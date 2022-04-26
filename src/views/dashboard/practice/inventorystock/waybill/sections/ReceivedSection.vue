@@ -1,9 +1,8 @@
 <template>
   <div>
     <div>
-      <span class="flex justify-end w-full mb-12">
+        <span class="flex justify-end w-full mb-12">
         <cornie-btn
-        @click="showRequest = true"
           class="
             bg-danger
             rounded-lg
@@ -16,7 +15,73 @@
             hover:opacity-90
           "
         >
-          Create New
+          New Waybill
+          <cornie-menu
+            top="0px"
+            right="100%"
+            class="border-l-2 h-full ml-2 border-white"
+          >
+            <template #activator="{ on }">
+              <icon-btn v-on="on">
+                <chevron-down-icon
+                  v-on="on"
+                  class="text-white mb-2 stroke-current mt-2 ml-1"
+                />
+              </icon-btn>
+            </template>
+            <cornie-card-text>
+              <div
+                class="
+                  flex
+                  mb-3
+                  items-center
+                  hover:bg-gray-100
+                  px-2
+                  py-2
+                  rounded-full
+                  cursor-pointer
+                "
+                @click="showWaybill = true"
+              >
+                <span class="ml-3 text-black text-sm">New Supply</span>
+              </div>
+              <div
+                class="
+                  flex
+                  mb-3
+                  items-center
+                  hover:bg-gray-100
+                  px-2
+                  py-2
+                  rounded-full
+                  cursor-pointer
+                "
+              @click="showOtherWaybill = true"
+              >
+                <span class="ml-3 text-black text-sm"
+                  >From Material Request</span
+                >
+              </div>
+              <div
+                class="
+                  flex
+                  mb-3
+                  items-center
+                  hover:bg-gray-100
+                  px-2
+                  py-2
+                  rounded-full
+                  cursor-pointer
+                "
+              @click="showOtherWaybill = true"
+              >
+                <span class="ml-3 text-black text-sm"
+                  >From Material Return</span
+                >
+              </div>
+  
+            </cornie-card-text>
+          </cornie-menu>
         </cornie-btn>
       </span>
     </div>
@@ -83,7 +148,8 @@
       </template>
     </cornie-table>
   </div>
-  <request-modal v-model="showRequest" />
+  <waybill-modal v-model="showWaybill" />
+  <other-modal v-model="showOtherWaybill"/>
   <view-modal v-model="showview" />
 </template>
 <script lang="ts">
@@ -113,7 +179,8 @@ import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 
-import RequestModal from "../components/requestModal.vue";
+import WaybillModal from "../components/waybillModal.vue";
+import OtherModal from "../components/otherwayBillModal.vue";
 import ViewModal from "../components/viewModal.vue"
 
 const location = namespace("location");
@@ -137,12 +204,13 @@ const catalogue = namespace("catalogues");
     CornieRadio,
     SelectOption,
     CheckIcon,
-    RequestModal,
+    WaybillModal,
     IconBtn,
     CheckInIcon,
     ChevronDownIcon,
     NewTab,
     ViewModal,
+    OtherModal,
   },
 })
 export default class IssuedExistingState extends Vue {
@@ -172,6 +240,8 @@ export default class IssuedExistingState extends Vue {
   isCheckAll = false;
   showRequest = false;
   showview = false;
+  showWaybill = false;
+  showOtherWaybill = false;
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 

@@ -243,6 +243,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Name"
+               
                 />
                 <cornie-select
                   :rules="required"
@@ -251,6 +252,7 @@
                   :items="['Sibling', 'Friend']"
                   placeholder="--Select--"
                   :required="true"
+                
                 />
                 <cornie-input
                   :rules="emailRule"
@@ -258,6 +260,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
+                  :disabled="disabled"
                 />
                 <phone-input
                   v-model="emergency.phone"
@@ -266,6 +269,7 @@
                   :required="true"
                   label="Phone Number"
                   placeholder="--Enter--"
+                  :disabled="disabled"
                 />
                 <auto-complete
                   class="w-full"
@@ -275,6 +279,7 @@
                   :rules="required"
                   :readonly="readonly"
                   :items="nationState.countries"
+                  :disabled="disabled"
                 />
                 <auto-complete
                   class="w-full"
@@ -284,6 +289,7 @@
                   placeholder="Enter"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   class="w-full"
@@ -293,6 +299,7 @@
                   placeholder="Enter"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   class="w-full"
@@ -302,6 +309,7 @@
                   :required="true"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   :rules="required"
@@ -309,6 +317,7 @@
                   label="Apartment or House Number"
                   placeholder="--Enter--"
                   :required="true"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   :rules="required"
@@ -316,6 +325,7 @@
                   label="Address"
                   placeholder="--Enter--"
                   :required="true"
+                  :disabled="disabled"
                 />
               </div>
             </template>
@@ -545,7 +555,7 @@
                     class="w-full"
                     :required="true"
                   />
-                  <date-picker
+                  <period-picker
                     class="w-full mb-5"
                     label="Year of Graduation"
                     v-model="graduationYear"
@@ -576,7 +586,9 @@
                   <div class="text-gray-600 text-sm flex items-center">
                     <div>{{ item.qualification }}</div>
                     <div class="font-bold text-xs leading-none mx-1">•</div>
-                    <div>{{ item.graduationYear.split("-")[0] }}</div>
+                    <div>{{ new Date(item.graduationYear)  .toLocaleDateString()
+                          .toString()
+                          .split("/")[2] }}</div>
                   </div>
                 </div>
               </div>
@@ -795,6 +807,7 @@ export default class AddPractitioner extends Vue {
 
   educations = [] as any;
   licenses = [] as any;
+  disabled=false;
 
   addEducation() {
     if (
@@ -947,7 +960,15 @@ export default class AddPractitioner extends Vue {
   @Watch("useSameAddress")
   populateEmergencyAddress() {
     if (this.useSameAddress) {
+      this.disabled = true;
       this.emergency.address = this.address;
+      this.emergency.phone = this.phone;
+      this.emergency.email = this.email;
+      this.emergency.country = this.country;
+      this.emergency.state = this.state;
+      this.emergency.city = this.city;
+      this.emergency.postCode = this.postCode;
+      this.emergency.aptNumber = this.aptNumber;
     } else {
       this.emergency.address = "";
     }
@@ -1026,17 +1047,17 @@ export default class AddPractitioner extends Vue {
     this.postCode = practitioner.postCode;
     this.aptNumber = practitioner.aptNumber;
     this.specialties = practitioner.specialties;
-    this.practiceDuration.value = practitioner.practiceDuration.value;
-    this.practiceDuration.unit = practitioner.practiceDuration.unit;
-    this.consultationRate.value = practitioner.consultationRate.value;
-    this.consultationRate.unit = practitioner.consultationRate.unit;
+    this.practiceDuration.value = practitioner?.practiceDuration?.value;
+    this.practiceDuration.unit = practitioner?.practiceDuration?.unit;
+    this.consultationRate.value = practitioner?.consultationRate?.value;
+    this.consultationRate.unit = practitioner?.consultationRate?.unit;
     this.consultationRatevalue = practitioner?.consultationRate?.value;
     this.consultationRateunit = practitioner?.consultationRate?.unit;
     this.practiceDurationvalue = practitioner?.practiceDuration?.value;
     this.practiceDurationunit = practitioner?.practiceDuration?.unit;
-    this.graduationYear = practitioner.graduationYear;
-    this.licenseIssuer = practitioner.licenseIssuer;
-    this.licensePeriod = practitioner.licensePeriod;
+    this.graduationYear = practitioner?.graduationYear;
+    this.licenseIssuer = practitioner?.licenseIssuer;
+    this.licensePeriod = practitioner?.licensePeriod;
   }
   serializeDate(date: string) {
     if (!date) return "";

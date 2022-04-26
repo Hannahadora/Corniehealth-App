@@ -4,36 +4,19 @@
     <div class="w-full">
       <div class="container-fluid">
         <!-- <div class="container-fluid" v-if="filterOptions.byPractitioners?.length === 0"> -->
-        <tabs
-          :items="tabLinks"
-          v-model="currentTab"
-          :dDate="start"
-          @filter="showFilterPane"
-          @left="setLeft"
-          @right="setRight"
-        >
-          <div>
-            <day-section
-              @set-oneId="setoneId"
-              :schedules="schedules"
-              :startDate="start"
-            />
-          </div>
-          <div>
-            <week-section
-              @set-oneId="setoneId"
-              :schedules="schedules"
-              :startDate="start"
-            ></week-section>
-          </div>
-          <div>
-            <month-section
-              @set-oneId="setoneId"
-              :schedules="schedules"
-              :startDate="start"
-            />
-          </div>
-        </tabs>
+       <tabs :showDate="true" :items="tabLinks" v-model="currentTab" :dDate="start"  @filter="showFilterPane" @left="setLeft" @right="setRight">
+
+                <div>
+                    <day-section :startDate="start"/>
+                </div>
+                <div>
+                    <week-section  :startDate="start"></week-section>
+                </div>
+                <div>
+                <month-section  :startDate="start"/>
+                </div>
+                
+            </tabs>
       </div>
 
       <advanced-filter v-model="showFilter" @applyfilter="applyFilter" />
@@ -71,9 +54,9 @@ import IPractitioner from "@/types/IPractitioner";
 import actorsSection from "./sections/newActors.vue";
 import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
-import WeekSection from "./sections/weekly.vue";
-import DaySection from "./sections/daily.vue";
-import MonthSection from "./sections/monthly.vue";
+import WeekSection from "@/views/dashboard/patientexp/calendar/availability/week.vue";
+import DaySection from "@/views/dashboard/patientexp/calendar/availability/day.vue";
+import MonthSection from "@/views/dashboard/patientexp/calendar/availability/month.vue"
 import ScreenHeader from "./Header.vue";
 
 const practitionersStore = namespace("practitioner");

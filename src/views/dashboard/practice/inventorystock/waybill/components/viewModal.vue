@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-        Goods Received Note
+        Waybill
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -40,13 +40,13 @@
                     <div class="w-full mt-5">
                          <div class="grid grid-cols-3 gap-4 mt-8">
                             <div class="bg-blue-50 rounded-lg shadow-md p-3">
-                                <p class="text-lg font-bold">Receiver Information</p>
+                                <p class="text-lg font-bold">Delivery Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received From</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Deliver To</p>
                                     <p class="text-sm text-right w-full">xxxxxx</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Address</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Delivery Address</p>
                                     <p class="text-sm text-right w-full">13, Colony Estate, Lekki...</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
@@ -59,21 +59,21 @@
                                 </div>
                             </div>
                              <div class="bg-white rounded-lg shadow-md p-3">
-                                <p class="text-lg font-bold">GRN Information</p>
+                                <p class="text-lg font-bold">Waybill Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">GRN #</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Waybill #</p>
                                     <p class="text-sm text-right w-full">xxxxxx</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received By</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Processed By</p>
                                     <p class="text-sm text-right w-full">xxxxxx</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Receive Date</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Issue Date</p>
                                     <p class="text-sm text-right w-full">25-04-2021</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received To</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Issued From</p>
                                     <p class="text-sm text-right w-full">xxxxxxx</p>
                                 </div>
                             </div>

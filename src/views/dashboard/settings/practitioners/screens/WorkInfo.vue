@@ -4,17 +4,17 @@
     <div class="grid grid-cols-4 gap-1">
       <div class="flex flex-col">
         <h1 class="text-gray-400 mb-1 text-sm">Employment Type</h1>
-        <h1 class="text-sm">{{ properties.employmentType }}</h1>
+        <h1 class="text-sm">{{ properties.employmentType  || 'N/A' }}</h1>
       </div>
       <div class="flex flex-col">
         <h1 class="text-gray-400 mb-1 text-sm">Speciality</h1>
 
-        <h1 class="text-sm">{{ properties.speciality }}</h1>
+        <h1 class="text-sm">{{ properties.speciality || 'N/A' }}</h1>
       </div>
       <div class="flex flex-col">
         <h1 class="text-gray-400 mb-1 text-sm">Job Designation</h1>
         <h1 class="text-sm">
-          {{ properties.jobDesignation }}
+          {{ properties.jobDesignation || 'N/A' }}
         </h1>
       </div>
       <div class="flex flex-col">
@@ -22,6 +22,7 @@
         <h1 class="text-sm">
           {{
             `${properties.consultationRate.value}/${properties.consultationRate.unit}`
+            || 'N/A'
           }}
         </h1>
       </div>
@@ -30,6 +31,7 @@
         <h1 class="text-sm">
           {{
             `${properties.yearsOfPractice.value} ${properties.yearsOfPractice.unit}`
+            || 'N/A'
           }}
         </h1>
       </div>

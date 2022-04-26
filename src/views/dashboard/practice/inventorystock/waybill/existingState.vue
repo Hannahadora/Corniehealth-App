@@ -5,28 +5,28 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Total Requests</p>
+              <p class="text-gray-400 text-sm">Total Waybills</p>
               <p class="text-black font-bold text-xl">0</p>
             </div>
-            <grn-icon />
+            <total-icon />
           </div>
         </div>
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Active Requests</p>
+              <p class="text-gray-400 text-sm">Active Waybills</p>
               <p class="text-black font-bold text-xl">0</p>
             </div>
-            <external-icon />
+            <active-icon />
           </div>
         </div>
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Closed Requests</p>
+              <p class="text-gray-400 text-sm">Closed Waybill</p>
               <p class="ctext-black font-bold text-xl">0</p>
             </div>
-            <internal-icon />
+            <close-icon />
           </div>
         </div>
       </div>
