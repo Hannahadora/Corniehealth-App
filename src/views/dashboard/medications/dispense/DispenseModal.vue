@@ -145,6 +145,15 @@ export default class DispenseModal extends Vue {
   get statuses() {
     return ["Active", "Substituted", "On-Hold", "Dispensed"];
   }
+
+  get lastUpdated() {
+     return new Date(this.request?.updatedAt).toLocaleString();
+  }
+
+  submit() {
+
+  }
+
 }
 </script>
 

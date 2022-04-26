@@ -12,7 +12,7 @@
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             Add New Customer
           </h2>
-          <cancel-icon
+          <cancel-red-bg
             class="float-right cursor-pointer"
             @click="show = false"
           />
@@ -20,7 +20,7 @@
       </cornie-card-title>
       <div class="">
         <cornie-card-text class="flex-grow scrollable">
-          <v-form class="flex-grow flex flex-col" @submit="submit">
+          <v-form class="flex-grow flex flex-col">
             <cornie-input
               class="w-full"
               label="Name"
@@ -71,7 +71,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -122,7 +122,7 @@ const appointmentRoom = namespace("appointmentRoom");
     TableOptions,
     FullPayment,
     SplitPayment,
-    CancelIcon,
+    CancelRedBg,
     CorniePhoneInput,
   },
 })

@@ -10,12 +10,12 @@
           <icon-btn @click="show = false">
             <arrow-left stroke="#ffffff" />
           </icon-btn>
-          <p class="text-3xl font-bold">{{ medication.brandCode }}</p>
+          <p class="text-3xl font-bold">{{ medication.genericName }}</p>
         </div>
 
         <span
           v-if="medication.substitutionAllowed"
-          class="flex items-center space-x-4 text-red-500"
+          class="flex items-center space-x-4 text-red-500 cursor-pointer"
           @click="substitute = true"
         >
           <substitution-allowed class="mr-2" /> Substitute
@@ -23,13 +23,13 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
+        <v-form class="flex-grow flex flex-col">
           <cornie-select
             class="w-full mt-6"
             label="Form"
-            placeholder="Tablet"
+            placeholder="--Select--"
             v-model="medication.form"
-            :items="tablets"
+            :items="medication.form"
             :disabled="true"
           />
           <cornie-input
@@ -41,7 +41,7 @@
           <cornie-input
             class="w-full"
             label="Prescribed Quantity"
-            v-model="medication.quantity"
+            v-model="medication.dosageInstruction"
             :disabled="true"
             :rules="required"
           />
@@ -51,13 +51,13 @@
             label="Pharmacy Supply Type"
             placeholder="--Select one--"
             v-model="supplyType"
-            :items="supplyTypes"
+            :items="['walk-in', 'delivery']"
           />
 
           <cornie-input
             class="w-full"
             label="Quantity"
-            v-model="quantity"
+            v-model="medication.quantity"
             :rules="required"
           />
         </v-form>
@@ -66,7 +66,7 @@
       <div class="flex items-center justify-end mt-24">
         <div class="flex items-center mb-6">
           <cornie-btn
-            @click="show = false"
+            @click="show = false; substitute = false;"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
             Save
@@ -97,107 +97,66 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
+        <v-form class="flex-grow flex flex-col" @submit="substituteMed">
           <cornie-select
-            class="w-full mt-6"
+            class="w-full"
             label="Prescribed medication"
-            v-model="medication.brandCode"
-            :items="brandCode"
+            v-model="medication.genericName"
+            :item="medNames"
             :disabled="true"
           />
           <cornie-select
-            class="w-full mt-6"
+            class="w-full"
             label="Type"
             placeholder="Select one"
-            v-model="supplyType"
-            :items="supplyTypes"
+            v-model="medication.form"
+            :items="medTypes"
           />
           <cornie-select
-            class="w-full mt-6"
+            class="w-full"
             label="Reason"
             placeholder="Select one"
-            v-model="reasons"
-            :items="reasons"
+            v-model="medication.reasonForSubstitution"
+            :items="['ook', 'jjjk']"
           />
 
           <cornie-input
             class="w-full"
             label="Responsible Party"
-            v-model="medication.responsibleParty"
+            v-model="responsibleParty"
+            :disabled="true"
             :rules="required"
           />
 
-          <cornie-select
-            class="w-full mt-6"
-            label="Pharmacy Supply Type"
+          <auto-complete
+            v-bind="$attrs"
+            label="Select medication to substitute with		"
             placeholder="Select one"
-            v-model="supplyType"
-            :items="supplyTypes"
-          />
-
-          <div class="">
-            <span
-              class="mb-2 w-full rounded-full"
-              @click="showDatalist = !showDatalist"
-            >
-              <icon-input
-                autocomplete="off"
-                class="border border-gray-600 rounded-full focus:outline-none"
-                type="search"
-                placeholder="Search"
-                v-model="medQuery"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
-            </span>
-            <div
-              :class="[
-                !showDatalist ? 'hidden' : 'o',
-                medicationData.length === 0 ? 'h-20' : 'h-auto',
-              ]"
-              class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-              style="width: 50%"
-            >
-              <div class="flex flex-col w-full p-3">
-                <div
-                  v-for="(item, i) in medicationData"
-                  :key="i"
-                  class="cursor-pointer mb-3 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
-                >
-                  <div class="flex items-center justify-between">
-                    <div
-                      class="w-full text-sm items-center p-2 border-transparent border-l-2 relative"
-                    >
-                      {{ item.name }}
-                      <p class="text-xs text-gray-400 italic">
-                        {{ item?.brandCode }}
-                      </p>
-                    </div>
-
-                    <cornie-radio
-                      name="search"
-                      @click="selectMed(item, item.name)"
-                    />
-                  </div>
+            v-model="medicationName"
+            :rules="required"
+            :items="medicationData"
+            @query="fetchMedications"
+          >
+            <template #item="{ item }">
+              <div class="w-full flex items-center justify-between my-1">
+                <!-- <avatar :src="item.image" /> -->
+                <div class="ml-4 flex flex-col">
+                  <span class="text-xs">{{ item.name }}</span>
+                  <span class="text-xs font-semibold text-gray-500">
+                    {{ item.brandCode }}
+                  </span>
                 </div>
+                 <cornie-radio name="search" @click="selected(item)" />
               </div>
-              <div v-if="medicationData.length === 0">
-                <span
-                  class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
-                  >No Match!</span
-                >
-              </div>
-            </div>
-          </div>
+            </template>
+          </auto-complete>
         </v-form>
       </cornie-card-text>
 
       <div class="flex items-center justify-end mt-24">
         <div class="flex items-center mb-6">
           <cornie-btn
-            @click="show = false"
+            @click="show = false; substitute = false;"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
             Cancel
@@ -231,12 +190,12 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
-import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
+import AutoComplete from "@/components/autocomplete.vue";
 
-import CornieSearch from "@/components/search-input.vue";
+import SearchInput from "@/components/search-input.vue";
 
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -269,7 +228,7 @@ const appointmentRoom = namespace("appointmentRoom");
     DatePicker,
     CancelIcon,
     SubstitutionAllowed,
-    CornieSearch,
+    SearchInput,
     IconInput,
     SearchIcon,
   },
@@ -284,14 +243,19 @@ export default class ModifyRequestModal extends Vue {
   @Prop({ type: Object, default: "" })
   medication!: IMedication;
 
-  required = string().required();
+  substitute = false;
 
+  medQuery = "";
+  medNames = <any>[];
+  medTypes = <any>[];
+  medicationName = "";
+
+  required = string().required();
   loading = false;
   selectedMed = "";
-  showDatalist = false;
-  medicationDetails = <any>[];
+  
   medicationData = <any>[];
-  substitute = false;
+  
   quantity = "";
   supplyType = "";
   supplyTypes = [];
@@ -302,7 +266,12 @@ export default class ModifyRequestModal extends Vue {
   authCurrentLocation!: any;
 
   get locationId() {
-    return this.authCurrentLocation;
+    // return this.authCurrentLocation;
+    return "21b84341-2051-4cad-b6b6-feae04f81215";
+  }
+
+  get responsibleParty() {
+    return "";
   }
 
   async fetchMedications(query: string) {
@@ -319,16 +288,20 @@ export default class ModifyRequestModal extends Vue {
     }
   }
 
-  selectMed(item: any) {
-    this.$emit("selected", item);
+  selected(item: any) {
     console.log("item", item);
     this.selectedMed = item;
-    this.showDatalist = false;
+    this.medicationName = item.genericName
   }
 
   @Watch("medQuery")
   typed(medQuery: string) {
     this.fetchMedications(medQuery);
+  }
+
+  substituteMed() { 
+    this.$emit("medicationModified", this.selectedMed);
+    this.show = false;
   }
 }
 </script>

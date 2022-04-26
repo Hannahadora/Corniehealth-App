@@ -1,27 +1,29 @@
 export default interface IPossale {
-    id: string,
-      identifier: string,
-      patientId: string,
-      type: string,
+  createdAt: string,
+  id: string,
+  identifier: string,
+  patientId: string,
+  type: string,
+  status: string,
+  coupon: string,
+  medications: [
+    {
+      id: string,
+      dispensedProductId: string,
+      reasonForSubstitution: string,
+      quantity: number
+    }
+  ],
+  payments: [
+    {
+      id: string,
+      paymentType: string,
+      amount: number,
+      total: number,
       status: string,
-      coupon: string,
-      medications: [
-        {
-          dispensedProductId: string,
-          reasonForSubstitution: string,
-          quantity: 0
-        }
-      ],
-      payments: [
-        {
-          id: string,
-          paymentType: string,
-          amount: number,
-          total: number,
-          status: string,
-        }
-      ],
-      customer: {
-        name: string
-      }
+    }
+  ],
+  customer: {
+    name: string
+  }
 }
