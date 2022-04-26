@@ -9,7 +9,7 @@
         </span>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-          New Request
+          New Waybill
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -22,53 +22,40 @@
         <v-form ref="form">
             <div class="border-dashed border-b-2 border-gray-200 pb-5">
                 <div class=" mt-5 grid grid-cols-2 gap-4 w-full">
+                   <cornie-input
+                        label="Waybill ID"
+                        class="w-full mb-4"
+                        placeholder="--Autoloaded--"
+                        :disabled="true"
+                    />
+                     <cornie-input
+                        label="Processed By"
+                        class="w-full mb-4"
+                        placeholder="--Autoloaded--"
+                        :disabled="true"
+                    />
                      <cornie-select
                     class="w-full"
                     placeholder="--Select---"
                     :items="['Active', 'Inactive', 'Resolved']"
-                    label="Select Location"
+                    label="Deliver To"
                     >
                     </cornie-select>
                      <cornie-input
-                        label="Requested By"
+                        label="Delivery Address"
                         class="w-full mb-4"
                         placeholder="--Autoloaded--"
                         :disabled="true"
                     />
-                     <cornie-input
-                        label="Reason for Request"
-                        class="w-full mb-4"
-                        placeholder="--Enter--"
-                    />
-                     <cornie-input
-                        label="Request Reference"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
-                     <cornie-select
-                        class="w-full"
-                        placeholder="--Select---"
-                        :items="['Active', 'Inactive', 'Resolved']"
-                        label="Required By"
+                   <cornie-select
+                    class="w-full"
+                    placeholder="--Select---"
+                    :items="['Active', 'Inactive', 'Resolved']"
+                    label="Approval Status"
                     >
                     </cornie-select>
-                     <cornie-input
-                        label="Approval Status"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
-                    <div class="w-full mt-2">
-                        <span class="text-sm font-semibold mb-4">Request Validity</span>
-                         <div class="flex space-x-4 w-full mt-5">
-                            <cornie-radio :label="'Immediately'" :value="'immediately'" v-model="valid" name="Cap"/>
-                            <cornie-radio :label="'Date'" :value="'date'" v-model="valid" name="Cap"/>
-                        </div>
-                    </div> 
                     <date-picker
-                        v-if="valid == 'date'"
-                        label="Date"
+                        label="Issued"
                         class="w-full"
                     />
                      
@@ -76,7 +63,7 @@
             </div>
           <div class="mt-5">
               <div class="w-full grid grid-cols-3 gap-4">
-                  <p class="font-bold text-blue-600">Make Request To:</p>
+                  <p class="font-bold text-blue-600">Issue Stock From:</p>
                   <cornie-select
                     class="w-full"
                     placeholder="--Select---"

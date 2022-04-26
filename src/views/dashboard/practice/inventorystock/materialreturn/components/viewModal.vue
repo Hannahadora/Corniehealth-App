@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-        Goods Received Note
+        Material Return
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -38,53 +38,52 @@
                     </div>
 
                     <div class="w-full mt-5">
-                         <div class="grid grid-cols-3 gap-4 mt-8">
+                         <div class="grid grid-cols-2 gap-4 mt-8">
                             <div class="bg-blue-50 rounded-lg shadow-md p-3">
-                                <p class="text-lg font-bold">Receiver Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received From</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Return #</p>
                                     <p class="text-sm text-right w-full">xxxxxx</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Address</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Date Processed</p>
                                     <p class="text-sm text-right w-full">13, Colony Estate, Lekki...</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Email</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Processed By</p>
                                     <p class="text-sm text-right w-full">mike@medplus.ng</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Role</p>
+                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Address</p>
+                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Validity</p>
+                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Approval Status</p>
                                     <p class="text-sm text-right w-full">+234 802 343 8799</p>
                                 </div>
                             </div>
-                             <div class="bg-white rounded-lg shadow-md p-3">
-                                <p class="text-lg font-bold">GRN Information</p>
-                                <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">GRN #</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received By</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Receive Date</p>
-                                    <p class="text-sm text-right w-full">25-04-2021</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Received To</p>
-                                    <p class="text-sm text-right w-full">xxxxxxx</p>
-                                </div>
-                            </div>
                              <div class="bg-blue-50 rounded-lg shadow-md p-3">
-                                <p class="text-lg font-bold">Reference Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Reference ID</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Return To</p>
                                     <p class="text-sm text-right w-full">AX1234</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Status</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Address</p>
+                                    <p class="text-sm text-right w-full">Complete</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Inventory Manager</p>
+                                    <p class="text-sm text-right w-full">Complete</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Return Status</p>
                                     <p class="text-sm text-right w-full">Complete</p>
                                 </div>
                             </div>
@@ -93,7 +92,7 @@
 
                     <div class="w-full mt-12">
                         <div class="bg-primary p-5 w-full flex mb-5">
-                            <p class="float-left text-white w-full">Description: <span class="font-semibold">XXXXXX</span></p>
+                            <p class="float-left text-white w-full">Reason for Return:: <span class="font-semibold">XXXXXX</span></p>
                         </div>
                         <div class="border-t-2 border-dashed border-gray-200 pb-12 pt-12">
 

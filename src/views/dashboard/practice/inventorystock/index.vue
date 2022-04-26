@@ -73,7 +73,7 @@ export default class CDMExistingState extends Vue {
     "Goods Received Note",
     "Material Request",
     "Material Return",
-    "Waybil"
+    "Waybill"
   ];
   currentTab = 0;
 
