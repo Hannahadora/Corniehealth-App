@@ -5,7 +5,7 @@
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-      <post-bill :request="request" @close="show = false; type = ''" />
+      <post-bill :request="request" :bill="bill" @closeModal="show = false" />
     </cornie-card>
 
     <cornie-card
@@ -13,7 +13,7 @@
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-     <post-claim :request="request" @close="show = false; type = ''" /> 
+     <post-claim :request="request" :bill="bill" /> 
     </cornie-card>
 
     <cornie-card
@@ -21,7 +21,7 @@
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-     <share-pay-link :request="request" @close="show = false; type = ''" /> 
+     <share-pay-link :request="request" :bill="bill" /> 
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -45,6 +45,7 @@ import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
+import IBill from "@/types/IBill";
 
 import PostBill from "./components/PostBill.vue";
 import PostClaim from "./components/PostClaim.vue";
@@ -89,6 +90,9 @@ export default class CollectPayment extends Vue {
 
   @Prop({ type: String, default: "" })
   type!: string;
+
+  @Prop({ type: Object, default: "" })
+  bill!: any;
 
 
   loading = false;
