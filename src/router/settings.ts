@@ -76,8 +76,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/special/index.vue"),
     },
     {
-      path: "location",
-      name: "Location",
+      path: "locations",
+      name: "Locations",
       component: () => import("@/views/dashboard/settings/location/index.vue"),
     },
     {
