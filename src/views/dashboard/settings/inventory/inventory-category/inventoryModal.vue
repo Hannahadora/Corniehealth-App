@@ -1,6 +1,6 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
-    <cornie-card height="100%" width="40%" class="flex flex-col">
+  <cornie-dialog v-model="show" right class="w-1/4 h-full">
+    <cornie-card height="100%" width="100%" class="flex flex-col">
 
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">

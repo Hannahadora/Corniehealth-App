@@ -43,18 +43,20 @@
 
       </template>
     </cornie-table>
-
+    <inventory-location-modal v-model="showInventoryRequest" />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import EmptyState from "./emptyState.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import InventoryLocationModal from "./locationModal.vue";
 
 @Options({
   components: {
     EmptyState,
-    CornieTable
+    CornieTable,
+    InventoryLocationModal
   }
 })
 

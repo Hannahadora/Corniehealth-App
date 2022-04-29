@@ -33,20 +33,23 @@
               ]" label="Location Manager" placeholder="--Select--" v-model="manager">
               </cornie-select>
               <cornie-input label="Address" placeholder="--Enter--" class="w-full" :modelValue="address" />
-              <cornie-select class="required" :rules="required" :items="[
+              <!-- <cornie-select class="required" :rules="required" :items="[
                 'CarePlan',
                 'MedicationRequest',
                 'ServiceRequest',
                 'ImmunizationRecommendation',
               ]" label="Country" placeholder="--Select--" v-model="country">
-              </cornie-select>
-              <cornie-select class="required" :rules="required" :items="[
+              </cornie-select> -->
+              <auto-complete :rules="required" v-model="country" required label="Country" :items="countries"
+                class="w-full" />
+              <auto-complete required :rules="required" :items="states" v-model="state" label="State" class="w-full" />
+              <!-- <cornie-select class="required" :rules="required" :items="[
                 'CarePlan',
                 'MedicationRequest',
                 'ServiceRequest',
                 'ImmunizationRecommendation',
               ]" label="State" placeholder="--Select--" v-model="state">
-              </cornie-select>
+              </cornie-select> -->
               <cornie-select class="required" :rules="required" :items="[
                 'CarePlan',
                 'MedicationRequest',
@@ -96,6 +99,11 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import AutoComplete from "@/components/autocomplete.vue";
+
+
+const countries = getCountries();
 
 @Options({
   name: "Inventory Modal",
@@ -107,12 +115,15 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
     CornieIconBtn,
     ArrowLeftIcon,
     CancelIcon,
+    AutoComplete
   }
 })
 
 export default class InventoryLocationModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
+  countries = countries;
+  states = [] as any;
 
 
   name = ''
@@ -134,6 +145,11 @@ export default class InventoryLocationModal extends Vue {
     // this.loading = false;
     console.log('submit')
     this.loading = false
+  }
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
   }
 }
 </script>

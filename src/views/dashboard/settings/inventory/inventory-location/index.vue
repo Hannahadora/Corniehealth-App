@@ -21,6 +21,6 @@ import inventoryLocationExistingState from "./existingState.vue";
 })
 
 export default class InventoryLocationIndex extends Vue {
-  empty = true
+  empty = false
 }
 </script>
