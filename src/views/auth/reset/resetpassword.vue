@@ -1,13 +1,16 @@
 <template>
   <auth>
-    <password-reset v-if="step === 1" />
-    <security-question v-if="step === 2" />
+    <verify-mail @nextStep="confirm" v-if="step === 1"/>
+    <confirmation v-if="step === 2" />
+    <password-reset v-if="step === 3" />
+    <security-question v-if="step === 4" />
   </auth>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Watch } from "vue-property-decorator";
 import PasswordReset from "./passwordreset.vue";
+import VerifyMail from "./verifymail.vue";
 import SecurityQuestion from "./securityquestion.vue";
 import Confirmation from "./confirmation.vue";
 import Auth from "../auth.vue";
@@ -19,6 +22,7 @@ type CreatedUser = { id: string; email: string };
     SecurityQuestion,
     Confirmation,
     Auth,
+    VerifyMail,
   },
 })
 export default class SignUp extends Vue {
@@ -36,6 +40,10 @@ export default class SignUp extends Vue {
 
   public section(data: string): void {
     this.step = parseInt(data);
+  }
+
+  confirm() {
+    this.step = 2
   }
 }
 </script>
