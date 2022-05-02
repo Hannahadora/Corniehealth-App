@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full m-0 pt-11 pb-20 lg:px-32 md:px-12 px-6" style="background: #080056">
+  <div class="w-full h-screen overflow-y-scroll m-0 pt-11 pb-20 lg:px-32 md:px-12 px-6" style="background: #080056">
     <div>
       <img src="../../assets/logo(1).png" alt="" />
     </div>
@@ -11,17 +11,17 @@
           <div v-if="areaPath === 'signup'">
             <div v-if="currentStep == 2">
               <img
-                src="../../assets/smiling_lady2.svg"
+                src="../../assets/img/provider-su-lady.png"
                 v-if="!currentStep !== 3 && type === 'Provider'"
                 class="w-full provider-img"
               />
               <img
-                src="../../assets/smiling_lady.png"
+                src="../../assets/img/payer-su-lady.png"
                 v-if="!currentStep !== 3 && type === 'Payer'"
                 class="w-full payer-img"
               />
               <img
-                src="../../assets/happy-famile-x.png"
+                src="../../assets/img/patient-su-family.png"
                 v-if="!currentStep !== 3 && type === 'Patient'"
                 class="w-full patient-img"
               />
@@ -148,17 +148,17 @@ export default {
 }
 
 .patient-img {
-  height: 623px;
+  /* height: 623px; */
 }
 
 .provider-img {
-  height: 650px;
-  width: 439px;
+  /* height: 650px; */
+  /* width: 439px; */
 }
 
 .payer-img {
-  width: 427px;
-  height: 619px;
+  /* width: 427px; */
+  /* height: 619px; */
 }
 /* @media (min-width: 640px) {
   .dauth {
