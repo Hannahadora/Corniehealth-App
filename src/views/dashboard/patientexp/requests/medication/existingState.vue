@@ -9,7 +9,7 @@
     </span>
     <div class="flex justify-start space-x-6 w-full mb-8">
         <span class="flex space-x-4">
-          <medication-drug class="mr-2"/> Substitution Allowed
+          <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">
             <refill-drug class="mr-2"/> Refilled Required
@@ -29,7 +29,7 @@
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
               <refill-icon />
               <span class="ml-3 text-xs">Refill Request</span>
             </div>
@@ -121,6 +121,9 @@
             </p>
           </div>
         </template>
+        <template #refillno="{ item }">
+            <span>{{ item.refills.length }}</span>
+        </template>
     </cornie-table>
 
     <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded"/>
@@ -183,7 +186,7 @@ import search from "@/plugins/search";
 import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
-import IRequest from "@/types/IRequest";
+import IRequest, {Medications} from "@/types/IRequest";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -549,6 +552,7 @@ export default class RequestExistingState extends Vue {
      this.showDetails = true;
   }
   showRefillModal(value:string){
+    console.log(value, 'medicationId');
     this.showRefill = true;
     this.requestId = value;
   }

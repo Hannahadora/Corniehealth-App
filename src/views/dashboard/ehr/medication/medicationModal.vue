@@ -17,7 +17,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-         <v-form ref="form">
+        <v-form ref="form">
          <div  class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component
                 title="Basic Info"
@@ -26,7 +26,8 @@
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                         <cornie-select
-                            class="required"
+                        required
+                            class="required w-full"
                             :rules="required"
                           :items="[
                               'CarePlan',
@@ -40,8 +41,7 @@
                         >
                         </cornie-select>
                         <cornie-select
-                        class="required"
-                        :rules="required"
+                        class="w-full"
                         :items="[
                         'proposal',
                         'plan',
@@ -62,6 +62,7 @@
                             </template>
                         </cornie-select>
                         <cornie-select
+                        required
                           class="required"
                           :rules="required"
                           :items="[
@@ -75,7 +76,8 @@
                           placeholder="--Select--">
                         </cornie-select>
                         <cornie-select
-                            class="required"
+                        required
+                            class="required w-full"
                             :rules="required"
                             :items="[
                             'Inpatient',
@@ -89,7 +91,8 @@
                         >
                         </cornie-select>
                         <cornie-select
-                            class="required"
+                            class="required w-full"
+                            required
                             :rules="required"
                             :items="allPerformer"
                             label="requester"
@@ -98,7 +101,8 @@
                             >
                         </cornie-select>
                         <!-- <cornie-select
-                            class="required"
+                            class="required w-full"
+                            required
                             :rules="required"
                             :items="allRequester"
                             label="Patient"
@@ -116,6 +120,7 @@
                             >
                         </cornie-select>
                         <cornie-input
+                        required
                             class="required"
                             :rules="required"
                             label="supporting information"
@@ -144,7 +149,8 @@
                           label="medication code"
                           placeholder="--Select--"
                         /> -->
-                        <auto-complete :label="'medication code'" @click="resultData(emptyMedicationDetails.genericCode)" :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Select'"/>
+                        <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
+
                         <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
                         <cornie-select
                             class="w-full"
@@ -166,14 +172,17 @@
                         <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
                             <div class="flex space-x-2 w-full">
+                                <div>
                                 <cornie-input
-                                :rules="required"
                                 v-maska="'#*:#*:#*'"
+                                :rules="required"
                                 placeholder="0:0:0"
                                 class="grow w-full"
                                 :setfull="true"
                                 v-model="emptyMedicationDetails.dosageInstruction"
                                 />
+                                <span class="text-xs text-gray-600">Press the space bar to add <span class="text-sm font-bold">' : '</span> </span>
+                              </div>
                                 <cornie-select
                                 :items="['Day']"
                                 placeholder="/ Day"
@@ -230,7 +239,6 @@
                                 <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
                             <div class="flex space-x-2 w-full">
                                     <cornie-input
-                                        :rules="required"
                                         placeholder="--Enter--"
                                         class="grow w-full"
                                         :setfull="true"
@@ -257,7 +265,6 @@
                                 <span class="text-sm font-semibold mb-3">Supply Duration</span>
                                 <div class="flex space-x-2 w-full">
                                     <cornie-input
-                                        :rules="required"
                                         placeholder="--Enter--"
                                         class="grow w-full"
                                         :setfull="true"
@@ -287,6 +294,7 @@
                     <cornie-select
                         class="required w-full"
                         :rules="required"
+                        required
                         :items="['reason']"
                         label="Medication Substitution Code"
                         placeholder="Select"
@@ -327,7 +335,7 @@
                     <div class="flex space-x-10">
                       <div class="mb-0 p-2">
                         <p class="text-xs text-primary font-semibold">
-                          {{input.code }}
+                          {{input.genericName }}
                         </p>
                         <p class="text-xs text-gray-500 font-light">
                           {{ input.dosageInstruction }}
@@ -357,8 +365,7 @@
                     <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
 
                         <cornie-select
-                            class="required w-full"
-                            :rules="required"
+                            class="w-full"
                             :items="['reason code']"
                             label="do not perform"
                             placeholder="--Select--"
@@ -366,7 +373,6 @@
                         >
                         </cornie-select>
                         <cornie-select
-                            :rules="required"
                             :items="['reason reference']"
                             label="reason for prohibition"
                             placeholder="--Select--"
@@ -500,8 +506,7 @@
                     <span class="w-full font-semibold text-gray-600">Medication Administration</span>
                     <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
                         <cornie-select
-                            class="required"
-                            :rules="required"
+                            class="w-full"
                             :items="allPerformer"
                             label="Performer"
                             placeholder="Select"
@@ -509,7 +514,7 @@
                         >
                         </cornie-select>
                         <cornie-select
-                        :rules="required"
+                        class="w-full"
                         :items="allRoles"
                         label="Performer Role"
                         placeholder="Select"
@@ -523,8 +528,7 @@
                     <span class="w-full font-semibold text-gray-600">History</span>
                     <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
                         <cornie-select
-                            class="required"
-                            :rules="required"
+                            class="w-full"
                             :items="['reason code']"
                             label="Prior Prescription"
                             placeholder="Select"
@@ -760,7 +764,7 @@ export default class MedicationModal extends Vue {
   days="";
   days2="";
   basedOn = "";
-  intent = "";
+  intent = null;
   priority = "";
   category = "";
   requesterId = "";
@@ -769,19 +773,19 @@ export default class MedicationModal extends Vue {
   supportingInformation = "";
   medications  = [] as any;
   status = "draft";
-  reasonCode = "";
-  reasonReference = "";
-  note = "";
+  reasonCode = null;
+  reasonReference = null;
+  note = null;
   allergies = [] as any;
   aconditions = [] as any;
   identifier = "";
   safetyCapRequest = true;
   deliveryLocation = "";
-  priorPrescription = "";
+  priorPrescription = null;
   detectedIssues = [] as any;
   priorityShipping = true;
-  performer = "";
-  performerRole =  "";
+  performer = null;
+  performerRole =  null;
   emptyRefill = {
     medicationId: "",
     interval: 0,
@@ -983,7 +987,8 @@ export default class MedicationModal extends Vue {
   }
 
   async createRequest() {
-  
+   const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
     try {
       const response = await cornieClient().post(
         "/api/v1/medication-requests",

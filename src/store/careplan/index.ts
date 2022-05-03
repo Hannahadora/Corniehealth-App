@@ -1,46 +1,50 @@
+import ObjectSet from "@/lib/objectset";
 import ICarePlan from "@/types/ICarePlan";
 import { StoreOptions } from "vuex";
-import { createCarePlan, getCarePlans, updateCarePlan } from "./helper";
+import { getCarePlans, updateCarePlan } from "./helper";
 
 interface CareplanStore {
-  patientCarePlans: ICarePlan[];
+  careplans: ICarePlan[];
 }
 
 export default {
   namespaced: true,
   state: {
-    patientCarePlans: [],
+    careplans: [],
   },
 
   mutations: {
-    setPatientPlans(state, patientCarePlans: ICarePlan[]) {
-      state.patientCarePlans = [...patientCarePlans];
+    setCareplans(state, careplans: ICarePlan[]) {
+      state.careplans = [...careplans];
+    },
+    updateCareplans(state, careplans: ICarePlan[]) {
+      const careplanSet = new ObjectSet(
+        [...state.careplans, ...careplans],
+        "id"
+      );
+      state.careplans = [...careplanSet];
+    },
+    deleteCareplan(state, id: string) {
+      const index = state.careplans.findIndex(orgCarePlan => orgCarePlan.id == id);
+      if (index < 0) return;
+      const careplans = [...state.careplans];
+      careplans.splice(index, 1);
+      state.careplans = [...careplans];
     },
 
-    addNewItem(state, data) {
-      if (data) {
-        state.patientCarePlans.unshift(data);
-      }
-    },
+  
 
   
   },
 
   actions: {
-    async getCarePlans(ctx, patientId: string) {
-      const response = await getCarePlans(patientId);
-      ctx.commit("setPatientPlans", response);
-    },
-
-    async createCarePlan(ctx, body) {
-      const res = await createCarePlan(body);
-      if (!res) return false;
-      ctx.commit("addNewItem", res);
-      return res as boolean;
+    async getCarePlans(ctx) {
+      const careplans = await getCarePlans();
+      ctx.commit("setCareplans", careplans);
     },
     async getCareplanById(ctx, id: string) {
-      if (ctx.state.patientCarePlans.length < 1) await ctx.dispatch("getCarePlans");
-      return ctx.state.patientCarePlans.find(patientCarePlan => patientCarePlan.id == id);
+      if (ctx.state.careplans.length < 1) await ctx.dispatch("getCarePlans");
+      return ctx.state.careplans.find(orgCarePlan => orgCarePlan.id == id);
     },
 
     async updateCarePlan(ctx, body: any) {

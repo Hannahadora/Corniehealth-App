@@ -89,6 +89,10 @@
                     <edit-icon />
                     <span class="ml-3 text-xs">Edit Medication</span>
                     </div>
+                    <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <delete-icon />
+                      <span class="ml-3 text-xs">Delete Medication</span>
+                    </div>
                 </template>
                   <template #code="{ item }">
                     <div class="flex space-x-3">

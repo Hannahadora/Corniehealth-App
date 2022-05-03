@@ -9,7 +9,7 @@
     </span>
     <div class="flex justify-start space-x-6 w-full mb-8">
         <span class="flex space-x-4">
-          <medication-drug class="mr-2"/> Substitution Allowed
+          <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">
             <refill-drug class="mr-2"/> Refilled Required
@@ -29,7 +29,7 @@
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
               <refill-icon />
               <span class="ml-3 text-xs">Refill Request</span>
             </div>
@@ -37,90 +37,6 @@
           <print-icon />
           <span class="ml-3 text-xs">Print</span>
         </div>
-
-        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <print-icon />
-          <span class="ml-3 text-xs">Print</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <plus-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Book Appointment</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <specimen-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Specimen ID #</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <specimen-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Report</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <checkin-icon class="text-green-500 fill-current" />
-          <span class="ml-3 text-xs">Check In</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <checkout-icon class="text-grren-500 fill-current" />
-          <span class="ml-3 text-xs">Check Out</span>
-        </div> -->
-
-        <!-- <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              `/dashboard/experience/view-request/${item.id}`
-            )
-          "
-        >
-          <newview-icon class="text-blue-700 fill-current" />
-          <span class="ml-3 text-xs">View</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              `/dashboard/experience/edit-request/${item.id}`
-            )
-          "
-        >
-          <newview-icon class="text-blue-700 fill-current" />
-          <span class="ml-3 text-xs">View & Edit</span>
-        </div>
-       
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              '/dashboard/provider/experience/add-appointment'
-            )
-          "
-        >
-          <plus-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Add Appointment</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push('/dashboard/provider/experience/add-task')
-          "
-        >
-          <plus-icon class="text-red-500 fill-current" />
-          <span class="ml-3 text-xs">Add Task</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="makeNotes(item.id)"
-        >
-          <note-icon class="text-green-600 fill-current" />
-          <span class="ml-3 text-xs">Add Notes</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
-        >
-          <danger-icon />
-          <span class="ml-3 text-xs">Cancel</span>
-        </div> -->
-
       </template>
       <template #prescription="{ item }">
           <p>{{ item.identifier }}</p>
@@ -135,7 +51,7 @@
       <template #medication="{ item }">
         <div class="flex space-x-3">
           <div>
-            <p>{{ item.code}}</p>
+            <p>{{ item.genericName}}</p>
             <p class="text-gray-400">{{ item.durationInDays }} days</p>
           </div>
             <medication-drug v-if="item.substitutionAllowed == true" />
@@ -205,6 +121,9 @@
             </p>
           </div>
         </template>
+        <template #refillno="{ item }">
+            <span>{{ item.refills.length }}</span>
+        </template>
     </cornie-table>
 
     <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded"/>
@@ -267,7 +186,7 @@ import search from "@/plugins/search";
 import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
-import IRequest from "@/types/IRequest";
+import IRequest, {Medications} from "@/types/IRequest";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -633,6 +552,7 @@ export default class RequestExistingState extends Vue {
      this.showDetails = true;
   }
   showRefillModal(value:string){
+    console.log(value, 'medicationId');
     this.showRefill = true;
     this.requestId = value;
   }
