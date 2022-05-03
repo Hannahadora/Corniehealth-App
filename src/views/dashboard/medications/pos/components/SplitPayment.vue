@@ -71,20 +71,10 @@ const appointmentRoom = namespace("appointmentRoom");
   },
 })
 export default class SplitPayment extends Vue {
-  @Prop({ type: Array, default: [{}] })
-  payments!: [{}];
+  @Prop({ type: Array, default: <any>[] })
+  payments!: any;
 
   @Prop({ type: Boolean, default: false })
   salesData!: boolean;
-
-  payment = {
-    amount: "",
-    paymentType: "",
-    total: this.paymentTotal(),
-  };
-
-  paymentTotal() {
-    return this.payments.forEach((el: any) => el.amount);
-  }
 }
 </script>
