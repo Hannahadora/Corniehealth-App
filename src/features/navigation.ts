@@ -68,12 +68,6 @@ const links: ISidebarLink[] = [
     hasSubsection: false,
   },
   {
-    name: "In-Patient",
-    to: "in-patient",
-    icon: "clinic-icon",
-    hasSubsection: false,
-  },
-  {
     name: "Diagnostics",
     to: "diagnostics",
     icon: "clip-board-icon",
@@ -145,6 +139,18 @@ const links: ISidebarLink[] = [
     ]
   },
   {
+    name: "Bills & Payments",
+    to: "bills",
+    icon: "debit-card-icon",
+    hasSubsection: false,
+  },
+  {
+    name: "Analytics",
+    to: "analytics",
+    icon: "chart-icon",
+    hasSubsection: false,
+  },
+  {
     name: "Practice",
     to: "practice",
     icon: "practice-icon",
@@ -202,43 +208,42 @@ const links: ISidebarLink[] = [
       },
     ],
   },
-  {
-    name: "Bills & Payments",
-    to: "bills",
-    icon: "debit-card-icon",
-    hasSubsection: false,
-  },
-  {
-    name: "Accounting",
-    to: "accounting",
-    icon: "wallet-icon",
-    hasSubsection: false,
-  },
-  {
-    name: "Analytics",
-    to: "analytics",
-    icon: "chart-icon",
-    hasSubsection: false,
-  },
-  { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
-  {
-    name: "Categories",
-    to: "categories",
-    icon: "categories-icon",
-    hasSubsection: true,
-    children: [
-      {
-        name: "Locations",
-        to: "/dashboard/provider/settings/locations",
-        hasSubsection: false,
-      },
-      {
-        name: "Group",
-        to: "/dashboard/provider/settings/group",
-        hasSubsection: false,
-      },
-    ]
-  },
+
+
+  // {
+  //   name: "In-Patient",
+  //   to: "in-patient",
+  //   icon: "clinic-icon",
+  //   hasSubsection: false,
+  // },
+ 
+
+  // {
+  //   name: "Accounting",
+  //   to: "accounting",
+  //   icon: "wallet-icon",
+  //   hasSubsection: false,
+  // },
+  
+  // { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  // {
+  //   name: "Categories",
+  //   to: "categories",
+  //   icon: "categories-icon",
+  //   hasSubsection: true,
+  //   children: [
+  //     {
+  //       name: "Locations",
+  //       to: "/dashboard/provider/settings/locations",
+  //       hasSubsection: false,
+  //     },
+  //     {
+  //       name: "Group",
+  //       to: "/dashboard/provider/settings/group",
+  //       hasSubsection: false,
+  //     },
+  //   ]
+  // },
 ];
 
 const soloLinks = [
