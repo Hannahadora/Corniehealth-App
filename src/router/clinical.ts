@@ -12,21 +12,21 @@ export const ClinicalsRoute: RouteRecordRaw = {
       name: "Health Trend",
       component: () => import("@/views/dashboard/ehr/healthtrend/index.vue"),
     },
-    {
-      path: "care-team",
-      name: "EHR - Care Team",
-      component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
-    },
-    {
-      path: "care-plan",
-      name: "EHR - Care Plan",
-      component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
-    },
-    {
-      path: "care-partners",
-      name: "EHR - Care Partners",
-      component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
-    },
+    // {
+    //   path: "care-team",
+    //   name: "EHR - Care Team",
+    //   component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
+    // },
+    // {
+    //   path: "care-plan",
+    //   name: "EHR - Care Plan",
+    //   component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
+    // },
+    // {
+    //   path: "care-partners",
+    //   name: "EHR - Care Partners",
+    //   component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
+    // },
     {
       path: "visits",
       name: "EHR - Visit",

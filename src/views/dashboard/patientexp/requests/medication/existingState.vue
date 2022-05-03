@@ -8,12 +8,12 @@
       </button>
     </span>
     <div class="flex justify-start space-x-6 w-full mb-8">
-      <span class="flex space-x-4">
-        <medication-drug class="mr-2" /> Substitution Allowed
-      </span>
-      <span class="flex space-x-4">
-        <refill-drug class="mr-2" /> Refilled Required
-      </span>
+        <span class="flex space-x-4">
+          <medication-drug class="mr-2"/> Substitution Permitted
+        </span>
+        <span class="flex space-x-4">
+            <refill-drug class="mr-2"/> Refilled Required
+        </span>
     </div>
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
@@ -29,11 +29,11 @@
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
-          <refill-icon />
-          <span class="ml-3 text-xs">Refill Request</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
+              <refill-icon />
+              <span class="ml-3 text-xs">Refill Request</span>
+            </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
           <print-icon />
           <span class="ml-3 text-xs">Print</span>
         </div>
@@ -70,34 +70,60 @@
         </span>
       </template>
       <template #status="{ item }">
-        <div class="flex items-center">
-          <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'draft'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded" v-if="item.status == 'on-hold'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'active'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'unknown'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'completed'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-red-100 text-red-600 p-1 rounded"
-            v-if="item.status == 'revoked' || item.status == 'cancelled'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'entered-in-error'">
-            {{ item.status }}
-          </p>
-          <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'do-not-perform'">
-            {{ item.status }}
-          </p>
-        </div>
-      </template>
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
+          </div>
+        </template>
+        <template #refillno="{ item }">
+            <span>{{ item.refills.length }}</span>
+        </template>
     </cornie-table>
 
     <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded" />
@@ -129,7 +155,7 @@ import search from "@/plugins/search";
 import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
-import IRequest from "@/types/IRequest";
+import IRequest, {Medications} from "@/types/IRequest";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -494,7 +520,8 @@ export default class RequestExistingState extends Vue {
     this.selectedItem = item;
     this.showDetails = true;
   }
-  showRefillModal(value: string) {
+  showRefillModal(value:string){
+    console.log(value, 'medicationId');
     this.showRefill = true;
     this.requestId = value;
   }

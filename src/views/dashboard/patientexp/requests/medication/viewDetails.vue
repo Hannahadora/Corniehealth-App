@@ -89,6 +89,10 @@
                     <edit-icon />
                     <span class="ml-3 text-xs">Edit Medication</span>
                     </div>
+                     <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                      <delete-icon />
+                      <span class="ml-3 text-xs">Delete Medication</span>
+                    </div>
                 </template>
                   <template #code="{ item }">
                     <div class="flex space-x-3">
@@ -128,6 +132,7 @@
                       <edit-icon />
                       <span class="ml-3 text-xs">Edit Refill</span>
                     </div>
+                   
                 </template>
                   <template #interval="{ item }">
                     <div class="flex space-x-3">
@@ -304,6 +309,9 @@ export default class DetailedViewModal extends Vue {
     @request.Action
     getRequestById!: (id: string) => IRequest;
 
+  @request.Action
+  deleteRequest!: (id: string) => Promise<boolean>;
+
 
     medicationMapper = (code: string) => "";
     loading = false;
@@ -470,6 +478,19 @@ export default class DetailedViewModal extends Vue {
   async medicationadded(){
     await this.fetchRequests();
   }
+
+  async deleteItem(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this medication",
+      title: "Delete medication",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteRequest(id))
+      window.notify({ msg: "Medication delete", status: "success" });
+    else window.notify({ msg: "Medication not deleted", status: "error" });
+  }
+
 
   async created() {
       await this.fetchRequests();

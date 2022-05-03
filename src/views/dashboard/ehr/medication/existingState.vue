@@ -9,7 +9,7 @@
     </span>
     <div class="flex justify-start space-x-6 w-full mb-8">
         <span class="flex space-x-4">
-          <medication-drug class="mr-2"/> Substitution Allowed
+          <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">
             <refill-drug class="mr-2"/> Refilled Required
@@ -120,6 +120,9 @@
               {{ item.status }}
             </p>
           </div>
+        </template>
+          <template #refillno="{ item }">
+            <span>{{ item.refills.length }}</span>
         </template>
     </cornie-table>
 

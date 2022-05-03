@@ -175,6 +175,31 @@ const links: ISidebarLink[] = [
         to: "pricebook",
         hasSubsection: false,
       },
+      {
+        name: "Practitoner Directory",
+        to: "practitioners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Partners",
+        to: "/dashboard/provider/practice/care-partners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Plan",
+        to: "/dashboard/provider/practice/care-plan",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Teams",
+        to: "/dashboard/provider/practice/care-team",
+        hasSubsection: false,
+      },
+      {
+        name: "Groups",
+        to: "group",
+        hasSubsection: false,
+      },
     ],
   },
   {

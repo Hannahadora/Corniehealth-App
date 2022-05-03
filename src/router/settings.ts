@@ -14,12 +14,12 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/OrganisationHierarchy/index.vue"),
     },
-    {
-      path: "care-partners",
-      name: "Care Partners",
-      component: () =>
-        import("@/views/dashboard/settings/CarePartners/index.vue"),
-    },
+    // {
+    //   path: "care-partners",
+    //   name: "Care Partners",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/CarePartners/index.vue"),
+    // },
     {
       path: "account-security",
       name: "Account Security",
@@ -140,11 +140,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/practitioners/viewPractitioner.vue"),
     },
-    {
-      path: "care-teams",
-      name: "Care Teams",
-      component: () => import("@/views/dashboard/settings/careteam/index.vue"),
-    },
+    // {
+    //   path: "care-teams",
+    //   name: "Care Teams",
+    //   component: () => import("@/views/dashboard/settings/careteam/index.vue"),
+    // },
     {
       path: "add-careteam/:id?",
       props: true,

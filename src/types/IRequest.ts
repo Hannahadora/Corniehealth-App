@@ -24,7 +24,7 @@ export interface Medications {
 export default interface IRequest {
   id?: string;
   basedOn: string;
-  intent: string;
+  intent: null;
   priority: string;
   category: string;
   requesterId: string;
@@ -33,17 +33,17 @@ export default interface IRequest {
   supportingInformation: string;
   medications: Medications[];
   status: string;
-  reasonCode: string;
-  reasonReference: string;
-  note: string;
-  allergies: string[];
+  reasonCode: null;
+  reasonReference: null;
+  note: null;
+  allergies?: string[] ;
   conditions: string[];
   identifier: string;
   safetyCapRequest: boolean;
   deliveryLocation: string;
-  priorPrescription: string;
-  detectedIssues: string[];
+  priorPrescription: null;
+  detectedIssues?: string[];
   priorityShipping: boolean;
-  performer: string;
-  performerRole: string;
+  performer: null;
+  performerRole: null;
 }

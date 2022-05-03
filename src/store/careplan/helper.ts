@@ -1,11 +1,9 @@
 import { cornieClient } from "@/plugins/http";
 import ICarePlan from "@/types/ICarePlan";
 
-export async function getCarePlans(patientId: string) {
+export async function getCarePlans() {
   try {
-    const response = await cornieClient().get(
-      `/api/v1/care-plan/patient/${patientId}`
-    );
+    const response = await cornieClient().get("/api/v1/care-plan/organizationId");
 
     return response.data;
   } catch (error) {
