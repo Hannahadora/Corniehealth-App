@@ -76,5 +76,7 @@ export default class SplitPayment extends Vue {
 
   @Prop({ type: Boolean, default: false })
   salesData!: boolean;
+ 
+  required = string().required();
 }
 </script>

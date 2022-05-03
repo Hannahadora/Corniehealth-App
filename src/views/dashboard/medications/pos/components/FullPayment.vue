@@ -56,5 +56,7 @@ export default class FullPayment extends Vue {
 
   @Prop({ type: Boolean, default: false })
   salesData!: boolean;
+  
+  required = string().required();
 }
 </script>
