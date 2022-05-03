@@ -228,8 +228,8 @@ const links: ISidebarLink[] = [
     hasSubsection: true,
     children: [
       {
-        name: "Location",
-        to: "/dashboard/provider/settings/location",
+        name: "Locations",
+        to: "/dashboard/provider/settings/locations",
         hasSubsection: false,
       },
       {

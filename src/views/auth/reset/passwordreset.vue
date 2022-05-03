@@ -1,13 +1,14 @@
 <template>
-  <div class="block rounded-lg bg-white -mt-4 p-9">
+  <div class="block rounded-lg bg-white -mt-4 px-6 py-12">
     <div
       class="lg:w-full xl:w-full md:w-full block"
     >
-      <form class="m-8" @submit.prevent="submit">
-        <h2 class="font-bold text-primary mb-5 text-xl">Reset Password</h2>
-        <label for="password" class=" flex flex-col">
-          <span class="block capitalize mb-1 w-full text-sm font-bold"
-            >Previous Password</span
+      <form class="" @submit.prevent="submit">
+        <h2 class="font-bold text-center text-primary text-3xl">Create new password</h2>
+        <p class="mt-2 text-center" style="font-size: 15px">Your new password must be different from previously used password.</p>
+        <label for="password" class="mt-9 flex flex-col">
+          <span class="block capitalize w-full text-sm font-bold"
+            >Password</span
           >
           <password-input
             v-model="previousPassword"
@@ -28,18 +29,21 @@
           </span>
         </label>
         <label for="confirm" class="mt-6 flex flex-col">
-          <span class="block capitalize mb-1 text-sm font-bold"
-            >New Password</span
+          <span class="block capitalize text-sm font-bold"
+            >Confirm Password</span
           >
           <password-input
             id="confirm"
             required
             v-model="newPassword"
             class="border rounded py-2"
-            :class="{ 'border-red-500': confirmation != password }"
+            :class="{ 'border-red-500': newPassword != previousPassword }"
           />
-          <span v-if="confirmation != password" class="text-xs text-red-500"
+          <span v-if="newPassword != previousPassword" class="text-xs text-red-500"
             >Passwords do not match</span
+          >
+          <span v-else class="text-xs text-red-500"
+            >All Good here. You can submit now.</span
           >
         </label>
         <!--<div class="mb-8 mt-5">
@@ -63,8 +67,8 @@
                 label="Email"
                 />
             </div>-->
-        <div class="block mt-2 mb-2">
-          <h4 class="font-bold">Password Requirements:</h4>
+        <div class="block mt-4 mb-11">
+          <h4 class="font-bold text-sm">Password Requirements:</h4>
           <ul class="text-xs text-gray-500">
             <li class="mb-1 flex items-center">
               <tick-icon v-if="oneUpperCase" class="mr-1" /> least 1 Upper Case

@@ -8,7 +8,7 @@
       label="Patient Type"
     />
   </div> -->
-  <div class="w-full grid grid-cols-2 gap-4">
+  <div class="w-full grid grid-cols-2 gap-3">
     <!-- <cornie-select
       v-if="account !== 'Patient'"
       v-model="practiceType"
@@ -71,7 +71,7 @@
       placeholder="--Enter--"
       label="Email Address"
     />
-
+<!-- 
     <cornie-input
       v-if="account === 'Provider'"
       :rules="requiredString"
@@ -80,8 +80,8 @@
       class="w-full"
       placeholder="--Enter--"
       label="Practice Name"
-    />
-    <cornie-input
+    /> -->
+    <!-- <cornie-input
       v-if="account === 'Payer'"
       :rules="requiredString"
       v-model="organisationName"
@@ -89,7 +89,7 @@
       class="w-full"
       placeholder="--Enter--"
       label="Organisation Name"
-    />
+    /> -->
     <!-- <cornie-input
        v-if="account !== 'Patient'"
         v-model="domainName"
@@ -98,15 +98,31 @@
         placeholder="--Enter--"
         label="Domain Name"
       /> -->
-    <domain-input
+    <!-- <domain-input
       v-if="account !== 'Patient'"
       label="Domain Name"
       placeholder="--Enter--"
       v-model="domainName"
       v-on:input="checkDomain"
-    />
+    /> -->
+      <cornie-select
+        v-if="account === 'Patient'"
+        v-model="subType"
+        :items="['Private', 'Employer']"
+        class="w-full col-span-2"
+        placeholder="--Select--"
+        label="Patient Profile"
+      />
+      <cornie-select
+        v-if="account === 'Provider'"
+        v-model="subType"
+        :items="['Hospital/Clinic', 'Solo Practice', 'Community Pharmacy', 'Diagnostics Center']"
+        class="w-full col-span-2"
+        placeholder="--Select--"
+        label="Provider Profile"
+      />
   </div>
-  <label for="terms" class="mt-1 mb-2 flex items-center">
+  <label for="terms" class="mt-1 flex items-center">
     <input id="terms" type="checkbox" v-model="checkRequire" required />
     <span class="ml-3 text-xs">
       I agree to CornieHealth’s
@@ -114,19 +130,21 @@
       <a href="javascript:void(0)" class="text-danger"> Privacy policy</a>
     </span>
   </label>
-  <cornie-btn
-    class="font-semibold mt-3 w-full p-2"
-    @click="next()"
-    :loading="loading"
-    :class="[
-      checkRequire == true && firstName !== ''
-        ? 'bg-danger text-white'
-        : 'text-gray-400 bg-gray-200',
-    ]"
-    :disabled="checkRequire != true && firstName == ''"
-  >
-    Continue
-  </cornie-btn>
+  <div class="my-10">
+    <cornie-btn
+      class="font-semibold w-full p-2"
+      @click="next()"
+      :loading="loading"
+      :class="[
+        checkRequire == true && firstName !== ''
+          ? 'bg-danger text-white'
+          : 'text-gray-400 bg-gray-200',
+      ]"
+      :disabled="checkRequire != true && firstName == ''"
+    >
+      Submit
+    </cornie-btn>
+  </div>
 </template>
 
 <script>

@@ -18,8 +18,8 @@ const settings: ISetting = {
     { name: "Contact Information", to: "contact-info", icon: "contact-icon" },
     { name: "KYC", to: "kyc", icon: "kyc-icon" },
     {
-      name: "Location",
-      to: "location",
+      name: "Locations",
+      to: "locations",
       icon: "location-icon",
     },
     {
