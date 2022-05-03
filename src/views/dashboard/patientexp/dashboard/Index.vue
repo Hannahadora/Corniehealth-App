@@ -4,7 +4,7 @@
       <div class="greet">{{ greeting }}, Dr. {{ cornieUser.firstName }}!</div>
       <div class="flex items-center mt-4">
         <span class="">Have a lovely day</span>
-        <img class="ml-3" src="../../../../assets/emoji.png" alt="" />
+        <!-- <img class="ml-3" src="../../../../assets/emoji.png" alt="" /> -->
       </div>
 
       <div class="s1-slider mt-8">
