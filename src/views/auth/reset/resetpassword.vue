@@ -1,7 +1,7 @@
 <template>
   <auth>
     <verify-mail @nextStep="confirm" v-if="step === 1"/>
-    <confirmation v-if="step === 2" />
+    <confirmation @nextStep="reset" v-if="step === 2" />
     <password-reset v-if="step === 3" />
     <security-question v-if="step === 4" />
   </auth>
@@ -44,6 +44,10 @@ export default class SignUp extends Vue {
 
   confirm() {
     this.step = 2
+  }
+
+  reset() {
+    this.step = 3
   }
 }
 </script>
