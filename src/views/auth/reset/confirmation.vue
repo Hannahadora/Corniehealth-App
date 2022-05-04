@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <cornie-dialog v-model="show" center class="w-1/2 mt-20 h-full">
+  <cornie-dialog v-model="show" center class="input-code-card mt-96 h-full">
     <div class="block rounded bg-white px-6 py-12">
       <div class="text-center font-bold text-2xl text-primary mb-9">
         Enter your verification Code
@@ -35,13 +35,22 @@
       <div class="text-base text-primary mb-9">
         Enter verification code sent to JohnDoe@gmail.com
       </div>
-      <multi-input :length="6" class="w-full" />
+      <multi-input
+        :length="6"
+        v-model="codeSync"
+        :customClass="customClass"
+        class="w-full"
+      />
       <div class="text-base">
         Didn't receive code?
-        <span class="text-red-500 cursor-pointer">Resend</span> (1:00)
+        <span class="text-red-500 cursor-pointer">Resend</span>
+        <vue-countdown :time="100 * 1000" v-slot="{ minutes, seconds }">
+          {{ minutes }} : {{ seconds }}
+        </vue-countdown>
+        <!-- (1:00) -->
       </div>
       <div class="mt-9 flex items-center justify-center">
-        <cornie-btn 
+        <cornie-btn
           @click="verify"
           :loading="loading"
           class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
@@ -55,7 +64,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { Watch } from "vue-property-decorator";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import MultiInput from "@/components/multi-input.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 
@@ -69,20 +78,57 @@ type CreatedUser = { id: string; email: string };
 })
 export default class SignUp extends Vue {
   user = {} as CreatedUser;
-  code = "";
   loading = false;
   show = false;
 
   userCreated = false;
   emailVerified = false;
 
+  codeLength = 6;
+  countDown = 10;
+
+  @Prop({ required: false, type: String })
+  code!: string;
+
+  @PropSync("code", { required: true })
+  codeSync!: string;
+
+  status: "loading" | "success" | "error" | "default" = "default";
+
   @Watch("user", { deep: true })
   userChanged(user: CreatedUser) {
     if (user.id) this.userCreated = true;
   }
 
+  get customClass() {
+    if (this.status == "loading") return "border-blue-400";
+    if (this.status == "error") return "border-red-400";
+    if (this.status == "success") return "border-green-400";
+    return "";
+  }
+
+  countDownTimer() {
+    if (this.countDown > 0) {
+      setTimeout(() => {
+        this.countDown -= 1;
+        this.countDownTimer();
+      }, 10000);
+    }
+  }
+
   verify() {
-    this.show = false
+    this.show = false;
+    this.$emit('nextStep')
+  }
+  async created() {
+    this.countDownTimer();
   }
 }
 </script>
+
+<style scoped>
+.input-code-card {
+  width: 380px;
+  height: 438px;
+}
+</style>

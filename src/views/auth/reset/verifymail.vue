@@ -86,7 +86,29 @@ export default class SignUp extends Vue {
     };
   }
 
-  submit() {
+  async submit() {
+    this.loading = true;
+    const errMsg = "Email not verified";
+    try {
+      const data = await quantumClient().post(
+        "/auth/code/verify/",
+        this.payload
+      );
+      if (data.success) {
+        // this.verifiedSync = true;
+        this.next();
+        this.loading = false;
+      } else {
+        window.notify({ msg: errMsg });
+      }
+    } catch (error) {
+      window.notify({ msg: errMsg });
+    } finally {
+      this.loading = true;
+    }
+  }
+
+  next() {
     this.$emit("nextStep");
   }
 
