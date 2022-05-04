@@ -1,34 +1,39 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full mb-8">
+    <!-- <span class="flex justify-end w-full mb-8">
           <button
             class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
             @click="showMedicationRequest = true">
             New Request
           </button>
-    </span>
-    <div class="flex justify-start space-x-6 w-full mb-8">
+    </span> -->
+    <div class="flex justify-center space-x-6 w-full -mb-10">
         <span class="flex space-x-4">
           <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">
-            <refill-drug class="mr-2"/> Refilled Required
+          <refill-drug class="mr-2"/> Refilled Required
         </span>
-    </div>
+      </div>
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
-          <edit-icon class="text-purple-700 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
           <eye-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">View Details</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <dispense-icon />
+          <span class="ml-3 text-xs">Dispense</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
+         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+          <edit-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div> -->
+        <!--
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
               <refill-icon />
               <span class="ml-3 text-xs">Refill Request</span>
@@ -36,7 +41,7 @@
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
           <print-icon />
           <span class="ml-3 text-xs">Print</span>
-        </div>
+        </div> -->
       </template>
       <template #prescription="{ item }">
           <p>{{ item.identifier }}</p>
@@ -132,16 +137,7 @@
     <refill-modal v-model="showRefill" :id="requestId"/>
     <print-modal v-model="showPrint" :selectedItem="selectedItem" />
 
-   <notes-add
-      :requestnotes="requestnotes"
-      :requestId="requestId"
-      v-model="showNotes"
-    />
-    <other-notes-add
-      :otherrequestnotes="otherrequestnotes"
-      :requestId="requestId"
-      v-model="showOthersNotes"
-    />
+
     <medication-modal
       :requestId="requestId"
       @update:preferred="showMedication"
@@ -166,15 +162,6 @@
       @status-added="statusadded"
     />
 
-    <other-status-modal
-      :id="requestId"
-      :updatedBy="otherupdatedBy"
-      :currentStatus="othercurrentStatus"
-      :dateUpdated="otherupdate"
-      @update:preferred="showOtherStatus"
-      v-model="showOtherStatusModal"
-    />
-    
 </div>
 </template>
 <script lang="ts">
@@ -221,6 +208,7 @@ import MedicationDrug from "@/components/icons/drugicon.vue";
 import RefillDrug from "@/components/icons/refillIcon.vue";
 
 import PrintModal from "./print.vue";
+import DispenseIcon from "./icons/dispense.vue";
 
 import ViewModal from "./viewDetails.vue";
 import MedicationRequestModal from "./medicationModal.vue";
@@ -253,6 +241,7 @@ const otherrequest = namespace("otherrequest");
     PrintIcon,
     // StatusModal,
     // OtherStatusModal,
+    DispenseIcon,
     PlusIcon,
     TableRefreshIcon,
     FilterIcon,

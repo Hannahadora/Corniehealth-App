@@ -1,7 +1,7 @@
 <template>
  <div class="mt-12">
      
-       <div v-if="!currentLocation">
+       <div v-if="!authCurrentLocation">
          <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
           <!-- <div v-if="loading">
             <div class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center">
@@ -118,8 +118,9 @@ export default class Weekly extends Vue {
 @Prop({ type: Function, default: defaultFilter })
   filter!: (item: any, query: string) => boolean;
 
-  @user.State
-  currentLocation!: string;
+
+  @user.Getter
+  authCurrentLocation!: string;
 
   actorsValue = [] as any;
 
@@ -153,7 +154,7 @@ export default class Weekly extends Vue {
  async fetchweekCalendar() {
     const date = this.startDate.toISOString() as any;
     this.loading = true;
-    const AllCalendarDay = cornieClient().get(`/api/v1/calendar/organization/${this.currentLocation}/week-view?date=${date}`,);  
+    const AllCalendarDay = cornieClient().get(`/api/v1/calendar/organization/${this.authCurrentLocation}/week-view?date=${date}`,);  
      const response = await Promise.all([AllCalendarDay]);
      if(response){
         this.loading = false;
@@ -163,7 +164,7 @@ export default class Weekly extends Vue {
 
 
   async created() {
-   if(this.currentLocation)await this.fetchweekCalendar();
+   if(this.authCurrentLocation)await this.fetchweekCalendar();
 
   }
 }

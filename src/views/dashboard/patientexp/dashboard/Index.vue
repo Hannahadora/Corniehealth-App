@@ -1,7 +1,7 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div class="sect1 my-8">
-      <div class="greet">{{ greeting }}, Dr. {{ cornieUser.firstName }}!</div>
+      <div class="greet">{{ greeting }}, Dr. {{ cornieUser?.firstName }}!</div>
       <div class="flex items-center mt-4">
         <span class="">Have a lovely day</span>
         <!-- <img class="ml-3" src="../../../../assets/emoji.png" alt="" /> -->

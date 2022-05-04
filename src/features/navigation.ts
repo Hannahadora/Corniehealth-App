@@ -101,21 +101,21 @@ const links: ISidebarLink[] = [
         to: "/dashboard/provider/settings/medication",
         hasSubsection: false,
       },
-      {
-        name: "Markup",
-        to: "/dashboard/provider/settings/markup",
-        hasSubsection: false,
-      },
-      {
-        name: "Catalogue",
-        to: "catologue",
-        hasSubsection: false,
-      },
-      {
-        name: "Inventory",
-        to: "inventory",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Markup",
+      //   to: "/dashboard/provider/settings/markup",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Catalogue",
+      //   to: "catologue",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Inventory",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
       {
         name: "Pricebook",
         to: "pricebook",
@@ -171,16 +171,16 @@ const links: ISidebarLink[] = [
         to: "/dashboard/provider/practice/inventory",
         hasSubsection: false,
       },
-      {
-        name: "Loyalty",
-        to: "inventory",
-        hasSubsection: false,
-      },
-      {
-        name: "Promotions",
-        to: "pricebook",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Loyalty",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Promotions",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
       {
         name: "Practitoner Directory",
         to: "practitioners",

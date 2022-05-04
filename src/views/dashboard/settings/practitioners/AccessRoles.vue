@@ -90,14 +90,14 @@
                   >
                     <div class="flex justify-center items-center">
                       <cornie-radio
-                        v-model="defaultVal"
+                        v-model="accessRoles[index].default"
                         name="default"
-                        :value="`${access.roleId}?${access.locationId}`"
-                        @update:modelValue="setDefault"
+                        :value="true"
+                        @update:modelValue="setDefault(access.locationId)"
                       ></cornie-radio>
                       <div class="flex flex-col">
                         <div class="mb-0 font-bold text-sm">
-                          {{ access.location.name }}
+                          {{ access.location.name ? access.location.name : access.location  }}
                           <!-- <span class="ml-5 text-gray-400 text-xs font-light">
                             {{ isActiveMon ? data?.mon : '' }} {{isActiveTue ? data?.tue : ''}}  {{isActiveWed ? data?.wed : ''}}
                               {{isActiveThu ? data?.thu : ''}}  {{isActiveFir ? data?.fri : ''}}  {{isActiveSat ? data?.sat : ''}}
@@ -115,14 +115,7 @@
                       </button>
                       <button
                       class="border-0"
-                      v-if="id"
                       @click="deleteItem(access.id)">
-                      <delete-red />
-                    </button>
-                    <button
-                    v-else
-                      class="border-0"
-                      @click="deleteRoleAccess(access.roleId, access.locationId,access.id)">
                       <delete-red />
                     </button>
                     </div>
@@ -144,33 +137,17 @@
                     <div class="flex flex-col">
                       <div class="mb-0 font-bold text-sm">
                         {{ access.location }}
-                        <span class="ml-5 text-gray-400 text-xs font-light">
-                          {{ isActiveMon ? data?.mon : "" }}
-                          {{ isActiveTue ? data?.tue : "" }}
-                          {{ isActiveWed ? data?.wed : "" }}
-                          {{ isActiveThu ? data?.thu : "" }}
-                          {{ isActiveFir ? data?.fri : "" }}
-                          {{ isActiveSat ? data?.sat : "" }}
-                          {{ isActiveSun ? data?.sun : "" }}
-                        </span>
                       </div>
                       <div class="text-xs text-gray-400">{{ access.role }}</div>
                     </div>
                   </div>
                   <div class="flex justify-center items-center">
                     <button class="border-0 mr-5">
-                      <edit-icon class="fill-current text-primary" />
+                      <edit-icon class="fill-current text-primary" @click="editRole(access.roleId, access.locationId)"/>
                     </button>
                     <button
                       class="border-0"
-                      v-if="id"
-                      @click="deleteItem(access.id)">
-                      <delete-red />
-                    </button>
-                    <button
-                    v-else
-                      class="border-0"
-                      @click="deleteRoleAccess(access.roleId, access.locationId,access.id)">
+                      @click="deleteRoleAccess(index)">
                       <delete-red />
                     </button>
                   </div>
@@ -297,10 +274,11 @@ export default class Accessrole extends Vue {
   expand = false;
   isActive = false;
   isVisible = "";
-  location = {};
+  location = "";
   role = "";
   locations = [];
   defaultVal = "";
+  isDefault = false;
 
   isActiveMon = false;
   isActiveTue = false;
@@ -312,6 +290,7 @@ export default class Accessrole extends Vue {
   data = {} as any;
 
   accessRoles = [] as any;
+  payloadAccessroles = [] as any;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -324,6 +303,9 @@ export default class Accessrole extends Vue {
 
   @practitioner.Action
   getPractitionerById!: (id: string) => Promise<IPractitioner>;
+
+  @practitioner.Action
+  deleteLocationrole!: ({ id, roleId} : any) => Promise<boolean>;
 
   get allLocation() {
     if (!this.locations || this.locations.length === 0) return [];
@@ -338,9 +320,19 @@ export default class Accessrole extends Vue {
   @practitioner.Action
   getPractitionerRoleById!: (id: string) => PractitionerLocationRole;
 
-@Watch("id")
+@Watch("setRoles")
+ roleChanged() {
+    this.setnewRoles();
+  }
+
+ @Watch("id")
  idChanged() {
     this.setAccessroles();
+  }
+
+  async setnewRoles(){
+    const newrole = this.setRoles;
+    this.accessRoles = newrole;
   }
 
   async setAccessroles() {
@@ -400,8 +392,45 @@ export default class Accessrole extends Vue {
     return pt ? `${pt.name}` : "";
   }
    editRole(locationId: string, roleId:string){
-    this.locationId = locationId;
-    this.roleId = roleId;
+    this.location = locationId;
+    this.role = roleId;
+  }
+
+   async add() {
+    if (this.role && this.location) {
+      // const added = this.accessRoles.some(
+      //   (item: any) =>
+      //     item.roleId === this.role && item.locationId === this.location
+      // );
+
+      // if (added) {
+      //   this.location = "";
+      //   this.role = "";
+      //   return;
+      // }
+      this.setDefault(this.location as string);
+      let access = {
+        roleId: this.role,
+        locationId: this.location,
+        role: this.practitionerRoles.find((item) => item.code === this.role)
+          ?.display,
+        location: this.allLocation.find((item) => item.code === this.location)
+          ?.display,
+        default: this.isDefault,
+        // days: this.data
+      };
+       let accessRoles = {
+        id: this.id,
+        roleId: this.role,
+        locationId: this.location,
+        default: this.isDefault,
+      };
+      this.accessRoles.push(access);
+      this.payloadAccessroles.push(accessRoles)
+
+      this.location = "";
+      this.role = "";
+    }
   }
    async submit() {
     this.loading = true;
@@ -421,7 +450,7 @@ export default class Accessrole extends Vue {
     try {
       const response = await cornieClient().post(
         `/api/v1/practitioner/location-roles/${this.id}`,
-        this.accessRoles
+        this.payloadAccessroles
       );
       if (response.success) {
         window.notify({ msg: "Practitioner role created", status: "success" });
@@ -446,105 +475,70 @@ export default class Accessrole extends Vue {
         window.notify({ msg: "Practitioner role updated", status: "success" });
         this.show = false;
       }
-    } catch (error) {
-      window.notify({ msg: "Practitioner role not updated", status: "error" });
+    } catch (error:any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
 
-  async deleteRoleAccess(roleId: string, locationId: string, id:string) {
-    if(this.id){
-         const confirmed = await window.confirmAction({
+  async deleteRoleAccess(index: number) {
+     const confirmed = await window.confirmAction({
       message:
         "Are you sure you want to delete this location role? This action cannot be undone.",
       title: "Delete location role",
     });
     if (!confirmed) return;
-    const url = `/api/v1/practitioner/location-roles/${this.id}`;
-    const payload = [id];
-    try {
-      const response = await cornieClient().delete(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Location role deleted", status: "success" });
-       this.show = false;
-       // this.$router.back();
-      }
-    } catch (error) {
-     window.notify({ msg: "Location role not deleted", status: "error" });
-    }
-
-    }
-    else
-    {
-        let filtered = this.accessRoles.filter(
-          (item: any) => item.roleId !== roleId && item.locationId !== locationId
-        );
-    
-        this.accessRoles = [...filtered];
-    }
+    this.accessRoles.splice(index, 1);
   }
-   async deleteItem(id: string) {
+
+async deleteItem(roleId: string) {
+  console.log(this.id, roleId, "role");
+  const id = this.id;
     const confirmed = await window.confirmAction({
-      message:
+       message:
         "Are you sure you want to delete this location role? This action cannot be undone.",
       title: "Delete location role",
     });
     if (!confirmed) return;
-    const url = `/api/v1/practitioner/location-roles/${this.id}`;
-    const payload = [id];
-    try {
-      const response = await cornieClient().delete(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Location role deleted", status: "success" });
-       this.show = false;
-       // this.$router.back();
-      }
-    } catch (error) {
-     window.notify({ msg: "Location role not deleted", status: "error" });
-    }
-
-
+    if (await this.deleteLocationrole({id, roleId}))
+      window.notify({ msg: "Location role deleted", status: "success" });
+    else window.notify({ msg: "Location role not deleted", status: "error" });
   }
+
+ 
 
   get practitionerRoles() {
     return this.roles.map((role) => ({ code: role.id, display: role.name }));
   }
 
-  async add() {
-    if (this.role && this.location) {
-      const added = this.accessRoles.some(
-        (item: any) =>
-          item.roleId === this.role && item.locationId === this.location
-      );
+ 
 
-      if (added) {
-        this.location = "";
-        this.role = "";
-        return;
+  // async setDefault(val: string) {
+
+    
+  //   const [roleId, locationId] = val.split("?");
+  //   let item = this.accessRoles.find(
+  //     (item: any) => item.roleId === roleId && item.locationId === locationId
+  //   );
+
+  //   if (item) item.default = true;
+  // }
+
+   async setDefault(location:string) {
+    const url = `/api/v1/practitioner/location-roles/default/`;
+    const body = {
+      locationId: location,
+      practitionerId: this.id,
+    };
+    try {
+      const response = await cornieClient().patch(url, body);
+      if (response.success) {
+        this.isDefault = true;
+      console.log('Default set');
       }
-      let access = {
-        roleId: this.role,
-        locationId: this.location,
-        role: this.practitionerRoles.find((item) => item.code === this.role)
-          ?.display,
-        location: this.allLocation.find((item) => item.code === this.location)
-          ?.display,
-        default: false,
-        // days: this.data
-      };
-      this.accessRoles = [access, ...this.accessRoles];
-
-      this.location = "";
-      this.role = "";
+    } catch (error) {
+       this.isDefault = false;
+      window.notify({ msg: "Cannot set default location", status: "error" });
     }
-  }
-
-  async setDefault(val: string) {
-    const [roleId, locationId] = val.split("?");
-    let item = this.accessRoles.find(
-      (item: any) => item.roleId === roleId && item.locationId === locationId
-    );
-
-    if (item) item.default = true;
   }
 
   async save() {

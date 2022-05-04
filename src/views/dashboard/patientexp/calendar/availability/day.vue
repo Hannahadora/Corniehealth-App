@@ -1,6 +1,6 @@
 <template>
 <div class="mt-12">
-        <div v-if="!currentLocation">
+        <div v-if="!authCurrentLocation">
          <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
         </div>
           <div class="flex w-full" v-else v-for="(item, index) in dayCalendar" :key="index">
@@ -74,10 +74,9 @@ export default class Daily extends Vue {
 
   actorsValue = [] as any;
 
-  @user.State
-  currentLocation!: string;
 
-
+  @user.Getter
+  authCurrentLocation!: string;
 
 
   @Watch("startDate")
@@ -100,7 +99,7 @@ export default class Daily extends Vue {
   async fetchDayCalendar() {
    const date = this.startDate.toISOString() as any;
      const AllCalendarDay = cornieClient().get(
-        `/api/v1/calendar/organization/${this.currentLocation}/day-view?date=${date}`,);
+        `/api/v1/calendar/organization/${this.authCurrentLocation}/day-view?date=${date}`,);
      
      const response = await Promise.all([AllCalendarDay]);
      this.dayCalendar = response[0].data;

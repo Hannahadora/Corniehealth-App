@@ -12,21 +12,21 @@ export const ClinicalsRoute: RouteRecordRaw = {
       name: "Health Trend",
       component: () => import("@/views/dashboard/ehr/healthtrend/index.vue"),
     },
-    // {
-    //   path: "care-team",
-    //   name: "EHR - Care Team",
-    //   component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
-    // },
-    // {
-    //   path: "care-plan",
-    //   name: "EHR - Care Plan",
-    //   component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
-    // },
-    // {
-    //   path: "care-partners",
-    //   name: "EHR - Care Partners",
-    //   component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
-    // },
+    {
+      path: "care-team",
+      name: "Care Team",
+      component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
+    },
+    {
+      path: "care-plan",
+      name: "Care Plans",
+      component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
+    },
+    {
+      path: "care-partners",
+      name: "Care Partner",
+      component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
+    },
     {
       path: "visits",
       name: "EHR - Visit",
@@ -45,9 +45,9 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
     },
     {
-      path: "medications",
+      path: "medications-request",
       props: true,
-      name: "Medications",
+      name: "Medication",
       component: () => import("@/views/dashboard/ehr/medication/index.vue"),
     },
     {
