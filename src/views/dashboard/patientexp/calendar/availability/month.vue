@@ -1,6 +1,6 @@
 <template>
 <div class="mt-10">
-    <div v-if="!currentLocation">
+    <div v-if="!authCurrentLocation">
          <p class="text-center text-lg font-bold py-5">Set a default location to view calendar</p>
     </div>
 <div v-else>
@@ -87,9 +87,9 @@ export default class Monthly extends Vue {
 
   @Prop({ type: String, default: "" })
   startDate!: any;
-
-  @user.State
-  currentLocation!: string;
+  
+  @user.Getter
+  authCurrentLocation!: string;
 
 
 
@@ -111,7 +111,7 @@ export default class Monthly extends Vue {
 async fetchMonthCalendar() {
    const date = this.startDate.toISOString() as any;
      const AllCalendarDay = cornieClient().get(
-      `/api/v1/calendar/organization/${this.currentLocation}/month-view?date=${date}`,);
+      `/api/v1/calendar/organization/${this.authCurrentLocation}/month-view?date=${date}`,);
      
      const response = await Promise.all([AllCalendarDay]);
      this.monthCalendar = response[0].data;
@@ -198,7 +198,7 @@ async fetchMonthCalendar() {
 
   async created() {
     this.fetchMonthCalendar()
-    // if (!this.currentLocation) await this.fetchMonthCalendar();
+    // if (!this.authCurrentLocation) await this.fetchMonthCalendar();
   }
 }
 </script>

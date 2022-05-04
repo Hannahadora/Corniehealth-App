@@ -26,7 +26,7 @@
               :class="{
                 active: item.status === 'active',
                 inactive: item.status === 'inactive',
-                error: item.status === 'entered-in-error',
+                inactive: item.status === 'entered-in-error',
               }"
             >
               {{ item.status }}</span

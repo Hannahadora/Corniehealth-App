@@ -22,10 +22,7 @@ export async function deletePatient(id: string): Promise<boolean> {
   }
 }
 
-export async function deleteProvider(
-  patientId: string,
-  providerId: string
-): Promise<boolean> {
+export async function deleteProvider(patientId: string, providerId: string): Promise<boolean> {
   try {
     const response = await cornieClient().delete(
       `/api/v1/patient/provider/${patientId}/${providerId}`

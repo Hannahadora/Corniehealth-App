@@ -971,7 +971,8 @@ export default class MedicationModal extends Vue {
   }
 
   async createRequest() {
-  
+  const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
     try {
       const response = await cornieClient().post(
         "/api/v1/medication-requests",
@@ -987,6 +988,8 @@ export default class MedicationModal extends Vue {
     }
   }
   async updateRequest() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
     const id = this.id;
     const url = `/api/v1/medication-requests/${id}`;
     const payload = this.payload;
@@ -1014,8 +1017,6 @@ export default class MedicationModal extends Vue {
   }
 
   async search(event:any){
-        console.log(event.target.value,"VSLUEJFFJ");
-        console.log(event,"000");
         const AllNotes = cornieClient().get(
         `/api/v1/emdex/generic-by-keyword/`,
         {

@@ -1,21 +1,26 @@
 import ObjectSet from "@/lib/objectset";
 import ICarePlan from "@/types/ICarePlan";
 import { StoreOptions } from "vuex";
-import { getCarePlans, updateCarePlan } from "./helper";
+import { getCarePlans, updateCarePlan, getPatientCarePlans } from "./helper";
 
 interface CareplanStore {
   careplans: ICarePlan[];
+  patientCarePlans: ICarePlan[];
 }
 
 export default {
   namespaced: true,
   state: {
     careplans: [],
+    patientCarePlans: []
   },
 
   mutations: {
     setCareplans(state, careplans: ICarePlan[]) {
       state.careplans = [...careplans];
+    },
+    setPatientPlans(state, patientCarePlans: ICarePlan[]) {
+      state.patientCarePlans = [...patientCarePlans];
     },
     updateCareplans(state, careplans: ICarePlan[]) {
       const careplanSet = new ObjectSet(
@@ -42,9 +47,17 @@ export default {
       const careplans = await getCarePlans();
       ctx.commit("setCareplans", careplans);
     },
+    async getPatientCarePlans(ctx, patientId: string) {
+      const response = await getPatientCarePlans(patientId);
+      ctx.commit("setPatientPlans", response);
+    },
     async getCareplanById(ctx, id: string) {
       if (ctx.state.careplans.length < 1) await ctx.dispatch("getCarePlans");
       return ctx.state.careplans.find(orgCarePlan => orgCarePlan.id == id);
+    },
+    async getPatientCareplanById(ctx, id: string) {
+      if (ctx.state.patientCarePlans.length < 1) await ctx.dispatch("getPatientCarePlans");
+      return ctx.state.patientCarePlans.find(patientCarePlan => patientCarePlan.id == id);
     },
 
     async updateCarePlan(ctx, body: any) {

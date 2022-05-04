@@ -11,6 +11,19 @@ export async function getCarePlans() {
   }
   return {};
 }
+export async function getPatientCarePlans(patientId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/care-plan/patient/${patientId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error loading care plans", status: "error" });
+  }
+  return {};
+}
+
 
 export async function createCarePlan(body: any) {
   try {

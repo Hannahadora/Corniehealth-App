@@ -179,7 +179,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "medication",
       props: true,
-      name: "Medications",
+      name: "Medication Request",
       component: () => import("@/views/dashboard/medications/medication/index.vue"),
     },
     {
@@ -226,7 +226,7 @@ export const SettingsRoute: RouteRecordRaw = {
       props: true,
       component: () =>
         import(
-          "@/views/dashboard/settings/catalogues/components/new-service.vue"
+          "@/views/dashboard/practice/cdm/components/new-service.vue"
         ),
     },
     {
@@ -235,12 +235,12 @@ export const SettingsRoute: RouteRecordRaw = {
       props: true,
       component: () =>
         import(
-          "@/views/dashboard/settings/catalogues/components/new-products.vue"
+          "@/views/dashboard/practice/cdm/components/new-products.vue"
         ),
     },
     {
       path: "addvariant/:catalogueId",
-      name: "Medication",
+      name: "Catalogue Medication",
       component: () =>
         import(
           "@/views/dashboard/settings/catalogues/components/new-products.vue"
