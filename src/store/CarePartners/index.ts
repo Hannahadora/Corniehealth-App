@@ -1,6 +1,7 @@
+import ObjectSet from "@/lib/objectset";
 import ICarePartner from "@/types/ICarePartner";
 import { StoreOptions } from "vuex";
-import CarePartnersClient from "./helper";
+import { fetchCarePartners, deleteCarepartner, search } from "./helper";
 
 interface CarePartnersStore {
   carePartners: ICarePartner[];
@@ -12,44 +13,43 @@ export default <StoreOptions<CarePartnersStore>>{
   },
 
   mutations: {
-    add(state, partner: ICarePartner) {
-      state.carePartners.push(partner);
+    setCarePartners(state, carePartners: ICarePartner[]) {
+      state.carePartners = [...carePartners];
     },
-
-    set(state, partners: ICarePartner[]) {
-      state.carePartners = partners;
-    },
-
-    remove(state, partner: ICarePartner) {
-      state.carePartners = state.carePartners.filter(
-        element => element.identifier != partner.identifier
+    updateCarePartners(state, carePartners: ICarePartner[]) {
+      const carepartnerSet = new ObjectSet(
+        [...state.carePartners, ...carePartners],
+        "id"
       );
+      state.carePartners = [...carepartnerSet];
+    },
+    deleteCarepartner(state, id: string) {
+      const index = state.carePartners.findIndex(carePartner => carePartner.id == id);
+      if (index < 0) return;
+      const carePartners = [...state.carePartners];
+      carePartners.splice(index, 1);
+      state.carePartners = [...carePartners];
     },
   },
 
   actions: {
-    async create(context, payload: ICarePartner): Promise<boolean> {
-      const partner = await CarePartnersClient.create(payload);
-      if (partner.id != null) {
-        context.dispatch("get");
-        return true;
-      }
-      return false;
+    async fetchCarePartners(ctx) {
+      const carePartners = await fetchCarePartners();
+      ctx.commit("setCarePartners", carePartners);
     },
-
-    async get(context): Promise<void> {
-      const partners = await CarePartnersClient.get();
-      if (partners.length > 0) context.commit("set", partners);
+    async getCarepartnerById(ctx, id: string) {
+      if (ctx.state.carePartners.length < 1) await ctx.dispatch("fetchCarePartners");
+      return ctx.state.carePartners.find(carePartner => carePartner.id == id);
+    },
+    async deleteCarepartner(ctx, id: string) {
+      const deleted = await deleteCarepartner(id);
+      if (!deleted) return false;
+      ctx.commit("deleteCarepartner", id);
+      return true;
     },
 
     async search(context, payload: { q: string }): Promise<ICarePartner[]> {
-      return await CarePartnersClient.search(payload);
-    },
-
-    async delete(context, payload: ICarePartner): Promise<boolean> {
-      const deleted = await CarePartnersClient.delete(payload.id as string);
-      if (deleted) context.dispatch("get");
-      return deleted;
+      return await search(payload);
     },
   },
 };

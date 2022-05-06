@@ -8,7 +8,7 @@
     :locationId="locationId"
     :roleId="roleId"
     :id="id"
-    :accessRoles="locationRoles"
+    :setRoles="locationRoles"
   />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
@@ -515,7 +515,7 @@
                       <button class="border-0 mr-5" type="button">
                         <edit-icon
                           class="fill-current text-primary"
-                          @click="addAccessRole = true"
+                          @click="showEditAccess(access.id, access.locationId)"
                         />
                       </button>
                       <button
@@ -795,7 +795,7 @@ export default class AddPractitioner extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   @practitioner.Action
-  deleteLocationrole!: (id: string) => Promise<boolean>;
+  deleteLocationrole!: ({ id, roleId} : any) => Promise<boolean>;
 
   @special.State
   specials!: ISpecial[];
@@ -985,6 +985,12 @@ export default class AddPractitioner extends Vue {
     this.addAccessRole = true;
   }
 
+  showEditAccess(value:string, valuelocation:string){
+    this.roleId = value;
+    this.locationId = valuelocation;
+    this.addAccessRole = true;
+  }
+
   async deleteRole(roleId: string, locationId: string) {
     this.accessRoles = [
       ...this.accessRoles.filter(
@@ -1130,7 +1136,7 @@ export default class AddPractitioner extends Vue {
       email: this.email,
       activeState: this.activeState,
       gender: this.gender,
-      locations: this.locations,
+      locations: this.accessRoles,
       phone: {
         number: this.phone,
         dialCode: this.dialCode,
@@ -1238,26 +1244,21 @@ export default class AddPractitioner extends Vue {
       window.notify({ msg: "Practitioner not updated", status: "error" });
     }
   }
-  async deleteItem(id: string) {
+ async deleteItem(roleId: string) {
+  console.log(this.id, roleId, "role");
+  const id = this.id;
     const confirmed = await window.confirmAction({
-      message:
+       message:
         "Are you sure you want to delete this location role? This action cannot be undone.",
       title: "Delete location role",
     });
     if (!confirmed) return;
-    const url = `/api/v1/practitioner/location-roles/${this.id}`;
-    const payload = [id];
-    try {
-      const response = await cornieClient().delete(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Location role deleted", status: "success" });
-        this.updatePractitioners([response.data]);
-        await this.fetchPractitioners();
-        // this.$router.back();
-      }
-    } catch (error) {
-      window.notify({ msg: "Location role not deleted", status: "error" });
-    }
+    if (await this.deleteLocationrole({id, roleId}))
+      window.notify({ msg: "Location role deleted", status: "success" });
+    else window.notify({ msg: "Location role not deleted", status: "error" });
+  }
+  async done(){
+     await this.fetchPractitioners();
   }
 
   getSpecialityName(id: string) {

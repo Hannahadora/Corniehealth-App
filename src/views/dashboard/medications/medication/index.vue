@@ -1,8 +1,13 @@
 <template>
-  <div class="h-full flex justify-center">
-    <div class="w-full mx-5">
-      <span class="w-full">
-        <medication-empty-state v-if="empty" />
+  <div class="flex justify-center bg-white shadow-md p-3 mb-2 rounded w-full">
+    <div class="w-full">
+      <span
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
+      >
+        Medications
+      </span>
+      <span class="w-full h-screen">
+         <medication-empty-state v-if="empty" />
         <medication-existing-state v-else />
       </span>
     </div>

@@ -60,10 +60,11 @@ export default {
       if (deleted) ctx.commit("deletePractitioner", id);
       return deleted;
     },
-    async deleteLocationrole(ctx, id: string) {
-      const deleted = await deleteLocationrole(id);
-      if (deleted) ctx.commit("deleteLocationrole", id);
-      return deleted;
+    async deleteLocationrole(ctx, { id, roleId }: any) {
+      const deleted = await deleteLocationrole(id, roleId);
+      if (!deleted) return false;
+      ctx.commit("deleteLocationrole", id, roleId);
+      return true;
     },
     async searchPractitioners(ctx, query: string) {
       if (!ctx.state.practitioners.length)

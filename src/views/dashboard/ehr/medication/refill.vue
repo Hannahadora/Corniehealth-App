@@ -28,8 +28,8 @@
                   v-model="emptyRefill.interval"
                   />
                   <cornie-select
-                    :items="['Kg','Mg','G']"
-                  placeholder="kg"
+                    :items="['Days', 'Months', 'Years']"
+                  placeholder="Select"
                   class="w-32 mt-0.5 flex-none"
                   :setPrimary="true"
                     v-model="emptyRefill.intervalUnit"
@@ -55,8 +55,8 @@
                   v-model="emptyRefill.supplyDuration"
                   />
                   <cornie-select
-                  :items="['days']"
-                  placeholder="/ Day"
+                  :items="['Days', 'Months', 'Years']"
+                  placeholder="Select"
                   class="w-32 mt-0.5 flex-none"
                   :setPrimary="true"
                   v-model="emptyRefill.supplyDurationUnit"
@@ -218,7 +218,7 @@ export default class RefillModal extends Vue {
 
       try {
         const response = await cornieClient().post(
-          `/api/v1/medication-requests/refill/${this.medicationId}`,
+          `/api/v1/medication-requests/refill/${this.id}`,
           this.payload
         );
         if (response.success) {

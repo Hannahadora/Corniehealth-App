@@ -111,8 +111,30 @@ export default class stockUnitMeasuremnt extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {}})
+  returnedStock!: any;
 
   loading = false;
+
+
+@Watch("returnedStock")
+    idChanged() {
+      this.setStock();
+    }
+
+async setStock(){
+  const newstock = this.returnedStock;
+  if (!newstock) return;
+  this.stock.purchase = newstock.purchase;
+  this.stock.quantity = newstock.quantity;
+  this.stock.inventory = newstock.inventory;
+  this.stock.itemInventory = newstock.itemInventory;
+  this.stock.sales = newstock.sales;
+  this.stock.itemSales = newstock.itemSales;
+
+ 
+}
+  
 
   stock = {
     purchase: "",

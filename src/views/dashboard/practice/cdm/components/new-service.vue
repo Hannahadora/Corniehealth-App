@@ -18,7 +18,7 @@
           <div>
             <div class="w-full py-5">
               <span class="flex items-center">
-                <cornie-avatar-field v-model="img.url" />
+                <cornie-avatar-field v-model="img.url" :rules="required"/>
               </span>
             </div>
 
@@ -29,6 +29,8 @@
                 v-model="category"
                 label="category"
                 placeholder="--Select--"
+                :rules="required"
+                required
               />
               <cornie-select
                 :items="allSpeciality"
@@ -36,6 +38,8 @@
                 v-model="specialtyId"
                 label="Medical Specialty"
                 placeholder="--Select--"
+                 :rules="required"
+                required
               />
               <fhir-input
                 reference="http://hl7.org/fhir/ValueSet/service-type"
@@ -43,16 +47,22 @@
                 v-model="type"
                 label="Type"
                 placeholder="--Select--"
+                 :rules="required"
+                required
               />
               <cornie-input
                 :label="'Service Name'"
                 v-model="name"
                 placeholder="--Enter--"
+                 :rules="required"
+                required
               />
               <cornie-input
                 v-model="description"
                 :label="'Description'"
                 placeholder="--Enter--"
+                :rules="required"
+                required
               />
               <div class="w-full">
                 <span class="text-dark font-semibold capitalize text-sm mb-5"
@@ -93,10 +103,12 @@
                       />
                       <cornie-select
                          :items="['hours', 'minutes', 'sessions']"
-                        placeholder="Days"
+                        placeholder="Select"
                         class="w-32 mt-0.5 flex-none"
                         :setPrimary="true"
                         v-model="serviceUOM"
+                         :rules="required"
+                      required
                       />
                   </div>
               </div>
@@ -122,6 +134,7 @@
                 </div>
               </div>
               <cornie-input
+              v-if="priced == true"
                 v-model="cost"
                 :label="'Cost Per Unit(NGN)'"
                 placeholder="--Enter--"
@@ -159,6 +172,7 @@
       </accordion-component>
 
       <accordion-component
+       v-if="priced == true"
         title="Fee Information"
         class="text-primary capitalize"
         :opened="true"
@@ -179,6 +193,7 @@
                 placeholder="200%"
               />
               <cornie-input
+              v-if="apply == 'yes'"
                 :label="'Maximum Discount'"
                 placeholder="--10%--"
                 v-model="discountLimit"
@@ -230,7 +245,7 @@
                   <div class="th flex items-center">
                     <span>{{ serviceUOM }}</span>
                   </div>
-                  <div class="th flex items-center hidden">
+                  <div class="th flex items-center">
                     <span>1</span>
                   </div>
                   <div class="th flex items-center">
@@ -248,9 +263,9 @@
                     <span>{{ markupData.margin }}</span>
                   </div>
                   <div class="th flex items-center">
-                    <span>{{ markupData.marginPercentage }}</span>
+                    <span>{{ markupData.markupPercentage }}</span>
                   </div>
-                  <div class="th flex items-center">
+                  <div class="th flex items-center" v-if="apply == 'yes'">
                     <span
                       ><cornie-input v-model="discountLimit" palceholder="0%"
                     /></span>
@@ -299,6 +314,8 @@
               v-model="referralMethod"
               label="referral method"
               placeholder="--Select--"
+               :rules="required"
+                required
             />
             <cornie-select
               v-model="channelOfService"
@@ -306,6 +323,8 @@
               :items="['dental', 'hospice']"
               placeholder="--Select--"
               class="w-full mb-5"
+               :rules="required"
+                required
             />
             <cornie-select
               :items="dropdown.CommunicationLanguage"
@@ -313,6 +332,8 @@
               label="Telecom"
               placeholder="--Select--"
               class="w-full"
+               :rules="required"
+                required
             />
             <cornie-input  
             label="Location & Days"
@@ -461,6 +482,8 @@
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
+import { string } from "yup";
+
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -545,11 +568,15 @@ export default class NwService extends Vue {
   @userStore.Getter
   cornieUser!: CornieUser;
 
+
+  @userStore.State
+  authCurrentLocation!: string;
+
   @markup.State
   markups!: any[];
 
-  @markup.Action
-  fetchMarkups!: () => Promise<void>;
+  // @markup.Action
+  // fetchMarkups!: () => Promise<void>;
 
   options = [
     { value: "holidays", label: "Holidays" },
@@ -581,7 +608,7 @@ export default class NwService extends Vue {
   type = "";
   coverageArea = "coverageArea";
   providedBy = "coverageArea";
-  priced = false;
+  priced = true;
   channelOfService = "";
   telecom = "";
   specialtyId ="";
@@ -595,14 +622,15 @@ export default class NwService extends Vue {
   hoursOfOperation: HoursOfOperation[] = [];
 
   img = setup(() => useHandleImage());
+    required = string().required();
   nationState = setup(() => useCountryStates());
   addNew = false;
   loading = false;
-  markupData = [];
+  markupData = {} as any;
   dropdown = {} as IIndexableObject;
   location = [] as any;
   locationsId = [] as any;
-  apply = "";
+  apply = "yes";
   reqBody = {
     quantity: 1,
     cost: 10,
@@ -624,6 +652,8 @@ export default class NwService extends Vue {
     this.locations = value;
     this.locationsId = locationValue;
   }
+
+
 
   async setServices() {
     const service = await this.getServicesById(this.id);
@@ -686,6 +716,8 @@ export default class NwService extends Vue {
   }
 
   async submit() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
     this.loading = true;
     if (this.id) await this.update();
     else await this.create();
@@ -693,7 +725,6 @@ export default class NwService extends Vue {
   }
 
   async create() {
-    // this.payload.organizationId = this.cornieUser.organizationId;
     try {
       const response = await cornieClient().post(
         "/api/v1/catalogue-service",
@@ -791,9 +822,7 @@ export default class NwService extends Vue {
   }
 
   async fetchLocation() {
-    const AllLocation = cornieClient().get(
-      "/api/v1/location/myOrg/getMyOrgLocations"
-    );
+    const AllLocation = cornieClient().get("/api/v1/location/myOrg/getMyOrgLocations");
     const response = await Promise.all([AllLocation]);
     this.location = response[0].data;
   }
@@ -807,17 +836,15 @@ export default class NwService extends Vue {
   }
 
   async fetchMarkup() {
-    const AllMarkup = cornieClient().get(
-      "/api/v1/markup-discount"
-    );
+    const AllMarkup = cornieClient().get(`/api/v1/markup-discount/location/${this.authCurrentLocation}`);
     const response = await Promise.all([AllMarkup]);
-    this.markupData = response[0].data[0];
+    this.markupData = response[0].data;
   }
   async created() {
+   if(this.authCurrentLocation) await this.fetchMarkup();
     await this.fetchSpecials();
     await this.setDropdown();
     await this.fetchLocation();
-    await this.fetchMarkup();
     await this.setServices();
   }
 }

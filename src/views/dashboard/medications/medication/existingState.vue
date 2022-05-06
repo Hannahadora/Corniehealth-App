@@ -1,126 +1,47 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full mb-8">
+    <!-- <span class="flex justify-end w-full mb-8">
           <button
             class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
             @click="showMedicationRequest = true">
             New Request
           </button>
-    </span>
-    <div class="flex justify-start space-x-6 w-full mb-8">
+    </span> -->
+    <div class="flex justify-center space-x-6 w-full -mb-10">
         <span class="flex space-x-4">
-          <medication-drug class="mr-2"/> Substitution Allowed
+          <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">
-            <refill-drug class="mr-2"/> Refilled Required
+          <refill-drug class="mr-2"/> Refilled Required
         </span>
-    </div>
+      </div>
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
-          <edit-icon class="text-purple-700 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
           <eye-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">View Details</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <dispense-icon />
+          <span class="ml-3 text-xs">Dispense</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
+         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+          <edit-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div> -->
+        <!--
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
               <refill-icon />
               <span class="ml-3 text-xs">Refill Request</span>
             </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
           <print-icon />
           <span class="ml-3 text-xs">Print</span>
-        </div>
-
-        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <print-icon />
-          <span class="ml-3 text-xs">Print</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <plus-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Book Appointment</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <specimen-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Specimen ID #</span>
-        </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <specimen-icon class="text-purple-800 fill-current" />
-          <span class="ml-3 text-xs">Report</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <checkin-icon class="text-green-500 fill-current" />
-          <span class="ml-3 text-xs">Check In</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-           <checkout-icon class="text-grren-500 fill-current" />
-          <span class="ml-3 text-xs">Check Out</span>
         </div> -->
-
-        <!-- <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              `/dashboard/experience/view-request/${item.id}`
-            )
-          "
-        >
-          <newview-icon class="text-blue-700 fill-current" />
-          <span class="ml-3 text-xs">View</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              `/dashboard/experience/edit-request/${item.id}`
-            )
-          "
-        >
-          <newview-icon class="text-blue-700 fill-current" />
-          <span class="ml-3 text-xs">View & Edit</span>
-        </div>
-       
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push(
-              '/dashboard/provider/experience/add-appointment'
-            )
-          "
-        >
-          <plus-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Add Appointment</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="
-            $router.push('/dashboard/provider/experience/add-task')
-          "
-        >
-          <plus-icon class="text-red-500 fill-current" />
-          <span class="ml-3 text-xs">Add Task</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="makeNotes(item.id)"
-        >
-          <note-icon class="text-green-600 fill-current" />
-          <span class="ml-3 text-xs">Add Notes</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
-        >
-          <danger-icon />
-          <span class="ml-3 text-xs">Cancel</span>
-        </div> -->
-
       </template>
       <template #prescription="{ item }">
           <p>{{ item.identifier }}</p>
@@ -135,7 +56,7 @@
       <template #medication="{ item }">
         <div class="flex space-x-3">
           <div>
-            <p>{{ item.code}}</p>
+            <p>{{ item.genericName}}</p>
             <p class="text-gray-400">{{ item.durationInDays }} days</p>
           </div>
             <medication-drug v-if="item.substitutionAllowed == true" />
@@ -205,6 +126,9 @@
             </p>
           </div>
         </template>
+        <template #refillno="{ item }">
+            <span>{{ item.refills.length }}</span>
+        </template>
     </cornie-table>
 
     <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded"/>
@@ -213,16 +137,7 @@
     <refill-modal v-model="showRefill" :id="requestId"/>
     <print-modal v-model="showPrint" :selectedItem="selectedItem" />
 
-   <notes-add
-      :requestnotes="requestnotes"
-      :requestId="requestId"
-      v-model="showNotes"
-    />
-    <other-notes-add
-      :otherrequestnotes="otherrequestnotes"
-      :requestId="requestId"
-      v-model="showOthersNotes"
-    />
+
     <medication-modal
       :requestId="requestId"
       @update:preferred="showMedication"
@@ -247,15 +162,6 @@
       @status-added="statusadded"
     />
 
-    <other-status-modal
-      :id="requestId"
-      :updatedBy="otherupdatedBy"
-      :currentStatus="othercurrentStatus"
-      :dateUpdated="otherupdate"
-      @update:preferred="showOtherStatus"
-      v-model="showOtherStatusModal"
-    />
-    
 </div>
 </template>
 <script lang="ts">
@@ -267,7 +173,7 @@ import search from "@/plugins/search";
 import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
-import IRequest from "@/types/IRequest";
+import IRequest, {Medications} from "@/types/IRequest";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -302,6 +208,7 @@ import MedicationDrug from "@/components/icons/drugicon.vue";
 import RefillDrug from "@/components/icons/refillIcon.vue";
 
 import PrintModal from "./print.vue";
+import DispenseIcon from "./icons/dispense.vue";
 
 import ViewModal from "./viewDetails.vue";
 import MedicationRequestModal from "./medicationModal.vue";
@@ -334,6 +241,7 @@ const otherrequest = namespace("otherrequest");
     PrintIcon,
     // StatusModal,
     // OtherStatusModal,
+    DispenseIcon,
     PlusIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -633,6 +541,7 @@ export default class RequestExistingState extends Vue {
      this.showDetails = true;
   }
   showRefillModal(value:string){
+    console.log(value, 'medicationId');
     this.showRefill = true;
     this.requestId = value;
   }

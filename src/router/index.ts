@@ -105,12 +105,12 @@ const routes: Array<RouteRecordRaw> = [
         component: Settings,
         // redirect: to => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "care-partners",
-            name: "Care Partners",
-            component: () =>
-              import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
+          // {
+          //   path: "care-partners",
+          //   name: "Care Partners",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/CarePartners/index.vue"),
+          // },
           {
             path: "account-security",
             name: "Account Security",
@@ -217,12 +217,12 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/practitioners/addPractitioner.vue"
               ),
           },
-          {
-            path: "care-teams",
-            name: "Care Teams",
-            component: () =>
-              import("@/views/dashboard/settings/careteam/index.vue"),
-          },
+          // {
+          //   path: "care-teams",
+          //   name: "Care Teams",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/careteam/index.vue"),
+          // },
           {
             path: "add-careteam/:id?",
             props: true,

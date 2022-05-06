@@ -16,7 +16,17 @@
         Add New
       </cornie-btn>
     </div>
+
     <div class="w-full pb-7 mt-28" v-else>
+      <span class="flex justify-end">
+        <cornie-btn
+          class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
+          @click="createObs = true"
+        >
+          Create New
+        </cornie-btn>
+      </span>
+
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
@@ -140,9 +150,7 @@
       </div>
     </div>
 
-    <create-observation
-    :id="typeId" v-model="createObs"
-  />
+    <create-observation :id="typeId" v-model="createObs" />
   </div>
 </template>
 <script lang="ts">
@@ -171,11 +179,15 @@ import UpdateStatusPurple from "@/components/icons/update-status-purple.vue";
 import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { IOrganization } from "@/types/IOrganization";
+
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 import CreateObservation from "./create-observation.vue";
 
 const location = namespace("location");
+const user = namespace("user");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -199,7 +211,7 @@ const location = namespace("location");
     CorrectGreen,
     AmendBlue,
     CancelRedBg,
-    CreateObservation
+    CreateObservation,
   },
 })
 export default class DiagnosticReport extends Vue {
@@ -217,7 +229,16 @@ export default class DiagnosticReport extends Vue {
   completedSales = 0;
   totalSalesVolume = 0;
 
-  diagnosticsReports = [{}];
+  observations = [] as any;
+
+  @user.Getter
+  authCurrentLocation!: any;
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -265,25 +286,25 @@ export default class DiagnosticReport extends Vue {
   ];
 
   get items() {
-    const diagnosticsReports = this.diagnosticsReports.map((report) => {
+    const observations = this.observations.map((report: any) => {
       (report as any).createdAt = new Date(
         (report as any).createdAt
       ).toLocaleDateString("en-US");
       return {
         ...report,
         // action: sale.id,
-        keydisplay: "XXXXXXX",
-        observationId: "-----",
-        basedOn: "-----",
-        category: "-----",
-        obsetvationCode: "-----",
-        subject: "-----",
-        performer: "-----",
-        status: "Active",
+        keydisplay: report.id,
+        observationId: report.id,
+        basedOn: report.basedOn,
+        category: report.category,
+        observationCode: report.observationCode,
+        subject: report.subject,
+        performer: report.performer,
+        status: report.status,
       };
     });
-    if (!this.query) return diagnosticsReports;
-    return search.searchObjectArray(diagnosticsReports, this.query);
+    if (!this.query) return observations;
+    return search.searchObjectArray(observations, this.query);
   }
 
   showItem(value: string) {
@@ -298,6 +319,35 @@ export default class DiagnosticReport extends Vue {
 
   closeModal() {
     this.showRecord = false;
+  }
+
+  deleteItem(id: any) {}
+
+  get locationId() {
+    // return this.authCurrentLocation;
+    return "21b84341-2051-4cad-b6b6-feae04f81215";
+  }
+
+  async fetchObservations() {
+    try {
+      const data = await cornieClient().get(
+        `/api/v1/observations?id=${this.locationId}`
+      );
+      this.observations = data.data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching observations",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchObservations();
+
+    if (this.observations.length < 1) this.fetchObservations();
+
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

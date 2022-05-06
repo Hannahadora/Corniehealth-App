@@ -297,31 +297,43 @@
             <cornie-btn
               @click="openPostOptions = true"
               class="border-primary border-2 px-6 py-1 mr-3 font-medium rounded-lg text-primary"
-            > 
+            >
               <chevron-down-icon />
               {{ postMethod }}
             </cornie-btn>
 
-            <div class="absolute w-full bg-white shadow rounded-lg py-4 px-2 mt-2" v-if="openPostOptions">
+            <div
+              class="absolute w-full bg-white shadow rounded-lg py-4 px-2 mt-2"
+              v-if="openPostOptions"
+            >
               <ul class="flex flex-col">
                 <li
                   class="py-3 px-4 cursor-pointer rounded-3xl"
                   :class="{ 'bg-f0f4fe': postMethod === 'Post Bill' }"
-                  @click="postMethod = 'Post Bill'; openPostOptions = false"
+                  @click="
+                    postMethod = 'Post Bill';
+                    openPostOptions = false;
+                  "
                 >
                   Post Bill
                 </li>
                 <li
                   class="py-3 px-4 cursor-pointer rounded-3xl"
                   :class="{ 'bg-f0f4fe': postMethod === 'Share Pay Link' }"
-                  @click="postMethod = 'Share Pay Link'; openPostOptions = false"
+                  @click="
+                    postMethod = 'Share Pay Link';
+                    openPostOptions = false;
+                  "
                 >
                   Share Pay Link
                 </li>
                 <li
                   class="py-3 px-4 cursor-pointer rounded-3xl"
                   :class="{ 'bg-f0f4fe': postMethod === 'Post Claim' }"
-                  @click="postMethod = 'Post Claim'; openPostOptions = false"
+                  @click="
+                    postMethod = 'Post Claim';
+                    openPostOptions = false;
+                  "
                 >
                   Post Claim
                 </li>
@@ -370,15 +382,14 @@
     </cornie-card>
   </cornie-dialog>
 
-
-
   <collect-payment
     :id="id"
     :type="postMethod"
     :request="viewedRequest"
+    :bill="bill"
     v-model="completePaymentModal"
   />
-  
+
   <modify-request
     @medicationModified="medicationModifed"
     :id="medicationId"
@@ -451,7 +462,6 @@ const user = namespace("user");
     SubstitutionAllowed,
     ChevronDownIcon,
     CollectPayment,
-
   },
 })
 export default class ViewRequest extends Vue {
@@ -479,6 +489,7 @@ export default class ViewRequest extends Vue {
   required = string().required();
 
   query = "";
+  bill = "";
 
   postMethod = "Post Bill";
   loading = false;
@@ -495,6 +506,12 @@ export default class ViewRequest extends Vue {
 
   @user.Getter
   authCurrentLocation!: any;
+  
+  @dispense.State
+  medicationRequest!: any[];
+
+  @dispense.Action
+  fetchMedReq!: () => Promise<void>;
 
   @dispense.State
   dispense!: IDispenseInfo;
@@ -589,8 +606,14 @@ export default class ViewRequest extends Vue {
   }
 
   collectPayment() {
-    this.completePaymentModal = true
-    this.setRequest()
+    this.completePaymentModal = true;
+    this.medicationRequest.filter((el: any) => {
+      if (el.id == this.id) {
+        this.viewedRequest = el;
+      }
+    });
+    // this.setRequest();
+    this.generateBill();
   }
 
   async setRequest() {
@@ -606,6 +629,27 @@ export default class ViewRequest extends Vue {
         status: "error",
       });
     }
+  }
+
+  async generateBill() {
+    try {
+      const { data } = await cornieClient().post(
+        `/api/v1/pharmacy/bill-request/${this.locationId}/${this.id}`,
+        {}
+      );
+      this.bill = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error geneating bill",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchMedReq();
+
+    if (this.medicationRequest.length < 1) this.fetchMedReq();
   }
 }
 </script>

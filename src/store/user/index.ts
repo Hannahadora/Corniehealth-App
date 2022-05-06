@@ -66,8 +66,8 @@ export default {
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
       const defaultLocation = locations?.find(location => location.default);
-
-      const currentLocation = state.currentLocation ?? defaultLocation;
+     
+      const currentLocation = defaultLocation?.locationId ?? state.currentLocation;
       sessionStorage.setItem("authCurrentLocation", currentLocation);
       return currentLocation;
     },

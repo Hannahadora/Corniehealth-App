@@ -1,93 +1,81 @@
 <template>
-  <div class="block rounded-lg bg-white" v-if="!login">
-    <div class="w-full block p-12">
-      <div>
-        <h2 class="font-bold text-3xl text-primary mb-4">Welcome Back!</h2>
-        <p class="text-primary mb-10">Sign In to CornieHealth</p>
-        <cornie-btn
-          @click="login = true"
-          class="font-semibold rounded bg-danger mt-3 w-full text-white p-2"
-          type="button"
-        >
-          Continue with Email
-        </cornie-btn>
-        <span class="w-full text-center block my-1">or</span>
-        <cornie-btn
-          class="font-semibold rounded mb-5 py-1 px-3 border-primary border-2 hover:bg-primary hover:text-white mt-2 w-full text-primary p-2"
-        >
-          <span class="inline-flex justify-center pb-1"
-            ><quantum-icon class="mr-2 pt-1" /></span
-          >Quantum
-        </cornie-btn>
-        <span class="w-full flex text-sm mt-2">
-          Don't have an account?
-          <router-link class="ml-1 text-danger" to="/signup">
-            Sign Up
-          </router-link>
-        </span>
-      </div>
+  <div>
+    <div class="flex items-center">
+      <span
+        @click="$router.push('/signup')"
+        class="px-6 py-4 text-white font-bold cursor-pointer text-lg"
+      >
+        Sign Up
+      </span>
+      <span
+        class="px-6 py-4 text-white font-bold cursor-pointer bg-red-500 text-lg"
+      >
+        Sign In
+      </span>
     </div>
-  </div>
-  <div class="h-full flex justify-center rounded-lg bg-white px-9 py-10" v-else>
-    <div class="w-full block">
-      <form class="w-full" @submit.prevent="submit">
-        <h2 class="font-bold text-3xl mb-12">Sign In to CornieHealth</h2>
-        <div class="w-full gap-y-2 grid-cols-1 grid">
-          <cornie-input
-            class="w-full"
-            v-model="domainName"
-            label="Domain Name"
-          />
-          <span class="text-right text-gray-400 mb-2 text-xs"
-            >Forgot Domain?</span
-          >
-          <cornie-input
-            v-model="email"
-            :rules="emailRule"
-            class="w-full mb-2"
-            label="Mobile Number or Email Address"
-          />
-          <label for="password" class="flex flex-col">
-            <span class="block uppercase mb-1 text-xs font-bold">
-              Password
-            </span>
-            <password-input
-              id="password"
-              :rules="requiredRule"
-              v-model="password"
-              class="border rounded"
+    <div class="h-full flex justify-center bg-white px-9 py-10">
+      <div class="w-full block">
+        <form class="w-full" @submit.prevent="submit">
+          <h2 class="font-bold text-3xl mb-12">Sign In to CornieHealth</h2>
+          <div class="w-full gap-y-2 grid-cols-1 grid">
+            <div class="flex items-start w-full mb-6">
+              <div class="lg:w-10/12 w-1/2">
+                <div class="relative">
+                  <img class="absolute left-24 ml-1" src="../../../assets/img/reg.png" />
+                <cornie-input
+                  v-model="domainName"
+                  class="w-full"
+                  placeholder="--Enter--"
+                  label="Domain Name"
+                />
+                </div>
+              </div>
+              <div
+                class="ml-1 rounded px-4 py-3 text-xs text-white italic mt-6"
+                style="background: #080056"
+              >
+                corniehealth.com/
+              </div>
+            </div>
+            <cornie-input
+              v-model="email"
+              :rules="emailRule"
+              class="w-full mb-2"
+              label="Mobile Number or Email Address"
             />
-
+            <label for="password" class="flex flex-col">
+              <span class="block mb-1 text-xs font-bold"> Password </span>
+              <password-input
+                id="password"
+                :rules="requiredRule"
+                v-model="password"
+                class="border rounded"
+              />
+            </label>
+          </div>
+          <span class="flex item-center justify-between mb-12">
+            <div class="flex item-center">
+              <cornie-checkbox />
+              <span class="ml-2 text-xs mt-3">Keep me logged in</span>
+            </div>
             <span
-              class="text-right text-gray-400 mb-2 text-xs cursor-pointer"
+              class="text-right text-gray-400 text-xs cursor-pointer"
               @click="$router.push('/reset/password')"
             >
               Forgot Password?</span
             >
-          </label>
-        </div>
-        <span class="flex item-center mb-1">
-          <cornie-checkbox />
-          <span class="mt-3 ml-3 text-xs">Keep me logged in</span>
-        </span>
-        <div class="flex items-center justify-center">
-          <cornie-btn
-            :loading="loading"
-            class="font-semibold rounded-lg bg-danger mt-3 mb-5 text-white py-1 px-5"
-            type="submit"
-          >
-            Sign In
-          </cornie-btn>
-        </div>
-        <span
-          class="w-full flex justify-center items-center text-sm text-center mt-6"
-        >
-          Don't have an account?
-          <router-link class="ml-1 text-danger" to="/Signup">
-            Sign Up
-          </router-link>
-        </span>
-      </form>
+          </span>
+          <div class="flex items-center justify-center">
+            <cornie-btn
+              :loading="loading"
+              class="font-semibold rounded-lg bg-danger mt-3 mb-5 text-white py-1 px-5 w-full"
+              type="submit"
+            >
+              Sign In
+            </cornie-btn>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -98,6 +86,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import QuantumIcon from "@/components/icons/quantum.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
+import DomainInput from "@/components/domain-input.vue";
 import store from "@/store";
 import { login, setAuthDomain } from "@/plugins/auth";
 import { string } from "yup";
@@ -109,14 +98,14 @@ import { string } from "yup";
     PasswordInput,
     QuantumIcon,
     CornieCheckbox,
+    DomainInput,
   },
 })
 export default class Signin extends Vue {
   email = "";
   password = "";
   loading = false;
-  domainName = ""
-  login = true;
+  domainName = "";
 
   get payload() {
     const payload: any = {
@@ -125,10 +114,6 @@ export default class Signin extends Vue {
     };
     if (this.domainName) payload.accountId = this.domainName;
     return payload;
-  }
-
-  async showLogin() {
-    this.login = true;
   }
 
   get userId() {

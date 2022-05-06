@@ -14,17 +14,17 @@ export const ClinicalsRoute: RouteRecordRaw = {
     },
     {
       path: "care-team",
-      name: "EHR - Care Team",
+      name: "Care Team",
       component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
     },
     {
       path: "care-plan",
-      name: "EHR - Care Plan",
+      name: "Care Plans",
       component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
     },
     {
       path: "care-partners",
-      name: "EHR - Care Partners",
+      name: "Care Partner",
       component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
     },
     {
@@ -45,9 +45,9 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
     },
     {
-      path: "medications",
+      path: "medications-request",
       props: true,
-      name: "Medications",
+      name: "Medication",
       component: () => import("@/views/dashboard/ehr/medication/index.vue"),
     },
     {

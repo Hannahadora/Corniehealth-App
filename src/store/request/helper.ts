@@ -24,7 +24,7 @@ export async function fetchrequestsById(patientId: string) {
 
 export async function deleteRequest(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/medication-requests/${id}`);
+    const response = await cornieClient().delete(`/api/v1/requests/${id}`);
     if (response.success) {
       return true;
     }
