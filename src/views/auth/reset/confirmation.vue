@@ -43,7 +43,7 @@
       />
       <div class="text-base">
         Didn't receive code?
-        <span class="text-red-500 cursor-pointer">Resend</span>
+        <span class="text-red-500 cursor-pointer">Resend </span>
         <vue-countdown :time="500 * 1000" v-slot="{ minutes, seconds }">
           {{ minutes }} : {{ seconds }}
         </vue-countdown>
@@ -142,7 +142,7 @@ export default class SignUp extends Vue {
 
 @media screen and (max-width: 1024px) {
   .input-code-card {
-    width: 100%;
+    width: 95%%;
   }
 }
 </style>

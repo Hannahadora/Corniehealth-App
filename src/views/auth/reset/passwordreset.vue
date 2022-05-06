@@ -102,7 +102,7 @@
     </div>
   </div>
 
-  <cornie-dialog v-model="show" center class="lg:w-1/2 w-full h-full">
+  <cornie-dialog v-model="show" center class="lg:w-1/2 w-11/12 h-full">
     <div class="block rounded bg-white px-6 py-12 mt-80">
       <div class="flex items-center justify-center pb-9">
         <img src="../../../assets/img/password-reset-success.svg" alt="" />
