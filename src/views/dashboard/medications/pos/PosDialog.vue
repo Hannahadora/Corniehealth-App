@@ -116,14 +116,15 @@
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
-            <template #quantity="{ item }">
+            <template #quantity="{ index }" >
               <cornie-input
                 type="number"
                 class="w-full"
                 placeholder="Enter"
-                v-model="item.quantity"
-                :id="item.id"
+
               />
+              <div>Items {{ items }}</div>
+              <div>Index {{ index }}</div>
             </template>
             <template #lineTotal="{ item }">
               <div class="flex space-x-3">
@@ -151,6 +152,18 @@
               <span class="text-xs text-red-500 mt-2 text-right"
                 >A Coupon/Promo discount of 20% applies.</span
               >
+              <div
+                class="mt-4 px-4 py-3 text-sm border rounded-md flex items-center justify-between w-full"
+              >
+                <span class="w-3/5 text-xs">Discount (%)</span>
+                <input
+                  class="w-2/5 self-end"
+                  type="number"
+                  v-model="discount"
+                  placeholder="----"
+                  :disabled="salesData"
+                />
+              </div>
             </div>
 
             <div class="w-1/3">
@@ -158,19 +171,19 @@
                 <tbody>
                   <tr>
                     <td>Total Discount</td>
-                    <td>{{ totalDiscount || 0 }}</td>
+                    <td>{{ totalDiscount || 0.0 }}</td>
                   </tr>
                   <tr>
                     <td>Sub Total</td>
-                    <td>{{ subTotal || 0 }}</td>
+                    <td>{{ subTotal || 0.0 }}</td>
                   </tr>
                   <tr>
                     <td class="font-bold">Shipping Cost</td>
-                    <td>{{ shippingCost || 0 }}</td>
+                    <td>{{ shippingCost || 0.0 }}</td>
                   </tr>
                   <tr class="">
                     <td class="font-bold">Grand Total</td>
-                    <td>{{ grandTotal || 0 }}</td>
+                    <td>{{ grandTotal || 0.0 }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -315,6 +328,7 @@ import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import FullPayment from "./components/FullPayment.vue";
 import SplitPayment from "./components/SplitPayment.vue";
+import QuantityInput from "./components/QuantityInput.vue";
 import AddCustomer from "./AddCustomer.vue";
 import AddMedications from "./AddMedications.vue";
 import CornieSearch from "@/components/search-input.vue";
@@ -352,6 +366,7 @@ const user = namespace("user");
     AddMedications,
     DeleteIcon,
     EditIcon,
+    QuantityInput,
   },
 })
 export default class PosDialog extends Vue {
@@ -443,7 +458,7 @@ export default class PosDialog extends Vue {
         action: medication.id,
         itemName: medication.name,
         unitPrice: medication.unitPrice,
-        quantity: this.quantity,
+        quantity: 1,
         lineTotal: Number(medication.unitPrice * this.quantity),
       };
     });
@@ -452,9 +467,13 @@ export default class PosDialog extends Vue {
   }
 
   get totalDiscount() {
-    if (this.discount) {
-      return 0;
-    } else return 0;
+    // if (this.discount) {
+    //   const dP = this.items?.map(
+    //     (item: any) => item.lineTotal * (this.discount / 100)
+    //   );
+    //   return dP.reduce((a: any, b: any) => a + b, 0).toFixed(2);
+    // } else return 0;
+    return 0;
   }
 
   get shippingCost() {
@@ -478,7 +497,7 @@ export default class PosDialog extends Vue {
       return [
         {
           amount: this.grandTotal,
-          paymentType: "",
+          paymentType: "pos" || "cash",
           total: this.grandTotal,
         },
       ];
@@ -565,7 +584,10 @@ export default class PosDialog extends Vue {
   }
 
   deleteItem(itemId: string) {
-    // this.medications.splice(itemId, 1)
+    this.medications.find((el: any) => {
+      el.id === itemId;
+      this.medications.slice(el);
+    });
   }
 
   showItem(id: any) {}
