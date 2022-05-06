@@ -42,7 +42,7 @@
           <span v-if="newPassword != previousPassword" class="text-xs text-red-500"
             >Passwords do not match</span
           >
-          <span v-else class="text-xs text-red-500"
+          <span v-else class="text-xs text-green-500"
             >All Good here. You can submit now.</span
           >
         </label>
@@ -101,6 +101,30 @@
       </form>
     </div>
   </div>
+
+  <cornie-dialog v-model="show" center class="lg:w-1/2 w-11/12 h-full">
+    <div class="block rounded bg-white px-6 py-12 mt-80">
+      <div class="flex items-center justify-center pb-9">
+        <img src="../../../assets/img/password-reset-success.svg" alt="" />
+      </div>
+      <div class="text-center font-bold text-2xl text-primary mb-2">
+        Successful password reset
+      </div>
+      <div class="text-base">
+        Your have successfully changed your password!
+      </div>
+      <div class="mt-9 flex items-center justify-center">
+        <cornie-btn
+          @click="$router.push('/signin')"
+          :loading="loading"
+          class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
+          type="submit"
+        >
+          Login
+        </cornie-btn>
+      </div>
+    </div>
+  </cornie-dialog>
 </template>
 <script lang="ts">
 import { quantumClient } from "@/plugins/http";
@@ -131,6 +155,13 @@ const user = namespace("user");
 })
 export default class SignUp extends Vue {
 
+  
+  @Prop({ required: true, type: String })
+  signature!: string;
+
+  @Prop({ required: true, type: String })
+  code!: string;
+
   @user.State
   cornieData!: any;
 
@@ -140,18 +171,18 @@ export default class SignUp extends Vue {
   @user.Getter
   cornieUser!: CornieUser;
 
-  code = "";
-
   domain = "";
   previousPassword = "";
   newPassword = "";
   email = "";
+  show = false;
 
   get payload() {
     return {
-      userId:"",
-      previousPassword: this.previousPassword,
-      newPassword: this.newPassword,
+      // userId:"",
+      password: this.previousPassword,
+      code: this.code,
+      signature: this.signature
     };
   }
 
@@ -220,12 +251,13 @@ export default class SignUp extends Vue {
     const errMsg = "Account not created";
     try {
       const data = await quantumClient().post(
-        "/auth/change-password/",
+        "/auth/reset-code-password",
         this.payload
       );
       this.loading = false;
       if (data.success) {
         window.notify({ msg: "Password updated", status: "success" });
+        this.show = true;
       } else {
         window.notify({ msg: errMsg, status: "error" });
       }

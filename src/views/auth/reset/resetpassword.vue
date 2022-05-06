@@ -1,8 +1,15 @@
 <template>
   <auth>
-    <verify-mail @nextStep="confirm" v-if="step === 1"/>
-    <confirmation @nextStep="reset" v-if="step === 2" />
-    <password-reset v-if="step === 3" />
+    <verify-mail @nextStep="confirm" v-if="step === 1" />
+    <confirmation
+      @nextStep="reset"
+      v-if="step === 2"
+      :email="email"
+    />
+    <password-reset v-if="step === 3" 
+      :code="code"
+      :signature="signature"
+    />
     <security-question v-if="step === 4" />
   </auth>
 </template>
@@ -29,6 +36,8 @@ export default class SignUp extends Vue {
   user = {} as CreatedUser;
   code = "";
   private step: number = 1;
+  signature = "";
+  email = "";
 
   userCreated = false;
   emailVerified = false;
@@ -42,12 +51,15 @@ export default class SignUp extends Vue {
     this.step = parseInt(data);
   }
 
-  confirm() {
-    this.step = 2
+  confirm(signature: any, email: any) {
+    this.step = 2;
+    this.signature = signature;
+    this.email = email
   }
 
-  reset() {
-    this.step = 3
+  reset(codeSync: any) {
+    this.step = 3;
+    this.code = codeSync;
   }
 }
 </script>
