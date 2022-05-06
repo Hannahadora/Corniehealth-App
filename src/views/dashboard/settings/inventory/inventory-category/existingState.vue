@@ -17,52 +17,89 @@
     </div> -->
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
-          <!-- <eye-icon class="text-purple-700 fill-current" /> -->
-          <span class="ml-3 text-xs">View </span>
+        <div v-if="item.status == 'inactive'">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View </span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <check class="text-green-600 fill-current" />
+            <span class="ml-3 text-xs">Activate</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <span class="ml-3 text-xs">Add to locations</span>
+          </div>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
 
-          <span class="ml-3 text-xs">Activate</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div v-if="item.status == 'active'">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View </span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
 
-          <span class="ml-3 text-xs">Add to locations</span>
+            <span class="ml-3 text-xs">Add to locations</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <!-- <Check class="text-green-600 fill-current" /> -->
+            <close-icon class="text-red-600 fill-current" />
+            <span class="ml-3 text-xs">Deactivate</span>
+          </div>
         </div>
 
       </template>
-      <template #idK="{ item }">
-        <!-- <p>{{ item.identifier }}</p>
-        <p class="text-gray-400">{{ new Date(item.createdAt).toLocaleDateString() }}</p> -->
-        <p class="text-gray-400">XXXXXX</p>
-
+      <template #location="{ item }">
+        <div>{{ item.location }}
+          <newview-icon class="text-yellow-500 ml-2 fill-current" />
+        </div>
+      </template>
+      <template #status="{ item }">
+        <p class="text-xs bg-red-300 text-red-600 p-1 rounded capitalize" v-if="item.status == 'inactive'">
+          {{ item.status }}
+        </p>
+        <p class="text-xs bg-green-100 text-green-500 p-1 rounded capitalize" v-if="item.status == 'active'">
+          {{ item.status }}
+        </p>
       </template>
     </cornie-table>
-
+    <inventory-modal v-model="showInventoryRequest" />
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import EmptyState from "./emptyState.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import User, { CornieUser } from "@/types/user";
+import { namespace } from "vuex-class";
+import InventoryModal from "./inventoryModal.vue";
+import ICategory from "@/types/ICategory";
+import NewviewIcon from "@/components/icons/newview.vue";
+import Check from "@/components/icons/check.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
+
+
+const account = namespace("user");
+const inventory = namespace('inventorysettings')
 
 @Options({
   components: {
     EmptyState,
-    CornieTable
+    CornieTable,
+    InventoryModal,
+    NewviewIcon,
+    Check,
+    CloseIcon
   }
 })
 
 export default class InventoryExistingState extends Vue {
   showInventoryRequest = false
-  items = []
   showDetails = false
   selectedItem = false
   rawHeaders = [
     {
       title: "identifier",
-      key: "idK",
+      key: "id",
       show: true,
       noOrder: true
     },
@@ -103,6 +140,13 @@ export default class InventoryExistingState extends Vue {
   showDetailsModal(item: any) {
     this.selectedItem = item;
     this.showDetails = true;
+  }
+
+  @inventory.State
+  categories!: ICategory[]
+
+  get items() {
+    return this.categories
   }
 }
 </script>
