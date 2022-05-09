@@ -331,7 +331,7 @@ export default class DiagnosticReport extends Vue {
   async fetchObservations() {
     try {
       const data = await cornieClient().get(
-        `/api/v1/observations?id=${this.locationId}`
+        `/api/v1/observations?id=${this.organizationInfo.id}`
       );
       this.observations = data.data;
     } catch (error) {
