@@ -3,7 +3,7 @@ import ICarePlan from "@/types/ICarePlan";
 
 export async function getCarePlans() {
   try {
-    const response = await cornieClient().get("/api/v1/care-plan/organizationId");
+    const response = await cornieClient().get("/api/v1/care-plan/practitioner");
 
     return response.data;
   } catch (error) {

@@ -14,9 +14,10 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import InventoryEmptyState from "./emptyState.vue";
 import InventoryExistingState from "./existingState.vue";
-import IRequest from "@/types/IRequest";
+import IInventroyStock from "@/types/IInventroyStock";
 
-const request = namespace("request");
+const inventorystock = namespace("inventorystock");
+const user = namespace("user");
 
 @Options({
   name: "InventoryIndex",
@@ -27,19 +28,22 @@ const request = namespace("request");
 })
 export default class InventoryIndex extends Vue {
 
+  @user.Getter
+  authCurrentLocation!: string;
+
   get empty() {
-    return this.requests.length < 1;
+    return this.inventorystocks.length < 1;
   }
 
-  @request.State
-  requests!: IRequest[];
+  @inventorystock.State
+  inventorystocks!: IInventroyStock[];
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  @inventorystock.Action
+  fetchInventorystocks!: (locationId: string) => Promise<void>;
 
 
   async created() {
-    await this.fetchRequests();
+    if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
   }
 }
 </script>

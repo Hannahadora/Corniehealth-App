@@ -43,10 +43,10 @@ export default class CareteamIndex extends Vue {
   carePartners!: ICarePartner[];
 
   @CarePartnersStore.Action
-  get!: () => Promise<void>;
+  fetchCarePartners!: () => Promise<void>;
 
   async created() {
-    await this.get();
+    await this.fetchCarePartners();
   }
 }
 </script>

@@ -221,24 +221,6 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/catalogues/index.vue"),
     },
     {
-      path: "newservice/:id?",
-      name: "New Service",
-      props: true,
-      component: () =>
-        import(
-          "@/views/dashboard/practice/cdm/components/new-service.vue"
-        ),
-    },
-    {
-      path: "newproduct/:id?",
-      name: "New Product",
-      props: true,
-      component: () =>
-        import(
-          "@/views/dashboard/practice/cdm/components/new-products.vue"
-        ),
-    },
-    {
       path: "addvariant/:catalogueId",
       name: "Catalogue Medication",
       component: () =>

@@ -36,13 +36,13 @@ export default class CarePlanIndex extends Vue {
 
  
    @careplan.Action
-   getCarePlans!: (patientId: string) => Promise<void>;
+   getPatientCarePlans!: (patientId: string) => Promise<void>;
 
   @careplan.State
-  careplans!: ICarePlan[];
+  patientCarePlans!: ICarePlan[];
 
    get empty() {
-    return this.careplans?.length < 1;
+    return this.patientCarePlans?.length < 1;
   }
 
 
@@ -53,7 +53,7 @@ export default class CarePlanIndex extends Vue {
 
 
   async created() {
-     await this.getCarePlans(this.$route.params.id.toString());
+     await this.getPatientCarePlans(this.$route.params.id.toString());
   }
 }
 </script>

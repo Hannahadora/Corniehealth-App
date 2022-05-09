@@ -38,7 +38,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total Items Category</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ TotalCategory }}</p>
             </div>
             <category-icon />
           </div>
@@ -47,7 +47,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total Inventory Items</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ TotalInventoryItem  }}</p>
             </div>
             <items-icon />
           </div>
@@ -56,7 +56,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total Inventory Value</p>
-              <p class="ctext-black font-bold text-xl">0</p>
+              <p class="ctext-black font-bold text-xl">₦ {{ (+TotalInventoryValue).toFixed(2) }} </p>
             </div>
             <value-icon />
           </div>
@@ -81,7 +81,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IInventroyStock from "@/types/IInventroyStock";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -111,10 +111,9 @@ import PharmacySection from "./sections/PharmacyExisiting.vue";
 import DiagnosticSection from "./sections/DiagnosticExisting.vue";
 import InpateintSection from "./sections/inPatientExsiting.vue";
 
-
 const location = namespace("location");
-
-const catalogue = namespace("catalogues");
+const inventorystock = namespace("inventorystock");
+const user = namespace("user");
 
 @Options({
   name: "InventoryExistingState",
@@ -145,18 +144,17 @@ const catalogue = namespace("catalogues");
     InpateintSection,
   },
 })
+
 export default class InventoryExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
+  @inventorystock.State
+  inventorystocks!: IInventroyStock[];
 
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @inventorystock.Action
+  fetchInventorystocks!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -256,23 +254,15 @@ export default class InventoryExistingState extends Vue {
   }
 
   get items() {
-    const products = this.products.map((product: any) => {
+    const inventorystocks = this.inventorystocks.map((inventorystock: any) => {
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
+        ...inventorystock,
+     
       };
     });
 
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+    if (!this.query) return inventorystocks;
+    return search.searchObjectArray(inventorystocks, this.query);
   }
 
   getsales(value: any, id: string) {
@@ -295,8 +285,19 @@ export default class InventoryExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  productAdded() {
-    this.getProducts();
+  get TotalCategory(){
+    return 4;
+  }
+  get TotalInventoryItem(){
+    return this.inventorystocks.length;
+  }
+
+
+  get TotalInventoryValue(){
+    return this.inventorystocks.reduce((acc, item) => acc + item.unitPrice, 0);
+  }
+  async stockAdded() {
+    if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
   }
 
   checkAll() {
@@ -319,20 +320,10 @@ export default class InventoryExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
-  }
+ 
 
   async created() {
-    await this.getProducts();
+    if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
     await this.fetchLocations();
   }
 }

@@ -7,12 +7,6 @@
        Care Plans added will be displayed here
       </p>
     </div>
-    <button
-      class="bg-danger rounded-lg font-semibold text-sm text-white mt-5 py-2 px-4 focus:outline-none hover:opacity-90"
-      @click="showCareplan = true"
-    >
-      Create a Care Plan
-    </button>
   </div>
   <careplan-modal v-model="showCareplan"/>
 </template>

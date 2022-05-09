@@ -7,12 +7,6 @@
         Care teams added will be displayed here.
       </p>
     </div>
-    <button
-      class="bg-danger rounded-lg font-semibold text-sm text-white mt-5 py-2 px-4 focus:outline-none hover:opacity-90"
-      @click="showCareTeam = true"
-    >
-      Create a Care Team
-    </button>
   </div>
   <careteam-modal v-model="showCareTeam"/>
 </template>

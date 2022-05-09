@@ -369,11 +369,20 @@ export default class AddActor extends Vue {
    practitionerId = "";
 
   addParticipant(item: any){
-      this.id = item?.id;
-      this.name = item.firstName + ' '+ item.lastName ? item?.deviceName?.name :  item.firstName + ' '+ item.lastName;
+    if(this.entity === 'Practitioner'){
+       this.id = item?.id;
+      this.name = item.firstName + ' '+ item.lastName 
       this.job =  item.jobDesignation;
       this.type = this.entity;
       this.image = item.image;
+    }else{
+       this.id = item?.id;
+      this.name =  item.deviceName.name 
+      this.job =  item.jobDesignation;
+      this.type = this.entity;
+      this.image = item.image;
+    }
+     
     
   }
 
@@ -431,9 +440,14 @@ export default class AddActor extends Vue {
      }
     this.$emit("update-actors-list", this.selectedActors);
      this.show = false;
-    // this.selectedEntity = "";
-    // this.status = "Active";
-    // this.period = "";
+     this.selectedEntity = "";
+     this.status = "Active";
+     this.period = "";
+     this.entity ="";
+     this.image = "";
+     this.role="";
+     this.onBehalfOf = "";
+     this.name = "";
   }
   changed(index:string) {
       this.singleId = index;

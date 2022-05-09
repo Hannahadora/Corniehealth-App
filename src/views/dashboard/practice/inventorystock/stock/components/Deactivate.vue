@@ -25,12 +25,15 @@
                     label="Batch No"
                     class="w-full mb-4"
                     placeholder="--Enter--"
+                    v-model="batchNo"
              />
              <date-picker
                label="Expiry"
                class="w-full mb-4"
+               v-model="expiryDate"
              />
              <text-area
+              v-model="reason"
                label="Reason for Deactivation"
                class="w-full mb-4"
                placeholder="Type your note..."
@@ -51,6 +54,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
+            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -93,10 +97,8 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 
 
 
-
-
 @Options({
-  name: "storageInfo",
+  name: "Deactivate",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -120,18 +122,59 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
     MainCornieSelect,
   },
 })
-export default class storageInfo extends Vue {
+export default class Deactivate extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
+  
+  @Prop({ type: Object, default: {} })
+  item!: any;
+
 
   loading = false;
- 
+  reason = "";
+  batchNo = "";
+  expiryDate =  "";
 
-  
+ 
+   get payload() {
+    return {
+      reason: this.reason,
+    };
+  }
+
+   async submit() {
+    this.loading = true;
+     await this.CreateStorage();
+    this.loading = false;
+  }
+
+  async CreateStorage() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+    try {
+      const response = await cornieClient().patch(
+        `/api/v1/inventory/stock/deactivate/${this.item.id}`,
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Stock deactivated Successfully",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error?.response?.data?.message, status: "error" });
+    }
+  }
+   done() {
+    this.show = false;
+    this.$emit("stockAdded");
+  }
   created() {
    
   }

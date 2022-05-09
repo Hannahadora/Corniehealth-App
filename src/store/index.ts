@@ -57,6 +57,7 @@ import DiagnostocStore from "./diagnostic";
 import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
+import InventoryStockStore from "./inventorystock";
 
 export default createStore({
   modules: {
@@ -107,6 +108,7 @@ export default createStore({
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
     markup:MarkupStore,
+    inventorystock:InventoryStockStore, 
 
     appointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,

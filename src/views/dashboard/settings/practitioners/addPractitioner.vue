@@ -8,6 +8,7 @@
     :locationId="locationId"
     :roleId="roleId"
     :id="id"
+    :locationRoleId="locationRoleId"
     :setRoles="locationRoles"
   />
   <div class="h-screen flex justify-center">
@@ -398,7 +399,7 @@
                 <cornie-select
                   :rules="required"
                   v-model="consultationChannel"
-                  label="Consultation Channel"
+                  label="Visit Type"
                   :items="dropdown.ConsultationChannel"
                   placeholder="--Select--"
                   :required="true"
@@ -515,7 +516,7 @@
                       <button class="border-0 mr-5" type="button">
                         <edit-icon
                           class="fill-current text-primary"
-                          @click="showEditAccess(access.id, access.locationId)"
+                          @click="showEditAccess(access.id, access.roleId, access.locationId)"
                         />
                       </button>
                       <button
@@ -870,6 +871,7 @@ export default class AddPractitioner extends Vue {
   gender = "";
   phone = "";
   address = "";
+  locationRoleId = "";
   dateOfBirth = "";
   jobDesignation = "";
   employmentType = "";
@@ -985,8 +987,9 @@ export default class AddPractitioner extends Vue {
     this.addAccessRole = true;
   }
 
-  showEditAccess(value:string, valuelocation:string){
-    this.roleId = value;
+  showEditAccess(value:string, valuerole:string, valuelocation:string){
+    this.locationRoleId = value;
+    this.roleId = valuerole;
     this.locationId = valuelocation;
     this.addAccessRole = true;
   }
