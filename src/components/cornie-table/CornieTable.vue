@@ -81,9 +81,9 @@
             <cornie-checkbox @click="select(row, index)" :checked="isSelected(row)" />
           </td>
           <td class="p-2">{{ index + 1 }}</td>
-          <template v-for="(column, index) in preferredColumns" :key="index">
+          <template v-for="(column, i) in preferredColumns" :key="i">
             <td class="p-3 text-sm capitalize" v-if="column.show">
-              <slot :name="column.key" :item="row" :index="index">
+              <slot :name="column.key" :item="row" :index="i">
                 {{ row[column.key] }}
               </slot>
             </td>

@@ -76,6 +76,7 @@ export default class SignUp extends Vue {
   cornieUser!: CornieUser;
 
   code = "";
+  signature = "";
 
   email = "";
   loading = false;
@@ -91,12 +92,13 @@ export default class SignUp extends Vue {
     const errMsg = "Email not verified";
     try {
       const data = await quantumClient().post(
-        "/auth/code/verify/",
+        "/auth/send-recovery-code/",
         this.payload
       );
       if (data.success) {
         // this.verifiedSync = true;
-        this.next();
+        this.signature = data.data.signature
+        this.next(this.signature, this.email);
         this.loading = false;
       } else {
         window.notify({ msg: errMsg });
@@ -104,12 +106,12 @@ export default class SignUp extends Vue {
     } catch (error) {
       window.notify({ msg: errMsg });
     } finally {
-      this.loading = true;
+      this.loading = false;
     }
   }
 
-  next() {
-    this.$emit("nextStep");
+  next(signature: any, email: any) {
+    this.$emit("nextStep", signature, email);
   }
 
   async created() {

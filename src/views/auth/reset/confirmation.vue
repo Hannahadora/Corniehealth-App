@@ -27,13 +27,13 @@
     </div>
   </div>
 
-  <cornie-dialog v-model="show" center class="input-code-card mt-96 h-full">
-    <div class="block rounded bg-white px-6 py-12">
+  <cornie-dialog v-model="show" center class="input-code-card h-full">
+    <div class="block rounded bg-white px-6 py-12 mt-80">
       <div class="text-center font-bold text-2xl text-primary mb-9">
         Enter your verification Code
       </div>
       <div class="text-base text-primary mb-9">
-        Enter verification code sent to JohnDoe@gmail.com
+        Enter verification code sent to {{ email }}
       </div>
       <multi-input
         :length="6"
@@ -43,8 +43,8 @@
       />
       <div class="text-base">
         Didn't receive code?
-        <span class="text-red-500 cursor-pointer">Resend</span>
-        <vue-countdown :time="100 * 1000" v-slot="{ minutes, seconds }">
+        <span class="text-red-500 cursor-pointer">Resend </span>
+        <vue-countdown :time="500 * 1000" v-slot="{ minutes, seconds }">
           {{ minutes }} : {{ seconds }}
         </vue-countdown>
         <!-- (1:00) -->
@@ -67,6 +67,7 @@ import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import MultiInput from "@/components/multi-input.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 type CreatedUser = { id: string; email: string };
 
@@ -74,6 +75,7 @@ type CreatedUser = { id: string; email: string };
   components: {
     MultiInput,
     CornieDialog,
+    VueCountdown,
   },
 })
 export default class SignUp extends Vue {
@@ -87,11 +89,17 @@ export default class SignUp extends Vue {
   codeLength = 6;
   countDown = 10;
 
-  @Prop({ required: false, type: String })
+  codeSync = "";
+
+  
+  @Prop({ required: true, type: String })
+  email!: string;
+  
+  @Prop({ required: true, type: String })
   code!: string;
 
-  @PropSync("code", { required: true })
-  codeSync!: string;
+  // @PropSync("code", { required: true })
+  // codeSync!: string;
 
   status: "loading" | "success" | "error" | "default" = "default";
 
@@ -118,7 +126,7 @@ export default class SignUp extends Vue {
 
   verify() {
     this.show = false;
-    this.$emit('nextStep')
+    this.$emit('nextStep', this.codeSync)
   }
   async created() {
     this.countDownTimer();
@@ -130,5 +138,11 @@ export default class SignUp extends Vue {
 .input-code-card {
   width: 380px;
   height: 438px;
+}
+
+@media screen and (max-width: 1024px) {
+  .input-code-card {
+    width: 95%%;
+  }
 }
 </style>
