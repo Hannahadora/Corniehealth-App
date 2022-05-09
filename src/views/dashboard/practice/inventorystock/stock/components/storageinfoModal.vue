@@ -26,31 +26,44 @@
                 class="w-full mb-4"
                 placeholder="--Autofilled--"
                 :disabled="true"
+                :modelValue="LocationName"
+               
+               
               />
                <cornie-input
                 label="Building No"
                 class="w-full mb-4"
                 placeholder="--Enter--"
+                v-model="condition"
+                 :rules="required"
               />
               <cornie-input
                 label="Room No"
                 class="w-full mb-4"
                 placeholder="--Enter--"
+                v-model="room"
+                 :rules="required"
               />
               <cornie-input
                 label="Shelf No"
                 class="w-full mb-4"
                 placeholder="--Enter--"
+                v-model="shelf"
+                 :rules="required"
               />
               <cornie-input
                 label="Rack No"
                 class="w-full mb-4"
                 placeholder="--Enter--"
+                v-model="rack"
+                 :rules="required"
               />
               <cornie-input
                 label="Bin No"
                 class="w-full mb-4"
                 placeholder="--Enter--"
+                v-model="bin"
+                 :rules="required"
               />
 
 
@@ -68,6 +81,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
+            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -85,7 +99,9 @@ import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import { string } from "yup";
 
+import ILocation from "@/types/ILocation";
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -109,8 +125,8 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 
 
-
-
+const user = namespace("user");
+const location = namespace("location");
 
 @Options({
   name: "storageInfo",
@@ -144,13 +160,78 @@ export default class storageInfo extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {} })
+  item!: any;
+
+  @user.Getter
+  authCurrentLocation!: string;
+
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+   required = string().required();
+
+  locationId = "";
+  room = "";
+  rack = "";
+  bin = "";
+  condition = "";
+  shelf ="";
 
   loading = false;
+
+    get payload() {
+    return {
+      locationId: this.authCurrentLocation,
+      room: this.room,
+      rack: this.rack,
+      bin: this.bin,
+      condition: this.condition,
+      shelf: this.shelf
+    };
+  }
  
+ async submit() {
+    this.loading = true;
+     await this.CreateStorage();
+    this.loading = false;
+  }
+
+  async CreateStorage() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+    try {
+      const response = await cornieClient().post(
+        `/api/v1/inventory/stock/store/${this.item.productId}`,
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Storage info updated Successfully",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error?.response?.data?.message, status: "error" });
+    }
+  }
+   done() {
+    this.show = false;
+    this.$emit("stockAdded");
+  }
+
+  get LocationName() {
+    const pt = this.locations.find((i: any) => i.id === this.authCurrentLocation);
+    return pt ? `${pt.name}` : "";
+  }
 
   
   created() {
-   
+    this.fetchLocations();
   }
 }
 </script>

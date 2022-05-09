@@ -253,6 +253,9 @@ export default class Accessrole extends Vue {
   roleId!: string;
 
   @Prop({ type: String, default: "" })
+  locationRoleId!: string;
+
+  @Prop({ type: String, default: "" })
   updatedBy!: string;
 
   @Prop({ type: Object, default: {} })
@@ -441,7 +444,7 @@ export default class Accessrole extends Vue {
 
   async apply() {
     this.loading = true;
-    if (this.roleId) await this.updateRole();
+    if (this.locationRoleId) await this.updateRole();
     else await this.createRole();
     this.loading = false;
   }
@@ -467,7 +470,7 @@ export default class Accessrole extends Vue {
   }
 
   async updateRole() {
-    const url = `/api/v1/practitioner/location-roles/${this.locationId}`;
+    const url = `/api/v1/practitioner/location-roles/${this.locationRoleId}`;
     const payload = { locationId: this.locationId, roleId: this.roleId };
     try {
       const response = await cornieClient().put(url, payload);

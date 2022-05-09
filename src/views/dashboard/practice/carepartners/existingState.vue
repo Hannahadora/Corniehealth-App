@@ -1,14 +1,6 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full">
-      <button
-        class="bg-danger rounded-md text-white mt-5 py-3 text-sm px-4 focus:outline-none hover:opacity-90"
-        @click="showAddCarePartners = true"
-      >
-        Add a Care Partner
-      </button>
-    </span>
-    <cornie-table :columns="headers" v-model="items">
+    <cornie-table :columns="headers" v-model="items" :menushow="true">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"

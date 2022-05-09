@@ -1,180 +1,239 @@
 <template>
   <div class="p-2">
     <div>
-       <accordion-component
-          v-if="!$route.path.includes('variant')"
-          title="New Product"
-          :opened="true"
-         >
-          <template v-slot:default>
-            <div class="w-full mb-5">
-              <div class="my-4">
-                <cornie-checkbox
-                  :label="'This is an inventory item'"
-                  v-model="isInventoryItem"
+      <accordion-component
+        v-if="!$route.path.includes('variant')"
+        title="New Product"
+        :opened="true"
+      >
+        <template v-slot:default>
+          <div class="w-full mb-5">
+            <div class="my-4">
+              <cornie-checkbox
+                :label="'This is an inventory item'"
+                v-model="isInventoryItem"
+                :value="'Yes'"
+              />
+            </div>
+            <p class="v-xteristics mb-4">Select Product Type</p>
+            <div class="my-2 flex">
+              <span
+                ><cornieradio
+                  v-model="type"
+                  :label="'Medication Product'"
+                  :value="'medication'"
                 />
-              </div>
-              <p class="v-xteristics mb-4">Select Product Type</p>
-              <div class="my-2 flex">
-                <span
+              </span>
+              <span class="ml-8"
+                ><cornieradio
+                  v-model="type"
+                  :label="'Other Health Product'"
+                  :value="'other'"
+                />
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-3 gap-4"
+            v-if="type?.toLowerCase() === 'medication'"
+          >
+            <auto-complete
+              class="w-full"
+              :label="'Generic Name'"
+              :items="allName"
+              @click="resultData(dataCode)"
+              @input="searchData"
+              v-model="dataCode"
+              :placeholder="'Select'"
+            />
+
+            <cornie-select
+              class="w-full"
+              :label="'Brand/Manufacturer'"
+              :items="allBrand"
+              @click="resultBrand(dataBrand)"
+              v-model="dataBrand"
+              :placeholder="'Select'"
+            />
+            <cornie-select
+              v-model="dataForm"
+              :label="'Form'"
+              :items="allForms"
+              :placeholder="'Select'"
+              class="w-full"
+              @click="resultPack(dataForm)"
+            />
+            <cornie-input
+              :label="'Pack'"
+              v-model="pack"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-input
+              :label="'Strength'"
+              v-model="strength"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-input
+              :label="'NAFDAC Registration No.'"
+              v-model="Nafdac"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-select
+              :label="'Classification.'"
+              placeholder="--Enter--"
+              :items="[
+                'General Health',
+                'Devices',
+                'Sexual Wellness',
+                'Personal Care',
+                'Nutrition, Fitness & Supplements',
+              ]"
+              v-model="classification"
+            />
+            <cornie-select
+              :label="'Sub-classification.'"
+              placeholder="--Enter--"
+              :items="getSubClassify"
+              v-model="subClassification"
+            />
+
+            <cornie-select
+              v-model="category"
+              :label="'Category'"
+              placeholder="--Select--"
+              :items="[
+                'Over-the-Counter Medicines',
+                'Prescription Only Medicine',
+                'Pharmacy Medicine',
+                'Controlled Drugs',
+              ]"
+            />
+
+            <div class="">
+              <span
+                class="flex capitalize mb-5 text-black text-sm font-semibold"
+              >
+                Discount applicable?
+              </span>
+              <div class="flex items-end -mb-2">
+                <span class="mr-14"
                   ><cornieradio
-                    v-model="type"
-                    :label="'Medication Product'"
-                    :value="'medication'"
+                    v-model="applyDiscount"
+                    :label="'Yes'"
+                    :value="true"
                   />
                 </span>
-                <span class="ml-8"
-                  ><cornieradio
-                    v-model="type"
-                    :label="'Other Health Product'"
-                    :value="'other'"
-                  />
-                </span>
+                <cornieradio
+                  :label="'No'"
+                  v-model="applyDiscount"
+                  :value="false"
+                />
               </div>
             </div>
+            <cornie-input
+              v-model="itemCode"
+              :label="'Item Code'"
+              placeholder="Autogenerated"
+            />
+          </div>
 
-            <div
-              class="grid grid-cols-3 gap-4"
-              v-if="type?.toLowerCase() === 'medication'"
-            >
-                <auto-complete class="w-full" :label="'Generic Name'" :items="allName" @click="resultData(dataCode)" @input="searchData"  v-model="dataCode" :placeholder="'Select'"/>
-            
-                <cornie-select class="w-full" :label="'Brand/Manufacturer'"  :items="allBrand" @click="resultBrand(dataBrand)"  v-model="dataBrand" :placeholder="'Select'"/>
-                <cornie-select
-                  v-model="dataForm"
-                  :label="'Form'"
-                  :items="allForms"
-                  :placeholder="'Select'"
-                  class="w-full"
-                  @click="resultPack(dataForm)"
-                /> 
-                <cornie-input
-                  :label="'Pack'"
-                  v-model="pack"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />
-                 <cornie-input
-                  :label="'Strength'"
-                  v-model="strength"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />  
-                <cornie-input
-                  :label="'NAFDAC Registration No.'"
-                  v-model="Nafdac"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />
-                <cornie-select
-                  :label="'Classification.'"
-                  placeholder="--Enter--"
-                  :items="['General Health','Devices','Sexual Wellness','Personal Care','Nutrition, Fitness & Supplements']"
-                  v-model="classification"
-                />
-                <cornie-select
-                  :label="'Sub-classification.'"
-                  placeholder="--Enter--"
-                  :items="getSubClassify"
-                  v-model="subClassification" />
-            
-                <cornie-select
-                  v-model="category"
-                  :label="'Category'"
-                  placeholder="--Select--"
-                  :items="['Over-the-Counter Medicines', 'Prescription Only Medicine','Pharmacy Medicine','Controlled Drugs']"
-                />
-  
-                <div class="">
-                  <span class="flex capitalize mb-5 text-black text-sm font-semibold">
-                    Discount applicable?
-                  </span>
-                  <div class="flex items-end -mb-2">
-                    <span class="mr-14"><cornieradio
-                        v-model="applyDiscount"
-                        :label="'Yes'"
-                        :value="true"/>
-                    </span>
-                    <cornieradio
-                      :label="'No'"
-                      v-model="applyDiscount"
-                      :value="false"
-                    />
-                  </div>
-                </div>
-               <cornie-input
-                    v-model="itemCode"
-                    :label="'Item Code'"
-                    placeholder="Autogenerated"
-                  />
-            </div>
+          <div
+            class="w-full grid gap-4 grid-cols-3"
+            v-if="type?.toLowerCase() === 'other'"
+          >
+            <cornie-select
+              :label="'Classification.'"
+              placeholder="--Enter--"
+              :items="[
+                'General Health',
+                'Devices',
+                'Sexual Wellness',
+                'Personal Care',
+                'Nutrition, Fitness & Supplements',
+              ]"
+              v-model="classification"
+            />
+            <cornie-select
+              :label="'Sub-classification.'"
+              placeholder="--Enter--"
+              :items="getSubClassify"
+              v-model="subClassification"
+            />
 
-            <div
-              class="w-full grid gap-4 grid-cols-3"
-              v-if="type?.toLowerCase() === 'other'"
-            >
-                <cornie-input
-                  :label="'Classification.'"
-                  v-model="classification"
-                  placeholder="--Enter--"
-                />
-                <cornie-input
-                  :label="'Sub-classification.'"
-                  v-model="subClassification"
-                  placeholder="--Enter--"
-                />
-                <auto-complete class="w-full" :label="'Generic Name'" :items="allName" @click="resultData(dataCode)" @input="searchData"  v-model="dataCode" :placeholder="'Select'"/>
-            
-                <cornie-select class="w-full" :label="'Brand/Manufacturer'"  :items="allBrand" @click="resultBrand(brandCode)"  v-model="brandCode" :placeholder="'Select'"/>
-                <cornie-select
-                  v-model="form"
-                  :label="'Form'"
-                  :items="allForms"
-                  :placeholder="'Select'"
-                  class="w-full"
-                  @click="resultPack(dataForm)"
-                /> 
-                <cornie-input
-                  :label="'Pack'"
-                  v-model="pack"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />
-                 <cornie-input
-                  :label="'Strength'"
-                  v-model="strength"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />  
-                <cornie-input
-                  :label="'NAFDAC Registration No.'"
-                  v-model="Nafdac"
-                  placeholder="--Autoloaded--"
-                  class="w-full"
-                  :disabled="true"
-                />
-                 <cornie-select
-                  v-model="category"
-                  :label="'Category'"
-                  placeholder="--Select--"
-                  :items="['Over-the-Counter Medicines', 'Prescription Only Medicine','Pharmacy Medicine','Controlled Drugs']"
-                />
-                <cornie-input
-                  v-model="itemCode"
-                  :label="'Item Code'"
-                  placeholder="Autogenerated"
-                />
-            </div>
+            <auto-complete
+              class="w-full"
+              :label="'Generic Name'"
+              :items="allName"
+              @click="resultData(dataCode)"
+              @input="searchData"
+              v-model="dataCode"
+              :placeholder="'Select'"
+            />
 
-          
-          </template>
-        </accordion-component>
-   
+            <cornie-select
+              class="w-full"
+              :label="'Brand/Manufacturer'"
+              :items="allBrand"
+              @click="resultBrand(brandCode)"
+              v-model="brandCode"
+              :placeholder="'Select'"
+            />
+            <cornie-select
+              v-model="form"
+              :label="'Form'"
+              :items="allForms"
+              :placeholder="'Select'"
+              class="w-full"
+              @click="resultPack(dataForm)"
+            />
+            <cornie-input
+              :label="'Pack'"
+              v-model="pack"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-input
+              :label="'Strength'"
+              v-model="strength"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-input
+              :label="'NAFDAC Registration No.'"
+              v-model="Nafdac"
+              placeholder="--Autoloaded--"
+              class="w-full"
+              :disabled="true"
+            />
+            <cornie-select
+              v-model="category"
+              :label="'Category'"
+              placeholder="--Select--"
+              :items="[
+                'Over-the-Counter Medicines',
+                'Prescription Only Medicine',
+                'Pharmacy Medicine',
+                'Controlled Drugs',
+              ]"
+            />
+            <cornie-input
+              v-model="itemCode"
+              :label="'Item Code'"
+              placeholder="Autogenerated"
+            />
+          </div>
+        </template>
+      </accordion-component>
+
       <div class="w-full my-5" v-if="isInventoryItem">
         <div
           class="stock py-5 cursor-pointer px-2"
@@ -182,439 +241,461 @@
         >
           <p class="flex justify-between px-2 sub-header">
             <span class="text-sm">Stock Unit of Measurement (UoM)</span>
-            <span><add-icon /></span>
+            <span v-if="salesUOMs.length === 0"><add-icon /></span>
+            <span v-else><edit-icon class="fill-current text-danger" /></span>
           </p>
         </div>
       </div>
-       <accordion-component
-          :title="'Cost Information'"
-          :opened="false"
-          :class="!isInventoryItem ? 'my-5' : ''"
-        >
-
-          <template v-slot:default>
-            <div class="w-full mb-5 mt-5">
-              <div class="mb-2 flex">
-                <span
-                  ><cornieradio
-                    :label="'Purchase item'"
-                    :value="'purchase'"
-                    v-model="purchaseType"
-                  />
-                </span>
-                <span class="ml-8"
-                  ><cornieradio
-                    :label="'Non Purchase item'"
-                    :value="'non-purchase'"
-                    v-model="purchaseType"
-                  />
-                </span>
-              </div>
-            </div>
-            <div class="w-full">
-              <div class="w-full">
-                <div class="w-full flex ths py-4">
-                  <div
-                    class="th py-4 flex items-center"
-                    v-if="purchaseType?.toLowerCase() === 'purchase'"
-                  >
-                    <span class="pl-5">Default</span>
-                  </div>
-                  <div
-                    class="th py-4 flex items-center"
-                    v-if="purchaseType?.toLowerCase() === 'purchase'"
-                  >
-                    <span>Supplier Name</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span
-                      :class="{
-                        'px-2':
-                          purchaseType?.toLowerCase() !== 'purchase',
-                      }"
-                    >
-                      {{
-                        purchaseType?.toLowerCase() === "purchase"
-                          ? "Purchase UOM"
-                          : "UOM"
-                      }}
-                    </span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span>Item Quantity/Unit</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span>Unit Cost</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span>Cost per item</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span>Available QTY</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span> % availability</span>
-                  </div>
-                  <div class="th py-4 flex items-center">
-                    <span>weighted av. cost</span>
-                  </div>
-                </div>
-                <div
-                  class="w-full flex border border-gray-400"
-                  :class="
-                    suppliers.length - 1 === index
-                      ? 'rounded-bl-md rounded-br-md'
-                      : ''
-                  "
-                  v-for="(supplier, index) in suppliers"
-                  :key="index"
-                >
-                  <div
-                    class="th flex items-center"
-                    v-if="purchaseType?.toLowerCase() === 'purchase'"
-                  >
-                    <span class="pl-5"
-                      ><cornieradio
-                        :value="supplier.id"
-                        @update:modelValue="setDefault"
-                        name="supplier"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="th flex items-center"
-                    v-if="purchaseType?.toLowerCase() === 'purchase'"
-                  >
-                    <span
-                      ><cornie-input
-                        v-model="suppliers[index].supplier"
-                        :placeholder="'--Enter--'"
-                    /></span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span
-                      class="small-text capitalize"
-                      :class="{
-                        'pl-2':
-                          purchaseType?.toLowerCase() !== 'purchase',
-                      }"
-                      >{{ stocksUnit?.purchase }}</span
-                    >
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text capitalize">{{
-                      stocksUnit?.quantity
-                    }}</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span
-                      ><cornie-input v-model="suppliers[index].unitCost" type="text"
-                    /></span>
-                  </div>
-                  <div class="th flex items-center">
-                    <!-- <span><cornie-input v-model="suppliers[index].costPerItem" /></span> -->
-                     <span class="small-text capitalize">
-                     ₦ {{
-                        (
-                          (suppliers[index].unitCost / stocksUnit?.quantity) 
-                        ).toFixed(2)
-                      }}
-                    </span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span
-                      ><cornie-input v-model="suppliers[index].quantity"
-                    /></span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text capitalize">
-                      {{
-                        (
-                          (+supplier.quantity / +totalAvailability) *
-                          100
-                        ).toFixed(2)
-                      }}
-                    </span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text capitalize">
-                      {{
-                        (
-                          (+supplier.quantity / +totalAvailability) *
-                          supplier.costPerItem
-                        ).toFixed(2)
-                      }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="w-full my-2"
-                v-if="purchaseType?.toLowerCase() === 'purchase'"
-              >
-                <a
-                  class="v-xteristics flex cursor-pointer"
-                  @click="addAnotherSupplier"
-                >
-                  <span class="mr-3"><add-icon /> </span>
-                  <span>Add Another Supplier</span>
-                </a>
-              </div>
-            </div>
-          </template>
-        </accordion-component>
-
-        <accordion-component :title="'Sales Information'" :opened="false">
-          <template v-slot:default>
-            <div class="w-full mt-2 mb-6 flex justify-between">
-              <div
-                class="w-4/12 p-4"
-                style="
-                  border: 1px solid #c2c7d6;
-                  border-radius: 8px;
-                  width: 32%;
-                "
-              >
-                <p class="flex flex-col">
-                  <span class="sales-label">Weighted Av. Cost (NGN)</span>
-                  <span class="sales-value">{{ weightedAverageCost }}</span>
-                </p>
-              </div>
-              <div
-                class="w-4/12 p-4"
-                style="
-                  border: 1px solid #c2c7d6;
-                  border-radius: 8px;
-                  width: 32%;
-                "
-              >
-                <p class="flex flex-col">
-                  <span class="sales-label">Sales Markup (%)</span>
-                  <span class="sales-value">{{ PercentageMarkup }}</span>
-                </p>
-              </div>
-              <div
-              v-if="applyDiscount == true"
-                class="w-4/12 p-4"
-                style="
-                  border: 1px solid #c2c7d6;
-                  border-radius: 8px;
-                  width: 32%;
-                "
-              >
-                <p class="flex flex-col">
-                  <span class="sales-label"
-                    >Maximum Allowable Discount (%)</span
-                  >
-                  <span class="sales-value">{{ MaxDiscount }}</span>
-                </p>
-              </div>
-            </div>
-            <div class="w-full">
-              <div class="w-full overflow-x-scroll">
-                <div class="w-full flex ths py-2" style="min-width: 1330px">
-                  <div class="th flex items-center">
-                    <span>Sales Unit</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>QTY</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>service cost</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>Sales markup</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>Service fee</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>margin (ngn)</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>margin (%)</span>
-                  </div>
-                  <div class="th flex items-center" v-if="applyDiscount == true">
-                    <span>discount limit</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>Service fee (discounted)</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>DISCOUNTED margin (ngn)</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span>DISCOUNTED margin(%)</span>
-                  </div>
-                </div>
-                <div
-                  class="w-full flex tbs py-2"
-                  style="min-width: 1330px"
-                >
-                  <div class="th flex items-center">
-                    <span class="small-text">{{ salesUOMs.unitName }}</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">{{ salesUOMs.itemQuantity }}</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">₦ 120,000.00</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text"
-                      ><cornie-input v-model="salesUOMs.markup"
-                    /></span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">₦ 240,000.00</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">₦ 240,000.00</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">50%</span>
-                  </div>
-                  <div class="th flex items-center" v-if="applyDiscount == true">
-                    <span class="small-text"
-                      ><cornie-input v-model="salesUOMs.discountLimit"
-                    /></span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">₦ 216,000.00</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text"> ₦ 86,000.00</span>
-                  </div>
-                  <div class="th flex items-center">
-                    <span class="small-text">43%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="w-full my-5">
-              <a class="v-xteristics">Tax Information</a>
-              <span class="flex mt-4">
-                <label class="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    v-model="applyVAT"
-                    class="form-radio h-3 w-3"
-                    :value="'Apply VAT to this service item'"
-                  />
-                  <span class="ml-2 noraml-text text-sm font-normal"
-                    >Apply VAT to this service item</span
-                  >
-                </label>
+      <accordion-component
+        :title="'Cost Information'"
+        :opened="false"
+        :class="!isInventoryItem ? 'my-5' : ''"
+      >
+        <template v-slot:default>
+          <div class="w-full mb-5 mt-5">
+            <div class="mb-2 flex">
+              <span
+                ><cornieradio
+                  :label="'Purchase item'"
+                  :value="'purchase'"
+                  v-model="purchaseType"
+                />
+              </span>
+              <span class="ml-8"
+                ><cornieradio
+                  :label="'Non Purchase item'"
+                  :value="'non-purchase'"
+                  v-model="purchaseType"
+                />
               </span>
             </div>
-          </template>
-        </accordion-component>
-
-        <accordion-component
-          :title="'Inventory Information'"
-          :opened="false"
-           v-if="isInventoryItem"
-        >
-          <template v-slot:default>
-            <div class="w-full grid gap-4 grid-cols-3 mt-5 mb-3">
-                <cornie-input
-                  v-model="inventory.itemCode"
-                  :label="'Item Code'"
-                  placeholder="--Autoloaded--"
-                />
-                <cornie-input
-                  :disabled="true"
-                  placeholder="--Autoloaded--"
-                  :label="'Item Variant'"
-                  v-model="inventory.itemVariant"
-                />
-                <cornie-select
-                  :label="'Valuation Method'"
-                  v-model="inventory.valuationMethod"
-                  :items="['fifo', 'lifo', 'weighted-average']"
-                />
-                <cornie-input
-                  :disabled="true"
-                  :label="'Opening Balance'"
-                  v-model="inventory.openingBalance"
-                  placeholder="--Autoloaded--"
-                />
-                <cornie-input
-                  :label="'Reorder Level'"
-                  v-model="inventory.reorderLevel"
-                  placeholder="Enter"
-                />
-                <cornie-input
-                  :label="'Batch No'"
-                  v-model="inventory.batchNo"
-                  placeholder="Enter"
-                />
-                <DatePicker
-                  :label="'Expiry Date'"
-                  v-model="inventory.expiryDate"
-                />
-
+          </div>
+          <div class="w-full">
+            <div class="w-full">
+              <div class="w-full flex ths py-4">
+                <div
+                  class="th py-4 flex items-center"
+                  v-if="purchaseType?.toLowerCase() === 'purchase'"
+                >
+                  <span class="pl-5">Default</span>
+                </div>
+                <div
+                  class="th py-4 flex items-center"
+                  v-if="purchaseType?.toLowerCase() === 'purchase'"
+                >
+                  <span>Supplier Name</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span
+                    :class="{
+                      'px-2': purchaseType?.toLowerCase() !== 'purchase',
+                    }"
+                  >
+                    {{
+                      purchaseType?.toLowerCase() === "purchase"
+                        ? "Purchase UOM"
+                        : "UOM"
+                    }}
+                  </span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span>Item Quantity/Unit</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span>Unit Cost (NGN)</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span>Cost per item (NGN)</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span>Available QTY</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span> % availability</span>
+                </div>
+                <div class="th py-4 flex items-center">
+                  <span>weighted av. cost (NGN)</span>
+                </div>
+              </div>
+              <div
+                class="w-full flex border border-gray-400"
+                :class="
+                  suppliers.length - 1 === index
+                    ? 'rounded-bl-md rounded-br-md'
+                    : ''
+                "
+                v-for="(supplier, index) in suppliers"
+                :key="index"
+              >
+                <div
+                  class="th flex items-center"
+                  v-if="purchaseType?.toLowerCase() === 'purchase'"
+                >
+                  <span class="pl-5"
+                    ><cornieradio
+                      :value="supplier.id"
+                      @update:modelValue="setDefault"
+                      name="supplier"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="th flex items-center"
+                  v-if="purchaseType?.toLowerCase() === 'purchase'"
+                >
+                  <span
+                    ><cornie-input
+                      v-model="suppliers[index].supplier"
+                      :placeholder="'--Enter--'"
+                  /></span>
+                </div>
+                <div class="th flex items-center">
+                  <span
+                    class="small-text capitalize"
+                    :class="{
+                      'pl-2': purchaseType?.toLowerCase() !== 'purchase',
+                    }"
+                    >{{ stocksUnit?.purchase }}</span
+                  >
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text capitalize">{{
+                    stocksUnit?.quantity
+                  }}</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>
+                    <cornie-input
+                    v-if="id"
+                      v-model="supplier.unitCost"
+                      type="text"
+                  />
+                  <cornie-input
+                  v-else
+                      v-model="suppliers[index].unitCost"
+                      type="text"
+                  />
+                  </span>
+                </div>
+                <div class="th flex items-center">
+                  <!-- <span><cornie-input v-model="suppliers[index].costPerItem" /></span> -->
+                  <span class="small-text capitalize" v-if="id">
+                    ₦
+                    {{
+                      (
+                        supplier.unitCost / stocksUnit?.quantity
+                      ).toFixed(2)
+                    }}
+                  </span>
+                  <span class="small-text capitalize" v-else>
+                    ₦
+                    {{
+                      (
+                        suppliers[index].unitCost / stocksUnit?.quantity
+                      ).toFixed(2)
+                    }}
+                  </span>
+                </div>
+                <div class="th flex items-center">
+                  <span>
+                    <cornie-input v-model="supplier.quantity" v-if="id"/>
+                    <cornie-input v-model="suppliers[index].quantity" v-else/>
+                  </span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text capitalize">
+                    {{
+                      ((+supplier.quantity / +totalAvailability) * 100).toFixed(2)
+                    }}
+                  </span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text capitalize" v-if="id">
+                    ₦
+                    {{
+                      (
+                        ((supplier.quantity / totalAvailability) * 100) *
+                        (supplier.unitCost / stocksUnit?.quantity)
+                      ).toFixed(2)
+                    }}
+                  </span>
+                   <span class="small-text capitalize" v-else>
+                    ₦
+                    {{
+                      (
+                        ((supplier.quantity / totalAvailability) * 100) *
+                        (suppliers[index].unitCost / stocksUnit?.quantity)
+                      ).toFixed(2)
+                    }}
+                  </span>
+                </div>
+              </div>
             </div>
-          </template>
-        </accordion-component>
+            <div
+              class="w-full my-2"
+              v-if="purchaseType?.toLowerCase() === 'purchase'"
+            >
+              <a
+                class="v-xteristics flex cursor-pointer"
+                @click="addAnotherSupplier"
+              >
+                <span class="mr-3"><add-icon /> </span>
+                <span>Add Another Supplier</span>
+              </a>
+            </div>
+          </div>
+        </template>
+      </accordion-component>
 
-        <accordion-component
-          :title="'Storage Information'"
-           :opened="false"
-           v-if="isInventoryItem"
-        >
-          <template v-slot:default>
-            <div class="w-full grid grid-cols-12 gap-5 mt-5">
-              <div class="w-full col-span-4">
-                <cornie-select
-                  :label="'Storage Condition'"
-                  :items="['Excellent', 'Good', 'Fair', 'Bad']"
-                  v-model="storage.condition"
-                  placeholder="Enter"
-                />
+      <accordion-component :title="'Sales Information'" :opened="false">
+        <template v-slot:default>
+          <div class="w-full mt-2 mb-6 flex justify-between">
+            <div
+              class="w-4/12 p-4"
+              style="border: 1px solid #c2c7d6; border-radius: 8px; width: 32%"
+            >
+              <p class="flex flex-col">
+                <span class="sales-label">Weighted Av. Cost (NGN)</span>
+                <span class="sales-value">{{ weightedAverageCost }}</span>
+              </p>
+            </div>
+            <div
+              class="w-4/12 p-4"
+              style="border: 1px solid #c2c7d6; border-radius: 8px; width: 32%"
+            >
+              <p class="flex flex-col">
+                <span class="sales-label">Sales Markup (%)</span>
+                <span class="sales-value">{{ PercentageMarkup }}</span>
+              </p>
+            </div>
+            <div
+              v-if="applyDiscount == true"
+              class="w-4/12 p-4"
+              style="border: 1px solid #c2c7d6; border-radius: 8px; width: 32%"
+            >
+              <p class="flex flex-col">
+                <span class="sales-label">Maximum Allowable Discount (%)</span>
+                <span class="sales-value">{{ MaxDiscount }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="w-full">
+            <div class="w-full overflow-x-scroll">
+              <div class="w-full flex ths py-2" style="min-width: 1330px">
+                <div class="th flex items-center">
+                  <span>Sales Unit</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>QTY</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>Item cost</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>Sales markup</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>Item Price</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>margin (ngn)</span>
+                </div>
+                <div class="th flex items-center">
+                  <span>margin (%)</span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span>discount limit</span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span>Item price (discounted)</span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span>DISCOUNTED margin (ngn)</span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span>DISCOUNTED margin(%)</span>
+                </div>
               </div>
-              <div class="w-full col-span-4">
-                <cornie-select
-                  :label="'Building'"
-                  :items="locationsList"
-                  v-model="storage.locationId"
-                  placeholder="Enter"
-                />
-              </div>
-              <div class="w-full col-span-4">
-                <cornie-input
-                  :label="'Room #'"
-                  v-model="storage.room"
-                  placeholder="Enter"
-                />
+              <div class="w-full flex tbs py-2"  v-for="(sale, index) in salesUOMs"
+                  :key="index" style="min-width: 1330px">
+                <div class="th flex items-center">
+                  <span class="small-text">{{ sale.unitName }}</span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text">{{ sale.itemQuantity }}</span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text">₦ {{ weightedAverageCost }}</span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text"
+                    ><cornie-input v-model="sale.markup"
+                  /></span>
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text"
+                    >₦
+                    {{
+                      ItemPriceNGN
+                    }}</span
+                  >
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text"
+                    >₦
+                    {{
+                     marginNGN
+                    }}</span
+                  >
+                </div>
+                <div class="th flex items-center">
+                  <span class="small-text"
+                    >{{
+                     marginPercent
+                    }}%</span
+                  >
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span class="small-text"
+                    ><cornie-input v-model="sale.discountLimit"
+                  /></span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span class="small-text">₦ {{ ItemCostDiscounted }}</span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span class="small-text">
+                    ₦
+                    {{ discountedMarginNGN }}
+                  </span>
+                </div>
+                <div class="th flex items-center" v-if="applyDiscount == true">
+                  <span class="small-text">{{ discountedMarginPercent}}%</span>
+                </div>
               </div>
             </div>
-            <div class="w-full grid grid-cols-12 gap-5 mt-5 mb-3">
-              <div class="w-full col-span-4">
-                <cornie-input
-                  :label="'Shelf #'"
-                  placeholder="Enter"
-                  v-model="storage.shelf"
+          </div>
+
+          <div class="w-full my-5">
+            <a class="v-xteristics">Tax Information</a>
+            <span class="flex mt-4">
+              <label class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  v-model="applyVAT"
+                  class="form-radio h-3 w-3"
+                  :value="'Apply VAT to this service item'"
                 />
-              </div>
-              <div class="w-full col-span-4">
-                <cornie-input
-                  :label="'Rack #'"
-                  v-model="storage.rack"
-                  placeholder="Enter"
-                />
-              </div>
-              <div class="w-full col-span-4">
-                <cornie-input
-                  placeholder="Enter"
-                  v-model="storage.bin"
-                  :label="'Bin'"
-                />
-              </div>
+                <span class="ml-2 noraml-text text-sm font-normal"
+                  >Apply VAT to this service item</span
+                >
+              </label>
+            </span>
+          </div>
+        </template>
+      </accordion-component>
+
+      <accordion-component
+        :title="'Inventory Information'"
+        :opened="false"
+        v-if="isInventoryItem"
+      >
+        <template v-slot:default>
+          <div class="w-full grid gap-4 grid-cols-3 mt-5 mb-3">
+            <cornie-input
+              v-model="inventory.itemCode"
+              :label="'Item Code'"
+              placeholder="--Autoloaded--"
+            />
+            <cornie-input
+              :disabled="true"
+              placeholder="--Autoloaded--"
+              :label="'Item Variant'"
+              v-model="inventory.itemVariant"
+            />
+            <cornie-select
+              :label="'Valuation Method'"
+              v-model="inventory.valuationMethod"
+              :items="['fifo', 'lifo', 'weighted-average']"
+              placeholder="--Select--"
+            />
+            <cornie-input
+              :disabled="true"
+              :label="'Opening Balance'"
+              v-model="inventory.openingBalance"
+              placeholder="--Autoloaded--"
+            />
+            <cornie-input
+              :label="'Reorder Level'"
+              v-model="inventory.reorderLevel"
+              placeholder="Enter"
+            />
+            <cornie-input
+              :label="'Batch No'"
+              v-model="inventory.batchNo"
+              placeholder="Enter"
+            />
+            <DatePicker :label="'Expiry Date'" v-model="inventory.expiryDate" />
+          </div>
+        </template>
+      </accordion-component>
+
+      <accordion-component
+        :title="'Storage Information'"
+        :opened="false"
+        v-if="isInventoryItem"
+      >
+        <template v-slot:default>
+          <div class="w-full grid grid-cols-12 gap-5 mt-5">
+            <div class="w-full col-span-4">
+              <cornie-select
+                :label="'Storage Condition'"
+                :items="['Excellent', 'Good', 'Fair', 'Bad']"
+                v-model="storage.condition"
+                placeholder="Enter"
+              />
             </div>
-          </template>
-        </accordion-component>
+            <div class="w-full col-span-4">
+              <cornie-select
+                :label="'Building'"
+                :items="locationsList"
+                v-model="storage.locationId"
+                placeholder="Enter"
+              />
+            </div>
+            <div class="w-full col-span-4">
+              <cornie-input
+                :label="'Room #'"
+                v-model="storage.room"
+                placeholder="Enter"
+              />
+            </div>
+          </div>
+          <div class="w-full grid grid-cols-12 gap-5 mt-5 mb-3">
+            <div class="w-full col-span-4">
+              <cornie-input
+                :label="'Shelf #'"
+                placeholder="Enter"
+                v-model="storage.shelf"
+              />
+            </div>
+            <div class="w-full col-span-4">
+              <cornie-input
+                :label="'Rack #'"
+                v-model="storage.rack"
+                placeholder="Enter"
+              />
+            </div>
+            <div class="w-full col-span-4">
+              <cornie-input
+                placeholder="Enter"
+                v-model="storage.bin"
+                :label="'Bin'"
+              />
+            </div>
+          </div>
+        </template>
+      </accordion-component>
 
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full m4-5">
@@ -651,11 +732,13 @@
       />
     </side-modal>
 
-     <stock-unit
-        v-model="showNewStock"
-        :returnedStock="stocksUnit"
-        @added-stockunit="stockAdded"
-      />
+    <stock-unit
+      v-model="showNewStock"
+      :returnedStock="salesUnit"
+      :salesUOMs="salesUOMs"
+      @added-stockunit="stockAdded"
+      :id="id"
+    />
   </div>
 </template>
 
@@ -668,6 +751,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Cornieradio from "@/views/dashboard/ehr/progressnotes/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
+import EditIcon from "@/components/icons/edit.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import DatePicker from "@/components/datepicker.vue";
 import Avatar from "@/components/avatar.vue";
@@ -717,6 +801,7 @@ const practiceform = namespace("practiceform");
     NewVariant,
     StockUnit,
     AutoComplete,
+    EditIcon,
   },
 })
 export default class NewProuct extends Vue {
@@ -724,7 +809,6 @@ export default class NewProuct extends Vue {
   id!: string;
 
   markups = [] as any;
-
 
   @location.State
   locations!: ILocation[];
@@ -744,8 +828,8 @@ export default class NewProuct extends Vue {
   @org.Action
   fetchOrgInfo!: () => Promise<void>;
 
-  @account.State
-  currentLocation!: string;
+  @account.Getter
+  authCurrentLocation!: string;
 
   @account.Getter
   cornieUser!: any;
@@ -767,8 +851,7 @@ export default class NewProuct extends Vue {
   fullInfo = [] as any;
   fullBrand = [] as any;
   fullStrength = [] as any;
-  fullPack  = [] as any;
-
+  fullPack = [] as any;
 
   Nafdac = "";
   form = "";
@@ -776,11 +859,11 @@ export default class NewProuct extends Vue {
   strength = "";
   type = "medication";
   genericName = "";
-  brandCode = "brandCode";
+  brandCode = "";
   description = "description";
   genericCode = "genericCode";
-  size = "size";
-  brand = "brand";
+  size = "";
+  brand = "";
   classification = "";
   subClassification = "";
   category = "";
@@ -802,7 +885,7 @@ export default class NewProuct extends Vue {
     rack: "",
     bin: "",
     condition: "",
-    shelf : ""
+    shelf: "",
   } as any;
   inventory = {
     itemCode: "",
@@ -816,17 +899,30 @@ export default class NewProuct extends Vue {
 
   inventoryUOM = {
     unitName: "",
-    itemQuantity: 0
+    itemQuantity: 0,
   } as any;
   purchaseUOM = {
-     unitName: "",
-    itemQuantity: 0
+    unitName: "",
+    itemQuantity: 0,
   } as any;
 
-  stocksUnit = {} as any;
-  salesUnit = [] as any;
+  stocksUnit = {
+    purchase: "",
+    quantity: "",
+    inventory: "",
+    itemInventory: "",
+    sales: "",
+    itemSales: "",
+  } as any;
+  salesUnit = {
+    purchase: "",
+    quantity: "",
+    inventory: "",
+    itemInventory: "",
+    sales: "",
+    itemSales: "",
+  } as any;
   purchaseType = "purchase";
-
 
   reqBody = {
     type: "medication",
@@ -838,20 +934,10 @@ export default class NewProuct extends Vue {
     form: "" as any,
   } as ICatalogueProduct;
 
-  salesUOMs = {} as any;
+  salesUOMs = [] as any;
 
-  suppliers = [
-    {
-      id: Math.random() * 1999 + Math.random() * 2999,
-      type: this.purchaseType,
-      unitCost: 0,
-      quantity: 0,
-      supplier: "",
-      default: false,
-      costPerItem: 0,
-      locationId: this.authLocation,
-    }
-  ] as any;
+
+  suppliers = [] as any;
 
   sales = [
     {
@@ -889,8 +975,8 @@ export default class NewProuct extends Vue {
   showNewStock = false;
   loading = false;
 
-  get authLocation(){
-    return this.currentLocation || "";
+  get authLocation() {
+    return this.authCurrentLocation;
   }
 
   get locationsList() {
@@ -907,7 +993,6 @@ export default class NewProuct extends Vue {
     return this.purchaseType;
   }
 
-
   deleteItem(id: any) {
     this.reqBody.variants = this.reqBody.variants.filter(
       (item: IProductVariant) => item.id !== id
@@ -916,130 +1001,210 @@ export default class NewProuct extends Vue {
 
   get totalAvailability() {
     let total = this.suppliers.reduce(
-      (acc:any, item: any) => (acc += +item.quantity),
+      (acc: any, item: any) => (acc += +item.quantity),
       0
     );
     return total;
+  }
+
+  get ItemPriceNGN() {
+    let total = 0;
+    for (let i = 0; i < this.salesUOMs.length; i++) {
+      total += (+this.weightedAverageCost + ((+this.salesUOMs[i].markup * +this.weightedAverageCost) / 100));
+    }
+
+    return total.toFixed(2);
+  }
+  get marginNGN() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total +=
+        +this.ItemPriceNGN - +this.weightedAverageCost;
+    }
+
+    return total.toFixed(2);
+  }
+
+  get marginPercent() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += (+this.marginNGN / +this.ItemPriceNGN) * 100;
+    }
+
+    return total.toFixed(2);
+  }
+   get ItemCostDiscounted() {
+    let total = 0;
+    for (let i = 0; i < this.salesUOMs.length; i++) {
+      total += +this.ItemPriceNGN - ((+this.salesUOMs[i].discountLimit * +this.ItemPriceNGN) / 100);
+    }
+
+    return total.toFixed(2);
+  }
+  get discountedMarginNGN() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += +this.ItemCostDiscounted - +this.weightedAverageCost;
+    }
+
+    return total.toFixed(2);
+  }
+  get discountedMarginPercent() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += (+this.discountedMarginNGN / +this.ItemCostDiscounted) * 100;
+    }
+
+    return total.toFixed(2);
   }
 
   get weightedAverageCost() {
     let total = 0;
     for (let i = 0; i < this.suppliers.length; i++) {
       total +=
-        (this.suppliers[i].quantity / this.totalAvailability) *
-        this.suppliers[i].costPerItem;
+        ((this.suppliers[i].quantity / this.totalAvailability) *
+          100 *
+          (this.suppliers[i].unitCost / this.stocksUnit?.quantity)) /
+        this.suppliers.length;
     }
 
     return total.toFixed(2);
   }
+  get costPerItem() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += (+this.suppliers[i].unitCost / +this.stocksUnit?.quantity)
+    }
 
-  get getSubClassify(){
-    if(this.classification == 'General Health'){
+    return total.toFixed(2);
+  }  
+  get totalAvailabiltyPercent(){
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += ((+this.suppliers[i].quantity / +this.totalAvailability) * 100)
+    }
+
+    return total.toFixed(2);
+  }          
+  get singleweightedAverageCost() {
+    let total = 0;
+    for (let i = 0; i < this.suppliers.length; i++) {
+      total += +this.costPerItem * +this.totalAvailabiltyPercent
+    }
+
+    return total.toFixed(2);
+  }
+ 
+
+ 
+
+  get getSubClassify() {
+    if (this.classification == "General Health") {
       return [
-        'Pain Relief',
-        'Cold & Cough',
-        'Malaria Care',
-        'Bone, Joint & Muscular Care',
-        'Eye Care',
-        'Ear Care',
-        'Hypertensive Care',
-        'Respiratory Care',
-        'Diabetic Care',
-        'Digestive Care',
-        'Cholesterol Care',
-        'Prostrate Health',
-        'STDs & Sexual Care',
-        'Piles, Fissures & Fistula',
-        'Mental Health',
-      ]
-    }else if (this.classification == 'Devices'){
+        "Pain Relief",
+        "Cold & Cough",
+        "Malaria Care",
+        "Bone, Joint & Muscular Care",
+        "Eye Care",
+        "Ear Care",
+        "Hypertensive Care",
+        "Respiratory Care",
+        "Diabetic Care",
+        "Digestive Care",
+        "Cholesterol Care",
+        "Prostrate Health",
+        "STDs & Sexual Care",
+        "Piles, Fissures & Fistula",
+        "Mental Health",
+      ];
+    } else if (this.classification == "Devices") {
       return [
-        'Masks (N95, Surgical and more)',
-        'Face Shield',
-        'Surgical Masks',
-        'N95 Masks',
-        'BP Monitors',
-        'Nebulizers & Vaporizers',
-        'Oximeters & Pedometers',
-        'Vital Signs Monitors & Wearables',
-        'Oxygen Concentrators & Cans',
-        'Weighing Scales',
-        'Thermometers',
-        'IR Thermometers',
-        'Body Massager',
-       ' Diabetes Monitors',
-        'Test Strips & Lancets',
-        'Syringes & Pens',
-        'Mobility Equipments',
-        'Exercise Equipments',
-        'Practice',
-       'Stethoscopes',
-        'Tapes & Bandages',
-        'Clinical Diagnostic Equipments',
-        'Dressings & Wound Care',
-        'Supports & Braces',
-        'Neck & Shoulder Support',
-        'Knee & Leg Support',
-        'Back & Abdomen Support',
-        'Ankle & Foot Support',
-        'Hand & Wrist Braces',
-        'Arm & Elbow Support',
-        'Cervical Pillows',
-        'Compression support & sleeves',
-        'Heel support',
-      ]
-    }else if (this.classification == 'Sexual Wellness'){
+        "Masks (N95, Surgical and more)",
+        "Face Shield",
+        "Surgical Masks",
+        "N95 Masks",
+        "BP Monitors",
+        "Nebulizers & Vaporizers",
+        "Oximeters & Pedometers",
+        "Vital Signs Monitors & Wearables",
+        "Oxygen Concentrators & Cans",
+        "Weighing Scales",
+        "Thermometers",
+        "IR Thermometers",
+        "Body Massager",
+        " Diabetes Monitors",
+        "Test Strips & Lancets",
+        "Syringes & Pens",
+        "Mobility Equipments",
+        "Exercise Equipments",
+        "Practice",
+        "Stethoscopes",
+        "Tapes & Bandages",
+        "Clinical Diagnostic Equipments",
+        "Dressings & Wound Care",
+        "Supports & Braces",
+        "Neck & Shoulder Support",
+        "Knee & Leg Support",
+        "Back & Abdomen Support",
+        "Ankle & Foot Support",
+        "Hand & Wrist Braces",
+        "Arm & Elbow Support",
+        "Cervical Pillows",
+        "Compression support & sleeves",
+        "Heel support",
+      ];
+    } else if (this.classification == "Sexual Wellness") {
       return [
-          'Family Planning & Condoms',
-          'Lubricants & Massage Gels',
-          'Men Performance Enhancers',
-          'Erectile Dysfunction',
-          'Fertility Support',
-          'Sex Toys',
-          'Sexual Health Supplements',
-          'Tests & Diagnostics',
-      ]
-    } else if (this.classification == 'Personal Care'){
+        "Family Planning & Condoms",
+        "Lubricants & Massage Gels",
+        "Men Performance Enhancers",
+        "Erectile Dysfunction",
+        "Fertility Support",
+        "Sex Toys",
+        "Sexual Health Supplements",
+        "Tests & Diagnostics",
+      ];
+    } else if (this.classification == "Personal Care") {
       return [
-        'Skin Care',
-        'Hair Care',
-        'Oral Care',
-        'Baby Care',
-        'Elderly Care',
-        'Women Care',
-        'Men Care',
-        'Family Care',
-      ]
-    }else if (this.classification == 'Nutrition, Fitness & Supplements'){
+        "Skin Care",
+        "Hair Care",
+        "Oral Care",
+        "Baby Care",
+        "Elderly Care",
+        "Women Care",
+        "Men Care",
+        "Family Care",
+      ];
+    } else if (this.classification == "Nutrition, Fitness & Supplements") {
       return [
-        'Vitamins & Mineral Supplements',
-        'Protein Supplements',
-        'Omega & Fish Oil',
-        'Pregnancy & Breastfeeding',
-        'Immunity Boosters',
-        'Sleep Aid',
-        'Weight Management',
-        'Specialty Supplements',
-        'Nutritional Drinks',
-        'Other Health Food & Drinks',
-      ]
-    }else {
-      return[
-        'Pain Relief',
-        'Cold & Cough',
-        'Malaria Care',
-        'Bone, Joint & Muscular Care',
-        'Eye Care',
-        'Ear Care',
-        'Hypertensive Care',
-        'Respiratory Care',
-        'Diabetic Care',
-        'Digestive Care',
-        'Cholesterol Care',
-        'Prostrate Health',
-        'STDs & Sexual Care',
-        'Piles, Fissures & Fistula',
-        'Mental Health',
+        "Vitamins & Mineral Supplements",
+        "Protein Supplements",
+        "Omega & Fish Oil",
+        "Pregnancy & Breastfeeding",
+        "Immunity Boosters",
+        "Sleep Aid",
+        "Weight Management",
+        "Specialty Supplements",
+        "Nutritional Drinks",
+        "Other Health Food & Drinks",
+      ];
+    } else {
+      return [
+        "Pain Relief",
+        "Cold & Cough",
+        "Malaria Care",
+        "Bone, Joint & Muscular Care",
+        "Eye Care",
+        "Ear Care",
+        "Hypertensive Care",
+        "Respiratory Care",
+        "Diabetic Care",
+        "Digestive Care",
+        "Cholesterol Care",
+        "Prostrate Health",
+        "STDs & Sexual Care",
+        "Piles, Fissures & Fistula",
+        "Mental Health",
       ] as any[];
     }
   }
@@ -1060,21 +1225,36 @@ export default class NewProuct extends Vue {
     this.reqBody.variants?.push(variant);
   }
 
-  stockAdded(stock: any) {
+  stockAdded(stock: any,  salesstock: any) {
     this.stocksUnit = stock;
-    this.salesUnit.push(stock);
-    this.salesUOMs = 
-      {
-      unitName: stock.sales,
-      itemQuantity: stock.itemSales,
-      markup: 0,
-      discountLimit: 0
-    };
+    this.purchaseUOM.unitName = stock.purchase;
+    this.purchaseUOM.itemQuantity = stock.quantity;
     this.inventoryUOM.unitName = stock.inventory;
     this.inventoryUOM.itemQuantity = stock.itemInventory;
-    this.purchaseUOM.unitName = stock.purchase;
-    this.purchaseUOM.itemQuantity = stock.quantity; 
 
+
+    this.salesUnit = {
+      purchase: this.purchaseUOM.unitName,
+      quantity: this.purchaseUOM.itemQuantity,
+      inventory: this.inventoryUOM.unitName,
+      itemInventory: this.inventoryUOM.itemQuantity,
+      sales: this.stocksUnit.sales,
+      itemSales: this.stocksUnit.itemSales,
+    };
+    if (this.suppliers.length === 0) {
+      this.suppliers.push({
+        id: Math.random() * 1999 + Math.random() * 2999,
+        type: this.purchaseType,
+        unitCost: 0,
+        quantity: 0,
+        supplier: "",
+        default: false,
+        costPerItem: 0,
+        locationId: this.authLocation,
+      });
+    }
+    this.salesUOMs = salesstock;
+   
     // this.suppliers.push(
     //   {
     //   id: Math.random() * 1999 + Math.random() * 2999,
@@ -1087,17 +1267,26 @@ export default class NewProuct extends Vue {
     //   locationId: this.authLocation,
     // })
   }
+  
+  get aBrandName(){
+    const pt = this.allName.find((i: any) => i.code === this.dataCode);
+    return pt ? `${pt.display}` : "";
+  }
+  get aBrandCode(){
+    const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
+    return pt ? `${pt.name}` : "";
+  }
 
   @Watch("id")
   idChanged() {
     this.setProducts();
   }
-   async setProducts() {
+  async setProducts() {
     const product = await this.getProductsById(this.id);
     if (!product) return;
     this.img.url = product.image;
     this.category = product.category;
-    this.genericCode = product.genericCode;
+    this.dataCode = product.brand;
     this.dataCode = product.genericName;
     this.dataForm = product.form;
     this.dataBrand = product.brandCode;
@@ -1121,37 +1310,58 @@ export default class NewProuct extends Vue {
     this.inventory = product.inventory;
     this.storage = product.storage;
     this.Nafdac = product.regNo;
+    this.salesUOMs = product.salesUOMs;
+   this.strength = product.strength;
+   this.salesUnit.purchase = product.purchaseUOM.unitName;
+    this.salesUnit.quantity = product.purchaseUOM.itemQuantity;
+   this.salesUnit.inventory = product.inventoryUOM.unitName;
+    this.salesUnit.itemInventory = product.inventoryUOM.unitName;
+   // this.salesUnit.sales = product.purchaseUOM.unitName;
+   //this.salesUnit.purchase = product.purchaseUOM.unitName;
 
+   this.stocksUnit.purchase = product.purchaseUOM.unitName;
+    this.stocksUnit.quantity = product.purchaseUOM.itemQuantity;
+   this.stocksUnit.inventory = product.inventoryUOM.unitName;
+    this.stocksUnit.itemInventory = product.inventoryUOM.unitName;
+  //  this.stocksUnit.sales = product.purchaseUOM.unitName;
+  // this.stocksUnit.purchase = product.purchaseUOM.unitName;
+
+
+   
   }
 
-    get payload() {
-        return {
-           genericCode: this.genericCode,
-            brandCode: this.brandCode,
-            form: this.allGenericForm,
-            classification: this.classification,
-            subClassification: this.subClassification,
-            applyDiscount: this.applyDiscount,
-            type: this.type,
-            category: this.category,
-            genericName: this.allGenericName,
-            status: this.status,
-            brand: this.brand,
-            ingredient: this.ingredient,
-            ingredientStatus: this.ingredientStatus,
-            description: this.description,
-            size: this.size,
-            inventoryUOM: this.inventoryUOM,
-            purchaseUOM: this.purchaseUOM,
-            salesUOMs: this.salesUOMs,
-            costInformation: this.suppliers,
-            applyVAT: this.applyVAT,
-            inventory: this.inventory,
-            storage: this.storage,
-            regNo: this.Nafdac
-        };
-   }
-   async apply() {
+  get payload() {
+    return {
+      genericCode: this.aBrandCode,
+      brandCode: this.aBrandCode,
+      form: this.allGenericForm,
+      classification: this.classification,
+      subClassification: this.subClassification,
+      applyDiscount: this.applyDiscount,
+      type: this.type,
+      category: this.category,
+      genericName: this.aBrandName,
+      status: this.status,
+      brand: this.aBrandCode,
+      ingredient: this.ingredient,
+      ingredientStatus: this.ingredientStatus,
+      description: this.description,
+      size: this.size,
+      inventoryUOM: this.inventoryUOM,
+      purchaseUOM: this.purchaseUOM,
+      salesUOMs: this.salesUOMs,
+      costInformation: this.suppliers,
+      applyVAT: this.applyVAT,
+      inventory: this.inventory,
+      storage: this.storage,
+      regNo: this.Nafdac,
+      strength: this.strength,
+
+
+      
+    };
+  }
+  async apply() {
     this.loading = true;
     if (this.id) await this.updateProduct();
     else await this.createProductInventory();
@@ -1168,9 +1378,9 @@ export default class NewProuct extends Vue {
           msg: "Catalogue product created",
           status: "success",
         });
-         this.$router.go(-1);
+        this.$router.go(-1);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       window.notify({
         msg: error.response.data.message,
         status: "error",
@@ -1186,14 +1396,12 @@ export default class NewProuct extends Vue {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({ msg: "Catalogue product  updated", status: "success" });
-       this.$router.go(-1);
+        this.$router.go(-1);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
-
-
 
   async onSave() {
     try {
@@ -1201,7 +1409,7 @@ export default class NewProuct extends Vue {
       if (this.img?.url) {
         this.reqBody.image = this.img.url;
       }
-      this.reqBody.costInformation = this.suppliers.map((i:any) => {
+      this.reqBody.costInformation = this.suppliers.map((i: any) => {
         i.type = this.purchaseType;
         return i;
       });
@@ -1334,28 +1542,28 @@ export default class NewProuct extends Vue {
     }
   }
 
-   get allName() {
-        if (!this.searchresult || this.searchresult.length === 0) return [];
-        return this.searchresult.map((i: any) => {
-        return {
-            code: i.id,
-            value: i.id,
-            display: i.name,
-        };
-        });
-    }
+  get allName() {
+    if (!this.searchresult || this.searchresult.length === 0) return [];
+    return this.searchresult.map((i: any) => {
+      return {
+        code: i.id,
+        value: i.id,
+        display: i.name,
+      };
+    });
+  }
 
-    get allBrand(){
-       if (!this.fullInfo || this.fullInfo.length === 0) return [];
-        return this.fullInfo.map((i: any) => {
-        return {
-            code: i.id,
-            value: i.id,
-            display: i.name,
-        };
-        });
-    }
- 
+  get allBrand() {
+    if (!this.fullInfo || this.fullInfo.length === 0) return [];
+    return this.fullInfo.map((i: any) => {
+      return {
+        code: i.id,
+        value: i.id,
+        display: i.name,
+      };
+    });
+  }
+
   get allForms() {
     if (!this.fullBrand || this.fullBrand.length === 0) return [];
     return this.fullInfo.map((i: any) => {
@@ -1366,68 +1574,64 @@ export default class NewProuct extends Vue {
       };
     });
   }
- 
 
-    async searchData(event:any){
-        const AllNotes = cornieClient().get(
-        `/api/v1/emdex/generic-by-keyword/`,
-        {
-            keyword : event.target.value,
-        }
-        );
-        const response = await Promise.all([AllNotes]);
-        if(response[0].data === 0){
-            this.searchresult = 'No medication code found'
-        }else{
-
-            this.searchresult = response[0].data;
-        }
+  async searchData(event: any) {
+    const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
+      keyword: event.target.value,
+    });
+    const response = await Promise.all([AllNotes]);
+    if (response[0].data === 0) {
+      this.searchresult = "No medication code found";
+    } else {
+      this.searchresult = response[0].data;
+    }
   }
 
-   async resultData(id:any){
-        const AllNotes = cornieClient().get(
-        `/api/v1/emdex/generic-brands/${id}`,
-        );
-        const response = await Promise.all([AllNotes]);
-        if(response[0].data === 0){
-            this.fullInfo = 'No medication code found'
-        }else{
-
-            this.fullInfo = response[0].data;
-        }
+  async resultData(id: any) {
+    const AllNotes = cornieClient().get(`/api/v1/emdex/generic-brands/${id}`);
+    const response = await Promise.all([AllNotes]);
+    if (response[0].data === 0) {
+      this.fullInfo = "No medication code found";
+    } else {
+      this.fullInfo = response[0].data;
+    }
   }
 
-  get allGenericName(){
-      const pt = this.fullInfo.find((i: any) => i.genericId === this.dataCode);
-      return this.genericName = pt ? pt.name : "";
+  get allGenericName() {
+    const pt = this.fullInfo.find((i: any) => i.genericId === this.dataCode);
+    return (this.genericName = pt ? pt.name : "");
   }
-  get allGenericCode(){
-      const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
-      return this.genericCode = pt ? pt.name : "";
+  get allGenericCode() {
+    const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
+    return (this.genericCode = pt ? pt.name : "");
   }
-  get allGenericForm(){
-      const pt = this.fullInfo.find((i: any) => i.id === this.dataForm);
-      return this.form = pt ? pt.form : "";
-  }
-  async resultBrand(id:any){
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-      return this.fullBrand = pt ? pt.form : {};
-  }
-  async resultPack(id:any){
-    console.log(id,"NAFADAC dataCode");
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-       this.resultStrength(id);
-      return this.pack = pt ? `${pt?.pack}` : "Pack not available";
+  get allGenericForm() {
+    const pt = this.fullInfo.find((i: any) => i.id === this.dataForm);
+    return (this.form = pt ? pt.form : "");
   }
 
-  async resultStrength(id:any){
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-      this.resultNadac(id);
-      return this.strength = pt ? `${pt?.strength}` : "Strength not available";
+
+  async resultBrand(id: any) {
+    const pt = this.fullInfo.find((i: any) => i.id === id);
+    return (this.fullBrand = pt ? pt.form : {});
   }
-  async resultNadac(id:any){
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-      return this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available";
+  async resultPack(id: any) {
+    console.log(id, "NAFADAC dataCode");
+    const pt = this.fullInfo.find((i: any) => i.id === id);
+    this.resultStrength(id);
+    this.size = pt.pack;
+    return (this.pack = pt  ? `${pt?.pack}` : "Pack not available");
+  }
+
+  async resultStrength(id: any) {
+    const pt = this.fullInfo.find((i: any) => i.id === id);
+    this.resultNadac(id);
+
+    return (this.strength = pt ? `${pt?.strength}` : "Strength not available");
+  }
+  async resultNadac(id: any) {
+    const pt = this.fullInfo.find((i: any) => i.id === id);
+    return (this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available");
   }
 
   async created() {

@@ -1,29 +1,17 @@
 <template>
-    <cornie-table v-model="items" :columns="headers">
-        <template #name="{ item }">
-            <div class="text-no-wrap flex items-center uppercase text-xs" style="white-space: nowrap">
-              <Avatar :src="item.image" />
-              <span class="ml-2">{{ item.name }}</span>
-            </div>
-        </template>
-        <template #itemCode-header>
-            <div class="text-no-wrap flex uppercase text-xs" style="white-space: nowrap"
-            >
-            Item Code
-            </div>
-        </template>
+ <!-- <div class="flex justify-center space-x-6 w-full -mb-10 cursor-pointer relative">
+        <span class="text-danger font-semibold cursor-pointer" @click="showWithdrawalInstructionModal" v-if="isCheck">
+          Withdrawal Instruction
+        </span>
+  </div> -->
+    <cornie-table v-model="items" :columns="headers"  @selectedItem="selectedItem">
         <template #status="{ item }">
-            <div class="text-no-wrap">
-            <span
-                class="status p-1"
-                :class="{
-                active: item.status === 'active',
-                inactive: item.status === 'inactive',
-                }"
-            >
-                {{ item.status }}</span
-            >
-            </div>
+          <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
+             Active
+          </span>
+           <span class="bg-red-100 text-red-600 rounded-lg p-2 text-xs" v-if="item.status == 'inactive'">
+             Inactive
+          </span>
         </template>
         <template #availability="{ item }">
             <div class="text-no-wrap">
@@ -41,15 +29,15 @@
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
             <check-icon class="text-blue-700 fill-current" />
             <span class="ml-3 text-xs">Check Availability</span>
             </div>
-            <div  class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div  class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStorageModal(item)">
                 <update-icon class="text-green-500 fill-current" />
                 <span class="ml-3 text-xs">Storage Info</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAllocateModal(item)">
                 <check-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Allocate Stock</span>
             </div>
@@ -65,12 +53,45 @@
                 <analytics-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Analytics</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivate = true">
                 <deactivate-icon class="text-primary fill-current" />
                 <span class="ml-3 text-xs">Deactivate</span>
             </div>
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showWithdrawalInstructionModal(item)">
+                <withdraw-icon class="text-blue-700 fill-current" />
+                <span class="ml-3 text-xs">Withdraw Instruction</span>
+            </div>
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showWithdrawItemOnly(item)">
+                <withdraw-icon class="text-blue-700 fill-current" />
+                <span class="ml-3 text-xs">Withdraw Item</span>
+            </div>
+        </template>
+        <template #bulkactions>
+             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showAllocateBulk = true">
+                <check-icon class="text-blue-700 fill-current" />
+                <span class="ml-3 text-xs">Allocate Stock</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <check-icon class="text-yelllow-700 fill-current" />
+                <span class="ml-3 text-xs">Material Request</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <check-icon class="text-purple-700 fill-current" />
+                <span class="ml-3 text-xs">Material Return</span>
+            </div>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <check-icon class="text-green-700 fill-current" />
+                <span class="ml-3 text-xs">Waybill</span>
+            </div>
         </template>
         </cornie-table>
+        <storage-modal v-model="showStorage" @stockAdded="stockAdded" :item="storageItem"/>
+        <allocate-modal v-model="showAllocate" @stockAdded="stockAdded" :item="singleAllocateItem"/>
+        <allocate-bulk-modal v-model="showAllocateBulk" @stockAdded="stockAdded" :item="BulkSelectedItem"/>
+        <deactivate-modal v-model="showDeactivate"/>
+        <availability-modal v-model="showAvailable"/>
+        <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
+        <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -78,7 +99,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IInventroyStock from "@/types/IInventroyStock";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -98,14 +119,23 @@ import NewTab from "@/components/newtab.vue";
 import RequestIcon from "../icons/request.vue";
 import ReturnIcon from "../icons/return.vue";
 import AnalyticsIcon from "../icons/analytics.vue";
-
-
 import CategoryIcon from "../icons/category.vue";
 import ItemsIcon from "../icons/items.vue";
 import ValueIcon from "../icons/value.vue";
-const location = namespace("location");
+import WithdrawIcon from "../icons/withdraw.vue";
 
-const catalogue = namespace("catalogues");
+import StorageModal from "../components/storageinfoModal.vue";
+import AllocateModal from "../components/AllocateModal.vue";
+import AllocateBulkModal from "../components/AllocatebulkModal.vue";
+import DeactivateModal from "../components/Deactivate.vue";
+import AvailabilityModal from "../components/availableModal.vue";
+import WithdrawnInstructionModal from "../components/withdrawalInstrcution.vue";
+import WithdrawItemModal from "../components/withdrawItemModal.vue";
+
+
+const location = namespace("location");
+const inventorystock = namespace("inventorystock");
+const user = namespace("user");
 
 @Options({
   name: "totalExistingState",
@@ -129,20 +159,27 @@ const catalogue = namespace("catalogues");
     ReturnIcon,
     AnalyticsIcon,
     NewTab,
+    StorageModal,
+    AllocateModal,
+    DeactivateModal,
+    AvailabilityModal,
+    AllocateBulkModal,
+    WithdrawnInstructionModal,
+    WithdrawItemModal,
+    WithdrawIcon
   },
+  
 })
 export default class totalExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
+  @inventorystock.State
+  inventorystocks!: IInventroyStock[];
 
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @inventorystock.Action
+  fetchInventorystocks!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -156,6 +193,19 @@ export default class totalExistingState extends Vue {
   cdm = 0;
   selected = [] as any;
   isCheckAll = false;
+  showStorage = false;
+  showAllocate = false;
+  showDeactivate = false;
+  showAvailable = false;
+  showAllocateBulk = false;
+  withdrawInstruction = false;
+  withdrawItemOnly = false;
+  singleAllocateItem = [];
+  BulkSelectedItem = [] as any;
+
+  isCheck = false;
+  withdrawItem = {} as any;
+  storageItem = {} as any;
 
  tabLinks = [
     "Total",
@@ -170,63 +220,63 @@ export default class totalExistingState extends Vue {
   headers = [
     {
       title: "item code",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "item name",
       key: "code",
       show: true,
     },
     {
+      title: "item name",
+      key: "name",
+      show: true,
+    },
+    {
       title: "brand",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "form",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "strength",
       key: "brand",
       show: true,
     },
     {
-      title: "pack size",
-      key: "sales",
+      title: "form",
+      key: "form",
       show: true,
     },
     {
+      title: "strength",
+      key: "strength",
+      show: false,
+    },
+    {
+      title: "pack size",
+      key: "false",
+      show: false,
+    },
+    {
       title: "uofm",
-      key: "cdm",
+      key: "uom",
       show: true,
     },
     {
       title: "opening",
-      key: "discount",
+      key: "opening",
       show: true,
     },
     {
       title: "issued",
-      key: "lastUpdated",
-      show: false,
+      key: "issued",
+      show: true,
     },
        {
       title: "added",
-      key: "lastUpdated",
-      show: false,
+      key: "added",
+      show: true,
     },
      {
       title: "balance",
-      key: "lastUpdated",
+      key: "balance",
       show: false,
     },
      {
       title: "total value (N)",
-      key: "lastUpdated",
-      show: false,
+      key: "unitPrice",
+      show: true,
     },
     {
       title: "Status",
@@ -235,30 +285,19 @@ export default class totalExistingState extends Vue {
     },
   
   ];
-
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
-  }
-
+  
   get items() {
-    const products = this.products.map((product: any) => {
+     const filterItem = this.inventorystocks.filter((c) => c.category == 'pharmacy')
+    const inventorystocks = filterItem.map((inventorystock: any) => {
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
+        ...inventorystock,
+        unitPrice:'₦' +(+inventorystock.unitPrice).toFixed(2)
+     
       };
     });
 
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+    if (!this.query) return inventorystocks;
+    return search.searchObjectArray(inventorystocks, this.query);
   }
 
   getsales(value: any, id: string) {
@@ -281,10 +320,28 @@ export default class totalExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  productAdded() {
-    this.getProducts();
+ async stockAdded() {
+    if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
   }
 
+  showStorageModal(value:any){
+    this.showStorage= true;
+    this.storageItem = value;
+  }
+
+  showAllocateModal(value:any){
+    this.showAllocate = true;
+    this.singleAllocateItem = value;
+  }
+
+  showWithdrawalInstructionModal(value:any){
+    this.withdrawInstruction = true
+    this.withdrawItem = value;
+  }
+  showWithdrawItemOnly(value:any){
+    this.withdrawItemOnly = true;
+     this.withdrawItem = value;
+  }
   checkAll() {
       console.log('Hello World');
         let index: string;
@@ -296,6 +353,11 @@ export default class totalExistingState extends Vue {
         }
   }
 
+  selectedItem(value:any, valueindex:number){
+     this.BulkSelectedItem = [...value];
+  }
+ 
+
   get allLocations() {
     if (!this.locations || this.locations.length === 0) return [];
     return this.locations.map((i: any) => {
@@ -305,21 +367,13 @@ export default class totalExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
-  }
 
+  
   async created() {
-    await this.getProducts();
+    if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
     await this.fetchLocations();
   }
+  
 }
 </script>

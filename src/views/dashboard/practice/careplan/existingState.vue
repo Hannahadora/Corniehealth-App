@@ -1,27 +1,10 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full">
-      <button
-        class="
-          bg-danger
-          rounded-md
-          text-white
-          mt-5
-          py-3
-          text-sm
-          px-4
-          focus:outline-none
-          hover:opacity-90
-        "
-        @click="showNewModal = true"
-      >
-        New Care Plan
-      </button>
-    </span>
     <cornie-table
       v-model="items"
       :columns="headers"
       @filter="filterAdvanced = true"
+      :menushow="true"
     >
       <template #title-header>
         <div
@@ -157,7 +140,7 @@ export default class ExistingState extends Vue {
   getCarePlans!: () => Promise<void>;
 
   @careplan.State
-  orgCarePlans!: ICarePlan[];
+  careplans!: ICarePlan[];
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -214,7 +197,7 @@ export default class ExistingState extends Vue {
   query = "";
 
   get items() {
-    let careplans = this.orgCarePlans.map((careplan: any) => {
+    let careplans = this.careplans.map((careplan: any) => {
       (careplan as any).startDate = new Date(
         (careplan as any).startDate
       ).toLocaleDateString("en-US");

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 w-full overflow-auto">
+  <div class="p-3 w-full overflow-auto bg-white rounded-lg">
     <router-view />
   </div>
 </template>

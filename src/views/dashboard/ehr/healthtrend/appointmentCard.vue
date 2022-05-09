@@ -10,7 +10,7 @@
     title="Upcoming Appointment"
   >
     <template #empty>
-      <div class="p-8" v-if="patientappointments.length === 0">
+      <div class="p-8" v-if="patientappointments?.length === 0">
         <noappoint-icon class="flex mt-2 justify-center w-full text-center" />
         <p class="mt-4 text-sm text-gray-500 text-center pb-5">
           Patient have no appoinntment saved. <br />
@@ -83,7 +83,7 @@
                         <span class="rounded-full">
                           <more-actors
                             :items="input.practitioner"
-                            v-if="input.practitioner.length > 1"
+                            v-if="input.practitioner?.length > 1"
                           />
                           <Actors :items="input.practitioner" v-else />
                         </span>
@@ -108,7 +108,7 @@
                   </td>
                   <td
                     class="px-1 py-1 whitespace-nowrap text-sm text-black"
-                    v-if="input.Location.length > 0"
+                    v-if="input.Location?.length > 0"
                   >
                     {{ input.location }}
                   </td>
@@ -194,7 +194,7 @@ export default class AppointmentCard extends Vue {
   // return this.patientappointments.slice(0, 3)
   // }
   get total() {
-    return this.sortAppointments.length;
+    return this.sortAppointments?.length;
   }
   get sortAppointments() {
     return this.items.slice().sort(function (a, b) {
@@ -204,7 +204,7 @@ export default class AppointmentCard extends Vue {
   get items() {
     const filteritems = this.patientappointments.filter((c) => c !== null);
     const newappointment = filteritems.slice(0, 3);
-    const patientappointments = newappointment.map(
+    const patientappointments = newappointment?.map(
       (patientappointment: any) => {
         (patientappointment as any).createdAt = new Date(
           (patientappointment as any).createdAt
@@ -221,18 +221,18 @@ export default class AppointmentCard extends Vue {
           patientappointment?.Location?.length +
           patientappointment?.HealthCare?.length;
 
-        const pateintId = patientappointment.Patients.map((patient: any) => {
+        const pateintId = patientappointment.Patients?.map((patient: any) => {
           this.onePatientId = patient.patientId;
         });
-        const onelocationId = patientappointment.Location.map(
+        const onelocationId = patientappointment?.Location?.map(
           (location: any) => {
             this.locationId = location.id;
           }
         );
-        const practitionerId = patientappointment.Practitioners.map(
+        const practitionerId = patientappointment?.Practitioners?.map(
           (Practitioner: any) => {
-            this.onePractitionerId = Practitioner.practitionerId;
-            this.availablepractioner = Practitioner.practitioner;
+            this.onePractitionerId = Practitioner?.practitionerId;
+            this.availablepractioner = Practitioner?.practitioner;
           }
         );
         const patientNewId = this.onePatientId;
@@ -272,7 +272,7 @@ export default class AppointmentCard extends Vue {
   }
   async created() {
     await this.fetchByIdAppointments(this.$route.params.id.toString());
-    await this.getSlot();
+   if(this.onePractitionerId) await this.getSlot();
   }
 }
 </script>

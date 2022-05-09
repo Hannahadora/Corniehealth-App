@@ -451,12 +451,14 @@ export default class careTeamModal extends Vue {
   }
 
   async createCareteam() {
+      const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
     this.payload.period.start = new Date(
       this.payload.period.start
     ).toISOString();
     this.payload.period.end = new Date(this.payload.period.end).toISOString();
-     const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
+   
     try {
       const response = await cornieClient().post(
         "/api/v1/care-teams",

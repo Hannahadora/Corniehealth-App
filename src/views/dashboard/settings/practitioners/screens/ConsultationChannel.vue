@@ -1,9 +1,9 @@
 <template>
-  <screen-header :properties="properties"> Consultation Channel </screen-header>
+  <screen-header :properties="properties"> Visit Type </screen-header>
   <div v-if="properties">
     <div class="grid grid-cols-4 gap-1">
       <div class="flex flex-col">
-        <h1 class="text-gray-400 mb-1 text-sm">Consultation Channel</h1>
+        <h1 class="text-gray-400 mb-1 text-sm">Visit Type</h1>
         <h1 class="text-sm">{{ properties.consultationChannel }}</h1>
       </div>
     </div>

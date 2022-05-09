@@ -151,7 +151,7 @@ export default class CarePartnersExistingState extends Vue {
   delete!: (partner: ICarePartner) => Promise<boolean>;
 
  @CarePartnersStore.Action
-  get!: () => Promise<void>;
+  fetchCarePartners!: () => Promise<void>;
 
   headers = [
     {
@@ -238,11 +238,11 @@ export default class CarePartnersExistingState extends Vue {
     else notify({ msg: "Care partner not deleted", status: "error" });
   }
   async addPartner(){
-      await this.get();
+      await this.fetchCarePartners();
   }
 
   async created(){
-    await this.get();
+    await this.fetchCarePartners();
   }
 }
 </script>

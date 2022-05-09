@@ -33,6 +33,25 @@ export const PracticeRoutes: RouteRecordRaw = {
       name: "Care Teams",
       component: () => import("@/views/dashboard/practice/careteam/index.vue"),
     },
+    {
+      path: "newservice/:id?",
+      name: "New Service",
+      props: true,
+      component: () =>
+        import(
+          "@/views/dashboard/practice/cdm/components/new-service.vue"
+        ),
+    },
+    {
+      path: "newproduct/:id?",
+      name: "New Product",
+      props: true,
+      component: () =>
+        import(
+          "@/views/dashboard/practice/cdm/components/new-products.vue"
+        ),
+    },
+    
     
   ],
 };
