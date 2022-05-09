@@ -19,6 +19,7 @@ import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
+import inventorySettings from "./inventory"
 
 import CalenderStore from "./calendar";
 import PrefrenceStore from "./prefrence";
@@ -93,6 +94,7 @@ export default createStore({
     diagnostic: DiagnostocStore,
 
     usersettings: UserSettingsStore,
+    inventorysettings: inventorySettings,
     schedules: ScheduleStore,
     visits: VisitsStore,
     patients: PatientStore,
@@ -107,8 +109,9 @@ export default createStore({
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
+
     markup:MarkupStore,
-    inventorystock:InventoryStockStore, 
+    inventorystock:InventoryStockStore,
 
     appointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,

@@ -18,19 +18,32 @@
         <v-form ref="form">
           <div class="flex flex-col space-y-4">
             <div>
-              <cornie-input label="Name" placeholder="--Enter--" class="w-full" :modelValue="name" />
+              <cornie-input label="Name" placeholder="--Enter--" class="w-full" v-model="Cname" />
             </div>
             <div>
-              <cornie-input label="Description" placeholder="--Enter--" class="w-full" :modelValue="description" />
+              <cornie-input label="Description" placeholder="--Enter--" class="w-full" v-model="Cdescription" />
             </div>
-            <div>
-              <cornie-select class="required" :rules="required" :items="[
-                'Inpatient',
-                'Outpatient',
-                'Community',
-                'Discharge',
-              ]" label="Assign to Other Location(s) (optional)" v-model="location" placeholder="--Select--">
-              </cornie-select>
+            <div class="flex flex-col space-y-2">
+              <div class="flex capitalize items-center mb-1 text-black text-sm font-semibold">Assign to Other
+                Location(s) (optional)</div>
+              <Multiselect label="Assign to Other Location(s) (optional)" v-model="Clocation" mode="tags"
+                :hide-selected="true" :options="allLocationNames" placeholder="--Select--" class="w-full">
+                <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                  <div class="multiselect-tag is-user">
+                    {{ option.label }}
+                    <span v-if="!disabled" class="multiselect-tag-remove"
+                      @mousedown.prevent="handleTagRemove(option, $event)">
+                      <span class="multiselect-tag-remove-icon"></span>
+                    </span>
+                  </div>
+                </template>
+                <template v-slot:option="{ option }">
+                  <span class="w-full text-sm">{{ option.label }}</span>
+                </template>
+              </Multiselect>
+              <!-- <cornie-select class="required" :rules="required" :items="allLocationNames"
+                label="Assign to Other Location(s) (optional)" v-model="Clocation" placeholder="--Select--">
+              </cornie-select> -->
             </div>
           </div>
         </v-form>
@@ -63,6 +76,14 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
+import { namespace } from "vuex-class";
+import ILocation from "@/types/ILocation";
+import Multiselect from "@vueform/multiselect";
+import ICategory from "@/types/ICategory";
+
+
+const location = namespace("location");
+const inventory = namespace('inventorysettings')
 
 @Options({
   name: "Inventory Modal",
@@ -74,6 +95,8 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
     CornieIconBtn,
     ArrowLeftIcon,
     CancelIcon,
+    Multiselect,
+
   }
 })
 
@@ -81,20 +104,78 @@ export default class InventoryModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: Object, default: undefined })
+  selectedId!: string;
 
-  name = ''
-  description = ''
-  location = ''
+
+  Cname = ''
+  Cdescription = ''
+  Clocation: any = []
   required = string().required();
   loading = false
 
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  @inventory.Action
+  createCategory!: (data: any) => Promise<void>
+
+  @inventory.State
+  categories!: ICategory[]
+
+  @Watch('selectedId', { immediate: true })
+  setItems() {
+    if (!this.selectedId || this.selectedId == '') {
+      return
+    }
+    let data = this.getCategoryDetails(this.selectedId)
+    this.Cname = data.name
+    this.Cdescription = data.description
+    this.Clocation = data.locations
+
+  }
+
+  getCategoryDetails(id: string) {
+    return this.categories.filter(x => x.id == id)[0]
+  }
+
+  // @inventory.State
+  // categories!: any
+
   async submit() {
     this.loading = true;
-    // if (this.id) await this.updateRequest();
-    // else await this.createRequest();
-    // this.loading = false;
-    console.log('submit')
+
+    await this.createCategory({
+      name: this.Cname,
+      description: this.Cdescription,
+      locations: this.Clocation
+    }).then(() => {
+      console.log("fdcxcx")
+    }).catch((e) => {
+      console.log("error cat", e)
+    })
     this.loading = false
+  }
+
+
+  get allLocationNames() {
+    return this.locations.map(x => {
+      return {
+        label: x.name,
+        value: x.id
+      }
+    })
+  }
+
+  mounted() {
+    //@ts-ignore
+    // console.log('mmmm', this.$store.state.inventorysettings)
   }
 }
 </script>
+<style src="@vueform/multiselect/themes/default.css">
+</style>
+

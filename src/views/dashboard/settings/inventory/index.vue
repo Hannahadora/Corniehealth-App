@@ -6,8 +6,7 @@
       </span>
       <span class="w-full h-screen">
         <tabs :items="tabLinks" v-model="currentTab">
-          <inventory-category-index />
-          <inventory-location-index />
+          <inventory-valuation-index />
         </tabs>
       </span>
     </div>
@@ -20,19 +19,20 @@ import { Prop, Watch } from "vue-property-decorator";
 import Tabs from "@/components/tabs.vue";
 import InventoryCategoryIndex from "./inventory-category/index.vue";
 import InventoryLocationIndex from "./inventory-location/index.vue";
+import InventoryValuationIndex from './inventory-valuation/index.vue'
 
 @Options({
   components: {
     Tabs,
     InventoryCategoryIndex,
-    InventoryLocationIndex
+    InventoryLocationIndex,
+    InventoryValuationIndex
   }
 })
 
 export default class InventoryIndex extends Vue {
   tabLinks = [
-    "Inventory Category(s)",
-    "Location(s)"
+    "Inventory valuation"
   ];
   currentTab = 0
 }

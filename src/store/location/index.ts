@@ -30,7 +30,6 @@ export default {
   actions: {
     async fetchLocations(ctx) {
       const locations = await fetchLocations();
-
       ctx.commit("setLocations", locations);
     },
     async getLocationById(ctx, id: string) {
