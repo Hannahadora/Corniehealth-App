@@ -7,12 +7,6 @@
        You have no care partners on record
       </p>
     </div>
-    <button
-      class="bg-danger rounded-lg font-semibold text-sm text-white mt-5 py-2 px-4 focus:outline-none hover:opacity-90"
-      @click="showCarepartner = true"
-    >
-      Add a Care Partner
-    </button>
   </div>
    <carepartner-modal v-model="showCarepartner"/>
 </template>

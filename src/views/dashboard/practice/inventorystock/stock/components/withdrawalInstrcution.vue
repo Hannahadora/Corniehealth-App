@@ -9,7 +9,7 @@
           </span>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Allocate Stock
+           Withdrawal Instruction
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -22,91 +22,49 @@
         <v-form ref="form">
 
              <cornie-input
-                label="Item Name"
+                label="Item"
                 class="w-full mb-4"
-                placeholder="--Autofilled--"
+                placeholder="--Autoloaded--"
                 :disabled="true"
                 v-model="item.name"
               />
                <cornie-input
                 label="Item Code"
                 class="w-full mb-4"
-                placeholder="--Autofilled--"
+                 placeholder="--Autoloaded--"
                 :disabled="true"
                  v-model="item.code"
               />
                <cornie-input
-                label="Available Quantity"
+                label="Batch No"
                 class="w-full mb-4"
-                placeholder="--Autofilled--"
+                 placeholder="--Autoloaded--"
+                 v-model="batchNumber"
+              />
+               <cornie-datepicker
+                label="Expiry Date"
+                class="w-full"
+                 placeholder="--Autoloaded--"
+                 v-model="expiryDate"
+              />
+              <cornie-input
+                label="Supply Quantity"
+                class="w-full mb-4 mt-4"
+                 placeholder="--Autoloaded--"
                 :disabled="true"
                  v-model="item.balance"
               />
-               <cornie-input
-                label="Quantity to Allocate"
+               <cornie-select
+                label="Reason for Withdrawal"
                 class="w-full mb-4"
-                placeholder="--Enter--"
-                :type="'number'"
-                v-model="quantity"
+                placeholder="--Select--"
+                :items="['Keep in Reserve','Faulty','Damaged','Quality Issue','Expired','Others']"
+                v-model="reasonForWithdrawal"
               />
-               <cornie-select
-                class="w-full"
-                :items="allLocations"
-                label="Allocate To"
-                placeholder="--Select---"
-                v-model="recipient.locationId"
-              >
-              </cornie-select>
-               <cornie-select
-                class="w-full"
-                placeholder="--Select---"
-                :items="['holding', 'pharmacy', 'diagnostics', 'in-patient']"
-                label="Inventory Category"
-                v-model="recipient.category"
-              >
-              </cornie-select>
-          <!-- <accordion-component
-            title="New Storage Information"
-            :grayCaption="true"
-           :opened="false"
-          >
-          <template v-slot:default>
-            <div class="mt-5">
-                <cornie-input
-                    label="Location"
-                    class="w-full mb-4"
-                    placeholder="--Autofilled--"
-                    :disabled="true"
-                />
-                <cornie-input
-                    label="Building No"
-                    class="w-full mb-4"
-                    placeholder="--Enter--"
-                />
-                <cornie-input
-                    label="Room No"
-                    class="w-full mb-4"
-                    placeholder="--Enter--"
-                />
-                <cornie-input
-                    label="Shelf No"
-                    class="w-full mb-4"
-                    placeholder="--Enter--"
-                />
-                <cornie-input
-                    label="Rack No"
-                    class="w-full mb-4"
-                    placeholder="--Enter--"
-                />
-                <cornie-input
-                    label="Bin No"
-                    class="w-full mb-4"
-                    placeholder="--Enter--"
-                />
-            </div>
-          </template>
-          </accordion-component>
-        -->
+           <p class="bg-blue-50 text-dark text-sm p-3 rounded">
+               Notifications will be sent to all locations & categories
+           </p>
+
         </v-form>
       </cornie-card-text>
       
@@ -164,13 +122,15 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
+import CornieDatepicker from "@/components/datepicker.vue";
+
 
 const location = namespace("location");
 const inventorystock = namespace("inventorystock");
 
 
 @Options({
-  name: "AllocateModal",
+  name: "withdrawlInstruction",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -191,9 +151,10 @@ const inventorystock = namespace("inventorystock");
     CorniePhoneInput,
     CornieRadio,
     CornieBtn,
+    CornieDatepicker,
   },
 })
-export default class AllocateModal extends Vue {
+export default class withdrawlInstruction extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -217,13 +178,10 @@ export default class AllocateModal extends Vue {
 
   loading = false;
 
-  sourceId = "";
-  quantity = 0;
-  recipient = {
-    locationId : "",
-    category: "",
-    productId: ""
-  }
+  productId = "";
+  batchNumber = "";
+  expiryDate = "";
+  reasonForWithdrawal = "";
  
   get allLocations() {
     if (!this.locations || this.locations.length === 0) return [];
@@ -238,38 +196,35 @@ export default class AllocateModal extends Vue {
     async setStock() {
         const stock = await this.getInventoryStockById(this.id);
         if (!stock) return;
-          this.sourceId =  stock.sourceId;
-         this.quantity =  stock.quantity;
-         this.recipient =  stock.recipient;
        
     }
 
     get payload() {
         return {
-            sourceId: this.item.id,
-            quantity: this.quantity,
-            recipient : this.recipient,
+            productId: this.item.productId,
+            batchNumber: this.batchNumber,
+            expiryDate : this.expiryDate,
+            reasonForWithdrawal: this.reasonForWithdrawal
           
         };
    }
   async submit() {
     this.loading = true;
     if (this.id) await this.updateStock();
-    else await this.createStock();
+    else await this.createWithdrawl();
     this.loading = false;
   }
 
-  async createStock() {
+  async createWithdrawl() {
   const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
-    this.payload.recipient.productId = this.item.productId;
     try {
       const response = await cornieClient().post(
-        "/api/v1/inventory/stock/allocate",
+        "/api/v1/inventory/withdrawal-instruction",
         this.payload
       );
       if (response.success) {
-        window.notify({ msg: "Stock Allocation Saved", status: "success" });
+        window.notify({ msg: "Stock withdrawn Successfully", status: "success" });
         this.done();
       }
     } catch (error:any) {

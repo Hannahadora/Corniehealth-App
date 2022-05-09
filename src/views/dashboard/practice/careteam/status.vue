@@ -42,18 +42,8 @@
                 :label="'New Status'"
                 v-model="status"
                 :items="[
-                  'draft',
+                  'inactive',
                   'active',
-                  'on-hold',
-                  'cancelled',
-                  'dispensed',
-                  'substituted',
-                  'completed',
-                  'stopped',
-                  'do-not-perform',
-                  'unknown',
-                  'entered-in-error',
-                  'ordered',
                 ]"
                 style="width: 100%"
               />

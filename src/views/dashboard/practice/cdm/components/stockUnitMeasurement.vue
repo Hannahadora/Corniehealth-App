@@ -23,40 +23,47 @@
                         style="width: 100%"
                         :items="dropdwonOptions"
                         placeholder="Select"
-                        v-model="stock.purchase"
+                        v-model="returnedStock.purchase"
                         />
                         <cornie-input
                         :label="'Item Quantity/Purchase UOM'"
                         style="width: 100%"
-                        v-model="stock.quantity"
+                        v-model="returnedStock.quantity"
                         placeholder="Enter"
                         />
                         <cornie-select
                         :label="'Inventory UOM'"
                         style="width: 100%"
                         :items="dropdwonOptions"
-                        v-model="stock.inventory"
+                        v-model="returnedStock.inventory"
                         placeholder="Select"
                         />
                         <cornie-input
                         :label="'Item Quantity/Inventory UOM'"
                         style="width: 100%"
-                        v-model="stock.itemInventory"
+                        v-model="returnedStock.itemInventory"
                         placeholder="Enter"
                         />
                         <cornie-select
                         :label="'Sales UOM'"
                         style="width: 100%"
                         :items="dropdwonOptions"
-                        v-model="stock.sales"
+                        v-model="returnedStock.sales"
                         placeholder="Select"
                         />
                         <cornie-input
                         :label="'Item Quantity/Sales UOM'"
                         style="width: 100%"
-                        v-model="stock.itemSales"
+                        v-model="returnedStock.itemSales"
                         placeholder="Enter"
                         />
+                </div>
+                <span class="text-danger font-semibold flex justify-end cursor-pointer" @click="addSales"><span class="text-xl mr-3 -mt-1">+</span> Add</span>
+                <div class="border-t-2 border-dashed  mt-5">
+                  <div class="pt-3" v-for="(sale, index) in salesUOMs" :key="index">
+                      <p>{{  sale.unitName }}</p>
+                      <span class="text-gray-300 text-xs">{{ sale. itemQuantity}}</span>
+                  </div>
                 </div>
             </v-form>
         </cornie-card-text>
@@ -114,10 +121,21 @@ export default class stockUnitMeasuremnt extends Vue {
   @Prop({ type: Object, default: {}})
   returnedStock!: any;
 
+  @Prop({ type: Array, default: []})
+  salesUOMs!: any;
+
   loading = false;
+
+  PercentageMarkup = 200;
+  MaxDiscount = 10;
 
 
 @Watch("returnedStock")
+    stockChanged() {
+      this.setStock();
+    }
+
+  @Watch("id")
     idChanged() {
       this.setStock();
     }
@@ -132,6 +150,8 @@ async setStock(){
   this.stock.sales = newstock.sales;
   this.stock.itemSales = newstock.itemSales;
 
+  this.salesUOMs = this.salesStock;
+
  
 }
   
@@ -144,18 +164,31 @@ async setStock(){
     sales: "",
     itemSales: "",
   } as any;
+
+  salesStock = [] as any;
  
 
     submit() {
-     this.loading = true;
+    if(this.salesStock === 0){
+       return 
+    }else{
 
-        this.$emit("added-stockunit", this.stock);
-
-        this.loading = false;
-        this.reset();
-        this.show = false;
+      this.loading = true;
+ 
+         this.$emit("added-stockunit", this.returnedStock, this.salesUOMs);
+ 
+         this.loading = false;
+         this.reset();
+         this.show = false;
+    }
     }
 
+  addSales(){
+    this.salesUOMs.push({ unitName: this.returnedStock.sales,
+      itemQuantity: this.returnedStock.itemSales,
+      markup: this.PercentageMarkup,
+      discountLimit: this.MaxDiscount,})
+  }
 
    get dropdwonOptions(){
      return [

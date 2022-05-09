@@ -1,12 +1,12 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full mb-8">
+    <!-- <span class="flex justify-end w-full mb-8">
       <button
         class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
         @click="showMedicationRequest = true">
         New Request
       </button>
-    </span>
+    </span> -->
      <div class="flex justify-center space-x-6 w-full -mb-10">
         <span class="flex space-x-4">
           <medication-drug class="mr-2"/> Substitution Permitted
