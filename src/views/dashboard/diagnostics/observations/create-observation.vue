@@ -359,6 +359,7 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
+import { IObservationValue} from "@/types/IObservationValue";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
@@ -421,9 +422,48 @@ export default class ViewResult extends Vue {
   ];
 
   basicInfo = <any>{};
-  effective = <any>{};
+  effective = {
+    // effectiveDate: "",
+    // effectivePeriod: {
+    //   start: "",
+    //   end: ""
+    // },
+    // date: "",
+    // assessor: "",
+    // previous: "",
+    // problem: "",
+    dateTime: "",
+    period: {
+      start: "",
+      end: ""
+    },
+    instant: {
+      dateTime: "",
+      timeZone: ""
+    }
+  };
   issueInfo = <any>{};
-  value = <any>{};
+  // value = {} as IObservationValue;
+  value = {
+     quantity: "",
+    code: "",
+    string: "",
+    boolean: "",
+    integer: 1,
+    range: {
+        unit: "",
+        min: 0,
+        max: 0,
+    },
+    ratio: "",
+    sampleData: "",
+    time: "",
+    dateTime: "",
+    period: {
+        start: "",
+        end: ""
+    }
+  };
   reasonInfo = <any>{};
   referenceRange = <any>{};
   member = {

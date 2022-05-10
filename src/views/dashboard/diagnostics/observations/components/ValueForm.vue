@@ -123,7 +123,7 @@
       />
       <cornie-input
         class="w-full"
-        :label="Ratio"
+        label="Ratio"
         placeholder="1:1"
         v-model="value.ratio"
         :rules="required"
@@ -187,7 +187,7 @@
         <cornie-select
           :items="['Days']"
           placeholder="Days"
-          class="w-32 mt-5 flex-none"
+          class="w-32 mt-3 flex-none"
           :setPrimary="true"
           v-model="value.range.unit"
         />
@@ -203,7 +203,7 @@
         <cornie-select
           :items="['Days']"
           placeholder="Days"
-          class="w-32 mt-0.5 flex-none"
+          class="w-32 mt-3 flex-none"
           :setPrimary="true"
           v-model="value.range.unit"
         />
@@ -224,6 +224,7 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
+import { IObservationValue } from "@/types/IObservationValue";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
@@ -243,8 +244,9 @@ import { first, getTableKeyValue } from "@/plugins/utils";
   },
 })
 export default class ValueForm extends Vue {
+
   @Prop({ type: Object, default: <any>{} })
-  value!: {};
+  value!: IObservationValue;
 
   required = string().required();
 
