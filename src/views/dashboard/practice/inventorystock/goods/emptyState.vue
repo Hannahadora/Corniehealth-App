@@ -4,19 +4,22 @@
     <h3 class="text-center mt-5">
         No Inventories on Record<br />
     </h3>
-    <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
+    <button @click="showGRN = true" class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90">
       Add New
     </button>
   </div>
+  <grn-modal v-model="showGRN" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import GrnModal from "./components/grnModal.vue";
 
 @Options({
   components: {
+    GrnModal
   },
 })
-export default class inventoryEmptyState extends Vue {
-    showMedication  = false;
+export default class grnEmptyState extends Vue {
+    showGRN  = false;
 }
 </script>

@@ -116,11 +116,11 @@ const links: ISidebarLink[] = [
       //   to: "inventory",
       //   hasSubsection: false,
       // },
-      {
-        name: "Pricebook",
-        to: "pricebook",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Pricebook",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
       {
         name: "POS Sales",
         to: "/dashboard/provider/settings/pos",

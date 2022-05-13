@@ -6,7 +6,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total GRN</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalGrn }}</p>
             </div>
             <grn-icon />
           </div>
@@ -15,7 +15,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">External Supplies</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalSupplies }}</p>
             </div>
             <external-icon />
           </div>
@@ -24,7 +24,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Internal Supplies</p>
-              <p class="ctext-black font-bold text-xl">0</p>
+              <p class="ctext-black font-bold text-xl">{{ totalSupplies }}</p>
             </div>
             <internal-icon />
           </div>
@@ -32,10 +32,11 @@
       </div>
     </div>
     <div class="">
-        <new-tab :items="tabLinks" v-model="currentTab" :width="'w-1/4'" class="mt-12">
+        <issued-section/>
+        <!-- <new-tab :items="tabLinks" v-model="currentTab" :width="'w-1/4'" class="mt-12">
             <issued-section/>
             <received-section />
-        </new-tab>
+        </new-tab> -->
     </div>
    
   </div>
@@ -46,7 +47,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IGrn from "@/types/IGrn";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -73,7 +74,7 @@ import ReceivedSection from "./sections/ReceivedSection.vue";
 
 
 const location = namespace("location");
-const catalogue = namespace("catalogues");
+const grn = namespace("grn");
 
 @Options({
   name: "GoodsExistingState",
@@ -99,17 +100,12 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class GoodsExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
+  
+  @grn.State
+  grns!: IGrn[];
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
-
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @grn.Action
+  fetchGrns!: () => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -117,12 +113,8 @@ export default class GoodsExistingState extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-  productId = "";
-  query = "";
   loading = false;
-  cdm = 0;
-  selected = [] as any;
-  isCheckAll = false;
+ 
 
  tabLinks = [
     "Issued",
@@ -131,138 +123,23 @@ export default class GoodsExistingState extends Vue {
 
   currentTab = 0;
 
-  headers = [
-    {
-      title: "GRN NO",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "DATE",
-      key: "code",
-      show: true,
-    },
-    {
-      title: "SUPPLIER",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "RECEIVER",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "item count",
-      key: "brand",
-      show: true,
-    },
-    {
-      title: "total qty",
-      key: "sales",
-      show: true,
-    },
-    {
-      title: "total cost",
-      key: "cdm",
-      show: true,
-    },
-    {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-  
-  ];
-
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
+   get totalGrn(){
+    return this.grns.length;
   }
 
-  get items() {
-    const products = this.products.map((product: any) => {
-      return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
-      };
-    });
-
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+   get totalSupplies(){
+    return this.grns.map((c: any) => c.supplyItems.length).reduce((a: any, b: any) => a + b, 0);
   }
-
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
-  }
-
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
-
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
-
-  get sortProduct() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-      console.log('Hello World');
-        let index: string;
-        this.selected = [];
-        if (!this.isCheckAll) {
-            for (index in this.locations) {
-                this.selected.push(this.allLocations[index].code);
-            }
-        }
-  }
-
-  get allLocations() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
-  }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
+ 
+  grnAdded() {
+    this.fetchGrns();
   }
 
   async created() {
-    await this.getProducts();
-    await this.fetchLocations();
+    await this.fetchGrns();
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
 * {
   font-family: Inter;
@@ -290,117 +167,5 @@ export default class GoodsExistingState extends Vue {
   color: #fe4d3c;
   background: rgba(254, 77, 60, 0.08);
   border-radius: 5px;
-}
-.multiselect {
-    border: none !important;
-}
-.multiselect-placeholder {
-    color: #000 !important;
-}
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
-}
-
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
-}
-
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
-}
-
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
-
-/* .multiselect-clear-icon {
-      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
-      mask-image: url("/components/icons/chevrondownprimary.vue");
-      background-color: #080056;
-      display: inline-block;
-      transition: .3s;
-  } */
-
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
-
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
-
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
-
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
-
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
-    background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
 }
 </style>

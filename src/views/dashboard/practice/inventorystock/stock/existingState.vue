@@ -294,7 +294,7 @@ export default class InventoryExistingState extends Vue {
 
 
   get TotalInventoryValue(){
-    return this.inventorystocks.reduce((acc, item) => acc + item.unitPrice, 0);
+    return this.inventorystocks.reduce((acc, item) => acc + (+item.unitPrice), 0);
   }
   async stockAdded() {
     if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
