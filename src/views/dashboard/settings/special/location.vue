@@ -3,53 +3,46 @@
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
-                <arrow-left-icon />
+          <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-          Manage Locations
+            Manage Locations
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="w-full">
-                <span class="cursor-pointer float-left rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-start" @click="showLocationModal = true">
-                    <span class="text-lg mr-4 -mt-1.5">+</span>New Location
-                </span>
-            </div>
+          <div class="w-full">
+            <span
+              class="cursor-pointer float-left rounded-lg font-semibold  mt-5 mb-5 py-2 px-5 text-primary border-2 border-primary mr-3 text-sm  focus:outline-none hover:opacity-90 flex justify-start"
+              @click="showLocationModal = true">
+              <span class="text-lg mr-4 -mt-1.5">+</span>New Location
+            </span>
+          </div>
 
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.locations" :key="index">
-                    <div class="w-full dflex mb-3">
-                        <div class="w-10 h-10">
-                            <house-icon/>
-                        </div>
-                        <span>{{ item.name}}</span>
-                    </div>
-                    <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)"/>
-                </div>
-        
-       
+          <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newspecials.locations" :key="index">
+            <div class="w-full dflex mb-3">
+              <div class="w-10 h-10">
+                <house-icon />
+              </div>
+              <span>{{ item.name }}</span>
+            </div>
+            <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteItem(item.id)" />
+          </div>
+
+
         </v-form>
       </cornie-card-text>
-      
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
+          <cornie-btn @click="show = false" class="border-primary border-2 px-6 mr-3 rounded-xl text-primary">
             Cancel
           </cornie-btn>
-          <cornie-btn
-             @click="show = false"
-            class="text-white bg-danger px-6 rounded-xl"
-           >
+          <cornie-btn @click="show = false" class="text-white bg-danger px-6 rounded-xl">
             Save
           </cornie-btn>
 
@@ -58,7 +51,7 @@
     </cornie-card>
 
   </cornie-dialog>
-  <new-location v-model="showLocationModal" @location-added="specialadded" :specilatyId="specilatyId"/>
+  <new-location v-model="showLocationModal" @location-added="specialadded" :specilatyId="specilatyId" />
 </template>
 
 <script lang="ts">
@@ -113,7 +106,7 @@ export default class manageLocation extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-@Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   specilatyId!: string;
 
 
@@ -139,38 +132,38 @@ export default class manageLocation extends Vue {
     this.setLocation();
   }
 
-async setLocation() {
-        const location = await this.getSpecialById(this.specilatyId);
-        if (!location) return;
-         this.newspecials = location;
+  async setLocation() {
+    const location = await this.getSpecialById(this.specilatyId);
+    if (!location) return;
+    this.newspecials = location;
   }
 
 
 
-  async deleteItem(value:string) {
-       const confirmed = await window.confirmAction({
-          message: "You are about to delete this Location",
-        });
-        if (!confirmed) return;
-      try {
+  async deleteItem(value: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this Location",
+    });
+    if (!confirmed) return;
+    try {
       const response = await cornieClient().delete(
         `/api/v1/specialty/location/${this.specilatyId}`,
-        {locations: [value]}
+        { locations: [value] }
       );
-      if(response.success){
-          this.done();
+      if (response.success) {
+        this.done();
         window.notify({ msg: "Location deleted successfully", status: "success" });
       }
     } catch (error) {
       window.notify({ msg: "Location not deleted", status: "error" });
     }
   }
-   async specialadded(){
-     await this.fetchSpecials();
+  async specialadded() {
+    await this.fetchSpecials();
   }
 
- 
- done() {
+
+  done() {
     this.$emit("location-added");
     this.show = false;
   }
@@ -181,19 +174,23 @@ async setLocation() {
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
+<style src="@vueform/multiselect/themes/default.css">
+</style>
 <style>
 .dflex {
   display: -webkit-box;
 }
+
 .multiselect-option.is-selected {
   background: #fe4d3c;
   color: var(--ms-option-color-selected, #fff);
 }
+
 .multiselect-option.is-selected.is-pointed {
   background: var(--ms-option-bg-selected-pointed, #fe4d3c);
   color: var(--ms-option-color-selected-pointed, #fff);
 }
+
 .multiselect-option.is-selected {
   background: var(--ms-option-bg-selected, #fe4d3c);
   color: var(--ms-option-color-selected, #fff);
@@ -214,10 +211,7 @@ async setLocation() {
   border-radius: var(--ms-radius, 4px);
   background: var(--ms-bg, #fff);
   font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
+  min-height: calc(var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) * var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2);
 }
 
 .multiselect-tags {
