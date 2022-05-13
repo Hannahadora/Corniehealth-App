@@ -37,6 +37,9 @@
         />
         <filter-icon class="cursor-pointer" @click="$emit('filter')" />
       </span>
+      <span class="flex justify-between items-center" v-if="!menu">
+        <print-icon class="mr-7" />
+      </span>
     </div>
 
     <cornie-card class="mt-3 block table-card pb-2" flat>
@@ -78,7 +81,7 @@
           class="border-t-2 border-2 border-y-gray"
         >
           <td class="p-2" v-if="check">
-            <cornie-checkbox @click="select(row, index)" :checked="isSelected(row)" />
+            <cornie-checkbox @click="select(row, index)" @change='updateCheckall()' v-model="selectedOne[index]" :checked="isSelected(row)" />
           </td>
           <td class="p-2">{{ index + 1 }}</td>
           <template v-for="(column, i) in preferredColumns" :key="i">
@@ -90,11 +93,11 @@
           </template>
           <td v-if="!menushow">
             <div class="flex justify-center">
-              <cornie-menu top="30px" right="100%">
+                <delete-icon v-if="deleteRow" class="cursor-pointer" @click="$emit('delete',index)"/>
+              <cornie-menu top="30px" v-else right="100%">
                 <template #activator="{ on }">
                   <icon-btn v-on="on">
-                    <delete-icon v-if="deleteRow" @click="$emit('delete')"/>
-                    <dots-horizontal-icon v-on="on" v-else/>
+                    <dots-horizontal-icon v-on="on"/>
                   </icon-btn>
                 </template>
                 <cornie-card-text :tablecard="true">
@@ -227,6 +230,7 @@ export default class CornieTable extends Vue {
   orderBy: Sorter = () => 1;
   selectedItems: any[] = [];
   selectedAll = false;
+  selectedOne = false;
   showColumnFilter = false;
   preferredColumns: IColumn[] = [];
 
@@ -249,8 +253,17 @@ export default class CornieTable extends Vue {
   }
 
   isSelected(item: any): boolean {
+    this.selectedOne = true;
     return !this.selectedItems.every((element: any) => element.id != item.id);
   }
+
+    updateCheckall (){
+      if(this.selectedItems.length == this.filteredItems.length){
+         this.selectedAll = true;
+      }else{
+         this.selectedAll = false;
+      }
+    }
 
   select(item: any, index:number) {
     if (this.isSelected(item)){
@@ -276,8 +289,14 @@ export default class CornieTable extends Vue {
   @Watch("selectedAll")
   onSelectedAllChange(newValue: boolean) {
     this.selectedItems = [];
-    if (newValue)
-      for (const item of this.filteredItems) this.selectedItems.push(item);
+    if (newValue){
+       for (const item of this.filteredItems) {
+         this.selectedItems.push(item);
+         this.selectedOne = true;
+        this.$emit('selectedItem', this.selectedItems)
+       }
+    }
+     
   }
 
   mounted() {

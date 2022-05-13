@@ -58,6 +58,8 @@ import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
 import InventoryStockStore from "./inventorystock";
+import GrnStore from "./grn";
+import MaterialrequestStore from "./materialRequest";
 
 export default createStore({
   modules: {
@@ -120,6 +122,8 @@ export default createStore({
     cancel: CanelStore,
     kyc: KycStore,
 
-    dispense: DispenseStore
+    dispense: DispenseStore,
+    grn: GrnStore,
+    materialrequest: MaterialrequestStore,
   },
 } as StoreOptions<any>);

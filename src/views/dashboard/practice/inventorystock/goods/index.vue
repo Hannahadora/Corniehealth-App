@@ -14,9 +14,9 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import GoodsEmptyState from "./emptyState.vue";
 import GoodsExistingState from "./existingState.vue";
-import IRequest from "@/types/IRequest";
+import IGrn from "@/types/IGrn";
 
-const request = namespace("request");
+const grn = namespace("grn");
 
 @Options({
   name: "GoodsIndex",
@@ -28,18 +28,18 @@ const request = namespace("request");
 export default class GoodsIndex extends Vue {
 
   get empty() {
-    return this.requests.length < 1;
+    return this.grns.length < 1;
   }
 
-  @request.State
-  requests!: IRequest[];
+  @grn.State
+  grns!: IGrn[];
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  @grn.Action
+  fetchGrns!: () => Promise<void>;
 
 
   async created() {
-    await this.fetchRequests();
+    await this.fetchGrns();
   }
 }
 </script>

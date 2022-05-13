@@ -27,6 +27,8 @@
               :items="['holding', 'pharmacy', 'diagnostics', 'in-patient']"
               label="Allocate To"
               v-model="category"
+              required
+              :rules="required"
             >
             </cornie-select>
           </div>
@@ -39,7 +41,7 @@
           >
             <template #qty="{ item }">
               <div class="w-12">
-                <cornie-input placeholder="6" v-model="quantities[item.id]" />
+                <cornie-input placeholder="6" :rules="isRequired" v-model="quantities[item.id]" />
               </div>
             </template>
             <template #name="{ item }">
@@ -92,6 +94,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
+import { number, string } from "yup";
 
 import ILocation from "@/types/ILocation";
 import IInventroyStock from "@/types/IInventroyStock";
@@ -238,6 +241,15 @@ export default class AllocateBulk extends Vue {
   }
   quantities = {} as Record <string, number>;
 
+  required = string().required();
+  get isRequired(){
+     const value = this.item.map((c:any) => c.balance)
+      return number().max((value),
+       "Quantity must be not be greater than avaialable quantity."); 
+  
+
+  }
+
   buildPayload(item:any){
     return {
       sourceId: item.id,
@@ -250,6 +262,7 @@ export default class AllocateBulk extends Vue {
 
     }
   }
+  
 
   get allLocations() {
     if (!this.locations || this.locations.length === 0) return [];
@@ -316,6 +329,8 @@ export default class AllocateBulk extends Vue {
   done() {
     this.show = false;
     this.$emit("stockAdded");
+
+    this.item = [];
   }
   async created() {
     await this.fetchLocations();
