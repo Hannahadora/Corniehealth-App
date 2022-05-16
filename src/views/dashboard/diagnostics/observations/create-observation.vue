@@ -371,7 +371,6 @@ import BasicInfo from "./components/BasicInfo.vue";
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
   name: "ObservationDialog",
