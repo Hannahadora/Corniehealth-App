@@ -132,7 +132,7 @@
             <template #lineTotal="{ item }">
               <div class="flex space-x-3">
                 <span>
-                  {{ item.lineTotal || 0.00 }}
+                  {{ item.lineTotal || 0.0 }}
                 </span>
               </div>
             </template>
@@ -463,19 +463,19 @@ export default class PosDialog extends Vue {
         action: medication.id,
         itemName: medication.name,
         unitPrice: medication.unitPrice,
-        // quantity: medication.quantity,
-        // lineTotal: Number(medication.unitPrice * medication.quantity),
+        quantity: medication.quantity,
+        lineTotal: Number(medication.unitPrice * medication.quantity),
       };
     });
     if (!this.query) return dMed;
     return search.searchObjectArray(dMed, this.query);
   }
 
-  @Watch("items")
+  @Watch("items", { immediate: true, deep: true })
   getLineTotal() {
     this.items.forEach((item: any) => {
-      item.lineTotal = item.quantity * item.unitPrice
-    })
+      item.lineTotal = item.quantity * item.unitPrice;
+    });
   }
 
   get totalDiscount() {

@@ -29,13 +29,27 @@
         v-model="basicInfo.code"
         :items="['a', 'b']"
       />
-      <cornie-select
-        class="w-full"
+      <auto-complete
+        v-bind="$attrs"
         label="Subject"
-        placeholder="Select"
+        placeholder="Select one"
         v-model="basicInfo.subject"
-        :items="['a', 'b']"
-      />
+        :rules="required"
+        :items="customers"
+        @query="fetchCustomers"
+      >
+        <template #item="{ item }">
+          <div class="w-full flex items-center my-1">
+            <!-- <avatar :src="item.image" /> -->
+            <div class="ml-4 flex flex-col">
+              <span class="text-xs">{{ item.name }}</span>
+              <span class="text-xs font-semibold text-gray-500">
+                {{ item.mrn }}
+              </span>
+            </div>
+          </div>
+        </template>
+      </auto-complete>
       <cornie-select
         class="w-full"
         label="Focus (Optional)"
@@ -70,6 +84,10 @@ import CornieRadio from "@/components/cornieradio.vue";
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import { IObservationBasicInfo } from "@/types/IObservationBasicInfo";
+
+import { debounce } from "lodash";
+import search from "@/plugins/search";
 
 @Options({
   name: "BasicInfo",
@@ -86,9 +104,45 @@ import { first, getTableKeyValue } from "@/plugins/utils";
 })
 export default class BasicInfo extends Vue {
   @Prop({ type: Object, default: <any>{} })
-  basicInfo!: {};
+  basicInfo!: IObservationBasicInfo;
 
   required = string().required();
+
+  customerDetails = [];
+  query = "";
+
+
+  fetchCustomers(query: string) {
+    debounce(async () => {
+      try {
+        const { data } = await cornieClient().get(
+          `/api/v1/pharmacy/find-customer/?query=${query}`
+        );
+        this.customerDetails = data || [];
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching customers details",
+          status: "error",
+        });
+      }
+    }, 1000)();
+  }
+
+  get customers() {
+    const xCustomers = this.customerDetails?.map((customer: any) => {
+      return {
+        ...customer,
+        code: customer.id,
+        display: customer.name,
+        name: customer.name,
+        mrn: customer.mrn,
+        id: customer.id,
+      };
+    });
+    if (!this.query) return xCustomers;
+    return search.searchObjectArray(xCustomers, this.query);
+  }
+
 }
 </script>
 

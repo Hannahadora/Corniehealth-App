@@ -21,7 +21,7 @@
       <span class="flex justify-end">
         <cornie-btn
           class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
-          @click="createObs = true"
+          @click="typeId = ''; createObs = true"
         >
           Create New
         </cornie-btn>
@@ -82,7 +82,7 @@
             </p>
             <p
               class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
-              v-if="item.status == 'on-hold'"
+              v-if="item.status == 'on-hold' || item.status == 'preliminary'"
             >
               {{ item.status }}
             </p>
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    <create-observation :id="typeId" v-model="createObs" />
+    <create-observation :id="typeId" :observation="selectedObservation" v-model="createObs" />
   </div>
 </template>
 <script lang="ts">
@@ -217,6 +217,7 @@ const organization = namespace("organization");
 export default class DiagnosticReport extends Vue {
   query = "";
   typeId = "";
+  selectedObservation = "";
   showRecord = false;
   showResult = false;
   createObs = false;
@@ -295,11 +296,11 @@ export default class DiagnosticReport extends Vue {
         // action: sale.id,
         keydisplay: report.id,
         observationId: report.id,
-        basedOn: report.basedOn,
-        category: report.category,
+        basedOn: report.basicInfo?.basedOn,
+        category: report.basicInfo?.category,
         observationCode: report.observationCode,
-        subject: report.subject,
-        performer: report.performer,
+        subject: report.basicInfo?.subject,
+        performer: report.issueInfo?.performer,
         status: report.status,
       };
     });
@@ -315,6 +316,7 @@ export default class DiagnosticReport extends Vue {
   viewItem(value: string) {
     this.createObs = true;
     this.typeId = value;
+    this.selectedObservation = this.observations.find((el: any) => el.id === value)
   }
 
   closeModal() {
@@ -322,6 +324,10 @@ export default class DiagnosticReport extends Vue {
   }
 
   deleteItem(id: any) {}
+
+  findPatientName() {
+    
+  }
 
   get locationId() {
     // return this.authCurrentLocation;
@@ -331,7 +337,7 @@ export default class DiagnosticReport extends Vue {
   async fetchObservations() {
     try {
       const data = await cornieClient().get(
-        `/api/v1/observations?id=${this.organizationInfo.id}`
+        '/api/v1/observations'
       );
       this.observations = data.data;
     } catch (error) {

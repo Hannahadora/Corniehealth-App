@@ -107,7 +107,7 @@ export default {
       state.domain = domain;
     },
     setLoginInfo(state, payload) {
-      state.user = payload.user;
+      state.user = payload;
 
       state.authTime = new Date();
       rememberLogin(payload.token);

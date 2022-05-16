@@ -48,7 +48,7 @@
               />
             </div>
           </accordion-component>
-          
+
           <accordion-component
             class="shadow-none rounded-none border-none text-primary"
             title="Effective"
@@ -358,16 +358,15 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import IAppointmentRoom from "@/types/IAppointmentRoom";
-import { IObservationValue} from "@/types/IObservationValue";
+import { IObservation } from "@/types/IObservation";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import ValueForm from './components/ValueForm.vue'
-import BasicInfo from './components/BasicInfo.vue'
+import ValueForm from "./components/ValueForm.vue";
+import BasicInfo from "./components/BasicInfo.vue";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -375,7 +374,7 @@ const user = namespace("user");
 const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
-  name: "AppointmentRoomDialog",
+  name: "ObservationDialog",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -396,9 +395,15 @@ const appointmentRoom = namespace("appointmentRoom");
     BasicInfo,
   },
 })
-export default class ViewResult extends Vue {
+export default class ObservationDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  @Prop({ type: Object, default: <any>{} })
+  observation!: IObservation;
 
   required = string().required();
 
@@ -421,49 +426,18 @@ export default class ViewResult extends Vue {
     },
   ];
 
-  basicInfo = <any>{};
-  effective = {
-    // effectiveDate: "",
-    // effectivePeriod: {
-    //   start: "",
-    //   end: ""
-    // },
-    // date: "",
-    // assessor: "",
-    // previous: "",
-    // problem: "",
-    dateTime: "",
-    period: {
-      start: "",
-      end: ""
-    },
-    instant: {
-      dateTime: "",
-      timeZone: ""
-    }
-  };
-  issueInfo = <any>{};
-  // value = {} as IObservationValue;
-  value = {
-     quantity: "",
+  basicInfo = {
+    basedOn: "",
+    category: "",
+    subject: "",
+    encounter: "",
+    partOf: "",
     code: "",
-    string: "",
-    boolean: "",
-    integer: 1,
-    range: {
-        unit: "",
-        min: 0,
-        max: 0,
-    },
-    ratio: "",
-    sampleData: "",
-    time: "",
-    dateTime: "",
-    period: {
-        start: "",
-        end: ""
-    }
+    focus: "",
   };
+  effective = <any>{};
+  issueInfo = <any>{};
+  value = <any>{};
   reasonInfo = <any>{};
   referenceRange = <any>{};
   member = {
@@ -471,16 +445,15 @@ export default class ViewResult extends Vue {
     derivedFrom: "",
   };
   component = {
-    code: ""
+    code: "",
   };
-
 
   get organizationId() {
     return "";
   }
 
   get patientId() {
-    return "";
+    return this.basicInfo.subject;
   }
 
   get practitionerId() {
@@ -497,6 +470,7 @@ export default class ViewResult extends Vue {
 
   async addObservations() {
     const newReport = {
+      patientId: this.patientId,
       basicInfo: this.basicInfo,
       effective: this.effective,
       issueInfo: this.issueInfo,
@@ -517,6 +491,19 @@ export default class ViewResult extends Vue {
       });
     }
   }
+
+  async created() {
+    if(this.id !== "") {
+     this.basicInfo = this.observation?.basicInfo,
+      this.effective = this.observation?.effective,
+      this.issueInfo = this.observation?.issueInfo,
+      this.value = this.observation?.value,
+      this.reasonInfo = this.observation?.reasonInfo,
+      this.referenceRange = this.observation?.referenceRange,
+      this.member = this.observation?.member
+    }
+  }
+
 }
 </script>
 

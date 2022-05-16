@@ -110,7 +110,7 @@
       <div class="text-center font-bold text-2xl text-primary mb-2">
         Successful password reset
       </div>
-      <div class="text-base">
+      <div class="text-base text-center">
         Your have successfully changed your password!
       </div>
       <div class="mt-9 flex items-center justify-center">
@@ -257,7 +257,7 @@ export default class SignUp extends Vue {
       this.loading = false;
       if (data.success) {
         window.notify({ msg: "Password updated", status: "success" });
-        this.show = true;
+        // this.show = true;
       } else {
         window.notify({ msg: errMsg, status: "error" });
       }

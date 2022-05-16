@@ -5,8 +5,8 @@
         name="value"
         class="mr-4"
         v-model="valueType"
-        label="Quantity"
         value="quantity"
+        label="Quantity"
       />
       <cornie-radio
         name="value"
@@ -87,7 +87,8 @@
         placeholder="Enter"
         v-model="value.quantity"
         :rules="required"
-        v-if="valueType == 'quantity'"
+        v-if="valueType === 'quantity'"
+        @blur="clearInput(e.target.value)"
       />
       <cornie-input
         class="w-full"
@@ -95,7 +96,7 @@
         placeholder="Enter"
         v-model="value.code"
         :rules="required"
-        v-if="valueType == 'code'"
+        v-if="valueType === 'code'"
       />
       <cornie-input
         class="w-full"
@@ -103,7 +104,7 @@
         placeholder="Enter"
         v-model="value.string"
         :rules="required"
-        v-if="valueType == 'string'"
+        v-if="valueType === 'string'"
       />
       <cornie-input
         class="w-full"
@@ -111,7 +112,7 @@
         label="Integer"
         placeholder="Enter"
         v-model="value.integer"
-        v-if="valueType == 'integer'"
+        v-if="valueType === 'integer'"
       />
       <cornie-input
         class="w-full"
@@ -119,7 +120,7 @@
         placeholder="Enter"
         v-model="value.sampleData"
         :rules="required"
-        v-if="valueType == 'sample-data'"
+        v-if="valueType === 'sample-data'"
       />
       <cornie-input
         class="w-full"
@@ -127,7 +128,7 @@
         placeholder="1:1"
         v-model="value.ratio"
         :rules="required"
-        v-if="valueType == 'ratio'"
+        v-if="valueType === 'ratio'"
       />
     </div>
 
@@ -136,29 +137,29 @@
         class="w-full"
         label="Start Date/Time"
         v-model:date="value.period.start"
-        v-if="valueType == 'period'"
+        v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="End Date/Time"
         v-model:date="value.period.end"
-        v-if="valueType == 'period'"
+        v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
         v-model:date="value.dateTime"
-        v-if="valueType == 'date-time'"
+        v-if="valueType === 'date-time'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
         v-model:date="value.time"
-        v-if="valueType == 'time'"
+        v-if="valueType === 'time'"
       />
     </div>
 
-    <div v-if="valueType == 'boolean'">
+    <div v-if="valueType === 'boolean'">
       <div class="font-bold text-base">Boolean</div>
       <div class="grid grid-cols-3 gap-3 mt-6 w-1/3">
         <cornie-radio
@@ -175,12 +176,12 @@
         />
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-6 mt-2" v-if="valueType == 'range'">
+    <div class="grid grid-cols-2 gap-6 mt-2" v-if="valueType === 'range'">
       <div class="flex space-x-2 w-full">
         <cornie-input
           label="Range(min)"
           placeholder="0"
-          v-model="value.range.min"
+          :modelValue="value?.range?.min"
           class="grow w-full"
           :setfull="true"
         />
@@ -189,7 +190,7 @@
           placeholder="Days"
           class="w-32 mt-3 flex-none"
           :setPrimary="true"
-          v-model="value.range.unit"
+          :modelValue="value?.range?.unit"
         />
       </div>
       <div class="flex space-x-2 w-full">
@@ -251,6 +252,13 @@ export default class ValueForm extends Vue {
   required = string().required();
 
   valueType = "quantity";
+
+  clearInput(value: any) {
+    if(!this.valueType.includes(value)) {
+      value = null
+    }
+  }
+
 }
 </script>
 
