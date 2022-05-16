@@ -5,6 +5,7 @@ import { SettingsRoute } from "./settings";
 import { ClinicalsRoute } from "./clinical";
 import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
+import { PracticeRoutes } from "./practice";
 import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
 
@@ -97,18 +98,19 @@ const routes: Array<RouteRecordRaw> = [
       ExperienceRoutes,
       InPatientRoutes,
       NewSettingsRoutes,
+      PracticeRoutes,
       {
         path: "/settings/",
         name: "Settings",
         component: Settings,
         // redirect: to => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "care-partners",
-            name: "Care Partners",
-            component: () =>
-              import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
+          // {
+          //   path: "care-partners",
+          //   name: "Care Partners",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/CarePartners/index.vue"),
+          // },
           {
             path: "account-security",
             name: "Account Security",
@@ -215,12 +217,12 @@ const routes: Array<RouteRecordRaw> = [
                 "@/views/dashboard/settings/practitioners/addPractitioner.vue"
               ),
           },
-          {
-            path: "care-teams",
-            name: "Care Teams",
-            component: () =>
-              import("@/views/dashboard/settings/careteam/index.vue"),
-          },
+          // {
+          //   path: "care-teams",
+          //   name: "Care Teams",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/careteam/index.vue"),
+          // },
           {
             path: "add-careteam/:id?",
             props: true,

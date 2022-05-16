@@ -92,6 +92,10 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { PropSync, Prop, Watch } from "vue-property-decorator";
+
+
+import { IPatient, RelatedPerson } from "@/types/IPatient";
+
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -135,10 +139,14 @@ export default class EmergencyDontactDialog extends Vue {
   @Prop({ type: Array, default: [] })
   associations!: [];
 
+  @Prop({ type: Object })
+  patient!: IPatient;
+
   relationshipOptions = ["Parent", "Employee"];
   accountType = "";
   name = "";
   relationship = "";
+  loading= false;
 
   addedAssociations = [] as any;
 
@@ -151,7 +159,8 @@ export default class EmergencyDontactDialog extends Vue {
     this.addedAssociations = [
       {
         id: `${Math.random() * 1999}${Math.random() * 2999}`,
-        accountType: this.accountType,
+        associatedPersonId: this?.patient?.id || '',
+        associationType: this.accountType,
         name: this.name,
         relationship: this.relationship,
       },

@@ -19,6 +19,7 @@ import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
+import inventorySettings from "./inventory"
 
 import CalenderStore from "./calendar";
 import PrefrenceStore from "./prefrence";
@@ -53,8 +54,13 @@ import RouterStore from "./routing";
 import SpecialStore from "./special";
 
 import DispenseStore from "./dispense"
+import DiagnostocStore from "./diagnostic";
+import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
+import InventoryStockStore from "./inventorystock";
+import GrnStore from "./grn";
+import MaterialrequestStore from "./materialRequest";
 
 export default createStore({
   modules: {
@@ -86,8 +92,11 @@ export default createStore({
     practiceinformation: PracticeInformationStore,
     appointment: AppointmentStore,
     request: RequestStore,
+    refferal: RefferalStore,
+    diagnostic: DiagnostocStore,
 
     usersettings: UserSettingsStore,
+    inventorysettings: inventorySettings,
     schedules: ScheduleStore,
     visits: VisitsStore,
     patients: PatientStore,
@@ -102,7 +111,9 @@ export default createStore({
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
+
     markup:MarkupStore,
+    inventorystock:InventoryStockStore,
 
     appointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,
@@ -114,6 +125,8 @@ export default createStore({
     cancel: CanelStore,
     kyc: KycStore,
 
-    dispense: DispenseStore
+    dispense: DispenseStore,
+    grn: GrnStore,
+    materialrequest: MaterialrequestStore,
   },
 } as StoreOptions<any>);

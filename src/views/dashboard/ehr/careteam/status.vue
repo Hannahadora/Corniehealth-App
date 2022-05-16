@@ -42,18 +42,8 @@
                 :label="'New Status'"
                 v-model="status"
                 :items="[
-                  'draft',
+                  'inactive',
                   'active',
-                  'on-hold',
-                  'cancelled',
-                  'dispensed',
-                  'substituted',
-                  'completed',
-                  'stopped',
-                  'do-not-perform',
-                  'unknown',
-                  'entered-in-error',
-                  'ordered',
                 ]"
                 style="width: 100%"
               />
@@ -206,7 +196,7 @@ export default class CareteamStatus extends Vue {
       status: this.status,
     };
     try {
-      const response = await cornieClient().patch(url, body);
+      const response = await cornieClient().put(url, body);
       if (response.success) {
         window.notify({ msg: "Status Updated", status: "success" });
         this.done();

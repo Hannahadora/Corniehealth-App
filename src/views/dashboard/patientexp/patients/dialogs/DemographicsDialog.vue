@@ -135,6 +135,7 @@ export default class DemographicsDialog extends Vue {
 
   currentId = "";
   primaryLanguage = "";
+  demographic = [] as any;
   secondaryLanguage = "";
   race = "";
   patientId = "";
@@ -164,8 +165,19 @@ export default class DemographicsDialog extends Vue {
     if (!report.valid) return;
     this.loading = true;
     if (this.patient) await this.submit();
-    else this.demographicsSync = this.payload;
+    else this.pushValue();
     this.loading = false;
+  }
+
+  pushValue(){
+    this.demographic = this.payload ;
+    this.$emit('data-sent', this.demographic);
+
+     window.notify({
+        msg: `Demographics added successfully`,
+        status: "success",
+      });
+    this.show = false;
   }
 
   async submit() {

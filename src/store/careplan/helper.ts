@@ -1,7 +1,17 @@
 import { cornieClient } from "@/plugins/http";
 import ICarePlan from "@/types/ICarePlan";
 
-export async function getCarePlans(patientId: string) {
+export async function getCarePlans() {
+  try {
+    const response = await cornieClient().get("/api/v1/care-plan/practitioner");
+
+    return response.data;
+  } catch (error) {
+    notify({ msg: "There was an error loading care plans", status: "error" });
+  }
+  return {};
+}
+export async function getPatientCarePlans(patientId: string) {
   try {
     const response = await cornieClient().get(
       `/api/v1/care-plan/patient/${patientId}`
@@ -13,6 +23,7 @@ export async function getCarePlans(patientId: string) {
   }
   return {};
 }
+
 
 export async function createCarePlan(body: any) {
   try {

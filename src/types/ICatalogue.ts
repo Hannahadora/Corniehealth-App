@@ -67,6 +67,8 @@ export interface ICatalogueProduct {
   classification: string;
   subClassification : string;
   applyDiscount: boolean;
+  strength: string;
+
 
 }
 

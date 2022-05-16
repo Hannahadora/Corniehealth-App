@@ -8,7 +8,8 @@
     :locationId="locationId"
     :roleId="roleId"
     :id="id"
-    :accessRoles="locationRoles"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
   />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
@@ -243,6 +244,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Name"
+               
                 />
                 <cornie-select
                   :rules="required"
@@ -251,6 +253,7 @@
                   :items="['Sibling', 'Friend']"
                   placeholder="--Select--"
                   :required="true"
+                
                 />
                 <cornie-input
                   :rules="emailRule"
@@ -258,6 +261,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
+                  :disabled="disabled"
                 />
                 <phone-input
                   v-model="emergency.phone"
@@ -266,6 +270,7 @@
                   :required="true"
                   label="Phone Number"
                   placeholder="--Enter--"
+                  :disabled="disabled"
                 />
                 <auto-complete
                   class="w-full"
@@ -275,6 +280,7 @@
                   :rules="required"
                   :readonly="readonly"
                   :items="nationState.countries"
+                  :disabled="disabled"
                 />
                 <auto-complete
                   class="w-full"
@@ -284,6 +290,7 @@
                   placeholder="Enter"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   class="w-full"
@@ -293,6 +300,7 @@
                   placeholder="Enter"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   class="w-full"
@@ -302,6 +310,7 @@
                   :required="true"
                   :rules="required"
                   :readonly="readonly"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   :rules="required"
@@ -309,6 +318,7 @@
                   label="Apartment or House Number"
                   placeholder="--Enter--"
                   :required="true"
+                  :disabled="disabled"
                 />
                 <cornie-input
                   :rules="required"
@@ -316,6 +326,7 @@
                   label="Address"
                   placeholder="--Enter--"
                   :required="true"
+                  :disabled="disabled"
                 />
               </div>
             </template>
@@ -388,7 +399,7 @@
                 <cornie-select
                   :rules="required"
                   v-model="consultationChannel"
-                  label="Consultation Channel"
+                  label="Visit Type"
                   :items="dropdown.ConsultationChannel"
                   placeholder="--Select--"
                   :required="true"
@@ -505,7 +516,7 @@
                       <button class="border-0 mr-5" type="button">
                         <edit-icon
                           class="fill-current text-primary"
-                          @click="addAccessRole = true"
+                          @click="showEditAccess(access.id, access.roleId, access.locationId)"
                         />
                       </button>
                       <button
@@ -545,7 +556,7 @@
                     class="w-full"
                     :required="true"
                   />
-                  <date-picker
+                  <period-picker
                     class="w-full mb-5"
                     label="Year of Graduation"
                     v-model="graduationYear"
@@ -576,7 +587,9 @@
                   <div class="text-gray-600 text-sm flex items-center">
                     <div>{{ item.qualification }}</div>
                     <div class="font-bold text-xs leading-none mx-1">•</div>
-                    <div>{{ item.graduationYear.split("-")[0] }}</div>
+                    <div>{{ new Date(item.graduationYear)  .toLocaleDateString()
+                          .toString()
+                          .split("/")[2] }}</div>
                   </div>
                 </div>
               </div>
@@ -783,7 +796,7 @@ export default class AddPractitioner extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   @practitioner.Action
-  deleteLocationrole!: (id: string) => Promise<boolean>;
+  deleteLocationrole!: ({ id, roleId} : any) => Promise<boolean>;
 
   @special.State
   specials!: ISpecial[];
@@ -795,6 +808,7 @@ export default class AddPractitioner extends Vue {
 
   educations = [] as any;
   licenses = [] as any;
+  disabled=false;
 
   addEducation() {
     if (
@@ -857,6 +871,7 @@ export default class AddPractitioner extends Vue {
   gender = "";
   phone = "";
   address = "";
+  locationRoleId = "";
   dateOfBirth = "";
   jobDesignation = "";
   employmentType = "";
@@ -947,7 +962,15 @@ export default class AddPractitioner extends Vue {
   @Watch("useSameAddress")
   populateEmergencyAddress() {
     if (this.useSameAddress) {
+      this.disabled = true;
       this.emergency.address = this.address;
+      this.emergency.phone = this.phone;
+      this.emergency.email = this.email;
+      this.emergency.country = this.country;
+      this.emergency.state = this.state;
+      this.emergency.city = this.city;
+      this.emergency.postCode = this.postCode;
+      this.emergency.aptNumber = this.aptNumber;
     } else {
       this.emergency.address = "";
     }
@@ -961,6 +984,13 @@ export default class AddPractitioner extends Vue {
   editRole(locationId: string, roleId: string) {
     this.locationId = locationId;
     this.roleId = roleId;
+    this.addAccessRole = true;
+  }
+
+  showEditAccess(value:string, valuerole:string, valuelocation:string){
+    this.locationRoleId = value;
+    this.roleId = valuerole;
+    this.locationId = valuelocation;
     this.addAccessRole = true;
   }
 
@@ -1026,17 +1056,17 @@ export default class AddPractitioner extends Vue {
     this.postCode = practitioner.postCode;
     this.aptNumber = practitioner.aptNumber;
     this.specialties = practitioner.specialties;
-    this.practiceDuration.value = practitioner.practiceDuration.value;
-    this.practiceDuration.unit = practitioner.practiceDuration.unit;
-    this.consultationRate.value = practitioner.consultationRate.value;
-    this.consultationRate.unit = practitioner.consultationRate.unit;
+    this.practiceDuration.value = practitioner?.practiceDuration?.value;
+    this.practiceDuration.unit = practitioner?.practiceDuration?.unit;
+    this.consultationRate.value = practitioner?.consultationRate?.value;
+    this.consultationRate.unit = practitioner?.consultationRate?.unit;
     this.consultationRatevalue = practitioner?.consultationRate?.value;
     this.consultationRateunit = practitioner?.consultationRate?.unit;
     this.practiceDurationvalue = practitioner?.practiceDuration?.value;
     this.practiceDurationunit = practitioner?.practiceDuration?.unit;
-    this.graduationYear = practitioner.graduationYear;
-    this.licenseIssuer = practitioner.licenseIssuer;
-    this.licensePeriod = practitioner.licensePeriod;
+    this.graduationYear = practitioner?.graduationYear;
+    this.licenseIssuer = practitioner?.licenseIssuer;
+    this.licensePeriod = practitioner?.licensePeriod;
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -1109,7 +1139,7 @@ export default class AddPractitioner extends Vue {
       email: this.email,
       activeState: this.activeState,
       gender: this.gender,
-      locations: this.locations,
+      locations: this.accessRoles,
       phone: {
         number: this.phone,
         dialCode: this.dialCode,
@@ -1217,26 +1247,21 @@ export default class AddPractitioner extends Vue {
       window.notify({ msg: "Practitioner not updated", status: "error" });
     }
   }
-  async deleteItem(id: string) {
+ async deleteItem(roleId: string) {
+  console.log(this.id, roleId, "role");
+  const id = this.id;
     const confirmed = await window.confirmAction({
-      message:
+       message:
         "Are you sure you want to delete this location role? This action cannot be undone.",
       title: "Delete location role",
     });
     if (!confirmed) return;
-    const url = `/api/v1/practitioner/location-roles/${this.id}`;
-    const payload = [id];
-    try {
-      const response = await cornieClient().delete(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Location role deleted", status: "success" });
-        this.updatePractitioners([response.data]);
-        await this.fetchPractitioners();
-        // this.$router.back();
-      }
-    } catch (error) {
-      window.notify({ msg: "Location role not deleted", status: "error" });
-    }
+    if (await this.deleteLocationrole({id, roleId}))
+      window.notify({ msg: "Location role deleted", status: "success" });
+    else window.notify({ msg: "Location role not deleted", status: "error" });
+  }
+  async done(){
+     await this.fetchPractitioners();
   }
 
   getSpecialityName(id: string) {

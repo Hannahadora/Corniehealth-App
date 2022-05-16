@@ -14,12 +14,12 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/OrganisationHierarchy/index.vue"),
     },
-    {
-      path: "care-partners",
-      name: "Care Partners",
-      component: () =>
-        import("@/views/dashboard/settings/CarePartners/index.vue"),
-    },
+    // {
+    //   path: "care-partners",
+    //   name: "Care Partners",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/CarePartners/index.vue"),
+    // },
     {
       path: "account-security",
       name: "Account Security",
@@ -44,6 +44,11 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "devices",
       name: "Devices",
       component: () => import("@/views/dashboard/settings/devices/index.vue"),
+    },
+    {
+      path: "inventory",
+      name: "Inventory settings",
+      component: () => import("@/views/dashboard/settings/inventory/index.vue")
     },
     {
       path: "update-add-device/:id?",
@@ -135,11 +140,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/practitioners/viewPractitioner.vue"),
     },
-    {
-      path: "care-teams",
-      name: "Care Teams",
-      component: () => import("@/views/dashboard/settings/careteam/index.vue"),
-    },
+    // {
+    //   path: "care-teams",
+    //   name: "Care Teams",
+    //   component: () => import("@/views/dashboard/settings/careteam/index.vue"),
+    // },
     {
       path: "add-careteam/:id?",
       props: true,
@@ -174,7 +179,7 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "medication",
       props: true,
-      name: "Medications",
+      name: "Medication Request",
       component: () => import("@/views/dashboard/medications/medication/index.vue"),
     },
     {
@@ -216,26 +221,8 @@ export const SettingsRoute: RouteRecordRaw = {
         import("@/views/dashboard/settings/catalogues/index.vue"),
     },
     {
-      path: "newservice/:id?",
-      name: "New Service",
-      props: true,
-      component: () =>
-        import(
-          "@/views/dashboard/settings/catalogues/components/new-service.vue"
-        ),
-    },
-    {
-      path: "newproduct/:id?",
-      name: "New Product",
-      props: true,
-      component: () =>
-        import(
-          "@/views/dashboard/settings/catalogues/components/new-products.vue"
-        ),
-    },
-    {
       path: "addvariant/:catalogueId",
-      name: "Medication",
+      name: "Catalogue Medication",
       component: () =>
         import(
           "@/views/dashboard/settings/catalogues/components/new-products.vue"

@@ -39,7 +39,7 @@
             </div>
             <div class="w-3/12 flex justify-end">
               <span
-                class="tag flex flex items-center px-3 py-1"
+                class="tag flex items-center px-3 py-1"
                 :class="{
                   'new-item': item.status?.toLocaleLowerCase() !== 'completed',
                   'bg-success rounded-full':
@@ -68,12 +68,12 @@
 
         <div class="w-full flex justify-end pb-2 mt-10">
           <div class="text-xs text-danger font-semibold">
-            <router-link
+            <!-- <router-link
               class="cursor-pointer"
               :to="{ name: 'Medical | Family History' }"
             >
               View all
-            </router-link>
+            </router-link> -->
           </div>
         </div>
       </div>

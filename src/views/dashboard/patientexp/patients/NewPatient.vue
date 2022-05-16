@@ -104,7 +104,7 @@
             />
             <cornie-input
               label="Genotype"
-              class="w-full"
+              class="w-full mt-2.5"
               placeholder="Enter"
               v-model="genotype"
               :readonly="viewOnly"
@@ -172,7 +172,6 @@
               loading-color="white"
               type="button"
               @click="saveBasic"
-              :loading="loading"
               class="bg-primary text-white px-6 py-1 rounded-md"
             >
               Save
@@ -266,7 +265,7 @@
                     <div class="flex-1">
                       <h1 class="text-sm">{{ assoc.name }}</h1>
                       <h1 class="text-xs">
-                        {{ assoc.accountType }}\{{ assoc.relationship }}
+                        {{ assoc.associationType }}\{{ assoc.relationship }}
                       </h1>
                     </div>
                   </div>
@@ -280,7 +279,6 @@
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
               type="button"
-              :loading="loading"
               @click="saveIdentity"
               class="bg-primary text-white px-10 py-1 rounded-md"
             >
@@ -396,16 +394,18 @@
     <!-- Now Links -->
     <links-dialog
       :patient="patient"
+      @links="links"
       v-model:guarantor="guarantor"
       v-model="showGuarantorDialog"
     />
     <association-dialog
       :associtions="associations"
+      :patient="patient"
       v-model="showAssociationsDialog"
       @add-associations="addAssociations"
     />
     <!-- Now Payment account -->
-    <payment-dialog v-model="addPaymentsDialog" />
+    <payment-dialog v-model="addPaymentsDialog" @setSeconinsurance="setSeconinsurance"/>
 
     <providers-dialog
       :patient="patient"
@@ -416,6 +416,7 @@
     />
     <demographics-dialog
       :patient="patient"
+      @data-sent="datasent"
       v-model:demographics="demographics"
       v-model="showDemographicsDialog"
     />
@@ -423,6 +424,7 @@
     <!-- Now primary doctor -->
     <practitioners-dialog
       :patient="patient"
+      @added-pract="addedpract"
       v-model="showPractitionersDialog"
       v-model:practitioners="practitioners"
     />
@@ -554,6 +556,7 @@ export default class NewPatient extends Vue {
 
   nationality = "";
   numberOfChildren = "";
+  genotype = "";
 
   vip = false;
   multipleBirth = false;
@@ -573,15 +576,17 @@ export default class NewPatient extends Vue {
   contacts = [];
   emergencyContacts = [] as any;
   providers = [] as any;
-  guarantor!: Guarantor;
-  insurances = [];
-  labs = [];
-  pharmacies = [];
+  guarantor = "";
+  insurances = [] as any;
+  labs = [] as any;
+  pharmacies = [] as any;
   associations = [] as any;
-  demographics!: Demographics;
+  demographics =  {};
   practitioners = [];
 
   maritalStatus = "";
+  guarantorLength = 0;
+  demographicsLength = 0;
 
   showEmergencyContactDialog = false;
   showGuarantorDialog = false;
@@ -644,8 +649,31 @@ export default class NewPatient extends Vue {
   allContacts(value:any){
     this.emergencyContacts.push(value);
   }
-  addproviders(value:any){
-    this.providers.push(value);
+  addproviders(value:any,type:string){
+    if(type == 'Pharmacy'){
+       this.pharmacies.push(value);
+    }else{
+       this.labs.push(value);
+    } 
+  }
+
+  setSeconinsurance(value:any){
+    this.insurances.push(value);
+  }
+  addedpract(value:any){
+    this.practitioners = value;
+  }
+  datasent(value:any){
+    this.demographics = value;
+    if(value || this.patient?.demographicsData){
+      this.demographicsLength = 1;
+    }
+  }
+  links(value:string){
+    this.guarantor = value;
+    if(value || this.patient?.guarantor){
+      this.guarantorLength = 1;
+    }
   }
   get providerLength() {
     const labLen = this.patient?.preferredLabs?.length || this.labs.length;
@@ -667,13 +695,13 @@ export default class NewPatient extends Vue {
         click: () => (this.showEmergencyContactDialog = true),
         number:
           this.patient?.emergencyContacts?.length ||
-          this?.emergencyContacts?.length,
+          this.emergencyContacts.length,
       },
       {
         name: "Providers",
         icon: "medicine-icon",
         click: () => (this.showProvidersDialog = true),
-        number: this.providerLength || this.providers.length,
+        number: this.providerLength,
       },
       {
         name: "Primary Doctor",
@@ -687,13 +715,13 @@ export default class NewPatient extends Vue {
         name: "Demographic Data",
         icon: "demographic-icon",
         click: () => (this.showDemographicsDialog = true),
-        number: this.patient?.demographicsData ? 1 : this.demographics ? 1 : 0,
+        number: this.demographicsLength,
       },
       {
         name: "Links",
         icon: "link-icon",
         click: () => (this.showGuarantorDialog = true),
-        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
+        number: this.guarantorLength,
       },
     ];
   }
@@ -746,6 +774,7 @@ export default class NewPatient extends Vue {
     const basicInfo = {
       firstname: this.firstName,
       lastname: this.lastName,
+      associates: this.associations,
       middlename: this.middleName,
       multipleBirth: this.multipleBirth,
       multipleBirthInteger: this.multipleBirthInteger,
@@ -767,6 +796,9 @@ export default class NewPatient extends Vue {
       emergencyContacts: this.emergencyContacts,
       preferredLabs: this.labs,
       preferredPharmacies: this.pharmacies,
+      demographicsData: this.demographics,
+      primaryDoctorDetails: this.practitioners,
+      guarantor: this.guarantor
     };
     if (this.id) return basicInfo;
     return { ...basicInfo, ...others };
@@ -805,7 +837,7 @@ export default class NewPatient extends Vue {
       window.notify({ msg: "Patient Updated", status: "success" });
         this.$router.go(-1);
     } catch (e:any) {
-      window.notify({ msg: e.response.data.message, status: "error" });
+      window.notify({ msg: e?.response?.data?.message, status: "error" });
     }
   }
 
@@ -826,7 +858,7 @@ export default class NewPatient extends Vue {
   }
 
   get patient() {
-    return this.patients.find((p) => p.id == this.id);
+    return this.patients.find((p) => p.id === this.id);
   }
   hydrate() {
     const patient = this.patient;

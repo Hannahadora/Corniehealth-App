@@ -24,7 +24,7 @@
             label="Payment Type"
             class="w-full"
             placeholder="Select One"
-            :items="['Card']"
+            :items="['Card','Insurance', 'Wallet']"
             v-model="paymentType"
           />
         </v-form>
@@ -49,8 +49,9 @@
     </cornie-card>
   </cornie-dialog>
 
-  <insurance-dialog v-model="openInsuranceDialog" @canceled="handleCancel" />
+  <insurance-dialog v-model="openInsuranceDialog" @canceled="handleCancel" @setInsurance="setInsurance"/>
   <card-dialog v-model="openCardDialog" @canceled="handleCancel" />
+  <wallet-dialog v-model="openWalletDialog"/>
 </template>
 
 <script lang="ts">
@@ -70,9 +71,10 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import InsuranceDialog from "./payments/InsuranceDialog.vue";
 import CardDialog from "./payments/cardDialog.vue";
+import WalletDialog from "./payments/WalletDialog.vue";
 
 @Options({
-  name: "guarantor-dialog",
+  name: "Paymentdialog",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -85,9 +87,10 @@ import CardDialog from "./payments/cardDialog.vue";
     CornieBtn,
     InsuranceDialog,
     CardDialog,
+    WalletDialog,
   },
 })
-export default class PaymentDialog extends Vue {
+export default class Paymentdialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -96,6 +99,7 @@ export default class PaymentDialog extends Vue {
   openInsuranceDialog = false;
   openWalletDialog = false;
   openCardDialog = false;
+  loading = false;
 
   handleCancel() {
     this.show = true;
@@ -103,20 +107,33 @@ export default class PaymentDialog extends Vue {
     this.accountType = "";
   }
 
-  @Watch("paymentType")
-  handlePaymentDialog() {
-    switch (this.paymentType) {
-      case "Issurance":
-        this.openInsuranceDialog = true;
-        break;
-      case "Wallet":
-        this.openWalletDialog = true;
-        break;
-      default:
-        this.openCardDialog = true;
-    }
+  // @Watch("paymentType")
+  // handlePaymentDialog() {
+  //   switch (this.paymentType) {
+  //     case "Insurance":
+  //       this.openInsuranceDialog = true;
+  //       break;
+  //     case "Wallet":
+  //       this.openWalletDialog = true;
+  //       break;
+  //     default:
+  //       this.openCardDialog = true;
+  //   }
 
+  //   this.show = false;
+  // }
+  save(){
+    if(this.paymentType === 'Insurance'){
+      this.openInsuranceDialog = true;
+    } else if (this.paymentType === 'Wallet'){
+      this.openWalletDialog = true;
+    }else if(this.paymentType === 'Card') {
+      this.openCardDialog = true;
+    }
+  }
+  setInsurance(value:any){
     this.show = false;
+    this.$emit('setSeconinsurance', value);
   }
 }
 </script>

@@ -29,8 +29,46 @@ export const ExperienceRoutes: RouteRecordRaw = {
       path: "view-patient/:id",
       name: "View Patient",
       props: true,
-      component: () =>
-        import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+      component: () => import("@/views/dashboard/patientexp/patients/ViewPatient.vue"),
+      children: [
+        {
+          path: "transactions/appointments",
+          name: "Patient Appointments",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/appointment.vue"),
+        },
+        {
+          path: "transactions/specialist",
+          name: "Patient Specialist Refferals",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/specialist.vue"),
+        },
+        {
+          path: "transactions/visits",
+          name: "Patient Visits",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/visits.vue"),
+        },
+        {
+          path: "transactions/medications",
+          name: "Patient Medication",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/medications.vue"),
+        },
+        {
+          path: "transactions/diagnostics",
+          name: "Patient Diagnostics",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/diagnostics.vue"),
+        },
+        {
+          path: "transactions/bills",
+          name: "Patient Bills",
+          component: () =>
+            import("@/views/dashboard/patientexp/patients/viewscreens/bills.vue"),
+        }
+      
+      ]
     },
     {
       path: "edit-patient/:id",

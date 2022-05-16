@@ -66,9 +66,11 @@ export default {
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
       const defaultLocation = locations?.find(location => location.default);
-
-      const currentLocation = state.currentLocation ?? defaultLocation;
+    
+      const currentLocation = (state.currentLocation || defaultLocation?.locationId) ?? "";
       sessionStorage.setItem("authCurrentLocation", currentLocation);
+      // eslint-disable-next-line no-console
+      console.log(currentLocation, "currentLocation");
       return currentLocation;
     },
     authorizedLocations(state) {
@@ -96,6 +98,7 @@ export default {
       state.currentLocation = practitioner?.defaultLocation || "";
     },
     switchCurrentLocation(state, locationId) {
+      sessionStorage.removeItem("authCurrentLocation");
       state.currentLocation = locationId;
     },
     setAuthToken(state, token) {

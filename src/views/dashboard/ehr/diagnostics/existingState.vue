@@ -314,7 +314,7 @@ export default class DiagnosticExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", key: "action", image: true }];
   }
-    get items() {
+  get items() {
     const diagnostics = this.patientdiagnostics.map((diagnostic) => {
       return {
         ...diagnostic,

@@ -38,7 +38,7 @@
           <span class="flex justify-center w-full">
             <div class="dropdown inline-block relative">
               <button
-                class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+                class="bg-danger rounded-lg font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
               >
                 <span class="mr-1">Create New </span>
                 <chevron-down-icon
@@ -83,7 +83,7 @@
           <span class="flex justify-center w-full">
             <div class="dropdown inline-block relative">
               <button
-                class="bg-danger rounded-full font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
+                class="bg-danger rounded-lg font-semibold text-white text-sm mt-5 py-3 pr-8 pl-8 px-3 focus:outline-none hover:opacity-90 inline-flex items-center"
               >
                 <span class="mr-1">Create New </span>
                 <chevron-down-icon

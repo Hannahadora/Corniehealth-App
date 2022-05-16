@@ -5,9 +5,9 @@
         You’ve made no requests!<br />
         Make a new service reques by clicking on “New Request” above
     </h3>
-    <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
+    <!-- <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
       New Requests
-    </button>
+    </button> -->
   </div>
   <medication-modal v-model="showMedication" />
 </template>

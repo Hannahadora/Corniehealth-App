@@ -17,6 +17,7 @@
             v-model="query"
             :results="results"
             @selected="selected"
+            placeholder="Search practitioner"
           />
 
           <v-form class="mt-4 w-full">
@@ -25,33 +26,36 @@
                 label="Practice Assigned Provider"
                 class="rounded-none w-full"
                 v-model="practice"
+                :disabled="true"
               
               />
               <cornie-input
                 label="Email Address"
                 v-model="email"
-                :rules="emailRule"
                 class="rounded-none w-full"
+                :disabled="true"
               
               />
               <cornie-input
                 label="Reference Organization"
                 class="rounded-none w-full"
                 v-model="referenceOrganizationName"
+                :disabled="true"
                
               />
             </div>
             <span class="flex justify-end">
               <cornie-btn
                 @click="show = false"
-                class="text-primary border-2 mr-2 border-primary"
+                type="button"
+                class="text-primary rounded-lg border-2 mr-2 border-primary"
               >
                 Cancel
               </cornie-btn>
               <cornie-btn
                 type="button"
                 @click="save"
-                class="text-white bg-danger px-6 rounded-xl"
+                class="text-white bg-danger px-6 rounded-lg"
               >
                 Save
               </cornie-btn>
@@ -63,7 +67,7 @@
           <h2 class="uppercase font-semibold text-xs">
             SELECT DEFAULT PRACTITIONER
           </h2>
-          <div class="flex items-center" v-for="(item, i) in items" :key="i">
+          <div class="flex items-center mb-5 mt-5" v-for="(item, i) in allPractitioner" :key="i">
             <cornie-radio
               name="default"
               :modelValue="item.default"
@@ -194,6 +198,7 @@ export default class PractitionersDialog extends Vue {
   referenceOrganization = "";
   referenceOrganizationName = "";
   practitioner!: IPractitioner;
+  allPractitioner = [] as any;
   emailRule = string().email().required();
 
   @patients.Action
@@ -224,16 +229,35 @@ export default class PractitionersDialog extends Vue {
   }
 
   pushPractitioners() {
-    const practitionerSet = new ObjectSet(
-      [...this.practitonersSync, this.practitioner],
-      "id"
-    );
-    this.practitonersSync = [...practitionerSet];
+    this.allPractitioner.push({
+      email : this.email,
+      practice: this.practice,
+      referenceOrganization: this.referenceOrganization, 
+      referenceOrganizationName: this.referenceOrganizationName
+    })
+    // const practitionerSet = new ObjectSet(
+    //   [...this.practitonersSync, this.practitioner],
+    //   "id"
+    // );
+    // this.practitonersSync = [...practitionerSet];
   }
 
   addToBatch() {
-    this.pushPractitioners();
-    window.notify({ msg: "Practitioner added", status: "success" });
+    if(!this.query){
+      window.notify({ msg: "Please search for a practitioner", status: "error" });
+    }else{
+
+      this.pushPractitioners();
+  
+      window.notify({ msg: "Practitioner added", status: "success" });
+      this.$emit('added-pract', this.allPractitioner);
+      
+      this.email = "";
+      this.practice = "";
+      this.referenceOrganization = "";
+      this.referenceOrganizationName = "";
+    }
+
   }
 
   async submit() {

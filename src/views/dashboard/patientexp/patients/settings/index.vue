@@ -9,7 +9,22 @@
       >
         {{ patientName }} (Patient Settings)
       </span>
-      <h3 class="font-bold text-base">Data Access</h3>
+      <h3 class="font-bold text-base">
+         <span class="flex items-center mt-3">
+          <span>Data Access</span> 
+          <tooltip class="ml-3" right>
+            <template #activator="{ on }">
+              <span v-on="on">
+                <info-icon />
+              </span>
+            </template>
+            <div>
+              Granting practitioners access to patient data enables the
+              practitioners to access data at any given time.
+            </div>
+          </tooltip>
+         </span>
+      </h3>
       <div class="block mb-4">
         <span class="flex items-center mt-3">
           <span class="uppercase block font-semibold text-sm">
@@ -22,12 +37,14 @@
               </span>
             </template>
             <div>
-              Granting practitioners access to patient data enables the
-              practitioners to access data at any given time.
+              List of practitioners who are authorised to access patient record.
             </div>
           </tooltip>
         </span>
-        <span class="block w-5/12">
+        <div class="mt-5 mb-5">
+        <span class="text-danger font-bold cursor-pointer" @click="showAuthModal = true"> <span class="text-lg">+ </span> Add Practitioner</span>
+        </div>
+        <!-- <span class="block w-5/12">
           <search-input
             v-model="query"
             background="bg-gray-300"
@@ -53,7 +70,10 @@
               </div>
             </template>
           </search-input>
-        </span>
+        </span> -->
+      </div>
+      <div class="w-full border-b-2 border-gray-200 mb-5 pb-3">
+        <span class="w-full font-bold ">Practitioners</span>
       </div>
       <cornie-table v-model="items" :columns="headers">
         <template #name="{ item }">
@@ -79,6 +99,7 @@
       </cornie-table>
     </div>
   </div>
+  <authorization-dialog v-model="showAuthModal" :id="id" @set-authorize="setauthorize"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -101,6 +122,7 @@ import SearchInput from "@/components/search-input.vue";
 import IPractitioner from "@/types/IPractitioner";
 import practitioner from "@/store/practitioner";
 import ObjectSet from "@/lib/objectset";
+import AuthorizationDialog from "./AuthoriseDialog.vue";
 
 const practitioners = namespace("practitioner");
 const patients = namespace("patients");
@@ -119,6 +141,7 @@ const patients = namespace("patients");
     CornieTable,
     TableAction,
     SearchInput,
+    AuthorizationDialog,
   },
 })
 export default class PatientSetting extends Vue {
@@ -157,7 +180,7 @@ export default class PatientSetting extends Vue {
   searchPractitioners!: (q: string) => Promise<IPractitioner[]>;
 
   query = "";
-
+  showAuthModal = false;
   results: any[] = [];
 
   get patientName() {
@@ -207,7 +230,7 @@ export default class PatientSetting extends Vue {
         `/api/v1/patient/unauthorize/practitioner/${this.id}`,
         [revoked.id]
       );
-      this.practitioners = this.practitioners.filter((p) => p.id != revoked.id);
+     this.practitioners = this.practitioners.filter((p) => p.id != revoked.id);
       window.notify({
         msg: "Access revoked",
         status: "success",
@@ -251,6 +274,10 @@ export default class PatientSetting extends Vue {
         status: "error",
       });
     }
+  }
+
+  async setauthorize(){
+   await this.fetchPractitioners();
   }
   async created() {
     this.fetchPractitioners();

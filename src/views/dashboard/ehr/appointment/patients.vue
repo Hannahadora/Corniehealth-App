@@ -3,86 +3,68 @@
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
-                <arrow-left-icon />
+          <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Select Patient
+            Select Patient
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="border-b-2 border-dashed border-gray-100">
-                <span class="text-sm mb-4">Select patient for this appointment</span>
-                <div class="w-full mb-5">
-                    <span class="mb-2 w-full rounded-full">
-                        <icon-input
-                        autocomplete="off"
-                        class="border border-gray-600 py-2 -mt-2 rounded focus:outline-none"
-                        type="search"
-                        placeholder="Search"
-                        v-model="query"
-                        >
-                        <template v-slot:prepend>
-                            <search-icon />
-                        </template>
-                        </icon-input>
-                    </span>
-                </div>
+          <div class="border-b-2 border-dashed border-gray-100">
+            <span class="text-sm mb-4">Select patient for this appointment</span>
+            <div class="w-full mb-5">
+              <span class="mb-2 w-full rounded-full">
+                <icon-input autocomplete="off" class="border border-gray-600 py-2 -mt-2 rounded focus:outline-none"
+                  type="search" placeholder="Search" v-model="query">
+                  <template v-slot:prepend>
+                    <search-icon />
+                  </template>
+                </icon-input>
+              </span>
             </div>
-             <span class="text-gray-500 text-xs mb-4">{{ firstPatient.length }} selected</span>
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in patients" :key="index">
-                    <div class="w-full dflex space-x-4 mb-3" >
-                        <div class="w-10 h-10">
-                            <avatar
-                                class="mr-2"
-                                v-if="item.profilePhoto"
-                                :src="item.profilePhoto"
-                            />
-                            <avatar class="mr-2" v-else  :src="localSrc" />
-                        </div>
-                        <div class="w-full">
-                            <p class="text-xs text-dark font-medium">
-                              {{ item.firstname }} {{ item.lastname }}
-                            </p>
-                            <p class="text-xs text-gray-500 font-meduim">
-                             {{ item.mrn }}
-                        </p>
-                        </div>
-                    </div>
-                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
-                </div>
-         
-          
-       
+          </div>
+          <span class="text-gray-500 text-xs mb-4">{{ firstPatient.length }} selected</span>
+          <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in patients" :key="index">
+            <div class="w-full dflex space-x-4 mb-3">
+              <div class="w-10 h-10">
+                <avatar class="mr-2" v-if="item.profilePhoto" :src="item.profilePhoto" />
+                <avatar class="mr-2" v-else :src="localSrc" />
+              </div>
+              <div class="w-full">
+                <p class="text-xs text-dark font-medium">
+                  {{ item.firstname }} {{ item.lastname }}
+                </p>
+                <p class="text-xs text-gray-500 font-meduim">
+                  {{ item.mrn }}
+                </p>
+              </div>
+            </div>
+            <select-option @click="pushValue(item, item.id)" :value="item.id" />
+          </div>
+
+
+
         </v-form>
       </cornie-card-text>
-      
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2  mr-3 rounded-xl text-primary"
-          >
+          <cornie-btn @click="show = false" class="border-primary border-2  mr-3 rounded-xl text-primary">
             Cancel
           </cornie-btn>
-          <cornie-btn
-             @click="submit"
-            class="text-white bg-danger px-2 rounded-xl"
-           >
+          <cornie-btn @click="submit" class="text-white bg-danger px-2 rounded-xl">
             Add
           </cornie-btn>
 
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-  <new-practitioner v-model="showPractitionerModal"   :specilatyId="specilatyId"/>
+    <new-practitioner v-model="showPractitionerModal" :specilatyId="specilatyId" />
 
   </cornie-dialog>
 </template>
@@ -176,7 +158,7 @@ export default class Patients extends Vue {
   fetchPatients!: () => Promise<void>;
 
   get payload() {
-      return this.patientIds;
+    return this.patientIds;
   }
 
   get filteredItems() {
@@ -185,43 +167,43 @@ export default class Patients extends Vue {
       .sort(this.orderBy);
   }
 
-  pushValue(item:any,id:string){
-    this.patientIds.push({patientId: id, required: true });
+  pushValue(item: any, id: string) {
+    this.patientIds.push({ patientId: id, required: true });
     this.firstPatient.push(item);
-     this.singlePatientId = id;
+    this.singlePatientId = id;
   }
 
-   async submit() {
+  async submit() {
     this.loading = true;
     if (this.id) await this.apply();
     else await this.updatePatientData();
     this.loading = false;
   }
-  async updatePatientData(){
-      this.$emit('patient-data',this.firstPatient,this.patientIds,this.singlePatientId);
+  async updatePatientData() {
+    this.$emit('patient-data', this.firstPatient, this.patientIds, this.singlePatientId);
     this.done();
   }
-  async apply(){
-      this.loading = true;
-        if (this.patientId) await this.updatePatient();
-        else await this.savePatient();
-     this.loading = false;
+  async apply() {
+    this.loading = true;
+    if (this.patientId) await this.updatePatient();
+    else await this.savePatient();
+    this.loading = false;
   }
   async savePatient() {
-      try {
+    try {
       const response = await cornieClient().post(
         `/api/v1/schedule/add-practitioners/${this.id}`,
         this.payload
       );
-      if(response.success){
-          this.done();
+      if (response.success) {
+        this.done();
         window.notify({ msg: "Practitioner added successfully", status: "success" });
       }
     } catch (error) {
       window.notify({ msg: "Practitioner not added", status: "error" });
     }
   }
-  
+
   async updatePatient() {
     const url = `/api/v1/schedule/add-practitioners/${this.patientId}`;
     const payload = { ...this.payload };
@@ -235,7 +217,7 @@ export default class Patients extends Vue {
       window.notify({ msg: "Practitioner not updated", status: "error" });
     }
   }
- done() {
+  done() {
     this.$emit("patient-added");
     this.show = false;
   }
@@ -245,7 +227,8 @@ export default class Patients extends Vue {
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
+<style src="@vueform/multiselect/themes/default.css">
+</style>
 <style>
 .dflex {
   display: -webkit-box;

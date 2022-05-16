@@ -55,6 +55,7 @@ import ReferIcon from "./icons/refer.vue";
 import SupportIcon from "./icons/support.vue";
 import PatientIcon from "./icons/PatientIcon.vue";
 import CategoriesIcon from "./icons/categories.vue";
+import PracticeIcon from "./icons/practiceIcon.vue";
 import SidebarLink from "./sidebarlink.vue";
 import { namespace } from "vuex-class";
 import { AccountMeta } from "@/types/user";
@@ -84,6 +85,7 @@ const user = namespace("user");
     ScheduleIcon,
     BookIcon,
     ClinicIcon,
+    PracticeIcon,
     PillIcon,
     ClipBoardIcon,
     PatientIcon,
@@ -110,169 +112,206 @@ export default class CorniDashboardeSideBar extends Vue {
   }
 
   providerLinks: ISidebarLink[] = [
-    {
-      name: "Dashboard",
-      to: "home",
-      icon: "dashboard-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "Experience",
-      to: "experience",
-      icon: "patient-icon",
-      hasSubsection: true,
-      children: [
-        { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
-        {
-          name: "Calendar",
-          to: "/dashboard/experience/calendar",
-          hasSubsection: false,
-        },
-        // {
-        //   name: "Schedules",
-        //   to: "/dashboard/experience/schedules",
-        //   hasSubsection: false,
-        // },
-        {
-          name: "Appointments",
-          to: { name: "Appointment" },
-          hasSubsection: false,
-        },
-        {
-          name: "Visits",
-          to: "/dashboard/experience/visits",
-          hasSubsection: false,
-        },
-        { name: "Requests", to: { name: "Requests" }, hasSubsection: false },
-        { name: "Tasks", to: { name: "Tasks" }, hasSubsection: false },
-        {
-          name: "Messaging",
-          to: "/dashboard/experience/messages",
-          hasSubsection: false,
-        },
-        {
-          name: "Satisfaction & Ratings",
-          to: "/dashboard/experience/ratings",
-          hasSubsection: false,
-        },
-        {
-          name: "Questionaires",
-          to: "/dashboard/experience/questionaires",
-          hasSubsection: false,
-        },
-      ],
-    },
-    {
-      name: "Clinical",
-      to: "clinical",
-      icon: "book-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "In-Patient",
-      to: "in-patient",
-      icon: "clinic-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "Diagnostics",
-      to: "diagnostics",
-      icon: "clip-board-icon",
-      hasSubsection: true,
-      children: [
-        {
-          name: "Diagnostics",
-          to: "/dashboard/provider/settings/diagnostics",
-          hasSubsection: false,
-        },
-        {
-          name: "Virtual-Lab-Orders",
-          to: "/dashboard/provider/settings/virtual-lab-orders",
-          hasSubsection: false,
-        },
-      ],
-    },
-    {
-      name: "Medications",
-      to: "medications",
-      icon: "pill-icon",
-      hasSubsection: true,
-      children: [
-        {
-          name: "Markup",
-          to: "/dashboard/provider/settings/markup",
-          hasSubsection: false,
-        },
-        {
-          name: "Catalogue",
-          to: "catologue",
-          hasSubsection: false,
-        },
-        {
-          name: "Inventory",
-          to: "inventory",
-          hasSubsection: false,
-        },
-        {
-          name: "Pricebook",
-          to: "pricebook",
-          hasSubsection: false,
-        },
-        {
-          name: "POS Sales",
-          to: "/dashboard/provider/settings/pos",
-          hasSubsection: false,
-        },
-        {
-          name: "Dispense",
-          to: "dispense",
-          hasSubsection: false,
-        },
-        {
-          name: "Pharmacy Orders",
-          to: "pharmacy-order",
-          hasSubsection: false,
-        },
-      ],
-    },
+      {
+    name: "Dashboard",
+    to: "home",
+    icon: "dashboard-icon",
+    hasSubsection: false,
+  },
+  {
+    name: "Experience",
+    to: "experience",
+    icon: "patient-icon",
+    hasSubsection: true,
+    children: [
+      { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+      {
+        name: "Calendar",
+        to: "/dashboard/experience/calendar",
+        hasSubsection: false,
+      },
+      // {
+      //   name: "Schedules",
+      //   to: "/dashboard/experience/schedules",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Appointments",
+      //   to: { name: "Appointment" },
+      //   hasSubsection: false,
+      // },
+      {
+        name: "Visits",
+        to: "/dashboard/experience/visits",
+        hasSubsection: false,
+      },
+      { name: "Requests", to: { name: "Requests" }, hasSubsection: false },
+      { name: "Tasks", to: { name: "Tasks" }, hasSubsection: false },
+      {
+        name: "Messaging",
+        to: "/dashboard/experience/messages",
+        hasSubsection: false,
+      },
+      {
+        name: "Satisfaction & Ratings",
+        to: "/dashboard/experience/ratings",
+        hasSubsection: false,
+      },
+      {
+        name: "Questionaires",
+        to: "/dashboard/experience/questionaires",
+        hasSubsection: false,
+      },
+    ],
+  },
+  {
+    name: "Clinical",
+    to: "clinical",
+    icon: "book-icon",
+    hasSubsection: false,
+  },
+  {
+    name: "Diagnostics",
+    to: "diagnostics",
+    icon: "clip-board-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Diagnostics",
+        to: "/dashboard/provider/settings/diagnostics",
+        hasSubsection: false,
+      },
+      {
+        name: "Virtual Lab Orders",
+        to: "/dashboard/provider/settings/virtual-lab-orders",
+        hasSubsection: false,
+      },
+      {
+        name: "Observations",
+        to: "/dashboard/provider/settings/observations",
+        hasSubsection: false,
+      },
+    ]
+  },
+  {
+    name: "Medications",
+    to: "medications",
+    icon: "pill-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Medication",
+        to: "/dashboard/provider/settings/medication",
+        hasSubsection: false,
+      },
+      // {
+      //   name: "Markup",
+      //   to: "/dashboard/provider/settings/markup",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Catalogue",
+      //   to: "catologue",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Inventory",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Pricebook",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
+      {
+        name: "POS Sales",
+        to: "/dashboard/provider/settings/pos",
+        hasSubsection: false,
+      },
+      {
+        name: "Dispense",
+        to: "dispense",
+        hasSubsection: false,
+      },
+      {
+        name: "Virtual Pharmacy Orders",
+        to: "pharmacy-orders",
+        hasSubsection: false,
+      }
+    ]
+  },
+  {
+    name: "Bills & Payments",
+    to: "bills",
+    icon: "debit-card-icon",
+    hasSubsection: false,
+  },
+  {
+    name: "Analytics",
+    to: "analytics",
+    icon: "chart-icon",
+    hasSubsection: false,
+  },
+  {
+    name: "Practice",
+    to: "practice",
+    icon: "practice-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Locations",
+        to: "locations",
+        hasSubsection: false,
+      },
+      {
+        name: "Charge Description Master",
+        to: "/dashboard/provider/practice/practice",
+        hasSubsection: false,
+      },
+      {
+        name: "Inventory Stock",
+        to: "/dashboard/provider/practice/inventory",
+        hasSubsection: false,
+      },
+      // {
+      //   name: "Loyalty",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Promotions",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
+      {
+        name: "Practitoner Directory",
+        to: "practitioners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Partners",
+        to: "/dashboard/provider/practice/care-partners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Plan",
+        to: "/dashboard/provider/practice/care-plan",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Teams",
+        to: "/dashboard/provider/practice/care-team",
+        hasSubsection: false,
+      },
+      {
+        name: "Groups",
+        to: "group",
+        hasSubsection: false,
+      },
+    ],
+  },
 
-    {
-      name: "Bills & Payments",
-      to: "bills",
-      icon: "debit-card-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "Accounting",
-      to: "accounting",
-      icon: "wallet-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "Analytics",
-      to: "analytics",
-      icon: "chart-icon",
-      hasSubsection: false,
-    },
-    { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
-    {
-      name: "Categories",
-      to: "categories",
-      icon: "categories-icon",
-      hasSubsection: true,
-      children: [
-        {
-          name: "Location",
-          to: "/dashboard/provider/settings/location",
-          hasSubsection: false,
-        },
-        {
-          name: "Group",
-          to: "/dashboard/provider/settings/group",
-          hasSubsection: false,
-        },
-      ],
-    },
   ];
 
   hmoLinks: ISidebarLink[] = [

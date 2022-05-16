@@ -58,7 +58,7 @@
                           class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
                           >Current Location</span> -->
                     <span
-                      v-if="currentLocation === item.id"
+                      v-if="authCurrentLocation === item.id"
                       class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
                       >Current Location</span
                     >
@@ -303,7 +303,7 @@ import SettingsWhiteIcon from "./icons/settingswhite.vue";
 import BellIcon from "./icons/bell.vue";
 import ChevronDown from "./icons/chevrondownprimary.vue";
 import { namespace } from "vuex-class";
-import User, { CornieUser } from "@/types/user";
+import User, { CornieUser,  } from "@/types/user";
 import OrgIcon from "@/components/icons/org.vue";
 import ContactIcon from "@/components/icons/contactinfo.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
@@ -370,6 +370,9 @@ export default class NavBar extends Vue {
   currentLocation!: string;
 
   @account.Getter
+  authCurrentLocation!: string;
+
+  @account.Getter
   cornieUser!: CornieUser;
 
   @account.Mutation
@@ -424,7 +427,7 @@ export default class NavBar extends Vue {
 
   get locationDefault() {
     const pt = this.authorizedLocations?.find(
-      (i: any) => i.id === this.currentLocation
+      (i: any) => i.id === this.authCurrentLocation
     );
     return pt ? `${pt.name}` : "Switch default location";
   }
@@ -445,7 +448,9 @@ export default class NavBar extends Vue {
       this.updatePractitioner(this.authPractitioner as any)
   }
   async created(){
+    this.authCurrentLocation;
      await this.updatePractitioner(this.authPractitioner as any)
+    
   }
 }
 </script>

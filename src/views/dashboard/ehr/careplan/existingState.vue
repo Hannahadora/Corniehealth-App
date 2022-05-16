@@ -131,7 +131,7 @@ const practitioner = namespace("practitioner");
 })
 export default class ExistingState extends Vue {
   @careplan.Action
-  getCarePlans!: (patientId: string) => Promise<void>;
+  getPatientCarePlans!: (patientId: string) => Promise<void>;
 
   @careplan.State
   patientCarePlans!: ICarePlan[];
@@ -249,11 +249,11 @@ export default class ExistingState extends Vue {
   }
 
   async careplanadded(){
-    await this.getCarePlans(this.$route.params.id.toString());
+    await this.getPatientCarePlans(this.$route.params.id.toString());
   }
 
   async created() {
-    await this.getCarePlans(this.$route.params.id.toString());
+    await this.getPatientCarePlans(this.$route.params.id.toString());
     await this.fetchPractitioners();
   }
 }

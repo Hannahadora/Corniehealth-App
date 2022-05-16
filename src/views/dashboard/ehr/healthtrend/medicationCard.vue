@@ -101,7 +101,8 @@ export default class MedicationCard extends Vue {
   patientrequests!: any;
 
   @request.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+  fetchrequestsById!: (patientId: string) => Promise<void>;
+  
   showMedicationModal = false;
   async showMedication() {
     this.showMedicationModal = true;
@@ -120,7 +121,7 @@ export default class MedicationCard extends Vue {
   }
 
   get totalMedication() {
-    return this.patientrequests.length;
+    return this.patientrequests?.length;
   }
   oldclinicalStatus = "";
 
@@ -131,9 +132,9 @@ export default class MedicationCard extends Vue {
   }
 
   get items() {
-    const newmedicationrequest = this.newmedicationrequest.map(
+    const newmedicationrequest = this.newmedicationrequest?.map(
       (medication: any) => {
-        medication.Medications.map((codeme: any) => {
+        medication?.Medications?.map((codeme: any) => {
           this.oldclinicalStatus = this.medicationMapper(
             codeme.medicationDetails.medicationCode
           );
@@ -153,9 +154,11 @@ export default class MedicationCard extends Vue {
     );
     return newmedicationrequest;
   }
+
+ 
   async created() {
     await this.createMapper();
-    await this.fetchOtherrequestsById(this.patientId);
+    await this.fetchrequestsById(this.patientId);
   }
 }
 </script>

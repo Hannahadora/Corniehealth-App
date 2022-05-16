@@ -222,7 +222,7 @@ export default class SpecialModal extends Vue {
         this.loading = false;
       }
     } catch (error) {
-      window.notify({ msg: "Invitation not sent.", status: "error" });
+      window.notify({ msg: "Invitation not sent. Email already exist.", status: "error" });
       this.loading = false;
     }
   }
