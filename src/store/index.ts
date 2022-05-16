@@ -55,6 +55,7 @@ import SpecialStore from "./special";
 
 import DispenseStore from "./dispense"
 import DiagnostocStore from "./diagnostic";
+import DiagnosticReport from "./diagnostic-report";
 import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
@@ -92,6 +93,7 @@ export default createStore({
     request: RequestStore,
     refferal: RefferalStore,
     diagnostic: DiagnostocStore,
+    diagnosticReport: DiagnosticReport,
 
     usersettings: UserSettingsStore,
     inventorysettings: inventorySettings,
@@ -110,8 +112,8 @@ export default createStore({
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
 
-    markup:MarkupStore,
-    inventorystock:InventoryStockStore,
+    markup: MarkupStore,
+    inventorystock: InventoryStockStore,
 
     appointmentRoom: AppointmentRoomStore,
     catalogues: CatalogueStore,

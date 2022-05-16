@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ title }}
+            View Result
           </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
@@ -27,7 +27,7 @@
                 class="w-full"
                 label="Status"
                 placeholder="status"
-                v-model="general.status"
+                v-model="status"
                 :items="statuses"
               />
 
@@ -35,7 +35,7 @@
                 class="w-full"
                 label="Specimen Id"
                 placeholder="Specimen Id"
-                v-model="general.specimenId"
+                v-model="specimenId"
                 :disabled="true"
                 :rules="required"
               />
@@ -43,15 +43,15 @@
                 class="w-full"
                 label="Based On"
                 placeholder="Based On"
-                v-model="general.basedOn"
-                :items="[]"
+                v-model="based"
+                :items="basis"
               />
 
               <cornie-input
                 class="w-full"
                 label="Category"
                 placeholder="Category"
-                v-model="general.category"
+                v-model="category"
                 :disabled="true"
                 :rules="required"
               />
@@ -59,25 +59,17 @@
                 class="w-full"
                 label="Code"
                 placeholder="Code"
-                v-model="general.code"
+                v-model="code"
                 :items="statuses"
               />
 
-              <!-- <cornie-input
+              <cornie-input
                 class="w-full"
                 label="Patient"
                 placeholder="Patient"
                 v-model="patient"
                 :disabled="true"
                 :rules="required"
-              /> -->
-
-              <cornie-select
-                class="w-full"
-                label="Patient"
-                placeholder="Patient"
-                v-model="general.patient"
-                :items="allPatients"
               />
               <!-- <cornie-input
               class="w-full"
@@ -100,27 +92,35 @@
             title="Effective"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-3 mt-5 w-1/2">
-              <cornie-radio v-model="type" label="Date/Time" value="date-time" />
-              <cornie-radio v-model="type" value="period" label="Period" />
+            <div class="grid grid-cols-2 gap-3 mt-2 w-1/2">
+              <cornie-radio
+                :name="name"
+                v-model="type"
+                label="Date/Time"
+                value="date-time"
+              />
+              <cornie-radio :name="name" v-model="type" value="period" label="Period" />
             </div>
             <div class="grid grid-cols-2 gap-6 py-6">
               <date-time-picker
                 class="w-full"
                 label="Start Date/Time"
-                v-model:date="effective.period.startTime"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
                 v-if="type == 'period'"
               />
               <date-time-picker
                 class="w-full"
                 label="End Date/Time"
-                v-model:date="effective.period.endTime"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
                 v-if="type == 'period'"
               />
               <date-time-picker
                 class="w-full"
                 label="Date/Time"
-                v-model:date="effective.date"
+                v-model:date="issuedDate"
+                v-model:time="issuedTime"
                 v-if="type == 'date-time'"
               />
             </div>
@@ -135,22 +135,24 @@
                 <date-time-picker
                   class="w-full"
                   label="Issued"
-                  v-model:date="issues.issued.date"
-                  v-model:time="issues.issued.time"
+                  v-model:date="issuedDate"
+                  v-model:time="issuedTime"
                 />
               </div>
-              <practioner-select
-                class="w-full mb-2"
+              <cornie-select
+                class="w-full"
                 label="Performer"
-                v-model="issues.performer"
-              >
-              </practioner-select>
-              <practioner-select
-                class="w-full mb-2"
+                placeholder="Performer"
+                v-model="performer"
+                :items="statuses"
+              />
+              <cornie-select
+                class="w-full"
                 label="Result Interpreter"
-                v-model="issues.resultInterpreter"
-              >
-              </practioner-select>
+                placeholder="Result Interpreter"
+                v-model="resultInterpreter"
+                :items="statuses"
+              />
             </div>
           </accordion-component>
           <accordion-component
@@ -158,70 +160,53 @@
             title="Result"
             :opened="false"
           >
-            <!-- <div class="flex items-center my-6 justify-end">
+            <div class="flex items-center my-6 justify-end">
               <plus-icon />
               <span class="text-danger text-sm ml-2">Add Another</span>
-            </div> -->
-            <div class="grid grid-cols-2 gap-6 pt-6 pb-1">
+            </div>
+            <div class="grid grid-cols-2 gap-6 py-6">
               <cornie-select
                 class="w-full"
                 label="Reference Observation"
                 placeholder="Reference Observation"
-                v-model="result.observation"
+                v-model="refernceObs"
                 :items="statuses"
               />
               <cornie-select
                 class="w-full"
                 label="Media(optional)"
                 placeholder="Media"
-                v-model="result.image"
+                v-model="media"
                 :items="statuses"
               />
 
-              <!-- <cornie-select
-                class="w-full"
-                label="Imaging Studying"
-                placeholder="Imaging Studying"
-                v-model="result.imaging_Study"
-                :items="basis"
-              /> -->
-            </div>
-            <div class="flex flex-col space-y-3 pb-5">
               <cornie-input
                 class="w-full"
                 label="Comment"
                 placeholder="Comment"
-                v-model="result.comments"
+                v-model="comment"
                 :rules="required"
               />
-              <cornie-input
+              <cornie-select
                 class="w-full"
                 label="Imaging Studying"
                 placeholder="Imaging Studying"
-                v-model="result.imaging_Study"
-                :rules="required"
+                v-model="imgStdy"
+                :items="basis"
               />
-            </div>
-          </accordion-component>
-          <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
-            title="Conclusion"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
               <cornie-select
                 class="w-full"
                 label="Conclusion"
                 placeholder="Conclusion"
-                v-model="conclusion.conclu"
-                :items="[]"
+                v-model="conclusion"
+                :items="basis"
               />
               <cornie-select
                 class="w-full"
                 label="Conclusion Code"
                 placeholder="Conclusion Code"
-                v-model="conclusion.code"
-                :items="[]"
+                v-model="conclusionCode"
+                :items="basis"
               />
             </div>
           </accordion-component>
@@ -238,7 +223,6 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="submit"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
           >
@@ -269,23 +253,19 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
-import PractionerSelect from "@/components/practitioner-select.vue";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import { IPatient } from "@/types/IPatient";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const appointmentRoom = namespace("appointmentRoom");
-const patients = namespace("patients");
-const report = namespace("diagnosticReport");
 
 @Options({
-  name: "createReport",
+  name: "AppointmentRoomDialog",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -301,27 +281,11 @@ const report = namespace("diagnosticReport");
     CancelIcon,
     AccordionComponent,
     PlusIcon,
-    PractionerSelect,
   },
 })
 export default class ViewResult extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
-
-  @Prop({ type: string })
-  id!: string;
-
-  @Prop({ type: string, default: "Create Report" })
-  title!: string;
-
-  @patients.State
-  patients!: IPatient[];
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  @report.Action
-  createDReport!: (s: any) => Promise<void>;
 
   required = string().required();
 
@@ -337,47 +301,7 @@ export default class ViewResult extends Vue {
   salesDate = 0;
   customers = "";
   types = "";
-  observations = "";
 
-  general = {
-    status: "",
-    specimenId: "",
-    basedOn: "",
-    patientId: "",
-    patient: "",
-    category: "",
-    code: "",
-  };
-
-  effective = {
-    date: "2022-05-13",
-    period: {
-      startTime: "",
-      endTime: "",
-    },
-  };
-
-  issues = {
-    issued: {
-      time: "",
-      date: "",
-    },
-    performer: "",
-    resultInterpreter: "",
-    dateTime: "",
-  };
-
-  result = {
-    observation: "",
-    image: "",
-    comments: "",
-    imaging_Study: "",
-  };
-
-  conclusion = {
-    conclu: "",
-    code: "",
-  };
   get statuses() {
     return [
       "Registered",
@@ -391,93 +315,6 @@ export default class ViewResult extends Vue {
       "Entered-in-Errors",
       "Unknown",
     ];
-  }
-
-  get allPatients() {
-    return this.patients.map((x) => x.firstname + " " + x.lastname);
-  }
-
-  get locationId() {
-    // return this.authCurrentLocation;
-    return "21b84341-2051-4cad-b6b6-feae04f81215";
-  }
-
-  async fetchObservations() {
-    try {
-      const data = await cornieClient().get(`/api/v1/observations`);
-      this.observations = data.data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching observations",
-        status: "error",
-      });
-    }
-  }
-
-  async mounted() {
-    await this.fetchPatients().then(async () => {
-      await this.fetchObservations();
-    });
-  }
-
-  findePatientId(name: string) {
-    if (!name) return "";
-    return this.patients.find((x) => x.firstname + " " + x.lastname == name)?.id;
-  }
-
-  submit() {
-    this.loading = true;
-
-    let s = {
-      status: this.general.status ? this.general.status.toLocaleLowerCase() : "final",
-      // statusHistory: {
-      //   value: "string",
-      //   start: "2022-05-13",
-      //   end: "2022-05-13",
-      //   practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      //   practitionerName: "string",
-      //   current: true,
-      //   priorPrescription: "string",
-      //   detectedIssue: "string",
-      //   eventHistory: "string",
-      // },
-      patientId: this.findePatientId(this.general.patient),
-      practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      // specimenId: this.general.specimenId,
-      basedOn: this.general.basedOn || "jkdhvsdjd",
-      category: this.general.category || "jhxcjkhvujxchjkvhxc",
-      code: this.general.code,
-      effective:
-        this.type == "date-time"
-          ? { date: this.effective.date }
-          : {
-              period: {
-                startTime: this.effective.period.startTime,
-                endTime: this.effective.period.endTime,
-              },
-            },
-      issueInfo: {
-        issued: this.issues.issued.date + this.issues.issued.time,
-        performer: this.issues.performer,
-        resultInterpreter: this.issues.resultInterpreter,
-        // dateTime: this.issues.issued.date + this.issues.issued.time,
-      },
-      result: [
-        {
-          referenceObservation: this.result.observation,
-          image: this.result.image,
-          comments: this.result.comments,
-          imagingStudy: this.result.imaging_Study,
-        },
-      ],
-      conclusion: {
-        conclusion: this.conclusion.conclu || ";lkoladjksklmdkls",
-        conclusionCode: this.conclusion.code || "nkxicujxizojcoxkjc",
-      },
-    };
-    this.loading = false;
-    console.log("submit", s);
-    this.createDReport(s);
   }
 }
 </script>
