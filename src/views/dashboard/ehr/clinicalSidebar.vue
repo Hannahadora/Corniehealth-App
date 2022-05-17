@@ -6,7 +6,7 @@
     <div class="containers" style="scroll-snap-align: start">
       <div class="rounded-lg bg-white shadow-md w-full">
         <div class="flex -mb-12 justify-center">
-          <avatar class="mr-2 h-24 w-24 m-5" :src="profilePhoto" />
+          <avatar class="mr-2 h-24 w-24 m-5" :src="''" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
           <span class="text-sm text-black font-bold">{{ items.fullname }}</span>
@@ -18,17 +18,13 @@
           <p>
             Blood Type:
             <span class="text-sm text-black font-light">A+ | </span>
-            <span
-              >Genotype: <span class="text-sm text-black font-light">AA</span>
-            </span>
+            <span>Genotype: <span class="text-sm text-black font-light">AA</span> </span>
           </p>
         </div>
         <div class="border-dashed border-2 border-gray-100 m-3"></div>
         <div>
           <div class="flex justify-between -mb-2 space-x-2 p-3">
-            <p class="text-xs text-gray-400 flex">
-              Policy IDs <eye-icon class="ml-2" />
-            </p>
+            <p class="text-xs text-gray-400 flex">Policy IDs <eye-icon class="ml-2" /></p>
             <p class="text-xs text-black flex">{{ items.my_policyId }}</p>
           </div>
           <div class="flex justify-between -mb-2 space-x-2 p-3">
@@ -116,9 +112,7 @@
     </div>
 
     <div class="containers sticky" style="scroll-snap-align: start">
-      <div
-        class="mt-2 mb-5 rounded-lg bg-white shadow-md w-full h-full max-h-full"
-      >
+      <div class="mt-2 mb-5 rounded-lg bg-white shadow-md w-full h-full max-h-full">
         <div class="w-full h-full p-2 pb-6">
           <div
             class="grid w-full pr-2 gap-y-9"
@@ -245,7 +239,7 @@ export default class Settings extends Vue {
   @Prop({ type: Object, required: true })
   patient!: IPatient;
   get profilePhoto() {
-    return this.patient.profilePhoto;
+    return this.patient.profilePhoto || "";
   }
   img = setup(() => useHandleImage());
   get organization() {
@@ -282,7 +276,7 @@ export default class Settings extends Vue {
       { name: "Referral", to: "referral", icon: "reffer-icon" },
       { name: "Care Team", to: "care-team", icon: "care-icon" },
       { name: "Care Partner", to: "care-partners", icon: "partners-icon" },
-       { name: "Care Plans", to: "care-plan", icon: "plan-icon" },
+      { name: "Care Plans", to: "care-plan", icon: "plan-icon" },
       { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
       { name: "Correspondence", to: "correspondence", icon: "correspond-icon" },
       { name: "Attachments", to: "attachments", icon: "attach-icon" },

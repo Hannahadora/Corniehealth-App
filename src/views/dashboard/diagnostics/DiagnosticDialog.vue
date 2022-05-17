@@ -12,46 +12,43 @@
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             Update Status
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
-        <cornie-card-text class="flex-grow scrollable">
-          <v-form class="flex-grow flex flex-col" @submit="submit">
-            <cornie-input
-              class="w-full"
-              label="Current Status"
-              placeholder="Current Status"
-              v-model="currentStatus"
-              :disabled="true"
-              :rules="required"
-            />
-            <cornie-input
-              class="w-full"
-              label="Updated By"
-              placeholder="Updated By"
-              v-model="updatedBy"
-              :disabled="true"
-              :rules="required"
-            />
-            <date-picker
-              class="w-full"
-              label="Last Updated"
-              v-model="lastUpdated"
-              :rules="required"
-            />
+      <cornie-card-text class="flex-grow scrollable">
+        <v-form class="flex-grow flex flex-col" @submit="submit">
+          <cornie-input
+            class="w-full"
+            label="Current Status"
+            placeholder="Current Status"
+            v-model="currentStatus"
+            :disabled="true"
+            :rules="required"
+          />
+          <cornie-input
+            class="w-full"
+            label="Updated By"
+            placeholder="Updated By"
+            v-model="updatedBy"
+            :disabled="true"
+            :rules="required"
+          />
+          <date-picker
+            class="w-full"
+            label="Last Updated"
+            v-model="lastUpdated"
+            :rules="required"
+          />
 
-            <cornie-select
-              class="w-full mt-6"
-              label="Update Status"
-              placeholder="--Select one--"
-              v-model="newStatus"
-              :items="statuses"
-            />
-          </v-form>
-        </cornie-card-text>
+          <cornie-select
+            class="w-full mt-6"
+            label="Update Status"
+            placeholder="--Select one--"
+            v-model="newStatus"
+            :items="statuses"
+          />
+        </v-form>
+      </cornie-card-text>
 
       <div class="flex items-center justify-end mt-24">
         <div class="flex items-center mb-6">
@@ -96,14 +93,14 @@ import IAppointmentRoom from "@/types/IAppointmentRoom";
 import DatePicker from "@/components/daterangepicker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const appointmentRoom = namespace("appointmentRoom");
+const report = namespace("diagnosticReport");
 
 @Options({
-  name: "AppointmentRoomDialog",
+  name: "DialogStatus-UpdateStatus",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -130,8 +127,23 @@ export default class DiagnosticDialog extends Vue {
   customers = "";
   types = "";
 
-  get statuses () {
-      return [ "Registered", "Partial", "Preliminary", "Final", "Ammended", "Corrected", "Appended", "Cancelled", "Entered-in-Errors", "Unknown"]
+  get statuses() {
+    return [
+      "Registered",
+      "Partial",
+      "Preliminary",
+      "Final",
+      "Ammended",
+      "Corrected",
+      "Appended",
+      "Cancelled",
+      "Entered-in-Errors",
+      "Unknown",
+    ];
+  }
+
+  submit() {
+    console.log("submitt");
   }
 }
 </script>
