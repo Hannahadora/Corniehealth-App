@@ -446,6 +446,8 @@ export default class ObservationDialog extends Vue {
   component = {
     code: "",
   };
+  rangeMin = "";
+  rangeMax = "";
 
   get organizationId() {
     return "";

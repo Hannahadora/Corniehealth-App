@@ -2,13 +2,16 @@
   <div>
     <div class="flex flex-wrap space-x-8 space-y-4 mt-6">
       <cornie-radio
+        v-for="(vType, i) in valueTypes"
+        :key="i"
         name="value"
         class="mr-4"
         v-model="valueType"
-        value="quantity"
-        label="Quantity"
+        :value="vType"
+        :label="vType"
+        @change="nullify"
       />
-      <cornie-radio
+      <!-- <cornie-radio
         name="value"
         class="mr-4"
         v-model="valueType"
@@ -77,7 +80,7 @@
         v-model="valueType"
         value="period"
         label="Period"
-      />
+      /> -->
     </div>
 
     <div class="grid grid-cols-2 gap-6 mt-6">
@@ -88,7 +91,6 @@
         v-model="value.quantity"
         :rules="required"
         v-if="valueType === 'quantity'"
-        @blur="clearInput(e.target.value)"
       />
       <cornie-input
         class="w-full"
@@ -96,7 +98,7 @@
         placeholder="Enter"
         v-model="value.code"
         :rules="required"
-        v-if="valueType === 'code'"
+        v-else-if="valueType === 'code'"
       />
       <cornie-input
         class="w-full"
@@ -104,7 +106,7 @@
         placeholder="Enter"
         v-model="value.string"
         :rules="required"
-        v-if="valueType === 'string'"
+        v-else-if="valueType === 'string'"
       />
       <cornie-input
         class="w-full"
@@ -245,20 +247,55 @@ import { first, getTableKeyValue } from "@/plugins/utils";
   },
 })
 export default class ValueForm extends Vue {
-
   @Prop({ type: Object, default: <any>{} })
   value!: IObservationValue;
 
   required = string().required();
 
+  initValue = {
+    quantity: null,
+    code: null,
+    string: null,
+    boolean: null,
+    integer: 0,
+    range: {
+        unit: null,
+        min: 0,
+        max: 0
+    },
+    ratio: null,
+    sampleData: null,
+    time: null,
+    dateTime: null,
+    period: {
+        start: null,
+        end: null
+    }
+}
+
+  valueTypes = [
+    "quantity",
+    "code",
+    "string",
+    "sample-data",
+    "boolean",
+    "range",
+    "integer",
+    "date-time",
+    "time",
+    "period",
+    "ratio",
+  ];
+
   valueType = "quantity";
 
-  clearInput(value: any) {
-    if(!this.valueType.includes(value)) {
-      value = null
-    }
+  nullify() {
+    Object.keys(this.value).forEach((key) => {
+      if (key === this.valueType) {
+        return key;
+      } 
+    });
   }
-
 }
 </script>
 

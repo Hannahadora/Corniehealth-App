@@ -11,7 +11,7 @@
       <h4 class="text-black text-center">There is no record.</h4>
       <cornie-btn
         class="bg-danger px-3 rounded-full text-white m-5"
-        @click="showRoom = true"
+        @click="createObs = true"
       >
         Add New
       </cornie-btn>
@@ -225,6 +225,7 @@ const patients = namespace("patients");
 })
 export default class DiagnosticReport extends Vue {
   query = "";
+  empty = "";
   typeId = "";
   selectedObservation = "";
   showRecord = false;
