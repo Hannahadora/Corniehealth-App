@@ -5,8 +5,8 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Total Requests</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-gray-400 text-sm">Total Returns</p>
+              <p class="text-black font-bold text-xl">{{ totalRequest }}</p>
             </div>
             <total-icon />
           </div>
@@ -14,8 +14,8 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Active Requests</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-gray-400 text-sm">Active Returns</p>
+              <p class="text-black font-bold text-xl">{{ totalRequestActive }}</p>
             </div>
             <active-icon />
           </div>
@@ -23,8 +23,8 @@
         <div class="w-" style="width: 32%">
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
-              <p class="text-gray-400 text-sm">Closed Requests</p>
-              <p class="ctext-black font-bold text-xl">0</p>
+              <p class="text-gray-400 text-sm">Closed Returns</p>
+              <p class="ctext-black font-bold text-xl">{{ totalRequestCancel }}</p>
             </div>
             <close-icon />
           </div>
@@ -46,7 +46,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IMaterialReturn from "@/types/IMaterialReturn";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -73,7 +73,8 @@ import ReceivedSection from "./sections/ReceivedSection.vue";
 
 
 const location = namespace("location");
-const catalogue = namespace("catalogues");
+const materialreturn = namespace("materialreturn");
+const user = namespace("user");
 
 @Options({
   name: "requestExistingState",
@@ -99,17 +100,15 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class requestExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
+ 
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
+  @materialreturn.State
+  materialreturns!: IMaterialReturn[];
 
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @materialreturn.Action
+  fetchMaterialReturnIncoming!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -131,134 +130,24 @@ export default class requestExistingState extends Vue {
 
   currentTab = 0;
 
-  headers = [
-    {
-      title: "GRN NO",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "DATE",
-      key: "code",
-      show: true,
-    },
-    {
-      title: "SUPPLIER",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "RECEIVER",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "item count",
-      key: "brand",
-      show: true,
-    },
-    {
-      title: "total qty",
-      key: "sales",
-      show: true,
-    },
-    {
-      title: "total cost",
-      key: "cdm",
-      show: true,
-    },
-    {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-  
-  ];
-
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
+    get totalRequest() {
+    return this.materialreturns.length;
   }
 
-  get items() {
-    const products = this.products.map((product: any) => {
-      return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
-      };
-    });
-
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+  get totalRequestActive() {
+    return this.materialreturns.filter((c:any) => c.status == 'active').length;
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
+    get totalRequestCancel() {
+    return this.materialreturns.filter((c:any) => c.status == 'cancelled').length;
   }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
 
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
 
-  get sortProduct() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-      console.log('Hello World');
-        let index: string;
-        this.selected = [];
-        if (!this.isCheckAll) {
-            for (index in this.locations) {
-                this.selected.push(this.allLocations[index].code);
-            }
-        }
-  }
-
-  get allLocations() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
-  }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
-  }
 
   async created() {
-    await this.getProducts();
-    await this.fetchLocations();
+    await this.fetchMaterialReturnIncoming(this.authCurrentLocation);
+   
   }
 }
 </script>

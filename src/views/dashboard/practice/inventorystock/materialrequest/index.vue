@@ -40,11 +40,11 @@ export default class RequestIndex extends Vue {
   materialrequests!: IMaterialRequest[];
 
   @materialrequest.Action
-  fetchInventorystocks!: (locationId: string) => Promise<void>;
+  fetchMaterialRequestsOutgoing!: (locationId: string) => Promise<void>;
 
 
   async created() {
-     if (this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
+     if (this.authCurrentLocation) await this.fetchMaterialRequestsOutgoing(this.authCurrentLocation);
   }
 }
 </script>

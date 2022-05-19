@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-9/12 h-full">
+  <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <span class="pr-2 flex items-center cursor-pointer border-r-2">
@@ -25,19 +25,20 @@
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <cornie-input
+                  v-if="identifier"
                     label="Request #"
                     class="w-full mb-4"
                     placeholder="--Autoloaded--"
                     :disabled="true"
-                    v-model="requestNumber"
+                    v-model="identifier"
                   />
-                  <cornie-input
+                  <!-- <cornie-input
                     label="Reference #"
                     class="w-full mb-4"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="referenceNumber"
-                  />
+                  /> -->
                   <cornie-input
                     label="Description"
                     class="w-full mb-4"
@@ -206,6 +207,7 @@
                 </div>
               </template>
             </accordion-component>
+          </div>
             <div class="mb-12 mt-5">
               <span
                 class="
@@ -224,8 +226,8 @@
                 <span class="text-xl -mt-1 mr-2">+</span>Add Item
               </span>
             </div>
-          </div>
-          <div class="mt-12">
+
+          <div class="mt-20">
             <cornie-table
               :menu="false"
               v-model="items"
@@ -337,6 +339,8 @@ import { useCountryStates } from "@/composables/useCountryStates";
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 import IGrn, { SupplyItems } from "@/types/IGrn";
 import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -412,6 +416,9 @@ export default class grnModal extends Vue {
   @user.Getter
   authCurrentLocation!: string;
 
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
   @location.State
   locations!: ILocation[];
 
@@ -434,12 +441,12 @@ export default class grnModal extends Vue {
     phone: {
       number: "8188281176",
       dialCode: "+234",
-    },
+    } as any,
   };
   identifier = "";
   receiverCategory = "";
   receiverLocationId = "";
-  dateReceived = "2022-05-10";
+  dateReceived = new Date();
   supplierCategory = "";
   supplierLocationId = "";
   supplierCountry = "";
@@ -546,13 +553,14 @@ export default class grnModal extends Vue {
     const grn = await this.getGrnById(this.id);
     if (!grn) return;
     this.requestNumber = grn.requestNumber;
+    this.identifier = grn.identifier;
     this.referenceNumber = grn.referenceNumber;
     this.description = grn.description;
     this.receivedBy = grn.receivedBy;
     this.receiverCategory = grn.receiverCategory;
     this.receiverLocationId = grn.receiverLocationId;
     this.supplierCountry = grn.supplierCountry;
-    this.dateReceived = grn.dateReceived || this.dateReceived;
+    this.dateReceived = grn.dateReceived || new Date();
     this.supplierCategory = grn.supplierCategory;
     this.supplierLocationId = grn.supplierLocationId;
     this.supplierState = grn.supplierState;
@@ -732,11 +740,17 @@ export default class grnModal extends Vue {
     this.show = false;
     this.$emit("grnAdded");
   }
+  receiverInfo(){
+    this.receivedBy.name = this.authPractitioner.firstName +''+ this.authPractitioner.lastName;
+     this.receivedBy.phone  = this.authPractitioner?.phone;
+     this.receivedBy.email = this.authPractitioner.email;
+  }
 
   created() {
     this.getProducts();
     this.fetchLocations();
     this.setGrn();
+    this.receiverInfo();
   }
 }
 </script>
