@@ -71,7 +71,7 @@
       placeholder="--Enter--"
       label="Email Address"
     />
-<!-- 
+    <!-- 
     <cornie-input
       v-if="account === 'Provider'"
       :rules="requiredString"
@@ -105,22 +105,27 @@
       v-model="domainName"
       v-on:input="checkDomain"
     /> -->
-      <cornie-select
-        v-if="account === 'Patient'"
-        v-model="subType"
-        :items="['Private', 'Employer']"
-        class="w-full col-span-2"
-        placeholder="--Select--"
-        label="Patient Profile"
-      />
-      <cornie-select
-        v-if="account === 'Provider'"
-        v-model="subType"
-        :items="['Hospital/Clinic', 'Solo Practice', 'Community Pharmacy', 'Diagnostics Center']"
-        class="w-full col-span-2"
-        placeholder="--Select--"
-        label="Provider Profile"
-      />
+    <cornie-select
+      v-if="account === 'Patient'"
+      v-model="subType"
+      :items="['Private', 'Employer']"
+      class="w-full col-span-2"
+      placeholder="--Select--"
+      label="Patient Profile"
+    />
+    <cornie-select
+      v-if="account === 'Provider'"
+      v-model="subType"
+      :items="[
+        'Hospital/Clinic',
+        'Solo Practice',
+        'Community Pharmacy',
+        'Diagnostics Center',
+      ]"
+      class="w-full col-span-2"
+      placeholder="--Select--"
+      label="Provider Profile"
+    />
   </div>
   <label for="terms" class="mt-1 flex items-center">
     <input id="terms" type="checkbox" v-model="checkRequire" required />
@@ -153,7 +158,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import { string } from "yup";
-import { ref, emit } from "vue";
+import { ref, emit, reactive, toRefs } from "vue";
 import DomainInput from "@/components/domain-input.vue";
 
 export default {
@@ -177,10 +182,9 @@ export default {
     const domainName = ref("");
     const organisationName = ref("");
     const PatientType = ref("");
-    // const practiceType = ref("");
+    const practiceType = toRefs(props).account;
     const subType = ref("");
     const checkRequire = ref(false);
-
     const next = () => {
       context.emit("next", {
         firstName,
@@ -192,7 +196,7 @@ export default {
         phone,
         dialCode,
         PatientType,
-        // practiceType,
+        practiceType,
         subType,
       });
     };

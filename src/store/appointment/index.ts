@@ -41,7 +41,7 @@ export default {
     },
     deleteAppointment(state, id: string) {
       const index = state.appointments.findIndex(
-        appointment => appointment.id == id
+        (appointment) => appointment.id == id
       );
       if (index < 0) return;
       const appointments = [...state.appointments];
@@ -65,12 +65,12 @@ export default {
     async getAppointmentById(ctx, id: string) {
       if (ctx.state.appointments.length < 1)
         await ctx.dispatch("fetchAppointments");
-      return ctx.state.appointments.find(appointment => appointment.id == id);
+      return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async getAppointmentResponseById(ctx, id: string) {
       if (ctx.state.appointments.length < 1)
         await ctx.dispatch("fetchAppointments");
-      return ctx.state.appointments.find(appointment => appointment.id == id);
+      return ctx.state.appointments.find((appointment) => appointment.id == id);
     },
     async deleteAppointment(ctx, id: string) {
       const deleted = await deleteAppointment(id);
