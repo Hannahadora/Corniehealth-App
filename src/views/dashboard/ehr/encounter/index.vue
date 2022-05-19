@@ -2,7 +2,7 @@
   <div
     class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
-    <div class="container-fluid" v-if="true">
+    <div class="container-fluid" v-if="empty">
       <div class="w-full p-2">
         <span
           class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
@@ -140,17 +140,10 @@
     </div>
 
     <div class="w-full" v-else>
-      <empty-state />
+      <empty-state @new_encounter="() => (showNewEncounterModal = true)" />
     </div>
 
-    <side-modal
-      :visible="showNewEncounterModal"
-      :width="990"
-      @closesidemodal="() => (showNewEncounterModal = false)"
-      :header="'New Encounter'"
-    >
-      <new-encounter />
-    </side-modal>
+    <new-encounter v-model="showNewEncounterModal" />
 
     <side-modal
       :visible="showNewEpisodeModal"
@@ -173,50 +166,51 @@
         @closesidemodal="closeUpdateModal"
       >
         <template #submit>
-          <CornieBtn
+          <cornie-btn
             :loading="loading"
             class="bg-danger p-2 rounded-full px-8 mx-2 cursor-pointer"
             @click="updateEncounterStatus"
           >
             <span class="text-white font-semibold">Update</span>
-          </CornieBtn>
+          </cornie-btn>
         </template>
       </update-status>
     </side-modal>
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieCard from "@/components/cornie-card";
-import CornieCardTitle from "@/components/cornie-card/CornieCardTitle.vue";
-import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import { namespace } from "vuex-class";
-import { IPatient } from "@/types/IPatient";
 import Avatar from "@/components/avatar.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieCardText from "@/components/cornie-card/CornieCardText.vue";
+import CornieCardTitle from "@/components/cornie-card/CornieCardTitle.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import AddIcon from "@/components/icons/add.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+import NewviewIcon from "@/components/icons/newview.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
-import TableAction from "@/components/table-action.vue";
-import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
 import Modal from "@/components/modal.vue";
 import SearchInput from "@/components/search-input.vue";
-import SearchDropdown from "../careteam/components/search-dropdown.vue";
-import User from "@/types/user";
-import EmptyState from "./components/empty-state.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-import VitalsForm from "./components/vitals-form.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import AddIcon from "@/components/icons/add.vue";
-import NewEncounter from "./components/new-encounter.vue";
-import NewEpisode from "./components/new-episode.vue";
+import TableAction from "@/components/table-action.vue";
 import IEncounter from "@/types/IEncounter";
 import IEpisode from "@/types/IEpisode";
-import UpdateStatus from "./components/update-status.vue";
+import { IPatient } from "@/types/IPatient";
 import IUpdateStatus, { Item } from "@/types/IUpdateModel";
+import User from "@/types/user";
+import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
+import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import AdvancedFilter from "../../patientexp/patients/dialogs/advanced-filter.vue";
+import SearchDropdown from "../careteam/components/search-dropdown.vue";
+import EmptyState from "./components/empty-state.vue";
+import NewEncounter from "./components/new-encounter.vue";
+import NewEpisode from "./components/new-episode.vue";
+import UpdateStatus from "./components/update-status.vue";
+import VitalsForm from "./components/vitals-form.vue";
+// import CornieBtn from "@/components/CornieBtn.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -254,6 +248,8 @@ const vital = namespace("vitals");
   },
 })
 export default class ExistingState extends Vue {
+  empty = false;
+
   @visitsStore.State
   visits!: any;
 

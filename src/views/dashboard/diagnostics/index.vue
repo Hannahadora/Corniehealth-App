@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pb-4 mt-6 border-b border-gray-300">
-      <p class="text-xl font-bold">{{ $route.name }}</p>
+      <p class="text-xl font-bold">{{ $route.name }} Report</p>
     </div>
     <div
       class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
@@ -50,10 +50,7 @@
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'draft'"
-            >
+            <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'draft'">
               {{ item.status }}
             </p>
             <p
@@ -68,10 +65,7 @@
             >
               {{ item.status }}
             </p>
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'unknown'"
-            >
+            <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'unknown'">
               {{ item.status }}
             </p>
             <p
@@ -126,12 +120,8 @@
       </div>
     </div>
   </div>
-  <diagnostic-dialog
-    v-model="showRecord"
-    :id="typeId"
-    @sales-added="salesAdded"
-  />
-  <view-result v-model="showResult" :id="typeId" />
+  <diagnostic-dialog v-model="showRecord" :id="typeId" @sales-added="salesAdded" />
+  <view-result v-model="showResult" :id="typeId" :title="'View Result'" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -247,9 +237,9 @@ export default class DiagnosticReport extends Vue {
 
   get items() {
     const diagnosticsReports = this.diagnosticsReports.map((report) => {
-      (report as any).createdAt = new Date(
-        (report as any).createdAt
-      ).toLocaleDateString("en-US");
+      (report as any).createdAt = new Date((report as any).createdAt).toLocaleDateString(
+        "en-US"
+      );
       return {
         ...report,
         // action: sale.id,
