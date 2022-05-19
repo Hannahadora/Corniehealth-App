@@ -152,8 +152,8 @@ export async function createInventoryValuation(data: any) {
   try {
     const response = await cornieClient().post(
       "/api/v1/inventory/valuations", {
-      valuation: data
-    }
+        valuation: data
+      }
     )
     return response.data;
 

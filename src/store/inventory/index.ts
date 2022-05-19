@@ -26,7 +26,7 @@ export default {
       await createInventoryCategory(data).then(() => {
         // ctx.dispatch()
         return Promise.resolve()
-      }).catch((e) => {
+      }).catch(e => {
         return Promise.reject(e)
       })
 
@@ -37,7 +37,7 @@ export default {
       await updateInventoryCategory(id, data).then(() => {
         // ctx.dispatch()
         return Promise.resolve()
-      }).catch((e) => {
+      }).catch(e => {
         return Promise.reject(e)
       })
     },
@@ -53,15 +53,15 @@ export default {
       await deleteInventoryCategory(id).then(() => {
         // ctx.dispatch()
         return Promise.resolve()
-      }).catch((e) => {
+      }).catch(e => {
         return Promise.reject(e)
       })
     },
 
     async getAllCategories(ctx: any, id: string) {
-      await getInventoryCategoriesByUser(id).then((c) => {
+      await getInventoryCategoriesByUser(id).then(c => {
         ctx.commit("setCategories", c)
-      }).catch((e) => {
+      }).catch(e => {
         console.log("error", e)
 
       })
@@ -86,7 +86,7 @@ export default {
     },
 
     async getAllLocations(ctx: any, id: string) {
-      await getLocationsByUser(id).then((l) => {
+      await getLocationsByUser(id).then(l => {
         ctx.commit("setLocations", l)
         return Promise.resolve()
       }).catch(e => {
@@ -122,7 +122,7 @@ export default {
     },
 
     async createValuation(ctx: any, data: any) {
-      await createInventoryValuation(data).then((l) => {
+      await createInventoryValuation(data).then(l => {
         ctx.commit("setValuation", l)
         return Promise.resolve()
       }).catch(e => {
@@ -131,7 +131,7 @@ export default {
     },
 
     async getAllValuation(ctx: any) {
-      await getAllInventoryValuation().then((l) => {
+      await getAllInventoryValuation().then(l => {
         ctx.commit("setValuation", l)
         return Promise.resolve()
       }).catch(e => {
@@ -140,7 +140,7 @@ export default {
     },
 
     async updateValuation(ctx: any, data: any) {
-      await updateInventoryValuation(data).then((l) => {
+      await updateInventoryValuation(data).then(l => {
         ctx.commit("setValuation", l)
         return Promise.resolve()
       }).catch(e => {
