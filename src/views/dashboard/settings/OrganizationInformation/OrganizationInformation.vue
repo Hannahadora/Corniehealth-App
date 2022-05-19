@@ -184,6 +184,7 @@ import { namespace } from "vuex-class";
 import CornieTooltip from "@/components/tooltip.vue";
 import QuestionIcon from "@/components/icons/question.vue";
 import DomainInput from "@/components/newdomaininput.vue";
+import { isUUID } from "@/plugins/utils";
 
 const organization = namespace("organization");
 @Options({
@@ -312,13 +313,17 @@ export default class PracticeInfo extends Vue {
     if (this.defaultOrgInfo) this.setOrgInfo(this.defaultOrgInfo);
   }
 
+  setDomainName(name: string) {
+    if (name && isUUID(name)) return;
+    this.DomainName = name || "";
+  }
   setOrgInfo(data: IOrganization) {
     this.OrganizationName = data.name || "";
     this.image = data.image || "";
     this.alias = data.alias || "";
     this.OrganizationType = data.organisationType || "";
     this.RegistrationNumber = data.registrationNumber || "";
-    this.DomainName = data.domainName;
+    this.setDomainName(data.domainName);
     this.OrganizationIdentifier = data.identifier || "";
     this.ProviderProfile = data.providerProfile || "";
     this.IncorporationType = data.incorporationType || "";
@@ -326,7 +331,6 @@ export default class PracticeInfo extends Vue {
     this.PhoneNumber = data.phone?.number;
     this.DialCode = data.phone?.dialCode;
     this.EmailAddress = data.email || "";
-    // this.IncorporationStatus = data.incorporationStatus || "";
     this.ReferenceOrganization = data.reference;
     this.address = data?.address || "";
   }

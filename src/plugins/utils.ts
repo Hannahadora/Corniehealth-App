@@ -1,6 +1,13 @@
 import ObjectSet from "@/lib/objectset";
 import IPractitioner from "@/types/IPractitioner";
 
+export function isUUID(str: string) {
+  const regexExp =
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+
+  return regexExp.test(str);
+}
+
 export const first = (num: number, vals: any[]) => {
   const res = [];
   for (let index = 0; index < vals.length; index++) {
@@ -141,7 +148,7 @@ export function printWeekday(date: Date) {
   return map[day];
 }
 
-export function splitDate(date: Date){
+export function splitDate(date: Date) {
   const [dateStr, ..._] = date.toISOString().split("T");
-  return dateStr
+  return dateStr;
 }
