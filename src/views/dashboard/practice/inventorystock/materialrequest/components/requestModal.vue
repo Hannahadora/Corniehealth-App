@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-9/12 h-full">
+  <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <span class="pr-2 flex items-center cursor-pointer border-r-2">
@@ -25,17 +25,17 @@
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <cornie-input
+                   v-if="identifier"
                     label="Request #"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
-                    v-model="requesterId"
+                    v-model="identifier"
                   />
                   <date-picker
                     label="Validity"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
-                    :disabled="true"
                     v-model="validity"
                   />
                 </div>
@@ -44,22 +44,27 @@
                     :label="'Description'"
                     class="w-full"
                     placeholder="Enter"
+                    v-model="description"
+                    :rows="'2'"
+                    :cols="'2'"
                   />
                 </div>
-                <div class="grid grid-cols-2 gap-4 w-full">
+                <!-- <div class="grid grid-cols-2 gap-4 w-full">
                   <cornie-input
                     label="Approval Status"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
+                     v-model="status"
                   />
                   <cornie-input
                     label="Issue Status"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
+                    v-model="status"
                   />
-                </div>
+                </div> -->
               </template>
             </accordion-component>
           </div>
@@ -69,14 +74,14 @@
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <cornie-input
                     label="Name"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="requestedBy.name"
                   />
                   <cornie-phone-input
                     label="Phone Number"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="requestedBy.phone.number"
@@ -84,21 +89,21 @@
                   />
                   <cornie-input
                     label="Email"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="requestedBy.email"
                   />
                   <date-picker
                     label="Date"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="dateRequested"
                   />
                   <cornie-input
                     label="Department"
-                    class="w-full mb-4"
+                    class="w-full"
                     placeholder="--Autoloaded--"
                     :disabled="true"
                     v-model="department"
@@ -182,6 +187,7 @@
                 </div>
               </template>
             </accordion-component>
+          </div>
             <div class="mb-12 mt-5">
               <span
                 class="
@@ -200,8 +206,7 @@
                 <span class="text-xl -mt-1 mr-2">+</span>Add Item
               </span>
             </div>
-          </div>
-          <div class="mt-12">
+          <div class="mt-20">
             <cornie-table
               :menu="false"
               v-model="items"
@@ -209,24 +214,10 @@
               :deleteRow="true"
               @delete="removeItem"
             >
-              <template #delieveredquanitity="{ item }">
+              <template #qty="{ item }">
                 <div class="w-12">
                   <cornie-input v-model="quantities[item.productId]" />
                 </div>
-              </template>
-              <template #unitCost="{ item }">
-                <div class="w-12">
-                  <cornie-input v-model="unitCosts[item.productId]" />
-                </div>
-              </template>
-              <template #totalCost="{ item }">
-                ₦
-                {{
-                  getTotal(
-                    quantities[item.productId],
-                    unitCosts[item.productId]
-                  )
-                }}
               </template>
             </cornie-table>
           </div>
@@ -294,7 +285,7 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
-  <item-modal v-model="showItem" />
+  <item-modal v-model="showItem" @item-supplier="itemsupplier"/>
 </template>
 
 <script lang="ts">
@@ -303,9 +294,11 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import { string, date } from "yup";
+import search from "@/plugins/search";
 
 import IMaterialRequest, { Items } from "@/types/IMaterialRequest";
 import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -374,11 +367,15 @@ export default class requestModal extends Vue {
   @user.Getter
   authCurrentLocation!: string;
 
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
+
   @materialrequest.State
   materialrequests!: IMaterialRequest[];
 
   @materialrequest.Action
-  fetchInventorystocks!: (locationId: string) => Promise<void>;
+  fetchMaterialRequestsIncoming!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -389,12 +386,14 @@ export default class requestModal extends Vue {
   @materialrequest.Action
   getMaterialRequestById!: (id: string) => Promise<IMaterialRequest>;
 
+
   required = string().required();
   emailRule = string().email().required();
   requiredRule = string().required();
 
   showItem = false;
   valid = "";
+  identifier = "";
 
   validity = "";
   status = false;
@@ -410,7 +409,7 @@ export default class requestModal extends Vue {
     dialCode: "+234",
   };
   description = "";
-  dateRequested = "";
+  dateRequested = new Date();
   dateApproved = "";
   department = "";
   requestedBy = {
@@ -419,66 +418,87 @@ export default class requestModal extends Vue {
     phone: {
       number: "",
       dialCode: "+234",
-    },
+    } as any,
   };
   item = [] as Items[];
+  query = "";
 
   headers = [
     {
       title: "item code",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "item name",
       key: "code",
       show: true,
     },
     {
-      title: "brand",
-      key: "category",
+      title: "item name",
+      key: "name",
       show: true,
     },
     {
-      title: "pack size",
+      title: "description",
       key: "description",
       show: true,
     },
     {
       title: "uofm",
-      key: "received",
+      key: "uofm",
       show: true,
     },
     {
       title: "Available QTy",
-      key: "qty",
+      key: "avQty",
       show: true,
     },
     {
       title: "qty requested",
-      key: "received",
+      key: "qty",
       show: true,
     },
   ];
 
-  get items() {
-    const materialrequests = this.materialrequests.map((product: any) => {
+  @Watch("id")
+  idChanged() {
+    this.setRequest();
+  }
+
+   async setRequest() {
+    const request = await this.getMaterialRequestById(this.id);
+    if (!request) return;
+    this.description = request.description;
+    this.validity = request.validity;
+    this.identifier = request.identifier;
+    this.status = request.status;
+    this.requesterId = request.requesterId;
+    this.requesterLocationId = request.requesterLocationId;
+    this.requesterCategory = request.requesterCategory;
+    this.supplyCategory = request.supplyCategory;
+    this.supplyLocationId = request.supplyLocationId;
+    this.supplyContactName = request.supplyContactName;
+    this.supplyContactEmail = request.supplyContactEmail;
+    this.supplyContactPhone = request.supplyContactPhone;
+    this.dateRequested = request.dateRequested || new Date();
+    this.dateApproved = request.dateApproved;
+    this.department = request.department;
+    this.requestedBy = request.requestedBy;
+    this.item = request.items;
+
+  
+  }
+
+   get items() {
+    const supplys = this.item.map((supply: any) => {
+      this.quantities[supply.productId] = 1;
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        qty: "24",
+        ...supply,
+        description: this.description,
       };
     });
-    return materialrequests;
+
+    if (!this.query) return supplys;
+    return search.searchObjectArray(supplys, this.query);
   }
 
   quantities = {} as Record<string, number>;
-  unitCosts = {} as Record<string, number>;
 
   async removeItem(index: number) {
     try {
@@ -495,6 +515,10 @@ export default class requestModal extends Vue {
     return (quantity * unityCost).toFixed(2);
   }
 
+  itemsupplier(value: any) {
+    this.item.push(value);
+  }
+
   get allLocations() {
     if (!this.locations || this.locations.length === 0) return [];
     return this.locations.map((i: any) => {
@@ -506,15 +530,15 @@ export default class requestModal extends Vue {
   }
   buildPayload(item: any) {
     return {
-      productId: "",
-      name: "",
-      code: "",
-      brand: "",
-      form: "",
-      strength: "",
-      uofm: "",
-      packSize: "",
-      quantity: "",
+      quantity: this.quantities[item.productId],
+      productId: item.productId,
+      name: item.name,
+      code: item.code,
+      brand: item.brand,
+      form: item.form,
+      strength: item.strength,
+      uofm: item.uofm,
+      packSize: item.packSize,
     };
   }
   get payload() {
@@ -530,7 +554,8 @@ export default class requestModal extends Vue {
       dateRequested: this.dateRequested,
       dateApproved: this.dateApproved,
       requestedBy: this.requestedBy,
-      items: this.items.map(this.buildPayload),
+      validity: this.validity,
+      items: this.item.map(this.buildPayload),
     };
   }
 
@@ -547,12 +572,12 @@ export default class requestModal extends Vue {
 
     try {
       const response = await cornieClient().post(
-        "/api/v1/inventory/grn/draft",
+        "/api/v1/inventory/material-request/draft",
         this.payload
       );
       if (response.success) {
         window.notify({
-          msg: "Goods received notes draft saved",
+          msg: "Material request draft saved",
           status: "success",
         });
         this.done();
@@ -568,11 +593,11 @@ export default class requestModal extends Vue {
 
     try {
       const response = await cornieClient().post(
-        "/api/v1/inventory/grn",
+        "/api/v1/inventory/material-request",
         this.payload
       );
       if (response.success) {
-        window.notify({ msg: "Goods received notes Saved", status: "success" });
+        window.notify({ msg: "Material Requests Saved", status: "success" });
         this.done();
       }
     } catch (error: any) {
@@ -583,13 +608,13 @@ export default class requestModal extends Vue {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
     const id = this.id;
-    const url = `/api/v1/inventory/grn/update-draft/${id}`;
+    const url = `/api/v1/inventory/material-request/draft/${id}`;
     const payload = this.payload;
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         window.notify({
-          msg: "Goods received note Updated",
+          msg: "Material Request Updated",
           status: "success",
         });
         this.done();
@@ -602,13 +627,13 @@ export default class requestModal extends Vue {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
     const id = this.id;
-    const url = `/api/v1/inventory/grn/complete-draft/${id}`;
+    const url = `/api/v1/inventory/material-request/draft/complete/${id}`;
     const payload = this.payload;
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         window.notify({
-          msg: "Goods received note draft completed",
+          msg: "Material Request draft completed",
           status: "success",
         });
         this.done();
@@ -623,10 +648,18 @@ export default class requestModal extends Vue {
     this.$emit("requestAdded");
   }
 
+  receiverInfo(){
+    this.requestedBy.name = this.authPractitioner.firstName +''+ this.authPractitioner.lastName;
+     this.requestedBy.phone  = this.authPractitioner?.phone;
+     this.requestedBy.email = this.authPractitioner.email;
+  }
+
   async created() {
+    this.receiverInfo();
     if (this.authCurrentLocation)
-      await this.fetchInventorystocks(this.authCurrentLocation);
+    await this.fetchMaterialRequestsIncoming(this.authCurrentLocation);
     await this.fetchLocations();
+
   }
 }
 </script>

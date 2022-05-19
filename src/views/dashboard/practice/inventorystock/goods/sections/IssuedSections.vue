@@ -2,6 +2,15 @@
   <div>
     <div>
       <span class="flex justify-end w-full mb-12">
+        <button
+          type="button"
+          @click="showGRN = true"
+          class="bg-danger rounded-lg text-white py-2 px-6"
+        >
+          New Supply
+        </button>
+      </span>
+      <!-- <span class="flex justify-end w-full mb-12">
         <cornie-btn
           class="
             bg-danger
@@ -97,7 +106,7 @@
             </cornie-card-text>
           </cornie-menu>
         </cornie-btn>
-      </span>
+      </span> -->
     </div>
     <cornie-table v-model="sortGrn" :columns="headers">
       <template #statusitem="{ item }">

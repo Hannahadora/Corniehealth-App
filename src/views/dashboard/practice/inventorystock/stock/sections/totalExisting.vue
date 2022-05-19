@@ -29,15 +29,15 @@
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailableModal(item.id,item)">
             <check-icon class="text-purple-700 fill-current" />
             <span class="ml-3 text-xs">Check Availability</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <check-icon class="text-green-700 fill-current" />
             <span class="ml-3 text-xs">Batch Info</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
             <check-icon class="text-blue-700 fill-current" />
             <span class="ml-3 text-xs">Supplier info</span>
             </div>
@@ -101,7 +101,7 @@
         <allocate-modal v-model="showAllocate" @stockAdded="stockAdded" :item="singleAllocateItem"/>
         <allocate-bulk-modal v-model="showAllocateBulk" @stockAdded="stockAdded" :item="BulkSelectedItem"/>
         <deactivate-modal v-model="showDeactivate" :item="withdrawItem" @stockAdded="stockAdded"/>
-        <availability-modal v-model="showAvailable"/>
+        <availability-modal v-model="showAvailable" :id="stockId" :item="selectItem"/>
         <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
 </template>
@@ -219,6 +219,8 @@ export default class totalExistingState extends Vue {
   isCheck = false;
   withdrawItem = {} as any;
   storageItem = {} as any;
+  selectItem = {} as any;
+  stockId = "";
 
   checked = false;
 
@@ -343,6 +345,12 @@ export default class totalExistingState extends Vue {
   showStorageModal(value:any){
     this.showStorage= true;
     this.storageItem = value;
+  }
+
+  showAvailableModal(id:string,value:any){
+    this.showAvailable = true;
+    this.selectItem = value;
+    this.stockId = id;
   }
 
   showAllocateModal(value:any){

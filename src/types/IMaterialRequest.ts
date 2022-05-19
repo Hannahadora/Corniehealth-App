@@ -16,7 +16,7 @@ export default interface IMaterialRequest {
         dialCode: string
       };
     description: string;
-    dateRequested: string;
+    dateRequested: Date;
     dateApproved: string;
     department: string;
     requestedBy: {
