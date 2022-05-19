@@ -29,14 +29,14 @@
             <update-icon class="text-purple-800 fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
-          <div
+          <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showStatus(item.id)"
           >
             <update-icon class="text-purple-800 fill-current" />
             <span class="ml-3 text-xs">Update Prognosis</span>
-          </div>
-          <div
+          </div> -->
+          <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="
               $router.push('/dashboard/provider/experience/add-appointment')
@@ -44,8 +44,8 @@
           >
             <plus-icon class="text-green-400 fill-current" />
             <span class="ml-3 text-xs">Add Occurrence</span>
-          </div>
-          <div
+          </div> -->
+          <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="
               $router.push('/dashboard/provider/experience/add-appointment')
@@ -53,12 +53,12 @@
           >
             <plus-icon class="text-green-400 fill-current" />
             <span class="ml-3 text-xs">Add Condition</span>
-          </div>
-          <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
+          </div> -->
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
                       <cancel-icon />
                       <span class="ml-3 text-xs"
                       >Cancel</span>
-                    </div> -->
+                    </div>
         </template>
       </cornie-table>
     </div>
@@ -295,17 +295,17 @@ export default class ImpressionExistingState extends Vue {
       (impression as any).updatedAt = new Date(
         (impression as any).updatedAt
       ).toLocaleDateString("en-US");
-      this.updatedBy = impression.effective.assessor;
+      this.updatedBy = impression.recorded.assessor;
       this.currentStatus = impression.status;
       this.update = impression.updatedAt;
       return {
         ...impression,
         action: impression.id,
         keydisplay: "XXXXXXX",
-        problem: impression.effective.problem,
+        problem: impression.recorded.problem,
         investigation: impression.investigation.item,
         prognosis: impression.findings.prognosis,
-        assessor: impression.effective.assessor,
+        assessor: impression.recorded.assessor,
       };
     });
 

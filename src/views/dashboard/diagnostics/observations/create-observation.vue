@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Create Observation
+            {{ newaction }} Observation
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
@@ -19,9 +19,9 @@
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="addObservations">
+        <v-form class="flex-grow flex flex-col" @submit="save">
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Basic Info"
             :opened="false"
           >
@@ -29,7 +29,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Issue Info"
             :opened="false"
           >
@@ -38,6 +38,7 @@
                 class="w-full"
                 label="Date/Time"
                 v-model:date="issueInfo.dateTime"
+                v-model:time="issueInfo.time"
               />
               <cornie-select
                 class="w-full"
@@ -50,7 +51,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Effective"
             :opened="false"
           >
@@ -111,7 +112,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Value"
             :opened="false"
           >
@@ -121,7 +122,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reason Info"
             :opened="false"
           >
@@ -180,7 +181,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reference Range"
             :opened="false"
           >
@@ -231,7 +232,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Member"
             :opened="false"
           >
@@ -253,7 +254,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Component"
             :opened="false"
           >
@@ -269,7 +270,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Value"
             :opened="false"
           >
@@ -279,7 +280,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reason Info"
             :opened="false"
           >
@@ -327,7 +328,7 @@
             Save As Draft
           </cornie-btn>
           <cornie-btn
-            @click="addObservations"
+            @click="save"
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -359,18 +360,21 @@ import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import { IObservation } from "@/types/IObservation";
+import { IPatient } from "@/types/IPatient";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import AccordionComponent from "@/components/dialog-accordion.vue";
+// import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import ValueForm from "./components/ValueForm.vue";
 import BasicInfo from "./components/BasicInfo.vue";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
+const patients = namespace("patients");
 
 @Options({
   name: "ObservationDialog",
@@ -403,6 +407,12 @@ export default class ObservationDialog extends Vue {
 
   @Prop({ type: Object, default: <any>{} })
   observation!: IObservation;
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
 
   required = string().required();
 
@@ -449,6 +459,11 @@ export default class ObservationDialog extends Vue {
   rangeMin = "";
   rangeMax = "";
 
+  @Watch("id")
+  idChanged() {
+    this.setObservation();
+  }
+
   get organizationId() {
     return "";
   }
@@ -469,10 +484,36 @@ export default class ObservationDialog extends Vue {
     return "";
   }
 
-  async addObservations() {
-    const newReport = {
+  get newaction() {
+    return this.id ? "Update" : "Create New";
+  }
+
+  async setObservation() {
+    const xObservation = this.observation;
+    if (!xObservation) return;
+    (this.basicInfo = xObservation?.basicInfo),
+      (this.effective = xObservation?.effective),
+      (this.issueInfo = xObservation?.issueInfo),
+      (this.value = xObservation?.value),
+      (this.reasonInfo = xObservation?.reasonInfo),
+      (this.referenceRange = xObservation?.referenceRange),
+      (this.member = xObservation?.member);
+  }
+
+  async save() {
+    this.loading = true;
+    if (this.id) await this.updateObservation();
+    else await this.createObservation();
+    this.loading = false;
+  }
+
+  get payload() {
+    return {
       patientId: this.patientId,
-      basicInfo: this.basicInfo,
+      basicInfo: {
+        ...this.basicInfo,
+        subject: this.getPatientName(this.basicInfo.subject),
+      },
       effective: this.effective,
       issueInfo: this.issueInfo,
       value: this.value,
@@ -480,11 +521,16 @@ export default class ObservationDialog extends Vue {
       referenceRange: this.referenceRange,
       member: this.member,
     };
+  }
+
+  async getObservationById() {
+    const url = `/api/v1/observations/${this.id}`;
+    const payload = {};
     try {
-      const { data } = await cornieClient().post(`/api/v1/observations`, {
-        ...newReport,
-      });
-      this.$emit("Observation created!");
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        return response.data;
+      }
     } catch (error) {
       window.notify({
         msg: "An error occured",
@@ -493,18 +539,65 @@ export default class ObservationDialog extends Vue {
     }
   }
 
-  async created() {
-    if(this.id !== "") {
-     this.basicInfo = this.observation?.basicInfo,
-      this.effective = this.observation?.effective,
-      this.issueInfo = this.observation?.issueInfo,
-      this.value = this.observation?.value,
-      this.reasonInfo = this.observation?.reasonInfo,
-      this.referenceRange = this.observation?.referenceRange,
-      this.member = this.observation?.member
+  async createObservation() {
+    try {
+      const { data } = await cornieClient().post(`/api/v1/observations`, {
+        ...this.payload,
+      });
+      if (data.success) {
+        window.notify({
+          msg: "Observations created",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
     }
   }
 
+  done() {
+    this.$emit("observation-added");
+    this.show = false;
+  }
+
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+
+  async updateObservation() {
+    const url = `/api/v1/observations/${this.id}`;
+    const payload = {
+      ...this.payload,
+    };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Observations updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({
+        msg: "Observations not updated",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    if (this.id) {
+      await this.setObservation();
+    }
+    await this.fetchPatients();
+    this.payload;
+  }
 }
 </script>
 

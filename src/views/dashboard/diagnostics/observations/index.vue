@@ -23,6 +23,7 @@
           class="bg-danger px-3 py-1 text-base rounded-lg text-white m-5"
           @click="
             typeId = '';
+            selectedObservation = {};
             createObs = true;
           "
         >
@@ -41,14 +42,14 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="viewItem(item.id)"
           >
             <update-status-yellow class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="updateStatus(item.id)"
           >
             <update-status-purple class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
@@ -77,12 +78,12 @@
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
-            <p
+            <!-- <p
               class="text-xs bg-gray-300 p-1 rounded"
               v-if="item.status == 'draft'"
             >
               {{ item.status }}
-            </p>
+            </p> -->
             <p
               class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
               v-if="item.status == 'on-hold' || item.status == 'preliminary'"
@@ -91,19 +92,19 @@
             </p>
             <p
               class="text-xs bg-green-100 text-green-500 p-1 rounded"
-              v-if="item.status == 'active'"
+              v-if="item.status == 'registered'"
             >
               {{ item.status }}
             </p>
-            <p
+            <!-- <p
               class="text-xs bg-gray-300 p-1 rounded"
               v-if="item.status == 'unknown'"
             >
               {{ item.status }}
-            </p>
+            </p> -->
             <p
               class="text-xs bg-green-100 text-green-400 p-1 rounded"
-              v-if="item.status == 'completed'"
+              v-if="item.status == 'final'"
             >
               {{ item.status }}
             </p>
@@ -115,16 +116,16 @@
             </p>
             <p
               class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-              v-if="item.status == 'entered-in-error'"
+              v-if="item.status == 'corrected'"
             >
               {{ item.status }}
             </p>
-            <p
+            <!-- <p
               class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
               v-if="item.status == 'do-not-perform'"
             >
               {{ item.status }}
-            </p>
+            </p> -->
           </div>
         </template>
       </cornie-table>
@@ -153,10 +154,20 @@
       </div>
     </div>
 
+    <update-status
+      :id="typeId"
+      :observation="selectedObservation"
+      :dateUpdated="dateUpdated"
+      :currentStatus="currentStatus"
+      :updatedBy="updatedBy"
+      v-model="statusModal"
+      @status-updated="fetchObservations"
+    />
     <create-observation
       :id="typeId"
       :observation="selectedObservation"
       v-model="createObs"
+      @observation-added="fetchObservations"
     />
   </div>
 </template>
@@ -191,6 +202,7 @@ import { IOrganization } from "@/types/IOrganization";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
 import CreateObservation from "./create-observation.vue";
+import UpdateStatus from "./update-status.vue";
 import { IPatient } from "@/types/IPatient";
 
 const location = namespace("location");
@@ -221,24 +233,27 @@ const patients = namespace("patients");
     AmendBlue,
     CancelRedBg,
     CreateObservation,
+    UpdateStatus,
   },
 })
 export default class DiagnosticReport extends Vue {
   query = "";
   empty = "";
   typeId = "";
-  selectedObservation = "";
+
+  selectedObservation = <any>{};
+  dateUpdated = "";
+  currentStatus = "";
+  updatedBy = "";
+
+
   showRecord = false;
   showResult = false;
   createObs = false;
+
+  statusModal = false;
   practitioner = [] as any;
   location = [] as any;
-  updatedBy = "";
-  currentStatus = "";
-  showStatusModal = false;
-  totalSales = 0;
-  completedSales = 0;
-  totalSalesVolume = 0;
 
   observations = [] as any;
   
@@ -311,9 +326,10 @@ export default class DiagnosticReport extends Vue {
         observationId: report.id,
         basedOn: report.basicInfo?.basedOn,
         category: report.basicInfo?.category,
-        observationCode: report.observationCode,
-        subject: this.getPatientName(report.basicInfo?.subject),
+        observationCode: report.basicInfo.code,
+        subject: report.basicInfo?.subject,
         performer: report.issueInfo?.performer,
+        interpreter: report.reasonInfo.interpretation,
         status: report.status,
       };
     });
@@ -324,6 +340,16 @@ export default class DiagnosticReport extends Vue {
   showItem(value: string) {
     this.showRecord = true;
     this.typeId = value;
+  }
+  updateStatus(value: string) {
+    this.statusModal = true;
+    this.typeId = value;
+     this.selectedObservation = this.observations.find(
+      (el: any) => el.id === value
+    );
+    this.dateUpdated = this.selectedObservation.updatedAt;
+  this.currentStatus = this.selectedObservation.status;
+  this.updatedBy = this.selectedObservation.performer;
   }
 
   viewItem(value: string) {
@@ -339,11 +365,6 @@ export default class DiagnosticReport extends Vue {
   }
 
   deleteItem(id: any) {}
-
-  getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
-  }
 
   get locationId() {
     // return this.authCurrentLocation;
