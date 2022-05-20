@@ -19,10 +19,10 @@ export default {
   actions: {
     async getAllReports(ctx: any) {
       await getReports()
-        .then((r) => {
+        .then(r => {
           ctx.commit("setReport", r);
         })
-        .catch((r) => {
+        .catch(r => {
           console.log("getRe", r);
         });
     },
@@ -31,25 +31,25 @@ export default {
         .then(() => {
           ctx.dispatch("getAllReports");
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("createR", e);
         });
     },
     async updateDReport(ctx: any, payload: any) {
       await updateReport(payload)
-        .then((d) => {
+        .then(d => {
           ctx.dispatch("getAllReports");
         })
-        .catch((d) => {
+        .catch(d => {
           console.log("updateR", d);
         });
     },
     async updateRStatus(ctx: any, payload: any) {
       await updateReportStatus(payload)
-        .then((e) => {
+        .then(e => {
           console.log("updateSuccess", e);
         })
-        .catch((f) => {
+        .catch(f => {
           console.log("ds", f);
         });
     },
@@ -58,7 +58,7 @@ export default {
         .then(() => {
           ctx.dispatch("getAllReports");
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("deleteReport", e);
         });
     },
