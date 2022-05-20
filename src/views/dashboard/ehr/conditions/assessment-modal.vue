@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-2/4 h-2/3" style="z-index: 999">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full" style="z-index: 999">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">
@@ -178,8 +178,8 @@ export default class AssessmentModal extends Vue {
     this.selectedValue.reference = this.active;
   }
 
-  created() {
-    this.fetchClinicalImpressions();
+  async created() {
+    if(this.patientId) await this.fetchClinicalImpressions();
   }
 }
 </script>

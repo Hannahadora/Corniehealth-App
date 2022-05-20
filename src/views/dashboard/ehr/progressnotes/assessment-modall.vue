@@ -178,8 +178,8 @@ export default class AssessmentModal extends Vue {
     this.selectedValue.reference = this.active;
   }
 
-  created() {
-    this.fetchClinicalImpressions();
+  async created() {
+    if(this.patientId) await this.fetchClinicalImpressions();
   }
 }
 </script>

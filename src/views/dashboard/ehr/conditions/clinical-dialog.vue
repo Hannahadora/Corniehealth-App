@@ -33,6 +33,9 @@
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <slot name="actions" />
       </div>
+       <div class="mx-4 mt-auto mb-4">
+        <slot name="optionactions" />
+      </div>
     </cornie-card>
   </cornie-dialog>
 </template>

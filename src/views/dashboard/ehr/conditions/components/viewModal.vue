@@ -1,6 +1,31 @@
 <template>
-  <clinical-dialog v-model="show" title="New Condition" class="">
+  <clinical-dialog v-model="show" title="View Condition" class="">
     <v-form ref="form">
+          <div class="grid grid-cols-3 gap-4 w-full mt-5">
+               <div>
+                   <p class="text-gray-400 italic text-sm">Condition</p>
+                   <span class="text-sm">XXXXXX</span>
+               </div>
+                <div>
+                   <p class="text-gray-400 italic text-sm">Clinical Status</p>
+                   <span class="text-sm">XXXXXX</span>
+               </div>
+                <div>
+                   <p class="text-gray-400 italic text-sm">Verification Status</p>
+                   <span class="text-sm">XXXXXX</span>
+               </div>
+                 <div>
+                   <p class="text-gray-400 italic text-sm">Asserter</p>
+                   <div class="flex space-x-4">
+                       <avatar />
+                        <div>
+                            <span class="mb-0 text-sm">Dr George Smith</span>
+                            <p class="text-xs">Cardiology</p>
+                        </div>
+                   </div>
+               </div>
+
+           </div> 
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
         <accordion-component
           title="Basic Info"
@@ -8,45 +33,29 @@
         >
         <template v-slot:default>
             <div class="grid grid-cols-2 gap-3 mt-3">
-              <!-- <fhir-input
-                v-model="clinicalStatus"
-                label="Clinical Status"
-                reference="http://hl7.org/fhir/ValueSet/condition-clinical"
-                :rules="required"
-              />
-              <fhir-input
-                v-model="verificationStatus"
-                label="Verification Status"
-                reference="http://hl7.org/fhir/ValueSet/condition-ver-status"
-                :rules="required"
-              /> -->
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/condition-category"
+              <cornie-input
                 v-model="category"
-                :rules="required"
                 label="Category"
-                placeholder="Select"
+                placeholder="Autoloaded"
+                :disabled="true"
               />
-              <fhir-input
+              <cornie-input
                 v-model="severity"
                 label="Severity"
-                :rules="required"
-                reference="http://hl7.org/fhir/ValueSet/condition-severity"
-                placeholder="Select"
+                 placeholder="Autoloaded"
+                :disabled="true"
               />
-              <fhir-input
+              <cornie-input
                 v-model="code"
-                :rules="required"
                 label="Code"
-                reference="http://hl7.org/fhir/ValueSet/condition-code"
-                placeholder="Select"
+                 placeholder="Autoloaded"
+                :disabled="true"
               />
-              <fhir-input
+              <cornie-input
                 v-model="bodySite"
-                reference="http://hl7.org/fhir/ValueSet/body-site"
-                :rules="required"
                 label="Body Site"
-                placeholder="Select"
+               placeholder="Autoloaded"
+                :disabled="true"
               />
               <!-- <encounter-select
                 v-model="referenceEncounter"
@@ -63,7 +72,7 @@
           >
           <template v-slot:default>
             <div>
-                <onset-picker v-model="onsetmesurable" label="Onset" />
+                <onset-picker   :disabled="true" v-model="onsetmesurable" label="Onset" />
             </div>
           </template>
           </accordion-component>
@@ -75,7 +84,7 @@
           >
           <template v-slot:default>
                 <div>
-                    <onset-picker v-model="abatementMeasurable" label="Onset" />
+                    <onset-picker    :disabled="true" v-model="abatementMeasurable" label="Onset" />
                 </div>
           </template>
           </accordion-component>
@@ -85,7 +94,7 @@
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
                   <div class="">
-                    <date-time-picker :label="'Date/Time'" :disabled="true" />
+                    <date-time-picker  :label="'Date/Time'" :disabled="true" />
                   </div>
                   <cornie-input
                     label="Recorder"
@@ -116,17 +125,9 @@
           >
           <template v-slot:default>
             <div class="grid grid-cols-2 gap-4 mt-5">
-              <cornie-input v-model="stageSummary" label="Summary" />
-              <assessment-select
-                :patientId="patientId"
-                v-model="stageAssessment"
-                label="Assessment"
-              />
-              <fhir-input
-                v-model="stageType"
-                reference="http://hl7.org/fhir/ValueSet/condition-stage-type"
-                label="Type"
-              />
+              <cornie-input v-model="stageSummary"   :disabled="true" label="Summary" />
+              <cornie-input v-model="stageAssessment"   :disabled="true" label="Assessment" />
+              <cornie-input v-model="stageType"   :disabled="true" label="Type" />
             </div>
             <div class="border-t-2 border-dashed border-gray-200 pt-5">
               <span class="text-sm text-danger">Assessment</span>
@@ -167,25 +168,10 @@
         >
         <template v-slot:default>
           <div class="grid grid-cols-2 justify-between gap-3 mt-3">
-            <fhir-input
-              v-model="evidenceCode"
-              :rules="required"
-              reference="http://hl7.org/fhir/ValueSet/manifestation-or-symptom"
-              label="Code"
-            />
-            <cornie-input
-              :rules="required"
-              v-model="evidenceDetail"
-              label="Detail"
-            />
-              <cornie-input
-               :rules="required"
-            v-model="evidenceNote"
-                      label="Note"
-                      class="mb-5 w-full"
-                      placeholder="Enter"
-                    >
-                    </cornie-input>
+               <cornie-input v-model="evidenceCode"   :disabled="true" label="Code" />
+                <cornie-input v-model="evidenceDetail"   :disabled="true" label="Detail" />
+                 <cornie-input v-model="evidenceNote"   :disabled="true" label="Note" />
+          
           </div>
         </template>
           <!-- <cornie-text-area
@@ -203,16 +189,8 @@
           <span
             v-if="!id"
             class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="SaveDraftGrn"
           >
             Save as draft
-          </span>
-          <span
-            v-else
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="completeDraft"
-          >
-            Complete draft
           </span>
 
           <cornie-btn
@@ -222,20 +200,10 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            v-if="!id"
             :loading="loading"
-            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
-          </cornie-btn>
-          <cornie-btn
-            v-else
-            :loading="loading"
-            @click="submit"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Update
           </cornie-btn>
         </div>
     </template>
@@ -457,89 +425,7 @@ export default class AddCondition extends Vue {
       return;
     }
   }
-  get payload() {
-    return {
-      patientId: this.patientId,
-      encounterId: this.referenceEncounter,
-      clinicalStatus: this.clinicalStatus,
-      verificationStatus: this.verificationStatus,
-      type: this.stageType,
-      category: this.category,
-      summary: this.stageSummary,
-      detail: this.evidenceDetail,
-      bodySite: this.bodySite,
-      assessment: this.stageAssessment,
-      severity: this.severity,
-      evidenceNote: this.evidenceNote,
-      onSet: this.onset,
-      abatement: this.abatement,
-      code: this.code,
-    };
-  }
-
-  async submit() {
-    this.loading = true;
-    await this.create();
-    this.loading = false;
-  }
-  async create() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-    try {
-      const { data } = await cornieClient().post(
-        "/api/v1/condition",
-        this.payload
-      );
-      window.notify({ msg: "Condition created", status: "success" });
-      this.show = false;
-    } catch (error) {
-      window.notify({ msg: "Condition not created", status: "error" });
-    }
-  }
-  async SaveDraftGrn() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/inventory/material-request/draft",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({
-          msg: "Material request draft saved",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-    async completeDraft() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-    const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/complete/${id}`;
-    const payload = this.payload;
-    try {
-      const response = await cornieClient().put(url, this.payload);
-      if (response.success) {
-        window.notify({
-          msg: "Material Request draft completed",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-
-  done() {
-    this.show = false;
-    this.$emit("requestAdded");
-  }
+  
 
   created() {
     this.setAsserter();
