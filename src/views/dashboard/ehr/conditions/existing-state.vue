@@ -4,7 +4,7 @@
       <span class="flex justify-end w-full mb-8">
         <button
           @click="addingCondition = true"
-          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+          class="bg-danger rounded-lg text-white mt-5 py-2  px-6 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
           New Condition
         </button>
@@ -101,26 +101,31 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { categories, codes, severities } from "./drop-downs";
+import { Codeable } from "@/types/misc";
+import { printPractitioner } from "@/plugins/utils";
+
+import { ICondition } from "@/types/ICondition";
+
+
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import NewViewIcon from "@/components/icons/newview.vue";
 import UpdateIcon from "@/components/icons/newupdate.vue";
 import HistoryIcon from "@/components/icons/history.vue";
-import AddCondition from "./add-condition.vue";
 import PlusIcon from "@/components/icons/plus.vue";
+
+
+import AddCondition from "./add-condition.vue";
 import AddOccurence from "./add-occurence.vue";
 import StatusUpdate from "./status-update.vue";
 import AddNotes from "./add-notes.vue";
 import RecordAbatement from "./record-abatement.vue";
 import ViewCondition from "./view-condition.vue";
-import { namespace } from "vuex-class";
-import { ICondition } from "@/types/ICondition";
+
 
 const condition = namespace("condition");
-
-import { categories, codes, severities } from "./drop-downs";
-import { Codeable } from "@/types/misc";
-import { printPractitioner } from "@/plugins/utils";
 
 function copy(data: any) {
   return JSON.parse(JSON.stringify(data));
@@ -203,18 +208,18 @@ export default class ExistingState extends Vue {
       noOrder: true,
     },
     {
-      title: "recorded",
+      title: "Date Recorded",
       key: "recorded",
       show: true,
     },
+      {
+        title: "Code",
+        key: "code",
+        show: true,
+      },
     {
-      title: "category",
+      title: "stage",
       key: "category",
-      show: true,
-    },
-    {
-      title: "Code",
-      key: "code",
       show: true,
     },
     {
@@ -223,13 +228,13 @@ export default class ExistingState extends Vue {
       show: true,
     },
     {
-      title: "recorder",
-      key: "recorder",
-      show: true,
-    },
-    {
       title: "Clinical Status",
       key: "clinicalStatus",
+      show: true,
+    },
+        {
+      title: "verification status",
+      key: "status",
       show: true,
     },
   ];

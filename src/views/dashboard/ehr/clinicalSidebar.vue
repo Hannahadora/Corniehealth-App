@@ -256,7 +256,7 @@ export default class Settings extends Vue {
         icon: "allergy-icon",
       },
       { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
-      { name: "Condition/Problem", to: "condition", icon: "condition-icon" },
+      { name: "Condition", to: "condition", icon: "condition-icon" },
       {
         name: "Appointments",
         to: "appointments",
