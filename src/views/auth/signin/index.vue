@@ -17,7 +17,7 @@
       <two-factor v-if="twoFactor" @change-path="changePath('signin')"/>
       <recommendation v-else @change-path="changePath('2fa')" />
     </template>
-    <sign-in v-else @logged-in="loggedIn = true" />
+    <sign-in v-else @logged-in="setLoggedIn" />
   </auth>
 </template>
 <script lang="ts">
@@ -44,7 +44,7 @@ const user = namespace("user");
 })
 export default class BaseSignIn extends Vue {
   loggedIn = false;
-  areaPath = 'signin'
+  areaPath = 'signin';
 
   @Prop({ type: Boolean, default: "" })
   showText!: boolean;
@@ -71,6 +71,10 @@ export default class BaseSignIn extends Vue {
       store.state.user.requiresTwoFactorAuth ||
       store.state.user.requiresSecurityQuestion
     );
+  }
+
+  setLoggedIn() {
+    this.loggedIn = true;
   }
 
   changePath(val: any) {

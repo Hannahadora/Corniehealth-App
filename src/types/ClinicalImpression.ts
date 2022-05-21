@@ -12,6 +12,8 @@ export interface IClinicalImpression {
       start: string;
       end: string;
     };
+  };
+  recorded: {
     date: string;
     assessor: string;
     previous: string;
@@ -23,10 +25,16 @@ export interface IClinicalImpression {
     protocol: string;
     summary: string;
   };
+  protocol: {
+    protocol: string;
+    summary: string;
+  },
   findings: {
     item: string;
     itemReference: string;
     basis: string;
+  };
+  prognosis: {
     prognosis: string;
     prognosisReference: string;
     supportingInfo: string;

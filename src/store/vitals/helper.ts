@@ -6,7 +6,7 @@ import IVital from "@/types/IVital";
 export async function getVitals(patientId: string) {
   try {
     const response = await cornieClient().get(
-      `/api/v1/vitals/patient/${patientId}`
+      `/api/v1/vitals/signs/patient/${patientId}`
     );
 
     return response.data;
@@ -45,7 +45,7 @@ export async function getEpisodes(patientId: string) {
 
 export async function createVital(body: IVital) {
   try {
-    const response = await cornieClient().post("/api/v1/vitals", body);
+    const response = await cornieClient().post("/api/v1/vitals/signs", body);
 
     if (response?.data?.id)
       notify({ msg: "Vitals recorded successfully", status: "success" });
@@ -83,7 +83,7 @@ export async function createEpisode(body: IEpisode) {
 export async function updateVitalStatus(body: any, vitalId: string) {
   try {
     const response = await cornieClient().put(
-      `/api/v1/vitals/status/${vitalId}`,
+      `/api/v1/vitals/signs/status/${vitalId}`,
       body
     );
 

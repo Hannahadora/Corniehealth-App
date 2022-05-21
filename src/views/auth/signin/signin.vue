@@ -19,15 +19,18 @@
           <h2 class="font-bold text-3xl mb-12">Sign In to CornieHealth</h2>
           <div class="w-full gap-y-2 grid-cols-1 grid">
             <div class="flex items-start w-full mb-6">
-              <div class="lg:w-10/12 w-1/2">
+              <div class="md:w-10/12 w-1/2">
                 <div class="relative">
-                  <img class="absolute left-24 ml-1" src="../../../assets/img/reg.png" />
-                <cornie-input
-                  v-model="domainName"
-                  class="w-full"
-                  placeholder="--Enter--"
-                  label="Domain Name"
-                />
+                  <img
+                    class="absolute left-24 ml-1"
+                    src="../../../assets/img/reg.png"
+                  />
+                  <cornie-input
+                    v-model="domainName"
+                    class="w-full"
+                    placeholder="--Enter--"
+                    label="Domain Name"
+                  />
                 </div>
               </div>
               <div
@@ -128,13 +131,17 @@ export default class Signin extends Vue {
   async submit() {
     this.loading = true;
     try {
-      await login(this.payload);
+      const res: any = await login(this.payload);
       if (
         !store.state.user.requiresTwoFactorAuth ||
         !store.state.user.requiresSecurityQuestion
       ) {
         this.$router.push("/dashboard");
-      } else this.$emit("logged-in");
+      } else {
+        this.$emit("logged-in");
+        console.log('2fa')
+      }
+
       if (this.domainName) setAuthDomain(this.domainName);
     } catch (error: any) {
       if (!error.response) {

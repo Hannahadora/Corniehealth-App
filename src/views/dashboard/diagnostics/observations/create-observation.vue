@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Create Observation
+            {{ newaction }} Observation
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
@@ -19,308 +19,110 @@
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="addObservations">
+        <v-form class="flex-grow flex flex-col" @submit="save">
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Basic Info"
             :opened="false"
           >
+            <basic-info :basicInfo="basicInfo" @get-customers="setCustomers" />
+          </accordion-component>
+
+          <accordion-component
+            class="text-primary"
+            title="Issue Info"
+            :opened="false"
+          >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
+              <date-picker
                 class="w-full"
-                label="Based On"
-                placeholder="Select"
-                v-model="basicInfo.basedOn"
-                :items="['a', 'b']"
+                label="Date/Time"
+                v-model:date="issueInfo.dateTime"
+                v-model:time="issueInfo.time"
               />
               <cornie-select
                 class="w-full"
-                label="Part of"
+                label="Performer"
                 placeholder="Select"
-                v-model="basicInfo.partOf"
-                :items="['a', 'b']"
-              />
-              <cornie-select
-                class="w-full"
-                label="Category"
-                placeholder="Select"
-                v-model="basicInfo.category"
-                :items="['a', 'b']"
-              />
-              <cornie-select
-                class="w-full"
-                label="Code"
-                placeholder="Select"
-                v-model="basicInfo.code"
-                :items="['a', 'b']"
-              />
-              <cornie-select
-                class="w-full"
-                label="Subject"
-                placeholder="Select"
-                v-model="basicInfo.subject"
-                :items="['a', 'b']"
-              />
-              <cornie-select
-                class="w-full"
-                label="Focus"
-                placeholder="Select"
-                v-model="basicInfo.focus"
-                :items="['a', 'b']"
-              />
-              <cornie-select
-                class="w-full"
-                label="Encounter"
-                placeholder="Select"
-                v-model="basicInfo.encounter"
+                v-model="issueInfo.performer"
                 :items="['a', 'b']"
               />
             </div>
           </accordion-component>
+
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Effective"
             :opened="false"
           >
             <div class="grid grid-cols-3 gap-3 mt-6 w-1/2">
               <cornie-radio
-                :name="name"
-                v-model="type"
+                name="effective"
+                v-model="effectiveType"
                 label="Date/Time"
                 value="date-time"
               />
               <cornie-radio
-                :name="name"
-                v-model="type"
+                name="effective"
+                v-model="effectiveType"
                 value="period"
                 label="Period"
               />
               <cornie-radio
-                :name="name"
-                v-model="type"
+                name="effective"
+                v-model="effectiveType"
                 value="instant"
                 label="Instant"
               />
             </div>
             <div class="grid grid-cols-2 gap-6 py-6">
-              <date-time-picker
+              <date-picker
                 class="w-full"
                 label="Start Date/Time"
                 v-model:date="effective.period.start"
-                v-model:time="effective.period.start"
-                v-if="type == 'period'"
+                v-if="effectiveType == 'period'"
               />
-              <date-time-picker
+              <date-picker
                 class="w-full"
                 label="End Date/Time"
                 v-model:date="effective.period.end"
-                v-model:time="effective.period.end"
-                v-if="type == 'period'"
+                v-if="effectiveType == 'period'"
               />
-              <date-time-picker
+              <date-picker
                 class="w-full"
                 label="Date/Time"
                 v-model:date="effective.instant.dateTime"
-                v-model:time="effective.instant.dateTime"
-                v-if="type == 'date-time' || type == 'instant'"
+                v-if="effectiveType == 'instant'"
+              />
+              <date-picker
+                class="w-full"
+                label="Date/Time"
+                v-model:date="effective.dateTime"
+                v-if="effectiveType == 'date-time'"
               />
               <cornie-select
                 class="w-full"
                 label="Timezone"
                 placeholder="Select"
                 v-model="effective.instant.timeZone"
-                :items="statuses"
-                v-if="type == 'instant'"
+                :items="['a', 'b']"
+                v-if="effectiveType == 'instant'"
               />
             </div>
           </accordion-component>
+
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Value"
             :opened="false"
           >
-            <div class="flex flex-wrap space-x-8 space-y-4 mt-6">
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                label="Quantity"
-                value="quantity"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="code"
-                label="Code"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="string"
-                label="String"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="boolean"
-                label="Boolean"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="integer"
-                label="Integer"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="range"
-                label="Range"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="ratio"
-                label="Ratio"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="sample-data"
-                label="Sample Data"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="time"
-                label="Time"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="date-time"
-                label="Date/Time"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="period"
-                label="Period"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6 mt-6">
-              <cornie-input
-                class="w-full"
-                :label="value"
-                :placeholder="'Enter' || { '1:1': value == 'ratio' }"
-                v-model="selectedVal"
-                :rules="required"
-                v-if="
-                  value == 'quantity' ||
-                  value == 'code' ||
-                  value == 'string' ||
-                  value == 'integer' ||
-                  value == 'sample-data' ||
-                  value == 'ratio'
-                "
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6 mt-6">
-              <date-time-picker
-                class="w-full"
-                label="Start Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'period'"
-              />
-              <date-time-picker
-                class="w-full"
-                label="End Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'period'"
-              />
-              <date-time-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'date-time' || value == 'time'"
-              />
-            </div>
-
-            <div v-if="value == 'boolean'">
-              <div class="font-bold text-base">Boolean</div>
-              <div class="grid grid-cols-3 gap-3 mt-6 w-1/3">
-                <cornie-radio
-                  :name="name"
-                  v-model="booleanValue"
-                  label="Yes"
-                  value="yes"
-                />
-                <cornie-radio
-                  :name="name"
-                  v-model="booleanValue"
-                  value="no"
-                  label="No"
-                />
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6 mt-2" v-if="value == 'range'">
-              <div class="flex items-start">
-                <div class="w-11/12">
-                  <cornie-input
-                    class="mr-1"
-                    label="Range(min)"
-                    placeholder="0"
-                    v-model="minRange"
-                    :rules="required"
-                  />
-                </div>
-                <cornie-select
-                  placeholder="Days"
-                  class="ml-1 font-bold bg-blue-900 text-white"
-                  :items="['Days']"
-                  v-model="minRangeP"
-                  label="'"
-                />
-              </div>
-              <div class="flex items-start">
-                <div class="w-11/12">
-                  <cornie-input
-                    class="mr-1"
-                    label="Range(max)"
-                    placeholder="0"
-                    v-model="maxRange"
-                    :rules="required"
-                  />
-                </div>
-                <div class="">
-                  <cornie-select
-                    placeholder="Days"
-                    class="ml-1 font-bold bg-blue-900 text-white"
-                    :items="['Days']"
-                    v-model="maxRangeP"
-                    label="'"
-                  />
-                </div>
-              </div>
+            <div>
+              <value-form :value="value" />
             </div>
           </accordion-component>
+
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reason Info"
             :opened="false"
           >
@@ -379,7 +181,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reference Range"
             :opened="false"
           >
@@ -430,7 +232,7 @@
           </accordion-component>
 
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Member"
             :opened="false"
           >
@@ -452,7 +254,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Component"
             :opened="false"
           >
@@ -461,198 +263,24 @@
                 class="w-full"
                 label="Code"
                 placeholder="Select"
-                v-model="code"
-                :items="code"
+                v-model="component.code"
+                :items="['a', 'b']"
               />
             </div>
           </accordion-component>
+
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Value"
             :opened="false"
           >
-            <div class="flex flex-wrap space-x-8 space-y-4 mt-6">
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                label="Quantity"
-                value="quantity"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="code"
-                label="Code"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="string"
-                label="String"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="boolean"
-                label="Boolean"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="integer"
-                label="Integer"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="range"
-                label="Range"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="ratio"
-                label="Ratio"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="sample-data"
-                label="Sample Data"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="time"
-                label="Time"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="date-time"
-                label="Date/Time"
-              />
-              <cornie-radio
-                :name="name"
-                class="mr-4"
-                v-model="value"
-                value="period"
-                label="Period"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6 mt-6">
-              <cornie-input
-                class="w-full"
-                :label="value"
-                :placeholder="'Enter' || { '1:1': value == 'ratio' }"
-                v-model="value"
-                :rules="required"
-                v-if="
-                  value == 'quantity' ||
-                  value == 'code' ||
-                  value == 'string' ||
-                  value == 'integer' ||
-                  value == 'sample-data' ||
-                  value == 'ratio'
-                "
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6 mt-6">
-              <date-time-picker
-                class="w-full"
-                label="Start Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'period'"
-              />
-              <date-time-picker
-                class="w-full"
-                label="End Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'period'"
-              />
-              <date-time-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="issuedDate"
-                v-model:time="issuedTime"
-                v-if="value == 'date-time' || value == 'time'"
-              />
-            </div>
-
-            <div v-if="value == 'boolean'">
-              <div class="font-bold text-base">Boolean</div>
-              <div class="grid grid-cols-3 gap-3 mt-6 w-1/3">
-                <cornie-radio
-                  :name="name"
-                  v-model="booleanValue"
-                  label="Yes"
-                  value="yes"
-                />
-                <cornie-radio
-                  :name="name"
-                  v-model="booleanValue"
-                  value="no"
-                  label="No"
-                />
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6 mt-2" v-if="value == 'range'">
-              <div class="flex items-start">
-                <div class="w-11/12">
-                  <cornie-input
-                    class="mr-1"
-                    label="Range(min)"
-                    placeholder="0"
-                    v-model="minRange"
-                    :rules="required"
-                  />
-                </div>
-                <cornie-select
-                  placeholder="Days"
-                  class="ml-1 font-bold bg-blue-900 text-white"
-                  :items="['Days']"
-                  v-model="minRangeP"
-                  label="'"
-                />
-              </div>
-              <div class="flex items-start">
-                <div class="w-11/12">
-                  <cornie-input
-                    class="mr-1"
-                    label="Range(max)"
-                    placeholder="0"
-                    v-model="maxRange"
-                    :rules="required"
-                  />
-                </div>
-                <div class="">
-                  <cornie-select
-                    placeholder="Days"
-                    class="ml-1 font-bold bg-blue-900 text-white"
-                    :items="['Days']"
-                    v-model="maxRangeP"
-                    label="'"
-                  />
-                </div>
-              </div>
+            <div>
+              <value-form :value="value" />
             </div>
           </accordion-component>
+
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Reason Info"
             :opened="false"
           >
@@ -700,7 +328,7 @@
             Save As Draft
           </cornie-btn>
           <cornie-btn
-            @click="addObservations"
+            @click="save"
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -731,20 +359,25 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import IAppointmentRoom from "@/types/IAppointmentRoom";
+import { IObservation } from "@/types/IObservation";
+import { IPatient } from "@/types/IPatient";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
+import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import AccordionComponent from "@/components/dialog-accordion.vue";
+// import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import ValueForm from "./components/ValueForm.vue";
+import BasicInfo from "./components/BasicInfo.vue";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
+const patients = namespace("patients");
 
 @Options({
-  name: "AppointmentRoomDialog",
+  name: "ObservationDialog",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -760,18 +393,35 @@ const appointmentRoom = namespace("appointmentRoom");
     CancelRedBg,
     AccordionComponent,
     PlusIcon,
+    DatePicker,
+    ValueForm,
+    BasicInfo,
   },
 })
-export default class ViewResult extends Vue {
+export default class ObservationDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  @Prop({ type: Object, default: <any>{} })
+  observation!: IObservation;
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
   required = string().required();
+
+  customers = <any>[]
 
   loading = false;
   activeTab = "Full Payment";
   opened = true;
-  type = "date-time";
+  effectiveType = "date-time";
 
   statusHistory = [
     {
@@ -796,95 +446,24 @@ export default class ViewResult extends Vue {
     code: "",
     focus: "",
   };
-
-  effective = {
-    dateTime: "",
-    period: {
-      start: "",
-      end: "",
-    },
-    instant: {
-      dateTime: "",
-      timeZone: "",
-    },
-  };
-
-  issueInfo = {
-    dateTime: "",
-    performer: "",
-  };
-
-  value = {
-    quantity: "",
-    code: "",
-    string: "",
-    boolean: true,
-    integer: 0,
-    range: {
-      unit: "",
-      min: 0,
-      max: 0,
-    },
-    ratio: "",
-    sampleData: "",
-    time: "",
-    dateTime: "",
-    period: {
-      start: "",
-      end: "",
-    },
-  };
-
-  reasonInfo = {
-    dateAbsentReason: "",
-    note: "",
-    method: "",
-    device: "",
-    interpretation: "",
-    bodysite: "",
-    specimen: "",
-  };
-
-  referenceRange = {
-    low: "",
-    high: "",
-    type: "",
-    age: "",
-    appliesTo: "",
-    text: "",
-  };
-
+  effective = <any>{};
+  issueInfo = <any>{};
+  value = <any>{};
+  reasonInfo = <any>{};
+  referenceRange = <any>{};
   member = {
     hasMemer: "",
     derivedFrom: "",
   };
+  component = {
+    code: "",
+  };
+  rangeMin = "";
+  rangeMax = "";
 
-  booleanValue = "yes";
-  minRange = 0;
-  maxRange = 0;
-  minRangeP = "Days";
-  maxRangeP = "Days";
-  issuedDate = "";
-  issuedTime = "";
-
-  reference = "";
-  salesDate = 0;
-  customers = "";
-  types = "";
-
-  get statuses() {
-    return [
-      "Registered",
-      "Partial",
-      "Preliminary",
-      "Final",
-      "Ammended",
-      "Corrected",
-      "Appended",
-      "Cancelled",
-      "Entered-in-Errors",
-      "Unknown",
-    ];
+  @Watch("id")
+  idChanged() {
+    this.setObservation();
   }
 
   get organizationId() {
@@ -892,7 +471,7 @@ export default class ViewResult extends Vue {
   }
 
   get patientId() {
-    return "";
+    return this.basicInfo.subject;
   }
 
   get practitionerId() {
@@ -907,9 +486,40 @@ export default class ViewResult extends Vue {
     return "";
   }
 
-  async addObservations() {
-    const newReport = {
-      basicInfo: this.basicInfo,
+  get newaction() {
+    return this.id ? "Update" : "Create New";
+  }
+
+  setCustomers(data: any) {
+    this.customers = data
+  }
+
+  async setObservation() {
+    const xObservation = this.observation;
+    if (!xObservation) return;
+    (this.basicInfo = xObservation?.basicInfo),
+      (this.effective = xObservation?.effective),
+      (this.issueInfo = xObservation?.issueInfo),
+      (this.value = xObservation?.value),
+      (this.reasonInfo = xObservation?.reasonInfo),
+      (this.referenceRange = xObservation?.referenceRange),
+      (this.member = xObservation?.member);
+  }
+
+  async save() {
+    this.loading = true;
+    if (this.id) await this.updateObservation();
+    else await this.createObservation();
+    this.loading = false;
+  }
+
+  get payload() {
+    return {
+      patientId: this.patientId,
+      basicInfo: {
+        ...this.basicInfo,
+        subject: this.getPatientName(this.basicInfo.subject),
+      },
       effective: this.effective,
       issueInfo: this.issueInfo,
       value: this.value,
@@ -917,18 +527,82 @@ export default class ViewResult extends Vue {
       referenceRange: this.referenceRange,
       member: this.member,
     };
+  }
+
+  async getObservationById() {
+    const url = `/api/v1/observations/${this.id}`;
+    const payload = {};
     try {
-      const { data } = await cornieClient().post(
-        `/api/v1/observations`,
-        { ...newReport }
-      );
-      this.$emit("Observation created!");
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        return response.data;
+      }
     } catch (error) {
       window.notify({
         msg: "An error occured",
         status: "error",
       });
     }
+  }
+
+  async createObservation() {
+    try {
+      const { data } = await cornieClient().post(`/api/v1/observations`, {
+        ...this.payload,
+      });
+      if (data.success) {
+        window.notify({
+          msg: "Observations created",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+
+  done() {
+    this.$emit("observation-added");
+    this.show = false;
+  }
+
+  getPatientName(id: string) {
+    const pt = this.customers.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
+  async updateObservation() {
+    const url = `/api/v1/observations/${this.id}`;
+    const payload = {
+      ...this.payload,
+    };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({
+          msg: "Observations updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({
+        msg: "Observations not updated",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    if (this.id) {
+      await this.setObservation();
+    }
+    await this.fetchPatients();
+    this.payload;
   }
 }
 </script>
