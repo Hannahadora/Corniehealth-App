@@ -6,14 +6,14 @@
         label="Based On"
         placeholder="Select"
         v-model="basicInfo.basedOn"
-        :items="['a', 'b']"
+        :items="['Care plan', 'Device request', 'Immunization Recommendation', 'Medication request', 'Nutrition order', 'Service request']"
       />
       <cornie-select
         class="w-full"
         label="Part of"
         placeholder="Select"
         v-model="basicInfo.partOf"
-        :items="['a', 'b']"
+        :items="['Medication administration', 'Medication dispense', 'Medication statement', 'Procedure', 'Immunization', 'Imaging study']"
       />
       <cornie-select
         class="w-full"
@@ -111,6 +111,11 @@ export default class BasicInfo extends Vue {
   customerDetails = [];
   query = "";
 
+  
+  @Watch("customers")
+  queryUpdate() {
+    this.$emit('get-customers', this.customerDetails);
+  }
 
   fetchCustomers(query: string) {
     debounce(async () => {
@@ -141,6 +146,10 @@ export default class BasicInfo extends Vue {
     });
     if (!this.query) return xCustomers;
     return search.searchObjectArray(xCustomers, this.query);
+  }
+
+  async created () {
+    this.$emit('get-customers', this.customerDetails)
   }
 
 }

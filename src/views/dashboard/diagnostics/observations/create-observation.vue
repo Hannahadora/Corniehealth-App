@@ -25,7 +25,7 @@
             title="Basic Info"
             :opened="false"
           >
-            <basic-info :basicInfo="basicInfo" />
+            <basic-info :basicInfo="basicInfo" @get-customers="setCustomers" />
           </accordion-component>
 
           <accordion-component
@@ -416,6 +416,8 @@ export default class ObservationDialog extends Vue {
 
   required = string().required();
 
+  customers = <any>[]
+
   loading = false;
   activeTab = "Full Payment";
   opened = true;
@@ -486,6 +488,10 @@ export default class ObservationDialog extends Vue {
 
   get newaction() {
     return this.id ? "Update" : "Create New";
+  }
+
+  setCustomers(data: any) {
+    this.customers = data
   }
 
   async setObservation() {
@@ -565,8 +571,8 @@ export default class ObservationDialog extends Vue {
   }
 
   getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+    const pt = this.customers.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
   }
 
   async updateObservation() {

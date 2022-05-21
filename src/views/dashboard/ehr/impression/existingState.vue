@@ -54,11 +54,13 @@
             <plus-icon class="text-green-400 fill-current" />
             <span class="ml-3 text-xs">Add Condition</span>
           </div> -->
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="destroy(item.id)">
-                      <cancel-icon />
-                      <span class="ml-3 text-xs"
-                      >Cancel</span>
-                    </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="destroy(item.id)"
+          >
+            <cancel-icon />
+            <span class="ml-3 text-xs">Cancel</span>
+          </div>
         </template>
       </cornie-table>
     </div>
@@ -304,7 +306,7 @@ export default class ImpressionExistingState extends Vue {
         keydisplay: "XXXXXXX",
         problem: impression.recorded.problem,
         investigation: impression.investigation.item,
-        prognosis: impression.findings.prognosis,
+        prognosis: impression.prognosis.prognosis,
         assessor: impression.recorded.assessor,
       };
     });
