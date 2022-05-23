@@ -420,6 +420,7 @@
 <script lang="ts">
 import CornieCard from "@/components/cornie-card";
 import CornieDialog from "@/components/CornieDialog.vue";
+import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
@@ -445,6 +446,7 @@ import problem from "./problem.vue";
     CornieSelect,
     items,
     ItemReference,
+    CornieInput,
   },
 })
 export default class NewProgressNote extends Vue {
