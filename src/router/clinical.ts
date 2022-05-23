@@ -1,5 +1,5 @@
-import { RouteRecordRaw } from "vue-router";
 import EHR from "@/views/dashboard/ehr/index.vue";
+import { RouteRecordRaw } from "vue-router";
 
 export const ClinicalsRoute: RouteRecordRaw = {
   path: ":id",
@@ -90,7 +90,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
       path: "procedure",
       props: true,
       name: "Procedures",
-      component: () => import("@/views/dashboard/ehr/procedures/index2.vuee"),
+      component: () => import("@/views/dashboard/ehr/procedures/index2.vue"),
     },
     {
       path: "history",
