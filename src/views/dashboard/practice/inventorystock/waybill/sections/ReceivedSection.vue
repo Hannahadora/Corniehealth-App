@@ -54,7 +54,7 @@
           <span class="ml-3 text-xs">Edit</span>
         </div>
 
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showGrnModal(item.id, item)">
           <check-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">Good Received Note</span>
         </div>
@@ -89,6 +89,7 @@
   <waybill-modal v-model="showWaybill" @waybillAdded="waybillAdded" />
   <other-modal v-model="showOtherWaybill" />
   <view-modal v-model="showview" />
+  <grn-modal  v-model="grnShow" :waybillId="waybillId" :selectedItem="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -121,6 +122,7 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import WaybillModal from "../components/waybillModal.vue";
 import OtherModal from "../components/otherwayBillModal.vue";
 import ViewModal from "../components/viewModal.vue";
+import GrnModal from "../../goods/components/grnModal.vue";
 
 const location = namespace("location");
 const waybill = namespace("waybill");
@@ -150,6 +152,7 @@ const user = namespace("user");
     NewTab,
     ViewModal,
     OtherModal,
+    GrnModal,
   },
 })
 export default class IssuedExistingState extends Vue {
@@ -181,6 +184,7 @@ export default class IssuedExistingState extends Vue {
   showWaybill = false;
   showOtherWaybill = false;
   waybillId = "";
+  grnShow = false;
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 
@@ -248,6 +252,12 @@ export default class IssuedExistingState extends Vue {
 
     if (!this.query) return waybills;
     return search.searchObjectArray(waybills, this.query);
+  }
+
+   showGrnModal(value:string, item:any){
+    this.grnShow = true;
+    this.waybillId = value;
+    this.selectedItem = item;
   }
 
   getLocationName(id: string) {

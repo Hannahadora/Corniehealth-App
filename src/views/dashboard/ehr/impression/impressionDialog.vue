@@ -487,7 +487,11 @@ import ItemModal from "./itemdailog.vue";
 import ReferenceModal from "./reference.vue";
 import { namespace } from "vuex-class";
 
+import IPractitioner from "@/types/IPractitioner";
+
 const impression = namespace("impression");
+const user = namespace("user");
+
 
 const emptyImpression: IImpression = {
   status: "",
@@ -503,11 +507,11 @@ const emptyImpression: IImpression = {
     date: "2021-10-14T14:42:16.549Z",
     assessor: "",
     previous: "",
-    problem: "",
+    problem: "problem",
   },
   investigation: {
     code: "",
-    item: "",
+    item: "item",
     protocol: "protocol",
     summary: "",
   },
@@ -568,6 +572,9 @@ export default class Medication extends Vue {
   available!: object;
 
   impressionModel = {} as IImpression;
+
+   @user.Getter
+  authPractitioner!: IPractitioner;
 
   @Watch("id")
   idChanged() {
@@ -646,7 +653,7 @@ export default class Medication extends Vue {
       subject: this.impressionModel.subject,
       statusReason: this.impressionModel.statusReason,
       description: this.impressionModel.description,
-      encounter: this.impressionModel.encounter,
+      encounter: this.authPractitioner.id,
       effective: this.impressionModel.effective,
       investigation: this.impressionModel.investigation,
       findings: this.impressionModel.findings,

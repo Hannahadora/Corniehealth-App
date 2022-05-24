@@ -166,9 +166,9 @@ export default class TimeablePicker extends Vue {
     else this.type = "date";
   }
 
-  mounted() {
-    this.setType();
-  }
+  // mounted() {
+  //   this.setType();
+  // }
 
   @Watch("timeable", { deep: true })
   timeChanged() {

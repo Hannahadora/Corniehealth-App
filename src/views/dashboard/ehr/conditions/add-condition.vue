@@ -84,10 +84,17 @@
             <accordion-component title="Recorded" :opened="false">
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
-                  <div class="">
-                    <date-time-picker :label="'Date/Time'" :disabled="true" />
+                  <div class="mt-1">
+                    <date-time-picker  v-model:date="recordDate"  v-model:time="recordTime"  :label="'Date/Time'" />
                   </div>
                   <cornie-input
+                    label="Recorder"
+                    class="w-full"
+                    placeholder="Autoloaded"
+                    :disabled="true"
+                    v-model="recorder"
+                  />
+                  <!-- <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
                     placeholder="Autoloaded"
@@ -104,7 +111,7 @@
                         <d-edit class="fill-current text-white" />
                       </span>
                     </template>
-                  </cornie-input>
+                  </cornie-input> -->
                 </div>
               </template>
             </accordion-component>
@@ -116,38 +123,41 @@
           >
           <template v-slot:default>
             <div class="grid grid-cols-2 gap-4 mt-5">
-              <cornie-input v-model="stageSummary" label="Summary" />
+              <cornie-input v-model="summary" label="Summary" />
               <assessment-select
                 :patientId="patientId"
-                v-model="stageAssessment"
+                v-model="assessment"
                 label="Assessment"
+                @asses-data="assesdata"
               />
               <fhir-input
-                v-model="stageType"
+                v-model="type"
                 reference="http://hl7.org/fhir/ValueSet/condition-stage-type"
                 label="Type"
+                placeholder="Select"
               />
             </div>
             <div class="border-t-2 border-dashed border-gray-200 pt-5">
               <span class="text-sm text-danger">Assessment</span>
                 <div class="grid grid-cols-3 gap-4">
-                  <div class="bg-white shadow-md p-1 w-full mt-5 rounded-lg">
+                  <div class="bg-white shadow-md p-1 w-full mt-5 rounded-lg" v-for="(item, index) in assessment" :key="index">
                     <div class="flex space-x-4 w-full">
                       <div class="w-full">
                         <p class="font-bold text-sm">
-                          Bleaching of Skin
+                          {{ item.name }}
                         </p>
                         <span class="text-gray-400 text-xs font-light">
-                            21/07/21
+                           {{ new Date(item.date).toLocaleDateString()}}
                         </span>
                         <span class="text-black text-xs font-light">
-                            Dr. Bola Ola <span class="text-gray-400">. Pathology</span>
+                            Dr. {{ item.practionerName}} <span class="text-gray-400">. {{ item.department}}</span>
                         </span>
                       </div>
                       <div class="float-right flex justify-end w-full">
                         <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
                           <delete-red
-                            class="mt-1"
+                            class="mt-1 cursor-pointer"
+                            @click="deleteAsses(index)"
                           />
                         </div>
                       </div>
@@ -168,19 +178,21 @@
         <template v-slot:default>
           <div class="grid grid-cols-2 justify-between gap-3 mt-3">
             <fhir-input
-              v-model="evidenceCode"
+              v-model="evidence.code"
               :rules="required"
               reference="http://hl7.org/fhir/ValueSet/manifestation-or-symptom"
               label="Code"
+              placeholder="Select"
             />
             <cornie-input
               :rules="required"
-              v-model="evidenceDetail"
+              v-model="evidence.detail"
               label="Detail"
+              placeholder="Enter"
             />
               <cornie-input
                :rules="required"
-            v-model="evidenceNote"
+            v-model="evidence.note"
                       label="Note"
                       class="mb-5 w-full"
                       placeholder="Enter"
@@ -285,9 +297,9 @@ const user = namespace("user");
 
 const timeable = {
   age: null,
-  startDate: null,
+  start: null,
   startTime: null,
-  endDate: null,
+  end: null,
   endTime: null,
   date: null,
   time: null,
@@ -309,6 +321,9 @@ const measurable = {
   startDate: null,
   startTime: null,
   endDate: null,
+  date: null,
+  time: null,
+  endTime: null
 };
 ;
 
@@ -356,8 +371,8 @@ export default class AddCondition extends Vue {
 
   loading = false;
   showRecorder = false;
-  clinicalStatus = "";
-  verificationStatus = "";
+  clinicalStatus = "active";
+  verificationStatus = "confirmed";
   category = "";
   severity = "";
   code = "";
@@ -383,6 +398,18 @@ export default class AddCondition extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
+  recorderId = "";
+  recordDate = "";
+  recordTime = "";
+  assessment = [] as any;
+  type = "";
+  summary = "";
+  evidence = {
+    code: "",
+    detail: "",
+    note: ""
+  };
+
   @Watch("authPractitioner")
   practitionerChanged(): void {
     this.setAsserter();
@@ -392,45 +419,129 @@ export default class AddCondition extends Vue {
     this.asserter = this.authPractitioner?.id || "";
   }
 
+  assesdata(value:any){
+    this.assessment.push(value);
+  }
+
+  deleteAsses(index: number) {
+        this.assessment.splice(index, 1);
+  }
+
   get patientId() {
     return this.$route.params.id;
   }
 
-  get onset() {
-    const { string, ...onsetRange } = this.onsetMeasurable;
-    const dateTime = this.safeBuildDateTime(
-      this.onsetTimeable.date as any,
-      this.onsetTimeable.time as any
-    );
-    const period = this.buildPeriod(this.onsetTimeable as any);
-    const data: any = {
-      age: this.onsetTimeable.age,
-      onsetString: this.onsetMeasurable.string,
+   get onset() {
+    return {
+      onsetRange: !Object.values({
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
+      }).every(o => o === null) ? {
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
+      } : null,
+      onsetAge: !Object.values({
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      }).every(o => o === null) ? {
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      } : null, 
+      onsetString: this.onsetmesurable.string || null,
+      onsetPeriod: !Object.values({
+        start: this.onsetmesurable.startDate,
+        end: this.onsetmesurable.endDate,
+        startTime:this.onsetmesurable.startTime,
+        endTime: this.onsetmesurable.endTime,
+      }).every(o => o === null) ? {
+        start: this.onsetmesurable.startDate,
+        end: this.onsetmesurable.endDate,
+         startTime:this.onsetmesurable.startTime,
+        endTime: this.onsetmesurable.endTime,
+      } : null,
+      onsetDateTime:  this.safeBuildDateTime(
+       this.onsetmesurable.date as any,
+       this.onsetmesurable.time as any
+     ),
     };
-    if (onsetRange.unit && onsetRange.min && onsetRange.max)
-      data.range = onsetRange;
-    if (period) data.period = period;
-    if (dateTime) data.dateTime = dateTime;
-    return data;
+  }
+  get abatement() {
+    return {
+      onsetRange: !Object.values({
+        unit: this.abatementMeasurable.unit,
+        min: this.abatementMeasurable.min,
+        max: this.abatementMeasurable.max,
+      }).every(o => o === null) ? {
+        unit: this.abatementMeasurable.unit,
+        min: this.abatementMeasurable.min,
+        max: this.abatementMeasurable.max,
+      } : null,
+      onsetAge: !Object.values({
+        unit: this.abatementMeasurable.ageUnit,
+        value: this.abatementMeasurable.ageValue,
+      }).every(o => o === null) ? {
+        unit: this.abatementMeasurable.ageUnit,
+        value: this.abatementMeasurable.ageValue,
+      } : null, 
+      onsetString: this.abatementMeasurable.string || null,
+      onsetPeriod: !Object.values({
+        start: this.abatementMeasurable.startDate,
+        end: this.abatementMeasurable.endDate,
+        startTime:this.abatementMeasurable.startTime,
+        endTime: this.abatementMeasurable.endTime,
+      }).every(o => o === null) ? {
+        start: this.abatementMeasurable.startDate,
+        end: this.abatementMeasurable.endDate,
+         startTime:this.abatementMeasurable.startTime,
+        endTime: this.abatementMeasurable.endTime,
+      } : null,
+      onsetDateTime:  this.safeBuildDateTime(
+       this.abatementMeasurable.date as any,
+       this.abatementMeasurable.time as any
+     ),
+    };
   }
 
-  get abatement() {
-    const { string, ...range } = this.abatementMeasurable;
-    const dateTime = this.safeBuildDateTime(
-      this.abatementTimeable.date as any,
-      this.abatementTimeable.time as any,
-    );
-    const period = this.buildPeriod(this.abatementTimeable as any);
-    const data: any = {
-      range,
-      string,
-      asserter: this.asserter,
-      age: this.abatementTimeable.age,
-    };
-    if (period) data.period = period;
-    if (dateTime) data.dateTime = dateTime;
-    return data;
-  }
+  //get onset() {
+    // const { string, ...onsetRange } = this.onsetMeasurable;
+    // const onsetDateTime = this.safeBuildDateTime(
+    //   this.onsetTimeable.date as any,
+    //   this.onsetTimeable.time as any
+    // );
+    // const onsetAge = this.onsetMeasurable.age;
+    // const onsetPeriod = this.buildPeriod(this.onsetTimeable as any);
+
+    // const onsetRange = ;
+    // const data: any = {
+    //   age: this.onsetTimeable.age,
+    //   onsetString: this.onsetMeasurable.string,
+    // };
+    // if (onsetRange.unit && onsetRange.min && onsetRange.max)
+    //   data.range = onsetRange;
+    // if (onsetPeriod) data.period = onsetPeriod;
+    // if (onsetDateTime) data.dateTime = onsetDateTime;
+    // return data;
+ // }
+
+  // get abatement() {
+  //   const { string, ...range } = this.abatementMeasurable;
+  //   const dateTime = this.safeBuildDateTime(
+  //     this.abatementTimeable.date as any,
+  //     this.abatementTimeable.time as any,
+  //   );
+  //   const period = this.buildPeriod(this.abatementTimeable as any);
+  //   const data: any = {
+  //     range,
+  //     string,
+  //     asserter: this.asserter,
+  //     age: this.abatementTimeable.age,
+  //   };
+  //   if (period) data.period = period;
+  //   if (dateTime) data.dateTime = dateTime;
+  //   return data;
+  // }
 
   buildPeriod({ startDate, startTime, endDate, endTime }: Timeable) {
     try {
@@ -457,15 +568,19 @@ export default class AddCondition extends Vue {
       return;
     }
   }
+  get recorder(){
+    this.recorderId = this.authPractitioner.id;
+    return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
+  }
   get payload() {
     return {
       patientId: this.patientId,
       encounterId: this.referenceEncounter,
       clinicalStatus: this.clinicalStatus,
       verificationStatus: this.verificationStatus,
-      type: this.stageType,
+      type: this.type,
       category: this.category,
-      summary: this.stageSummary,
+      summary: this.summary,
       detail: this.evidenceDetail,
       bodySite: this.bodySite,
       assessment: this.stageAssessment,
@@ -474,6 +589,9 @@ export default class AddCondition extends Vue {
       onSet: this.onset,
       abatement: this.abatement,
       code: this.code,
+      recordDate: this.recordDate,
+      recorderId: this.recorderId,
+
     };
   }
 

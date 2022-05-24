@@ -365,6 +365,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 
 import ItemModal from "./itemModal.vue";
+import { watch } from "@vue/runtime-core";
 
 const catalogue = namespace("catalogues");
 const user = namespace("user");
@@ -422,11 +423,25 @@ export default class grnModal extends Vue {
   @location.State
   locations!: ILocation[];
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   @location.Action
   fetchLocations!: () => Promise<void>;
 
   @grn.Action
   getGrnById!: (id: string) => Promise<IGrn>;
+
+  @Prop({ type: String, default: "" })
+  requestId!: string;
+
+  @Prop({ type: String, default: "" })
+  returnId!: string;
+
+  @Prop({ type: String, default: "" })
+  waybillId!: string;
+
+
 
   showItem = false;
   nationState = setup(() => useCountryStates());
@@ -444,7 +459,8 @@ export default class grnModal extends Vue {
     } as any,
   };
   identifier = "";
-  receiverCategory = "";
+
+receiverCategory = "";
   receiverLocationId = "";
   dateReceived = new Date();
   supplierCategory = "";
@@ -544,7 +560,14 @@ export default class grnModal extends Vue {
     return search.searchObjectArray(supplys, this.query);
   }
 
-    @Watch("id")
+  @Watch("selectedItem")
+  changeItem(){
+    this.setWaybill();
+  }
+  
+
+
+  @Watch("id")
   idChanged() {
     this.setGrn();
   }
@@ -574,8 +597,13 @@ export default class grnModal extends Vue {
     this.supplyItems = grn.supplyItems;
     this.supplyStatus = grn.supplyStatus;
     this.supplierName = grn.supplyItems[0].supplier;
+    
 
   
+  }
+
+  async setWaybill(){
+    
   }
   getTotal(quantity: number, unityCost: number) {
     return (quantity * unityCost).toFixed(2);
@@ -616,6 +644,9 @@ export default class grnModal extends Vue {
       supplierZipCode: this.supplierZipCode,
       supplierHouseNumber: this.supplierHouseNumber,
       supplyItems: this.items.map(this.buildPayload),
+      materialReturnId : this.returnId || null,
+      materialRequestId : this.requestId || null,
+      waybillId: this.waybillId || null,
     };
   }
   get allLocations() {

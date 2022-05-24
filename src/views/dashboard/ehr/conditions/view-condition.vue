@@ -275,16 +275,16 @@ export default class ViewCondition extends Vue {
 
   get abatement() {
     if (!this.item.id) return;
-    const abatements = this.item.abatements;
-    if (!abatements?.length) return;
-    const abatement = abatements[0];
-    return this.displayTimeable(abatement, "string");
+    // const abatements = this.item.abatements;
+    // if (!abatements?.length) return;
+    // const abatement = abatements[0];
+   // return this.displayTimeable(abatement, "string");
   }
 
   get onset() {
     if (!this.item.id) return;
-    const onset = this.item.onSet;
-    return this.displayTimeable(onset, "onsetString");
+    // const onset = this.item.onSet;
+    // return this.displayTimeable(onset, "onsetString");
   }
 
   printPeriod(period: Period) {
