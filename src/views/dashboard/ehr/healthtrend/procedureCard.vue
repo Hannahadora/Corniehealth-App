@@ -132,7 +132,7 @@ import DetailCard from "./detail-card.vue";
 import AddIcon from "@/components/icons/add.vue";
 
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-import NewProcedure from "@/views/dashboard/ehr/procedures/components/new-procedure.vue";
+import NewProcedure from "@/views/dashboard/ehr/procedures/components/new-procedure2.vue";
 import { sortListByDate } from "./chart-filter";
 import { Watch } from "vue-property-decorator";
 
