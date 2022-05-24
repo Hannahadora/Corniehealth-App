@@ -117,7 +117,7 @@
             :opened="false"
           >
             <div>
-              <value-form :value="value" />
+              <value-form @get-value="setValue" />
             </div>
           </accordion-component>
 
@@ -166,9 +166,8 @@
               <cornie-select
                 class="w-full"
                 label="Specimen"
-                placeholder="Enter"
+                placeholder="Select"
                 v-model="reasonInfo.specimen"
-                :items="['a', 'b']"
               />
               <cornie-select
                 class="w-full"
@@ -492,6 +491,10 @@ export default class ObservationDialog extends Vue {
 
   setCustomers(data: any) {
     this.customers = data
+  }
+
+  setValue(data: any) {
+    this.value = data
   }
 
   async setObservation() {

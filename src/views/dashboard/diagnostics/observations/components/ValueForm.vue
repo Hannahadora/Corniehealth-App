@@ -68,25 +68,27 @@
       <date-picker
         class="w-full"
         label="Start Date/Time"
-        v-model:date="value.period.start"
+        :modelValue:date="value.period.startDate"
+        :modelValue:time="value.period.startTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="End Date/Time"
-        v-model:date="value.period.end"
+        :modelValue:date="value.period.endDate"
+        :modelValue:time="value.period.endTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        v-model:date="value.dateTime"
+        :modelValue:date="value.period.dateTime"
         v-if="valueType === 'date-time'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        v-model:date="value.time"
+        :modelValue:date="value.period.time"
         v-if="valueType === 'time'"
       />
     </div>
@@ -177,31 +179,13 @@ import { first, getTableKeyValue } from "@/plugins/utils";
   },
 })
 export default class ValueForm extends Vue {
-  @Prop({ type: Object, default: <any>{} })
-  value!: IObservationValue;
+  // @Prop({ type: Object, default: value })
+  // xValue!: IObservationValue;
 
   required = string().required();
 
-  initValue = {
-    quantity: null,
-    code: null,
-    string: null,
-    boolean: null,
-    integer: 0,
-    range: {
-        unit: null,
-        min: 0,
-        max: 0
-    },
-    ratio: null,
-    sampleData: null,
-    time: null,
-    dateTime: null,
-    period: {
-        start: null,
-        end: null
-    }
-}
+  value = <any>{};
+
 
   valueTypes = [
     "quantity",
@@ -219,11 +203,16 @@ export default class ValueForm extends Vue {
 
   valueType = "quantity";
 
+  @Watch("valueType")
+  valueChanged() {
+    this.$emit("get-value", this.value);
+  }
+
   nullify() {
     Object.keys(this.value).forEach((key) => {
-      if (key === this.valueType) {
-        return key;
-      } 
+      if (key !== this.valueType) {
+        delete this.value[key];
+      }
     });
   }
 }

@@ -6,12 +6,12 @@
         title="Body Temperature"
         :opened="true"
       >
-        <div class="w-full grid grid-cols-2 gap-6">
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
           <div class="flex space-x-2 w-full">
             <cornie-input
               label="Body Temperature"
               placeholder="0"
-              :modelValue="vitalData.temperature.value"
+              v-model="vitalData.bodyTemperature.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -20,7 +20,7 @@
               placeholder="°C"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.temperature.unit"
+              v-model="vitalData.bodyTemperature.unit"
             />
           </div>
         </div>
@@ -31,12 +31,12 @@
         title="RR, HR, OS, BGL"
         :opened="true"
       >
-        <div class="w-full grid grid-cols-2 gap-6">
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
           <div class="flex space-x-2 w-full">
             <cornie-input
               label="Respiratory Rate"
               placeholder="0"
-              :modelValue="vitalData.respiratoryRate"
+              v-model="vitalData.respiration.respiratoryRate.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -45,7 +45,7 @@
               placeholder="/min"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.respiratoryUnit"
+              v-model="vitalData.respiration.respiratoryRate.unit"
             />
           </div>
 
@@ -53,7 +53,7 @@
             <cornie-input
               label="Heart Rate"
               placeholder="0"
-              :modelValue="vitalData.pulse"
+              v-model="vitalData.respiration.heartRate.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -62,7 +62,7 @@
               placeholder="/min"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.respiratoryUnit"
+              v-model="vitalData.respiration.heartRate.unit"
             />
           </div>
 
@@ -70,7 +70,7 @@
             <cornie-input
               label="Oxygen Saturation"
               placeholder="0"
-              :modelValue="vitalData.oxygenSaturation"
+              v-model="vitalData.respiration.oxygenSaturation.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -79,7 +79,7 @@
               placeholder="%"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.oxygenSaturationRate"
+              v-model="vitalData.respiration.oxygenSaturation.unit"
             />
           </div>
 
@@ -87,7 +87,7 @@
             <cornie-input
               label="Blood Glucose Level"
               placeholder="0"
-              :modelValue="vitalData.bloodGlucoseLevel"
+              v-model="vitalData.respiration.bloodGlucoseLevel.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -96,7 +96,7 @@
               placeholder="mm/dL"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.bloodGlucoseLevelUnit"
+              v-model="vitalData.respiration.bloodGlucoseLevel.unit"
             />
           </div>
         </div>
@@ -107,12 +107,12 @@
         title="Height & Head Circumference"
         :opened="true"
       >
-        <div class="w-full grid grid-cols-2 gap-6">
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
           <div class="flex space-x-2 w-full">
             <cornie-input
               label="Body Height"
               placeholder="0"
-              :modelValue="vitalData.height.value"
+              v-model="vitalData.circumferences.bodyHeight.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -121,7 +121,7 @@
               placeholder="cm"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.height.unit"
+              v-model="vitalData.circumferences.bodyHeight.unit"
             />
           </div>
 
@@ -129,7 +129,7 @@
             <cornie-input
               label="Head Circumference"
               placeholder="0"
-              :modelValue="vitalData.headCircumference.value"
+              v-model="vitalData.circumferences.headCircumferences.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -138,19 +138,19 @@
               placeholder="cm"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.headCircumference.unit"
+              v-model="vitalData.circumferences.headCircumferences.unit"
             />
           </div>
         </div>
       </accordion-component>
 
       <accordion-component class="text-lg" title="Body Weight" :opened="true">
-        <div class="w-full grid grid-cols-2 gap-6">
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
           <div class="flex space-x-2 w-full">
             <cornie-input
               label="Body Weight"
               placeholder="0"
-              :modelValue="vitalData.weight.value"
+              v-model="vitalData.bodyWeight.bodyWeight.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -159,7 +159,7 @@
               placeholder="kg"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.weight.unit"
+              v-model="vitalData.bodyWeight.bodyWeight.unit"
             />
           </div>
 
@@ -167,7 +167,7 @@
             <cornie-input
               label="Body Mass Index (BMI)"
               placeholder="0"
-              :modelValue="vitalData.bmi.value"
+              v-model="vitalData.bodyWeight.bodyMassIndex.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -176,7 +176,7 @@
               placeholder="kg/m³"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="vitalData.bmi.unit"
+              v-model="vitalData.bodyWeight.bodyMassIndex.unit"
             />
           </div>
         </div>
@@ -187,20 +187,20 @@
         title="Blood Pressure"
         :opened="true"
       >
-        <div class="w-full grid grid-cols-5 gap-6">
+        <div class="w-full grid grid-cols-5 gap-6 mmy-5">
           <div class="">
             <cornie-select
               :items="['Standing Left', 'Standing Right']"
               class="w-full mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="bloodPressure.measurement.unit"
+              v-model="newBp.position"
             />
           </div>
           <div class="flex space-x-2 w-full col-span-2">
             <cornie-input
               label="Systolic Blood Pressure"
               placeholder="0"
-              :modelValue="bloodPressure.measurement.value"
+              v-model="newBp.systolicBloodPressure.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -209,7 +209,7 @@
               placeholder="mmHg"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="bloodPressure.measurement.unit"
+              v-model="newBp.systolicBloodPressure.unit"
             />
           </div>
 
@@ -217,7 +217,7 @@
             <cornie-input
               label="Diastolic Blood Pressure"
               placeholder="0"
-              :modelValue="bloodPressure.measurement.value"
+              v-model="newBp.diastolicBloodPressure.value"
               class="grow w-full"
               :setfull="true"
             />
@@ -226,7 +226,7 @@
               placeholder="mmHg"
               class="w-20 mt-3 flex-none"
               :setPrimary="true"
-              :modelValue="bloodPressure.measurement.unit"
+              v-model="newBp.diastolicBloodPressure.unit"
             />
           </div>
         </div>
@@ -256,7 +256,13 @@
               <div class="w-full flex items-center">
                 <div class="w-8/12 flex flex-col">
                   <span class="font-semibold">{{ record.position }}</span>
-                  <span class="text-gray-400">{{ record.pressure }}</span>
+                  <span class="text-gray-400"
+                    >{{ record?.systolicBloodPressure?.value }}
+                    {{ record?.systolicBloodPressure?.unit }}/{{
+                      record?.diastolicBloodPressure?.value
+                    }}
+                    {{ record?.diastolicBloodPressure?.unit }}</span
+                  >
                   <span class="text-gray-400">
                     <span class="mr-4">{{ record.date }}</span>
                     <span>{{ record.time }}</span>
@@ -375,19 +381,33 @@ export default class VitalsForm extends Vue {
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
-  collectedPressures: Pressures[] = [];
+  collectedPressures: IBloodPressure[] = [];
 
   bloodPressure: IBloodPressure = {
     position: "",
-    type: "",
-    measurement: {
-      unit: "mmHg",
+    systolicBloodPressure: {
+      unit: "",
+      value: 0,
+    },
+    diastolicBloodPressure: {
+      unit: "",
       value: 0,
     },
   };
 
-  habit = {} as IHabit;
-  physical = {} as IHabit;
+  newBp: any = {
+    position: "",
+    systolicBloodPressure: {
+      unit: "",
+      value: 0,
+    },
+    diastolicBloodPressure: {
+      unit: "",
+      value: 0,
+    },
+    date: "",
+    time: "",
+  };
 
   systolic = "";
   diastolic = "";
@@ -425,24 +445,53 @@ export default class VitalsForm extends Vue {
   };
 
   vitalData: IVital = {
-    weight: {
-      unit: "Kg",
-      // value: 0
+    status: "preliminary",
+    bodyTemperature: {
+      unit: "",
+      value: 0,
     },
-    height: {
-      unit: "cm",
-      // value: 170
+    respiration: {
+      respiratoryRate: {
+        unit: "",
+        value: 0,
+      },
+      heartRate: {
+        unit: "",
+        value: 0,
+      },
+      oxygenSaturation: {
+        unit: "",
+        value: 0,
+      },
+      bloodGlucoseLevel: {
+        unit: "",
+        value: 0,
+      },
     },
-    temperature: {
-      unit: "fahrenheit",
-      // value: 50
-    },
-    comments: "",
     bloodPressure: [] as IBloodPressure[],
+    circumferences: {
+      bodyHeight: {
+        unit: "",
+        value: 0,
+      },
+      headCircumferences: {
+        unit: "",
+        value: 0,
+      },
+    },
 
+    bodyWeight: {
+      bodyWeight: {
+        unit: "",
+        value: 0,
+      },
+      bodyMassIndex: {
+        unit: "",
+        value: 0,
+      },
+    },
     date: new Date().toISOString(),
     type: "Type",
-    status: "active",
     encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
     patientId: this.$route?.params?.id,
     // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
@@ -464,20 +513,15 @@ export default class VitalsForm extends Vue {
     this.vitalData.bloodPressure.splice(index + 1, 2);
   }
 
-  removeHabit(index: number) {
-    this.vitalData.habits.splice(index, 1);
-  }
-
-  removePhysical(index: number) {
-    this.vitalData.physicals.splice(index, 1);
-  }
-
   resetBloodPressure() {
     this.bloodPressure = {
       position: "",
-      type: "",
-      measurement: {
-        unit: "mmHg",
+      systolicBloodPressure: {
+        unit: "",
+        value: 0,
+      },
+      diastolicBloodPressure: {
+        unit: "",
         value: 0,
       },
     };
@@ -485,31 +529,58 @@ export default class VitalsForm extends Vue {
 
   resetVitalData() {
     this.vitalData = {
-      weight: {
-        unit: "Kg",
-        // value: 0
+      bodyTemperature: {
+        unit: "",
+        value: 0,
       },
-      height: {
-        unit: "cm",
-        // value: 170
+      respiration: {
+        respiratoryRate: {
+          unit: "",
+          value: 0,
+        },
+        heartRate: {
+          unit: "",
+          value: 0,
+        },
+        oxygenSaturation: {
+          unit: "",
+          value: 0,
+        },
+        bloodGlucoseLevel: {
+          unit: "",
+          value: 0,
+        },
       },
-      temperature: {
-        unit: "fahrenheit",
-        // value: 50
-      },
-      comments: "",
-      habits: [] as IHabit[],
-      physicals: [] as IHabit[],
       bloodPressure: [] as IBloodPressure[],
+      circumferences: {
+        bodyHeight: {
+          unit: "",
+          value: 0,
+        },
+        headCircumferences: {
+          unit: "",
+          value: 0,
+        },
+      },
+
+      bodyWeight: {
+        bodyWeight: {
+          unit: "",
+          value: 0,
+        },
+        bodyMassIndex: {
+          unit: "",
+          value: 0,
+        },
+      },
 
       date: new Date().toISOString(),
       type: "Type",
-      status: "active",
+      status: "preliminary",
       encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
       patientId: this.$route?.params?.id,
       // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
       practitionerId: this.practitionerId,
-      // pulse: 78,
     } as IVital;
   }
 
@@ -518,41 +589,12 @@ export default class VitalsForm extends Vue {
     this.resetVitalData();
   }
 
-  addHabit() {
-    if (!this.habit.value || !this.habit.key) return false;
-    this.vitalData.habits.push(this.habit);
-    this.habit = {} as IHabit;
-    this.vitalData.comments = "";
-  }
-
-  addPhysical() {
-    if (!this.physical.value || !this.physical.key) return false;
-    this.vitalData.physicals.push(this.physical);
-    this.physical = {} as IHabit;
-    this.examComment = "";
-  }
-
   addBloodPressure() {
-    if (!this.diastolic || !this.bloodPressure.measurement?.value) return false;
     this.collectedPressures.push({
-      position: this.bloodPressure.position,
-      pressure: `${this.bloodPressure?.measurement?.value}/${this.diastolic}mmHg`,
+      ...this.newBp,
       date: new Date().toLocaleDateString(),
       time: new Date().toTimeString().substring(0, 5),
     });
-
-    this.bloodPressure.type = "systolic";
-    this.vitalData.bloodPressure.push(this.bloodPressure);
-    this.vitalData.bloodPressure.push({
-      position: this.bloodPressure.position,
-      type: "diastolic",
-      measurement: {
-        unit: "mmHg",
-        value: +this.diastolic,
-      },
-    });
-    this.diastolic = "";
-    this.bloodPressure.measurement.value = 0;
   }
 
   get patientId() {
@@ -566,6 +608,7 @@ export default class VitalsForm extends Vue {
       this.loading = true;
       this.vitalData.practitionerId = this.practitionerId;
       this.vitalData.patientId = this.patientId;
+      this.vitalData.bloodPressure = this.collectedPressures;
 
       await this.createVital(this.vitalData);
       this.getVitals(this.patientId);
@@ -577,27 +620,27 @@ export default class VitalsForm extends Vue {
     }
   }
 
-  @Watch("selectedVital")
-  updateVitalData() {
-    if (this.selectedVital?.id) {
-      this.vitalData = this.selectedVital;
-      this.collectedPressures = [];
+  // @Watch("selectedVital")
+  // updateVitalData() {
+  //   if (this.selectedVital?.id) {
+  //     this.vitalData = this.selectedVital;
+  //     this.collectedPressures = [];
 
-      for (
-        let i = 1;
-        i <= this.selectedVital.bloodPressure?.length;
-        i = i + 2
-      ) {
-        this.collectedPressures.push({
-          position: this.selectedVital?.bloodPressure[i - 1].position,
-          pressure: `${
-            this.selectedVital?.bloodPressure[i - 1]?.measurement?.value
-          }/${this.selectedVital?.bloodPressure[i]?.measurement?.value}mmHg`,
-          date: new Date().toLocaleDateString(),
-          time: new Date().toTimeString().substring(0, 5),
-        });
-      }
-    }
-  }
+  //     for (
+  //       let i = 1;
+  //       i <= this.selectedVital.bloodPressure?.length;
+  //       i = i + 2
+  //     ) {
+  //       this.collectedPressures.push({
+  //         position: this.selectedVital?.bloodPressure[i - 1].position,
+  //         pressure: `${
+  //           this.selectedVital?.bloodPressure[i - 1]?.measurement?.value
+  //         }/${this.selectedVital?.bloodPressure[i]?.measurement?.value}mmHg`,
+  //         date: new Date().toLocaleDateString(),
+  //         time: new Date().toTimeString().substring(0, 5),
+  //       });
+  //     }
+  //   }
+  // }
 }
 </script>

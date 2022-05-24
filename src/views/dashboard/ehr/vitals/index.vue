@@ -318,7 +318,7 @@ export default class ExistingState extends Vue {
       return {
         id: vital.id,
         identifier: "XXXXX",
-        recorded: new Date(vital.date).toLocaleDateString(),
+        // recorded: new Date(vital.date).toLocaleDateString(),
         recordType: vital?.encounter?.serviceType,
         encounter: vital?.encounter?.class,
         performer: `${vital.practitioner?.lastName} ${vital.practitioner?.firstName}`,

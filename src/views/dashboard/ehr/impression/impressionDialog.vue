@@ -2,10 +2,14 @@
   <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+        <div class="w-full mb-4">
+          <div>
+        <icon-btn @click="show = false">
+          <arrow-left-icon stroke="#ffffff" />
+             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             {{ newaction }} Impression
           </h2>
+          </div>
           <cancel-icon
             class="float-right cursor-pointer"
             @click="show = false"
@@ -126,7 +130,7 @@
               <div v-else>
                 <div class="w-full cursor-pointer mt-6" @click="showAssessor">
                   <label
-                    class="flex capitalize mb-1 text-black text-sm font-bold"
+                    class="flex capitalize text-black text-sm font-bold"
                     >assessor</label
                   >
                   <div class="flex items-center">
@@ -142,7 +146,7 @@
                         style="border-radius: 8px"
                       />
                     </input-desc-rounded>
-                    <img src="@/assets/img/asseor-update.svg" alt="" />
+                    <img src="@/assets/img/asseor-update.svg" class="ml-2" alt="" />
                   </div>
                 </div>
               </div>
@@ -491,6 +495,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
+import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -565,7 +570,7 @@ const emptyImpression: IImpression = {
     prognosisReference: "";
     supportingInfo: "";
     note: "";
-  };
+  }
 };
 
 @Options({
@@ -599,6 +604,7 @@ const emptyImpression: IImpression = {
     CornieBtn,
     MainCornieSelect,
     PlusIcon,
+    IconBtn,
   },
 })
 export default class Medication extends Vue {
