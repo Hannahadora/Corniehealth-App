@@ -1,16 +1,12 @@
 <template>
   <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
-
       <cornie-card-title class="w-full">
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             {{ newaction }} Impression
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
@@ -131,11 +127,7 @@
                 >
                 </cornie-select>
               </div>
-              <div
-                class="w-full cursor-pointer mt-6"
-                v-else
-                @click="showAssessor"
-              >
+              <div class="w-full cursor-pointer mt-6" v-else @click="showAssessor">
                 <label class="flex capitalize mb-1 text-black text-sm font-bold"
                   >assessor</label
                 >
@@ -182,8 +174,7 @@
                 v-if="setType == 'Allergy'"
                 @click="showProblem($event)"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Problem</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -202,8 +193,7 @@
                 v-else
                 @click="showProblem($event)"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Problem</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -302,8 +292,7 @@
                 v-if="setFindingType == 'Condition'"
                 @click="showFindings"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -322,8 +311,7 @@
                 v-else-if="setFindingType == 'Observation'"
                 @click="showFindings"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -342,8 +330,7 @@
                 v-else
                 @click="showFindings"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -406,10 +393,9 @@
           </accordion-component>
         </v-form>
       </cornie-card-text>
-      
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -423,7 +409,6 @@
           >
             Save
           </cornie-btn>
-
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
@@ -621,12 +606,7 @@ export default class Medication extends Vue {
     this.impressionModel = impression;
   }
 
-  buildPeriod(
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string
-  ) {
+  buildPeriod(startDate: string, startTime: string, endDate: string, endTime: string) {
     const start = this.buildDateTime(this.data.startDate, this.data.startTime);
     const end = this.buildDateTime(this.data.endDate, this.data.endTime);
     return { start, end };
