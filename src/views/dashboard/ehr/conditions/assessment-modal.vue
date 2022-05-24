@@ -69,22 +69,18 @@
           </span>
         </div>
       </cornie-card-text>
-       <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            @click.prevent="add"   :loading="loading"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Add
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>
+    
+      <div class="flex justify-end mx-4 mt-auto mb-4">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn @click="add"   :loading="loading" class="text-white bg-danger px-9 rounded-xl">
+          Add
+        </cornie-btn>
+      </div>
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -149,6 +145,8 @@ export default class AssessmentModal extends Vue {
     }
   }
 
+  setImpression = {} as any;
+
   loading = false;
 
   isSelected(impression: IClinicalImpression) {
@@ -160,13 +158,9 @@ export default class AssessmentModal extends Vue {
       id: impression.id!!,
       reference: this.active,
     };
-    this.assesData = {
-      name: impression.findings.item,
-      descrition: impression.description,
-      practionerName: this.getPractitionerName(impression.encounter),
-      date: impression.createdAt,
-      department:  this.getJobName(impression.encounter),
-    }
+
+    console.log(impression, 'IMPRESSION')
+    this.setImpression = impression;
   }
 
   get clinicalImpressions() {
@@ -189,7 +183,16 @@ export default class AssessmentModal extends Vue {
   assesData = {} as any;
 
   async add(e:any) {
-    e.prevent();
+    e.preventDefault();
+
+      this.assesData = {
+      name: this.setImpression.findings.item,
+      descrition: this.setImpression.description,
+      practionerName: this.getPractitionerName(this.setImpression.encounter),
+      date: this.setImpression.createdAt,
+      department:  this.getJobName(this.setImpression.encounter),
+    }
+
     this.$emit('asses-data', this.assesData)
     this.show = false;
   }
