@@ -1,5 +1,5 @@
-import { RouteRecordRaw } from "vue-router";
 import EHR from "@/views/dashboard/ehr/index.vue";
+import { RouteRecordRaw } from "vue-router";
 
 export const ClinicalsRoute: RouteRecordRaw = {
   path: ":id",

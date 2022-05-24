@@ -7,10 +7,7 @@
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             {{ newaction }} Impression
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
@@ -178,8 +175,7 @@
                 class="w-full cursor-pointer clear-left mt-1"
                 v-if="setType == 'Allergy'"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Problem</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -196,8 +192,7 @@
                 class="w-full cursor-pointer clear-left mt-1"
                 v-else
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Problem</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -315,8 +310,7 @@
                 v-else-if="setFindingType == 'Observation'"
                 @click="showFindings"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -335,8 +329,7 @@
                 v-else
                 @click="showFindings"
               >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
+                <label class="flex normal-case mb-0 text-black text-sm font-bold"
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -444,17 +437,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieSelect from "@/components/autocomplete.vue";
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -466,17 +456,21 @@ import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
-import DatePicker from "./components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import IImpression from "@/types/IImpression";
 import Period from "@/types/IPeriod";
-import IImpression, { Effective } from "@/types/IImpression";
-import EncounterSelect from "./encounter-select.vue";
-import DateTimePicker from "./components/datetime-picker.vue";
-import AssesorModal from "./assesor.vue";
-import ProblemModal from "./problem.vue";
-import ItemModal from "./itemdailog.vue";
-import ReferenceModal from "./reference.vue";
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import AssesorModal from "./assesor.vue";
+import DatePicker from "./components/datepicker.vue";
+import DateTimePicker from "./components/datetime-picker.vue";
+import EncounterSelect from "./encounter-select.vue";
+import ItemModal from "./itemdailog.vue";
+import ProblemModal from "./problem.vue";
+import ReferenceModal from "./reference.vue";
 
 const impression = namespace("impression");
 
@@ -580,12 +574,7 @@ export default class Medication extends Vue {
     this.impressionModel = impression;
   }
 
-  buildPeriod(
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string
-  ) {
+  buildPeriod(startDate: string, startTime: string, endDate: string, endTime: string) {
     const start = this.buildDateTime(this.data.startDate, this.data.startTime);
     const end = this.buildDateTime(this.data.endDate, this.data.endTime);
     return { start, end };

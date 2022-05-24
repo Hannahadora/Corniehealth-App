@@ -79,9 +79,7 @@
             label="Deceased Range/String"
           />
           <div class="flex pt-5 mt-4 border-t-2">
-            <p
-              class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold"
-            >
+            <p class="lbl mt-2 flex uppercase text-black mb-1 text-xs font-bold">
               add asserter
             </p>
             <label class="switch">
@@ -102,9 +100,7 @@
                 for="ecounter"
                 class="flex capitalize mb-1 text-sm text-black font-medium"
                 >asserter
-                <span class="ml-2">
-                  <info-icon class="text-primary fill-current"
-                /></span>
+                <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
               </label>
               <!-- <cornie-input class="mb-2 w-full" v-model="asserterName" disabled/> -->
               <input
@@ -127,9 +123,7 @@
           </div>
 
           <div>
-            <label
-              for="ecounter"
-              class="flex uppercase mb-1 text-black text-xs font-bold"
+            <label for="ecounter" class="flex uppercase mb-1 text-black text-xs font-bold"
               >Notes</label
             >
             <div class="my-2 w-full">
@@ -179,13 +173,9 @@
             />
           </div>
           <div class="mb-2">
-            <label
-              for="SEVERITY"
-              class="flex uppercase text-black mb-1 text-xs font-bold"
+            <label for="SEVERITY" class="flex uppercase text-black mb-1 text-xs font-bold"
               >SEVERITY *
-              <span class="ml-2">
-                <info-icon class="text-primary fill-current"
-              /></span>
+              <span class="ml-2"> <info-icon class="text-primary fill-current" /></span>
             </label>
             <div class="w-full flex space-x-4 mt-5 mb-3">
               <cornie-radio
@@ -222,9 +212,7 @@
           />
         </div>
         <div>
-          <label
-            for="ecounter"
-            class="flex text-black uppercase mb-1 text-xs font-bold"
+          <label for="ecounter" class="flex text-black uppercase mb-1 text-xs font-bold"
             >Notes</label
           >
           <div class="my-2 w-full">
@@ -523,10 +511,7 @@ export default class Medication extends Vue {
     this.payload.reaction.onset = new Date(this.date).toISOString();
 
     try {
-      const response = await cornieClient().post(
-        "/api/v1/allergy",
-        this.payload
-      );
+      const response = await cornieClient().post("/api/v1/allergy", this.payload);
       if (response.success) {
         window.notify({ msg: "Allergy created", status: "success" });
         this.done();

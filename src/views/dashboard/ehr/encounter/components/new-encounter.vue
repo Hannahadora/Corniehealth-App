@@ -16,7 +16,7 @@
       <cornie-card-text>
         <v-form class="flex-grow flex flex-col">
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="rounded-none border-none text-primary"
             title="Basic Info"
             :opened="false"
           >
@@ -72,7 +72,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="rounded-none border-none text-primary"
             title="Diagnosis"
             :opened="false"
           >
@@ -104,7 +104,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="rounded-none border-none text-primary"
             title="Participant"
             :opened="false"
           >
@@ -145,7 +145,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="rounded-none border-none text-primary"
             title="Hospitalisation"
             :opened="false"
           >
@@ -248,7 +248,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="rounded-none border-none text-primary"
             title="Location"
             :opened="false"
           >
@@ -265,18 +265,8 @@
                 placeholder="Autoloaded"
               />
               <cornie-input class="w-full" label="Status" placeholder="Autoloaded" />
-              <date-time-picker
-                class="w-full"
-                label="Start Date/Time"
-                v-model:date="issues.issued.date"
-                v-model:time="issues.issued.time"
-              />
-              <date-time-picker
-                class="w-full"
-                label="End Date/Time"
-                v-model:date="issues.issued.date"
-                v-model:time="issues.issued.time"
-              />
+              <date-time-picker class="w-full" label="Start Date/Time" />
+              <date-time-picker class="w-full" label="End Date/Time" />
               <cornie-input class="w-full" label="Part of" placeholder="Autoloaded" />
             </div>
           </accordion-component>
@@ -317,7 +307,7 @@ import CornieDialog from "@/components/CornieDialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import AddIcon from "@/components/icons/plus.vue";

@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ title }}
+            {{ title || "Create Report" }}
           </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
@@ -44,7 +44,12 @@
                 label="Based On"
                 placeholder="Based On"
                 v-model="general.basedOn"
-                :items="[]"
+                :items="[
+                  'CarePlan',
+                  'MedicationRequest',
+                  'ServiceRequest',
+                  'ImmunizationRecommendation',
+                ]"
               />
 
               <cornie-input
@@ -55,12 +60,19 @@
                 :disabled="true"
                 :rules="required"
               />
-              <cornie-select
+              <!-- <cornie-select
                 class="w-full"
                 label="Code"
                 placeholder="Code"
                 v-model="general.code"
                 :items="statuses"
+              /> -->
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/report-codes"
+                class="required w-full"
+                label="Code"
+                v-model="general.code"
+                placeholder="Code"
               />
 
               <!-- <cornie-input
@@ -109,18 +121,21 @@
                 class="w-full"
                 label="Start Date/Time"
                 v-model:date="effective.period.startTime"
+                v-model:time="effective.period.time1"
                 v-if="type == 'period'"
               />
               <date-time-picker
                 class="w-full"
                 label="End Date/Time"
                 v-model:date="effective.period.endTime"
+                v-model:time="effective.period.time2"
                 v-if="type == 'period'"
               />
               <date-time-picker
                 class="w-full"
                 label="Date/Time"
                 v-model:date="effective.date"
+                v-model:time="effective.time"
                 v-if="type == 'date-time'"
               />
             </div>
@@ -167,17 +182,29 @@
                 class="w-full"
                 label="Reference Observation"
                 placeholder="Reference Observation"
-                v-model="result.observation"
-                :items="statuses"
+                v-model="obs"
+                :items="observations"
               />
-              <cornie-select
+              <!-- <cornie-select
                 class="w-full"
                 label="Media(optional)"
                 placeholder="Media"
                 v-model="result.image"
                 :items="statuses"
+              /> -->
+              <!-- <file-picker
+                @uploaded="idFileUploaded"
+                v-model="certificateOfIncoporation"
+                :label="'Certificate of Incorporation'"
+                class=""
+              /> -->
+              <!-- <uploader v-model="file" v-model:meta="fileInfo" /> -->
+              <cornie-input
+                class="w-full"
+                label="Media(optional)"
+                placeholder="Media"
+                v-model="result.image"
               />
-
               <!-- <cornie-select
                 class="w-full"
                 label="Imaging Studying"
@@ -216,12 +243,19 @@
                 v-model="conclusion.conclu"
                 :items="[]"
               />
-              <cornie-select
+              <!-- <cornie-select
                 class="w-full"
                 label="Conclusion Code"
                 placeholder="Conclusion Code"
                 v-model="conclusion.code"
                 :items="[]"
+              /> -->
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+                class="required w-full"
+                label="Conclusion Code"
+                v-model="conclusion.code"
+                placeholder="Conclusion Code"
               />
             </div>
           </accordion-component>
@@ -250,32 +284,29 @@
   </cornie-dialog>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieDialog from "@/components/CornieDialog.vue";
+import AutoComplete from "@/components/autocomplete.vue";
 import CornieCard from "@/components/cornie-card";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CustomCheckbox from "@/components/custom-checkbox.vue";
+import DateTimePicker from "@/components/date-time-picker.vue";
+import AccordionComponent from "@/components/dialog-accordion.vue";
+import FhirInput from "@/components/fhir-input.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import PlusIcon from "@/components/icons/plus.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieBtn from "@/components/CornieBtn.vue";
-import { namespace } from "vuex-class";
-import { CornieUser } from "@/types/user";
-import { string } from "yup";
-import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient } from "@/plugins/http";
-import CornieRadio from "@/components/cornieradio.vue";
-import IAppointmentRoom from "@/types/IAppointmentRoom";
 import PractionerSelect from "@/components/practitioner-select.vue";
-
-import DateTimePicker from "@/components/date-time-picker.vue";
-import { first, getTableKeyValue } from "@/plugins/utils";
-
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import { cornieClient } from "@/plugins/http";
 import { IPatient } from "@/types/IPatient";
+import uploader from "@/views/dashboard/ehr/attachments/uploader.vue";
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { string } from "yup";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -302,6 +333,8 @@ const report = namespace("diagnosticReport");
     AccordionComponent,
     PlusIcon,
     PractionerSelect,
+    uploader,
+    FhirInput,
   },
 })
 export default class ViewResult extends Vue {
@@ -337,7 +370,11 @@ export default class ViewResult extends Vue {
   salesDate = 0;
   customers = "";
   types = "";
-  observations = "";
+  observations: any = [];
+  allObservations: any = [];
+  file = "";
+  fileInfo = "";
+  obs = "";
 
   general = {
     status: "",
@@ -351,9 +388,12 @@ export default class ViewResult extends Vue {
 
   effective = {
     date: "2022-05-13",
+    time: "",
     period: {
       startTime: "",
       endTime: "",
+      time1: "",
+      time2: "",
     },
   };
 
@@ -368,7 +408,7 @@ export default class ViewResult extends Vue {
   };
 
   result = {
-    observation: "",
+    observation: this.findObservationId(this.obs),
     image: "",
     comments: "",
     imaging_Study: "",
@@ -378,6 +418,14 @@ export default class ViewResult extends Vue {
     conclu: "",
     code: "",
   };
+
+  @Watch("obs")
+  setObservations() {
+    if (this.obs !== "" || this.obs !== undefined) {
+      this.result.observation = this.findObservationId(this.obs);
+    }
+  }
+
   get statuses() {
     return [
       "Registered",
@@ -402,10 +450,27 @@ export default class ViewResult extends Vue {
     return "21b84341-2051-4cad-b6b6-feae04f81215";
   }
 
+  findObservationId(g: any) {
+    console.log(
+      "fff",
+      this.allObservations.find((x: any) => x.reasonInfo.note == g)
+    );
+    return this.allObservations.length > 0
+      ? this.allObservations.find((x: any) => x.reasonInfo.note == g).id
+      : "";
+    // return "";
+  }
   async fetchObservations() {
     try {
       const data = await cornieClient().get(`/api/v1/observations`);
-      this.observations = data.data;
+      this.allObservations = data.data;
+      if (this.allObservations.length > 0) {
+        this.observations = this.allObservations.map((x: any) => {
+          return x.reasonInfo.note;
+        });
+      } else {
+        this.observations = [];
+      }
     } catch (error) {
       window.notify({
         msg: "There was an error fetching observations",
@@ -442,7 +507,7 @@ export default class ViewResult extends Vue {
       //   eventHistory: "string",
       // },
       patientId: this.findePatientId(this.general.patient),
-      practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      // practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       // specimenId: this.general.specimenId,
       basedOn: this.general.basedOn || "jkdhvsdjd",
       category: this.general.category || "jhxcjkhvujxchjkvhxc",
