@@ -56,7 +56,7 @@
           </div> -->
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="destroy(item.id)"
+  
           >
             <cancel-icon />
             <span class="ml-3 text-xs">Cancel</span>
@@ -67,7 +67,6 @@
 
     <impression-modal
       v-if="impressionId == 'false'"
-      :columns="practitioner"
       @impression-added="impressionAdded"
       @update:preferred="showImpression"
       v-model="showImpressionModal"
@@ -76,7 +75,7 @@
     <impression-modal
       v-else
       :id="impressionId"
-      :columns="practitioner"
+
       @update:preferred="showImpression"
       v-model="showImpressionModal"
     />
@@ -297,17 +296,17 @@ export default class ImpressionExistingState extends Vue {
       (impression as any).updatedAt = new Date(
         (impression as any).updatedAt
       ).toLocaleDateString("en-US");
-      this.updatedBy = impression.recorded.assessor;
+      // this.updatedBy = impression.recorded.assessor;
       this.currentStatus = impression.status;
       this.update = impression.updatedAt;
       return {
         ...impression,
         action: impression.id,
         keydisplay: "XXXXXXX",
-        problem: impression.recorded.problem,
-        investigation: impression.investigation.item,
-        prognosis: impression.prognosis.prognosis,
-        assessor: impression.recorded.assessor,
+        // problem: impression.recorded.problem,
+        // investigation: impression.investigation.item,
+        // prognosis: impression.prognosis.prognosis,
+        // assessor: impression.recorded.assessor,
       };
     });
 
