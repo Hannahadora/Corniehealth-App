@@ -1,603 +1,405 @@
 <template>
-  <div class="w-full">
-    <div class="w-full mb-4">
-      <p class="text-sm text-gray-400">All fields are required</p>
-    </div>
-
-    <collapse-section :title="'Basic Info'" :height="530">
-      <template #form>
-        <div class="w-full flex items-center mb-4 mt-5">
-          <div class="w-6/12">
-            <cornie-input
-              v-model="procedure.canonicalReference"
-              :label="'Instantiates Canonical'"
-              :items="['active', 'inactive', 'received']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-input
-              v-model="procedure.customReference"
-              :label="'Instantiates Uri'"
-              :items="['Ative', 'Inactive']"
-            />
-          </div>
+  <cornie-dialog v-model="show" right class="w-1/2 h-full">
+    <cornie-card
+      height="100%"
+      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
+    >
+      <cornie-card-title class="">
+        <icon-btn class="cursor-pointer" @click="show = false">
+          <arrow-left stroke="#ffffff" />
+        </icon-btn>
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3">Create New</h2>
+          <cancel-icon class="float-right cursor-pointer mt-1" @click="show = false" />
         </div>
+      </cornie-card-title>
+      <cornie-card-text>
+        <v-form class="flex-grow flex flex-col">
+          <accordion-component
+            class="rounded-none border-none text-primary"
+            title="Basic info"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Based on</div>
+                <div
+                  @click="() => (showBasedOn = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Part of</div>
+                <div
+                  @click="() => (showPartOf = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'Category'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-select
+                :label="'Code'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Based On'"
-              v-model="procedure.basedOn.id"
-              :items="['Reference 1', 'Reference 2']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Part Of'"
-              v-model="procedure.partOf.id"
-              :items="['Reference 1', 'Reference 2']"
-            />
-          </div>
-        </div>
+          <accordion-component
+            class="rounded-none border-none text-primary"
+            title="Performed"
+            :opened="false"
+          >
+            <div class="flex flex-col">
+              <div>Performed</div>
+              <div class="flex space-x-2">
+                <div v-for="r in performedOptions" :key="r">
+                  <cornie-radio
+                    v-model="performed"
+                    :value="r.toLocaleLowerCase()"
+                    :label="r"
+                  />
+                </div>
+              </div>
+              <div>
+                <date-time-picker
+                  v-if="performed == 'date/time'"
+                  class="w-full"
+                  label="Date reported"
+                  v-model:date="date"
+                  v-model:time="time"
+                />
+                <div v-if="performed == 'period'" class="grid grid-cols-2 gap-6">
+                  <date-time-picker
+                    class="w-full"
+                    label="Date reported"
+                    v-model:date="date"
+                    v-model:time="time"
+                  />
+                  <date-time-picker
+                    class="w-full"
+                    label="Date reported"
+                    v-model:date="date"
+                    v-model:time="time"
+                  />
+                </div>
+                <cornie-input
+                  v-if="performed == 'string'"
+                  class="w-full"
+                  label="String"
+                  placeholder="Enter"
+                />
+              </div>
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Code'"
-              v-model="procedure.code"
-              :items="[
-                'Excision of lesion of patella',
-                'Fit removable orthodontic appliance',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Status Reason'"
-              v-model="procedure.statusReason"
-              :items="[
-                'Nitrate contraindicated',
-                'Sensitivity C/I - immunization',
-                'Calcium channel blocker contraindicated',
-              ]"
-            />
-          </div>
-        </div>
+          <accordion-component
+            class="rounded-none text-primary"
+            title="Recorder"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-5">
+              <div class="flex flex-col">
+                <div class="flex flex-row items-center justify-between">
+                  <div>Recorder</div>
+                  <div class="flex items-center space-x-1">
+                    <check-box v-model="recorderCheck" class="mr-2" />
+                    <div>Assert this record</div>
+                  </div>
+                </div>
+                <div>
+                  <cornie-input
+                    :disabled="true"
+                    class="w-full"
+                    placeholder="Autoloaded"
+                  />
+                </div>
+              </div>
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Category'"
-              v-model="procedure.category"
-              :items="[
-                'Surgical procedure',
-                'Diagnostic procedure',
-                'Social service procedur',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select :label="'Subject'" :items="['Ative', 'Inactive']" />
-            <!-- <cornie-select :label="'Code'"  :items="['Ative', 'Inactive' ]"/> -->
-          </div>
-        </div>
+          <accordion-component
+            class="rounded-none text-primary"
+            title="Performer"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Actor</div>
+                <div
+                  @click="() => (showActor = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Function</div>
+                <div
+                  @click="() => (showFunction = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'On Behalf'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
-        <div class="w-full flex items-center mb-3">
-          <!-- <div class="w-6/12">
-                        <cornie-select :label="'Subject'"  :items="['Ative', 'Inactive' ]"/>
-                    </div> -->
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Encounter'"
-              v-model="procedure.encounterId"
-              :items="encountersList"
-            />
-          </div>
-        </div>
-      </template>
-    </collapse-section>
+          <accordion-component
+            class="rounded-none text-primary"
+            title="Location"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Location</div>
+                <div
+                  @click="() => (showLocation = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'Reason Code'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">
+                  Reason Reference
+                </div>
+                <div
+                  @click="() => (showReasonReference = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'Body site'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-select
+                :label="'Outcome'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">Report</div>
+                <div
+                  @click="() => (showReport = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'Complication'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-select
+                :label="'Complication Detail'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-select
+                :label="'Follow Up'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-input class="w-full" :label="'Note'" placeholder="Autoloaded" />
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
+          <accordion-component
+            class="rounded-none text-primary"
+            title="Focal Device"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <cornie-select
+                :label="'Action'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+              <cornie-select
+                :label="'Manipulated'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+            </div>
+          </accordion-component>
+          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
-    <collapse-section :title="'Performance Info'" :height="565">
-      <template #form>
-        <div class="w-full flex items-center mb-1 mt-5">
-          <div class="w-6/12">
-            <div class="w-11/12">
-              <date-time-picker
-                :label="'Performed date & Time'"
-                :width="'w-full'"
+          <accordion-component
+            class="rounded-none text-primary"
+            title="Used items"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <div class="flex flex-col w-full">
+                <div class="capitalize text-black text-sm font-semibold">
+                  Used reference
+                </div>
+                <div
+                  @click="() => (showUsedReference = true)"
+                  class="flex border rounded-md p-3 mt-0.5"
+                >
+                  <div class="flex-1">Select</div>
+                  <div class="flex-none self-center">
+                    <add-icon />
+                  </div>
+                </div>
+              </div>
+              <cornie-select
+                :label="'Used Code'"
+                v-model="code"
+                placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              />
+            </div>
+            <div class="flex w-full justify-end">
+              <div
+                class="rounded-full space-x-3 font-bold px-6 py-3 flex text-primary items-center justify-center border border-primary"
               >
-                <template #date>
-                  <span>{{
-                    new Date(
-                      procedure.performedDate ?? Date.now()
-                    ).toLocaleDateString()
-                  }}</span>
-                </template>
-                <template #time>
-                  <span>{{ "00:00" }}</span>
-                </template>
-                <template #input>
-                  <v-date-picker
-                    v-model="procedure.performedDate"
-                    name="eeee"
-                    style="z-index: 9000; width: 100%"
-                  ></v-date-picker>
-                  <label class="block uppercase my-1 text-xs font-bold">
-                    Time
-                  </label>
-                  <input type="time" class="w-full border rounded-md p-2" />
-                </template>
-              </date-time-picker>
+                <add-icon />
+                <div>Add</div>
+              </div>
             </div>
-          </div>
-          <div class="w-6/12">
-            <cornie-input
-              :label="'Performed Age'"
-              v-model="procedure.performedAge"
-            />
-          </div>
-        </div>
-
-        <div class="w-full flex items-center mt-6 mb-3">
-          <div class="w-6/12">
-            <div class="w-11/12">
-              <date-time-picker :label="'Start date & Time'" :width="'w-full'">
-                <template #date>
-                  <span>{{
-                    new Date(
-                      procedure.performedPeriod?.start ?? Date.now()
-                    ).toLocaleDateString()
-                  }}</span>
-                </template>
-                <template #time>
-                  <span>{{ "00:00" }}</span>
-                </template>
-                <template #input>
-                  <v-date-picker
-                    v-model="procedure.performedPeriod.start"
-                    name="eeee"
-                    style="z-index: 9000; width: 100%"
-                  ></v-date-picker>
-                  <label class="block uppercase my-1 text-xs font-bold">
-                    Time
-                  </label>
-                  <input type="time" class="w-full border rounded-md p-2" />
-                </template>
-              </date-time-picker>
-            </div>
-          </div>
-          <div class="w-6/12">
-            <div class="w-11/12">
-              <date-time-picker :label="'End date & Time'" :width="'w-full'">
-                <template #date>
-                  <span>{{
-                    new Date(
-                      procedure.performedPeriod?.end ?? Date.now()
-                    ).toLocaleDateString()
-                  }}</span>
-                </template>
-                <template #time>
-                  <span>{{ "00:00" }}</span>
-                </template>
-                <template #input>
-                  <v-date-picker
-                    v-model="procedure.performedPeriod.end"
-                    name="eeee"
-                    style="z-index: 9000; width: 100%"
-                  ></v-date-picker>
-                  <label class="block uppercase my-1 text-xs font-bold">
-                    Time
-                  </label>
-                  <input type="time" class="w-full border rounded-md p-2" />
-                </template>
-              </date-time-picker>
-            </div>
-          </div>
-        </div>
-
-        <div class="w-full flex items-center mb-3">
-          <div class="w-4/12">
-            <cornie-input
-              v-model="procedure.performedRange"
-              :label="'Performed Range (min)'"
-              :items="['Ative', 'Inactive']"
-            />
-          </div>
-          <div class="w-4/12">
-            <cornie-input
-              :label="'Performed Range (max)'"
-              :items="['Ative', 'Inactive']"
-            />
-          </div>
-          <div class="w-4/12">
-            <cornie-input
-              v-model="procedure.performedString"
-              :label="'String'"
-              :items="['Ative', 'Inactive']"
-            />
-          </div>
-        </div>
-
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Recorder'"
-              v-model="procedure.recorderId"
-              :items="practitionersList"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Asserter'"
-              v-model="procedure.asserterId"
-              :items="practitionersList"
-            />
-          </div>
-        </div>
-      </template>
-    </collapse-section>
-
-    <collapse-section :title="'Performer'">
-      <template #form>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Function'"
-              :items="[
-                'Specialized surgeon',
-                'Radiation therapist',
-                'Chiropractor',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Actor'"
-              v-model="procedure.actorId"
-              :items="practitionersList"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'On  Behalf Of'"
-              v-model="procedure.onBehalfOf"
-              :items="['Practitioner', 'Organisation']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Location'"
-              v-model="procedure.locationId"
-              :items="demoLocations"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Reason Code'"
-              v-model="procedure.reasonCode"
-              :items="[
-                'Anxiety disorder of childhood OR adolescence',
-                'Choroidal hemorrhage',
-                'Decreased hair growth',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Reason Reference'"
-              v-model="procedure.reasonReference"
-              :items="['Hand written reason', 'Unavailable']"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Body Site'"
-              v-model="procedure.bodySite"
-              :items="[
-                'Posterior carpal region',
-                'Fetal part of placenta',
-                'Parathyroid gland',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Outcome'"
-              v-model="procedure.outcome"
-              :items="['Successfull', 'Unsuccessfull', 'Partially Successful']"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Report'"
-              v-model="procedure.report"
-              :items="['Report 1', 'Report 2']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Complication'"
-              v-model="procedure.complication"
-              :items="[
-                'Anxiety disorder of childhood OR adolescence',
-                'Choroidal hemorrhage',
-                'Spontaneous abortion with laceration of cervix',
-              ]"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Complication Detail'"
-              v-model="procedure.complicationDetail"
-              :items="['Condition 1', 'Condition 2']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Followup'"
-              v-model="procedure.followUp"
-              :items="[
-                'Change of dressing',
-                'Removal of suture',
-                'Removal of drain',
-              ]"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-input :label="'Note'" v-model="procedure.note" />
-          </div>
-        </div>
-      </template>
-    </collapse-section>
-
-    <collapse-section :title="'Focal Device'" :height="300">
-      <template #form>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Action'"
-              v-model="procedure.deviceAction"
-              :items="[
-                'Patient evaluation - action',
-                'Measurement - action',
-                'Administrative action',
-              ]"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Manipulated'"
-              v-model="procedure.deviceManipulated"
-              :items="demoDevices"
-            />
-          </div>
-        </div>
-        <div class="w-full flex items-center mb-3">
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Used Reference'"
-              v-model="procedure.deviceUsedReference"
-              :items="['Other substance used', 'Bone plate', 'Atomizer']"
-            />
-          </div>
-          <div class="w-6/12">
-            <cornie-select
-              :label="'Used Code'"
-              v-model="procedure.deviceUsedCode"
-              :items="['Spine board', 'Inactive']"
-            />
-          </div>
-        </div>
-      </template>
-    </collapse-section>
-
-    <div class="flex justify-end">
-      <corniebtn
-        class="p-2 rounded-full px-8 mx-4 cursor-pointer flex items-center"
-        style="border: 1px solid #080056"
-      >
-        <span
-          class="font-semibold text-primary-500"
-          @click="() => $emit('closesidemodal')"
-          >Cancel</span
-        >
-      </corniebtn>
-
-      <CornieBtn
-        :loading="loading"
-        class="bg-red-500 p-2 rounded-full px-8 mx-4"
-        v-if="!item?.id"
-        @click="onSave"
-      >
-        <span class="text-white font-semibold">Create New Procedure</span>
-      </CornieBtn>
-
-      <CornieBtn
-        :loading="loading"
-        class="bg-red-500 p-2 rounded-full px-8 mx-4"
-        v-else
-        @click="onUpdate"
-      >
-        <span class="text-white font-semibold">Update Procedure</span>
-      </CornieBtn>
+          </accordion-component>
+        </v-form>
+      </cornie-card-text>
+    </cornie-card>
+    <div>
+      <basedon v-model="showBasedOn" />
+      <parton v-model="showPartOf" />
+      <actor v-model="showActor" />
+      <function v-model="showFunction" />
+      <location v-model="showLocation" />
+      <reason-reference v-model="showReasonReference" />
+      <report v-model="showReport" />
+      <used-reference v-model="showUsedReference" />
     </div>
-  </div>
+  </cornie-dialog>
 </template>
-
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieSelect from "@/components/cornieselect.vue";
-import CollapseSection from "./collapse-section.vue";
-import DateTimePicker from "@/views/dashboard/schedules/components/datetime-picker.vue";
+import CornieCard from "@/components/cornie-card";
+import CornieDialog from "@/components/CornieDialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
-import { namespace } from "vuex-class";
-import IProcedure from "@/types/IProcedure";
-import ILocation from "@/types/ILocation";
-import IPractitioner from "@/types/IPractitioner";
-import IEncounter from "@/types/IEncounter";
-import { Prop, Watch } from "vue-property-decorator";
-import helperFunctions from "../helper/helper";
-import IDevice from "@/types/IDevice";
-
-const procedure = namespace("procedure");
-const location = namespace("location");
-const practitioner = namespace("practitioner");
-const vital = namespace("vitals");
-const device = namespace("device");
+import CornieSelect from "@/components/cornieselect.vue";
+import CheckBox from "@/components/custom-checkbox.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
+import CancelIcon from "@/components/icons/cancel.vue";
+import AddIcon from "@/components/icons/plus.vue";
+import DateTimePicker from "@/views/dashboard/schedules/components/datetime-picker.vue";
+import { Options, Vue } from "vue-class-component";
+import { PropSync } from "vue-property-decorator";
+import actor from "./actor.vue";
+import basedon from "./basedon.vue";
+import Function from "./function.vue";
+import location from "./location.vue";
+import parton from "./partof.vue";
+import reasonReference from "./reason-reference.vue";
+import report from "./report.vue";
+import usedReference from "./used-reference.vue";
 
 @Options({
   components: {
-    CornieSelect,
-    CollapseSection,
+    CornieDialog,
+    ...CornieCard,
+    ArrowLeft,
+    CancelIcon,
+    AddIcon,
     DateTimePicker,
+    AccordionComponent,
+    basedon,
+    CornieSelect,
+    parton,
+    CheckBox,
     CornieInput,
+    actor,
+    Function,
+    location,
+    reasonReference,
+    report,
+    usedReference,
   },
 })
-export default class NewProcedure extends Vue {
-  @procedure.Action
-  createProcedure!: (procedure: IProcedure) => Promise<boolean>;
+export default class NewProgressNote extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
 
-  @location.State
-  locations!: ILocation[];
+  performedOptions = ["Date/Time", "Age", "Period", "Range", "String"];
+  showBasedOn = false;
+  showPartOf = false;
+  showItemReference = false;
+  showActor = false;
+  showFunction = false;
+  showLocation = false;
+  showReasonReference = false;
+  showReport = false;
+  showUsedReference = false;
 
-  @location.Action
-  fetchLocations!: () => Promise<void>;
-
-  @practitioner.State
-  practitioners!: IPractitioner[];
-
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @vital.State
-  encounters!: IEncounter[];
-
-  @vital.Action
-  getEncounters!: (id: string) => Promise<void>;
-
-  @procedure.Action
-  updateProcedure!: (procedure: IProcedure) => Promise<void>;
-
-  @device.Action
-  fetchDevices!: () => Promise<void>;
-
-  @device.State
-  devices!: IDevice[];
-
-  @Prop({ type: Object, default: {} })
-  item!: IProcedure;
-
-  procedure = {
-    basedOn: {
-      type: "location",
-      id: "d25cc910-0830-40cf-a0c8-7c303f381b29",
-    },
-    partOf: {
-      type: "location",
-      id: "d25cc910-0830-40cf-a0c8-7c303f381b29",
-    },
-    performedPeriod: {
-      start: new Date().toLocaleDateString(),
-      end: new Date().toLocaleDateString(),
-    },
-  } as IProcedure;
-
-  patientId = "";
-  loading = false;
-
-  demoLocations = [
-    { code: "d25cc910-0830-40cf-a0c8-7c303f381b29", display: "Market" },
-    { code: "25bc0c8e-bec8-401d-a1a3-bb74fee9dc4a", display: "Hospital" },
-  ];
-
-  demoDevices = [
-    { code: "1ddf9d31-2c65-4eb5-9ee5-d2eaa2d9f2a3", display: "Stethoscope" },
-    { code: "e581a5a9-8762-4c4a-9293-0ed964a49ce3", display: "Stethoscope" },
-  ];
-
-  get locationsList() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations?.map((location) => {
-      return {
-        code: location.id,
-        display: location.alias,
-      };
-    });
-  }
-
-  get practitionersList() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners?.map((practitioner) => {
-      return {
-        code: practitioner.id,
-        display: practitioner.firstName,
-      };
-    });
-  }
-
-  get encountersList() {
-    if (!this.encounters || this.encounters.length === 0) return [];
-    return this.encounters?.map((encounter) => {
-      return {
-        code: encounter.id,
-        display: `${encounter.startDate} - ${encounter.endDate}`,
-      };
-    });
-  }
-
-  async onSave() {
-    try {
-      this.loading = true;
-      this.procedure.patientId = this.patientId;
-      this.procedure.locationId = "d25cc910-0830-40cf-a0c8-7c303f381b29";
-      const response = await this.createProcedure(this.procedure);
-      this.loading = false;
-      this.$emit("closesidemodal");
-    } catch (error) {
-      this.loading = false;
-    }
-  }
-
-  async onUpdate() {
-    try {
-      const reqBody = helperFunctions.formatReqBody(this.procedure);
-
-      this.loading = true;
-      const response = await this.updateProcedure(reqBody);
-      this.loading = false;
-      this.$emit("closesidemodal");
-    } catch (error) {
-      this.loading = false;
-    }
-  }
-
-  async created() {
-    this.patientId = this.$route.params.id as string;
-    await this.getEncounters(this.patientId);
-    await this.fetchLocations();
-
-    if (this.devices?.length <= 0) await this.fetchDevices();
-    // await this.get
-    this.fetchPractitioners();
-  }
-
-  @Watch("item")
-  updateProcedureData() {
-    this.procedure = helperFunctions.mapSelectedProcedure(this.item);
-  }
+  performed = "";
+  recorderCheck = "";
+  date = "23/04/2022";
+  time = "";
+  code = "";
+  assessment = {
+    protocol: "",
+    summary: "",
+  };
 }
 </script>
-
-<style></style>

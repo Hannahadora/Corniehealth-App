@@ -11,14 +11,17 @@
         Find Patient Chart
       </p>
     </div>
-    <div class="mt-10 mb-5 rounded-lg settings">
-      <div class="w-full h-screen max-h-full">
-        <clinical-sidebar class="pb-96" :patient="patient" />
-      </div>
-      <div
-        class="w-full overflow-auto h-screen pb-72 max-h-full mb-5 p-3 border-l-none -mt-3"
-      >
-        <router-view />
+    <div class="mt-10 mb-5 rounded-lg w-full">
+      <div class="flex flex-col md:flex-row w-full">
+        <div class="md:flex-none h-screen max-h-full">
+          <clinical-sidebar class="pb-96" :patient="patient" />
+        </div>
+        <!-- {{ $route.name }} -->
+        <div
+          class="w-full md:flex-1 overflow-auto h-screen pb-72 max-h-full mb-5 p-3 border-l-none -mt-3"
+        >
+          <router-view />
+        </div>
       </div>
     </div>
     <patient-modal v-model:visible="showPatient" />

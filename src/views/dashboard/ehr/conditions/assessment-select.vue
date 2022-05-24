@@ -14,6 +14,7 @@
       v-model:selectedValue="selected"
       :patientId="patientId"
       v-model="show"
+      @asses-data="assesdata"
     />
   </div>
 </template>
@@ -47,6 +48,10 @@ export default class Assessment extends Vue {
 
   get assessment() {
     return this.selected?.id;
+  }
+
+  assesdata(value:any){
+    this.$emit('asses-data', value)
   }
 }
 </script>

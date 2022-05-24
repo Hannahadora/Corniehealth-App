@@ -26,11 +26,11 @@
                                     <cornie-logo />
                                     <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                                     <div class="float-right w-full flex justify-end">
-                                        <div>
-                                            <p class="font-bold mb-2 text-right">Cornie Health</p>
-                                            <p class="text-right mb-2">57 Campbell Street, Lagos Island. Lagos</p>
-                                            <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
-                                            <p class="text-right mb-2"> <span class="text-gray-300">(+234) 802 290 8484</span>waybill@corniehealth.com</p>
+                                         <div>
+                                            <p class="font-bold mb-2 text-right">{{ authPractitioner?.firstName +''+ authPractitioner?.lastName }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.address }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> {{ authPractitioner?.email }}</p>
+                                            <p class="text-right mb-2"> <span class="text-gray-300">{{ (authPractitioner?.phone?.dialCode) +' '+ authPractitioner?.phone?.number }}</span>{{ authPractitioner?.email }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -38,92 +38,91 @@
                     </div>
 
                     <div class="w-full mt-5">
-                         <div class="grid grid-cols-2 gap-4 mt-8">
-                            <div class="bg-blue-50 rounded-lg shadow-md p-3">
+                         <div class="grid grid-cols-3 gap-4 mt-8">
+                             <div class="bg-blue-50 rounded-lg shadow-md p-3">
+                                   <p class="text-lg font-bold">Request Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Return #</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Date Processed</p>
-                                    <p class="text-sm text-right w-full">13, Colony Estate, Lekki...</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Processed By</p>
-                                    <p class="text-sm text-right w-full">mike@medplus.ng</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Role</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
-                                </div>
-                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Request #</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.requestId }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Validity</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-right w-full">{{ new Date(selectedItem?.validity).toLocaleDateString() }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Approval Status</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.status }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Issue Status</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.status }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Description</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.description }}</p>
+                                </div>
+                            </div>
+                            <div class="bg-white border-gray-200 border-2 rounded-lg shadow-md p-3">
+                                 <p class="text-lg font-bold">Requisitioner</p>
+                                <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Name</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.requestedBy.name }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.requestedBy?.phone?.dialCode +' '+selectedItem.requestedBy?.phone?.number }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Email</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.requestedBy.email }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Date</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.dateRequested }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Department</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.department }}</p>
+                                </div>
+                                 <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Delivery Location</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.address }}</p>
                                 </div>
                             </div>
                              <div class="bg-blue-50 rounded-lg shadow-md p-3">
+                                  <p class="text-lg font-bold">Supplier</p>
                                 <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Return To</p>
-                                    <p class="text-sm text-right w-full">AX1234</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Supplier</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.supplyContactName}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">Complete</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.supplyaddress}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Inventory Manager</p>
-                                    <p class="text-sm text-right w-full">Complete</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Supplier Contact</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.supplyContactName}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
-                                    <p class="text-sm text-gray-400 font-light w-full">Return Status</p>
-                                    <p class="text-sm text-right w-full">Complete</p>
+                                    <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.supplyContactPhone?.dialCode +' '+selectedItem?.supplyContactPhone?.number }}</p>
+                                </div>
+                                   <div class="flex space-x-4 mt-5 w-full">
+                                    <p class="text-sm text-gray-400 font-light w-full">Email</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.supplyContactEmail}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="w-full mt-12">
-                        <div class="bg-primary p-5 w-full flex mb-5">
-                            <p class="float-left text-white w-full">Reason for Return:: <span class="font-semibold">XXXXXX</span></p>
-                        </div>
                         <div class="border-t-2 border-dashed border-gray-200 pb-12 pt-12">
 
                             <span class="font-bold text-lg my-9">BOQ</span>
-                            <cornie-table :columns="Header" v-model="items" :listmenu="true" :check="false">
-
-                                        <template #code="{ item }">
-                                            <div class="flex space-x-3">
-                                            <div>
-                                                <p>{{ item.code }}</p>
-                                                <p class="text-gray-400">{{ item.durationInDays }} days</p>
-                                            </div>
-                                                <medication-drug v-if="item.substitutionAllowed == true" />
-                                                <refill-drug v-else/>
-                                            </div>
-                                        </template>
-                                        <template #dosage="{ item }">
-                                            <p >{{ item.dosageInstruction }}/day</p>
-                                        </template>
-                                        <template #duration="{ item }">
-                                            <p >{{ item.durationInDays }} Days</p>
-                                        </template>
-                                        <template #quantity="{ item }">
-                                        <span>
-                                            {{ item.quantity }}
-                                        </span>
-                                        </template>
-                                        <template #courseOfTherapy="{ item}">
-                                            <p>
-                                            {{ item.courseOfTherapy}}
-                                            </p>
+                            <cornie-table :menushow="true" :columns="headers" v-model="items" :listmenu="true" :check="false">
+                                        <template #name="{ item }">
+                                            <p >{{ item.name }}</p>
+                                            <span class="text-gray-400">{{ item.form +' - '+ item.packSize }}</span>
                                         </template>
                             </cornie-table>
                         </div>
@@ -291,92 +290,61 @@ export default class printSection extends Vue {
         
     }
 
-    Header = [
+    headers = [
     {
       title: "item code",
-      key: "default",
+      key: "code",
       show: true,
        noOrder: true,
     },
     {
       title: "item name",
-      key: "default",
+      key: "name",
       show: true,
        noOrder: true,
     },
     {
-      title: "pack size",
-      key: "default",
+      title: "description",
+      key: "description",
       show: true,
        noOrder: true,
     },
     {
       title: "uofm",
-      key: "default",
+      key: "uofm",
       show: true,
        noOrder: true,
     },
 
     {
-      title: "qty ordered",
+      title: "Available QTy",
       key: "qty",
       show: true,
        noOrder: true,
     },
      {
-      title: "qty received",
-      key: "qty",
-      show: true,
-       noOrder: true,
-    },
-     {
-      title: "outstanding qty",
-      key: "qty",
+      title: "qty requested",
+      key: "quantity",
       show: true,
        noOrder: true,
     },
     ];
 
-  
-    get items() {
-      const requests = this.requests.map((request) => {
-      const refillses = request.medications.map((medication:any) => medication.refills);
-        return {
-          ...request,
-          action: request.id,
-          refils: refillses[0],
-          qty: '12',
-          default: 'xxxxxx',
-        };
-      });
+      get items() {
+    const supplys = this.selectedItem.items.map((supply: any) => {
+      return {
+        ...supply,
+        total: this.selectedItem.total,
+        description: this.selectedItem.description,
 
-     return requests;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
-    }
-    
+        // totalCost: this.getTotal(+this.unitCosts[supply.productId], +this.quantities[supply.productId]),
+      
+      };
+    });
 
-     get allRequester() {
-        if (!this.patients || this.patients.length === 0) return [];
-        return this.patients.map((i: any) => {
-        return {
-            code: i.id,
-            display: i.firstname + " " + i.lastname,
-        };
-        });
-    }
-
-    get allPerformer() {
-        if (!this.practitioners || this.practitioners.length === 0) return [];
-        return this.practitioners.map((i: any) => {
-        return {
-            code: i.id,
-            display: i.firstName + " " + i.lastName,
-        };
-        });
-    }
-
-
+    if (!this.query) return supplys;
+    return search.searchObjectArray(supplys, this.query);
+  }
 
 
    async submit() {

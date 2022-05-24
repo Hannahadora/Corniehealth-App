@@ -14,9 +14,10 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import ReturnEmptyState from "./emptyState.vue";
 import ReturnExistingState from "./existingState.vue";
-import IRequest from "@/types/IRequest";
+import IMaterialReturn from "@/types/IMaterialReturn";
 
-const request = namespace("request");
+const materialreturn = namespace("materialreturn");
+const user = namespace("user");
 
 @Options({
   name: "ReturnIndex",
@@ -26,20 +27,21 @@ const request = namespace("request");
   },
 })
 export default class ReturnIndex extends Vue {
-
   get empty() {
-    return this.requests.length < 1;
+    return this.materialreturns.length < 1;
   }
 
-  @request.State
-  requests!: IRequest[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  @materialreturn.State
+  materialreturns!: IMaterialReturn[];
 
+  @materialreturn.Action
+  fetchMaterialReturnOutgoing!: (locationId: string) => Promise<void>;
 
   async created() {
-    await this.fetchRequests();
+    await this.fetchMaterialReturnOutgoing(this.authCurrentLocation);
   }
 }
 </script>

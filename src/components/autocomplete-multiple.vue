@@ -41,9 +41,7 @@
                   @change="handleChange"
                 />
 
-                <div
-                  class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
-                >
+                <div class="text-gray-300 py-1 pr-1 flex items-center border-gray-200">
                   <chevron-down-icon />
                 </div>
               </div>
@@ -207,9 +205,7 @@ export default class AutoComplete extends Vue {
       let isAdded = this.selectedItems.some((i: any) => i.code === item.code);
 
       if (isAdded) {
-        this.selectedItems = this.selectedItems.filter(
-          (i: any) => i.code !== item.code
-        );
+        this.selectedItems = this.selectedItems.filter((i: any) => i.code !== item.code);
         selected.checked = false;
       } else {
         this.selectedItems.push(item);

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pb-4 mt-6 border-b border-gray-300">
-      <p class="text-xl font-bold">{{ $route.name }}</p>
+      <p class="text-xl font-bold">{{ $route.name }} Report</p>
     </div>
     <div
       class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
@@ -9,15 +9,20 @@
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
       <h4 class="text-black text-center">There is no record.</h4>
-      <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
-        @click="showRoom = true"
-      >
+      <cornie-btn class="bg-danger px-3 rounded-full text-white m-5" @click="viewItem()">
         Add New
       </cornie-btn>
     </div>
-    <div class="w-full pb-7 mt-28" v-else>
-      <cornie-table :columns="rawHeaders" v-model="items">
+    <div class="w-full pb-7" v-else>
+      <div class="flex flex-row w-full justify-end mt-10">
+        <div
+          @click="viewItem()"
+          class="bg-danger p-2 rounded-xl text-white font-bold px-8 py-3 mx-2 cursor-pointer"
+        >
+          Create New
+        </div>
+      </div>
+      <cornie-table class="mt-28" :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -50,10 +55,7 @@
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'draft'"
-            >
+            <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'draft'">
               {{ item.status }}
             </p>
             <p
@@ -68,10 +70,7 @@
             >
               {{ item.status }}
             </p>
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'unknown'"
-            >
+            <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'unknown'">
               {{ item.status }}
             </p>
             <p
@@ -126,37 +125,30 @@
       </div>
     </div>
   </div>
-  <diagnostic-dialog
-    v-model="showRecord"
-    :id="typeId"
-    @sales-added="salesAdded"
-  />
+  <diagnostic-dialog v-model="showRecord" :id="typeId" @sales-added="salesAdded" />
   <view-result v-model="showResult" :id="typeId" />
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import ThreeDotIcon from "@/components/icons/threedot.vue";
-import SortIcon from "@/components/icons/sort.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PrintIcon from "@/components/icons/print.vue";
-import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
-import FilterIcon from "@/components/icons/filter.vue";
-import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import { namespace } from "vuex-class";
-import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
+import IconInput from "@/components/IconInput.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import { cornieClient } from "@/plugins/http";
-import search from "@/plugins/search";
 import EyeBlue from "@/components/icons/eye-blue.vue";
-import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
-import UpdateReportGreen from "@/components/icons/update-report-green.vue";
+import FilterIcon from "@/components/icons/filter.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { first, getTableKeyValue } from "@/plugins/utils";
-
+import PrintIcon from "@/components/icons/print.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import SortIcon from "@/components/icons/sort.vue";
+import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
+import ThreeDotIcon from "@/components/icons/threedot.vue";
+import UpdateReportGreen from "@/components/icons/update-report-green.vue";
+import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
+import TableOptions from "@/components/table-options.vue";
+import search from "@/plugins/search";
+import { getTableKeyValue } from "@/plugins/utils";
+import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
 import DiagnosticDialog from "./DiagnosticDialog.vue";
 import ViewResult from "./ViewResult.vue";
 
@@ -187,6 +179,7 @@ const location = namespace("location");
 export default class DiagnosticReport extends Vue {
   query = "";
   typeId = "";
+  empty = false;
   showRecord = false;
   showResult = false;
   practitioner = [] as any;
@@ -197,6 +190,7 @@ export default class DiagnosticReport extends Vue {
   totalSales = 0;
   completedSales = 0;
   totalSalesVolume = 0;
+  title = "";
 
   diagnosticsReports = [{}];
 
@@ -247,9 +241,9 @@ export default class DiagnosticReport extends Vue {
 
   get items() {
     const diagnosticsReports = this.diagnosticsReports.map((report) => {
-      (report as any).createdAt = new Date(
-        (report as any).createdAt
-      ).toLocaleDateString("en-US");
+      (report as any).createdAt = new Date((report as any).createdAt).toLocaleDateString(
+        "en-US"
+      );
       return {
         ...report,
         // action: sale.id,
@@ -273,9 +267,9 @@ export default class DiagnosticReport extends Vue {
     this.typeId = value;
   }
 
-  viewItem(value: string) {
+  viewItem(value?: string) {
     this.showResult = true;
-    this.typeId = value;
+    this.typeId = value || "";
   }
 
   closeModal() {

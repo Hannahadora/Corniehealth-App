@@ -14,7 +14,7 @@ export default interface IGrn {
   identifier: string;
   receiverCategory: string;
   receiverLocationId: string;
-  dateReceived: string;
+  dateReceived: Date;
   supplierCategory: string;
   supplierLocationId: string;
   supplierCountry: string;
