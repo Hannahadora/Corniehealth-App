@@ -85,7 +85,7 @@ export default class conditionCard extends Vue {
     const items = this.patientConditions.map((condition) => ({
       name: this.codeMapper(condition.code),
       severity: this.severityMapper(condition.severity),
-      onset: this.displayTimeable(condition.onSet, "onsetString"),
+    //  onset: this.displayTimeable(condition.onSet, "onsetString"),
       abatement: this.printAbatement(condition),
     }));
 
@@ -93,19 +93,19 @@ export default class conditionCard extends Vue {
   }
 
   printAbatement(condition: ICondition) {
-    const latest = this.latestAbatement(condition);
-    if (!latest) return;
-    return this.displayTimeable(latest, "string");
+    // const latest = this.latestAbatement(condition);
+    // if (!latest) return;
+    // return this.displayTimeable(latest, "string");
   }
 
-  latestAbatement({ abatements }: ICondition) {
-    const allAbatements = abatements || [];
-    const sorted = allAbatements.sort((a: any, b: any) => {
-      if ((a.createdAt = b.createdAt)) return 0;
-      return a.createdAt > b.createdAt ? 1 : -1;
-    });
-    return sorted.pop();
-  }
+  // latestAbatement({ abatements }: ICondition) {
+  //   const allAbatements = abatements || [];
+  //   const sorted = allAbatements.sort((a: any, b: any) => {
+  //     if ((a.createdAt = b.createdAt)) return 0;
+  //     return a.createdAt > b.createdAt ? 1 : -1;
+  //   });
+  //   return sorted.pop();
+  // }
 
   displayTimeable(item: Timeable, stringKey: string) {
     const value = { ...item };

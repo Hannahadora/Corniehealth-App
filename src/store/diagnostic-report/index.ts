@@ -23,6 +23,7 @@ export default {
           ctx.commit("setReport", r);
         })
         .catch(r => {
+          // eslint-disable-next-line no-console
           console.log("getRe", r);
         });
     },
@@ -32,24 +33,29 @@ export default {
           ctx.dispatch("getAllReports");
         })
         .catch(e => {
+          // eslint-disable-next-line no-console
           console.log("createR", e);
         });
     },
     async updateDReport(ctx: any, payload: any) {
       await updateReport(payload)
+        // eslint-disable-next-line unused-imports/no-unused-vars
         .then(d => {
           ctx.dispatch("getAllReports");
         })
         .catch(d => {
+          // eslint-disable-next-line no-console
           console.log("updateR", d);
         });
     },
     async updateRStatus(ctx: any, payload: any) {
       await updateReportStatus(payload)
         .then(e => {
+          // eslint-disable-next-line no-console
           console.log("updateSuccess", e);
         })
         .catch(f => {
+          // eslint-disable-next-line no-console
           console.log("ds", f);
         });
     },
@@ -59,6 +65,7 @@ export default {
           ctx.dispatch("getAllReports");
         })
         .catch(e => {
+          // eslint-disable-next-line no-console
           console.log("deleteReport", e);
         });
     },

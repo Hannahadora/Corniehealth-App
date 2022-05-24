@@ -1,6 +1,6 @@
-import { IOrganization } from "./IOrganization";
 import Period from "./IPeriod";
 import IPractitioner from "./IPractitioner";
+import { IOrganization } from "./IOrganization";
 
 interface Range {
   unit: string;
@@ -18,15 +18,15 @@ export interface Timeable {
   [state: string]: any;
 }
 
-interface OnSet extends Timeable {
-  onsetString?: string;
-}
+// interface OnSet extends Timeable {
+//   onsetString?: string;
+// }
 
-interface IAbatement extends Timeable {
-  asserter: string;
-  practitionerId: string;
-  conditionId: string;
-}
+// interface IAbatement extends Timeable {
+//   asserter: string;
+//   practitionerId: string;
+//   conditionId: string;
+// }
 
 export interface IAssessment {
   reference: "Clinical Impression" | "Diagnostic Reports" | "Observation";
@@ -42,7 +42,7 @@ interface History<T> {
   practitionerName?: string;
 }
 
-type VerificationStatus =
+export type VerificationStatus =
   | "unconfirmed"
   | "provisional"
   | "differential"
@@ -82,34 +82,119 @@ export interface ConditionNote {
   updatedAt?: string;
   practitioner?: IPractitioner;
 }
+
+export interface OnSet {
+  onsetDateTime: string;
+  onsetAge: string;
+  onsetPeriod: {
+    start: string,
+    end: string,
+    startTime: string,
+    endTime: string
+  };
+  onsetRange: [];
+  recordedDate: string;
+  recorder: string;
+  asserter: string;
+  lastOccurence: string;
+  note: string;
+  dateTime: string;
+  age: {
+    unit: "",
+    value: 0
+  };
+  period:{
+    start: string,
+    end: string,
+    startTime: string,
+    endTime: string
+  };
+  range:{
+    unit: string,
+    min: number,
+    max: number
+  };
+  string: string;
+
+}
+export interface Abatement {
+  onsetDateTime: string;
+  onsetAge: string;
+  onsetPeriod: {
+    start: string,
+    end: string,
+    startTime: string,
+    endTime: string
+  };
+  onsetRange: [];
+  recordedDate: string;
+  recorder: string;
+  asserter: string;
+  lastOccurence: string;
+  note: string;
+  dateTime: string;
+  age: {
+    unit: "",
+    value: 0
+  };
+  period:{
+    start: string,
+    end: string,
+    startTime: string,
+    endTime: string
+  };
+  range:{
+    unit: string,
+    min: number,
+    max: number
+  };
+  string: string;
+
+}
+
+
 export interface ICondition {
   id?: string;
   patientId: string;
+  category: string;
+  bodySite: string;
+  severity: string;
+  code: string;
+  onSet: OnSet;
+  abatement: Abatement;
+  recordDate : string;
+  recorderId : string;
+  type : string;
+  assessment : {
+    id: "",
+    reference: "",
+    description: ""
+  };
+  evidence: {
+    code: "",
+    detail: "",
+    note: ""
+  },
+  clinicalStatus : string;
+  verificationStatus : string;
+
+
+
   practitionerId: string;
   organizationId: string;
   encounterId: string;
 
   notes?: ConditionNote[];
-
-  type: string;
-  category: string;
   summary: string;
   detail: string;
-  bodySite: string;
-  severity: string;
   evidenceNote: string;
-  code: string;
-  onSet: OnSet;
 
-  assessment: IAssessment;
-  clinicalStatus: ClinicalStatus;
-  verificationStatus: VerificationStatus;
   verificationSatusHistory: History<VerificationStatus>[];
   clinicalStatusHistory: History<ClinicalStatus>[];
   occurences?: IOccurence[];
-  abatements?: IAbatement[];
   createdAt?: string;
   updatedAt?: string;
   practitioner?: IPractitioner;
   organization?: IOrganization;
+
 }

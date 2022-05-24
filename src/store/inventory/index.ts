@@ -62,6 +62,7 @@ export default {
       await getInventoryCategoriesByUser(id).then(c => {
         ctx.commit("setCategories", c)
       }).catch(e => {
+        // eslint-disable-next-line no-console
         console.log("error", e)
 
       })

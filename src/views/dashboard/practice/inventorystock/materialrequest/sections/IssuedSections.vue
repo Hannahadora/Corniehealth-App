@@ -84,7 +84,7 @@
           <span class="ml-3 text-xs">Edit</span>
         </div>
 
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showGrnModal(item.id)">
                 <check-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Good Received Note</span>
            </div>
@@ -101,6 +101,7 @@
   </div>
   <request-modal v-model="showRequest" @requestAdded="requestAdded" :id="requestId"/>
   <view-modal v-model="showview" :selectedItem="selectedItem"/>
+  <grn-modal v-model="showGrn" :requestId="requestId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -136,7 +137,8 @@ import ViewModal from "../components/viewModal.vue"
 
 import ActiveIcon from "../icons/active.vue";
 import TotalIcon from "../icons/total.vue";
-import CloseIcon from "../icons/close.vue"
+import CloseIcon from "../icons/close.vue";
+import GrnModal from "../../goods/components/grnModal.vue";
 
 const location = namespace("location");
 const user = namespace("user");
@@ -168,6 +170,7 @@ const materialrequest = namespace("materialrequest");
     ChevronDownIcon,
     NewTab,
     ViewModal,
+    GrnModal,
   },
 })
 export default class IssuedExistingState extends Vue {
@@ -197,6 +200,7 @@ export default class IssuedExistingState extends Vue {
   showtimeline  = false;
   requestId = "";
   selectedItem = {};
+  showGrn = false;
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 
@@ -299,6 +303,11 @@ export default class IssuedExistingState extends Vue {
   showViewModal(value:any){
     this.showview = true;
     this.selectedItem = value;
+  }
+
+    showGrnModal(value:string){
+    this.showGrn = true;
+    this.requestId = value;
   }
 
   checkAll() {

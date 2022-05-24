@@ -3,12 +3,6 @@ import Period from "./IPeriod";
 export interface Effective {
   effectiveDate: string;
   effectivePeriod: Period;
-}
-export interface Protocol {
-  protocol: string;
-  summary: string;
-}
-export interface Recorded {
   date: string;
   assessor: string;
   previous: string;
@@ -24,8 +18,6 @@ interface Findings {
   item: string;
   itemReference: string;
   basis: string;
-}
-interface Prognosis {
   prognosis: string;
   prognosisReference: string;
   supportingInfo: string;
@@ -41,9 +33,7 @@ export default interface IImpression {
   encounter: string;
   subject: string;
   effective: Effective;
-  recorded: Recorded;
   investigation: Investigation;
   findings: Findings;
-  protocol: Protocol;
-  prognosis: Prognosis;
+  recorded: [];
 }
