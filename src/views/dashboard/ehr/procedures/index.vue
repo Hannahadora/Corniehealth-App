@@ -3,12 +3,10 @@
     class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
     <div class="w-full">
-      <empty-state
-        @procedure="() => (showNewProcedure = true)"
-        v-if="items?.length <= 0"
-      />
+      <empty-state @procedure="() => (showNewProcedure = true)" />
       <!-- <existing-state v-else :patient="patient" :patientId="patientId" :items="items" />
       <new-progress-note v-model="showNewProcedure" /> -->
+      <new-procedure v-model="showNewProcedure" />
     </div>
   </div>
 </template>
@@ -21,18 +19,19 @@ import IProgressnote from "@/types/IProgressnote";
 import { Codeable } from "@/types/misc";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
-import EmptyState from "./empty-state.vue";
-import ExistingState from "./existing-state.vue";
-import NewProgressNote from "./new-progress-note.vue";
-
+import EmptyState from "./components/empty-state.vue";
+// import ExistingState from "./existing-state.vue";
+// import NewProgressNote from "./new-progress-note.vue";
+import newProcedure from "./components/new-procedure.vue";
 const patients = namespace("patients");
 
 @Options({
   name: "progressnotes",
   components: {
     EmptyState,
-    ExistingState,
-    NewProgressNote,
+    // ExistingState,
+    // NewProgressNote,
+    newProcedure,
   },
 })
 export default class ProgressNotes extends Vue {
