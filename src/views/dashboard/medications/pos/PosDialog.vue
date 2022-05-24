@@ -116,20 +116,23 @@
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
-            <template #quantity="{ index }" >
-              <cornie-input
-                type="number"
+            <template #quantity="{ item }">
+              <!-- <cornieinput
                 class="w-full"
                 placeholder="Enter"
-
+                v-model="quantity[index]"
+              /> -->
+              <input
+                class="border p-1"
+                type="number"
+                placeholder="Enter"
+                v-model="item.quantity"
               />
-              <div>Items {{ items }}</div>
-              <div>Index {{ index }}</div>
             </template>
             <template #lineTotal="{ item }">
               <div class="flex space-x-3">
                 <span>
-                  {{ item.quantity * item.unitPrice || 0 }}
+                  {{ item.lineTotal || 0.0 }}
                 </span>
               </div>
             </template>
@@ -169,7 +172,7 @@
             <div class="w-1/3">
               <table class="w-full">
                 <tbody>
-                  <tr>
+                  <tr v-if="discount">
                     <td>Total Discount</td>
                     <td>{{ totalDiscount || 0.0 }}</td>
                   </tr>
@@ -254,7 +257,7 @@
                 class="w-full"
                 label="Payment Type"
                 placeholder="--Search--"
-                v-model="payment.paymentType"
+                v-model="paymentType"
                 :items="['pos', 'cash']"
                 :disabled="salesData"
               />
@@ -306,6 +309,7 @@ import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import PlusIconWhite from "@/components/icons/plus-icon-white.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
+import corninuminput from "@/components/cornienuminput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -367,6 +371,7 @@ const user = namespace("user");
     DeleteIcon,
     EditIcon,
     QuantityInput,
+    corninuminput,
   },
 })
 export default class PosDialog extends Vue {
@@ -385,12 +390,12 @@ export default class PosDialog extends Vue {
   required = string().required();
 
   showDatalist = false;
-  quantity = 1;
   searchMedication = false;
   discount = 0;
 
   query = "";
   addCustomerModal = false;
+  paymentType = "";
 
   loading = false;
   activeTab = "Full Payment";
@@ -458,12 +463,19 @@ export default class PosDialog extends Vue {
         action: medication.id,
         itemName: medication.name,
         unitPrice: medication.unitPrice,
-        quantity: 1,
-        lineTotal: Number(medication.unitPrice * this.quantity),
+        quantity: medication.quantity,
+        lineTotal: Number(medication.unitPrice * medication.quantity),
       };
     });
     if (!this.query) return dMed;
     return search.searchObjectArray(dMed, this.query);
+  }
+
+  @Watch("items", { immediate: true, deep: true })
+  getLineTotal() {
+    this.items.forEach((item: any) => {
+      item.lineTotal = item.quantity * item.unitPrice;
+    });
   }
 
   get totalDiscount() {
@@ -497,7 +509,7 @@ export default class PosDialog extends Vue {
       return [
         {
           amount: this.grandTotal,
-          paymentType: "pos" || "cash",
+          paymentType: this.paymentType,
           total: this.grandTotal,
         },
       ];
@@ -542,7 +554,7 @@ export default class PosDialog extends Vue {
   }
 
   addMedication(chosenMedication: any) {
-    this.medications.push({ ...chosenMedication });
+    this.medications.push({ ...chosenMedication, quantity: 1 });
   }
 
   async addSales(type: any) {
@@ -561,7 +573,7 @@ export default class PosDialog extends Vue {
           ...el,
           dispensedProductId: el.id,
           reasonForSubstitution: el.reasonForSubstitution,
-          quantity: this.quantity,
+          quantity: el.quantity,
         };
       }),
       payments: this.payments,

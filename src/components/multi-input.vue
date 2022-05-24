@@ -5,7 +5,7 @@
       :key="i"
       maxlength="1"
       :class="[customClass]"
-      class="max-w-xs w-20 rounded mb-2 border py-4 px-6 text-center focus:outline-none"
+      class="max-w-xs md:w-16 w-12 rounded mb-2 border py-4 px-4 text-center focus:outline-none"
       placeholder="--"
       @keydown="keyPressed(i - 1)"
       :ref="`input${i - 1}`"
@@ -63,7 +63,8 @@ export default class MultiInput extends Vue {
     } else {
       next = this.$refs[`input${index - 1}`];
     }
-    next?.focus();
+    console.log('next', next)
+    return next?.focus();
   }
 }
 </script>

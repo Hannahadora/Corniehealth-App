@@ -18,8 +18,9 @@ export async function login(payload: AuthPayload) {
   const data = await quantumClient().post("/auth/login", payload);
   store.commit("user/setLoginInfo", data.data);
   const cornieData = await fetchCornieData();
-
+  
   store.commit("user/setCornieData", cornieData);
+  return data;
 }
 
 export async function getAccountType() {
@@ -27,7 +28,7 @@ export async function getAccountType() {
 
   if (!type) {
     const { user } = await fetchCornieData();
-    type = user.accountType;
+    type = user?.accountType;
     setSessionData("accountType", type);
   }
   return type;

@@ -142,7 +142,7 @@ export default class SignUp extends Vue {
 
 @media screen and (max-width: 1024px) {
   .input-code-card {
-    width: 95%%;
+    width: 95%;
   }
 }
 </style>

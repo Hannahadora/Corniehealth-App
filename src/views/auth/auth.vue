@@ -1,11 +1,11 @@
 <template>
-  <div class="w-full h-screen overflow-y-scroll m-0 pt-11 pb-20 lg:px-32 md:px-12 px-6" style="background: #080056">
+  <div class="w-full h-screen overflow-y-scroll m-0 pt-11 pb-20 lg:px-32 md:px-20 px-6" style="background: #080056">
     <div>
       <img src="../../assets/logo(1).png" alt="" />
     </div>
-    <div class="gap-x-10 md:grid block items-center grid-cols-12 md:-mt-3 mt-5">
+    <div class="gap-x-10 lg:grid block items-center grid-cols-12 lg:-mt-3 mt-9">
       <div
-        class="col-span-6 h-full w-full md:flex hidden flex-col justify-center items-center"
+        class="col-span-6 h-full w-full lg:flex hidden flex-col justify-center items-center"
       >
         <div class="">
           <div v-if="areaPath === 'signup'">

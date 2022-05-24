@@ -1,376 +1,278 @@
 <template>
   <div class="container-fluid p-4">
     <div class="w-full">
-      <CollapseSection
-        :title="'Basic Info'"
-        :show="true"
-        :height="280"
-        :overflow="true"
-        :underlined="true"
-        class="mb-5"
+      <accordion-component
+        class="text-primary"
+        title="Body Temperature"
+        :opened="true"
       >
-        <template #form>
-          <div class="w-full flex items-center">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <input-desc-rounded :label="'Temperature'">
-                  <input
-                    v-model="vitalData.temperature.value"
-                    type="text"
-                    class="p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                  <template #unit>
-                    <units-select
-                      class="-mt-1"
-                      v-model="vitalData.temperature.unit"
-                      :items="temperatureUnits"
-                      style="width: 48px; border: none; font-size: 14px"
-                    />
-                  </template>
-                </input-desc-rounded>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded :label="'Pulse Rate'" :info="'bpm'">
-                <input
-                  v-model="vitalData.pulse"
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-              </input-desc-rounded>
-            </div>
+        <div class="w-full grid grid-cols-2 gap-6">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Temperature"
+              placeholder="0"
+              :modelValue="vitalData.temperature.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="temperatureUnits"
+              placeholder="°C"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.temperature.unit"
+            />
           </div>
+        </div>
+      </accordion-component>
 
-          <div class="w-full flex items-center mt-2">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <input-desc-rounded :label="'Respiratory Rate'" :info="'rpm'">
-                  <input
-                    v-model="vitalData.respiratoryRate"
-                    type="text"
-                    class="p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded :label="'Oxygen Saturation'" :info="'%'">
-                <input
-                  v-model="vitalData.oxygenSaturation"
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-              </input-desc-rounded>
-            </div>
-          </div>
-
-          <div class="w-full flex items-center py-3 mt-2">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <input-desc-rounded :label="'Height'">
-                  <input
-                    v-model="vitalData.height.value"
-                    type="text"
-                    class="p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                  <template #unit>
-                    <units-select
-                      class="-mt-1"
-                      v-model="vitalData.height.unit"
-                      :items="['cm', 'in', 'ft']"
-                      style="width: 48px; border: none; font-size: 14px"
-                    />
-                  </template>
-                </input-desc-rounded>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded
-                :label="'Weight'"
-                v-model="vitalData.height.value"
-              >
-                <input
-                  v-model="vitalData.weight.value"
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-                <template #unit>
-                  <units-select
-                    class="-mt-1"
-                    v-model="vitalData.weight.unit"
-                    :items="['Kg', 'Ib']"
-                    style="width: 48px; border: none; font-size: 14px"
-                  />
-                </template>
-              </input-desc-rounded>
-            </div>
-          </div>
-        </template>
-      </CollapseSection>
-
-      <CollapseSection
-        :title="'Blood Pressure'"
-        :overflow="true"
-        :underlined="true"
-        class="my-5"
-        :height="collectedPressures?.length <= 0 ? 150 : 210"
+      <accordion-component
+        class="text-primary"
+        title="RR, HR, OS, BGL"
+        :opened="true"
       >
-        <template #form>
-          <div class="w-full flex items-center -mt-5">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <split-input :label="'Blood Pressure (Systolic)'">
-                  <template #list>
-                    <cornie-select
-                      v-model="bloodPressure.position"
-                      :items="['Standing_Left', 'Standing_Right']"
-                      style="width: 100%; border-radius: 8px 0 0 8px"
-                    />
-                  </template>
-                  <template #input>
-                    <input-with-desc :info="'mmHg'">
-                      <input
-                        v-model="bloodPressure.measurement.value"
-                        type="text"
-                        class="p-2 border w-100 w-full"
-                        style="border-radius: 0 8px 8px 0"
-                      />
-                    </input-with-desc>
-                  </template>
-                </split-input>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded
-                :label="'Blood Pressure(Diastolic)'"
-                :info="'mmHg'"
-              >
-                <input
-                  v-model="diastolic"
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 0 8px 8px 0"
-                />
-              </input-desc-rounded>
-            </div>
+        <div class="w-full grid grid-cols-2 gap-6">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Respiratory Rate"
+              placeholder="0"
+              :modelValue="vitalData.respiratoryRate"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="temperatureUnits"
+              placeholder="/min"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.respiratoryUnit"
+            />
           </div>
 
-          <div class="w-full mb-4">
-            <div class="w-full flex justify-end">
-              <corniebtn
-                @click="addBloodPressure"
-                class="p-2 rounded-full px-8 mx-4 cursor-pointer"
-                style="border: 1px solid #080056"
-              >
-                <span class="font-semibold text-primary-500 flex items-center">
-                  <span class="mx-2"><check-icon /></span>
-                  <span class="mr-2">Add</span>
-                </span>
-              </corniebtn>
-            </div>
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Heart Rate"
+              placeholder="0"
+              :modelValue="vitalData.pulse"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="temperatureUnits"
+              placeholder="/min"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.respiratoryUnit"
+            />
           </div>
 
-          <div class="w-full flex items-center py-5">
-            <div
-              class="w-4/12"
-              v-for="(record, index) in collectedPressures"
-              :key="index"
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Oxygen Saturation"
+              placeholder="0"
+              :modelValue="vitalData.oxygenSaturation"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="temperatureUnits"
+              placeholder="%"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.oxygenSaturationRate"
+            />
+          </div>
+
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Blood Glucose Level"
+              placeholder="0"
+              :modelValue="vitalData.bloodGlucoseLevel"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['mm/dL', 'mmo/L']"
+              placeholder="mm/dL"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.bloodGlucoseLevelUnit"
+            />
+          </div>
+        </div>
+      </accordion-component>
+
+      <accordion-component
+        class="text-primary"
+        title="Height & Head Circumference"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-2 gap-6">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Height"
+              placeholder="0"
+              :modelValue="vitalData.height.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['cm', 'in', 'ft']"
+              placeholder="cm"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.height.unit"
+            />
+          </div>
+
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Head Circumference"
+              placeholder="0"
+              :modelValue="vitalData.headCircumference.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['cm', 'in', 'ft']"
+              placeholder="cm"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.headCircumference.unit"
+            />
+          </div>
+        </div>
+      </accordion-component>
+
+      <accordion-component class="text-lg" title="Body Weight" :opened="true">
+        <div class="w-full grid grid-cols-2 gap-6">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Weight"
+              placeholder="0"
+              :modelValue="vitalData.weight.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['Kg', 'Ib']"
+              placeholder="kg"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.weight.unit"
+            />
+          </div>
+
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Mass Index (BMI)"
+              placeholder="0"
+              :modelValue="vitalData.bmi.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['cm', 'in', 'ft']"
+              placeholder="kg/m³"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="vitalData.bmi.unit"
+            />
+          </div>
+        </div>
+      </accordion-component>
+
+      <accordion-component
+        class="text-primary"
+        title="Blood Pressure"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-5 gap-6">
+          <div class="">
+            <cornie-select
+              :items="['Standing Left', 'Standing Right']"
+              class="w-full mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="bloodPressure.measurement.unit"
+            />
+          </div>
+          <div class="flex space-x-2 w-full col-span-2">
+            <cornie-input
+              label="Systolic Blood Pressure"
+              placeholder="0"
+              :modelValue="bloodPressure.measurement.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['mmHg']"
+              placeholder="mmHg"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="bloodPressure.measurement.unit"
+            />
+          </div>
+
+          <div class="flex space-x-2 w-full col-span-2">
+            <cornie-input
+              label="Diastolic Blood Pressure"
+              placeholder="0"
+              :modelValue="bloodPressure.measurement.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['mmHg']"
+              placeholder="mmHg"
+              class="w-20 mt-3 flex-none"
+              :setPrimary="true"
+              :modelValue="bloodPressure.measurement.unit"
+            />
+          </div>
+        </div>
+
+        <div class="w-full mb-4">
+          <div class="w-full flex justify-end">
+            <corniebtn
+              @click="addBloodPressure"
+              class="p-2 rounded-full px-8 mx-4 cursor-pointer"
+              style="border: 1px solid #080056"
             >
-              <div class="w-11/12" style="border-right: 1px dashed #878e99">
-                <div class="w-full flex items-center">
-                  <div class="w-8/12 flex flex-col">
-                    <span class="font-semibold">{{ record.position }}</span>
-                    <span class="text-gray-400">{{ record.pressure }}</span>
-                    <span class="text-gray-400">
-                      <span class="mr-4">{{ record.date }}</span>
-                      <span>{{ record.time }}</span>
-                    </span>
-                  </div>
-                  <div class="w-4/12 flex items-center justify-center">
-                    <span class="mx-2 cursor-pointer"><edit-icon /></span>
-                    <span class="mx-2 cursor-pointer"
-                      ><delete-icon @click="removePresure(index)"
-                    /></span>
-                  </div>
+              <span class="font-semibold text-primary-500 flex items-center">
+                <span class="mx-2"><check-icon /></span>
+                <span class="mr-2">Add</span>
+              </span>
+            </corniebtn>
+          </div>
+        </div>
+
+        <div class="w-full flex items-center py-5">
+          <div
+            class="w-4/12"
+            v-for="(record, index) in collectedPressures"
+            :key="index"
+          >
+            <div class="w-11/12" style="border-right: 1px dashed #878e99">
+              <div class="w-full flex items-center">
+                <div class="w-8/12 flex flex-col">
+                  <span class="font-semibold">{{ record.position }}</span>
+                  <span class="text-gray-400">{{ record.pressure }}</span>
+                  <span class="text-gray-400">
+                    <span class="mr-4">{{ record.date }}</span>
+                    <span>{{ record.time }}</span>
+                  </span>
+                </div>
+                <div class="w-4/12 flex items-center justify-center">
+                  <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                  <span class="mx-2 cursor-pointer"
+                    ><delete-icon @click="removePresure(index)"
+                  /></span>
                 </div>
               </div>
             </div>
           </div>
-        </template>
-      </CollapseSection>
-
-      <CollapseSection
-        :title="'Habits'"
-        :underlined="true"
-        class="my-6"
-        :height="vitalData.habits?.length <= 0 ? 150 : 250"
-      >
-        <template #form>
-          <div class="w-full flex items-center -mt-5">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <split-input :label="'Habits'">
-                  <template #list>
-                    <cornie-select
-                      v-model="habit.key"
-                      :items="['Excercise Frequently', 'another Option']"
-                      class="mt-1"
-                      style="width: 100%; border-radius: 8px 0 0 8px"
-                    />
-                  </template>
-                  <template #input>
-                    <cornie-select
-                      v-model="habit.value"
-                      :items="['Off & On', 'another Option']"
-                      class="-mb-1"
-                      style="width: 100%; border-radius: 0 8px 8px 0"
-                    />
-                  </template>
-                </split-input>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded :label="'Comment'" :info="''">
-                <input
-                  v-model="vitalData.comments"
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 0 8px 8px 0"
-                />
-              </input-desc-rounded>
-            </div>
-          </div>
-
-          <div class="w-full mb-4">
-            <div class="w-full flex justify-end">
-              <corniebtn
-                @click="addHabit"
-                class="p-2 rounded-full px-8 mx-4 cursor-pointer"
-                style="border: 1px solid #080056"
-              >
-                <span class="font-semibold text-primary-500 flex items-center">
-                  <span class="mx-2"><check-icon /></span>
-                  <span class="mr-2">Add</span>
-                </span>
-              </corniebtn>
-            </div>
-          </div>
-
-          <div class="w-full flex items-center py-5">
-            <div
-              class="w-4/12"
-              v-for="(record, index) in vitalData.habits"
-              :key="index"
-            >
-              <div class="w-11/12" style="border-right: 1px dashed #878e99">
-                <div class="w-full flex items-center">
-                  <div class="w-8/12 flex flex-col">
-                    <span class="font-semibold">{{ record.key }}</span>
-                    <span class="text-gray-400">{{ record.value }}</span>
-                  </div>
-                  <div class="w-4/12 flex items-center justify-center">
-                    <span class="mx-2 cursor-pointer"><edit-icon /></span>
-                    <span
-                      class="mx-2 cursor-pointer"
-                      @click="removeHabit(index)"
-                      ><delete-icon
-                    /></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </CollapseSection>
-
-      <CollapseSection
-        :title="'Physical Examination'"
-        :overflow="true"
-        :underlined="true"
-        class="my-6"
-        :height="vitalData.physicals?.length <= 0 ? 150 : 250"
-      >
-        <template #form>
-          <div class="w-full flex items-center -mt-5">
-            <div class="w-6/12">
-              <div class="w-11/12">
-                <split-input :label="'Physical Examination'">
-                  <template #list>
-                    <cornie-select
-                      v-model="physical.key"
-                      :items="['Heent', 'Skin']"
-                      class="mt-1"
-                      style="width: 100%; border-radius: 8px 0 0 8px"
-                    />
-                  </template>
-                  <template #input>
-                    <cornie-select
-                      v-model="physical.value"
-                      :items="['Abnormal', 'Skin Lesion']"
-                      class="-mb-1"
-                      style="width: 100%; border-radius: 0 8px 8px 0"
-                    />
-                  </template>
-                </split-input>
-              </div>
-            </div>
-            <div class="w-6/12">
-              <input-desc-rounded :label="'Comment'" :info="''">
-                <input
-                  type="text"
-                  v-model="examComment"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 0 8px 8px 0"
-                />
-              </input-desc-rounded>
-            </div>
-          </div>
-
-          <div class="w-full mb-4">
-            <div class="w-full flex justify-end">
-              <corniebtn
-                @click="addPhysical"
-                class="p-2 rounded-full px-8 mx-4 cursor-pointer"
-                style="border: 1px solid #080056"
-              >
-                <span class="font-semibold text-primary-500 flex items-center">
-                  <span class="mx-2"><check-icon /></span>
-                  <span class="mr-2">Add</span>
-                </span>
-              </corniebtn>
-            </div>
-          </div>
-
-          <div class="w-full flex items-center py-5">
-            <div
-              class="w-4/12"
-              v-for="(record, index) in vitalData.physicals"
-              :key="index"
-            >
-              <div class="w-11/12" style="border-right: 1px dashed #878e99">
-                <div class="w-full flex items-center">
-                  <div class="w-8/12 flex flex-col">
-                    <span class="font-semibold">{{ record.key }}</span>
-                    <span class="text-gray-400">{{ record.value }}</span>
-                  </div>
-                  <div class="w-4/12 flex items-center justify-center">
-                    <span class="mx-2 cursor-pointer"><edit-icon /></span>
-                    <span class="mx-2 cursor-pointer"
-                      ><delete-icon @click="removePhysical"
-                    /></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </CollapseSection>
+        </div>
+      </accordion-component>
 
       <div class="w-full mt-12" v-if="!selectedVital?.id">
         <div class="w-full pb-8 flex flex justify-end">
@@ -421,7 +323,7 @@ import { Prop, Watch } from "vue-property-decorator";
 import IEncounter from "@/types/IEncounter";
 import { Item } from "@/types/IUpdateModel";
 import UnitsSelect from "./units-select.vue";
-import CollapseSection from "@/views/dashboard/settings/catalogues/components/dropdown.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 
 const vitalsStore = namespace("vitals");
 const userStore = namespace("user");
@@ -454,7 +356,7 @@ interface Pressures {
     InputDescRounded,
     SelectWithDesc,
     CheckIcon,
-    CollapseSection,
+    AccordionComponent,
   },
 })
 export default class VitalsForm extends Vue {
@@ -536,8 +438,6 @@ export default class VitalsForm extends Vue {
       // value: 50
     },
     comments: "",
-    habits: [] as IHabit[],
-    physicals: [] as IHabit[],
     bloodPressure: [] as IBloodPressure[],
 
     date: new Date().toISOString(),
