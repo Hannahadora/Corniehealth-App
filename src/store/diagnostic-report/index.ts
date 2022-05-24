@@ -39,6 +39,7 @@ export default {
     },
     async updateDReport(ctx: any, payload: any) {
       await updateReport(payload)
+        // eslint-disable-next-line unused-imports/no-unused-vars
         .then(d => {
           ctx.dispatch("getAllReports");
         })
