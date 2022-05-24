@@ -27,10 +27,10 @@
                                     <!--   <avatar class="mr-2" v-else :src="img.placeholder" />-->
                                     <div class="float-right w-full flex justify-end">
                                         <div>
-                                            <p class="font-bold mb-2 text-right">Cornie Health</p>
-                                            <p class="text-right mb-2">57 Campbell Street, Lagos Island. Lagos</p>
-                                            <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
-                                            <p class="text-right mb-2"> <span class="text-gray-300">(+234) 802 290 8484</span>waybill@corniehealth.com</p>
+                                            <p class="font-bold mb-2 text-right">{{ authPractitioner?.firstName +''+ authPractitioner?.lastName }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.address }}</p>
+                                            <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> {{ authPractitioner?.email }}</p>
+                                            <p class="text-right mb-2"> <span class="text-gray-300">{{ (authPractitioner?.phone?.dialCode) +' '+ authPractitioner?.phone?.number }}</span>{{ authPractitioner?.email }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -43,49 +43,49 @@
                                 <p class="text-lg font-bold">Receiver Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Received From</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.receivedBy}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">13, Colony Estate, Lekki...</p>
+                                    <p class="text-sm text-right w-full">{{ 'No' +' '+ selectedItem.supplierHouseNumber +','+ selectedItem.supplierCity +','+ selectedItem.supplierState +','+ selectedItem.supplierCountry }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">mike@medplus.ng</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.supplierEmail}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.supplierPhone.dialCode +' '+ selectedItem.supplierPhone.number }}</p>
                                 </div>
                             </div>
                              <div class="bg-white rounded-lg shadow-md p-3">
                                 <p class="text-lg font-bold">GRN Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">GRN #</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.identifier}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Received By</p>
-                                    <p class="text-sm text-right w-full">xxxxxx</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.receivedBy}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Receive Date</p>
-                                    <p class="text-sm text-right w-full">25-04-2021</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.dateReceived}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Received To</p>
-                                    <p class="text-sm text-right w-full">xxxxxxx</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.receiveTo}}</p>
                                 </div>
                             </div>
                              <div class="bg-blue-50 rounded-lg shadow-md p-3">
                                 <p class="text-lg font-bold">Reference Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Reference ID</p>
-                                    <p class="text-sm text-right w-full">AX1234</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.id}}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Status</p>
-                                    <p class="text-sm text-right w-full">Complete</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem.supplyStatus}}</p>
                                 </div>
                             </div>
                         </div>
@@ -93,12 +93,12 @@
 
                     <div class="w-full mt-12">
                         <div class="bg-primary p-5 w-full flex mb-5">
-                            <p class="float-left text-white w-full">Description: <span class="font-semibold">XXXXXX</span></p>
+                            <p class="float-left text-white w-full">Description: <span class="font-semibold">{{ selectedItem.description}}</span></p>
                         </div>
                         <div class="border-t-2 border-dashed border-gray-200 pb-12 pt-12">
 
                             <span class="font-bold text-lg my-9">BOQ</span>
-                            <cornie-table :columns="Header" v-model="items" :listmenu="true" :check="false">
+                            <cornie-table :menushow="true" :columns="headers" v-model="items" :listmenu="true" :check="false">
 
                                         <template #code="{ item }">
                                             <div class="flex space-x-3">
@@ -210,7 +210,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "printSection",
+  name: "viewModal",
   components: {
     ...CornieCard,
     AccordionComponent,
@@ -234,7 +234,7 @@ function defaultFilter(item: any, query: string) {
     CornieLogo
   },
 })
-export default class printSection extends Vue {
+export default class viewModal extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
@@ -292,69 +292,74 @@ export default class printSection extends Vue {
         
     }
 
-    Header = [
+  
+  headers = [
     {
       title: "item code",
-      key: "default",
+      key: "itemCode",
       show: true,
-       noOrder: true,
+      noOrder: true,
     },
     {
       title: "item name",
-      key: "default",
+      key: "itemName",
       show: true,
-       noOrder: true,
-    },
-    {
-      title: "pack size",
-      key: "default",
-      show: true,
-       noOrder: true,
+      noOrder: true,
     },
     {
       title: "uofm",
-      key: "default",
-      show: true,
-       noOrder: true,
+      key: "uofm",
+      show: false,
+      noOrder: true,
     },
-
     {
-      title: "qty ordered",
-      key: "qty",
-      show: true,
-       noOrder: true,
+      title: "batch #",
+      key: "batch",
+      show: false,
+      noOrder: true,
     },
-     {
-      title: "qty received",
-      key: "qty",
+    {
+      title: "expiry",
+      key: "expiryDate",
       show: true,
-       noOrder: true,
+      noOrder: true,
     },
-     {
-      title: "outstanding qty",
-      key: "qty",
+    {
+      title: "deleivered qty",
+      key: "quantity",
       show: true,
-       noOrder: true,
+      noOrder: true,
     },
-    ];
+    {
+      title: "unit cost",
+      key: "unitCost",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "total cost",
+      key: "total",
+      show: true,
+      noOrder: true,
+    },
+  ];
+
 
   
     get items() {
-      const requests = this.requests.map((request) => {
-      const refillses = request.medications.map((medication:any) => medication.refills);
-        return {
-          ...request,
-          action: request.id,
-          refils: refillses[0],
-          qty: '12',
-          default: 'xxxxxx',
-        };
-      });
+    const supplys = this.selectedItem.supplyItems.map((supply: any) => {
+      return {
+        ...supply,
+        total: this.selectedItem.total,
 
-     return requests;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
-    }
+        // totalCost: this.getTotal(+this.unitCosts[supply.productId], +this.quantities[supply.productId]),
+      
+      };
+    });
+
+    if (!this.query) return supplys;
+    return search.searchObjectArray(supplys, this.query);
+  }
     
 
      get allRequester() {

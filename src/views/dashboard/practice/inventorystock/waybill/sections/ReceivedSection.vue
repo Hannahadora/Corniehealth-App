@@ -1,146 +1,84 @@
 <template>
   <div>
     <div>
-        <span class="flex justify-end w-full mb-12">
-        <cornie-btn
-          class="
-            bg-danger
-            rounded-lg
-            text-white
-            mt-5
-            px-2
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
+      <span class="flex justify-end w-full mb-12">
+        <button
+          type="button"
+          @click="showWaybill = true"
+          class="bg-danger rounded-lg text-white py-2 px-6"
         >
           New Waybill
-          <cornie-menu
-            top="0px"
-            right="100%"
-            class="border-l-2 h-full ml-2 border-white"
-          >
-            <template #activator="{ on }">
-              <icon-btn v-on="on">
-                <chevron-down-icon
-                  v-on="on"
-                  class="text-white mb-2 stroke-current mt-2 ml-1"
-                />
-              </icon-btn>
-            </template>
-            <cornie-card-text>
-              <div
-                class="
-                  flex
-                  mb-3
-                  items-center
-                  hover:bg-gray-100
-                  px-2
-                  py-2
-                  rounded-full
-                  cursor-pointer
-                "
-                @click="showWaybill = true"
-              >
-                <span class="ml-3 text-black text-sm">New Supply</span>
-              </div>
-              <div
-                class="
-                  flex
-                  mb-3
-                  items-center
-                  hover:bg-gray-100
-                  px-2
-                  py-2
-                  rounded-full
-                  cursor-pointer
-                "
-              @click="showOtherWaybill = true"
-              >
-                <span class="ml-3 text-black text-sm"
-                  >From Material Request</span
-                >
-              </div>
-              <div
-                class="
-                  flex
-                  mb-3
-                  items-center
-                  hover:bg-gray-100
-                  px-2
-                  py-2
-                  rounded-full
-                  cursor-pointer
-                "
-              @click="showOtherWaybill = true"
-              >
-                <span class="ml-3 text-black text-sm"
-                  >From Material Return</span
-                >
-              </div>
-  
-            </cornie-card-text>
-          </cornie-menu>
-        </cornie-btn>
+        </button>
       </span>
     </div>
     <cornie-table v-model="items" :columns="headers">
-      <template #name="{ item }">
-        <div
-          class="text-no-wrap flex items-center uppercase text-xs"
-          style="white-space: nowrap"
-        >
-          <Avatar :src="item.image" />
-          <span class="ml-2">{{ item.name }}</span>
-        </div>
-      </template>
-      <template #itemCode-header>
-        <div
-          class="text-no-wrap flex uppercase text-xs"
-          style="white-space: nowrap"
-        >
-          Item Code
-        </div>
-      </template>
       <template #status="{ item }">
-        <div class="text-no-wrap">
-          <span
-            class="status p-1"
-            :class="{
-              active: item.status === 'active',
-              inactive: item.status === 'inactive',
-            }"
-          >
-            {{ item.status }}</span
-          >
-        </div>
-      </template>
-      <template #availability="{ item }">
-        <div class="text-no-wrap">
-          <span class="status p-1 bolder"> {{ item.availability }}</span>
-        </div>
+        <span
+          class="bg-gray-100 text-gray-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'draft'"
+        >
+          Draft
+        </span>
+        <span
+          class="bg-green-100 text-green-600 rounded-lg p-2 text-xs"
+          v-if="
+            item.status === 'received' ||
+            item.status === 'active' ||
+            item.status === 'submitted' ||
+            item.status === 'issued'
+          "
+        >
+          {{ item.status }}
+        </span>
+        <span
+          class="bg-red-100 text-red-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'cancelled' || item.status === 'declined'"
+        >
+          {{ item.status }}
+        </span>
       </template>
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showview = true">
-          <new-view-icon class="text-purple-700 fill-current" />
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showViewModal(item)"
+        >
+          <new-view-icon class="text-blue-700 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showtimeline = true"
+          v-if="item.status === 'draft'"
+          @click="showWaybillmodal(item.id)"
         >
-          <new-view-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">View Timeline</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <edit-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
 
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <check-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">Good Received Note</span>
+        </div>
+
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+          @click="approveWaybill(item.id)"
+          v-if="item.status != 'declined'"
+        >
+          <check-icon class="text-green-700 fill-current" />
+          <span class="ml-3 text-xs">Receive</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="declineWaybill(item.id)"
+          v-if="item.status != 'declined'"
+        >
+          <cancel-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Decline</span>
+        </div>
+
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="cancelWaybill(item.id)"
         >
           <cancel-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Cancel</span>
@@ -148,8 +86,8 @@
       </template>
     </cornie-table>
   </div>
-  <waybill-modal v-model="showWaybill" />
-  <other-modal v-model="showOtherWaybill"/>
+  <waybill-modal v-model="showWaybill" @waybillAdded="waybillAdded" />
+  <other-modal v-model="showOtherWaybill" />
   <view-modal v-model="showview" />
 </template>
 <script lang="ts">
@@ -157,8 +95,9 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
+import { cornieClient } from "@/plugins/http";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IWaybill from "@/types/IWaybill";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -181,11 +120,11 @@ import CancelIcon from "@/components/icons/cancel.vue";
 
 import WaybillModal from "../components/waybillModal.vue";
 import OtherModal from "../components/otherwayBillModal.vue";
-import ViewModal from "../components/viewModal.vue"
+import ViewModal from "../components/viewModal.vue";
 
 const location = namespace("location");
-
-const catalogue = namespace("catalogues");
+const waybill = namespace("waybill");
+const user = namespace("user");
 
 @Options({
   name: "IssuedExistingState",
@@ -214,23 +153,22 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class IssuedExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
+  @waybill.State
+  waybills!: IWaybill[];
 
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @waybill.Action
+  fetchWaybillIncoming!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
 
   @location.Action
   fetchLocations!: () => Promise<void>;
+
+  selectedItem = {};
 
   productId = "";
   query = "";
@@ -242,6 +180,7 @@ export default class IssuedExistingState extends Vue {
   showview = false;
   showWaybill = false;
   showOtherWaybill = false;
+  waybillId = "";
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 
@@ -249,64 +188,39 @@ export default class IssuedExistingState extends Vue {
 
   headers = [
     {
-      title: "item code",
-      key: "genericName",
+      title: "date requested",
+      key: "submittedOn",
       show: true,
     },
     {
-      title: "item name",
-      key: "code",
+      title: "waybill id",
+      key: "identifier",
       show: true,
     },
     {
-      title: "brand",
-      key: "category",
+      title: "processed by",
+      key: "receiverName",
       show: true,
     },
     {
-      title: "form",
-      key: "description",
+      title: "reference",
+      key: "referenceIdentifier",
       show: true,
     },
     {
-      title: "strength",
-      key: "brand",
+      title: "deliver to",
+      key: "deliver",
       show: true,
     },
     {
-      title: "pack size",
-      key: "sales",
+      title: "item count",
+      key: "count",
       show: true,
     },
     {
-      title: "uofm",
-      key: "cdm",
+      title: "boq",
+      key: "boq",
       show: true,
-    },
-    {
-      title: "opening",
-      key: "discount",
-      show: true,
-    },
-    {
-      title: "issued",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "added",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "balance",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "total value (N)",
-      key: "lastUpdated",
-      show: false,
     },
     {
       title: "Status",
@@ -321,58 +235,34 @@ export default class IssuedExistingState extends Vue {
   }
 
   get items() {
-    const products = this.products.map((product: any) => {
+    const waybills = this.waybills.map((waybill: any) => {
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
+        ...waybill,
+        action: waybill.id,
+        deliver: this.getLocationName(waybill.receiverLocationId),
+        count: waybill.items.length,
+        boq: "XXXXXX",
+          total: " ₦ " + this.getTotalCost(waybill.items).toFixed(2)
       };
     });
 
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+    if (!this.query) return waybills;
+    return search.searchObjectArray(waybills, this.query);
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
+  getLocationName(id: string) {
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+    getTotalCost(value: any) {
+    return value
+      .map((item: any) => item.quantity * item.unitCost)
+      .reduce((a: any, b: any) => a + b, 0);
   }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
 
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
-
-  get sortProduct() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-    console.log("Hello World");
-    let index: string;
-    this.selected = [];
-    if (!this.isCheckAll) {
-      for (index in this.locations) {
-        this.selected.push(this.allLocations[index].code);
-      }
-    }
+  async waybillAdded() {
+    await this.fetchWaybillIncoming(this.authCurrentLocation);
   }
 
   get allLocations() {
@@ -384,20 +274,105 @@ export default class IssuedExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to delete this item?",
-      title: "Delete Item",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
+   showViewModal(value:any){
+    this.showview = true;
+    this.selectedItem = value;
+  }
+  showWaybillmodal(value:string){
+    this.showWaybill = true;
+    this.waybillId = value;
   }
 
+  async approveWaybill(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to receive this waybill",
+        title: "Receive Waybill",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/waybill/receive/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Waybill recevied Successfully",
+              status: "success",
+            });
+            this.waybillAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
+  }
+  async declineWaybill(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to decline this waybill",
+        title: "Decline waybill",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/waybill/decline/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Waybill  declined Successfully",
+              status: "success",
+            });
+            this.waybillAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
+  }
+
+   async cancelWaybill(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to cancel this waybill",
+        title: "Cancel waybill",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/waybill/cancel/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Waybill cancelled Successfully",
+              status: "success",
+            });
+            this.waybillAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
+  }
+
+
   async created() {
-    await this.getProducts();
+    await this.fetchWaybillIncoming(this.authCurrentLocation);
     await this.fetchLocations();
   }
 }

@@ -13,7 +13,7 @@
         <check-icon class="my-auto ml-3" v-if="verifiedSync" />
       </span>
       <p class="mt-12 text-sm">
-        Didn’t receive code?
+        Didn't receive code?
         <span class="cursor-pointer text-danger" @click="resend"> Resend </span>
         <vue-countdown :time="300 * 1000" v-slot="{ minutes, seconds }">
           {{ minutes }} : {{ seconds }}

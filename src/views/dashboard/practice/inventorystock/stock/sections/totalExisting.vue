@@ -4,7 +4,7 @@
           Withdrawal Instruction
         </span>
   </div> -->
-    <cornie-table v-model="items" :columns="headers"  @selectedItem="selectedItem">
+    <cornie-table v-model="items" :columns="headers" :checked="checked"  @selectedItem="selectedItem">
         <template #status="{ item }">
           <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
              Active
@@ -29,20 +29,20 @@
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
-            <check-icon class="text-blue-700 fill-current" />
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailableModal(item.id,item)">
+            <check-icon class="text-purple-700 fill-current" />
             <span class="ml-3 text-xs">Check Availability</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
-            <check-icon class="text-blue-700 fill-current" />
-            <span class="ml-3 text-xs">Check Availability</span>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <check-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs">Batch Info</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
             <check-icon class="text-blue-700 fill-current" />
-            <span class="ml-3 text-xs">Check Availability</span>
+            <span class="ml-3 text-xs">Supplier info</span>
             </div>
             <div  class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStorageModal(item)">
-                <update-icon class="text-green-500 fill-current" />
+                <update-icon class="text-blue-200 fill-current" />
                 <span class="ml-3 text-xs">Storage Info</span>
             </div>
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAllocateModal(item)">
@@ -61,9 +61,13 @@
                 <analytics-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Analytics</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivateModal(item)">
+            <div v-if="item.active == true" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivateModal(item)">
                 <deactivate-icon class="text-primary fill-current" />
                 <span class="ml-3 text-xs">Deactivate</span>
+            </div>
+            <div v-else class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="activate(item.id)">
+                 <check-icon class="text-green-400 fill-current" />
+                <span class="ml-3 text-xs">Activate</span>
             </div>
              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showWithdrawalInstructionModal(item)">
                 <withdraw-icon class="text-blue-700 fill-current" />
@@ -97,7 +101,7 @@
         <allocate-modal v-model="showAllocate" @stockAdded="stockAdded" :item="singleAllocateItem"/>
         <allocate-bulk-modal v-model="showAllocateBulk" @stockAdded="stockAdded" :item="BulkSelectedItem"/>
         <deactivate-modal v-model="showDeactivate" :item="withdrawItem" @stockAdded="stockAdded"/>
-        <availability-modal v-model="showAvailable"/>
+        <availability-modal v-model="showAvailable" :id="stockId" :item="selectItem"/>
         <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
 </template>
@@ -106,6 +110,7 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
+import { cornieClient } from "@/plugins/http";
 
 import IInventroyStock from "@/types/IInventroyStock";
 import ILocation from "@/types/ILocation";
@@ -214,6 +219,10 @@ export default class totalExistingState extends Vue {
   isCheck = false;
   withdrawItem = {} as any;
   storageItem = {} as any;
+  selectItem = {} as any;
+  stockId = "";
+
+  checked = false;
 
  tabLinks = [
     "Total",
@@ -329,11 +338,19 @@ export default class totalExistingState extends Vue {
   }
  async stockAdded() {
     if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);
+    this.singleAllocateItem = [];
+    this.BulkSelectedItem = [];
   }
 
   showStorageModal(value:any){
     this.showStorage= true;
     this.storageItem = value;
+  }
+
+  showAvailableModal(id:string,value:any){
+    this.showAvailable = true;
+    this.selectItem = value;
+    this.stockId = id;
   }
 
   showAllocateModal(value:any){
@@ -379,6 +396,30 @@ export default class totalExistingState extends Vue {
     });
   }
 
+   async activate(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to activate this stock",
+        title: "Activate Stock",
+      });
+      if (confirmed) {
+        
+           try {
+      const response = await cornieClient().patch(`/api/v1/inventory/stock/activate/${id}`, {});
+      if (response.success) {
+        window.notify({
+          msg: "Stock deactivated Successfully",
+          status: "success",
+        });
+        this.stockAdded();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error?.response?.data?.message, status: "error" });
+    }
+      } 
+      
+    } catch (error) {}
+  }
 
   
   async created() {

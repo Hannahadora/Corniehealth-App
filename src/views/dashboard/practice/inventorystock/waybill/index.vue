@@ -14,9 +14,10 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import WaybillEmptyState from "./emptyState.vue";
 import WaybillExistingState from "./existingState.vue";
-import IRequest from "@/types/IRequest";
+import IWaybill from "@/types/IWaybill";
 
-const request = namespace("request");
+const waybill = namespace("waybill");
+const user = namespace("user");
 
 @Options({
   name: "WaybillIndex",
@@ -28,18 +29,21 @@ const request = namespace("request");
 export default class WaybillIndex extends Vue {
 
   get empty() {
-    return this.requests.length < 1;
+    return this.waybills.length < 1;
   }
 
-  @request.State
-  requests!: IRequest[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  @waybill.State
+  waybills!: IWaybill[];
+
+  @waybill.Action
+  fetchWaybillOutgoing!: (locationId: string) => Promise<void>;
 
 
-  async created() {
-    await this.fetchRequests();
+   async created() {
+    await this.fetchWaybillOutgoing(this.authCurrentLocation);
   }
 }
 </script>

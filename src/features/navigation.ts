@@ -116,11 +116,11 @@ const links: ISidebarLink[] = [
       //   to: "inventory",
       //   hasSubsection: false,
       // },
-      {
-        name: "Pricebook",
-        to: "pricebook",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Pricebook",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
       {
         name: "POS Sales",
         to: "/dashboard/provider/settings/pos",
@@ -128,12 +128,12 @@ const links: ISidebarLink[] = [
       },
       {
         name: "Dispense",
-        to: "dispense",
+        to: "/dashboard/provider/settings/dispense",
         hasSubsection: false,
       },
       {
         name: "Virtual Pharmacy Orders",
-        to: "pharmacy-orders",
+        to: "/dashboard/provider/settings/pharmacy-orders",
         hasSubsection: false,
       }
     ]
@@ -158,7 +158,7 @@ const links: ISidebarLink[] = [
     children: [
       {
         name: "Locations",
-        to: "locations",
+        to: "/dashboard/provider/practice/locations",
         hasSubsection: false,
       },
       {
@@ -203,7 +203,7 @@ const links: ISidebarLink[] = [
       },
       {
         name: "Groups",
-        to: "group",
+        to: "/dashboard/provider/practice/group",
         hasSubsection: false,
       },
     ],
