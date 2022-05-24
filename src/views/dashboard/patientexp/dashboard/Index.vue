@@ -1,9 +1,9 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div class="sect1 my-8">
-      <div class="greet">{{ greeting }}, Dr. {{ cornieUser?.firstName }}!</div>
+      <div class="greet">{{ `Good ${greeting}` || 'Hello' }}, Dr. {{ cornieUser?.firstName }}!</div>
       <div class="flex items-center mt-4">
-        <span class="">Have a lovely day</span>
+        <span class="">Have a lovely {{ greeting || 'rest' }}</span>
         <!-- <img class="ml-3" src="../../../../assets/emoji.png" alt="" /> -->
       </div>
 
@@ -150,10 +150,11 @@ export default class DashboardHome extends Vue {
     const myDate = new Date();
     const hrs = myDate.getHours();
 
-    if (hrs >= 12 && hrs <= 11.59) return "Good Morning";
-    else if (hrs >= 12 && hrs <= 17) return "Good Afternoon";
-    else if (hrs >= 17 && hrs <= 24) return "Good Evening";
+    if (hrs >= 1 && hrs <= 11.59) return "Morning";
+    else if (hrs >= 12 && hrs <= 17) return "Afternoon";
+    else if (hrs >= 17 && hrs <= 24) return "Evening";
   }
+
 }
 </script>
 

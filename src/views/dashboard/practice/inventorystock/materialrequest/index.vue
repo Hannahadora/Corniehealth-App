@@ -14,9 +14,11 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import RequestEmptyState from "./emptyState.vue";
 import RequestExistingState from "./existingState.vue";
-import IRequest from "@/types/IRequest";
+import IMaterialRequest from "@/types/IMaterialRequest";
 
-const request = namespace("request");
+const materialrequest = namespace("materialrequest");
+const user = namespace("user");
+
 
 @Options({
   name: "RequestIndex",
@@ -28,18 +30,21 @@ const request = namespace("request");
 export default class RequestIndex extends Vue {
 
   get empty() {
-    return this.requests.length < 1;
+    return this.materialrequests.length < 1;
   }
 
-  @request.State
-  requests!: IRequest[];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  @request.Action
-  fetchRequests!: () => Promise<void>;
+  @materialrequest.State
+  materialrequests!: IMaterialRequest[];
+
+  @materialrequest.Action
+  fetchMaterialRequestsOutgoing!: (locationId: string) => Promise<void>;
 
 
   async created() {
-    await this.fetchRequests();
+     if (this.authCurrentLocation) await this.fetchMaterialRequestsOutgoing(this.authCurrentLocation);
   }
 }
 </script>

@@ -18,7 +18,7 @@
          </span>
        
         </slot>
-        <span class="ml-1 mb-1" v-if="$slots.labelicon">
+        <span class="ml-1 w-full flex justify-end" v-if="$slots.labelicon">
           <slot name="labelicon" />
         </span>
          <span class="float-right flex justify-end w-full" :class="[textred ? 'text-red-500' : 'text-green-500' ]" v-if="labelText"> {{ innerlabel }} </span>

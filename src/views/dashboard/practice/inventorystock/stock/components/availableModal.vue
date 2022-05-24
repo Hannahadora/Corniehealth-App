@@ -22,44 +22,42 @@
         <v-form ref="form">
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Item Code</p>
-                <p class="flex justify-end float-right w-full">GJ67894</p>
+                <p class="flex justify-end float-right w-full">{{ item.code }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Item Name</p>
-                <p class="flex justify-end float-right w-full">Paracetamol</p>
+                <p class="flex justify-end float-right w-full">{{ item.name }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Brand</p>
-                <p class="flex justify-end float-right w-full">Pfizer</p>
+                <p class="flex justify-end float-right w-full">{{ item.brand }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Form</p>
-                <p class="flex justify-end float-right w-full">Tablet</p>
+                <p class="flex justify-end float-right w-full">{{ item.form }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Strength</p>
-                <p class="flex justify-end float-right w-full">5mg</p>
+                <p class="flex justify-end float-right w-full">{{ item.strength }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Pack Size</p>
-                <p class="flex justify-end float-right w-full">30</p>
+                <p class="flex justify-end float-right w-full">{{ item.packSize }}</p>
             </div>
 
-            <div class="shadow-lg p-2 mb-4 flex space-x-4 rounded">
-                <location-icon/>
-                <div>
-                    <p class="font-bold">Ikeja</p>
-                    <span class="text-gray-400 text-sm">N100/Pack</span>
-                </div>
-            </div>
-            <div class="shadow-lg p-2 flex space-x-4 rounded">
-                <location-icon/>
-                <div>
-                    <p class="font-bold">Ikeja</p>
-                    <span class="text-gray-400 text-sm">N100/Pack</span>
-                </div>
-            </div>
+            <div v-if="stockAvaialbilty.length === 0">
+            <p class="text-center font-bold">
+              No Available Stock
+            </p>
 
+            </div>
+            <div class="shadow-lg p-2 mb-4 flex space-x-4 rounded"  v-for="(item, index) in stockAvaialbilty" :key="index">
+                <location-icon/>
+                <div>
+                    <p class="font-bold">{{ item.location }}</p>
+                    <span class="text-gray-400 text-sm">{{ item.balance }}</span>
+                </div>
+            </div>
         </v-form>
       </cornie-card-text>
       
@@ -117,11 +115,8 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import LocationIcon from "../icons/location.vue";
 
 
-
-
-
 @Options({
-  name: "storageInfo",
+  name: "availableModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -146,20 +141,41 @@ import LocationIcon from "../icons/location.vue";
     LocationIcon,
   },
 })
-export default class storageInfo extends Vue {
+export default class availableModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
+  @Prop({ type: Object, default: {} })
+  item!: any;
+
   @Prop({ type: String, default: "" })
-  id!: string;
+  id!: string
 
 
   loading = false;
+
+  stockAvaialbilty = [] as any;
  
+  
+      @Watch("id")
+  idChanged() {
+    this.fetchAvailability();
+  }
+
+
+  async fetchAvailability() {
+    const AllLocation = cornieClient().get(
+      `/api/v1/inventory/stock/availability/${this.id}`
+    );
+    const response = await Promise.all([AllLocation]);
+    this.stockAvaialbilty = response[0].data;
+  }
 
   
-  created() {
-   
+  async created() {
+    if(this.id != ""){
+        await this.fetchAvailability();
+    }
   }
 }
 </script>

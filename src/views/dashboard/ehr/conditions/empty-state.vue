@@ -1,19 +1,19 @@
 <template>
   <div class="block w-full">
     <cornie-empty-state
-      heading="No alergies."
-      subheading="[Benefit of adding new allergy to the system]"
+      heading="Patient currently have no condition"
+      subheading=""
     >
       <template #icon>
-        <img src="@/assets/img/empty-condition.svg" />
+        <img src="@/assets/img/allergy.svg" />
       </template>
       <template #actions>
         <div class="flex justify-center">
           <cornie-btn
             @click="addCondition = true"
-            class="bg-danger text-white m-5 p-2"
+            class="bg-danger text-white m-5 py-1"
           >
-            New Condition
+            Add New Condition
           </cornie-btn>
         </div>
       </template>

@@ -51,7 +51,22 @@ export const PracticeRoutes: RouteRecordRaw = {
           "@/views/dashboard/practice/cdm/components/new-products.vue"
         ),
     },
-    
-    
+    {
+      path: "locations",
+      name: "Locations",
+      component: () => import("@/views/dashboard/settings/location/index.vue"),
+    },
+    {
+      path: "add-location/:id?",
+      props: true,
+      name: "New Location",
+      component: () =>
+        import("@/views/dashboard/settings/location/addLocation.vue"),
+    },
+    {
+      path: "group",
+      name: "Group",
+      component: () => import("@/views/dashboard/settings/group/index.vue"),
+    },
   ],
 };

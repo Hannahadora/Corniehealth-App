@@ -15,7 +15,15 @@
           <!-- <p class="text-gray-400 text-xs p-3 -mt-5 -mb-5">
             Fields with <span class="text-danger">*</span> are required
           </p> -->
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Basic Info" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Basic Info"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full my-3">
               <main-cornie-select
                 class="w-full"
@@ -32,7 +40,15 @@
             </div>
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Effective" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Effective"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-3 gap-3 mt-6 w-1/2">
               <cornie-radio
                 name="effective"
@@ -60,7 +76,14 @@
                 />
               </div>
             </div>
+<<<<<<< HEAD
             <div v-else-if="effectiveType === 'period'" class="grid grid-cols-2 gap-6">
+=======
+            <div
+              v-else-if="effectiveType === 'period'"
+              class="grid grid-cols-2 gap-6"
+            >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
               <div class="w-full mt-5">
                 <date-time-picker
                   v-model:date="data.startDate"
@@ -80,7 +103,15 @@
             </div>
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Recorded" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Recorded"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <div class="w-full mt-5">
                 <date-time-picker
@@ -107,11 +138,23 @@
 
               <div v-else>
                 <div class="w-full cursor-pointer mt-6" @click="showAssessor">
+<<<<<<< HEAD
                   <label class="flex capitalize mb-1 text-black text-sm font-bold"
                     >assessor</label
                   >
                   <div class="flex items-center">
                     <input-desc-rounded :info="''" class="cursor-pointer w-11/12">
+=======
+                  <label
+                    class="flex capitalize mb-1 text-black text-sm font-bold"
+                    >assessor</label
+                  >
+                  <div class="flex items-center">
+                    <input-desc-rounded
+                      :info="''"
+                      class="cursor-pointer w-11/12"
+                    >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
                       <input
                         disabled
                         type="text"
@@ -195,7 +238,15 @@
                       </cornie-input> -->
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Investigation" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Investigation"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <cornie-select
                 class="w-full"
@@ -259,7 +310,15 @@
             </div> -->
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Protocol" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Protocol"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full my-3">
               <main-cornie-select
                 class="w-full"
@@ -276,7 +335,15 @@
             </div>
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Findings" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Findings"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <cornie-select
                 class="w-full"
@@ -298,7 +365,12 @@
                 v-if="setFindingType == 'Condition'"
                 @click="showFindings"
               >
+<<<<<<< HEAD
                 <label class="flex normal-case mb-1 text-black text-sm font-bold"
+=======
+                <label
+                  class="flex normal-case mb-1 text-black text-sm font-bold"
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
                   >Item Reference</label
                 >
                 <input-desc-rounded :info="''" class="cursor-pointer">
@@ -360,7 +432,15 @@
             </div>
           </accordion-component>
 
+<<<<<<< HEAD
           <accordion-component class="text-primary" title="Findings" :opened="true">
+=======
+          <accordion-component
+            class="text-primary"
+            title="Findings"
+            :opened="true"
+          >
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
             <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <cornie-select
                 class="w-full"
@@ -446,6 +526,20 @@
 </template>
 
 <script lang="ts">
+<<<<<<< HEAD
+=======
+import { Vue, Options } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieCard from "@/components/cornie-card";
+import Textarea from "@/components/textarea.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import CornieInput from "@/components/cornieinput.vue";
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
 import CornieSelect from "@/components/autocomplete.vue";
 import CornieCard from "@/components/cornie-card";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -457,9 +551,16 @@ import MainCornieSelect from "@/components/cornieselect.vue";
 // import AccordionComponent from "@/components/dialog-accordion.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import IconInput from "@/components/IconInput.vue";
+<<<<<<< HEAD
 import CDelete from "@/components/icons/adelete.vue";
 import DEdit from "@/components/icons/aedit.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+=======
+import SearchIcon from "@/components/icons/search.vue";
+// import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import DatePicker from "./components/datepicker.vue";
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import NoteIcon from "@/components/icons/graynote.vue";
 import InfoIcon from "@/components/icons/info.vue";
@@ -512,6 +613,7 @@ const emptyImpression: IImpression = {
     item: "",
     itemReference: "",
     basis: "",
+<<<<<<< HEAD
   },
   protocol: {
     protocol: "",
@@ -522,7 +624,19 @@ const emptyImpression: IImpression = {
     prognosisReference: "",
     supportingInfo: "",
     note: "",
+=======
+>>>>>>> 23f257cfa98c3d596fc2c096da1943ec6f92a548
   },
+   protocol: {
+    protocol: "";
+    summary: "";
+  },
+  prognosis: {
+    prognosis: "";
+    prognosisReference: "";
+    supportingInfo: "";
+    note: "";
+  };
 };
 
 @Options({

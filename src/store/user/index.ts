@@ -44,8 +44,8 @@ export default {
       return {
         organizationType: organization?.organisationType,
         accountType: getters.accountType,
-        practiceType: organization?.practiceType,
-        practiceSubType: organization?.practiceSubType,
+        practiceType: organization?.providerProfile,
+        practiceSubType: organization?.providerProfile,
       };
     },
     accountType(state) {
@@ -66,11 +66,11 @@ export default {
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
       const defaultLocation = locations?.find(location => location.default);
-    
-      const currentLocation = (state.currentLocation || defaultLocation?.locationId) ?? "";
+
+      const currentLocation =
+        (state.currentLocation || defaultLocation?.locationId) ?? "";
       sessionStorage.setItem("authCurrentLocation", currentLocation);
-      // eslint-disable-next-line no-console
-      console.log(currentLocation, "currentLocation");
+
       return currentLocation;
     },
     authorizedLocations(state) {
@@ -110,7 +110,7 @@ export default {
       state.domain = domain;
     },
     setLoginInfo(state, payload) {
-      state.user = payload.user;
+      state.user = payload;
 
       state.authTime = new Date();
       rememberLogin(payload.token);
@@ -124,8 +124,8 @@ export default {
     updatePractitionerAuthStatus(state, payload) {
       state.practitionerAuthenticated = payload;
     },
-    updatePractitioner(state, payload:IPractitioner) {
-      state.cornieData.practitioner = payload
+    updatePractitioner(state, payload: IPractitioner) {
+      state.cornieData.practitioner = payload;
     },
   },
   actions: {

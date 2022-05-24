@@ -75,18 +75,18 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/special/index.vue"),
     },
-    {
-      path: "locations",
-      name: "Locations",
-      component: () => import("@/views/dashboard/settings/location/index.vue"),
-    },
-    {
-      path: "add-location/:id?",
-      props: true,
-      name: "New Location",
-      component: () =>
-        import("@/views/dashboard/settings/location/addLocation.vue"),
-    },
+    // {
+    //   path: "locations",
+    //   name: "Locations",
+    //   component: () => import("@/views/dashboard/settings/location/index.vue"),
+    // },
+    // {
+    //   path: "add-location/:id?",
+    //   props: true,
+    //   name: "New Location",
+    //   component: () =>
+    //     import("@/views/dashboard/settings/location/addLocation.vue"),
+    // },
     {
       path: "domains",
       name: "Domains",
@@ -166,11 +166,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
     },
-    {
-      path: "group",
-      name: "Group",
-      component: () => import("@/views/dashboard/settings/group/index.vue"),
-    },
+    // {
+    //   path: "group",
+    //   name: "Group",
+    //   component: () => import("@/views/dashboard/settings/group/index.vue"),
+    // },
     {
       path: "practice-templates",
       name: "Practice Forms/Templates",

@@ -6,7 +6,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total Requests</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalRequest }}</p>
             </div>
             <total-icon />
           </div>
@@ -15,7 +15,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Active Requests</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalRequestActive }}</p>
             </div>
             <active-icon />
           </div>
@@ -24,7 +24,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Closed Requests</p>
-              <p class="ctext-black font-bold text-xl">0</p>
+              <p class="ctext-black font-bold text-xl">{{ totalRequestCancel }}</p>
             </div>
             <close-icon />
           </div>
@@ -32,12 +32,16 @@
       </div>
     </div>
     <div class="">
-        <new-tab :items="tabLinks" v-model="currentTab" :width="'w-1/4'" class="mt-12">
-            <issued-section/>
-            <received-section />
-        </new-tab>
+      <new-tab
+        :items="tabLinks"
+        v-model="currentTab"
+        :width="'w-1/4'"
+        class="mt-12"
+      >
+        <issued-section />
+        <received-section />
+      </new-tab>
     </div>
-   
   </div>
 </template>
 <script lang="ts">
@@ -46,7 +50,7 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IMaterialRequest, { Items } from "@/types/IMaterialRequest";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -62,18 +66,16 @@ import CheckIcon from "@/components/icons/checkdynamic.vue";
 import CheckInIcon from "@/components/icons/checkin.vue";
 import NewTab from "@/components/newtab.vue";
 
-
 import TotalIcon from "./icons/total.vue";
 import ActiveIcon from "./icons/active.vue";
 import CloseIcon from "./icons/close.vue";
 
-
 import IssuedSection from "./sections/IssuedSections.vue";
 import ReceivedSection from "./sections/ReceivedSection.vue";
 
-
 const location = namespace("location");
-const catalogue = namespace("catalogues");
+const user = namespace("user");
+const materialrequest = namespace("materialrequest");
 
 @Options({
   name: "requestExistingState",
@@ -99,18 +101,6 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class requestExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
-
-  @catalogue.State
-  products!: ICatalogueProduct[];
-
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
-
   @location.State
   locations!: ILocation[];
 
@@ -124,115 +114,35 @@ export default class requestExistingState extends Vue {
   selected = [] as any;
   isCheckAll = false;
 
- tabLinks = [
-    "Issued",
-    "Received",
-  ];
+  tabLinks = ["Issued", "Received"];
 
   currentTab = 0;
 
-  headers = [
-    {
-      title: "GRN NO",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "DATE",
-      key: "code",
-      show: true,
-    },
-    {
-      title: "SUPPLIER",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "RECEIVER",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "item count",
-      key: "brand",
-      show: true,
-    },
-    {
-      title: "total qty",
-      key: "sales",
-      show: true,
-    },
-    {
-      title: "total cost",
-      key: "cdm",
-      show: true,
-    },
-    {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-  
-  ];
+  @user.Getter
+  authCurrentLocation!: string;
 
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
+  @materialrequest.State
+  materialrequests!: IMaterialRequest[];
+
+  @materialrequest.Action
+  fetchMaterialRequestsIncoming!: (locationId: string) => Promise<void>;
+
+  get totalRequest() {
+    return this.materialrequests.length;
   }
 
-  get items() {
-    const products = this.products.map((product: any) => {
-      return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
-      };
-    });
-
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+  get totalRequestActive() {
+    return this.materialrequests.filter((c:any) => c.status == 'active').length;
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
+    get totalRequestCancel() {
+    return this.materialrequests.filter((c:any) => c.status == 'cancelled').length;
   }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
-
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
-
-  get sortProduct() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-      console.log('Hello World');
-        let index: string;
-        this.selected = [];
-        if (!this.isCheckAll) {
-            for (index in this.locations) {
-                this.selected.push(this.allLocations[index].code);
-            }
-        }
+  get totalSupplies() {
+    return this.materialrequests
+      .map((c: any) => c.supplyItems.length)
+      .reduce((a: any, b: any) => a + b, 0);
   }
 
   get allLocations() {
@@ -244,20 +154,10 @@ export default class requestExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
-  }
 
   async created() {
-    await this.getProducts();
+    if (this.authCurrentLocation)
+      await this.fetchMaterialRequestsIncoming(this.authCurrentLocation);
     await this.fetchLocations();
   }
 }
@@ -292,10 +192,10 @@ export default class requestExistingState extends Vue {
   border-radius: 5px;
 }
 .multiselect {
-    border: none !important;
+  border: none !important;
 }
 .multiselect-placeholder {
-    color: #000 !important;
+  color: #000 !important;
 }
 .multiselect-option.is-selected {
   background: #fe4d3c;

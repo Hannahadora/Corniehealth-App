@@ -29,7 +29,7 @@
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailable = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailableModal(item.id,item)">
             <check-icon class="text-blue-700 fill-current" />
             <span class="ml-3 text-xs">Check Availability</span>
             </div>
@@ -53,7 +53,7 @@
                 <analytics-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Analytics</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivate = true">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivateModal(item)">
                 <deactivate-icon class="text-primary fill-current" />
                 <span class="ml-3 text-xs">Deactivate</span>
             </div>
@@ -88,8 +88,8 @@
         <storage-modal v-model="showStorage" @stockAdded="stockAdded" :item="storageItem"/>
         <allocate-modal v-model="showAllocate" @stockAdded="stockAdded" :item="singleAllocateItem"/>
         <allocate-bulk-modal v-model="showAllocateBulk" @stockAdded="stockAdded" :item="BulkSelectedItem"/>
-        <deactivate-modal v-model="showDeactivate"/>
-        <availability-modal v-model="showAvailable"/>
+        <deactivate-modal v-model="showDeactivate" :item="withdrawItem" @stockAdded="stockAdded"/>
+        <availability-modal v-model="showAvailable" :id="stockId" :item="selectItem"/>
         <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
 </template>
@@ -206,6 +206,9 @@ export default class totalExistingState extends Vue {
   isCheck = false;
   withdrawItem = {} as any;
   storageItem = {} as any;
+
+   selectItem = {} as any;
+  stockId = "";
 
  tabLinks = [
     "Total",
@@ -329,9 +332,14 @@ export default class totalExistingState extends Vue {
     this.storageItem = value;
   }
 
+
   showAllocateModal(value:any){
     this.showAllocate = true;
     this.singleAllocateItem = value;
+  }
+  showDeactivateModal(value:any){
+    this.showDeactivate = true
+    this.withdrawItem = value;
   }
 
   showWithdrawalInstructionModal(value:any){
@@ -342,6 +350,12 @@ export default class totalExistingState extends Vue {
     this.withdrawItemOnly = true;
      this.withdrawItem = value;
   }
+    showAvailableModal(id:string,value:any){
+    this.showAvailable = true;
+    this.selectItem = value;
+    this.stockId = id;
+  }
+
   checkAll() {
       console.log('Hello World');
         let index: string;

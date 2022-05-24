@@ -6,7 +6,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Total Waybills</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalWaybill }}</p>
             </div>
             <total-icon />
           </div>
@@ -15,7 +15,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Active Waybills</p>
-              <p class="text-black font-bold text-xl">0</p>
+              <p class="text-black font-bold text-xl">{{ totalWaybillActive }}</p>
             </div>
             <active-icon />
           </div>
@@ -24,7 +24,7 @@
           <div class="w-12/12 flex justify-between shadow-lg rounded-lg p-5">
             <div class="w-full">
               <p class="text-gray-400 text-sm">Closed Waybill</p>
-              <p class="ctext-black font-bold text-xl">0</p>
+              <p class="ctext-black font-bold text-xl">{{ totalWaybillCancel }}</p>
             </div>
             <close-icon />
           </div>
@@ -46,8 +46,8 @@ import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
-import ILocation from "@/types/ILocation";
+
+import IWaybill from "@/types/IWaybill";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -73,10 +73,11 @@ import ReceivedSection from "./sections/ReceivedSection.vue";
 
 
 const location = namespace("location");
-const catalogue = namespace("catalogues");
+const waybill = namespace("waybill");
+const user = namespace("user");
 
 @Options({
-  name: "requestExistingState",
+  name: "waybillExistingState",
   components: {
     CornieTable,
     EditIcon,
@@ -98,24 +99,20 @@ const catalogue = namespace("catalogues");
     ReceivedSection,
   },
 })
-export default class requestExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
-
-  @catalogue.State
-  products!: ICatalogueProduct[];
-
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
-
-  @location.State
-  locations!: ILocation[];
+export default class waybillExistingState extends Vue {
 
   @location.Action
   fetchLocations!: () => Promise<void>;
+
+  @waybill.State
+  waybills!: IWaybill[];
+
+  @waybill.Action
+  fetchWaybillOutgoing!: (locationId: string) => Promise<void>;
+
+  @user.Getter
+  authCurrentLocation!: string;
+
 
   productId = "";
   query = "";
@@ -131,133 +128,21 @@ export default class requestExistingState extends Vue {
 
   currentTab = 0;
 
-  headers = [
-    {
-      title: "GRN NO",
-      key: "genericName",
-      show: true,
-    },
-    {
-      title: "DATE",
-      key: "code",
-      show: true,
-    },
-    {
-      title: "SUPPLIER",
-      key: "category",
-      show: true,
-    },
-    {
-      title: "RECEIVER",
-      key: "description",
-      show: true,
-    },
-    {
-      title: "item count",
-      key: "brand",
-      show: true,
-    },
-    {
-      title: "total qty",
-      key: "sales",
-      show: true,
-    },
-    {
-      title: "total cost",
-      key: "cdm",
-      show: true,
-    },
-    {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-  
-  ];
-
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
+     get totalWaybill() {
+    return this.waybills.length;
   }
 
-  get items() {
-    const products = this.products.map((product: any) => {
-      return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
-      };
-    });
-
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+  get totalWaybillActive() {
+    return this.waybills.filter((c:any) => c.status == 'submitted' || c.status == 'received').length;
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
+    get totalWaybillCancel() {
+    return this.waybills.filter((c:any) => c.status == 'cancelled' || c.status == 'declined').length;
   }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
-
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
-
-  get sortProduct() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-      console.log('Hello World');
-        let index: string;
-        this.selected = [];
-        if (!this.isCheckAll) {
-            for (index in this.locations) {
-                this.selected.push(this.allLocations[index].code);
-            }
-        }
-  }
-
-  get allLocations() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
-  }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
-    });
-    if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
-  }
 
   async created() {
-    await this.getProducts();
+   await this.fetchWaybillOutgoing(this.authCurrentLocation);
     await this.fetchLocations();
   }
 }

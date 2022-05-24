@@ -19,7 +19,8 @@ import PracticeformStore from "./practiceform";
 import AppointmentStore from "./appointment";
 import TaskStore from "./task";
 import UserSettingsStore from "./usersettings";
-import inventorySettings from "./inventory"
+import inventorySettings from "./inventory";
+import WaybillStore from "./waybill";
 
 import CalenderStore from "./calendar";
 import PrefrenceStore from "./prefrence";
@@ -60,6 +61,9 @@ import RefferalStore from "./refferal";
 
 import AppointmentRoomStore from "./appointmentroom";
 import InventoryStockStore from "./inventorystock";
+import GrnStore from "./grn";
+import MaterialrequestStore from "./materialRequest";
+import MaterialreturnStore from "./materialReturn";
 
 export default createStore({
   modules: {
@@ -125,6 +129,10 @@ export default createStore({
     cancel: CanelStore,
     kyc: KycStore,
 
-    dispense: DispenseStore
+    dispense: DispenseStore,
+    grn: GrnStore,
+    materialrequest: MaterialrequestStore,
+    materialreturn: MaterialreturnStore,
+    waybill : WaybillStore,
   },
 } as StoreOptions<any>);

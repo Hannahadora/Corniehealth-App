@@ -9,7 +9,10 @@
     >
       Sign Up
     </span>
-    <span @click="$router.push('/signin')" class="px-6 py-4 text-white font-bold cursor-pointer text-lg">
+    <span
+      @click="$router.push('/signin')"
+      class="px-6 py-4 text-white font-bold cursor-pointer text-lg"
+    >
       Sign In
     </span>
   </div>
@@ -24,7 +27,7 @@
     </div>
 
     <v-form class="w-full" @submit="submit">
-      <div class="mb-10 " v-if="step == 2 && !userCreated">
+      <div class="mb-10" v-if="step == 2 && !userCreated">
         <One
           :checked="checked"
           :checked2="checked2"
@@ -36,21 +39,20 @@
       </div>
 
       <div v-if="step == 2 && !userCreated">
-
-          <Two
-            :loading="loading"
-            :account="accountType"
-            @next="updateData($event)"
-          >
-          </Two>
+        <Two
+          :loading="loading"
+          :account="accountType"
+          @next="updateData($event)"
+        >
+        </Two>
       </div>
 
       <div class="" :user="user" v-if="step == 3 && userCreated">
-       <div class="container flex flex-col flex-wrap">
+        <div class="container flex flex-col flex-wrap">
           <h1 class="text-primary font-bold text-4xl mb-12">
             Create an account
           </h1>
-           
+
           <verify-email-code
             v-model:code="code"
             :user="user"
@@ -65,7 +67,7 @@
           <h1 class="text-primary font-bold text-4xl mb-12">
             Create an account
           </h1>
-          
+
           <activate-account
             :userId="user.id"
             :code="code"
@@ -184,6 +186,8 @@ export default class CreateAccount extends Vue {
   width_percent = 33;
   width = 33;
 
+  practiceType = "";
+  practiceSubType = "";
   @user.Mutation
   setCornieData!: (data: any) => void;
 
@@ -193,6 +197,8 @@ export default class CreateAccount extends Vue {
     this.phone = data.phone.value;
     this.email = data.email.value;
     this.dialCode = data.dialCode.value;
+    this.practiceSubType = data.subType;
+    this.practiceType = data.practiceType;
   }
 
   get payload() {
@@ -255,6 +261,13 @@ export default class CreateAccount extends Vue {
     this.$emit("check-type", this.accountType);
   }
 
+  get corniePayload() {
+    return {
+      practiceType: this.practiceType,
+      practiceSubType: this.practiceSubType,
+      accountType: this.accountType,
+    };
+  }
   async submit() {
     const errMsg = "Account not created";
     this.loading = true;
@@ -262,7 +275,7 @@ export default class CreateAccount extends Vue {
       const data = await quantumClient().post("/auth/signup/", this.payload);
       if (data.success) {
         this.setUser(data);
-        this.setCornieData({ accountType: this.accountType });
+        this.setCornieData(this.corniePayload);
         this.next();
       } else {
         window.notify({ msg: errMsg, status: "error" });
