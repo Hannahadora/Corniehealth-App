@@ -162,11 +162,11 @@ export default class Settings extends Vue {
   }
   get healthCare() {
     return [
-      {
-        name: "Healthcare Services",
-        to: "health-services",
-        icon: "health-service-icon",
-      },
+      // {
+      //   name: "Healthcare Services",
+      //   to: "health-services",
+      //   icon: "health-service-icon",
+      // },
       { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
       // {
       //   name: "Charge Description Master",

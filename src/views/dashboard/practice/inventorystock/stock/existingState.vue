@@ -1,37 +1,5 @@
 <template>
   <div class="w-full pb-80">
-    <div class="mt-5 mb-5 flex justify-end w-full">
-        <div class="w-72">
-            <Multiselect
-            ref="multiselect"
-            :close-on-select="true"
-            :groups="true"
-            :group-select="false"
-            placeholder="Select location"
-            label="display"
-            :options="[
-                {
-                label:'',
-                options: ['All Locations'],
-                },
-                {
-                label:'',
-                options: allLocations,
-                },
-            ]"
-            >
-            <template v-slot:singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                {{ value?.display }} 
-                </div>
-            </template>
-            <template v-slot:option="{ option }">
-                <select-option @click="checkAll()" id="toggleAll" v-model="isCheckAll" v-if="option.display == 'All Locations'" :label="option.display"/>
-                <select-option v-else :modelValue:select="selected" :id="`loc_${option.code}`" :value="option.code" :label="option.display"/>
-            </template>
-            </Multiselect>
-        </div>
-    </div>
     <div class="mt-5 mb-5">
       <div class="flex justify-between">
         <div class="w-" style="width: 32%">
@@ -294,7 +262,7 @@ export default class InventoryExistingState extends Vue {
 
 
   get TotalInventoryValue(){
-    return this.inventorystocks.reduce((acc, item) => acc + item.unitPrice, 0);
+    return this.inventorystocks.reduce((acc, item) => acc + (+item.unitPrice), 0);
   }
   async stockAdded() {
     if(this.authCurrentLocation) await this.fetchInventorystocks(this.authCurrentLocation);

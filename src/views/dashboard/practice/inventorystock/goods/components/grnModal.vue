@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-9/12 h-full">
+  <cornie-dialog v-model="show" right class="w-8/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <span class="pr-2 flex items-center cursor-pointer border-r-2">
@@ -9,7 +9,7 @@
         </span>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Goods Received Note
+            Goods Received Note
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -20,118 +20,327 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-            <div class="border-dashed border-b-2 border-gray-200 pb-5">
-                <div class=" mt-5 grid grid-cols-2 gap-4 w-full">
-                    <cornie-input
-                        label="GRN ID"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
-                    <cornie-input
-                        label="Currency"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
-                    <cornie-select
-                    class="w-full"
-                    placeholder="--Select---"
-                    :items="['Active', 'Inactive', 'Resolved']"
-                    label="Received From"
-                    :labelText="true"
-                    :innerlabel="'Add new'"
-                    >
-                    </cornie-select>
-                    <cornie-input
-                        label="Description"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
-                    <date-picker
-                        label="Date"
-                        class="w-full"
-                    />
-                        <cornie-input
-                        label="Processed By"
-                        class="w-full mb-4"
-                        placeholder="--Autoloaded--"
-                        :disabled="true"
-                    />
+          <div class="border-b-2 pb-5 border-dashed border-gray-200">
+            <accordion-component title="GRN Info" :opened="true">
+              <template v-slot:default>
+                <div class="mt-5 grid grid-cols-2 gap-4 w-full">
+                  <cornie-input
+                  v-if="identifier"
+                    label="Request #"
+                    class="w-full mb-4"
+                    placeholder="--Autoloaded--"
+                    :disabled="true"
+                    v-model="identifier"
+                  />
+                  <!-- <cornie-input
+                    label="Reference #"
+                    class="w-full mb-4"
+                    placeholder="--Autoloaded--"
+                    :disabled="true"
+                    v-model="referenceNumber"
+                  /> -->
+                  <cornie-input
+                    label="Description"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="description"
+                    :rules="requiredRule"
+                  />
                 </div>
-            </div>
-          <div class="mt-5">
-              <div class="w-full grid grid-cols-3 gap-4">
-                  <p class="font-bold text-blue-600">Add Stock to:</p>
-                  <cornie-select
-                    class="w-full"
-                    placeholder="--Select---"
-                    :items="['Active', 'Inactive', 'Resolved']"
-                    label="Select Inventory Location"
-                    :labelText="true"
-                    :innerlabel="'Add new'"
-                    >
-                  </cornie-select>
-                  <cornie-select
-                    class="w-full"
-                    placeholder="--Select---"
-                    :items="['Active', 'Inactive', 'Resolved']"
-                    label="Select Inventory Category"
-                    :labelText="true"
-                    :innerlabel="'Add new'"
-                    >
-                  </cornie-select>
-
-              </div>
+              </template>
+            </accordion-component>
           </div>
-            <div class="border-dashed border-t-2 border-gray-200 mb-5 mt-5">
-                <span class="text-danger font-bold m flex justify-end float-right mt-5 w-full cursor-pointer" @click="showItem = true"> 
-                    <span class="text-xl -mt-1 mr-2">+</span>Add Item
-            </span>
+          <div class="border-b-2 pb-5 border-dashed border-gray-200">
+            <accordion-component title="Receiver" :opened="false">
+              <template v-slot:default>
+                <div class="mt-5 grid grid-cols-2 gap-4 w-full">
+                  <cornie-input
+                    label="Name"
+                    class="w-full mb-4"
+                    placeholder="--Autoloaded--"
+                    :disabled="true"
+                    v-model="receivedBy.name"
+                  />
+                  <cornie-phone-input
+                    label="Phone Number"
+                    class="w-full mb-4"
+                    placeholder="--Autoloaded--"
+                    :disabled="true"
+                    v-model="receivedBy.phone.number"
+                    v-model:code="receivedBy.phone.dialCode"
+                  />
+                  <cornie-input
+                    label="Email"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    :disabled="true"
+                    v-model="receivedBy.email"
+                  />
+                  <date-picker
+                    label="Date"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    :disabled="true"
+                    v-model="dateReceived"
+                  />
+                  <cornie-select
+                    class="w-full"
+                    placeholder="--Select---"
+                    :items="[
+                      'holding',
+                      'pharmacy',
+                      'diagnostics',
+                      'in-patient',
+                    ]"
+                    label="Department/Inventory Category"
+                    v-model="receiverCategory"
+                    :rules="requiredRule"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="w-full"
+                    placeholder="--Select---"
+                    :items="allLocations"
+                    label="Receive To"
+                    v-model="receiverLocationId"
+                    :rules="requiredRule"
+                  >
+                  </cornie-select>
+                </div>
+              </template>
+            </accordion-component>
+          </div>
+          <div class="border-b-2 pb-5 border-dashed border-gray-200">
+            <accordion-component title="Supplier" :opened="false">
+              <template v-slot:default>
+                <div class="mt-5 grid grid-cols-2 gap-4 w-full">
+                  <cornie-input
+                    label="Supplier Name"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierName"
+                    :rules="requiredRule"
+                  />
+                </div>
+                <div class="mt-5 grid grid-cols-2 gap-4 w-full">
+                  <cornie-select
+                    class="w-full"
+                    placeholder="--Select--"
+                    :items="[
+                      'holding',
+                      'pharmacy',
+                      'diagnostics',
+                      'in-patient',
+                    ]"
+                    label="Department/Inventory Category"
+                    v-model="supplierCategory"
+                    :rules="requiredRule"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    class="w-full"
+                    placeholder="--Select--"
+                    :items="allLocations"
+                    label="Delivery Location"
+                    v-model="supplierLocationId"
+                  >
+                  </cornie-select>
+                  <cornie-select
+                    label="Country"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.countries"
+                    v-model="nationState.country"
+                    :rules="requiredRule"
+                  />
+                  <cornie-select
+                    label="State or Region"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.states"
+                    v-model="state"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    label="City"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierCity"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    label="Zip or Post Code"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierZipCode"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    label="Apartment or House Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierHouseNumber"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    label="Contact Person"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierContactPerson"
+                    :rules="requiredRule"
+                  />
+                  <cornie-phone-input
+                    label="Phone Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierPhone.number"
+                    v-model:code="supplierPhone.dialCode"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    label="Email"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierEmail"
+                    :rules="emailRule"
+                  />
+                </div>
+              </template>
+            </accordion-component>
+          </div>
+            <div class="mb-12 mt-5">
+              <span
+                class="
+                  text-danger
+                  font-bold
+                  m
+                  flex
+                  justify-end
+                  float-right
+                  mt-5
+                  w-full
+                  cursor-pointer
+                "
+                @click="showItem = true"
+              >
+                <span class="text-xl -mt-1 mr-2">+</span>Add Item
+              </span>
             </div>
 
-            <div class="mt-12">
-                <cornie-table v-model="items" :columns="headers" :deleteRow="true">
-                    <template #received>
-                            <div class="w-12">
-                                <cornie-input placeholder="6"/>
-                            </div>
-                    </template>
-                </cornie-table>
-            </div>
+          <div class="mt-20">
+            <cornie-table
+              :menu="false"
+              v-model="items"
+              :columns="headers"
+              :deleteRow="true"
+              @delete="removeItem"
+            >
+              <template #delieveredquanitity="{ item }">
+                <div class="w-12">
+                  <cornie-input v-model="quantities[item.productId]" />
+                </div>
+              </template>
+              <template #unitCost="{ item }">
+                <div class="w-12">
+                  <cornie-input v-model="unitCosts[item.productId]" />
+                </div>
+              </template>
+              <template #totalCost="{ item }">
+                ₦
+                {{
+                  getTotal(
+                    quantities[item.productId],
+                    unitCosts[item.productId]
+                  )
+                }}
+              </template>
+            </cornie-table>
+          </div>
         </v-form>
       </cornie-card-text>
 
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <p class="text-sm font-bold text-danger float-left flex justify-start w-full">Save as draft</p>
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          <span
+            v-if="!id"
+            class="
+              text-sm
+              font-bold
+              text-danger
+              float-left
+              flex
+              justify-start
+              w-full
+              cursor-pointer
+            "
+            @click="SaveDraftGrn"
           >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            class="text-white bg-danger px-6 rounded-xl"
+            Save as draft
+          </span>
+          <span
+           v-else
+            class="
+              text-sm
+              font-bold
+              text-danger
+              float-left
+              flex
+              justify-start
+              w-full
+              cursor-pointer
+            "
+            @click="completeDraft"
           >
-            Save
-          </cornie-btn>
+            Complete draft
+          </span>
+
+            <cornie-btn
+              @click="show = false"
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn
+            v-if="!id"
+              :loading="loading"
+              @click="submit"
+              class="text-white bg-danger px-6 rounded-xl"
+            >
+              Save
+            </cornie-btn>
+             <cornie-btn
+             v-else
+              :loading="loading"
+              @click="submit"
+              class="text-white bg-danger px-6 rounded-xl"
+            >
+              Update
+            </cornie-btn>
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
-  <item-modal v-model="showItem"/>
+  <item-modal
+    v-model="showItem"
+    :supplierName="supplierName"
+    @item-supplier="itemsupplier"
+  />
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
+import { string, date } from "yup";
+import { useCountryStates } from "@/composables/useCountryStates";
 
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IGrn, { SupplyItems } from "@/types/IGrn";
+import ILocation from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -151,15 +360,16 @@ import DatePicker from "@/components/datepicker.vue";
 import CDelete from "@/components/icons/adelete.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 
 import ItemModal from "./itemModal.vue";
 
-
-
 const catalogue = namespace("catalogues");
+const user = namespace("user");
+const location = namespace("location");
+const grn = namespace("grn");
 
 @Options({
   name: "grnModal",
@@ -185,7 +395,7 @@ const catalogue = namespace("catalogues");
     CornieBtn,
     MainCornieSelect,
     CornieTable,
-    ItemModal
+    ItemModal,
   },
 })
 export default class grnModal extends Vue {
@@ -196,70 +406,351 @@ export default class grnModal extends Vue {
   id!: string;
 
   loading = false;
+
   @catalogue.State
   products!: ICatalogueProduct[];
 
   @catalogue.Action
   getProducts!: () => Promise<void>;
 
+  @user.Getter
+  authCurrentLocation!: string;
+
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  @grn.Action
+  getGrnById!: (id: string) => Promise<IGrn>;
+
   showItem = false;
+  nationState = setup(() => useCountryStates());
+
+  state = "";
+  requestNumber = "";
+  referenceNumber = "";
+  description = "";
+  receivedBy = {
+    name: "",
+    email: "",
+    phone: {
+      number: "8188281176",
+      dialCode: "+234",
+    } as any,
+  };
+  identifier = "";
+  receiverCategory = "";
+  receiverLocationId = "";
+  dateReceived = new Date();
+  supplierCategory = "";
+  supplierLocationId = "";
+  supplierCountry = "";
+  supplierState = "";
+  supplierCity = "";
+  supplierZipCode = "";
+  supplierHouseNumber = "";
+  supplierContactPerson = "";
+  supplierPhone = {
+    number: "",
+    dialCode: "+234",
+  };
+  supplierEmail = "";
+  supplyItems = [] as SupplyItems[];
+  supplyStatus = "";
+
+  quantity = 0;
+  expiryDate = "";
+  supplierName = "";
+  query = "";
+
+  required = string().required();
+  emailRule = string().email().required();
+  requiredRule = string().required();
 
   headers = [
     {
       title: "item code",
-      key: "genericName",
+      key: "itemCode",
       show: true,
+      noOrder: true,
     },
     {
       title: "item name",
-      key: "code",
+      key: "itemName",
       show: true,
-    },
-    {
-      title: "pack size",
-      key: "category",
-      show: true,
+      noOrder: true,
     },
     {
       title: "uofm",
-      key: "description",
-      show: true,
+      key: "uofm",
+      show: false,
+      noOrder: true,
     },
     {
-      title: "qty ordered",
-      key: "received",
-      show: true,
+      title: "batch #",
+      key: "batch",
+      show: false,
+      noOrder: true,
     },
     {
-      title: "qty received",
-      key: "received",
+      title: "expiry",
+      key: "expiryDate",
       show: true,
+      noOrder: true,
     },
     {
-      title: "outstanding qty",
-      key: "qty",
+      title: "available qty",
+      key: "avQty",
       show: true,
+      noOrder: true,
+    },
+    {
+      title: "deleivered qty",
+      key: "delieveredquanitity",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "unit cost",
+      key: "unitCost",
+      show: true,
+      noOrder: true,
+    },
+    {
+      title: "total cost",
+      key: "totalCost",
+      show: true,
+      noOrder: true,
     },
   ];
 
   get items() {
-    const products = this.products.map((product: any) => {
+    const supplys = this.supplyItems.map((supply: any) => {
+      this.unitCosts[supply.productId] = 1;
+      this.quantities[supply.productId] = supply.quantity;
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        qty: "24"
+        ...supply,
+        // totalCost: this.getTotal(+this.unitCosts[supply.productId], +this.quantities[supply.productId]),
+        supplier: this.supplierName,
       };
     });
-    return products;
+
+    if (!this.query) return supplys;
+    return search.searchObjectArray(supplys, this.query);
+  }
+
+    @Watch("id")
+  idChanged() {
+    this.setGrn();
+  }
+
+   async setGrn() {
+    const grn = await this.getGrnById(this.id);
+    if (!grn) return;
+    this.requestNumber = grn.requestNumber;
+    this.identifier = grn.identifier;
+    this.referenceNumber = grn.referenceNumber;
+    this.description = grn.description;
+    this.receivedBy = grn.receivedBy;
+    this.receiverCategory = grn.receiverCategory;
+    this.receiverLocationId = grn.receiverLocationId;
+    this.supplierCountry = grn.supplierCountry;
+    this.dateReceived = grn.dateReceived || new Date();
+    this.supplierCategory = grn.supplierCategory;
+    this.supplierLocationId = grn.supplierLocationId;
+    this.supplierState = grn.supplierState;
+    this.state = grn.supplierState;
+    this.supplierCity = grn.supplierCity;
+    this.supplierZipCode = grn.supplierZipCode;
+    this.supplierHouseNumber = grn.supplierHouseNumber;
+    this.supplierContactPerson = grn.supplierContactPerson;
+    this.supplierPhone = grn.supplierPhone;
+    this.supplierEmail = grn.supplierEmail;
+    this.supplyItems = grn.supplyItems;
+    this.supplyStatus = grn.supplyStatus;
+    this.supplierName = grn.supplyItems[0].supplier;
+
+  
+  }
+  getTotal(quantity: number, unityCost: number) {
+    return (quantity * unityCost).toFixed(2);
+  }
+
+  itemsupplier(value: any, exipry: string) {
+    this.supplyItems.push(value);
+    this.expiryDate = exipry;
+  }
+  quantities = {} as Record<string, number>;
+  unitCosts = {} as Record<string, number>;
+
+  buildPayload(item: any) {
+    return {
+      type: "purchase",
+      unitCost: this.unitCosts[item.productId],
+      quantity: this.quantities[item.productId],
+      supplier: this.supplierName,
+      expiryDate: item.expiryDate,
+      default: false,
+      productId: item.productId,
+      locationId: this.authCurrentLocation,
+    };
+  }
+  get payload() {
+    return {
+      description: this.description,
+      receiverCategory: this.receiverCategory,
+      receiverLocationId: this.receiverLocationId,
+      supplierCategory: this.supplierCategory,
+      supplierLocationId: this.supplierLocationId,
+      supplierContactPerson: this.supplierContactPerson,
+      supplierPhone: this.supplierPhone,
+      supplierEmail: this.supplierEmail,
+      supplierCountry: this.supplierCountry,
+      supplierState: this.supplierState,
+      supplierCity: this.supplierCity,
+      supplierZipCode: this.supplierZipCode,
+      supplierHouseNumber: this.supplierHouseNumber,
+      supplyItems: this.items.map(this.buildPayload),
+    };
+  }
+  get allLocations() {
+    if (!this.locations || this.locations.length === 0) return [];
+    return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+  get checkstatus() {
+    return this.supplyStatus === 'draft' ? "Complete draft" : "Save";
+  }
+
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.updateGrn();
+    else await this.createGrn();
+    this.loading = false;
+  }
+
+
+  async SaveDraftGrn() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
+    this.supplierCountry = this.nationState.country;
+    this.supplierState = this.state;
+
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/inventory/grn/draft",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({
+          msg: "Goods received notes draft saved",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+   async removeItem(index: number) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to delete this item?",
+        title: "Delete Item",
+      });
+      if (confirmed) {
+       this.supplyItems.splice(index, 1);
+      }
+    } catch (error) {}
+  
+   
+  }
+
+
+  async createGrn() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
+    this.supplierCountry = this.nationState.country;
+    this.supplierState = this.state;
+
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/inventory/grn",
+        this.payload
+      );
+      if (response.success) {
+        window.notify({ msg: "Goods received notes Saved", status: "success" });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+  async updateGrn() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+    const id = this.id;
+    const url = `/api/v1/inventory/grn/update-draft/${id}`;
+    const payload = this.payload;
+    try {
+      const response = await cornieClient().put(url, this.payload);
+      if (response.success) {
+        window.notify({
+          msg: "Goods received note Updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+   async completeDraft() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+    const id = this.id;
+    const url = `/api/v1/inventory/grn/complete-draft/${id}`;
+    const payload = this.payload;
+    try {
+      const response = await cornieClient().put(url, this.payload);
+      if (response.success) {
+        window.notify({
+          msg: "Goods received note draft completed",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: error.response.data.message, status: "error" });
+    }
+  }
+
+  done() {
+    this.show = false;
+    this.$emit("grnAdded");
+  }
+  receiverInfo(){
+    this.receivedBy.name = this.authPractitioner.firstName +''+ this.authPractitioner.lastName;
+     this.receivedBy.phone  = this.authPractitioner?.phone;
+     this.receivedBy.email = this.authPractitioner.email;
   }
 
   created() {
     this.getProducts();
+    this.fetchLocations();
+    this.setGrn();
+    this.receiverInfo();
   }
 }
 </script>

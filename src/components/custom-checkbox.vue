@@ -21,7 +21,7 @@
       type="checkbox"
       :checked="valueSync"
     />
-    <span class="ml-2 text-sm">{{ label }}</span>
+    <span class="ml-2 text-xs font-medium w-full">{{ label }}</span>
     <span v-if="errorMessage" class="text-xs text-red-500 block">{{
       errorMessage
     }}</span>

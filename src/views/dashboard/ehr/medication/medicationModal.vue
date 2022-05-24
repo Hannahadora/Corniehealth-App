@@ -697,7 +697,7 @@ export default class MedicationModal extends Vue {
     const request = await this.getOneRequestById(this.id);
     if (!request) return;
     this.basedOn = request.basedOn;
-    this.intent = request.intent;
+    // this.intent = request.intent;
     this.priority = request.priority;
     this.category = request.category;
     this.requesterId = request.requesterId;

@@ -130,16 +130,6 @@ export default class CorniDashboardeSideBar extends Vue {
           to: "/dashboard/experience/calendar",
           hasSubsection: false,
         },
-        // {
-        //   name: "Schedules",
-        //   to: "/dashboard/experience/schedules",
-        //   hasSubsection: false,
-        // },
-        {
-          name: "Appointments",
-          to: { name: "Appointment" },
-          hasSubsection: false,
-        },
         {
           name: "Visits",
           to: "/dashboard/experience/visits",
@@ -171,12 +161,6 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: false,
     },
     {
-      name: "In-Patient",
-      to: "in-patient",
-      icon: "clinic-icon",
-      hasSubsection: false,
-    },
-    {
       name: "Diagnostics",
       to: "diagnostics",
       icon: "clip-board-icon",
@@ -188,8 +172,13 @@ export default class CorniDashboardeSideBar extends Vue {
           hasSubsection: false,
         },
         {
-          name: "Virtual-Lab-Orders",
+          name: "Virtual Lab Orders",
           to: "/dashboard/provider/settings/virtual-lab-orders",
+          hasSubsection: false,
+        },
+        {
+          name: "Observations",
+          to: "/dashboard/provider/settings/observations",
           hasSubsection: false,
         },
       ],
@@ -201,23 +190,8 @@ export default class CorniDashboardeSideBar extends Vue {
       hasSubsection: true,
       children: [
         {
-          name: "Markup",
-          to: "/dashboard/provider/settings/markup",
-          hasSubsection: false,
-        },
-        {
-          name: "Catalogue",
-          to: "catologue",
-          hasSubsection: false,
-        },
-        {
-          name: "Inventory",
-          to: "inventory",
-          hasSubsection: false,
-        },
-        {
-          name: "Pricebook",
-          to: "pricebook",
+          name: "Medication",
+          to: "/dashboard/provider/settings/medication",
           hasSubsection: false,
         },
         {
@@ -231,55 +205,16 @@ export default class CorniDashboardeSideBar extends Vue {
           hasSubsection: false,
         },
         {
-          name: "Pharmacy Orders",
-          to: "pharmacy-order",
+          name: "Virtual Pharmacy Orders",
+          to: "pharmacy-orders",
           hasSubsection: false,
         },
       ],
     },
     {
-    name: "Practice",
-    to: "practice",
-    icon: "practice-icon",
-    hasSubsection: true,
-    children: [
-      {
-        name: "Locations",
-        to: "locations",
-        hasSubsection: false,
-      },
-     {
-        name: "Charge Description Master",
-        to: "/dashboard/provider/practice/practice",
-        hasSubsection: false,
-      },
-      {
-        name: "Inventory Stock",
-          to: "/dashboard/provider/practice/inventory",
-        hasSubsection: false,
-      },
-      {
-        name: "Loyalty",
-        to: "inventory",
-        hasSubsection: false,
-      },
-      {
-        name: "Promotions",
-        to: "pricebook",
-        hasSubsection: false,
-      },
-    ],
-   },
-    {
       name: "Bills & Payments",
       to: "bills",
       icon: "debit-card-icon",
-      hasSubsection: false,
-    },
-    {
-      name: "Accounting",
-      to: "accounting",
-      icon: "wallet-icon",
       hasSubsection: false,
     },
     {
@@ -288,21 +223,50 @@ export default class CorniDashboardeSideBar extends Vue {
       icon: "chart-icon",
       hasSubsection: false,
     },
-    { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
     {
-      name: "Categories",
-      to: "categories",
-      icon: "categories-icon",
+      name: "Practice",
+      to: "practice",
+      icon: "practice-icon",
       hasSubsection: true,
       children: [
         {
-          name: "Location",
-          to: "/dashboard/provider/settings/location",
+          name: "Locations",
+          to: "locations",
           hasSubsection: false,
         },
         {
-          name: "Group",
-          to: "/dashboard/provider/settings/group",
+          name: "Charge Description Master",
+          to: "/dashboard/provider/practice/practice",
+          hasSubsection: false,
+        },
+        {
+          name: "Inventory Stock",
+          to: "/dashboard/provider/practice/inventory",
+          hasSubsection: false,
+        },
+        {
+          name: "Practitoner Directory",
+          to: "practitioners",
+          hasSubsection: false,
+        },
+        {
+          name: "Care Partners",
+          to: "/dashboard/provider/practice/care-partners",
+          hasSubsection: false,
+        },
+        {
+          name: "Care Plan",
+          to: "/dashboard/provider/practice/care-plan",
+          hasSubsection: false,
+        },
+        {
+          name: "Care Teams",
+          to: "/dashboard/provider/practice/care-team",
+          hasSubsection: false,
+        },
+        {
+          name: "Groups",
+          to: "group",
           hasSubsection: false,
         },
       ],

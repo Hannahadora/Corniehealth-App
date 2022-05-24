@@ -2,6 +2,15 @@
   <div>
     <div>
       <span class="flex justify-end w-full mb-12">
+        <button
+          type="button"
+          @click="showGRN = true"
+          class="bg-danger rounded-lg text-white py-2 px-6"
+        >
+          New Supply
+        </button>
+      </span>
+      <!-- <span class="flex justify-end w-full mb-12">
         <cornie-btn
           class="
             bg-danger
@@ -97,64 +106,57 @@
             </cornie-card-text>
           </cornie-menu>
         </cornie-btn>
-      </span>
+      </span> -->
     </div>
-    <cornie-table v-model="items" :columns="headers">
-      <template #name="{ item }">
-        <div
-          class="text-no-wrap flex items-center uppercase text-xs"
-          style="white-space: nowrap"
+    <cornie-table v-model="sortGrn" :columns="headers">
+      <template #statusitem="{ item }">
+        <span
+          class="bg-green-100 text-green-600 rounded-lg p-2 text-xs"
+          v-if="item.supplyStatus === 'received'"
         >
-          <Avatar :src="item.image" />
-          <span class="ml-2">{{ item.name }}</span>
-        </div>
-      </template>
-      <template #itemCode-header>
-        <div
-          class="text-no-wrap flex uppercase text-xs"
-          style="white-space: nowrap"
+          Received
+        </span>
+        <span
+          class="bg-red-100 text-red-600 rounded-lg p-2 text-xs"
+          v-if="item.supplyStatus === 'cancelled'"
         >
-          Item Code
-        </div>
-      </template>
-      <template #status="{ item }">
-        <div class="text-no-wrap">
-          <span
-            class="status p-1"
-            :class="{
-              active: item.status === 'active',
-              inactive: item.status === 'inactive',
-            }"
-          >
-            {{ item.status }}</span
-          >
-        </div>
-      </template>
-      <template #availability="{ item }">
-        <div class="text-no-wrap">
-          <span class="status p-1 bolder"> {{ item.availability }}</span>
-        </div>
+          Cancelled
+        </span>
+        <span
+          class="bg-gray-100 text-gray-600 rounded-lg p-2 text-xs"
+          v-if="item.supplyStatus === 'draft'"
+        >
+          Draft
+        </span>
       </template>
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showview = true">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showViewModal(item)"
+        >
           <new-view-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showtimeline = true"
         >
           <new-view-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">View Timeline</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        </div> -->
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          v-if="item.supplyStatus === 'draft'"
+          @click="showGrnModal(item.id)"
+        >
           <edit-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
 
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+           v-if="item.supplyStatus === 'draft'"
+          @click="Cancelgrn(item.id)"
         >
           <cancel-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Cancel</span>
@@ -162,18 +164,19 @@
       </template>
     </cornie-table>
   </div>
-  <grn-modal v-model="showGRN" />
+  <grn-modal v-model="showGRN" @grnAdded="grnAdded" :id="GrnId" />
   <other-grn-modal v-model="showotherGRN" />
   <timeline-modal v-model="showtimeline" />
-  <view-modal v-model="showview" />
+  <view-modal v-model="showview"  :selectedItem="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
+import { cornieClient } from "@/plugins/http";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IGrn from "@/types/IGrn";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -197,11 +200,10 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import GrnModal from "../components/grnModal.vue";
 import OtherGrnModal from "../components/othergrnModal.vue";
 import TimelineModal from "../components/timelineModal.vue";
-import ViewModal from "../components/viewModal.vue"
+import ViewModal from "../components/viewModal.vue";
 
 const location = namespace("location");
-
-const catalogue = namespace("catalogues");
+const grn = namespace("grn");
 
 @Options({
   name: "IssuedExistingState",
@@ -231,17 +233,11 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class IssuedExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
+  @grn.State
+  grns!: IGrn[];
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
-
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @grn.Action
+  fetchGrns!: () => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -259,6 +255,8 @@ export default class IssuedExistingState extends Vue {
   showotherGRN = false;
   showtimeline = false;
   showview = false;
+  GrnId = "";
+  selectedItem = {};
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 
@@ -266,105 +264,86 @@ export default class IssuedExistingState extends Vue {
 
   headers = [
     {
-      title: "item code",
-      key: "genericName",
+      title: "DATE received",
+      key: "dateReceived",
       show: true,
     },
     {
-      title: "item name",
-      key: "code",
+      title: "GRN NO",
+      key: "identifier",
       show: true,
     },
     {
-      title: "brand",
-      key: "category",
+      title: "SUPPLIER",
+      key: "SUPPLIER",
       show: true,
     },
     {
-      title: "form",
-      key: "description",
+      title: "RECEIVER",
+      key: "receivedBy",
       show: true,
     },
     {
-      title: "strength",
-      key: "brand",
+      title: "received to",
+      key: "receiveTo",
       show: true,
     },
     {
-      title: "pack size",
-      key: "sales",
+      title: "item count",
+      key: "count",
       show: true,
     },
     {
-      title: "uofm",
+      title: "Boq",
       key: "cdm",
       show: true,
     },
     {
-      title: "opening",
-      key: "discount",
+      title: "total cost",
+      key: "total",
       show: true,
     },
     {
-      title: "issued",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "added",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "balance",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
-      title: "total value (N)",
-      key: "lastUpdated",
-      show: false,
-    },
-    {
       title: "Status",
-      key: "status",
+      key: "statusitem",
       show: true,
     },
   ];
 
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
-  }
-
   get items() {
-    const products = this.products.map((product: any) => {
+    const grns = this.grns.map((grn: any) => {
       return {
-        ...product,
-        action: product.id,
-        keydisplay: "XXXXXXX",
-        code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
+        ...grn,
+        action: grn.id,
+        receivedBy: grn.receivedBy.name,
+        receiveTo: this.getLocationName(grn.receiverLocationId),
+        count: grn.supplyItems.length,
+        SUPPLIER: grn.supplyItems[0].supplier,
+        total: " ₦ " + this.getTotalCost(grn.supplyItems).toFixed(2),
       };
     });
 
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+    if (!this.query) return grns;
+    return search.searchObjectArray(grns, this.query);
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
+  getLocationName(id: string) {
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+  getTotalCost(value: any) {
+    return value
+      .map((item: any) => item.quantity * item.unitCost)
+      .reduce((a: any, b: any) => a + b, 0);
+  }
+  showGrnModal(value: string) {
+    this.showGRN = true;
+    this.GrnId = value;
   }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
+  showViewModal(item:any){
+    this.showview = true
+    this.selectedItem = item;
   }
 
   getcdmprice(value: any, id: string) {
@@ -372,24 +351,13 @@ export default class IssuedExistingState extends Vue {
     return pt ? `${pt?.unitCost}` : "";
   }
 
-  get sortProduct() {
+  get sortGrn() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  productAdded() {
-    this.getProducts();
-  }
-
-  checkAll() {
-    console.log("Hello World");
-    let index: string;
-    this.selected = [];
-    if (!this.isCheckAll) {
-      for (index in this.locations) {
-        this.selected.push(this.allLocations[index].code);
-      }
-    }
+  async grnAdded() {
+    await this.fetchGrns();
   }
 
   get allLocations() {
@@ -401,20 +369,38 @@ export default class IssuedExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to delete this item?",
-      title: "Delete Item",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
+  async Cancelgrn(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to cancel this goods received note",
+        title: "Cancel good received note",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().patch(
+            `/api/v1/inventory/grn/draft/cancel/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Goods recevied note cancelled Successfully",
+              status: "success",
+            });
+            this.grnAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
   }
 
   async created() {
-    await this.getProducts();
+    await this.fetchGrns();
     await this.fetchLocations();
   }
 }

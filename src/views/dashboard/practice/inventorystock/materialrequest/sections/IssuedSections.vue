@@ -16,36 +16,32 @@
         </button>
       </span>
     </div>
-    <cornie-table v-model="items" :columns="headers">
-      <template #name="{ item }">
-        <div
-          class="text-no-wrap flex items-center uppercase text-xs"
-          style="white-space: nowrap"
-        >
-          <Avatar :src="item.image" />
-          <span class="ml-2">{{ item.name }}</span>
-        </div>
-      </template>
-      <template #itemCode-header>
-        <div
-          class="text-no-wrap flex uppercase text-xs"
-          style="white-space: nowrap"
-        >
-          Item Code
-        </div>
-      </template>
-      <template #status="{ item }">
-        <div class="text-no-wrap">
+    <cornie-table v-model="sortMaterialRequest" :columns="headers">
+       <template #status="{ item }">
           <span
-            class="status p-1"
-            :class="{
-              active: item.status === 'active',
-              inactive: item.status === 'inactive',
-            }"
-          >
-            {{ item.status }}</span
-          >
-        </div>
+          class="bg-gray-100 text-gray-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'draft'"
+        >
+          Draft
+        </span>
+        <span
+          class="bg-green-100 text-green-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'received' || item.status === 'active' || item.status === 'submitted' || item.status === 'issued'"
+        >
+          {{ item.status }}
+        </span>
+        <span
+          class="bg-red-100 text-red-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'cancelled' || item.status === 'declined'"
+        >
+          {{ item.status }}
+        </span>
+         <span
+          class="bg-yellow-100 text-yellow-600 rounded-lg p-2 text-xs"
+          v-if="item.status === 'processed' || item.status === 'pending' || item.status === 'in-progress'"
+        >
+          {{ item.status }}
+        </span>
       </template>
       <template #availability="{ item }">
         <div class="text-no-wrap">
@@ -53,25 +49,49 @@
         </div>
       </template>
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showview = true">
-          <new-view-icon class="text-purple-700 fill-current" />
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showViewModal(item)">
+          <new-view-icon class="text-blue-700 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
+          <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="Approverequest(item.id)"
+          v-if="item.status != 'declined'"
+        >
+          <check-icon class="text-green-700 fill-current" />
+          <span class="ml-3 text-xs">Approve</span>
+        </div>
         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="declineRequest(item.id)"
+          v-if="item.status != 'declined'"
+        >
+          <cancel-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Decline</span>
+        </div>
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showtimeline = true"
         >
           <new-view-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">View Timeline</span>
-        </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+        </div> -->
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+         v-if="item.status === 'draft'"
+          @click="showRequestModal(item.id)"
+        >
           <edit-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
 
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+                <check-icon class="text-purple-700 fill-current" />
+                <span class="ml-3 text-xs">Good Received Note</span>
+           </div>
+
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+          @click="Cancelreuqest(item.id)"
         >
           <cancel-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Cancel</span>
@@ -79,16 +99,17 @@
       </template>
     </cornie-table>
   </div>
-  <request-modal v-model="showRequest" />
-  <view-modal v-model="showview" />
+  <request-modal v-model="showRequest" @requestAdded="requestAdded" :id="requestId"/>
+  <view-modal v-model="showview" :selectedItem="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 import Multiselect from "@vueform/multiselect";
+import { cornieClient } from "@/plugins/http";
 
-import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IMaterialRequest, { Items } from "@/types/IMaterialRequest";
 import ILocation from "@/types/ILocation";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -109,6 +130,7 @@ import CornieCard from "@/components/cornie-card";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 
+
 import RequestModal from "../components/requestModal.vue";
 import ViewModal from "../components/viewModal.vue"
 
@@ -117,8 +139,8 @@ import TotalIcon from "../icons/total.vue";
 import CloseIcon from "../icons/close.vue"
 
 const location = namespace("location");
-
-const catalogue = namespace("catalogues");
+const user = namespace("user");
+const materialrequest = namespace("materialrequest");
 
 @Options({
   name: "IssuedExistingState",
@@ -149,17 +171,14 @@ const catalogue = namespace("catalogues");
   },
 })
 export default class IssuedExistingState extends Vue {
-  @catalogue.State
-  services!: ICatalogueService[];
+    @user.Getter
+  authCurrentLocation!: string;
 
-  @catalogue.State
-  products!: ICatalogueProduct[];
+  @materialrequest.State
+  materialrequests!: IMaterialRequest[];
 
-  @catalogue.Action
-  getProducts!: () => Promise<void>;
-
-  @catalogue.Action
-  deleteProduct!: (serviceId: string) => Promise<boolean>;
+  @materialrequest.Action
+  fetchMaterialRequestsOutgoing!: (locationId: string) => Promise<void>;
 
   @location.State
   locations!: ILocation[];
@@ -175,6 +194,9 @@ export default class IssuedExistingState extends Vue {
   isCheckAll = false;
   showRequest = false;
   showview = false;
+  showtimeline  = false;
+  requestId = "";
+  selectedItem = {};
 
   tabLinks = ["Total", "Holding", "Pharmacy", "Diagnostics", "InPatient"];
 
@@ -182,33 +204,43 @@ export default class IssuedExistingState extends Vue {
 
   headers = [
     {
-      title: "request date",
-      key: "genericName",
+      title: "date requested",
+      key: "dateRequested",
       show: true,
     },
     {
-      title: "reference no",
-      key: "code",
+      title: "request #",
+      key: "requesterId",
       show: true,
     },
     {
       title: "requester",
-      key: "category",
+      key: "requester",
       show: true,
     },
     {
-      title: "request reason",
-      key: "description",
+      title: "entity",
+      key: "keydisplay",
+      show: true,
+    },
+    {
+      title: "validity",
+      key: "validity",
+      show: true,
+    },
+    {
+      title: "delivery address",
+      key: "address",
       show: true,
     },
     {
       title: "item count",
-      key: "brand",
+      key: "count",
       show: true,
     },
     {
       title: "boq",
-      key: "sales",
+      key: "keydisplay",
       show: true,
     },
     {
@@ -224,47 +256,49 @@ export default class IssuedExistingState extends Vue {
   }
 
   get items() {
-    const products = this.products.map((product: any) => {
+    const materialrequests = this.materialrequests.map((materialrequest: any) => {
       return {
-        ...product,
-        action: product.id,
+        ...materialrequest,
+        action: materialrequest.id,
         keydisplay: "XXXXXXX",
         code: "xxxxxxx",
-        createdAt: "19-07-21",
-        condition: "Accident Prone",
-        deceased: "No",
-        cdm: "₦ " + this.getcdmprice(product.costInformation, product.id),
-        sales: this.getsales(product.salesUOMs, product.id),
-        discount: this.getDiscount(product.salesUOMs, product.id) + " %",
+        requester: materialrequest.requestedBy.name,
+        validity: new Date(materialrequest.materialrequest as any).toDateString(),
+        address: this.getLocationName(materialrequest.supplyLocationId),
+        count: materialrequest.items.length,
+        supplyaddress: this.getLocationName(materialrequest.supplyLocationId),
+
+
+
       };
     });
 
-    if (!this.query) return products;
-    return search.searchObjectArray(products, this.query);
+    if (!this.query) return materialrequests;
+    return search.searchObjectArray(materialrequests, this.query);
   }
 
-  getsales(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.unitName}` : "";
-  }
 
-  getDiscount(value: any, id: string) {
-    const pt = value.find((i: any) => value.length > 0);
-    return pt ? `${pt?.discountLimit}` : "";
-  }
-
-  getcdmprice(value: any, id: string) {
-    const pt = value.find((i: any) => i.productId === id);
-    return pt ? `${pt?.unitCost}` : "";
-  }
-
-  get sortProduct() {
+  get sortMaterialRequest() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  productAdded() {
-    this.getProducts();
+  getLocationName(id: string) {
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+  async requestAdded() {
+     if (this.authCurrentLocation) await this.fetchMaterialRequestsOutgoing(this.authCurrentLocation);
+  }
+
+  showRequestModal(value:string){
+    this.showRequest = true;
+    this.requestId = value;
+  }
+
+  showViewModal(value:any){
+    this.showview = true;
+    this.selectedItem = value;
   }
 
   checkAll() {
@@ -287,20 +321,96 @@ export default class IssuedExistingState extends Vue {
       };
     });
   }
-  async deleteItem(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to delete this item?",
-      title: "Delete Item",
-    });
-    if (!confirmed) return;
 
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
+async Approverequest(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to approve this material request",
+        title: "Approve material request",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/material-request/approve/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Material request approved Successfully",
+              status: "success",
+            });
+            this.requestAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
+  }
+  async declineRequest(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to decline this material request",
+        title: "Decline material request",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/material-request/decline/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Material request declined Successfully",
+              status: "success",
+            });
+            this.requestAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
   }
 
+   async Cancelreuqest(id: string) {
+    try {
+      const confirmed = await window.confirmAction({
+        message: "You are about to cancel this material request",
+        title: "Cancel material request",
+      });
+      if (confirmed) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/inventory/material-request/cancel/${id}`,
+            {}
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Material request cancelled Successfully",
+              status: "success",
+            });
+            this.requestAdded();
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: error?.response?.data?.message,
+            status: "error",
+          });
+        }
+      }
+    } catch (error) {}
+  }
+
+
   async created() {
-    await this.getProducts();
+    if (this.authCurrentLocation) await this.fetchMaterialRequestsOutgoing(this.authCurrentLocation);
     await this.fetchLocations();
   }
 }
