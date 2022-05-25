@@ -4,6 +4,7 @@ import IPractitioner from "./IPractitioner";
 export default interface IVital {
   id: string;
   patientId: string;
+  createdAt: string;
   practitionerId: string;
   practitioner: IPractitioner;
   encounterId: string;
