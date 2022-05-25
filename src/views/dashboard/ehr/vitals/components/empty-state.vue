@@ -7,7 +7,7 @@
         Vital Signs
       </span>
     </div>
-    <div class="w-8/12 mx-auto flex justify-center items-center flex-col mb-12">
+    <div class="w-8/12 mx-auto flex justify-center items-center flex-col mt-20 mb-12">
       <img src="@/assets/img/empty-vital-signs.svg" alt="">
       <h3 class="text-center mt-8 font-bold text-2xl ">
        Patient currently have no vitals on record
@@ -18,7 +18,7 @@
           class="text-white font-semibold bg-danger rounded-xl py-3 px-14 mx-3 focus:outline-none hover:opacity-90"
           @click="() => $emit('addnew')"
         >
-          New Request
+          New Vitals
         </button>
       </div>
     </div>

@@ -49,11 +49,11 @@ export default class BloodChartt extends Vue {
     return sortListByDate(this.vitals);
   }
 
-  get chartData() {
-    const data = groupData(this.upperBandStats, this.order);
-    // const data = groupData(this.raw, this.order);
-    return data;
-  }
+  // get chartData() {
+  //   const data = groupData(this.upperBandStats, this.order);
+  //   // const data = groupData(this.raw, this.order);
+  //   return data;
+  // }
 
   get upperBand() {
     const values = this.sortedVitals
@@ -65,62 +65,62 @@ export default class BloodChartt extends Vue {
     return data;
   }
 
-  get upperBandStats() {
-    const x = this.vitals.map((i) => {
-      return {
-        bloodPresures: i?.bloodPressure?.map((j) => {
-          return {
-            ...j,
-            date: i.date,
-          };
-        }),
-      };
-    });
-    const values = x
-      ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
-      .flat();
+  // get upperBandStats() {
+  //   const x = this.vitals.map((i) => {
+  //     return {
+  //       bloodPresures: i?.bloodPressure?.map((j) => {
+  //         return {
+  //           ...j,
+  //           date: i.date,
+  //         };
+  //       }),
+  //     };
+  //   });
+  //   const values = x
+  //     ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
+  //     .flat();
 
-    const data = values
-      ?.filter((bloodPressure) => bloodPressure?.type === "systolic")
-      ?.map((bloodpressure) => {
-        return {
-          count: bloodpressure.measurement?.value,
-          date: bloodpressure.date,
-        };
-      }) as IStat[];
-    return data;
-  }
+  //   const data = values
+  //     ?.filter((bloodPressure) => bloodPressure?.type === "systolic")
+  //     ?.map((bloodpressure) => {
+  //       return {
+  //         count: bloodpressure.measurement?.value,
+  //         date: bloodpressure.date,
+  //       };
+  //     }) as IStat[];
+  //   return data;
+  // }
 
-  get lowerBandStats() {
-    const x = this.vitals.map((i) => {
-      return {
-        bloodPresures: i?.bloodPressure?.map((j) => {
-          return {
-            ...j,
-            date: i.date,
-          };
-        }),
-      };
-    });
-    const values = x
-      ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
-      .flat();
+  // get lowerBandStats() {
+  //   const x = this.vitals.map((i) => {
+  //     return {
+  //       bloodPresures: i?.bloodPressure?.map((j) => {
+  //         return {
+  //           ...j,
+  //           date: i.date,
+  //         };
+  //       }),
+  //     };
+  //   });
+  //   const values = x
+  //     ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
+  //     .flat();
 
-    const data = values
-      ?.filter((bloodPressure) => bloodPressure?.type === "diastolic")
-      ?.map((bloodpressure) => {
-        return {
-          count: bloodpressure.measurement?.value,
-          date: bloodpressure.date,
-        };
-      }) as IStat[];
-    return data;
-  }
+    // const data = values
+    //   ?.filter((bloodPressure) => bloodPressure?.type === "diastolic")
+    //   ?.map((bloodpressure) => {
+    //     return {
+    //       count: bloodpressure.measurement?.value,
+    //       date: bloodpressure.date,
+    //     };
+    //   }) as IStat[];
+    // return data;
+  // }
 
-  get diastolicData() {
-    const data = groupData(this.lowerBandStats, this.order);
-    return data;
-  }
+  // get diastolicData() {
+  //   const data = groupData(this.lowerBandStats, this.order);
+  //   return data;
+  // }
 
   get labels() {
     return getDatesAsChartLabel(this.sortedVitals);
@@ -168,14 +168,14 @@ export default class BloodChartt extends Vue {
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
-    this.chartData;
+    // this.chartData;
     this.diastolicChartData;
     this.systolicChartData;
   }
 
   @Watch("order")
   orderUpdated() {
-    this.chartData;
+    // this.chartData;
     this.diastolicChartData;
     this.systolicChartData;
     this.mountChart();

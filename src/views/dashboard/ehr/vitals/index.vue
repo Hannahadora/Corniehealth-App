@@ -15,8 +15,11 @@
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
-            class="bg-danger text-white m-5 p-2 font-semibold"
-            @click="() => (showNewModal = true)"
+            class="bg-danger text-white m-5 rounded-xl font-semibold"
+            @click="
+              showNewModal = true;
+              selectedVitalId = '';
+            "
           >
             New Vitals
           </cornie-btn>
@@ -64,13 +67,72 @@
               <update-icon class="text-primary fill-current" />
               <span class="ml-3 text-xs">Update Status</span>
             </table-action>
+            <table-action>
+              <correct-green class="text-primary fill-current" />
+              <span class="ml-3 text-xs">Correct</span>
+            </table-action>
+            <table-action>
+              <cancel-red-bg class="text-primary fill-current" />
+              <span class="ml-3 text-xs">Cancel</span>
+            </table-action>
+          </template>
+          <template #status="{ item }">
+            <div class="flex items-center">
+              <!-- <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p> -->
+              <p
+                class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+                v-if="item.status == 'corrected'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-gray-300 p-1 rounded"
+                v-if="item.status == 'unknown' || item.status == 'preliminary'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-100 text-green-400 p-1 rounded"
+                v-if="item.status == 'final'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-red-100 text-red-600 p-1 rounded"
+                v-if="item.status == 'revoked' || item.status == 'cancelled'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+                v-if="item.status == 'Entered-in-error'"
+              >
+                {{ item.status }}
+              </p>
+              <!-- <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p> -->
+            </div>
           </template>
         </cornie-table>
       </div>
     </div>
 
     <div class="w-full" v-else>
-      <empty-state @addnew="() => (showNewModal = true)" />
+      <empty-state
+        @addnew="
+          showNewModal = true;
+          selectedVitalId = '';
+        "
+      />
     </div>
     <!--
     <advanced-filter
@@ -79,90 +141,19 @@
       :patients="patients"
     /> -->
 
-    <side-modal
-      :visible="showNewModal"
-      :header="'New Request'"
-      :width="990"
-      @closesidemodal="closeNewModal"
-    >
-      <vitals-form
-        @closesidemodal="() => (showNewModal = false)"
-        :selectedVital="selectedVital"
-      />
-    </side-modal>
+    <vitals-form
+      @vitals-added="getVitals(activePatientId)"
+      :id="selectedVitalId"
+      :vital="selectedVital"
+      v-model="showNewModal"
+    />
 
-    <side-modal
-      :visible="showUpdateStatusModal"
-      :width="590"
-      :header="'Update Status'"
-      @closesidemodal="closeUpdateModal"
-    >
-      <div class="w-full">
-        <div class="container px-6 content-con">
-          <div class="w-full py-3">
-            <div class="w-full my-6">
-              <input-desc-rounded :label="'Current Status'" :info="''">
-                <input
-                  v-model="selectedVital.status"
-                  disabled
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-              </input-desc-rounded>
-            </div>
-
-            <div class="w-full my-6">
-              <input-desc-rounded :label="'Updated By'" :info="''">
-                <input
-                  v-model="selectedVital.status"
-                  disabled
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-              </input-desc-rounded>
-            </div>
-
-            <div class="w-full my-6">
-              <input-desc-rounded :label="'Date Last Updated'" :info="''">
-                <input
-                  :value="selectedVital.updatedAt"
-                  disabled
-                  type="text"
-                  class="p-2 border w-100 w-full"
-                  style="border-radius: 8px"
-                />
-              </input-desc-rounded>
-            </div>
-
-            <cornie-select
-              v-model="updateData.status"
-              :label="'New Status'"
-              :items="['Active', 'Inactive']"
-              style="width: 100%"
-            />
-          </div>
-
-          <div class="w-full flex flex justify-end mt-12">
-            <corniebtn
-              class="text-primary cancel-btn flex items-center rounded-full px-8 mx-2 cursor-pointer"
-            >
-              <span class="font-semibold">Cancel</span>
-            </corniebtn>
-
-            <CornieBtn
-              :loading="loading"
-              class="bg-danger rounded-full px-8 mx-2 cursor-pointer"
-            >
-              <span class="text-white font-semibold" @click="updateStatus"
-                >Update</span
-              >
-            </CornieBtn>
-          </div>
-        </div>
-      </div>
-    </side-modal>
+    <update-status
+      :id="selectedVitalId"
+      :vital="selectedVital"
+      v-model="showUpdateStatusModal"
+      @status-updated="getVitals(activePatientId)"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -176,6 +167,8 @@ import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import Avatar from "@/components/avatar.vue";
 import EditIcon from "@/components/icons/edit-purple.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+import CorrectGreen from "@/components/icons/correct-green.vue";
 import NewviewIcon from "@/components/icons/eye-blue-bg.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
@@ -189,6 +182,7 @@ import EmptyState from "./components/empty-state.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 import VitalsForm from "./components/vitals-form.vue";
+import UpdateStatus from "./components/update-status.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import DatePicker from "@/components/datepicker.vue";
 import IVital from "@/types/IVital";
@@ -224,6 +218,9 @@ const vitalsStore = namespace("vitals");
     SideModal,
     VitalsForm,
     UpdateIcon,
+    CancelRedBg,
+    CorrectGreen,
+    UpdateStatus,
   },
 })
 export default class ExistingState extends Vue {
@@ -273,11 +270,16 @@ export default class ExistingState extends Vue {
     {
       title: "Identifier",
       key: "identifier",
+      show: false,
+    },
+    {
+      title: "Vital Id",
+      key: "vitalId",
       show: true,
     },
     {
-      title: "Recorded",
-      key: "recorded",
+      title: "Date Recorded",
+      key: "dateRecorded",
       show: true,
     },
     {
@@ -317,8 +319,9 @@ export default class ExistingState extends Vue {
     return this.vitals?.map((vital) => {
       return {
         id: vital.id,
-        identifier: "XXXXX",
-        recorded: new Date(vital.date).toLocaleDateString(),
+        vitalId: "XXXXX",
+        identifier: vital?.practitioner?.identifier,
+        dateRecorded: new Date(vital?.createdAt).toLocaleDateString(),
         recordType: vital?.encounter?.serviceType,
         encounter: vital?.encounter?.class,
         performer: `${vital.practitioner?.lastName} ${vital.practitioner?.firstName}`,
@@ -332,20 +335,6 @@ export default class ExistingState extends Vue {
   openUpdateStatusModal(id: string) {
     this.showUpdateStatusModal = true;
     this.selectedVitalId = id;
-  }
-
-  async updateStatus() {
-    try {
-      this.loading = true;
-      await this.updateVitalStatus({
-        data: this.updateData,
-        vitalId: this.selectedVitalId,
-      });
-      this.loading = false;
-      this.showUpdateStatusModal = false;
-    } catch (error) {
-      this.loading = false;
-    }
   }
 
   closeUpdateModal() {

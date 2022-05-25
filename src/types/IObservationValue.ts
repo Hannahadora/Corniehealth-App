@@ -1,20 +1,20 @@
 export interface IObservationValue {
-    quantity: string,
-    code: string,
-    string: string,
-    boolean: string,
+    quantity: null,
+    code: null,
+    string: null,
+    boolean: null,
     integer: number,
     range: {
-        unit: string,
+        unit: null,
         min: number,
         max: number
     },
-    ratio: string,
-    sampleData: string,
-    time: string,
-    dateTime: string,
+    ratio: null,
+    sampleData: null,
+    time: null,
+    dateTime: null,
     period: {
-        start: string,
-        end: string
+        start: null,
+        end: null
     }
 }

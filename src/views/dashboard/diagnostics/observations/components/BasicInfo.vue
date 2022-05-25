@@ -6,7 +6,7 @@
         label="Based On"
         placeholder="Select"
         v-model="basicInfo.basedOn"
-        :items="['Care plan', 'Device request', 'Immunization Recommendation', 'Medication request', 'Nutrition order', 'Service request']"
+        :items="['Care plan', 'Device request', 'Immunization recommendation', 'Medication request', 'Nutrition order', 'Service request']"
       />
       <cornie-select
         class="w-full"
