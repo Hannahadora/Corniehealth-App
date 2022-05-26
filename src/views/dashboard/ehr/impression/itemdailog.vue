@@ -1,66 +1,100 @@
 <template>
-  <div class="bg-white">
-    <modal :visible="visible" class="w-4/12 flex flex-col mr-2">
-      <div class="flex w-full rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">
-            Item
-          </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
-        </div>
-      </div>
-      <div class="flex flex-col p-3 mb-7 h-96">
-        <div class="border-b-2 pb-3 border-dashed">
-          <cornie-select
-            @change="setValue(type)"
-            label="Select Reference"
-            class="w-full"
-            :items="[
-              'Observation',
-              'Questionaire Response',
-              'Family member History',
-              'Diagnostic Report',
-              'Risk Assessment',
-            ]"
-            v-model="type"
-          >
-          </cornie-select>
-        </div>
-        <div class="w-full">
-          <div class="mt-4 mb-4">
-            <p class="text-gray-400 text-xs">
-              {{ check3.practitioners.length }} selected
-            </p>
+  <cornie-dialog
+    v-model="show"
+    right
+    class="w-4/12 h-full"
+    style="z-index: 999"
+  >
+    <cornie-card height="100%" class="flex flex-col bg-white">
+      <cornie-card-title>
+        <div class="w-full flex items-center justify-between">
+          <div class="w-full flex items-center">
+            <span class="pr-2 flex items-center cursor-pointer border-r-2">
+              <cornie-icon-btn @click="show = false">
+                <arrow-left-icon />
+              </cornie-icon-btn>
+            </span>
+
+            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Item</h2>
           </div>
-          <div class="relative bottom-2">
-            <icon-input
-              autocomplete="off"
-              class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
-              type="search"
-              placeholder="Search"
-              v-bind="$attrs"
-              v-model="displayVal"
+          <delete-icon
+            class="text-danger fill-current cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+
+      <cornie-card-text class="flex-grow scrollable">
+        <div class="flex flex-col p-3 mb-7 h-96">
+          <div class="border-b-2 pb-3 border-dashed">
+            <cornie-select
+              @change="setValue(type)"
+              label="Select Reference"
+              class="w-full"
+              :items="[
+                'Observation',
+                'Questionaire Response',
+                'Family member History',
+                'Diagnostic Report',
+                'Risk Assessment',
+                'Imaging Study',
+                'Media'
+              ]"
+              v-model="type"
             >
-              <template v-slot:prepend>
-                <search-icon />
-              </template>
-            </icon-input>
+            </cornie-select>
           </div>
-        </div>
-        <div class="overflow-y-auto h-96">
-          <div>
-            <div v-if="observeFilter">
+          <div class="w-full">
+            <div class="mt-4 mb-4">
+              <p class="text-gray-400 text-xs">
+                {{ check3.practitioners.length }} selected
+              </p>
+            </div>
+            <div class="relative bottom-2">
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-bind="$attrs"
+                v-model="displayVal"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </div>
+          </div>
+          <div class="overflow-y-auto h-96">
+            <div>
+              <div v-if="observeFilter">
+                <div>
+                  <div class="w-full mt-5 p-3">
+                    <div class="w-full">
+                      <div class="w-full">
+                        <p class="text-sm text-dark mb-1 font-medium">
+                          [Identifier]
+                        </p>
+                        <p class="text-xs text-gray-300">xxxxxx</p>
+                      </div>
+                    </div>
+                    <div
+                      class="w-full -mt-8 cursor-pointer w-full text-xs text-danger"
+                    >
+                      <input
+                        type="checkbox"
+                        v-model="check3.practitioners"
+                        :value="'Identifier'"
+                        class="bg-danger focus-within:bg-danger px-6 shadow float-right"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="questionFilter">
               <div>
-                <div class="w-full mt-5 p-3">
+                <div class="w-full mt-2 p-3">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
@@ -70,7 +104,7 @@
                     </div>
                   </div>
                   <div
-                    class="w-full -mt-8 cursor-pointer w-full text-xs text-danger"
+                    class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
                   >
                     <input
                       type="checkbox"
@@ -83,32 +117,9 @@
               </div>
             </div>
           </div>
-          <div v-if="questionFilter">
-            <div>
-              <div class="w-full mt-2 p-3">
-                <div class="w-full">
-                  <div class="w-full">
-                    <p class="text-sm text-dark mb-1 font-medium">
-                      [Identifier]
-                    </p>
-                    <p class="text-xs text-gray-300">xxxxxx</p>
-                  </div>
-                </div>
-                <div
-                  class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
-                >
-                  <input
-                    type="checkbox"
-                    v-model="check3.practitioners"
-                    :value="'Identifier'"
-                    class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+      </cornie-card-text>
+
       <div class="flex justify-end pb-6 px-2">
         <div class="flex justify-end w-full mt-auto" v-if="observeFilter">
           <button
@@ -139,8 +150,8 @@
           </button>
         </div>
       </div>
-    </modal>
-  </div>
+    </cornie-card>
+  </cornie-dialog>
 </template>
 <script>
 import { setup } from "vue-class-component";

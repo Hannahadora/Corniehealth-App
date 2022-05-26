@@ -60,7 +60,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['/min']"
                   placeholder="/min"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -77,7 +77,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['/min']"
                   placeholder="/min"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -94,7 +94,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['%']"
                   placeholder="%"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -111,7 +111,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="['mm/dL', 'mmo/L']"
+                  :items="['mm/dL', 'mmol/L']"
                   placeholder="mm/dL"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -190,12 +190,13 @@
                 <cornie-input
                   label="Body Mass Index (BMI)"
                   placeholder="0"
-                  v-model="vitalData.bodyWeight.bodyMassIndex.value"
+                  :disabled="true"
+                  v-model="bmi"
                   class="grow w-full"
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="['cm', 'in', 'ft']"
+                  :items="['kg/m³']"
                   placeholder="kg/m³"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -308,7 +309,7 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-between mt-24">
-        <div class="text-red-500 py-1 px-2 text-sm">Cancel</div>
+        <div class="text-red-500 py-1 px-2 text-sm">Save as draft</div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -555,6 +556,22 @@ export default class VitalsForm extends Vue {
     return this.authPractitioner?.id;
   }
 
+  get bmi () {
+    const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
+    const weightUnit = this.vitalData?.bodyWeight?.bodyWeight?.unit
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
+    const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit
+    if(weightValue && heightValue) {
+      if(weightUnit === 'kg' && heightUnit === 'm³') {
+        return Number(weightValue / heightValue) || 0
+      }
+      if(weightUnit === 'kg' && heightUnit === 'cm') {
+        const hv = heightValue / 100
+        return Number(weightValue / hv) || 0
+      }
+    }
+  }
+
   removePresure(index: number) {
     this.collectedPressures.splice(index, 1);
     this.vitalData.bloodPressure.splice(index + 1, 2);
@@ -641,6 +658,19 @@ export default class VitalsForm extends Vue {
       date: new Date().toLocaleDateString(),
       time: new Date().toTimeString().substring(0, 5),
     });
+    this.newBp = {
+      position: "",
+      systolicBloodPressure: {
+        unit: "",
+        value: 0,
+      },
+      diastolicBloodPressure: {
+        unit: "",
+        value: 0,
+      },
+      date: "",
+      time: "",
+    };
   }
 
   get patientId() {
@@ -662,12 +692,15 @@ export default class VitalsForm extends Vue {
       this.vitalData.practitionerId = this.practitionerId;
       this.vitalData.patientId = this.patientId;
       this.vitalData.bloodPressure = this.collectedPressures;
+      this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi as number;
 
-      await this.createVital(this.vitalData);
-      this.getVitals(this.patientId);
-      this.loading = false;
-      this.$emit("closesidemodal");
-      this.resetVitalData();
+      const res: any = await this.createVital(this.vitalData);
+      if (res.success) {
+        this.getVitals(this.patientId);
+        this.loading = false;
+        this.$emit("closesidemodal");
+        this.resetVitalData();
+      }
     } catch (error) {
       this.loading = false;
     }

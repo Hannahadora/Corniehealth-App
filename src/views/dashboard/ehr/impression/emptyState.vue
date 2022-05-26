@@ -1,7 +1,7 @@
 <template>
   <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-      <div class="w-1/2 flex flex-col items-center justify-center">
+      <div class="w-1/2 flex flex-col items-center justify-center mt-20">
         <img src="@/assets/img/no-impression.svg" />
         <h3 class="text-center mt-8 text-2xl font-bold">
           No Impressions on Record

@@ -1,89 +1,126 @@
 <template>
-  <div class="bg-white">
-    <modal :visible="visible" class="w-4/12 flex flex-col mr-2">
-      <div class="flex w-full rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">
-            Assesor
-          </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
+  <cornie-dialog
+    v-model="show"
+    right
+    class="w-4/12 h-full"
+    style="z-index: 999"
+  >
+    <cornie-card height="100%" class="flex flex-col bg-white">
+      <cornie-card-title>
+        <div class="w-full flex items-center justify-between">
+          <div class="w-full flex items-center">
+            <span class="pr-2 flex items-center cursor-pointer border-r-2">
+              <cornie-icon-btn @click="show = false">
+                <arrow-left-icon />
+              </cornie-icon-btn>
+            </span>
+
+            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Assesor</h2>
+          </div>
+          <delete-icon
+            class="text-danger fill-current cursor-pointer"
             @click="show = false"
           />
         </div>
-      </div>
-      <div class="flex flex-col p-3 mb-7 h-96">
-        <div class="border-b-2 pb-3 border-dashed">
-          <label
-            for="ecounter"
-            class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
-            >status
-          </label>
-          <div class="w-full flex space-x-4">
-            <cornie-radio
-              label="Practitioner"
-              class="text-xs"
-              name="practice"
-              :checked="check"
-              @click="setValue('Practitioner')"
-            />
-            <cornie-radio
+      </cornie-card-title>
+
+      <cornie-card-text class="flex-grow scrollable">
+        <div class="flex flex-col p-3 mb-7">
+          <div class="border-b-2 pb-3 border-dashed">
+            <label
+              for="ecounter"
+              class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
+              >Reference
+            </label>
+            <div class="w-full flex space-x-4">
+              <cornie-radio
+                label="Practitioner"
+                class="text-xs"
+                name="practice"
+                :checked="check"
+                @click="setValue('Practitioner')"
+              />
+              <!-- <cornie-radio
               label="Practitioner role"
               class="text-xs"
               name="role"
               :checked="check2"
               @click="setValue('Role')"
-            />
+            /> -->
+            </div>
           </div>
-        </div>
-        <div class="w-full">
-          <div class="mt-4 mb-4">
-            <p class="text-gray-400 text-xs">
-              {{ check3.practitioners.length }} selected
-            </p>
+          <div class="w-full">
+            <div class="mt-4 mb-4">
+              <p class="text-gray-400 text-xs">
+                {{ check3.practitioners.length }} selected
+              </p>
+            </div>
+            <div class="relative bottom-2">
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-bind="$attrs"
+                v-model="displayVal"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </div>
           </div>
-          <div class="relative bottom-2">
-            <icon-input
-              autocomplete="off"
-              class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
-              type="search"
-              placeholder="Search"
-              v-bind="$attrs"
-              v-model="displayVal"
-            >
-              <template v-slot:prepend>
-                <search-icon />
-              </template>
-            </icon-input>
-          </div>
-        </div>
-        <div class="overflow-y-auto h-96">
-          <div>
-            <div v-if="practitionerFilter">
-              <div v-for="(input, index) in practitioners" :key="index">
-                <div class="flex justify-between space-x-4 w-full mt-2 p-3">
-                  <div class="w-full dflex space-x-4">
-                    <div class="w-10 h-10">
-                      <avatar
-                        class="mr-2"
-                        v-if="input.image"
-                        :src="input.image"
+          <div class="overflow-y-auto">
+            <div>
+              <div v-if="practitionerFilter">
+                <div v-for="(input, index) in practitioners" :key="index">
+                  <div class="flex justify-between w-full mt-2 p-3">
+                    <div class="w-full dflex space-x-4 w-11/12">
+                      <div class="w-10 h-10">
+                        <avatar
+                          class="mr-2"
+                          v-if="input.image"
+                          :src="input.image"
+                        />
+                        <avatar class="mr-2" v-else :src="localSrc" />
+                      </div>
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.firstName }}
+                          {{ input.lastName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.jobDesignation }}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mb-5 cursor-pointer text-xs text-danger flex items-center justify-end"
+                    >
+                      <cornie-radio
+                        type="radio"
+                        v-model="check3.practitioners"
+                        :value="input.firstName + ' ' + input.lastName"
+                        class=""
                       />
-                      <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="roleFilter">
+              <div v-for="(input, index) in roles" :key="index">
+                <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
+                  <div class="dflex space-x-4">
+                    <div class="w-10 h-10">
+                      <avatar class="mr-2" :src="localSrc" />
                     </div>
                     <div class="w-full">
                       <p class="text-xs text-dark font-semibold">
-                        {{ input.firstName }}
-                        {{ input.lastName }}
+                        {{ input.name }}
                       </p>
-                      <p class="text-xs text-gray-500 font-meduim">
-                        {{ input.jobDesignation }}
+                      <p class="text-xs text-gray font-light">
+                        {{ input.description }}
                       </p>
                     </div>
                   </div>
@@ -91,9 +128,9 @@
                     class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
                   >
                     <input
-                      type="checkbox"
                       v-model="check3.practitioners"
-                      :value="input.firstName + ' ' + input.lastName"
+                      :value="input.name"
+                      type="checkbox"
                       class="bg-danger focus-within:bg-danger px-6 shadow float-right"
                     />
                   </div>
@@ -101,37 +138,9 @@
               </div>
             </div>
           </div>
-          <div v-if="roleFilter">
-            <div v-for="(input, index) in roles" :key="index">
-              <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
-                <div class="dflex space-x-4">
-                  <div class="w-10 h-10">
-                    <avatar class="mr-2" :src="localSrc" />
-                  </div>
-                  <div class="w-full">
-                    <p class="text-xs text-dark font-semibold">
-                      {{ input.name }}
-                    </p>
-                    <p class="text-xs text-gray font-light">
-                      {{ input.description }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
-                >
-                  <input
-                    v-model="check3.practitioners"
-                    :value="input.name"
-                    type="checkbox"
-                    class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+      </cornie-card-text>
+
       <div class="flex justify-end pb-6 px-2">
         <div class="flex justify-end w-full mt-auto" v-if="practitionerFilter">
           <button
@@ -162,8 +171,8 @@
           </button>
         </div>
       </div>
-    </modal>
-  </div>
+    </cornie-card>
+  </cornie-dialog>
 </template>
 <script>
 import { setup } from "vue-class-component";
@@ -242,7 +251,7 @@ export default {
     return {
       selected: 0,
       localSrc: require("../../../../assets/img/placeholder.png"),
-      check: false,
+      check: true,
       check2: false,
       check3: {
         practitioners: [],

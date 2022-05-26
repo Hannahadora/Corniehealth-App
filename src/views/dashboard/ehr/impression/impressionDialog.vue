@@ -4,10 +4,10 @@
       <cornie-card-title class="w-full">
         <div class="w-full mb-4">
           <div>
-          <arrow-left-icon stroke="#ffffff" />
-             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ newaction }} Impression
-          </h2>
+            <arrow-left-icon stroke="#ffffff" />
+            <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+              {{ newaction }} Impression
+            </h2>
           </div>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -118,18 +118,13 @@
                   class="cursor-pointer flex capitalize text-black text-sm font-bold"
                   >assessor
                 </label>
-                <cornie-select
-                  class="w-full"
-                  :items="assessorItems"
-                  v-model="impressionModel.recorded.assessor"
-                >
-                </cornie-select>
+                <cornie-input class="w-full" v-model="assessorItems">
+                </cornie-input>
               </div>
 
               <div v-else>
                 <div class="w-full cursor-pointer mt-6" @click="showAssessor">
-                  <label
-                    class="flex capitalize text-black text-sm font-bold"
+                  <label class="flex capitalize text-black text-sm font-bold"
                     >assessor</label
                   >
                   <div class="flex items-center">
@@ -145,7 +140,11 @@
                         style="border-radius: 8px"
                       />
                     </input-desc-rounded>
-                    <img src="@/assets/img/asseor-update.svg" class="ml-2" alt="" />
+                    <img
+                      src="@/assets/img/asseor-update.svg"
+                      class="ml-2"
+                      alt=""
+                    />
                   </div>
                 </div>
               </div>
@@ -200,26 +199,6 @@
               </div>
             </div>
 
-            <!-- <cornie-input
-                     v-if="setType == 'Allergy'"
-                     @click="showProblem"
-                      class="w-full"
-                      v-model="impressionModel.effective.problem"
-                      :value="problemItems.code"
-                      label="Problem"
-                      placeholder="Select Problem"
-                      >
-                      </cornie-input>
-                       <cornie-input
-                    v-else
-                     @click="showProblem"
-                      class="w-full"
-                      v-model="impressionModel.effective.problem"
-                     :value="conditionItems.name"
-                      label="Problem" 
-                      placeholder="Select Problem"
-                      >
-                      </cornie-input> -->
           </accordion-component>
 
           <accordion-component
@@ -240,18 +219,16 @@
                 v-if="investigateItems.length === 0"
                 @click="showItem"
               >
-                <label class="flex capitalize mb-1 text-black text-sm font-bold"
-                  >Item</label
+                <cornie-input
+                  v-bind="$attrs"
+                  label="Item"
+                  readonly
+                  @click="show = true"
                 >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    disabled
-                    type="text"
-                    placeholder="Select Item"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
+                  <template #append-inner>
+                    <plus-icon class="fill-current text-danger" />
+                  </template>
+                </cornie-input>
               </div>
               <div class="" v-else>
                 <label
@@ -562,7 +539,7 @@ const emptyImpression: IImpression = {
     itemReference: "",
     basis: "",
   },
-   protocol: {
+  protocol: {
     protocol: "",
     summary: "",
   },
@@ -571,7 +548,7 @@ const emptyImpression: IImpression = {
     prognosisReference: "",
     supportingInfo: "",
     note: "",
-  }
+  },
 };
 
 @Options({
