@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <span
@@ -11,7 +11,7 @@
         </span>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           View Allergy
+            View Allergy
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -22,36 +22,37 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-           <div class="grid grid-cols-3 gap-4 w-full mt-5">
-               <div>
-                   <p class="text-gray-400 italic text-sm">Allergy Intolerance ID</p>
-                   <span class="text-sm">XXXXXX</span>
-               </div>
-                <div>
-                   <p class="text-gray-400 italic text-sm">Clinical Status</p>
-                   <span class="text-sm">XXXXXX</span>
-               </div>
-                <div>
-                   <p class="text-gray-400 italic text-sm">Verification Status</p>
-                   <span class="text-sm">XXXXXX</span>
-               </div>
-                <div>
-                   <p class="text-gray-400 italic text-sm">Encounter</p>
-                   <span class="mb-0 text-sm">XXXXXX</span>
-                   <p class="text-xs">24/02/2929</p>
-               </div>
-                 <div>
-                   <p class="text-gray-400 italic text-sm">Asserter</p>
-                   <div class="flex space-x-4">
-                       <avatar />
-                        <div>
-                            <span class="mb-0 text-sm">Dr George Smith</span>
-                            <p class="text-xs">Cardiology</p>
-                        </div>
-                   </div>
-               </div>
-
-           </div> 
+          <div class="grid grid-cols-3 gap-4 w-full mt-5">
+            <div>
+              <p class="text-gray-400 italic text-sm">Allergy Intolerance ID</p>
+              <span class="text-sm">{{ allergy.id }}</span>
+            </div>
+            <div>
+              <p class="text-gray-400 italic text-sm">Clinical Status</p>
+              <span class="text-sm">{{ allergy.clinicalStatus }}</span>
+            </div>
+            <div>
+              <p class="text-gray-400 italic text-sm">Verification Status</p>
+              <span class="text-sm">{{ allergy.verificationStatus }}</span>
+            </div>
+            <!-- <div>
+              <p class="text-gray-400 italic text-sm">Encounter</p>
+              <span class="mb-0 text-sm">XXXXXX</span>
+              <p class="text-xs">24/02/2929</p>
+            </div> -->
+            <div>
+              <p class="text-gray-400 italic text-sm">Asserter</p>
+               <div class="flex space-x-4">
+            <avatar :src="getPractImage(allergy.asserterId)"/>
+            <div>
+              <span class="mb-0 text-sm"
+                >Dr {{ getPractitionerName(allergy.asserterId) }}</span
+              >
+              <p class="text-xs">{{ getPractDepartment(allergy.asserterId) }}</p>
+            </div>
+          </div>
+            </div>
+          </div>
           <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Basic Info" :opened="true">
               <template v-slot:default>
@@ -60,57 +61,68 @@
                     label="type"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="type.display"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Category"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="category.display"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Criticality"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="criticality.display"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Code"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="allergy.code"
                   />
-                 
                 </div>
               </template>
             </accordion-component>
           </div>
 
-               <div class="border-b-2 pb-5 border-dashed border-gray-200">
+          <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Recorded" :opened="true">
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
                   <div class="">
-                    <date-time-picker :label="'Date/Time'" :disabled="true" />
+                    <date-time-picker :label="'Date/Time'" v-model="allergy.recordDate" :disabled="true" />
                   </div>
                   <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="recorder"
                   >
                     <template #labelicon>
                       <custom-checkbox
                         :label="'Assert this record'"
                         class="w-full"
                         :disabled="true"
+                        v-model="allergy.asserterId"
+                        :value="allergy.asserterId"
                       />
                     </template>
                   </cornie-input>
-                  <div class="">
-                    <date-time-picker :disabled="true" :label="'Last Occurence'" />
+                  <div class="" v-for="(item, index) in allergy.occurences" :key="index">
+                    <date-time-picker
+                      :disabled="true"
+                      :label="'Last Occurence'"
+                      v-model:date="item.time"
+                    />
                   </div>
                   <cornie-input
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="allergy.note"
                   >
                   </cornie-input>
                 </div>
@@ -122,7 +134,11 @@
             <accordion-component title="Onset" :opened="true">
               <template v-slot:default>
                 <div>
-                  <onset-picker v-model="onsetmesurable" :disabled="true" label="Onset" />
+                  <onset-picker
+                    v-model="allergy.onSet"
+                    :disabled="true"
+                    label="Onset"
+                  />
                 </div>
               </template>
             </accordion-component>
@@ -132,40 +148,46 @@
             <accordion-component title="Reaction" :opened="true">
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
-                   <cornie-input
+                  <cornie-input
                     label="Substance"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="substance.display"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Manifestation"
                     placeholder="Autoloaded"
                     :disabled="true"
+                     v-model="manifestation.display"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Description"
                     placeholder="Autoloaded"
                     :disabled="true"
+                     v-model="allergy.reaction.description"
                   />
 
-                   <div class="-mt-5">
-                    <date-time-picker :label="'Onset'" :disabled="true"/>
+                  <div class="-mt-5">
+                    <date-time-picker :label="'Onset'" v-model="allergy.reaction.onset" :disabled="true" />
                   </div>
-                   <cornie-input
+                  <cornie-input
                     label="Severity"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="allergy.reaction.severity"
                   />
-                   <cornie-input
+                  <cornie-input
                     label="Exposure Route"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="route.display"
                   />
                   <cornie-input
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="allergy.reaction.note"
                   >
                   </cornie-input>
                 </div>
@@ -177,21 +199,6 @@
 
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <span
-            v-if="!id"
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="SaveDraftGrn"
-          >
-            Save as draft
-          </span>
-          <span
-            v-else
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="completeDraft"
-          >
-            Complete draft
-          </span>
-
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -199,20 +206,10 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            v-if="!id"
             :loading="loading"
-            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
-          </cornie-btn>
-          <cornie-btn
-            v-else
-            :loading="loading"
-            @click="submit"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Update
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -221,13 +218,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import { string, date } from "yup";
 import search from "@/plugins/search";
+import { useFHIRDefinition } from "@/composables/useFHIRDefinition";
 
+import IAllergy from "@/types/IAllergy";
 import IPractitioner from "@/types/IPractitioner";
 
 import CornieCard from "@/components/cornie-card";
@@ -257,11 +256,15 @@ import Avatar from "@/components/avatar.vue";
 
 import OnsetPicker from "./onset.vue";
 
+const user = namespace("user");
+const allergy = namespace("allergy");
+const practitioner = namespace("practitioner");
+
 const timeable = {
   age: null,
-  startDate: null,
+  start: null,
   startTime: null,
-  endDate: null,
+  end: null,
   endTime: null,
   date: null,
   time: null,
@@ -283,10 +286,13 @@ const measurable = {
   startDate: null,
   startTime: null,
   endDate: null,
+  date: null,
+  time: null,
+  endTime: null,
 };
 
 @Options({
-  name: "AlergyModal",
+  name: "viewAlergyModal",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -315,114 +321,121 @@ const measurable = {
     CustomCheckbox,
   },
 })
-export default class AlergyModal extends Vue {
+export default class viewAlergyModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, required: true })
+  allergy!: IAllergy;
+
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
+  @allergy.Action
+  getAllergyById!: (id: string) => IAllergy;
+
+    @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
   loading = false;
   required = string().required();
   emailRule = string().email().required();
   requiredRule = string().required();
   query = "";
+  showRecorder = false;
 
   onsetmesurable = { ...measurable };
 
+  // clinicalStatus = "active";
+  // verificationStatus = "confirmed";
+  // type = "";
+  // category = "";
+  // criticality = "";
+  // code = "";
+  reaction = {
+    substance: "",
+    manifestation: "",
+    description: "",
+    onset: "",
+    severity: "",
+    exposureRoute: "",
+    note: "",
+  };
+  recorderId = "";
+  asserterId = "";
+  occurences = [] as any;
+  setOccurence = "";
+  setOccurencetime = "";
+  recordDate = "";
+  note = "";
+
+
+  clinicalStatus = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-clinical")
+  );
+  verificationStatus = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-ver-status")
+  );
+
+  code = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/allergyintolerance-code")
+  );
+   type = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/allergy-intolerance-type")
+  );
+   category = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/allergy-intolerance-category")
+  );
+   criticality = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality")
+  );
+   substance = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/substance-code")
+  );
+   manifestation = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/clinical-findings")
+  );
+   route = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/route-codes")
+  );
+
+
   @Watch("id")
   idChanged() {
-    this.setRequest();
+    this.setAllergy();
   }
 
-  async setRequest() {}
+  async setAllergy() {
+    const allergy = await this.getAllergyById(this.id);
+    if (!allergy) return;
+    // this.clinicalStatus = allergy.clinicalStatus;
+    // this.verificationStatus = allergy.verificationStatus;
+    // this.type = allergy.type;
+    // this.category = allergy.category;
+    // this.criticality = allergy.criticality;
+    // this.code = allergy.code;
+    //this.onset = allergy.onSet;
+    this.occurences = allergy.occurences;
+    this.note = allergy.note;
+    this.reaction = allergy.reaction;
+    this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
+    this.asserterId = allergy.asserterId;
+    this.recorderId = allergy.recorderId;
+  }
 
   get payload() {
     return {};
   }
 
-  async submit() {
-    this.loading = true;
-    if (this.id) await this.updateRequest();
-    else await this.createRequest();
-    this.loading = false;
-  }
-
-  async SaveDraftGrn() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/inventory/material-request/draft",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({
-          msg: "Material request draft saved",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-
-  async createRequest() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/inventory/material-request",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({ msg: "Material Requests Saved", status: "success" });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-  async updateRequest() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-    const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/${id}`;
-    const payload = this.payload;
-    try {
-      const response = await cornieClient().put(url, this.payload);
-      if (response.success) {
-        window.notify({
-          msg: "Material Request Updated",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-  async completeDraft() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-    const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/complete/${id}`;
-    const payload = this.payload;
-    try {
-      const response = await cornieClient().put(url, this.payload);
-      if (response.success) {
-        window.notify({
-          msg: "Material Request draft completed",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
+   get recorder(){
+    this.recorderId = this.authPractitioner.id;
+    return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
   }
 
   done() {
@@ -430,7 +443,37 @@ export default class AlergyModal extends Vue {
     this.$emit("requestAdded");
   }
 
-  async created() {}
+    loadDefinitions() {
+    this.clinicalStatus.code = this.allergy?.clinicalStatus;
+    this.verificationStatus.code = this.allergy?.verificationStatus;
+    this.category.code = this.allergy?.category;
+    this.type.code = this.allergy?.type;
+    this.code.code = this.allergy?.code;
+    this.criticality.code = this.allergy?.criticality;
+    this.substance.code = this.allergy?.reaction?.substance;
+    this.manifestation.code = this.allergy?.reaction?.manifestation;
+     this.route.code = this.allergy?.reaction?.exposureRoute;
+  }
+
+    getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+
+  getPractImage(id:string){
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.image}` : "";
+  }
+
+  getPractDepartment(id: string){
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.department}` : "";
+  }
+
+  async created() {
+    this.loadDefinitions();
+    this.fetchPractitioners();
+  }
 }
 </script>
 

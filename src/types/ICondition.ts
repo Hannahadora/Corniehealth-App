@@ -84,20 +84,6 @@ export interface ConditionNote {
 }
 
 export interface OnSet {
-  onsetDateTime: string;
-  onsetAge: string;
-  onsetPeriod: {
-    start: string,
-    end: string,
-    startTime: string,
-    endTime: string
-  };
-  onsetRange: [];
-  recordedDate: string;
-  recorder: string;
-  asserter: string;
-  lastOccurence: string;
-  note: string;
   dateTime: string;
   age: {
     unit: "",
@@ -118,20 +104,6 @@ export interface OnSet {
 
 }
 export interface Abatement {
-  onsetDateTime: string;
-  onsetAge: string;
-  onsetPeriod: {
-    start: string,
-    end: string,
-    startTime: string,
-    endTime: string
-  };
-  onsetRange: [];
-  recordedDate: string;
-  recorder: string;
-  asserter: string;
-  lastOccurence: string;
-  note: string;
   dateTime: string;
   age: {
     unit: "",
@@ -161,7 +133,7 @@ export interface ICondition {
   severity: string;
   code: string;
   onSet: OnSet;
-  abatement: Abatement;
+  abatement: Abatement[];
   recordDate : string;
   recorderId : string;
   type : string;
@@ -183,6 +155,8 @@ export interface ICondition {
   practitionerId: string;
   organizationId: string;
   encounterId: string;
+  asserterId: string;
+ 
 
   notes?: ConditionNote[];
   summary: string;
@@ -192,7 +166,7 @@ export interface ICondition {
   verificationSatusHistory: History<VerificationStatus>[];
   clinicalStatusHistory: History<ClinicalStatus>[];
   occurences?: IOccurence[];
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
   practitioner?: IPractitioner;
   organization?: IOrganization;

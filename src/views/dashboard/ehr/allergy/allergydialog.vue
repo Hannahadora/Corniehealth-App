@@ -55,7 +55,7 @@
             <encounter-select
               class="w-full"
               v-model="encounter"
-              :rules="required"
+        
               placeholder="Select Encounter"
               label="Reference Encounter"
             />
@@ -65,16 +65,16 @@
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="OnSet"
-        v-model="openedS"
+      
       >
         <div class="w-full mt-5 pb-5">
           <timeable-picker
-            v-model="onsettimeable"
+        
             class="w-full"
             label="Deceased Date/Age"
           />
           <measurable
-            v-model="onsetmeasurable"
+        
             class="w-full"
             label="Deceased Range/String"
           />
@@ -131,7 +131,7 @@
                 class="w-full text-xs"
                 v-model="note"
                 placeholder="Placeholder"
-                :rules="required"
+             
               />
             </div>
           </div>
@@ -140,7 +140,7 @@
       <accordion-component
         class="shadow-none rounded-none border-none text-primary"
         title="Reaction"
-        v-model="openedS"
+       
       >
         <div class="grid grid-cols-2 gap-4 w-full mt-5 pb-5">
           <fhir-input
@@ -220,7 +220,7 @@
               class="w-full text-xs"
               v-model="reaction.note"
               placeholder="Placeholder"
-              :rules="required"
+            
             />
           </div>
         </div>
@@ -282,34 +282,6 @@ import { namespace } from "vuex-class";
 
 const allergy = namespace("allergy");
 const organization = namespace("organization");
-const timeable = {
-  age: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
-  date: "",
-  time: "",
-};
-
-const measurable = {
-  unit: "",
-  min: 0,
-  max: 0,
-  string: "",
-};
-const emptyOnSet: OnSet = {
-  onsetDateTime: "",
-  onsetAge: "",
-  onsetPeriod: {} as Period,
-  onsetRange: [20, 50],
-  onsetString: "",
-  recordedDate: "",
-  recorder: "",
-  asserter: "",
-  lastOccurence: "",
-  note: "",
-};
 
 const emptyReaction: Reaction = {
   substance: "",
@@ -406,7 +378,6 @@ export default class Medication extends Vue {
   lastOccurence = "";
   note = "";
   date = "";
-  onSet = { ...emptyOnSet };
   reaction = { ...emptyReaction };
   switchshow = false;
   value = [20, 40];
@@ -414,11 +385,7 @@ export default class Medication extends Vue {
     days: [],
   };
 
-  onsettimeable = { ...timeable };
-  onsetmeasurable = { ...measurable };
-  get format() {
-    return `${this.onSet.onsetRange}`;
-  }
+
 
   loading = false;
   notes = "";
@@ -427,19 +394,7 @@ export default class Medication extends Vue {
 
   get onsetnew() {
     return {
-      onsetDateTime: this.onsettimeable.date,
-      onsetAge: this.onsettimeable.age,
-      onsetPeriod: {
-        start: this.onsettimeable.startDate,
-        end: this.onsettimeable.endDate,
-      },
-      onsetRange: [this.onsetmeasurable.min, this.onsetmeasurable.max],
-      onsetString: this.onsetmeasurable.string,
-      recordedDate: this.date,
-      recorder: this.recorder,
-      asserter: this.asserter,
-      lastOccurence: this.lastOccurence,
-      note: this.note,
+    
     };
   }
   get activePatientId() {
@@ -463,7 +418,7 @@ export default class Medication extends Vue {
     this.category = allergy.category;
     this.criticality = allergy.criticality;
     this.code = allergy.code;
-    this.onSet = allergy.onSet;
+  //  this.onSet = allergy.onSet;
     this.reaction = allergy.reaction;
   }
   get payload() {

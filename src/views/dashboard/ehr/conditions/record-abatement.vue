@@ -1,15 +1,16 @@
 <template>
-  <clinical-dialog v-model="show" title="Record Abatement">
-    <v-form class="w-full p-3">
-      <timeable-picker v-model="timeable" />
-      <measurable v-model="measurable" />
-      <span class="grid grid-cols-2 gap-3 mt-3 border-t-2 pt-5 border-dashed">
+  <clinical-dialog v-model="show" title="Record Abatement" class="h-full">
+    <v-form class="w-full p-3 h-full">
+      <!-- <timeable-picker v-model="timeable" /> -->
+       <div>
+         <onset-picker v-model="abatementMeasurable" label="Abatement" :name="'abatement'"/>
+       </div>
+      <!-- <span class="grid grid-cols-2 gap-3 mt-3 border-t-2 pt-5 border-dashed">
         <practitioner-select
-          :rules="required"
           v-model="asserter"
           label="Asserter"
         />
-      </span>
+      </span> -->
     </v-form>
     <template #actions>
       <cornie-btn
@@ -30,16 +31,22 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import { Prop, PropSync } from "vue-property-decorator";
+
+import { ICondition } from "@/types/ICondition";
+import IPractitioner from "@/types/IPractitioner";
+import { Timeable } from "@/types/misc";
+
 import ClinicalDialog from "./clinical-dialog.vue";
 import TimeablePicker from "./timeable.vue";
 import Measurable from "./measurable.vue";
-import { Prop, PropSync } from "vue-property-decorator";
 import PractitionerSelect from "./practitioner-select.vue";
-import IPractitioner from "@/types/IPractitioner";
-import { namespace } from "vuex-class";
-import { ICondition } from "@/types/ICondition";
-import { Timeable } from "@/types/misc";
-import { cornieClient } from "@/plugins/http";
+
+
+
+import OnsetPicker from "./components/onset.vue";
 
 const user = namespace("user");
 const timeable = {
@@ -53,11 +60,26 @@ const timeable = {
 };
 
 const measurable = {
-  unit: "",
-  min: "",
-  max: "",
-  string: "",
+  age: null,
+  ageUnit: null,
+  ageValue: null,
+  day: null,
+  unit: null,
+  min: null,
+  minUnit: null,
+  minValue: null,
+  max: null,
+  maxUnit: null,
+  maxValue: null,
+  string: null,
+  startDate: null,
+  startTime: null,
+  endDate: null,
+  date: null,
+  time: null,
+  endTime: null
 };
+
 
 @Options({
   name: "RecordAbatement",
@@ -66,6 +88,7 @@ const measurable = {
     TimeablePicker,
     Measurable,
     PractitionerSelect,
+    OnsetPicker
   },
 })
 export default class RecordAbatement extends Vue {
@@ -82,29 +105,56 @@ export default class RecordAbatement extends Vue {
 
   timeable = { ...timeable };
   measurable = { ...measurable };
+  abatement = [] as any;
 
   asserter = "";
 
   @user.Getter
   authPractitioner!: IPractitioner;
 
-  get payload() {
-    const { string, ...range } = this.measurable;
-    const dateTime = this.safeBuildDateTime(
-      this.timeable.date,
-      this.timeable.time
-    );
-    const period = this.buildPeriod(this.timeable);
-    const data: any = {
-      asserter: this.asserter,
-      conditionId: this.condition.id,
+  abatementMeasurable = { ...measurable };
+
+   get setabatement() {
+    return {
+      range: !Object.values({
+        unit: this.abatementMeasurable.unit,
+        min: this.abatementMeasurable.min,
+        max: this.abatementMeasurable.max,
+      }).every(o => o === null) ? {
+        unit: this.abatementMeasurable.unit,
+        min: this.abatementMeasurable.min,
+        max: this.abatementMeasurable.max,
+      } : null,
+      age: !Object.values({
+        unit: this.abatementMeasurable.ageUnit,
+        value: this.abatementMeasurable.ageValue,
+      }).every(o => o === null) ? {
+        unit: this.abatementMeasurable.ageUnit,
+        value: this.abatementMeasurable.ageValue,
+      } : null, 
+      string: this.abatementMeasurable.string || null,
+      period: !Object.values({
+        start: this.abatementMeasurable.startDate,
+        end: this.abatementMeasurable.endDate,
+        startTime:this.abatementMeasurable.startTime,
+        endTime: this.abatementMeasurable.endTime,
+      }).every(o => o === null) ? {
+        start: this.abatementMeasurable.startDate,
+        end: this.abatementMeasurable.endDate,
+         startTime:this.abatementMeasurable.startTime,
+        endTime: this.abatementMeasurable.endTime,
+      } : null,
+      dateTime:  this.safeBuildDateTime(
+       this.abatementMeasurable.date as any,
+       this.abatementMeasurable.time as any
+     ),
     };
-    if (range.unit && range.min && range.max) data.range = range;
-    if (string) data.string = string;
-    if (this.timeable.age) data.age = this.timeable.age;
-    if (period) data.period = period;
-    if (dateTime) data.dateTime = dateTime;
-    return data;
+  }
+  get payload() {
+    this.abatement.push(this.setabatement);
+   return{
+     abatement: this.abatement,
+   }
   }
 
   buildPeriod({ startDate, startTime, endDate, endTime }: Timeable) {
@@ -136,13 +186,22 @@ export default class RecordAbatement extends Vue {
   async submit() {
     this.loading = true;
     try {
-      await cornieClient().post("/api/v1/condition/abatement", this.payload);
+      await cornieClient().put(`/api/v1/condition/${this.condition.id}`, this.payload);
       window.notify({ status: "success", msg: "Abatement added" });
+      this.done();
     } catch (error) {
       window.notify({ status: "error", msg: "Abatement not added" });
+      this.done();
     }
     this.loading = false;
   }
+
+  
+done() {
+    this.$emit("conditionAdded");
+    this.show = false;
+  }
+
   created() {
     this.asserter = this.authPractitioner?.id || "";
   }
