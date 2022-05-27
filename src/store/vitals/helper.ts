@@ -33,7 +33,7 @@ export async function getEpisodes(patientId: string) {
   try {
     // const response = await cornieClient().get(`/api/v1/encounter/episode`);
     const response = await cornieClient().get(
-      `/api/v1/encounter/episode/${patientId}`
+      `/api/v1/encounter/patient/${patientId}`
     );
 
     return response.data;

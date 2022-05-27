@@ -36,53 +36,53 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { Prop, Watch, PropSync } from "vue-property-decorator";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "./icons/chevrondown.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, Watch } from "vue-property-decorator";
+  import ChevronDownIcon from "./icons/chevrondown.vue";
 
-@Options({
-  name: "AccordionItem",
-  components: {
-    ChevronRightIcon,
-    ChevronDownIcon,
-  },
-})
-export default class AccordionComponent extends Vue {
-  @Prop({ type: String, default: "" })
-  title!: string;
+  @Options({
+    name: "AccordionItem",
+    components: {
+      ChevronRightIcon,
+      ChevronDownIcon,
+    },
+  })
+  export default class AccordionComponent extends Vue {
+    @Prop({ type: String, default: "" })
+    title!: string;
 
-  @Prop({ type: Boolean, default: false })
-  first!: boolean;
+    @Prop({ type: Boolean, default: false })
+    first!: boolean;
 
-  @Prop({ type: Boolean, default: false })
-  modelValue!: boolean;
+    @Prop({ type: Boolean, default: false })
+    modelValue!: boolean;
 
-  expanded = false;
+    expanded = false;
 
-  expand() {
-    this.expanded = true;
-    this.$emit("update:modelValue", true);
+    expand() {
+      this.expanded = true;
+      this.$emit("update:modelValue", true);
+    }
+
+    hide() {
+      this.expanded = false;
+      this.$emit("update:modelValue", false);
+    }
+
+    @Prop({ type: String, default: "" })
+    titledescription!: string;
+
+    @Watch("modelValue")
+    updateVisibility() {
+      this.expanded = this.modelValue;
+    }
+    handle() {
+      if (this.expanded) this.hide();
+      else this.expand();
+    }
+    created() {
+      this.expanded = Boolean(this.modelValue);
+    }
   }
-
-  hide() {
-    this.expanded = false;
-    this.$emit("update:modelValue", false);
-  }
-
-  @Prop({ type: String, default: "" })
-  titledescription!: string;
-
-  @Watch("modelValue")
-  updateVisibility() {
-    this.expanded = this.modelValue;
-  }
-  handle() {
-    if (this.expanded) this.hide();
-    else this.expand();
-  }
-  created() {
-    this.expanded = Boolean(this.modelValue);
-  }
-}
 </script>
