@@ -22,22 +22,22 @@
       </cornie-card-title>
       <div class="px-4">
         <span class="capitalize font-bold text-sm"> Reference </span>
-        <span class="grid grid-cols-3 gap-2 mt-2 border-b-2 pb-3 border-dashed">
+        <span class="grid grid-cols-3 gap-2 mt-4 border-b-2 pb-3 border-dashed">
           <cornie-radio
             v-model="active"
-            value="impression"
+            value="Clinical Impression"
             name="reference"
             label="Clinical Impression"
           />
           <cornie-radio
             v-model="active"
-            value="diagnosis"
+            value="Diagnostic Reports"
             name="reference"
             label="Diagnostic Reports"
           />
           <cornie-radio
             v-model="active"
-            value="observation"
+            value="Observation"
             name="reference"
             label="Observation"
           />
@@ -48,25 +48,46 @@
       </div>
       <cornie-card-text class="overflow-y-auto flex-col">
         <div
-          class="flex items-center cursor-pointer hover:bg-gray-50 rounded-full justify-between py-2 my-1 text-sm px-8"
+          class="flex items-center cursor-pointer hover:bg-gray-50 rounded-full justify-between py-2 my-1 text-sm"
           :class="{ 'bg-gray-100': isSelected(item) }"
           v-for="(item, i) in items"
           :key="i"
           @click="select(item)"
         >
-          <span class="flex-col flex">
-            <span>{{ item.findings.item }}
-             <span class="text-gray-400">. {{ item.date }}</span>
+        <div class="flex items-center w-full" v-if="active == 'Clinical Impression'">
+          <span class="w-full">
+            <span>{{ item.findings.item  }} <span class="text-gray-400">. {{ item.date }}</span>
             </span>
-            <p>{{ item.description }}</p>
+            <p>{{ item.description  }}</p>
             
           </span>
-          <span>
-            <span>{{ getPractitionerName(item.encounter)}}</span>
-            <p class="text-gray-400">
-              {{ getJobName(item.encounter)}}
-            </p>
+          <div class="flex justify-end w-full">
+            <div>
+
+              <p class="mb-0">{{ getPractitionerName(item.practitionerId)}}</p>
+              <p class="text-gray-400">
+                {{ getJobName(item.practitionerId)}}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center w-full" v-if="active == 'Observation'">
+          <span class="w-full">
+            <span>{{ item?.basicInfo?.subject }}
+             <span class="text-gray-400">. {{ item.date }}</span>
+            </span>
+            <p>{{ item?.reasonInfo?.note }}</p>
+            
           </span>
+          <div class="flex justify-end w-full">
+            <div>
+              <p class="mb-0">{{ getPractitionerName(item.practitionerId)}}</p>
+              <p class="text-gray-400">
+                {{ getJobName(item.practitionerId)}}
+              </p>
+            </div>
+          </div>
+        </div>
         </div>
       </cornie-card-text>
     
@@ -77,7 +98,7 @@
         >
           Cancel
         </cornie-btn>
-        <cornie-btn @click="add"   :loading="loading" class="text-white bg-danger px-9 rounded-xl">
+        <cornie-btn @click.prevent="add"   :loading="loading" class="text-white bg-danger px-9 rounded-xl">
           Add
         </cornie-btn>
       </div>
@@ -100,6 +121,7 @@ import search from "@/plugins/search";
 import IPractitioner from "@/types/IPractitioner";
 
 const practitioner = namespace("practitioner");
+const diagnosticReport = namespace("diagnosticReport");
 
 @Options({
   name: "AssessmentModal",
@@ -117,7 +139,7 @@ export default class AssessmentModal extends Vue {
   show!: false;
 
   query = "";
-  active: "impression" | "diagnosis" | "observation" = "impression";
+  active: "Clinical Impression" | "Diagnostic Reports" | "Observation" = "Clinical Impression";
 
   @Prop({ type: Object, default: {} })
   selectedValue!: { reference: string; id: string };
@@ -135,11 +157,17 @@ export default class AssessmentModal extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   rawClinicalImpressions: IClinicalImpression[] = [];
+  diagnosticreport = [];
+  observations = [];
 
   get items() {
     switch (this.active) {
-      case "impression":
+      case "Clinical Impression":
         return this.clinicalImpressions;
+      case "Diagnostic Reports":
+        return this.diagnosticReports;
+      case "Observation":
+        return this.allObservations;
       default:
         return [];
     }
@@ -153,14 +181,34 @@ export default class AssessmentModal extends Vue {
     return impression.id == this.selected.id;
   }
 
-  select(impression: IClinicalImpression) {
-    this.selected = {
-      id: impression.id!!,
+  select(impression: any) {
+    // this.selected = {
+    //   id: impression.id!!,
+    //   reference: this.active,
+    // };
+    if(this.active == 'Clinical Impression'){
+      this.assesData = {
+       id: impression.id,
+      name: impression.findings.item,
       reference: this.active,
-    };
+      description: impression.description,
+      practionerName: this.getPractitionerName(impression.practitionerId),
+      date: impression.createdAt,
+      department:  this.getJobName(impression.practitionerId),
+     }
 
-    console.log(impression, 'IMPRESSION')
-    this.setImpression = impression;
+    } else if(this.active == 'Observation')
+      this.assesData = {
+       id: impression.id,
+      name: impression.basicInfo?.subject,
+      reference: this.active,
+      description: impression.reasonInfo?.note,
+      practionerName: this.getPractitionerName(impression.practitionerId),
+      date: impression.createdAt,
+      department:  this.getJobName(impression.practitionerId),
+     }
+
+    
   }
 
   get clinicalImpressions() {
@@ -173,6 +221,27 @@ export default class AssessmentModal extends Vue {
     }));
   }
 
+  get diagnosticReports(){
+      const diagnosticreports = this.query
+      ? search.searchObjectArray(this.diagnosticreport, this.query)
+      : this.diagnosticreport;
+    return diagnosticreports.map((report:any) => ({
+      ...report,
+      date: this.printDate(report.createdAt!!),
+    }));
+  }
+
+   get allObservations(){
+     console.log('Gello');
+      const observations = this.query
+      ? search.searchObjectArray(this.observations, this.query)
+      : this.observations;
+    return observations.map((observation:any) => ({
+      ...observation,
+      date: this.printDate(observation.createdAt!!),
+    }));
+  }
+
   printDate(dateString: string) {
     const date = new Date(dateString);
     const localeDate = date.toLocaleDateString();
@@ -182,27 +251,17 @@ export default class AssessmentModal extends Vue {
 
   assesData = {} as any;
 
-  async add(e:any) {
-    e.preventDefault();
-
-      this.assesData = {
-      name: this.setImpression.findings.item,
-      descrition: this.setImpression.description,
-      practionerName: this.getPractitionerName(this.setImpression.encounter),
-      date: this.setImpression.createdAt,
-      department:  this.getJobName(this.setImpression.encounter),
-    }
-
+  async add() {
     this.$emit('asses-data', this.assesData)
     this.show = false;
   }
 
   getPractitionerName(id: string) {
-    const pt = this.practitioners.find((i: any) => i.organizationId === id);
+    const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
    getJobName(id: string) {
-    const pt = this.practitioners.find((i: any) => i.organizationId === id);
+    const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.department}` : "";
   }
 
@@ -220,13 +279,46 @@ export default class AssessmentModal extends Vue {
     }
   }
 
+  async fetchReport() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/diagnostic/report/patient/${this.patientId}`
+      );
+      this.diagnosticreport = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching diagnotic report",
+        status: "error",
+      });
+    }
+  }
+
+   async fetchObservations() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/observations/`
+      );
+      this.observations = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching observations",
+        status: "error",
+      });
+    }
+  }
+
+
+  
+
   mounted() {
-    this.selectedValue.reference = this.active;
+  //  this.selectedValue.reference = this.active;
   }
 
   async created() {
-    if(this.patientId) await this.fetchClinicalImpressions();
     await this.fetchPractitioners();
+    if(this.patientId) await this.fetchReport();
+    await this.fetchObservations();
+    if(this.patientId) await this.fetchClinicalImpressions();
   }
 }
 </script>

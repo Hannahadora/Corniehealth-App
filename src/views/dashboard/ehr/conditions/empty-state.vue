@@ -1,5 +1,5 @@
 <template>
-  <div class="block w-full">
+  <div class="block w-full p-30">
     <cornie-empty-state
       heading="Patient currently have no condition"
       subheading=""

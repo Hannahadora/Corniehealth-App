@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <span
@@ -11,7 +11,7 @@
         </span>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Create New
+            {{ newaction }}
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -58,7 +58,6 @@
                     label="code"
                     v-model="code"
                     placeholder="Select"
-
                     required
                   />
                 </div>
@@ -81,33 +80,37 @@
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
                   <div class="">
-                    <date-time-picker :label="'Date/Time'" :disabled="true" />
+                    <date-picker :label="'Date'"  v-model="recordDate"/>
                   </div>
                   <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
                     placeholder="Autoloaded"
                     :disabled="true"
+                    v-model="recorder"
                   >
                     <template #labelicon>
                       <custom-checkbox
                         :label="'Assert this record'"
                         class="w-full"
+                        v-model="asserterId"
+                        :value="authPractitioner.id"
                       />
                     </template>
-                    <template #append-inner>
+                    <!-- <template #append-inner>
                       <span class="bg-primary py-2.5 px-3 -mr-2 rounded cursor-pointer" @click="showRecorder = true">
                         <d-edit class="fill-current text-white" />
                       </span>
-                    </template>
+                    </template> -->
                   </cornie-input>
-                  <div class="">
-                    <date-time-picker :label="'Last Occurence'" />
+                  <div >
+                    <date-time-picker :label="'Last Occurence'" v-model:date="setOccurence" v-model:time="setOccurencetime"/>
                   </div>
                   <cornie-input
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
+                    v-model="note"
                   >
                   </cornie-input>
                 </div>
@@ -124,39 +127,45 @@
                     class="required w-full"
                     label="substance"
                     placeholder="select"
+                    v-model="reaction.substance"
                   />
                   <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/clinical-findings"
                     class="w-full mb-2"
                     label="manifestation"
                     placeholder="select"
+                    v-model="reaction.manifestation"
                   />
                   <cornie-input
                     label="Description"
                     class="-mt-5 w-full"
                     placeholder="Enter"
+                    v-model="reaction.description"
                   >
                   </cornie-input>
                   <div class="-mt-5">
-                    <date-time-picker :label="'Onset'" />
+                    <date-picker :label="'Onset'" v-model="reaction.onset"/>
                   </div>
                   <cornie-select
                     class="w-full"
                     :rules="required"
-                    :items="['Mid', 'Medium','Severe',]"
+                    :items="['Mid', 'Medium', 'Severe']"
                     placeholder="Select"
-                    label="Substance"
+                    label="Severity"
+                    v-model="reaction.severity"
                   />
-                   <fhir-input
-                        reference="http://hl7.org/fhir/ValueSet/route-codes"
-                        class="w-full mb-2"
-                        label="Exposure Route"
-                        placeholder="select"
-                    />
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/route-codes"
+                    class="w-full mb-2"
+                    label="Exposure Route"
+                    placeholder="select"
+                    v-model="reaction.exposureRoute"
+                  />
                   <cornie-input
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
+                     v-model="reaction.note"
                   >
                   </cornie-input>
                 </div>
@@ -168,21 +177,6 @@
 
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <span
-            v-if="!id"
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="SaveDraftGrn"
-          >
-            Save as draft
-          </span>
-          <span
-            v-else
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="completeDraft"
-          >
-            Complete draft
-          </span>
-
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -210,7 +204,7 @@
     </cornie-card>
   </cornie-dialog>
 
-  <recorder-modal v-model="showRecorder"/>
+  <recorder-modal v-model="showRecorder" />
 </template>
 
 <script lang="ts">
@@ -222,6 +216,7 @@ import { string, date } from "yup";
 import search from "@/plugins/search";
 
 import IPractitioner from "@/types/IPractitioner";
+import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -250,11 +245,14 @@ import CustomCheckbox from "@/components/custom-checkbox.vue";
 
 import RecorderModal from "./components/recorder.vue";
 
+const user = namespace("user");
+const allergy = namespace("allergy");
+
 const timeable = {
   age: null,
-  startDate: null,
+  start: null,
   startTime: null,
-  endDate: null,
+  end: null,
   endTime: null,
   date: null,
   time: null,
@@ -276,6 +274,9 @@ const measurable = {
   startDate: null,
   startTime: null,
   endDate: null,
+  date: null,
+  time: null,
+  endTime: null,
 };
 
 @Options({
@@ -315,6 +316,12 @@ export default class AlergyModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
+  @allergy.Action
+  getAllergyById!: (id: string) => IAllergy;
+
   loading = false;
   required = string().required();
   emailRule = string().email().required();
@@ -324,73 +331,186 @@ export default class AlergyModal extends Vue {
 
   onsetmesurable = { ...measurable };
 
+  clinicalStatus = "active";
+  verificationStatus = "confirmed";
+  type = "";
+  category = "";
+  criticality = "";
+  code = "";
+  reaction = {
+    substance: "",
+    manifestation: "",
+    description: "",
+    onset: "",
+    severity: "",
+    exposureRoute: "",
+    note: "",
+  };
+  recorderId = "";
+  asserterId = "";
+  occurences = [] as any;
+  setOccurence = "";
+  setOccurencetime = "";
+  recordDate = "";
+  note = "";
+
   @Watch("id")
   idChanged() {
-    this.setRequest();
+    this.setAllergy();
   }
 
-  async setRequest() {}
+  async setAllergy() {
+    const allergy = await this.getAllergyById(this.id);
+    if (!allergy) return;
+    this.clinicalStatus = allergy.clinicalStatus;
+    this.verificationStatus = allergy.verificationStatus;
+    this.type = allergy.type;
+    this.category = allergy.category;
+    this.criticality = allergy.criticality;
+    this.code = allergy.code;
+    //this.onset = allergy.onSet;
+    this.occurences = allergy.occurences;
+     this.note = allergy.note;
+    this.reaction = allergy.reaction;
+    this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
+    this.asserterId = allergy.asserterId;
+    this.recorderId = allergy.recorderId;
+  }
+
+  get patientId() {
+    return this.$route.params.id;
+  }
+
+  get onset() {
+    return {
+      onsetRange: !Object.values({
+        unit: this.onsetmesurable.unit,
+        min: this.onsetmesurable.min,
+        max: this.onsetmesurable.max,
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.unit,
+            min: this.onsetmesurable.min,
+            max: this.onsetmesurable.max,
+          }
+        : null,
+      onsetAge: !Object.values({
+        unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.ageUnit,
+            value: this.onsetmesurable.ageValue,
+          }
+        : null,
+      onsetString: this.onsetmesurable.string || null,
+      onsetPeriod: !Object.values({
+        start: this.onsetmesurable.startDate,
+        end: this.onsetmesurable.endDate,
+        startTime: this.onsetmesurable.startTime,
+        endTime: this.onsetmesurable.endTime,
+      }).every((o) => o === null)
+        ? {
+            start: this.onsetmesurable.startDate,
+            end: this.onsetmesurable.endDate,
+            startTime: this.onsetmesurable.startTime,
+            endTime: this.onsetmesurable.endTime,
+          }
+        : null,
+      onsetDateTime: this.safeBuildDateTime(
+        this.onsetmesurable.date as any,
+        this.onsetmesurable.time as any
+      ),
+    };
+  }
+
+ get newaction() {
+    return this.id ? "Edit Allergy" : "Create New";
+  }
+
+  safeBuildDateTime(dateString: string, time: string) {
+    try {
+      return this.buildDateTime(dateString, time);
+    } catch (error) {
+      return;
+    }
+  }
+  buildDateTime(dateString: string, time: string) {
+    const date = new Date(dateString);
+    const [hour, minute] = time.split(":");
+    date.setMinutes(Number(minute));
+    date.setHours(Number(hour));
+    return date.toISOString();
+  }
+
+   setOccurenceTIme(date:string, time:string){
+     console.log('Hello')
+        this.occurences.push({time: this.safeBuildDateTime(date, time)})
+  }
+    get recorder(){
+     if(this.setOccurence) this.setOccurenceTIme(this.setOccurence, this.setOccurencetime)
+    this.recorderId = this.authPractitioner.id;
+    return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
+  }
+
 
   get payload() {
-    return {};
+    const newoccur = this.occurences.filter((c:any) => c.time !== undefined)
+    return {
+      clinicalStatus: this.clinicalStatus,
+      verificationStatus: this.verificationStatus,
+      patientId: this.patientId,
+      type: this.type,
+      category: this.category,
+      criticality: this.criticality,
+      code: this.code,
+      onSet: this.onset,
+      reaction: this.reaction,
+      occurences: newoccur,
+      recordDate: this.recordDate,
+      note: this.note,
+      asserterId: this.authPractitioner.id,
+      recorderId: this.recorderId,
+
+    };
   }
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateRequest();
-    else await this.createRequest();
+    if (this.id) await this.updateAllergy();
+    else await this.createAllergy();
     this.loading = false;
   }
 
-  async SaveDraftGrn() {
+
+  async createAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
 
     try {
       const response = await cornieClient().post(
-        "/api/v1/inventory/material-request/draft",
+        "/api/v1/allergy",
         this.payload
       );
       if (response.success) {
-        window.notify({
-          msg: "Material request draft saved",
-          status: "success",
-        });
+        window.notify({ msg: "Allergy Saved", status: "success" });
         this.done();
       }
     } catch (error: any) {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
-
-  async createRequest() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/inventory/material-request",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({ msg: "Material Requests Saved", status: "success" });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-  async updateRequest() {
+  async updateAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
     const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/${id}`;
+    const url = `/api/v1/allergy/${id}`;
     const payload = this.payload;
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         window.notify({
-          msg: "Material Request Updated",
+          msg: "Allergy Updated",
           status: "success",
         });
         this.done();
@@ -399,32 +519,15 @@ export default class AlergyModal extends Vue {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
-  async completeDraft() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-    const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/complete/${id}`;
-    const payload = this.payload;
-    try {
-      const response = await cornieClient().put(url, this.payload);
-      if (response.success) {
-        window.notify({
-          msg: "Material Request draft completed",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
-    }
-  }
-
+ 
   done() {
+    this.$emit("allergy-added");
     this.show = false;
-    this.$emit("requestAdded");
   }
 
-  async created() {}
+  async created() {
+   
+  }
 }
 </script>
 

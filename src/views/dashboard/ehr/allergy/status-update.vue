@@ -68,10 +68,10 @@
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
-          @click="show = false"
+          @click="showHistory = true"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
         >
-         Cancel
+          View History
         </cornie-btn>
         <cornie-btn
         v-if="active == 'clinical'"
@@ -106,13 +106,13 @@ import CornieSelect from "@/components/cornieselect.vue";
 import DatePicker from "@/components/datepicker.vue";
 import { verificationStatuses, clinicalStatuses } from "./drop-downs";
 import StatusHistory from "./status-history.vue";
-import { ICondition } from "@/types/ICondition";
+import IAllergy from "@/types/IAllergy";
 import { string } from "yup";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 
-const condition = namespace("condition");
+const allergy = namespace("allergy");
 
 @Options({
   name: "ConditionStatusUpdate",
@@ -133,7 +133,7 @@ export default class StatusUpdate extends Vue {
   show!: boolean;
 
   @Prop({ type: Object })
-  condition!: ICondition;
+  allergy!: IAllergy;
 
   showHistory = false;
 
@@ -145,13 +145,13 @@ export default class StatusUpdate extends Vue {
 
   loading = false;
 
-  @condition.Mutation
+  @allergy.Mutation
   setPatientConditions!: ({
     patientId,
-    conditions,
+    allergys,
   }: {
     patientId: string;
-    conditions: ICondition[];
+    allergys: IAllergy[];
   }) => Promise<void>;
 
   get statuses() {
@@ -160,15 +160,15 @@ export default class StatusUpdate extends Vue {
 
   get currentStatus() {
     return this.active == "clinical"
-      ? this.condition.clinicalStatus
-      : this.condition.verificationStatus;
+      ? this.allergy.clinicalStatus
+      : this.allergy.verificationStatus;
   }
 
   get histories() {
     const histories =
       this.active == "clinical"
-        ? this.condition.clinicalStatusHistory
-        : this.condition.verificationSatusHistory;
+        ? this.allergy.clinicalStatusHistory
+        : this.allergy.verificationSatusHistory;
     return histories || [];
   }
 
@@ -179,59 +179,50 @@ export default class StatusUpdate extends Vue {
   }
 
   get lastUpdated() {
-    const dateString = this.condition.updatedAt;
+    const dateString = this.allergy.updatedAt;
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toLocaleDateString();
   }
 
-  // async submit() {
-  //   const { valid } = await (this.$refs.form as any).validate();
-  //   if (!valid) return;
-  //   this.loading = true;
-  //   const type =
-  //     this.active == "clinical" ? "clinical-status" : "verification-status";
-  //   const payload = { status: this.newStatus };
-  //   await this.setStatus(payload, type);
-  //   this.loading = false;
-  // }
+ 
 
-  async setStatus(payload: any, type: string) {
-    this.loading = true;
+  async setStatus() {
+       this.loading = true;
     try {
-      const { data } =  await cornieClient().patch(`/api/v1/condition/clinical-status/${this.condition.id}`, { status: this.newStatus })
+      const { data } = await cornieClient().patch(
+        `/api/v1/allergy/update-clinical-status/${this.allergy.id}`,
+        { status: this.newStatus }
+      );
+        this.done();
       window.notify({ status: "success", msg: "Status updated" });
-      this.done();
       this.loading = false;
-    } catch (error:any) {
+    } catch (error) {
       window.notify({ status: "error", msg: "Status not updated" });
+      this.loading = false;
     }
-    this.loading = false;
   }
 
-  async setVerifyStatus(payload: any, type: string) {
-
-     this.loading = true;
+    async setVerifyStatus() {
+         this.loading = true;
     try {
-      const { data } =  await cornieClient().patch(`/api/v1/condition/verification-status/${this.condition.id}`, { status: this.newStatus })
-      window.notify({ status: "success", msg: "Status updated" });
+      const { data } = await cornieClient().patch(
+        `/api/v1/allergy/update-verification-status/${this.allergy.id}`,
+        { status: this.newStatus }
+      );
       this.done();
+       window.notify({ status: "success", msg: "Status updated" });
       this.loading = false;
-    } catch (error:any) {
+    } catch (error) {
       window.notify({ status: "error", msg: "Status not updated" });
+      this.loading = false;
     }
-    this.loading = false;
   }
 
-  
-  done() {
+done() {
+    this.$emit("allergy-added");
     this.show = false;
-    this.$emit("conditionAdded");
   }
 
-  updateCondition(condition: ICondition) {
-    const payload = { patientId: condition.patientId, conditions: [condition] };
-    this.setPatientConditions(payload);
-  }
 }
 </script>

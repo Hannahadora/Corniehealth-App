@@ -6,7 +6,7 @@
       {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
-    <div class="grid grid-cols-5 gap-4 mt-4 w-1/2">
+    <div class="grid grid-cols-5 gap-4 mt-4 w-3/4">
       <cornie-radio
         :name="name"
         v-model="type"
@@ -156,24 +156,26 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: timeable })
   timeable!: ITimeable;
 
-  type: "date" | "age" | "period" | "date-time" | "range" | "string" = "date";
+  // type: "date" | "age" | "period" | "date-time" | "range" | "string" = "date";
 
-  setType() {
-    const timeable = this.timeable;
-    if (timeable.date || timeable.time) this.type = "date-time";
-    else if (timeable.startDate || timeable.endDate) this.type = "period";
-    else if (timeable.ageValue) this.type = "age";
-    else this.type = "date";
-  }
+  type  = "date";
+
+  // setType() {
+  //   const timeable = this.timeable;
+  //   if (timeable.date || timeable.time) this.type = "date-time";
+  //   else if (timeable.startDate || timeable.endDate) this.type = "period";
+  //   else if (timeable.ageValue) this.type = "age";
+  //   else this.type = "date";
+  // }
 
   // mounted() {
   //   this.setType();
   // }
 
-  @Watch("timeable", { deep: true })
-  timeChanged() {
-    this.setType();
-  }
+  // @Watch("timeable", { deep: true })
+  // timeChanged() {
+  //   this.setType();
+  // }
 
   created() {
     if (!this.timeable) this.timeable = timeable as any;

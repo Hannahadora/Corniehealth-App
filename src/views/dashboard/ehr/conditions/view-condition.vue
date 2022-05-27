@@ -59,9 +59,9 @@
             </div>
             <div class="flex flex-col">
               <span class="text-sm text-gray-500"> Body Site </span>
-              <span class="mt-1 text-xs text-black capitalize">
+              <!-- <span class="mt-1 text-xs text-black capitalize">
                 {{ bodySite.display }}
-              </span>
+              </span> -->
             </div>
           </div>
           <div class="mt-3 flex flex-col">
@@ -82,11 +82,11 @@
             </span>
             <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3">{{ onset.key }}</span>
+                <!-- <span class="text-sm text-gray-500 mb-3">{{ onset.key }}</span>
                 <span class="text-sm">{{ onset.text }}</span>
                 <span class="text-sm text-gray-500 mb-3">
                   {{ onset.subtext || "" }}
-                </span>
+                </span> -->
               </div>
             </div>
           </div>
@@ -98,13 +98,13 @@
             </span>
             <div class="mt-5 grid grid-cols-2">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-500 mb-3 capitalize">
+                <!-- <span class="text-sm text-gray-500 mb-3 capitalize">
                   {{ abatement.key }}
                 </span>
                 <span class="text-sm">{{ abatement.text }}</span>
                 <span class="text-sm text-gray-500 mb-3">
                   {{ abatement.subtext || "" }}
-                </span>
+                </span> -->
               </div>
             </div>
           </div>
