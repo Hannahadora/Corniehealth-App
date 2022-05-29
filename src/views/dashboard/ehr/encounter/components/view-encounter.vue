@@ -7,7 +7,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3">
-            Create New </h2>
+            View Encounter </h2>
           <cancel-icon class="float-right cursor-pointer mt-1 text-danger fill-current" @click="show = false" />
         </div>
       </cornie-card-title>
@@ -15,93 +15,53 @@
         <v-form class="flex-grow flex flex-col">
           <accordion-component class="rounded-none border-none text-primary" title="Basic Info" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select :label="'Class'" v-model="encounterClass"
-                :items="['inpatient', 'outpatient', 'ambulatory', 'emmergency']" />
-              <cornie-select :label="'Service Type'" v-model="encounter.serviceType" :items="[
-                'Cardiology',
-                'Aged Care Assessment',
-                'Friendly Visiting',
-                'Personal Alarms/Alerts',
-                'Acupuncture',
-                'Aromatherapy',
-                'Bowen Therapy',
-              ]" />
-              <cornie-select :label="'Priority'" v-model="encounter.priority"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']" />
-              <cornie-select v-model="basedOn" :label="'Based on'" :items="['Service 1', 'Service 2']" />
-              <auto-complete :label="'Appointment'" v-model="encounter.appointmentId" :items="appointmentList" />
-              <cornie-select :label="'Reason code'" v-model="encounter.priority"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']" />
-              <div class="flex flex-col">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Reason reference
-                </div>
-                <div @click="() => (showReference = true)" class="flex items-center border rounded-md p-3 mt-0.5">
-                  <div class="flex-1">{{ selectedReasonReference.summary ? selectedReasonReference.summary : 'Select' }}
-                  </div>
-                  <div class="flex-none">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
+              <cornie-input :disabled="true" class="w-full" label="Class" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Service Type"
+                placeholder="Autoloaded/Manual input" />
+
+              <cornie-input :disabled="true" class="w-full" label="Priority" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Based On" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Appointment" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Reason Code" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Reaspn Reference"
+                placeholder="Autoloaded/Manual input" />
+
             </div>
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component class="rounded-none border-none text-primary" title="Diagnosis" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Condition
-                </div>
-                <div @click="() => (showCondition = true)" class="flex items-center border rounded-md p-3 mt-0.5">
-                  <div class="flex-1">{{ selectedDiagnosisCondition.summary ? selectedDiagnosisCondition.summary :
-                      'Select'
-                  }}
-                  </div>
-                  <div class="flex-none">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <cornie-select :label="'Use'" v-model="encounter.priority" placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']" />
-              <cornie-input class="w-full" label="Rank" placeholder="Enter" v-model="encounter.priority" />
+              <cornie-input :disabled="true" class="w-full" label="Condition" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Use" placeholder="Autoloaded/Manual input" />
+              <cornie-input :disabled="true" class="w-full" label="Rank" placeholder="Autoloaded/Manual input" />
             </div>
-            <div class="flex w-full items-center justify-end">
+            <!-- <div class="flex w-full items-center justify-end">
               <div
                 class="px-5 py-2 space-x-2 capitalize items-center font-bold text-primary border-primary rounded-full border-2 flex">
                 <add-icon />
                 <div>Add new</div>
               </div>
-            </div>
+            </div> -->
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component class="rounded-none border-none text-primary" title="Participant" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Participant type
-                </div>
-                <div @click="() => (showPersonReference = true)" class="flex items-center border rounded-md p-3 mt-0.5">
-                  <div class="flex-1">{{ selectedPersonReference.name ? selectedPersonReference.name : 'Select' }}</div>
-                  <div class="flex-none">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
+              <cornie-input :disabled="true" class="w-full" label="Participant Type"
+                placeholder="Autoloaded/Manual input" />
+
               <cornie-input :disabled="true" class="w-full" label="Person" placeholder="Autoloaded/Manual input" />
-              <date-time-picker class="w-full" label="Start date/time" v-model:date="participant.date"
+              <date-time-picker :disabled="true" class="w-full" label="Start date/time" v-model:date="participant.date"
                 v-model:time="participant.time" />
             </div>
-            <div class="flex w-full items-center justify-end">
+            <!-- <div class="flex w-full items-center justify-end">
               <div
                 class="px-5 py-2 space-x-2 capitalize items-center font-bold text-primary border-primary rounded-full border-2 flex">
                 <add-icon />
                 <div>Add new</div>
               </div>
-            </div>
+            </div> -->
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
@@ -225,7 +185,7 @@ import IPractitioner from "@/types/IPractitioner";
 import IProcedure from "@/types/IProcedure";
 import SelectBoxes from "@/views/dashboard/schedules/components/apply-to.vue";
 import { Options, Vue } from "vue-class-component";
-import { PropSync } from "vue-property-decorator";
+import { Prop, PropSync } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import BasicInfo from "./basic-info.vue";
 import conditionM from "./condition.vue";
@@ -272,9 +232,13 @@ const procedure = namespace("procedure");
     origin,
   },
 })
-export default class NewEncounter extends Vue {
+export default class ViewEncounter extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
+
+  @Prop()
+  encounterDetails!: any
+
   showReference = false;
   showCondition = false;
   showPersonReference = false;
@@ -493,11 +457,7 @@ export default class NewEncounter extends Vue {
 
 
   async created() {
-    this.patientId = this.$route.params.id as string;
-    if (this.locations?.length <= 0) await this.fetchLocations();
-    console.log("location", this.locations);
-    await this.fetchPatientConditions(this.$route.params.id.toString());
-    await this.getProcedures(this.$route.params.id.toString());
+    console.log('view datg', this.encounterDetails)
   }
 }
 </script>

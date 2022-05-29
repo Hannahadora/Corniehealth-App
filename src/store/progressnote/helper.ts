@@ -25,6 +25,8 @@ export async function createProgressNote(data: any) {
   return [] as any[];
 }
 
+export async function updateProgressNote(patientId: string, data: any) {}
+
 export async function fetchAllergys(patientId: string) {
   try {
     const response = await cornieClient().get(

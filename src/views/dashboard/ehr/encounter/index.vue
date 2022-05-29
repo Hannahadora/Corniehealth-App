@@ -112,13 +112,15 @@
       </div>
     </div>
     <div class="" v-if="encounters.length > 0">
-      <exisiting-state @new_encounter="() => (showNewEncounterModal = true)" />
+      <exisiting-state @view_encounter="setView" @new_encounter="() => (showNewEncounterModal = true)" />
     </div>
     <div class="w-full" v-else>
       <empty-state @new_encounter="() => (showNewEncounterModal = true)" />
     </div>
 
     <new-encounter v-model="showNewEncounterModal" />
+    <view-encounter :encounterDetails="encounterDetails" v-model="showViewEncounterModal" />
+
 
     <!-- <side-modal
       :visible="showNewEpisodeModal"
@@ -180,9 +182,7 @@ import EmptyState from "./components/empty-state.vue";
 // import CornieBtn from "@/components/CornieBtn.vue";
 import ExisitingState from './components/existing-state.vue';
 import NewEncounter from "./components/new-encounter.vue";
-import NewEpisode from "./components/new-episode.vue";
-import UpdateStatus from "./components/update-status.vue";
-import VitalsForm from "./components/vitals-form.vue";
+import ViewEncounter from './components/view-encounter.vue';
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -213,19 +213,21 @@ const encounter = namespace("encounter");
     EmptyState,
     CornieSelect,
     SideModal,
-    VitalsForm,
     UpdateIcon,
     AddIcon,
     NewEncounter,
-    NewEpisode,
-    UpdateStatus,
-    ExisitingState
+    ExisitingState,
+    ViewEncounter
   },
 })
 export default class ExistingState extends Vue {
   empty = true;
   showw = false
   showNewEncounterModal = false
+  showViewEncounterModal = false
+  encounterDetails: any = {}
+
+
   @encounter.State
   encounters!: any[];
 
@@ -249,6 +251,12 @@ export default class ExistingState extends Vue {
   getEncounters!: (id: any) => Promise<void>;
 
   patientId = ''
+  setView(e: any) {
+    console.log('view', e)
+    this.encounterDetails = e
+    this.showViewEncounterModal = true
+
+  }
 
   async created() {
     this.patientId = this.$route.params.id as string;

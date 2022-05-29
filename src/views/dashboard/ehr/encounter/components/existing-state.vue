@@ -60,25 +60,55 @@
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
-          <div @click="updateStatus(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <update-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Update Status </span>
-          </div>
+
           <div @click="recordAbatement(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <edit-icon class="text-purple-800 fill-current" />
-            <span class="ml-3 text-xs"> Record Abatement </span>
+            <edit-icon class="text-yellow-800 fill-current" />
+            <span class="ml-3 text-xs"> Edit </span>
+          </div>
+          <div @click="updateStatus(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <update-icon class="text-purple-500 fill-current" />
+            <span class="ml-3 text-xs"> Update Status </span>
           </div>
           <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Add Note </span>
+            <span class="ml-3 text-xs"> End encounter </span>
           </div>
-          <div @click="addOccurence(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <plus-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> Add Occurence </span>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Pause encounter </span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <history-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs"> View History </span>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Admit Patient </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Clinical Impression </span>
+          </div>
+
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Medication Request </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs">Diagnostics Request </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs">Referral Request </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Manage Bill </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs"> Progress Notes </span>
+          </div>
+          <div @click="addNote(item)" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon class="text-green-700 fill-current" />
+            <span class="ml-3 text-xs">Class History </span>
           </div>
         </template>
       </cornie-table>
@@ -113,7 +143,7 @@ const encounter = namespace("encounter");
     PlusIcon,
     HistoryIcon,
   },
-  emits: ["new_encounter"],
+  emits: ["new_encounter", "view_encounter"],
 })
 export default class EncounterExistingState extends Vue {
   @encounter.Action
@@ -194,6 +224,10 @@ export default class EncounterExistingState extends Vue {
   async mounted() {
     await this.getEncounters(this.$route.params.id)
     console.log('encounters', this.encounters)
+  }
+
+  viewCondition(e: any) {
+    this.$emit('view_encounter', e)
   }
 }
 </script>
