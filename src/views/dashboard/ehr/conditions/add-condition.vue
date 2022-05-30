@@ -85,9 +85,9 @@
             <accordion-component title="Recorded" :opened="false">
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
-                  <div class="mt-1">
+                  <!-- <div class="mt-1">
                     <date-time-picker  v-model:date="recordDate"  v-model:time="recordTime"  :label="'Date/Time'" />
-                  </div>
+                  </div> -->
                   <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
@@ -405,7 +405,7 @@ export default class AddCondition extends Vue {
   abatement = [] as any;
 
   recorderId = "";
-  recordDate = "";
+  recordDate = new Date().toString();
   recordTime = "";
   assessment = [] as any;
   type = "";

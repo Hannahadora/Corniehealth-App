@@ -79,9 +79,9 @@
             <accordion-component title="Recorded" :opened="false">
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
-                  <div class="">
+                  <!-- <div class="">
                     <date-picker :label="'Date'"  v-model="recordDate"/>
-                  </div>
+                  </div> -->
                   <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
@@ -351,7 +351,7 @@ export default class AlergyModal extends Vue {
   occurences = [] as any;
   setOccurence = "";
   setOccurencetime = "";
-  recordDate = "";
+  recordDate = new Date().toString();
   note = "";
 
   @Watch("id")

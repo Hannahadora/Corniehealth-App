@@ -37,7 +37,7 @@
             </div>
             <!-- <div>
               <p class="text-gray-400 italic text-sm">Encounter</p>
-              <span class="mb-0 text-sm">XXXXXX</span>
+              <span class="mb-0 text-sm">{{ allergy.encounter }}</span>
               <p class="text-xs">24/02/2929</p>
             </div> -->
             <div>
@@ -61,19 +61,19 @@
                     label="type"
                     placeholder="Autoloaded"
                     :disabled="true"
-                    v-model="type.display"
+                    :modelValue="allergy.type"
                   />
                   <cornie-input
                     label="Category"
                     placeholder="Autoloaded"
                     :disabled="true"
-                    v-model="category.display"
+                    v-model="allergy.category"
                   />
                   <cornie-input
                     label="Criticality"
                     placeholder="Autoloaded"
                     :disabled="true"
-                    v-model="criticality.display"
+                    v-model="allergy.criticality"
                   />
                   <cornie-input
                     label="Code"
@@ -91,7 +91,7 @@
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
                   <div class="">
-                    <date-time-picker :label="'Date/Time'" v-model="allergy.recordDate" :disabled="true" />
+                    <date-time-picker :label="'Date/Time'" v-model:date="allergy.createdAt" :time="separateTime(allergy.createdAt)" :disabled="true" />
                   </div>
                   <cornie-input
                     label="Recorder"
@@ -105,8 +105,8 @@
                         :label="'Assert this record'"
                         class="w-full"
                         :disabled="true"
-                        v-model="allergy.asserterId"
-                        :value="allergy.asserterId"
+                        v-model="asserterId"
+                    :value="authPractitioner.id"
                       />
                     </template>
                   </cornie-input>
@@ -133,13 +133,100 @@
           <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Onset" :opened="true">
               <template v-slot:default>
-                <div>
-                  <onset-picker
-                    v-model="allergy.onSet"
-                    :disabled="true"
-                    label="Onset"
-                  />
+                <div class="mt-5">
+              <div class="mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.dateTime != null">
+                <date-time-picker
+                  v-model:date="allergy.onSet.dateTime"
+                  :time="separateTime(allergy.onSet.dateTime)"
+                  label="Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.age != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="allergy.onSet.age.value"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="allergy.onSet.age.unit"
+                      :disabled="true"
+                    />
+                  </div>
                 </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.period != null">
+                <date-time-picker
+                  v-model:date="allergy.onSet.period.start"
+                  :time="separateTime(allergy.onSet.period.startTime)"
+                  label="Start Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+                <date-time-picker
+                  v-model:date="allergy.onSet.period.end"
+                  :time="separateTime(allergy.onSet.period.endTime)"
+                  label="End Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+              </div>
+              <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="allergy?.onSet?.range != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="allergy.onSet.range.min"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="allergy.onSet.range.unit"
+                      :disabled="true"
+                    />
+                  </div>
+                </div>
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                     v-model="allergy.onSet.range.max"
+                     :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="allergy.onSet.range.min"
+                     :disabled="true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.string != null">
+                 <cornie-input label="String" v-model="allergy.onSet.string"  :disabled="true" />
+              </div>
+            </div>
               </template>
             </accordion-component>
           </div>
@@ -152,23 +239,23 @@
                     label="Substance"
                     placeholder="Autoloaded"
                     :disabled="true"
-                    v-model="substance.display"
+                    v-model="allergy.substance"
                   />
                   <cornie-input
                     label="Manifestation"
                     placeholder="Autoloaded"
                     :disabled="true"
-                     v-model="manifestation.display"
+                     v-model="allergy.manifestation"
                   />
                   <cornie-input
                     label="Description"
                     placeholder="Autoloaded"
                     :disabled="true"
-                     v-model="allergy.reaction.description"
+                     v-model="reaction.description"
                   />
 
-                  <div class="-mt-5">
-                    <date-time-picker :label="'Onset'" v-model="allergy.reaction.onset" :disabled="true" />
+                  <div class="">
+                    <date-picker :label="'Onset'" v-model="allergy.reaction.onset" :disabled="true" />
                   </div>
                   <cornie-input
                     label="Severity"
@@ -180,7 +267,7 @@
                     label="Exposure Route"
                     placeholder="Autoloaded"
                     :disabled="true"
-                    v-model="route.display"
+                    v-model="allergy.exposureRoute"
                   />
                   <cornie-input
                     label="Note"
@@ -203,14 +290,14 @@
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
-            Cancel
+            Close
           </cornie-btn>
-          <cornie-btn
+          <!-- <cornie-btn
             :loading="loading"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
-          </cornie-btn>
+          </cornie-btn> -->
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
@@ -329,7 +416,7 @@ export default class viewAlergyModal extends Vue {
   id!: string;
 
   @Prop({ type: Object, required: true })
-  allergy!: IAllergy;
+  allergy!: any;
 
   @user.Getter
   authPractitioner!: IPractitioner;
@@ -401,10 +488,19 @@ export default class viewAlergyModal extends Vue {
    manifestation = setup(() =>
     useFHIRDefinition("http://hl7.org/fhir/ValueSet/clinical-findings")
   );
-   route = setup(() =>
+   exposureRoute = setup(() =>
     useFHIRDefinition("http://hl7.org/fhir/ValueSet/route-codes")
   );
 
+  get item() {
+    return this.allergy || {};
+  }
+
+
+  separateTime(date:string){
+    const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
+    return date ? newtime :''
+  }
 
   @Watch("id")
   idChanged() {
@@ -433,6 +529,10 @@ export default class viewAlergyModal extends Vue {
     return {};
   }
 
+  newDate(){
+    return new Date(this.recordDate).toLocaleDateString()
+  }
+
    get recorder(){
     this.recorderId = this.authPractitioner.id;
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
@@ -442,17 +542,19 @@ export default class viewAlergyModal extends Vue {
     this.show = false;
     this.$emit("requestAdded");
   }
+  newsubstance = this.item?.reaction?.substance;
 
     loadDefinitions() {
-    this.clinicalStatus.code = this.allergy?.clinicalStatus;
-    this.verificationStatus.code = this.allergy?.verificationStatus;
-    this.category.code = this.allergy?.category;
-    this.type.code = this.allergy?.type;
-    this.code.code = this.allergy?.code;
-    this.criticality.code = this.allergy?.criticality;
-    this.substance.code = this.allergy?.reaction?.substance;
-    this.manifestation.code = this.allergy?.reaction?.manifestation;
-     this.route.code = this.allergy?.reaction?.exposureRoute;
+      
+       this.clinicalStatus.code = this.allergy?.clinicalStatus;
+      this.verificationStatus.code = this.item?.verificationStatus;
+      this.category.code = this.allergy?.category;
+      this.type.code = this.allergy?.type;
+      this.code.code = this.allergy?.code;
+      this.criticality.code = this.allergy?.criticality;
+      this.substance.code = this.allergy?.reaction?.substance;
+      this.manifestation.code = this.allergy?.reaction?.manifestation;
+      this.exposureRoute.code = this.allergy?.reaction?.exposureRoute;
   }
 
     getPractitionerName(id: string) {
@@ -471,8 +573,22 @@ export default class viewAlergyModal extends Vue {
   }
 
   async created() {
-    this.loadDefinitions();
+    await this.loadDefinitions();
     this.fetchPractitioners();
+
+    this.type;
+  }
+  mounted(){
+    this.loadDefinitions();
+     this.clinicalStatus.code = this.allergy?.clinicalStatus;
+      this.verificationStatus.code = this.item?.verificationStatus;
+      this.category.code = this.allergy?.category;
+      this.type.code = this.allergy?.type;
+      this.code.code = this.allergy?.code;
+      this.criticality.code = this.allergy?.criticality;
+      this.substance.code = this.allergy?.reaction?.substance;
+      this.manifestation.code = this.allergy?.reaction?.manifestation;
+      this.exposureRoute.code = this.allergy?.reaction?.exposureRoute;
   }
 }
 </script>

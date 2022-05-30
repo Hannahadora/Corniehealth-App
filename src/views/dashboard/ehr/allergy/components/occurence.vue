@@ -143,10 +143,8 @@ export default class occurenceModal extends Vue {
     return date ? new Date(date).toLocaleDateString() : "";
   }
 
-separateTime(date:string){
+  separateTime(date:string){
   const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
-  console.log(newtime, 'NREE');
-   //  this.setOccurencetime = newtime;
     return date ? newtime :''
   }
   
