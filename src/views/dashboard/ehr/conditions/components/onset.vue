@@ -87,14 +87,14 @@
             placeholder="0"
             class="grow w-full"
             :setfull="true"
-            v-model="timeable.minValue"
+            v-model="timeable.maxValue"
           />
           <cornie-select
             :items="['Days', 'Months', 'Years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
-            v-model="timeable.minUnit"
+            v-model="timeable.maxUnit"
           />
         </div>
       </div>

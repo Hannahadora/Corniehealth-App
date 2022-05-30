@@ -487,6 +487,8 @@ export default class AlergyModal extends Vue {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
 
+    this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     try {
       const response = await cornieClient().post(
         "/api/v1/allergy",
@@ -503,6 +505,9 @@ export default class AlergyModal extends Vue {
   async updateAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     const id = this.id;
     const url = `/api/v1/allergy/${id}`;
     const payload = this.payload;
