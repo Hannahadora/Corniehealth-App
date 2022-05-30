@@ -500,15 +500,15 @@ export default class VitalsForm extends Vue {
     },
     respiration: {
       respiratoryRate: {
-        unit: "",
+        unit: "/min",
         value: 0,
       },
       heartRate: {
-        unit: "",
+        unit: "/min",
         value: 0,
       },
       oxygenSaturation: {
-        unit: "",
+        unit: "%",
         value: 0,
       },
       bloodGlucoseLevel: {
@@ -534,7 +534,7 @@ export default class VitalsForm extends Vue {
         value: 0,
       },
       bodyMassIndex: {
-        unit: "",
+        unit: "kg/m³",
         value: 0,
       },
     },
@@ -558,18 +558,22 @@ export default class VitalsForm extends Vue {
 
   get bmi () {
     const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
-    const weightUnit = this.vitalData?.bodyWeight?.bodyWeight?.unit
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
+    if(heightValue !== 0 && weightValue !== 0) {
+       return (weightValue / this.convertHeightValue()).toFixed(2) || 0
+    } else return 0.00
+  }
+
+  convertHeightValue() {
     const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
     const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit
-    if(weightValue && heightValue) {
-      if(weightUnit === 'kg' && heightUnit === 'm³') {
-        return Number(weightValue / heightValue) || 0
-      }
-      if(weightUnit === 'kg' && heightUnit === 'cm') {
-        const hv = heightValue / 100
-        return Number(weightValue / hv) || 0
-      }
-    }
+    if(heightUnit === 'cm') {
+      return heightValue / 1000000;
+    } else if(heightUnit === 'in') {
+      return heightValue / 61024
+    } else if(heightUnit === 'ft') {
+      return heightValue / 35.315
+    } else return heightValue
   }
 
   removePresure(index: number) {
@@ -595,46 +599,46 @@ export default class VitalsForm extends Vue {
     this.vitalData = {
       bodyTemperature: {
         unit: "",
-        value: 0,
+        // value: 0,
       },
       respiration: {
         respiratoryRate: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         heartRate: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         oxygenSaturation: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         bloodGlucoseLevel: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
       },
       bloodPressure: [] as IBloodPressure[],
       circumferences: {
         bodyHeight: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         headCircumferences: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
       },
 
       bodyWeight: {
         bodyWeight: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         bodyMassIndex: {
-          unit: "",
-          value: 0,
+          unit: "kg/m³",
+          // value: 0,
         },
       },
 
@@ -698,7 +702,7 @@ export default class VitalsForm extends Vue {
       if (res.success) {
         this.getVitals(this.patientId);
         this.loading = false;
-        this.$emit("closesidemodal");
+         this.done();
         this.resetVitalData();
       }
     } catch (error) {

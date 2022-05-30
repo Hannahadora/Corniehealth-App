@@ -2,7 +2,7 @@
   <cornie-dialog
     v-model="show"
     right
-    class="w-4/12 h-full"
+    class="w-5/12 h-full"
     style="z-index: 999"
   >
     <cornie-card height="100%" class="flex flex-col bg-white">
@@ -28,7 +28,7 @@
         <div class="flex flex-col p-3 mb-7 h-96">
           <div class="border-b-2 pb-3 border-dashed">
             <cornie-select
-              @change="setValue(type)"
+              @change="setType(type)"
               label="Select Reference"
               class="w-full"
               :items="[
@@ -38,7 +38,7 @@
                 'Diagnostic Report',
                 'Risk Assessment',
                 'Imaging Study',
-                'Media'
+                'Media',
               ]"
               v-model="type"
             >
@@ -46,9 +46,7 @@
           </div>
           <div class="w-full">
             <div class="mt-4 mb-4">
-              <p class="text-gray-400 text-xs">
-                {{ check3.practitioners.length }} selected
-              </p>
+              <p class="text-gray-400 text-xs">{{ type }} selected</p>
             </div>
             <div class="relative bottom-2">
               <icon-input
@@ -65,77 +63,99 @@
               </icon-input>
             </div>
           </div>
-          <div class="overflow-y-auto h-96">
-            <div>
-              <div v-if="observeFilter">
-                <div>
-                  <div class="w-full mt-5 p-3">
+          <div class="overflow-y-auto">
+            <div v-if="type === 'Observation'">
+              <div v-for="(input, index) in observations" :key="index">
+                <div class="w-full mt-5 p-3" @click="getValue(input)">
+                  <div class="w-full">
                     <div class="w-full">
-                      <div class="w-full">
-                        <p class="text-sm text-dark mb-1 font-medium">
-                          [Identifier]
-                        </p>
-                        <p class="text-xs text-gray-300">xxxxxx</p>
-                      </div>
-                    </div>
-                    <div
-                      class="w-full -mt-8 cursor-pointer w-full text-xs text-danger"
-                    >
-                      <input
-                        type="checkbox"
-                        v-model="check3.practitioners"
-                        :value="'Identifier'"
-                        class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                      />
+                      <p class="text-sm text-dark mb-1 font-medium">
+                        {{ input }}
+                      </p>
+                      <p class="text-xs text-gray-300">xxxxxx</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="questionFilter">
-              <div>
-                <div class="w-full mt-2 p-3">
+            <div v-if="type === 'Questionaire Response'">
+              <div v-for="(input, index) in questions" :key="index">
+                <div class="w-full mt-2 p-3" @click="getValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
-                        [Identifier]
+                        {{ input }}
                       </p>
                       <p class="text-xs text-gray-300">xxxxxx</p>
                     </div>
                   </div>
-                  <div
-                    class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
-                  >
-                    <input
-                      type="checkbox"
-                      v-model="check3.practitioners"
-                      :value="'Identifier'"
-                      class="bg-danger focus-within:bg-danger px-6 shadow float-right"
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="type === 'Family member History'">
+            <div v-for="(input, index) in familyHistories" :key="index">
+              <div class="w-full mt-2 p-3">
+                <div class="w-full flex items-center justify-between">
+                  <div class="w-1/2 flex items-center space-x-4">
+                    <cornie-radio
+                      @change="setValue(input)"
+                      type="radio"
+                      name="selected"
+                      v-model="checkedValue"
+                      :value="input"
+                      class=""
                     />
+                    <div class="w-10 h-10">
+                      <avatar
+                        class="mr-2"
+                        v-if="input.image"
+                        :src="input.image"
+                      />
+                      <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                    <div class="w-full">
+                      <p class="text-sm text-dark font-semibold">
+                        {{ input.name }}
+                      </p>
+                      <p class="text-xs text-gray-500 font-meduim">
+                        {{ input.relationship }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="w-1/2">
+                    <p class="text-sm text-dark mb-1 font-medium">
+                      {{ input.conditionCode }}
+                    </p>
+                    <p class="text-xs text-gray-300">{{ input.age?.year }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="type === 'Diagnostic Report'">
+            <div v-for="(input, index) in diagnosticReports" :key="index">
+              <div class="w-full mt-2 p-3" @click="getValue(input)">
+                <div class="w-full">
+                  <div class="w-full">
+                    <p class="text-sm text-dark mb-1 font-medium">
+                      {{ input }}
+                    </p>
+                    <p class="text-xs text-gray-300">xxxxxx</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- </div> -->
+        <!-- </div> -->
       </cornie-card-text>
 
       <div class="flex justify-end pb-6 px-2">
-        <div class="flex justify-end w-full mt-auto" v-if="observeFilter">
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-        <div class="flex justify-end w-full mt-auto" v-if="questionFilter">
+        <div class="flex justify-end w-full mt-auto">
           <button
             class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
@@ -153,7 +173,9 @@
     </cornie-card>
   </cornie-dialog>
 </template>
-<script>
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { setup } from "vue-class-component";
 import Modal from "@/components/practitionermodal.vue";
 import DragIcon from "@/components/icons/draggable.vue";
@@ -176,10 +198,12 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
-const copy = (original) => JSON.parse(JSON.stringify(original));
+import { IObservation } from "@/types/IObservation";
+import IDiagnostic from "@/types/IDiagnostic";
+import { Investigation } from "@/types/IImpression";
 
-export default {
-  name: "item",
+@Options({
+  name: "ItemDialog",
   components: {
     ...CornieCard,
     Modal,
@@ -199,114 +223,76 @@ export default {
     Avatar,
     CornieRadio,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
+})
+export default class ItemDialog extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: Array, default: [] })
+  observations!: IObservation[];
+
+  @Prop({ type: Array, default: [] })
+  questions!: any[];
+
+  @Prop({ type: Array, default: [] })
+  familyHistories!: any[];
+
+  @Prop({ type: Array, default: [] })
+  diagnosticReports!: IDiagnostic[];
+
+  localSrc = require("../../../../assets/img/placeholder.png");
+  type = "Family member History";
+  selectedItem: Investigation = {
+    code: "",
+    item: {
+      type: "",
+      details: "",
+      id: "",
     },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    observations: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    questions: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
-  data() {
-    return {
-      selected: 0,
-      localSrc: require("../../../../assets/img/placeholder.png"),
-      check: true,
-      check2: false,
-      check3: {
-        practitioners: [],
-      },
-      Patients: [],
-      Practitioners: [],
-      Devices: [],
-      activeState: "",
-      practitionerType: "",
-      columnsProxy: [],
-      indexvalue: [],
-      valueid: [],
-      available: [],
-      type: "Practitioner",
-      assesorPractitionerValue: [],
-      assesorRoleValue: [],
-      availableFilter: false,
-      practitionername: "",
-      profileFilter: false,
-      observeFilter: true,
-      deviceFilter: false,
-      patientFilter: false,
-      questionFilter: false,
-      practitionerId: "",
-    };
-  },
-  watch: {
-    columns(val) {
-      this.columnsProxy = copy(val);
-    },
-    visible() {
-      const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      //this.columnsProxy = copy([...active]);
-    },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-  methods: {
-    setValue(value) {
-      if (value == "Practitioner") {
-        this.observeFilter = true;
-        this.questionFilter = false;
-        this.check = true;
-        this.check2 = false;
-        this.type = value;
-      } else if (value == "Role") {
-        this.questionFilter = true;
-        this.observeFilter = false;
-        this.type = value;
-        this.check2 = true;
-        this.check = false;
-      }
-    },
-    apply() {
-      this.$emit("update:preferred", this.check3.practitioners);
-      this.show = false;
-    },
-    select(i) {
-      this.selected = i;
-    },
-  },
-  mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
-  },
-  created() {
-    this.setValue();
-  },
-};
+  };
+  practitionerId = "";
+  checkedValue = <any>{};
+
+  setType(type: any) {
+    this.type = type;
+  }
+
+  @Watch("checkedValue")
+  valueChanged() {
+    this.setValue(this.checkedValue);
+  }
+
+  setValue(value: any) {
+    if (this.type === "Family member History") {
+      this.selectedItem.item.type = "family-history";
+      this.selectedItem.code = value.conditionCode;
+      this.selectedItem.item.details = value.name;
+      this.selectedItem.item.id = value.id;
+    }
+    if (this.type === "Observation") {
+      this.selectedItem.item.type = "observation";
+    }
+    if (this.type === "Diagnostic report") {
+      this.selectedItem.item.type = "diagnostic-report";
+    }
+    if (this.type === "Risk Assessment") {
+      this.selectedItem.item.type = "risk-assessment";
+    }
+    if (this.type === "Media") {
+      this.selectedItem.item.type = "media";
+    }
+    if (this.type === "Imaging Study") {
+      this.selectedItem.item.type = "imaging-study";
+    }
+  }
+
+  apply() {
+    this.$emit("getItem", this.selectedItem);
+    this.show = false;
+  }
+
+  created() {}
+}
 </script>
 <style scoped>
 .dflex {
