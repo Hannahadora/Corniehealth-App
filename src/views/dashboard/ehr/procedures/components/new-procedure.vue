@@ -6,7 +6,9 @@
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3">Create New</h2>
+          <h2 class="font-bold float-left text-lg text-primary ml-3">
+            Create New
+          </h2>
           <cancel-icon class="float-right fill-current text-danger cursor-pointer mt-1" @click="show = false" />
         </div>
       </cornie-card-title>
@@ -15,22 +17,24 @@
           <accordion-component class="rounded-none border-none text-primary" title="Basic info" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Based on</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Based on
+                </div>
                 <div @click="() => (showBasedOn = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Part of</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Part of
+                </div>
                 <div @click="() => (showPartOf = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -87,7 +91,6 @@
                   </div>
                 </div>
                 <cornie-input v-if="performed == 'string'" class="w-full" label="String" placeholder="Enter" />
-
               </div>
             </div>
           </accordion-component>
@@ -114,22 +117,24 @@
           <accordion-component class="rounded-none text-primary" title="Performer" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Actor</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Actor
+                </div>
                 <div @click="() => (showActor = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Function</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Function
+                </div>
                 <div @click="() => (showFunction = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -142,12 +147,13 @@
           <accordion-component class="rounded-none text-primary" title="Location" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Location</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Location
+                </div>
                 <div @click="() => (showLocation = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -161,7 +167,6 @@
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -170,12 +175,13 @@
               <cornie-select :label="'Outcome'" v-model="code" placeholder="Select"
                 :items="['ASAP', 'Callback results', 'callback for scheduling']" />
               <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">Report</div>
+                <div class="capitalize text-black text-sm font-semibold">
+                  Report
+                </div>
                 <div @click="() => (showReport = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -209,7 +215,6 @@
                   <div class="flex-1">Select</div>
                   <div class="flex-none self-center">
                     <add-icon class="fill-current text-danger" />
-
                   </div>
                 </div>
               </div>
@@ -226,6 +231,17 @@
           </accordion-component>
         </v-form>
       </cornie-card-text>
+      <div class="flex items-center justify-end mt-24">
+        <div class="flex items-center mb-6">
+          <cornie-btn @click="show = false" class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary">
+            Cancel
+          </cornie-btn>
+          <cornie-btn :loading="loading" @click="submit" type="submit"
+            class="text-white bg-danger px-3 py-1 rounded-lg">
+            Save
+          </cornie-btn>
+        </div>
+      </div>
     </cornie-card>
     <div>
       <basedon v-model="showBasedOn" />
@@ -253,6 +269,7 @@ import CancelIcon from "@/components/icons/cancel.vue";
 import AddIcon from "@/components/icons/plus.vue";
 import { Options, Vue } from "vue-class-component";
 import { PropSync } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import actor from "./actor.vue";
 import basedon from "./basedon.vue";
 import Function from "./function.vue";
@@ -262,6 +279,7 @@ import reasonReference from "./reason-reference.vue";
 import report from "./report.vue";
 import usedReference from "./used-reference.vue";
 
+const procedure = namespace("procedure");
 
 @Options({
   components: {
@@ -283,7 +301,7 @@ import usedReference from "./used-reference.vue";
     reasonReference,
     report,
     usedReference,
-    CornieRadio
+    CornieRadio,
   },
 })
 export default class NewProgressNote extends Vue {
@@ -303,6 +321,7 @@ export default class NewProgressNote extends Vue {
 
   performed = "range";
   recorderCheck = "";
+  loading = false;
   date = "";
   time = "";
   code = "";
@@ -312,15 +331,134 @@ export default class NewProgressNote extends Vue {
   };
   age = {
     value: "",
-    day: ""
-  }
+    day: "",
+  };
   period = {
     value: "",
-    day: ""
-  }
+    day: "",
+  };
   range = {
     value: "",
-    day: ""
+    day: "",
+  };
+
+  @procedure.Action
+  createProcedure!: (procedure: any) => Promise<boolean>;
+
+  async submit() {
+    let g = {
+      patientId: this.$route.params.id,
+      // recorderId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      // asserterId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      recorder: {
+        name: "string",
+        specialty: "string",
+      },
+      basedOn: [{
+        type: "care-plan",
+        date: "2022-05-30",
+        name: "string",
+      }],
+      partOf: {
+        type: "location",
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        name: "string",
+      },
+      category: "string",
+      // code: "120006",
+      status: "preparation",
+      performed: {
+        // dateTime: "2022-05-30",
+        // age: {
+        //   unit: "string",
+        //   value: 0,
+        // },
+        period: {
+          start: "2022-05-30",
+          end: "2022-05-30",
+          startTime: "2022-05-30",
+          endTime: "2022-05-30",
+        },
+        // range: {
+        //   unit: "string",
+        //   min: 0,
+        //   max: 0,
+        // },
+        // string: "string",
+      },
+      performers: [
+        {
+          type: "practitioner",
+          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          name: "string",
+          detail: "string",
+          dispenserType: "string",
+          dispenser: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        },
+      ],
+      performerFunction: {
+        type: "procedure",
+        practitioner: "string",
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        name: "string",
+        detail: "string",
+      },
+      locations: [
+        {
+          type: "location",
+          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          name: "string",
+        },
+      ],
+      reason: {
+        type: "condition",
+        practitioner: "string",
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        name: "string",
+        detail: "string",
+        practitionerSpecialty: "string",
+        date: "2022-05-30",
+      },
+      bodySite: "string",
+      outcome: "string",
+      // report: {
+      //   type: "diagnostic-report",
+      //   date: "2022-05-30",
+      //   id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      //   name: "string",
+      //   detail: "string",
+      // },
+      report: "jkdlkfj09435",
+      complication: "string",
+      complicationDetail: "string",
+      followUp: "string",
+      note: "string",
+      focalDeviceAction: "string",
+      focalDeviceManipulated: "string",
+      statusHistory: {
+        value: "string",
+        start: "2022-05-30",
+        end: "2022-05-30",
+        practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        practitionerName: "string",
+        current: true,
+        priorPrescription: "string",
+        detectedIssue: "string",
+        eventHistory: "string",
+      },
+      usedItems: [
+        {
+          type: "device",
+          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          name: "string",
+          detail: "string",
+        },
+      ],
+    };
+
+    await this.createProcedure(g)
+
+
   }
 }
 </script>

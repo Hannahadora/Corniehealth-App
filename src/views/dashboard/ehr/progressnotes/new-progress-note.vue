@@ -445,6 +445,7 @@ export default class NewProgressNote extends Vue {
       prognosisSupportingInfo: "string",
       prognosisSupportingInfoReference: "string",
     });
+    window.location.reload()
   }
 }
 </script>
