@@ -35,11 +35,11 @@
               <p class="text-gray-400 italic text-sm">Verification Status</p>
               <span class="text-sm">{{ allergy.verificationStatus }}</span>
             </div>
-            <!-- <div>
+            <div>
               <p class="text-gray-400 italic text-sm">Encounter</p>
               <span class="mb-0 text-sm">{{ allergy.encounter }}</span>
-              <p class="text-xs">24/02/2929</p>
-            </div> -->
+              <p class="text-xs">{{ new Date(allergy.createdAt).toLocaleDateString() }}</p>
+            </div>
             <div>
               <p class="text-gray-400 italic text-sm">Asserter</p>
                <div class="flex space-x-4">
