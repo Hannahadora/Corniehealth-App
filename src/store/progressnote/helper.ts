@@ -25,7 +25,18 @@ export async function createProgressNote(data: any) {
   return [] as any[];
 }
 
-export async function updateProgressNote(patientId: string, data: any) {}
+export async function updateProgressNote(id: string, data: any) {
+  try {
+    const response = await cornieClient().put(
+      `/api/v1/progress-notes/${id}`,
+      data
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+  return [] as any[];
+}
 
 export async function fetchAllergys(patientId: string) {
   try {

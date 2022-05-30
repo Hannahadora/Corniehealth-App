@@ -67,7 +67,7 @@ export default {
     async createProgressNote(ctx, data) {
       const response = await createProgressNote(data);
       console.log("created", response);
-      ctx.dispatch("fetchProgressNote");
+      // ctx.dispatch("fetchProgressNote");
     },
     async fetchProgressNote(ctx, id) {
       const response = await fetchProgressNote(id);
