@@ -70,23 +70,7 @@ export default class ProgressNotes extends Vue {
   }
 
   get items() {
-    const items = this.patientProgressNotes.map((progress: any) => ({
-      ...progress,
-      original: progress,
-      identifier: "XXXXX",
-      recorded: this.printRecorded(progress),
-      condition: this.printCondition(progress.condition),
-      status: this.printStatus(progress.condition),
-      // status:history.basicInfo.status
-      // code: this.printCode(condition.code),
-      // severity: this.printSeverity(condition.severity),
-      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
-      // recorder: {
-      //   name: printPractitioner(condition.practitioner!!),
-      //   department: condition.practitioner!!.department,
-      // },
-    }));
-    return items;
+    return []
   }
 
   async fetchProgressnotes() {

@@ -6,7 +6,9 @@
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Condition</h2>
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Origin
+          </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
@@ -24,41 +26,8 @@
               <search-icon />
             </template>
           </icon-input>
-          <div v-if="selectedOption == 'condition'" class="flex flex-col space-y-5">
-            <!-- {{ selectedId }} -->
-            <div v-for="c in conditions[$route.params.id]">
-              <div @click="() => (selectedId = c.id)" :class="`rounded-full flex px-5 py-3 cursor-pointer ${selectedId == c.id ? 'bg-blue-50' : ''
-              }`">
-                <div class="flex flex-col w-full">
-                  <div class="flex items-center">
-                    <div class="">{{ c.summary }} -</div>
-                    <div class="font-light text-xxs">{{ c.recordDate }}</div>
-                  </div>
-                  <div></div>
-                </div>
-                <div class="flex flex-col">
-                  <div>
-                    {{ c.practitioner.firstName }}
-                  </div>
-                  <div class="font-light text-xxs flex justify-end">
-                    {{ c.practitioner.department }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </cornie-card-text>
-      <div class="flex items-center justify-end mt-24">
-        <div class="flex items-center mb-6">
-          <cornie-btn @click="show = false" class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary">
-            Cancel
-          </cornie-btn>
-          <cornie-btn @click="submit" type="submit" class="text-white bg-danger px-3 py-1 rounded-lg">
-            Add
-          </cornie-btn>
-        </div>
-      </div>
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -81,7 +50,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PractionerSelect from "@/components/practitioner-select.vue";
 import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync } from "vue-property-decorator";
+import { PropSync } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 const hierarchy = namespace("hierarchy");
@@ -117,27 +86,8 @@ export default class ReasonReference extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop()
-  conditions!: any[];
-
-  radioValues = ["Condition", "Procedure"];
+  radioValues = ["Location", "Organisation"];
   selectedOption = "";
-  selectedId = "";
-  selectedData = ""
   query = "";
-
-  submit() {
-    if (!this.selectedId) return
-    let u = this.$route.params.id.toLocaleString()
-    //@ts-ignore
-    this.selectedData = this.conditions[u].find(x => x.id == this.selectedId)
-    this.$emit('selectedId', this.selectedData)
-    this.show = false
-  }
-
-  mounted() {
-    console.log("condition", this.conditions);
-    // console.log("procedures", this.procedures);
-  }
 }
 </script>

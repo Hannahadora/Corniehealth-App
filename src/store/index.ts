@@ -1,69 +1,67 @@
 import { createStore, StoreOptions } from "vuex";
-import DeviceStore from "./device";
-import UserStore from "./user";
-import Dropdown from "./dropdowns";
-import LocationStore from "./location";
-import ContactStore from "./contact";
-import MarkupStore from "./markup";
-
-import DomainStore from "./domain";
-import PaymentStore from "./payment";
-import CurrencyStore from "./currency";
-import CarePartnersStore from "./CarePartners";
-import practitioner from "./practitioner";
-import HealthcareStore from "./healthcare";
-import CareteamStore from "./careteam";
-import RolesStore from "./roles";
-import GroupteamStore from "./group";
-import PracticeformStore from "./practiceform";
-import AppointmentStore from "./appointment";
-import TaskStore from "./task";
-import UserSettingsStore from "./usersettings";
-import inventorySettings from "./inventory";
-import WaybillStore from "./waybill";
-
-import CalenderStore from "./calendar";
-import PrefrenceStore from "./prefrence";
-import OrgStore from "./organization";
-import CollectionStore from "./collection";
-import AssociationStore from "./associate";
-import VisitsStore from "./visits";
-import ShiftsStore from "./shift";
-import ScheduleStore from "./schedules";
-import PatientStore from "./patient";
-import RequestStore from "./request";
 import AllergyStore from "./allergy";
-import ImpressionStore from "./impression";
-import HistoryStore from "./history";
-import OrgLevels from "./hierarchy/levels";
-import OrganizationHierarchy from "./hierarchy";
-import OrgFunctions from "./hierarchy/functions";
-import VitalsStore from "./vitals";
-import ProcedureStore from "./procedure";
-import designation from "./hierarchy/designation";
-import condition from "./condition";
-import DetectedIssues from "./detectedissues";
-import Attachments from "./attachment";
-import PracticeInformationStore from "./practiceinformation";
-import hospitalisationStore from "./hospitalisation";
-import CareplanStore from "./careplan";
-import CatalogueStore from "./catalogues";
+import AppointmentStore from "./appointment";
+import AppointmentRoomStore from "./appointmentroom";
 import AppointmentTypeStore from "./appointments";
+import AssociationStore from "./associate";
+import Attachments from "./attachment";
+import CalenderStore from "./calendar";
 import CanelStore from "./cancel";
-import KycStore from "./kyc";
-import RouterStore from "./routing";
-import SpecialStore from "./special";
-
-import DispenseStore from "./dispense"
+import CarePartnersStore from "./CarePartners";
+import CareplanStore from "./careplan";
+import CareteamStore from "./careteam";
+import CatalogueStore from "./catalogues";
+import CollectionStore from "./collection";
+import condition from "./condition";
+import ContactStore from "./contact";
+import CurrencyStore from "./currency";
+import DetectedIssues from "./detectedissues";
+import DeviceStore from "./device";
 import DiagnostocStore from "./diagnostic";
 import DiagnosticReport from "./diagnostic-report";
-import RefferalStore from "./refferal";
-
-import AppointmentRoomStore from "./appointmentroom";
-import InventoryStockStore from "./inventorystock";
+import DispenseStore from "./dispense";
+import DomainStore from "./domain";
+import Dropdown from "./dropdowns";
+import encounter from "./encounter";
 import GrnStore from "./grn";
+import GroupteamStore from "./group";
+import HealthcareStore from "./healthcare";
+import OrganizationHierarchy from "./hierarchy";
+import designation from "./hierarchy/designation";
+import OrgFunctions from "./hierarchy/functions";
+import OrgLevels from "./hierarchy/levels";
+import HistoryStore from "./history";
+import hospitalisationStore from "./hospitalisation";
+import ImpressionStore from "./impression";
+import inventorySettings from "./inventory";
+import InventoryStockStore from "./inventorystock";
+import KycStore from "./kyc";
+import LocationStore from "./location";
+import MarkupStore from "./markup";
 import MaterialrequestStore from "./materialRequest";
 import MaterialreturnStore from "./materialReturn";
+import OrgStore from "./organization";
+import PatientStore from "./patient";
+import PaymentStore from "./payment";
+import PracticeformStore from "./practiceform";
+import PracticeInformationStore from "./practiceinformation";
+import practitioner from "./practitioner";
+import PrefrenceStore from "./prefrence";
+import ProcedureStore from "./procedure";
+import progressnote from "./progressnote";
+import RefferalStore from "./refferal";
+import RequestStore from "./request";
+import RolesStore from "./roles";
+import RouterStore from "./routing";
+import ScheduleStore from "./schedules";
+import ShiftsStore from "./shift";
+import SpecialStore from "./special";
+import TaskStore from "./task";
+import UserStore from "./user";
+import UserSettingsStore from "./usersettings";
+import VisitsStore from "./visits";
+import VitalsStore from "./vitals";
+import WaybillStore from "./waybill";
 
 export default createStore({
   modules: {
@@ -115,6 +113,7 @@ export default createStore({
     procedure: ProcedureStore,
     hospitalisation: hospitalisationStore,
     careplan: CareplanStore,
+    progressNote: progressnote,
 
     markup: MarkupStore,
     inventorystock: InventoryStockStore,
@@ -133,6 +132,8 @@ export default createStore({
     grn: GrnStore,
     materialrequest: MaterialrequestStore,
     materialreturn: MaterialreturnStore,
-    waybill : WaybillStore,
+    waybill: WaybillStore,
+
+    encounter: encounter,
   },
 } as StoreOptions<any>);

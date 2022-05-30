@@ -9,8 +9,33 @@ export async function fetchProgressNote(patientId: string) {
     if (response.success) {
       return response.data;
     }
+  } catch (error) {
+    console.log("fetch error", error);
+  }
+  return [];
+}
+
+export async function createProgressNote(data: any) {
+  try {
+    const response = await cornieClient().post("/api/v1/progress-notes", data);
+    if (response.success) {
+      return response.data;
+    }
   } catch (error) {}
-  return [] as IPro[];
+  return [] as any[];
+}
+
+export async function updateProgressNote(id: string, data: any) {
+  try {
+    const response = await cornieClient().put(
+      `/api/v1/progress-notes/${id}`,
+      data
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+  return [] as any[];
 }
 
 export async function fetchAllergys(patientId: string) {

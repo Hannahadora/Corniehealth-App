@@ -1,25 +1,20 @@
 <template>
   <cornie-dialog v-model="show" right class="w-1/2 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
+    <cornie-card height="100%" class="flex flex-col h-full bg-white px-6 overflow-y-scroll">
       <cornie-card-title class="">
         <icon-btn class="cursor-pointer" @click="show = false">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3">Create New</h2>
-          <cancel-icon class="float-right cursor-pointer mt-1" @click="show = false" />
+          <h2 class="font-bold float-left text-lg text-primary ml-3">
+            Create New
+          </h2>
+          <cancel-icon class="float-right cursor-pointer mt-1 fill-current text-danger" @click="show = false" />
         </div>
       </cornie-card-title>
       <cornie-card-text>
         <v-form class="flex-grow flex flex-col">
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Subjective"
-            :opened="false"
-          >
+          <accordion-component class="rounded-none border-none text-primary" title="Subjective" :opened="false">
             <div class="grid grid-cols-2 gap-6 py-6">
               <div class="col-span-2">
                 <div class="flex w-1/2">
@@ -27,13 +22,11 @@
                     <div class="capitalize text-black text-sm font-semibold">
                       Chief complaint
                     </div>
-                    <div
-                      @click="() => (showProblemModal = true)"
-                      class="flex border rounded-md p-3 mt-0.5"
-                    >
+                    <div @click="() => (showProblemModal = true)"
+                      class="flex items-center border rounded-md p-3 mt-0.5">
                       <div class="flex-1">Select</div>
                       <div class="flex-none self-center">
-                        <add-icon />
+                        <add-icon class="fill-current text-danger" />
                       </div>
                     </div>
                   </div>
@@ -56,27 +49,20 @@
                           </div>
                         </div>
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+
+                      <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" />
                     </div>
                   </div>
                   <div class="col-span-1">
-                    <date-time-picker
-                      class="w-full h-full"
-                      label="Date recorded"
-                      v-model:date="date"
-                      v-model:time="time"
-                    />
+                    <date-time-picker class="w-full h-full" label="Date recorded" v-model:date="date"
+                      v-model:time="time" />
                   </div>
                   <div class="col-span-1">
                     <div class="flex flex-col">
                       <div class="capitalize text-black text-sm font-semibold">
                         Severity
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+                      <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" />
                     </div>
                   </div>
                   <div class="col-span-1">
@@ -84,19 +70,14 @@
                       <div class="capitalize text-black text-sm font-semibold">
                         Verification status
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+                      <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <accordion-component
-              class="rounded-none shadow-none border-none text-primary"
-              title="Medications"
-              :opened="false"
-            >
+            <accordion-component class="rounded-none shadow-none border-none text-primary" title="Medications"
+              :opened="false">
               <div class="flex w-full justify-between space-x-20 pt-3">
                 <div class="flex-none">
                   <div class="flex flex-col">
@@ -117,9 +98,7 @@
                         <div class="underline-danger text-danger">View details</div>
                       </div> -->
                     </div>
-                    <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                      Autoloaded
-                    </div>
+                    <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" />
                   </div>
                   <div class="flex flex-col w-full">
                     <div class="flex">
@@ -131,15 +110,11 @@
                       </div> -->
                     </div>
                     <div class="grid grid-cols-3 gap-x-2">
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
+                      <div class="flex border rounded-md p-3 mt-0.5">
                         2 Tabs
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        1:1:1
-                      </div>
-                      <div
-                        class="flex border text-white bg-blue-700 rounded-md p-3 mt-0.5"
-                      >
+                      <div class="flex border rounded-md p-3 mt-0.5">1:1:1</div>
+                      <div class="flex border text-white bg-blue-700 rounded-md p-3 mt-0.5">
                         x 3 Days
                       </div>
                     </div>
@@ -149,11 +124,7 @@
             </accordion-component>
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Objective"
-            :opened="false"
-          >
+          <accordion-component class="rounded-none border-none text-primary" title="Objective" :opened="false">
             <div class="flex flex-col space-y-7">
               <div class="flex flex-col">
                 <div class="font-bold py-5">Diagnostics</div>
@@ -169,25 +140,16 @@
                         </div>
                       </div>
                     </div>
-                    <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                      Autoloaded
-                    </div>
+                    <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" />
                   </div>
-                  <date-time-picker
-                    class="w-full"
-                    label="Date reported"
-                    v-model:date="date"
-                    v-model:time="time"
-                  />
+                  <date-time-picker class="w-full" label="Date reported" v-model:date="date" v-model:time="time" />
                 </div>
               </div>
               <div class="flex flex-col">
                 <div class="font-bold flex py-5 items-center">
                   <div class="flex-1">Investigation</div>
                   <div class="flex-none">
-                    <div
-                      class="flex text-danger underline-danger text-sm font-bold items-center space-x-2"
-                    >
+                    <div class="flex text-danger underline-danger text-sm font-bold items-center space-x-2">
                       <div>
                         <add-icon />
                       </div>
@@ -196,21 +158,19 @@
                   </div>
                 </div>
                 <div class="grid grid-cols-2 gap-6">
-                  <cornie-select
-                    :label="'Code'"
-                    v-model="code"
-                    placeholder="Select"
-                    :items="['ASAP', 'Callback results', 'callback for scheduling']"
-                  />
+                  <cornie-select :label="'Code'" v-model="code" placeholder="Select" :items="[
+                    'ASAP',
+                    'Callback results',
+                    'callback for scheduling',
+                  ]" />
                   <div class="flex flex-col">
-                    <div class="capitalize text-black text-sm font-semibold">item</div>
-                    <div
-                      @click="() => (showItemsModal = true)"
-                      class="flex border rounded-md p-3 mt-0.5"
-                    >
+                    <div class="capitalize text-black text-sm font-semibold">
+                      item
+                    </div>
+                    <div @click="() => (showItemsModal = true)" class="flex items-center border rounded-md p-3 mt-0.5">
                       <div class="flex-1">Select</div>
                       <div class="flex-none">
-                        <add-icon />
+                        <add-icon class="fill-current text-danger" />
                       </div>
                     </div>
                   </div>
@@ -219,47 +179,32 @@
             </div>
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Assessment"
-            :opened="false"
-          >
+          <accordion-component class="rounded-none border-none text-primary" title="Assessment" :opened="false">
             <div class="grid grid-cols-2 gap-6 pt-5">
-              <cornie-select
-                :label="'Protocol(optional)'"
-                v-model="assessment.protocol"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <cornie-select
-                :label="'Summary'"
-                v-model="assessment.summary"
-                placeholder="Enter"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
+              <cornie-select :label="'Protocol(optional)'" v-model="assessment.protocol" placeholder="Select"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']" />
+              <cornie-select :label="'Summary'" v-model="assessment.summary" placeholder="Enter"
+                :items="['ASAP', 'Callback results', 'callback for scheduling']" />
               <div class="col-span-2">
                 <div class="flex w-full py-3 font-bold">Findings</div>
                 <div class="grid grid-cols-2 gap-6">
                   <div class="col-span-1">
-                    <cornie-select
-                      :label="'Item code'"
-                      v-model="assessment.summary"
-                      placeholder="Enter"
-                      :items="['ASAP', 'Callback results', 'callback for scheduling']"
-                    />
+                    <cornie-select :label="'Item code'" v-model="assessment.summary" placeholder="Enter" :items="[
+                      'ASAP',
+                      'Callback results',
+                      'callback for scheduling',
+                    ]" />
                   </div>
                   <div class="col-span-1">
                     <div class="flex flex-col">
                       <div class="capitalize text-black text-sm font-semibold">
                         Item Reference
                       </div>
-                      <div
-                        @click="() => (showItemReference = true)"
-                        class="flex border rounded-md p-3 mt-0.5"
-                      >
+                      <div @click="() => (showItemReference = true)"
+                        class="flex items-center border rounded-md p-3 mt-0.5">
                         <div class="flex-1">Select</div>
                         <div class="flex-none self-center">
-                          <add-icon />
+                          <add-icon class="fill-current text-danger" />
                         </div>
                       </div>
                     </div>
@@ -270,44 +215,30 @@
                 </div>
               </div>
             </div>
-            <accordion-component
-              class="rounded-none shadow-none border-none text-primary"
-              title="Prognosis"
-              :opened="false"
-            >
+            <accordion-component class="rounded-none shadow-none border-none text-primary" title="Prognosis"
+              :opened="false">
               <div class="grid grid-cols-2 gap-6 pt-5">
-                <cornie-select
-                  :label="'Code'"
-                  v-model="code"
-                  placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
-                />
-                <cornie-select
-                  :label="'Reference'"
-                  v-model="code"
-                  placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
-                />
-                <cornie-select
-                  :label="'Supporting info'"
-                  v-model="code"
-                  placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
-                />
-                <cornie-input
-                  class="w-full"
-                  label="Item REference"
-                  placeholder="Autoloaded"
-                />
+                <cornie-select :label="'Code'" v-model="code" placeholder="Select" :items="[
+                  'ASAP',
+                  'Callback results',
+                  'callback for scheduling',
+                ]" />
+                <cornie-select :label="'Reference'" v-model="code" placeholder="Select" :items="[
+                  'ASAP',
+                  'Callback results',
+                  'callback for scheduling',
+                ]" />
+                <cornie-select :label="'Supporting info'" v-model="code" placeholder="Select" :items="[
+                  'ASAP',
+                  'Callback results',
+                  'callback for scheduling',
+                ]" />
+                <cornie-input class="w-full" placeholder="Autoloaded" :disabled="true" label="Item Reference" />
               </div>
             </accordion-component>
           </accordion-component>
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Plan"
-            :opened="false"
-          >
+          <accordion-component class="rounded-none border-none text-primary" title="Plan" :opened="false">
             <div class="grid grid-cols-2 gap-5 pt-5">
               <div class="flex items-center w-full p-5 shadow-lg rounded-md">
                 <div class="flex-1">
@@ -317,9 +248,7 @@
                   </div>
                 </div>
                 <div class="flex-none">
-                  <div
-                    class="bg-grays w-14 h-14 flex items-center justify-center text-center"
-                  >
+                  <div class="bg-grays w-14 h-14 flex items-center justify-center text-center">
                     <add-icon />
                   </div>
                 </div>
@@ -332,9 +261,7 @@
                   </div>
                 </div>
                 <div class="flex-none">
-                  <div
-                    class="bg-grays w-14 h-14 flex items-center justify-center text-center"
-                  >
+                  <div class="bg-grays w-14 h-14 flex items-center justify-center text-center">
                     <add-icon />
                   </div>
                 </div>
@@ -347,9 +274,7 @@
                   </div>
                 </div>
                 <div class="flex-none">
-                  <div
-                    class="bg-grays w-14 h-14 flex items-center justify-center text-center"
-                  >
+                  <div class="bg-grays w-14 h-14 flex items-center justify-center text-center">
                     <add-icon />
                   </div>
                 </div>
@@ -362,9 +287,7 @@
                   </div>
                 </div>
                 <div class="flex-none">
-                  <div
-                    class="bg-grays w-14 h-14 flex items-center justify-center text-center"
-                  >
+                  <div class="bg-grays w-14 h-14 flex items-center justify-center text-center">
                     <add-icon />
                   </div>
                 </div>
@@ -377,9 +300,7 @@
                   </div>
                 </div>
                 <div class="flex-none">
-                  <div
-                    class="bg-grays w-14 h-14 flex items-center justify-center text-center"
-                  >
+                  <div class="bg-grays w-14 h-14 flex items-center justify-center text-center">
                     <add-icon />
                   </div>
                 </div>
@@ -393,18 +314,11 @@
           Save as Draft
         </div>
         <div class="flex items-center mb-6">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
-          >
+          <cornie-btn @click="show = false" class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary">
             Cancel
           </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="submit"
-            type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
-          >
+          <cornie-btn :loading="loading" @click="submit" type="submit"
+            class="text-white bg-danger px-3 py-1 rounded-lg">
             Save
           </cornie-btn>
         </div>
@@ -422,16 +336,21 @@ import CornieCard from "@/components/cornie-card";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
+import DateTimePicker from "@/components/date-time-picker.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
 import AddIcon from "@/components/icons/plus.vue";
-import DateTimePicker from "@/views/dashboard/schedules/components/datetime-picker.vue";
 import { Options, Vue } from "vue-class-component";
 import { PropSync } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import ItemReference from "./item-reference.vue";
 import items from "./items.vue";
 import problem from "./problem.vue";
+
+const progressNote = namespace("progressNote");
+const medicationRequest = namespace("request")
+const conditionR = namespace("condition")
 
 @Options({
   components: {
@@ -456,13 +375,77 @@ export default class NewProgressNote extends Vue {
   showProblemModal = false;
   showItemsModal = false;
   showItemReference = false;
+  loading = false;
 
-  date = "23/04/2022";
+  date = "";
   time = "";
   code = "";
   assessment = {
     protocol: "",
     summary: "",
   };
+
+  @progressNote.Action
+  createProgressNote!: (data: any) => Promise<void>;
+  @medicationRequest.Action
+  fetchrequestsById!: (id: string) => Promise<void>
+
+  async submit() {
+    await this.createProgressNote({
+      patientId: this.$route.params.id,
+      identifier: "",
+      chiefComplaint: {
+        type: "condition",
+        condition: "string",
+        dateRecorded: "2022-05-27",
+        severity: "string",
+        verificationStatus: "string",
+        referenceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      },
+      medications: [
+        {
+          name: "string",
+          strength: "string",
+          duration: "Unknown Type: String",
+          dosage: "string",
+          requestId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        },
+      ],
+      objectiveDiagnosis: [
+        {
+          summary: "string",
+          dateReported: "2022-05-27",
+        },
+      ],
+      objectiveInvestigations: [
+        {
+          code: "string",
+          item: {
+            type: "observation",
+            details: "string",
+            id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          },
+        },
+      ],
+      protocol: "string",
+      summary: "string",
+      assessmentFindings: [
+        {
+          type: "condition",
+          referenceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          practitioner: "string",
+          practitionerSpecialty: "string",
+          description: "string",
+          details: "string",
+        },
+      ],
+      assessmentBasis: "string",
+      prognosisCode: "string",
+      prognosisReference: "string",
+      prognosisSupportingInfo: "string",
+      prognosisSupportingInfoReference: "string",
+    });
+    window.location.reload()
+  }
 }
 </script>
