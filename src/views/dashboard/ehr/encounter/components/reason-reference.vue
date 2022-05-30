@@ -1,9 +1,6 @@
 <template>
   <cornie-dialog v-model="show" right class="w-2/6 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
+    <cornie-card height="100%" class="flex flex-col h-full bg-white px-6 overflow-y-scroll">
       <cornie-card-title class="">
         <icon-btn @click="show = false">
           <arrow-left stroke="#ffffff" />
@@ -18,32 +15,52 @@
       <cornie-card-text class="flex-grow scrollable">
         <div class="font-bold mb-4">Reference</div>
         <div class="grid grid-cols-3 gap-3">
-          <div
-            v-for="(r, i) in radioValues"
-            :key="r"
-            :class="i == 3 ? 'col-span-2' : 'col-span-1'"
-          >
-            <cornie-radio
-              v-model="selectedOption"
-              :value="r.toLocaleLowerCase()"
-              :label="r"
-            />
+          <div v-for="(r, i) in radioValues" :key="r" :class="i == 3 ? 'col-span-2' : 'col-span-1'">
+            <cornie-radio v-model="selectedOption" :value="r.toLocaleLowerCase()" :label="r" />
           </div>
         </div>
         <div class="flex flex-col">
-          <icon-input
-            autocomplete="off"
-            type="search"
-            v-model="query"
-            placeholder="Search"
-            class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
-          >
+          <icon-input autocomplete="off" type="search" v-model="query" placeholder="Search"
+            class="rounded-full w-full border-2 py-2 px-8 focus:outline-none">
             <template v-slot:prepend>
               <search-icon />
             </template>
           </icon-input>
+          <div v-if="selectedOption == 'condition'" class="flex flex-col space-y-5">
+            <!-- {{ selectedId }} -->
+            <div v-for="c in conditions[$route.params.id]">
+              <div @click="() => (selectedId = c.id)" :class="`rounded-full flex px-5 py-3 cursor-pointer ${selectedId == c.id ? 'bg-blue-50' : ''
+              }`">
+                <div class="flex flex-col w-full">
+                  <div class="flex items-center">
+                    <div class="">{{ c.summary }} -</div>
+                    <div class="font-light text-xxs">{{ c.recordDate }}</div>
+                  </div>
+                  <div></div>
+                </div>
+                <div class="flex flex-col">
+                  <div>
+                    {{ c.practitioner.firstName }}
+                  </div>
+                  <div class="font-light text-xxs flex justify-end">
+                    {{ c.practitioner.department }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </cornie-card-text>
+      <div class="flex items-center justify-end mt-24">
+        <div class="flex items-center mb-6">
+          <cornie-btn @click="show = false" class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary">
+            Cancel
+          </cornie-btn>
+          <cornie-btn @click="submit" type="submit" class="text-white bg-danger px-3 py-1 rounded-lg">
+            Add
+          </cornie-btn>
+        </div>
+      </div>
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -66,15 +83,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PractionerSelect from "@/components/practitioner-select.vue";
 import { Options, Vue } from "vue-class-component";
-import { PropSync } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-
-const hierarchy = namespace("hierarchy");
-const orgFunctions = namespace("OrgFunctions");
-const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
-const patients = namespace("patients");
-const report = namespace("diagnosticReport");
+import { Prop, PropSync } from "vue-property-decorator";
 
 @Options({
   name: "createReport",
@@ -97,13 +106,41 @@ const report = namespace("diagnosticReport");
     SearchIcon,
     IconInput,
   },
+  emits: ['selectedId']
 })
 export default class ReasonReference extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  radioValues = ["Condition", "Procedure", "Observation", "Immunization Recommendation"];
+  @Prop()
+  conditions!: any[];
+
+  @Prop()
+  procedures!: any[];
+
+  radioValues = [
+    "Condition",
+    "Procedure",
+    "Observation",
+    "Immunization Recommendation",
+  ];
   selectedOption = "";
+  selectedId = "";
+  selectedData = ""
   query = "";
+
+  submit() {
+    if (!this.selectedId) return
+    let u = this.$route.params.id.toLocaleString()
+    //@ts-ignore
+    this.selectedData = this.conditions[u].find(x => x.id == this.selectedId)
+    this.$emit('selectedId', this.selectedData)
+    this.show = false
+  }
+
+  mounted() {
+    console.log("condition", this.conditions);
+    console.log("procedures", this.procedures);
+  }
 }
 </script>
