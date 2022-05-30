@@ -218,6 +218,8 @@ export default class AllergyExistingState extends Vue {
   // @Prop({ type: Array, default: [] })
   // allergys!: IAllergy[];
   medicationMapper = (code: string) => "";
+  manifestationMapper = (code: string) => "";
+  exposureRouteMapper = (code: string) => "";
 
   @allergy.State
   allergys!: IAllergy[];
@@ -324,6 +326,13 @@ export default class AllergyExistingState extends Vue {
     this.medicationMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/substance-code"
     );
+
+    this.manifestationMapper =await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/clinical-findings"
+    );
+     this.exposureRouteMapper =await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/route-codes"
+    );
   }
 
 
@@ -347,8 +356,11 @@ export default class AllergyExistingState extends Vue {
         // onsetPeriod:
         //   allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
         // asserter: this.getPractitionerName(allergy.onSet.asserter),
-        // product: this.medicationMapper(allergy.reaction.substance),
+         substance: this.medicationMapper(allergy.reaction.substance),
+         manifestation: this.manifestationMapper(allergy.reaction.manifestation),
+         exposureRoute: this.exposureRouteMapper(allergy.reaction.exposureRoute),
         // type: mapDisplay(allergy.type),
+
       };
     });
     if (!this.query) return allergys;

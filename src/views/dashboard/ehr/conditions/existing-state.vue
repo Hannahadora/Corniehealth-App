@@ -325,6 +325,10 @@ export default class ExistingState extends Vue {
     return this._categories.find((cat) => cat.code == type)?.display || "";
   }
 
+  printAssesment(value: any){
+    return value.map((c:any) => c.reference)
+  }
+
   get items() {
     const items = this.patientConditions.map((condition) => ({
       ...condition,
@@ -340,6 +344,7 @@ export default class ExistingState extends Vue {
         name: printPractitioner(condition.practitioner!!),
         department: condition.practitioner!!.department,
       },
+      reference: this.printAssesment(condition.assessment)
     }));
     return items;
   }

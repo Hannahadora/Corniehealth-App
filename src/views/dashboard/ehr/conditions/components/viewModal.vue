@@ -67,12 +67,99 @@
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
         <accordion-component title="Onset" :opened="true">
           <template v-slot:default>
-            <div>
-              <onset-picker
-                :disabled="true"
-                v-model="onsetmesurable"
-                label="Onset"
-              />
+            <div class="mt-5">
+              <div class="mt-5 grid grid-cols-2 gap-4" v-if="condition.onSet.dateTime != null">
+                <date-time-picker
+                  v-model:date="condition.onSet.dateTime"
+                  :time="separateTime(condition.onSet.dateTime)"
+                  label="Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="condition.onSet.age != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="condition.onSet.age.value"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="condition.onSet.age.unit"
+                      :disabled="true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="condition.onSet.period != null">
+                <date-time-picker
+                  v-model:date="condition.onSet.period.start"
+                  :time="separateTime(condition.onSet.period.startTime)"
+                  label="Start Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+                <date-time-picker
+                  v-model:date="condition.onSet.period.end"
+                  :time="separateTime(condition.onSet.period.endTime)"
+                  label="End Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+              </div>
+              <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="condition.onSet.range != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="condition.onSet.range.min"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="condition.onSet.range.unit"
+                      :disabled="true"
+                    />
+                  </div>
+                </div>
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                     v-model="condition.onSet.range.max"
+                     :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="condition.onSet.range.min"
+                     :disabled="true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="condition.onSet.string != null">
+                 <cornie-input label="String" v-model="condition.onSet.string"  :disabled="true" />
+              </div>
             </div>
           </template>
         </accordion-component>
@@ -80,12 +167,99 @@
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
         <accordion-component :opened="true" title="Abatement">
           <template v-slot:default>
-            <div>
-              <onset-picker
-                :disabled="true"
-                v-model="abatementMeasurable"
-                label="Onset"
-              />
+            <div v-for="(abatement, index) in condition.abatement" :key="index">
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="abatement.dateTime != null">
+                  <date-time-picker
+                    v-model:date="abatement.dateTime"
+                    :time="separateTime(abatement.dateTime)"
+                    label="Date/Time"
+                    width="w-11/12"
+                    :disabled="true"
+                  />
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="abatement.age != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="abatement.age.value"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="abatement.age.unit"
+                      :disabled="true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="abatement.period != null">
+                <date-time-picker
+                  v-model:date="abatement.period.start"
+                  :time="separateTime(abatement.period.startTime)"
+                  label="Start Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+                <date-time-picker
+                  v-model:date="abatement.period.end"
+                  :time="separateTime(abatement.period.endTime)"
+                  label="End Date/Time"
+                  width="w-11/12"
+                  :disabled="true"
+                />
+              </div>
+              <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="abatement.range != null">
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="abatement.range.min"
+                      :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="abatement.range.unit"
+                      :disabled="true"
+                    />
+                  </div>
+                </div>
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                     v-model="abatement.range.max"
+                     :disabled="true"
+                    />
+                    <cornie-select
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="abatement.range.min"
+                     :disabled="true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="abatement.string != null">
+                <cornie-input label="Year" v-model="abatement.string"  :disabled="true" />
+              </div>
             </div>
           </template>
         </accordion-component>
@@ -95,7 +269,7 @@
           <template v-slot:default>
             <div class="mt-8 grid grid-cols-2 gap-4 w-full">
               <div class="">
-                <date-time-picker v-model:date="recordDate"  v-model:time="recordTime" :label="'Date/Time'" :disabled="true" />
+                <date-time-picker v-model:date="condition.createdAt"  :time="separateTime(condition.createdAt)" :label="'Date/Time'" :disabled="true" />
               </div>
               <cornie-input
                 label="Recorder"
@@ -127,7 +301,7 @@
                 label="Summary"
               />
               <cornie-input
-                v-model="assessmentName"
+                v-model="condition.reference"
                 :disabled="true"
                 label="Assessment"
               />
@@ -193,14 +367,14 @@
           @click="show = false"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
         >
-          Cancel
+          Close
         </cornie-btn>
-        <cornie-btn
+        <!-- <cornie-btn
           :loading="loading"
           class="text-white bg-danger px-6 rounded-xl"
         >
           Save
-        </cornie-btn>
+        </cornie-btn> -->
       </div>
     </template>
   </clinical-dialog>
@@ -371,6 +545,7 @@ export default class ViewCondtionModal extends Vue {
   referenceEncounter = "";
 
   asserter = "";
+  
 
   onsetTimeable = { ...timeable };
   onsetMeasurable = { ...measurable };
@@ -416,6 +591,11 @@ export default class ViewCondtionModal extends Vue {
 
   }
 
+  
+  separateTime(date:string){
+  const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
+    return date ? newtime :''
+  }
  
   async setAsserter() {
     this.asserter = this.authPractitioner?.id || "";
@@ -519,7 +699,7 @@ export default class ViewCondtionModal extends Vue {
 
 
   async created() {
-    this.loadDefinitions();
+    await this.loadDefinitions();
     this.setCondition();
     await this.fetchPractitioners();
     this.setAsserter();
