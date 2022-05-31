@@ -60,7 +60,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['/min']"
                   placeholder="/min"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -77,7 +77,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['/min']"
                   placeholder="/min"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -94,7 +94,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="temperatureUnits"
+                  :items="['%']"
                   placeholder="%"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -111,7 +111,7 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="['mm/dL', 'mmo/L']"
+                  :items="['mm/dL', 'mmol/L']"
                   placeholder="mm/dL"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -190,12 +190,13 @@
                 <cornie-input
                   label="Body Mass Index (BMI)"
                   placeholder="0"
-                  v-model="vitalData.bodyWeight.bodyMassIndex.value"
+                  :disabled="true"
+                  v-model="bmi"
                   class="grow w-full"
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="['cm', 'in', 'ft']"
+                  :items="['kg/m³']"
                   placeholder="kg/m³"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
@@ -308,7 +309,7 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-between mt-24">
-        <div class="text-red-500 py-1 px-2 text-sm">Cancel</div>
+        <div class="text-red-500 py-1 px-2 text-sm">Save as draft</div>
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -499,15 +500,15 @@ export default class VitalsForm extends Vue {
     },
     respiration: {
       respiratoryRate: {
-        unit: "",
+        unit: "/min",
         value: 0,
       },
       heartRate: {
-        unit: "",
+        unit: "/min",
         value: 0,
       },
       oxygenSaturation: {
-        unit: "",
+        unit: "%",
         value: 0,
       },
       bloodGlucoseLevel: {
@@ -533,7 +534,7 @@ export default class VitalsForm extends Vue {
         value: 0,
       },
       bodyMassIndex: {
-        unit: "",
+        unit: "kg/m³",
         value: 0,
       },
     },
@@ -553,6 +554,26 @@ export default class VitalsForm extends Vue {
 
   get practitionerId() {
     return this.authPractitioner?.id;
+  }
+
+  get bmi () {
+    const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
+    if(heightValue !== 0 && weightValue !== 0) {
+       return (weightValue / this.convertHeightValue()).toFixed(2) || 0
+    } else return 0.00
+  }
+
+  convertHeightValue() {
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
+    const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit
+    if(heightUnit === 'cm') {
+      return heightValue / 1000000;
+    } else if(heightUnit === 'in') {
+      return heightValue / 61024
+    } else if(heightUnit === 'ft') {
+      return heightValue / 35.315
+    } else return heightValue
   }
 
   removePresure(index: number) {
@@ -578,46 +599,46 @@ export default class VitalsForm extends Vue {
     this.vitalData = {
       bodyTemperature: {
         unit: "",
-        value: 0,
+        // value: 0,
       },
       respiration: {
         respiratoryRate: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         heartRate: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         oxygenSaturation: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         bloodGlucoseLevel: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
       },
       bloodPressure: [] as IBloodPressure[],
       circumferences: {
         bodyHeight: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         headCircumferences: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
       },
 
       bodyWeight: {
         bodyWeight: {
           unit: "",
-          value: 0,
+          // value: 0,
         },
         bodyMassIndex: {
-          unit: "",
-          value: 0,
+          unit: "kg/m³",
+          // value: 0,
         },
       },
 
@@ -641,6 +662,19 @@ export default class VitalsForm extends Vue {
       date: new Date().toLocaleDateString(),
       time: new Date().toTimeString().substring(0, 5),
     });
+    this.newBp = {
+      position: "",
+      systolicBloodPressure: {
+        unit: "",
+        value: 0,
+      },
+      diastolicBloodPressure: {
+        unit: "",
+        value: 0,
+      },
+      date: "",
+      time: "",
+    };
   }
 
   get patientId() {
@@ -662,12 +696,15 @@ export default class VitalsForm extends Vue {
       this.vitalData.practitionerId = this.practitionerId;
       this.vitalData.patientId = this.patientId;
       this.vitalData.bloodPressure = this.collectedPressures;
+      this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi as number;
 
-      await this.createVital(this.vitalData);
-      this.getVitals(this.patientId);
-      this.loading = false;
-      this.$emit("closesidemodal");
-      this.resetVitalData();
+      const res: any = await this.createVital(this.vitalData);
+      if (res.success) {
+        this.getVitals(this.patientId);
+        this.loading = false;
+         this.done();
+        this.resetVitalData();
+      }
     } catch (error) {
       this.loading = false;
     }

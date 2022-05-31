@@ -201,7 +201,7 @@ export default class Medication extends Vue {
   }
 
   done() {
-    this.$emit("allergy-added");
+    this.$emit("status-added");
     this.show = false;
   }
   async apply() {

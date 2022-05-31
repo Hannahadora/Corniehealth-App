@@ -1,494 +1,407 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
-    <cornie-card height="100%" class="flex flex-col">
-      <cornie-card-title class="w-full">
-        <div class="w-full mb-4">
-          <div>
-          <arrow-left-icon stroke="#ffffff" />
-             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ newaction }} Impression
-          </h2>
-          </div>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
-        </div>
-      </cornie-card-title>
-
-      <cornie-card-text class="flex-grow scrollable">
-        <v-form ref="form">
-          <!-- <p class="text-gray-400 text-xs p-3 -mt-5 -mb-5">
+  <clinical-dialog
+    v-model="show"
+    :title="newaction + ' ' + 'Impression'"
+    class=""
+  >
+    <v-form ref="form">
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <!-- <p class="text-gray-400 text-xs p-3 -mt-5 -mb-5">
             Fields with <span class="text-danger">*</span> are required
           </p> -->
-          <accordion-component
-            class="text-primary"
-            title="Basic Info"
-            :opened="true"
-          >
-            <div class="grid grid-cols-2 gap-4 w-full my-3">
-              <main-cornie-select
-                class="w-full"
-                :items="['Active', 'Inactive', 'Resolved']"
-                v-model="impressionModel.basicInfo.code"
-                label="Code"
-              >
-              </main-cornie-select>
-              <cornie-input
-                label="Description"
-                class="w-full"
-                v-model="impressionModel.basicInfo.description"
-              />
-            </div>
-          </accordion-component>
+        <accordion-component
+          class="text-primary"
+          title="Basic Info"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full my-3">
+            <main-cornie-select
+              class="w-full"
+              :items="['Active', 'Inactive', 'Resolved']"
+              v-model="impressionModel.basicInfo.code"
+              label="Code"
+            >
+            </main-cornie-select>
+            <cornie-input
+              label="Description"
+              class="w-full"
+              v-model="impressionModel.basicInfo.description"
+            />
+          </div>
+        </accordion-component>
 
-          <accordion-component
-            class="text-primary"
-            title="Effective"
-            :opened="true"
+        <accordion-component
+          class="text-primary"
+          title="Effective"
+          :opened="true"
+        >
+          <div class="grid grid-cols-3 gap-3 mt-6 w-1/2">
+            <cornie-radio
+              name="effective"
+              v-model="effectiveType"
+              label="Date/Time"
+              value="date-time"
+            />
+            <cornie-radio
+              name="effective"
+              v-model="effectiveType"
+              value="period"
+              label="Period"
+            />
+          </div>
+          <div
+            v-if="effectiveType === 'date-time'"
+            class="grid grid-cols-2 gap-4 w-full mt-5"
           >
-            <div class="grid grid-cols-3 gap-3 mt-6 w-1/2">
-              <cornie-radio
-                name="effective"
-                v-model="effectiveType"
+            <div class="w-full mt-5">
+              <date-time-picker
+                v-model:date="data.date"
+                v-model:time="data.dateTime"
                 label="Date/Time"
-                value="date-time"
-              />
-              <cornie-radio
-                name="effective"
-                v-model="effectiveType"
-                value="period"
-                label="Period"
+                width="w-11/12"
               />
             </div>
-            <div
-              v-if="effectiveType === 'date-time'"
-              class="grid grid-cols-2 gap-4 w-full mt-5"
-            >
-              <div class="w-full mt-5">
-                <date-time-picker
-                  v-model:date="data.date"
-                  v-model:time="data.dateTime"
-                  label="Date/Time"
-                  width="w-11/12"
-                />
-              </div>
-            </div>
-            <div
-              v-else-if="effectiveType === 'period'"
-              class="grid grid-cols-2 gap-6"
-            >
-              <div class="w-full mt-5">
-                <date-time-picker
-                  v-model:date="data.startDate"
-                  v-model:time="data.startTime"
-                  label="Date/Time"
-                  width="w-11/12"
-                />
-              </div>
-              <div class="w-full mt-5">
-                <date-time-picker
-                  v-model:date="data.endDate"
-                  v-model:time="data.endTime"
-                  label="Date/Time"
-                  width="w-11/12"
-                />
-              </div>
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Recorded"
-            :opened="true"
+          </div>
+          <div
+            v-else-if="effectiveType === 'period'"
+            class="grid grid-cols-2 gap-6"
           >
-            <div class="grid grid-cols-2 gap-4 w-full mt-5">
-              <div class="w-full mt-5">
-                <date-time-picker
-                  v-model:date="impressionModel.recorded.date"
-                  v-model:time="impressionModel.recorded.dateTime"
-                  label="Recorded Date"
-                  width="w-11/12"
-                />
-              </div>
-              <div class="mt-5" v-if="assessorItems.length > 0">
-                <label
-                  for="assessor"
-                  @click="showAssessor"
-                  class="cursor-pointer flex capitalize text-black text-sm font-bold"
-                  >assessor
-                </label>
-                <cornie-select
-                  class="w-full"
-                  :items="assessorItems"
-                  v-model="impressionModel.recorded.assessor"
-                >
-                </cornie-select>
-              </div>
+            <div class="w-full mt-5">
+              <date-time-picker
+                v-model:date="data.startDate"
+                v-model:time="data.startTime"
+                label="Date/Time"
+                width="w-11/12"
+              />
+            </div>
+            <div class="w-full mt-5">
+              <date-time-picker
+                v-model:date="data.endDate"
+                v-model:time="data.endTime"
+                label="Date/Time"
+                width="w-11/12"
+              />
+            </div>
+          </div>
+        </accordion-component>
 
-              <div v-else>
-                <div class="w-full cursor-pointer mt-6" @click="showAssessor">
-                  <label
-                    class="flex capitalize text-black text-sm font-bold"
-                    >assessor</label
-                  >
-                  <div class="flex items-center">
-                    <input-desc-rounded
-                      :info="''"
-                      class="cursor-pointer w-11/12"
-                    >
-                      <input
-                        disabled
-                        type="text"
-                        placeholder="Autoloaded"
-                        class="cursor-pointer p-2 border w-full mr-2"
-                        style="border-radius: 8px"
-                      />
-                    </input-desc-rounded>
-                    <img src="@/assets/img/asseor-update.svg" class="ml-2" alt="" />
+        <accordion-component
+          class="text-primary"
+          title="Recorded"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full mt-5">
+            <div class="w-full mt-5">
+              <date-time-picker
+                v-model:date="recordedDate"
+                v-model:time="recordedTime"
+                label="Recorded Date"
+                width="w-11/12"
+              />
+            </div>
+            <div class="" v-if="assessorItems.length > 0">
+              <label
+                for="assessor"
+                @click="showAssessor"
+                class="cursor-pointer flex capitalize text-black text-sm font-bold"
+                >assessor
+              </label>
+              <cornie-input class="w-full" v-model="assessorItems">
+              </cornie-input>
+            </div>
+
+            <div v-else>
+              <div class="w-full cursor-pointer" @click="showAssessor">
+                <label class="flex capitalize text-black text-sm font-bold"
+                  >assessor</label
+                >
+                <div class="flex items-center">
+                  <input-desc-rounded :info="''" class="cursor-pointer w-11/12">
+                    <input
+                      disabled
+                      type="text"
+                      placeholder="Autoloaded"
+                      class="cursor-pointer p-2 border w-full mr-2"
+                      style="border-radius: 8px"
+                      v-model="asessor"
+                    />
+                  </input-desc-rounded>
+                  <img
+                    src="@/assets/img/asseor-update.svg"
+                    class="ml-2"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+
+            <main-cornie-select
+              class="w-full"
+              :items="['Clinical Impression']"
+              v-model="impressionModel.recorded.previous"
+              label="previous"
+            >
+            </main-cornie-select>
+
+            <div class="w-full cursor-pointer" @click="showProblemModal = true">
+              <cornie-input
+                v-bind="$attrs"
+                label="Problem"
+                readonly
+                @click="show = true"
+              >
+                <template #append-inner>
+                  <plus-icon class="fill-current text-danger" />
+                </template>
+              </cornie-input>
+            </div>
+          </div>
+
+          <div v-if="conditionItems.length > 0">
+            <div class="w-full flex items-center py-5">
+              <div
+                class="w-4/12"
+                v-for="(record, index) in conditionItems"
+                :key="index"
+              >
+                <p class="text-red-500 text-sm font-medium mb-2">
+                  {{ record?.referenceType }}
+                </p>
+                <div class="w-11/12" style="border-right: 1px dashed #878e99">
+                  <div class="w-full flex items-center">
+                    <div class="w-8/12 flex flex-col">
+                      <span class="font-semibold">{{
+                        record?.description
+                      }}</span>
+                      <div>
+                        <p>
+                          {{ record?.practitioner }}
+                        </p>
+                        <p>{{ record?.practitionerSpecialty }}</p>
+                      </div>
+                    </div>
+                    <div class="w-4/12 flex items-center justify-center">
+                      <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                      <span class="mx-2 cursor-pointer"
+                        ><delete-icon @click="removeCondition(index)"
+                      /></span>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <main-cornie-select
-                class="w-full"
-                :items="['Clinical Impression']"
-                v-model="impressionModel.recorded.previous"
-                label="previous"
-              >
-              </main-cornie-select>
-
-              <div
-                class="w-full cursor-pointer clear-left mt-1"
-                v-if="setType == 'Allergy'"
-                @click="showProblem($event)"
-              >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
-                  >Problem</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    type="text"
-                    disabled
-                    :value="problemItems.code"
-                    placeholder="Select Problem"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-              <div
-                class="w-full cursor-pointer clear-left mt-1"
-                v-else
-                @click="showProblem($event)"
-              >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
-                  >Problem</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    type="text"
-                    disabled
-                    :value="'Identifier'"
-                    placeholder="Select Problem"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
             </div>
+          </div>
+        </accordion-component>
 
-            <!-- <cornie-input
-                     v-if="setType == 'Allergy'"
-                     @click="showProblem"
-                      class="w-full"
-                      v-model="impressionModel.effective.problem"
-                      :value="problemItems.code"
-                      label="Problem"
-                      placeholder="Select Problem"
-                      >
-                      </cornie-input>
-                       <cornie-input
-                    v-else
-                     @click="showProblem"
-                      class="w-full"
-                      v-model="impressionModel.effective.problem"
-                     :value="conditionItems.name"
-                      label="Problem" 
-                      placeholder="Select Problem"
-                      >
-                      </cornie-input> -->
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Investigation"
-            :opened="true"
-          >
-            <div class="grid grid-cols-2 gap-4 w-full mt-5">
-              <cornie-select
-                class="w-full"
-                label="code"
-                :items="['Examination / Signs', 'History / Symptoms']"
-                v-model="impressionModel.investigation.code"
-              >
-              </cornie-select>
-              <div
-                class="w-full cursor-pointer"
-                v-if="investigateItems.length === 0"
-                @click="showItem"
-              >
-                <label class="flex capitalize mb-1 text-black text-sm font-bold"
-                  >Item</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    disabled
-                    type="text"
-                    placeholder="Select Item"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-              <div class="" v-else>
-                <label
-                  for="item"
-                  @click="showItem"
-                  class="cursor-pointer flex capitalize mb-1 text-black text-sm font-bold"
-                  >item
-                </label>
-                <cornie-select
-                  class="w-full"
-                  :items="investigateItems"
-                  :value="'Identifier'"
-                  v-model="impressionModel.investigation.item"
-                >
-                </cornie-select>
-              </div>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-              <button
-                type="button"
-                class="flex items-center border border-blue-900 px-6 py-3 text-primary text-base font-bold rounded-full"
-              >
-                <plus-icon class="mr-2" />
-                Add
-              </button>
-            </div>
-            <!-- <div class="">
-              <Textarea
-                class="w-full"
-                v-model="impressionModel.investigation.summary"
-                label="Summary"
-                placeholder="Enter summary"
-              />
-              <span></span>
-            </div> -->
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Protocol"
-            :opened="true"
-          >
-            <div class="grid grid-cols-2 gap-4 w-full my-3">
-              <main-cornie-select
-                class="w-full"
-                :items="['Active', 'Inactive', 'Resolved']"
-                v-model="impressionModel.protocol.protocol"
-                label="Protocol"
-              >
-              </main-cornie-select>
+        <accordion-component
+          class="text-primary"
+          title="Investigation"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full mt-5">
+            <cornie-input
+              class="w-full"
+              label="code"
+              disabled
+              placeholder="Autogenerated"
+            >
+            </cornie-input>
+            <div class="w-full cursor-pointer" @click="showItem">
               <cornie-input
-                label="Summary"
-                class="w-full"
-                v-model="impressionModel.protocol.summary"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Findings"
-            :opened="true"
-          >
-            <div class="grid grid-cols-2 gap-4 w-full mt-5">
-              <cornie-select
-                class="w-full"
-                label="Item code"
-                :items="[
-                  'Anxiety disorder of childhood OR adolescence',
-                  'Choroidal hemorrhage',
-                  '	Spontaneous abortion with laceration of cervix',
-                  'Homoiothermia',
-                  'Decreased hair growth',
-                  'Chronic pharyngitis',
-                  'Normal peripheral vision',
-                ]"
-                v-model="impressionModel.findings.item"
+                v-bind="$attrs"
+                label="Item"
+                readonly
+                @click="show = true"
               >
-              </cornie-select>
-              <div
-                class="w-full cursor-pointer clear-left -mt-1"
-                v-if="setFindingType == 'Condition'"
-                @click="showFindings"
-              >
-                <label
-                  class="flex normal-case mb-1 text-black text-sm font-bold"
-                  >Item Reference</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    type="text"
-                    disabled
-                    :value="'Identifier'"
-                    placeholder="Select Item Reference"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-              <div
-                class="w-full cursor-pointer clear-left -mt-1"
-                v-else-if="setFindingType == 'Observation'"
-                @click="showFindings"
-              >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
-                  >Item Reference</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    type="text"
-                    disabled
-                    :value="'Identifier'"
-                    placeholder="Select Item Reference"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-              <div
-                class="w-full cursor-pointer clear-left -mt-1"
-                v-else
-                @click="showFindings"
-              >
-                <label
-                  class="flex normal-case mb-0 text-black text-sm font-bold"
-                  >Item Reference</label
-                >
-                <input-desc-rounded :info="''" class="cursor-pointer">
-                  <input
-                    type="text"
-                    disabled
-                    :value="'Identifier'"
-                    placeholder="Select Item Reference"
-                    class="cursor-pointer p-2 border w-100 w-full"
-                    style="border-radius: 8px"
-                  />
-                </input-desc-rounded>
-              </div>
-              <cornie-input
-                class="w-full"
-                v-model="impressionModel.findings.basis"
-                label="Basis"
-                placeholder="Enter"
-              >
+                <template #append-inner>
+                  <plus-icon class="fill-current text-danger" />
+                </template>
               </cornie-input>
             </div>
-          </accordion-component>
+          </div>
 
-          <accordion-component
-            class="text-primary"
-            title="Findings"
-            :opened="true"
-          >
-            <div class="grid grid-cols-2 gap-4 w-full mt-5">
-              <cornie-select
-                class="w-full"
-                label="Item Code"
-                :items="[
-                  'Conditional prognosis',
-                  'Fair prognosis',
-                  'Guarded prognosis',
-                  'Good prognosis',
-                  'Poor prognosis',
-                  'Prognosis uncertain',
-                ]"
-                v-model="impressionModel.prognosis.prognosis"
+          <div class="mt-4 flex items-center justify-end">
+            <button @click="showItem"
+              type="button"
+              class="flex items-center border border-blue-900 px-6 py-3 text-primary text-base font-bold rounded-full"
+            >
+              <plus-icon class="mr-2" />
+              Add
+            </button>
+          </div>
+
+          <div v-if="investigationItems.length > 0">
+            <div class="w-full flex items-center py-5">
+              <div
+                class="w-4/12"
+                v-for="(record, index) in investigationItems"
+                :key="index"
               >
-              </cornie-select>
-              <cornie-select
-                class="w-full"
-                label="Item Reference"
-                :items="['Prognosis Reference']"
-                v-model="impressionModel.prognosis.prognosisReference"
-              >
-              </cornie-select>
+                <p class="text-red-500 text-sm font-medium mb-2">
+                  {{ record?.item?.type }}
+                </p>
+                <div class="w-11/12" style="border-right: 1px dashed #878e99">
+                  <div class="w-full flex items-center">
+                    <div class="w-8/12 flex flex-col">
+                      <div>
+                        <p>
+                          {{ record?.item?.details }}
+                        </p>
+                        <p>{{ record?.code }}</p>
+                      </div>
+                    </div>
+                    <div class="w-4/12 flex items-center justify-center">
+                      <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                      <span class="mx-2 cursor-pointer"
+                        ><delete-icon @click="removeInvestigation(index)"
+                      /></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </accordion-component>
+
+        <accordion-component
+          class="text-primary"
+          title="Protocol"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full my-3">
+            <main-cornie-select
+              class="w-full"
+              :items="['Active', 'Inactive', 'Resolved']"
+              v-model="impressionModel.protocol.protocol"
+              label="Protocol"
+            >
+            </main-cornie-select>
+            <cornie-input
+              label="Summary"
+              class="w-full"
+              v-model="impressionModel.protocol.summary"
+            />
+          </div>
+        </accordion-component>
+
+        <accordion-component
+          class="text-primary"
+          title="Findings"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full mt-5">
+            <cornie-input
+              class="w-full"
+              label="Item code"
+              :disabled="true"
+              placeholder="Autoloaded"
+              v-model="impressionModel.findings.itemCode"
+            >
+            </cornie-input>
+            <div class="w-full cursor-pointer" @click="showFindings">
               <cornie-input
-                class="w-full"
-                label="Supporting Info"
-                placeholder="Enter"
-                v-model="impressionModel.prognosis.supportingInfo"
+                v-bind="$attrs"
+                label="Problem"
+                readonly
+                v-model="findingItem"
+                @click="showFindingModal = true"
               >
-              </cornie-input>
-              <cornie-input
-                class="w-full"
-                label="Supporting Info"
-                placeholder="Enter"
-                v-model="impressionModel.prognosis.note"
-              >
+                <template #append-inner>
+                  <plus-icon class="fill-current text-danger" />
+                </template>
               </cornie-input>
             </div>
-          </accordion-component>
-        </v-form>
-      </cornie-card-text>
+            <cornie-input
+              class="w-full"
+              v-model="impressionModel.findings.basis"
+              label="Basis"
+              placeholder="Enter"
+            >
+            </cornie-input>
+          </div>
+        </accordion-component>
 
-      <cornie-card>
-        <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-          >
-            Save
-          </cornie-btn>
-        </cornie-card-text>
-      </cornie-card>
-    </cornie-card>
-    <assesor-modal
-      :practitioners="practitioner"
-      :roles="role"
-      @update:preferred="showAssessor"
-      v-model:visible="showAssessorModal"
-    />
-    <problem-modal
-      :conditions="condtions"
-      :allergy="allergy"
-      @update:preferred="showProblem"
-      v-model:visible="showProblemModal"
-    />
-    <item-modal
-      :observations="observations"
-      :questions="questions"
-      @update:preferred="showItem"
-      v-model:visible="showItemModal"
-    />
-    <reference-modal
-      @update:preferred="showFindings"
-      v-model:visible="showFindingModal"
-    />
-  </cornie-dialog>
+        <accordion-component
+          class="text-primary"
+          title="Prognosis"
+          :opened="true"
+        >
+          <div class="grid grid-cols-2 gap-4 w-full mt-5">
+            <cornie-input
+              class="w-full"
+              label="Item Code"
+              placeholder="a"
+              disabled
+              v-model="impressionModel.prognosis.itemCode"
+            >
+            </cornie-input>
+            <cornie-select
+              class="w-full"
+              label="Item Reference"
+              :items="observations"
+              v-model="impressionModel.prognosis.itemReference"
+            >
+            </cornie-select>
+            <cornie-input
+              class="w-full"
+              label="Supporting Info"
+              placeholder="Enter"
+              v-model="impressionModel.prognosis.supportingInfo"
+            >
+            </cornie-input>
+            <cornie-input
+              class="w-full"
+              label="Note"
+              placeholder="Enter"
+              v-model="impressionModel.prognosis.note"
+            >
+            </cornie-input>
+          </div>
+        </accordion-component>
+      </div>
+    </v-form>
+
+    <template #optionactions>
+      <cornie-btn
+        @click="show = false"
+        class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+      >
+        Cancel
+      </cornie-btn>
+      <cornie-btn
+        :loading="loading"
+        @click="apply"
+        class="text-white bg-danger px-6 rounded-xl"
+      >
+        Save
+      </cornie-btn>
+    </template>
+  </clinical-dialog>
+  <assesor-modal
+    :practitioners="practitioner"
+    @update:preferred="showAssessor"
+    v-model="showAssessorModal"
+  />
+  <problem-modal
+    :conditions="conditions"
+    :allergy="allergy"
+    @getProblem="showProblem"
+    v-model="showProblemModal"
+  />
+  <item-modal
+    :observations="observations"
+    :questions="questions"
+    :familyHistories="familyHistories"
+    :diagnosticReports="diagnosticReports"
+    @getItem="showItem"
+    v-model="showItemModal"
+  />
+  <reference-modal
+    @update:preferred="showFindings"
+    v-model:visible="showFindingModal"
+    :observations="observations"
+    :conditions="conditions"
+  />
 </template>
 
 <script lang="ts">
@@ -524,54 +437,56 @@ import IImpression from "@/types/IImpression";
 import EncounterSelect from "./encounter-select.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import AssesorModal from "./assesor.vue";
-import ProblemModal from "./problem.vue";
+import ProblemModal from "./problemdialog.vue";
 import ItemModal from "./itemdailog.vue";
 import ReferenceModal from "./reference.vue";
 import { namespace } from "vuex-class";
+import DeleteIcon from "@/components/icons/deleteorange.vue";
+
+import IPractitioner from "@/types/IPractitioner";
+
+import ClinicalDialog from "../conditions/clinical-dialog.vue";
 
 const impression = namespace("impression");
+const user = namespace("user");
 
 const emptyImpression: IImpression = {
-  status: "",
-  statusReason: "",
+  patientId: "",
+  status: "Completed",
   updatedAt: "",
-  subject: "subject",
-  encounter: "",
-  basicInfo: {
+  basicInfo: <any>{
     code: "",
     description: "",
+    // subject: "subject",
+    // encounter: "c5903ec6-20ac-47ee-b652-a562e5df7379",
   },
   effective: {
-    effectiveDate: "",
+    recordDate: "",
     effectivePeriod: {} as Period,
   },
-  recorded: {
-    date: "",
-    assessor: "",
-    previous: "",
-    problem: "",
-  },
-  investigation: {
-    code: "",
-    item: "",
-    // protocol: "protocol",
-    // summary: "",
-  },
+  investigation: [] as { code: ""; item: any }[],
+
   findings: {
-    item: "",
-    itemReference: "",
+    itemCode: "",
+    itemReference: <any>{},
     basis: "",
   },
-   protocol: {
+  prognosis: {
+    itemCode: "",
+    itemReference: "",
+    supportingInfo: "",
+    note: "",
+  },
+  recorded: {
+    recordDate: "",
+    previous: "",
+    asserterId: "",
+    problem: <any>[],
+  },
+  protocol: {
     protocol: "",
     summary: "",
   },
-  prognosis: {
-    prognosis: "",
-    prognosisReference: "",
-    supportingInfo: "",
-    note: "",
-  }
 };
 
 @Options({
@@ -606,9 +521,11 @@ const emptyImpression: IImpression = {
     MainCornieSelect,
     PlusIcon,
     IconBtn,
+    DeleteIcon,
+    ClinicalDialog,
   },
 })
-export default class Medication extends Vue {
+export default class Impression extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -620,6 +537,9 @@ export default class Medication extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   available!: object;
+
+  @user.Getter
+  authPractitioner!: IPractitioner;
 
   impressionModel = {} as IImpression;
 
@@ -639,9 +559,9 @@ export default class Medication extends Vue {
     endTime: "",
   };
   assessorItems = [];
-  conditionItems = [];
-  problemItems = [];
-  investigateItems = [];
+  conditionItems = <any>[];
+  problemItems = <any>[];
+  investigationItems = <any>[];
   loading = false;
   status = false;
   showAssessorModal = false;
@@ -649,14 +569,16 @@ export default class Medication extends Vue {
   showItemModal = false;
   practitioner = [];
   role = [];
-  condtions = [];
+  conditions = [];
   allergy = [];
   setType = "";
   observations = [];
+  familyHistories = <any>[];
   questions = [];
+  diagnosticReports = <any>[];
   setFindingType = "";
   showFindingModal = false;
-  findingItems = [];
+  findingItems = <any>[];
 
   async setImpressionModel() {
     this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression }));
@@ -675,6 +597,28 @@ export default class Medication extends Vue {
     const impression = await this.getImpressionById(this.id);
     if (!impression) return;
     this.impressionModel = impression;
+  }
+
+  get recordedDate() {
+    return new Date().toISOString();
+  }
+
+  removeCondition(index: number) {
+    this.conditionItems.splice(index, 1);
+  }
+  removeProblem(index: number) {
+    this.problemItems.splice(index, 1);
+  }
+  removeInvestigation(index: number) {
+    this.investigationItems.splice(index, 1);
+  }
+
+  get recordedTime() {
+    return (
+      new Date().getHours() +
+      ":" +
+      new Date().getMinutes()
+    );
   }
 
   buildPeriod(
@@ -699,15 +643,13 @@ export default class Medication extends Vue {
       patientId: this.activePatientId,
       status: this.impressionModel.status,
       basicInfo: this.impressionModel.basicInfo,
-      subject: this.impressionModel.subject,
       statusReason: this.impressionModel.statusReason,
-      encounter: this.impressionModel.encounter,
       effective: this.impressionModel.effective,
-      recorded: this.impressionModel.recorded,
       investigation: this.impressionModel.investigation,
       findings: this.impressionModel.findings,
-      protocol: this.impressionModel.protocol,
       prognosis: this.impressionModel.prognosis,
+      recorded: this.impressionModel.recorded,
+      protocol: this.impressionModel.protocol,
     };
   }
 
@@ -715,60 +657,66 @@ export default class Medication extends Vue {
     return this.id ? "Update" : "Create New";
   }
 
+  get asessor() {
+    if (this.assessorItems.length === 0) {
+      return (
+        this.authPractitioner.firstName + " " + this.authPractitioner.lastName
+      );
+    } else return this.assessorItems;
+  }
+
+  get asseterId() {
+    if (this.assessorItems.length === 0) {
+      return this.authPractitioner.id;
+    } else return this.assessorItems;
+  }
+
+  get findingItem() {
+    return this.findingItems.map((el: any) => {
+      return el.code;
+    });
+  }
+
   done() {
     this.$emit("impression-added");
     this.show = false;
-  }
-
-  changeChecked(value: string) {
-    if (value == "Mild") {
-      this.impressionModel.status = value;
-    } else if (value == "Medium") {
-      this.impressionModel.status = value;
-    } else {
-      this.impressionModel.status = value;
-    }
   }
 
   showAssessor(valueforrole: any) {
     this.showAssessorModal = true;
     this.assessorItems = valueforrole;
   }
-  showProblem(value: any, type: string) {
-    this.showProblemModal = true;
-    if (type == "Allergy") {
-      this.problemItems = value;
-      this.setType = type;
-      this.passProblem(this.problemItems);
-      console.log("pi", this.problemItems);
-    } else if (type == "Condition") {
-      this.conditionItems = value;
-      this.setType = type;
-      this.passProblem(this.conditionItems);
-      console.log("ci", this.conditionItems);
-    }
-  }
-  passProblem(e: any) {
-    this.impressionModel.recorded.problem = e.code;
+  showProblem(value: any) {
+    this.conditionItems.push(value);
   }
 
   passRef(e: any) {
-    this.impressionModel.findings.itemReference = "Identifier";
+    this.impressionModel.findings.itemReference = e;
+    this.impressionModel.findings.itemCode = e.map((el: any) => el.code);
   }
   async showItem(value: any) {
     this.showItemModal = true;
-    this.investigateItems = value;
+    this.investigationItems.push(value);
   }
 
   showFindings(value: any) {
     this.showFindingModal = true;
-    this.findingItems = value;
+    this.findingItems.push(value);
     this.passRef(this.findingItems);
   }
+
   async createImpression() {
-    this.payload.effective.effectiveDate = this.data.date;
+    this.payload.effective.recordDate = this.data.date;
     this.payload.effective.effectivePeriod.start = this.data.startDate;
     this.payload.effective.effectivePeriod.end = this.data.endDate;
+    this.payload.recorded.asserterId = this.asseterId as string;
+    this.payload.recorded.problem = this.conditionItems;
+    this.payload.recorded.recordDate = this.buildDateTime(
+      this.recordedDate,
+      this.recordedTime
+    );
+    this.payload.investigation = this.investigationItems;
+
     try {
       const response = await cornieClient().post(
         "/api/v1/clinical-impressions",
@@ -819,10 +767,29 @@ export default class Medication extends Vue {
     const response = await Promise.all([AllRoles]);
     this.role = response[0].data;
   }
-  async fetchCondtions() {
-    const AllRoles = cornieClient().get("/api/v1/roles");
-    const response = await Promise.all([AllRoles]);
-    this.role = response[0].data;
+
+  async fetchConditions() {
+    const url = `/api/v1/condition/patient/${this.activePatientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.conditions = response.data;
+    }
+  }
+
+  async fetchObservations() {
+    const url = `/api/v1/observations/patient/${this.activePatientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.observations = response.data;
+    }
+  }
+
+  async fetchFamilyHistories() {
+    const url = `/api/v1/family-history/get-for-patient/${this.activePatientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.familyHistories = response.data;
+    }
   }
 
   async fetchAllergy() {
@@ -838,6 +805,9 @@ export default class Medication extends Vue {
     this.fetchPractitioners();
     if (this.activePatientId) await this.fetchAllergy();
     this.setImpressionModel();
+    this.fetchObservations();
+    this.fetchConditions();
+    this.fetchFamilyHistories();
   }
 }
 </script>
