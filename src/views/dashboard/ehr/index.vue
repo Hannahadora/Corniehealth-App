@@ -2,12 +2,22 @@
   <div class="w-full">
     <div class="flex space-x-4 float-right col-span-full mr-4">
       <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
-        Patient Queue (2)
+        Patient Queue ({{ patients.length }})
       </p>
-      <p class="text-xs cursor-pointer text-gray-500" @click="showAppoont">
-        Upcoming Appointments (2)
+      <p
+        class="text-xs cursor-pointer text-gray-500"
+       v-if="Object.keys(appoitments).length  > 0"
+      >
+        Upcoming Appointments ({{ appoitments.length || 0 }})
       </p>
-      <p class="text-xs cursor-pointer text-gray-500" @click="showChart">
+      <p
+        v-else
+        class="text-xs cursor-pointer text-gray-500"
+        @click="showAppoont = true"
+      >
+        Upcoming Appointments ({{ appoitments.length || 0 }})
+      </p>
+      <p class="text-xs cursor-pointer text-gray-500" @click="showChart = true">
         Find Patient Chart
       </p>
     </div>
@@ -24,27 +34,30 @@
         </div>
       </div>
     </div>
+
     <patient-modal v-model:visible="showPatient" />
-    <!-- </div> -->
-    <patient-modal v-model:visible="showPatient" />
-    <!-- <modal :visible="!practitionerAuthenticated">
-    <auth-modal />
-  </modal> -->
+    <appointment-modal v-model:visible="showAppoont" />
+    <chart-modal v-model:visible="showChart" @patientId="getPatientId"/>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import ClinicalSidebar from "./clinicalSidebar.vue";
-import PatientModal from "./dialogs/patientDialog.vue";
-import Modal from "@/components/modal.vue";
-import AuthModal from "./auth-modal.vue";
-import { namespace } from "vuex-class";
-
-const userStore = namespace("user");
-
 import { Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+
+import IPractitioner from "@/types/IPractitioner";
 import { IPatient } from "@/types/IPatient";
 
+import Modal from "@/components/modal.vue";
+
+import PatientModal from "./dialogs/patientDialog.vue";
+import AppointmentModal from "./dialogs/appointmentDialog.vue";
+import ClinicalSidebar from "./clinicalSidebar.vue";
+import AuthModal from "./auth-modal.vue";
+import ChartModal from "./dialogs/chartDialog.vue";
+
+const userStore = namespace("user");
 const patients = namespace("patients");
 
 @Options({
@@ -53,6 +66,8 @@ const patients = namespace("patients");
     PatientModal,
     Modal,
     AuthModal,
+    AppointmentModal,
+    ChartModal,
   },
 })
 export default class ClinicalsSidebar extends Vue {
@@ -63,22 +78,60 @@ export default class ClinicalsSidebar extends Vue {
   practitionerAuthenticated!: boolean;
 
   showPatient = false;
+  showAppoont = false;
+  showChart = false;
+  appoitments = [] as any;
+  date = new Date().toISOString();
+
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
+
+  @userStore.Getter
+  authCurrentLocation!: string;
 
   patient = {} as IPatient;
+  newpatientId = "";
 
   @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
 
   get patientId() {
-    return (this.$route.params.id || this.$route.params.patientId) as string;
+    return this.newpatientId || (this.$route.params.id || this.$route.params.patientId) as string;
   }
 
   showPatientModal() {
     this.showPatient = true;
   }
+  async fetchAppontments() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/calendar/personal/day-view/${this.authCurrentLocation}/practitioner/${this.authPractitioner.id}/`,
+        { date: this.date }
+      );
+      this.appoitments = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching appointments",
+        status: "error",
+      });
+    }
+  }
+  async getPatientId(value:string){
+      this.newpatientId = value;
+      this.patient = await this.findPatient(this.newpatientId);
+      this.$route.params.id = value;
+  }
 
   async created() {
     this.patient = await this.findPatient(this.patientId);
+    this.fetchPatients();
+    this.fetchAppontments();
   }
 }
 </script>

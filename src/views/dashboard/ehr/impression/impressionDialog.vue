@@ -832,11 +832,11 @@ export default class Medication extends Vue {
     const response = await Promise.all([AllAllergy]);
     this.allergy = response[0].data;
   }
-  created() {
+  async created() {
     this.setImpression();
     this.fetchRoles();
     this.fetchPractitioners();
-    this.fetchAllergy();
+    if (this.activePatientId) await this.fetchAllergy();
     this.setImpressionModel();
   }
 }

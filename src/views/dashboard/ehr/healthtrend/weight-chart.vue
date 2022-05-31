@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="343px" title="Weight" @ordered="onOrder">
+  <chart-card height="338px" title="Weight" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
       {{ average }}<span class="font-light">kg</span>
     </p>
@@ -23,7 +23,7 @@ import { getChartData } from "./helper/vitals-chart-helper";
 const vitalsStore = namespace("vitals");
 
 @Options({
-  name: "BloodChart",
+  name: "weightChart",
   components: {
     ChartCard,
   },
@@ -46,11 +46,34 @@ export default class WeightChart extends Vue {
 
   chart!: Chart;
 
-  height = "643px";
+  height = "443px";
+  startDate = new Date().toISOString();
+  endDate = "";
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
   }
+ 
+  get date(){
+    if (this.order == 'Today'){
+      return new Date().toISOString();
+    }else if(this.order == 'WTD'){
+      const  today = new Date();
+      const  nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7).toISOString();
+      return nextweek;
+    }else if(this.order == 'MTD'){
+      const Xmas95 = new Date();
+      const month = Xmas95.getMonth();
+      const newmonth = new Date(month).toISOString();
+      return newmonth;
+    }else {
+      const today = new Date();
+      const year = today.getFullYear();
+      const newyear = new Date(year).toISOString();
+       return newyear;
+    }
+  }
+
 
   get chartData() {
     const data = getChartData(this.raw, this.order);
@@ -73,15 +96,19 @@ export default class WeightChart extends Vue {
   async fetchData(patientId: string) {
     try {
       const response = await cornieClient().get(
-        `api/v1/vitals/weight-stats/${patientId}`
+        `api/v1/health-trends/weight-stats/${patientId}`,
+        {
+          start: this.startDate,
+          end: this.date,
+        }
       );
       this.raw = response.data?.map((item: any) => {
         return { count: item.value, date: item.date };
       });
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
-    } catch (error) {
+    } catch (error:any) {
       window.notify({
-        msg: "Failed to fetch weight chart data",
+        msg: error.response.data.message,
         status: "error",
       });
     }
@@ -122,6 +149,7 @@ export default class WeightChart extends Vue {
             label: "Patient Weight Stats",
             data: this.chartData ? this.chartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
+            backgroundColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -129,6 +157,8 @@ export default class WeightChart extends Vue {
       },
       options: {
         responsive: true,
+         maintainAspectRatio: true,
+         aspectRatio: 2.3,
         scales: {
           x: {
             grid: {
