@@ -1,5 +1,5 @@
 <template>
-  <chart-card height="343px" title="Blood Pressure" @ordered="onOrder">
+  <chart-card height="415px" title="Blood Pressure" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
       {{ diastolicAverage }}/{{ systolicAverage }}
       <span class="font-light">mmHgz</span>

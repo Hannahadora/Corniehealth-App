@@ -1,32 +1,28 @@
 <template>
   <detail-card
-    height="313px"
+    height="337px"
     title="Current Conditions"
-    :count="1"
-    more=""
+    :count="items?.length"
+    more="View all"
     @add="$router.push('condition')"
   >
+    <div class="flex flex-col items-center justify-center my-auto" v-if="items.length === 0">
+      <img class="mb-3" src="@/assets/img/no-condition-trend.svg" alt="" />
+      <p class="text-sm text-center" style="color: #667499">No Conditions</p>
+    </div>
     <div
-      class="w-full grid grid-cols-3 gap-1 text-sm pb-2 border-b border-gray-200"
-      v-for="(item, i) in items"
+      v-else
+      class="w-full flex items-start justify-between gap-1 text-sm py-4 border-b border-gray-200"
+      v-for="(item, i) in items.slice(0,2)"
       :key="i"
     >
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">{{ item.name }}</span>
-        <span class="text-gray-400">{{ item.severity }}</span>
+      <div class="flex flex-col w-10/12">
+        <span class="text-sm font-semibold text-primary">{{ item.name }}</span>
+        <span class="text-sm text-gray-400">{{ item.severity }}</span>
+        <span class="text-sm text-gray-400">{{ item.date }}</span>
       </div>
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">Onset</span>
-        <span class="text-gray-400">
-          {{ item.onset.key }}: {{ item.onset.text }}
-        </span>
-      </div>
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">Abatement</span>
-        <span class="text-gray-400" v-if="abatement">
-          {{ item.abatement.key }}: {{ item.abatement.text }}
-        </span>
-        <span class="text-gray-400" v-else> N/A </span>
+      <div class="">
+        <img src="@/assets/img/trend-checked.svg" alt="">
       </div>
     </div>
   </detail-card>
@@ -82,11 +78,12 @@ export default class conditionCard extends Vue {
   }
 
   get items() {
-    const items = this.patientConditions.map((condition) => ({
+    const items = this.patientConditions.map((condition: any) => ({
       name: this.codeMapper(condition.code),
       severity: this.severityMapper(condition.severity),
-    //  onset: this.displayTimeable(condition.onSet, "onsetString"),
+      //  onset: this.displayTimeable(condition.onSet, "onsetString"),
       abatement: this.printAbatement(condition),
+      date: new Date(condition.createdAt).toLocaleDateString()
     }));
 
     return items;

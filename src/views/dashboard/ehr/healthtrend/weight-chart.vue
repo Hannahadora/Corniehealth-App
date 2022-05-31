@@ -1,9 +1,9 @@
 <template>
-  <chart-card height="343px" title="Weight" @ordered="onOrder">
+  <chart-card height="415px" title="Weight" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
       {{ average }}<span class="font-light">kg</span>
     </p>
-    <canvas ref="registration_chart" style="margin: auto; width: 100%"></canvas>
+    <canvas ref="registration_chart" style="margin: auto; width: 90%"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
