@@ -4,12 +4,12 @@
       <span class="flex justify-end w-full mb-8">
         <button
           @click="addingProgressnote = true"
-          class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+          class="bg-danger rounded-md text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
-          New Progress Note
+          Add Progress Note
         </button>
       </span>
-      <cornie-table :columns="headers" v-model="sortProgressNotes">
+      <cornie-table :columns="headers" v-model="items">
         <!-- <template #clinicalStatus="{ item: { status: status } }">
           <span
             :class="{
@@ -166,334 +166,307 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import NewViewIcon from "@/components/icons/newview.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import HistoryIcon from "@/components/icons/history.vue";
-import AddCondition from "./add-condition.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import AddOccurence from "./add-occurence.vue";
-import StatusUpdate from "./status-update.vue";
-import AddNotes from "./add-notes.vue";
-import RecordAbatement from "./record-abatement.vue";
-import ViewCondition from "./view-condition.vue";
+  import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import HistoryIcon from "@/components/icons/history.vue";
+  import UpdateIcon from "@/components/icons/newupdate.vue";
+  import NewViewIcon from "@/components/icons/newview.vue";
+  import PlusIcon from "@/components/icons/plus.vue";
+  import CornieTextArea from "@/components/textarea.vue";
+  import { getDropdown } from "@/plugins/definitions";
+  import { cornieClient } from "@/plugins/http";
+  import IAppointment from "@/types/IAppointment";
+  import { ICondition } from "@/types/ICondition";
+  import { IPatient } from "@/types/IPatient";
+  import IPractitioner from "@/types/IPractitioner";
+  import { Codeable } from "@/types/misc";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import AddCondition from "./add-condition.vue";
+  import AddNotes from "./add-notes.vue";
+  import AddOccurence from "./add-occurence.vue";
+  import AddProgressNote from "./add-progressnote.vue";
+  import RecordAbatement from "./record-abatement.vue";
+  import StatusUpdate from "./status-update.vue";
+  // import { cornieClient } from "@/plugins/http";
+  import StatusModal from "./status.vue";
+  import ViewCondition from "./view-condition.vue";
 
-import CornieTextArea from "@/components/textarea.vue";
-import AddProgressNote from "./add-progressnote.vue";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { IPatient } from "@/types/IPatient";
-// import { cornieClient } from "@/plugins/http";
-import StatusModal from "./status.vue";
+  const patients = namespace("patients");
+  const appointment = namespace("appointment");
+  const practitioner = namespace("practitioner");
 
-// import { Prop, PropSync, Watch } from "vue-property-decorator";
-// import { namespace } from "vuex-class";
-// import { IPatient } from "@/types/IPatient";
-import IProgressnote from "@/types/IProgressnote";
-
-import { cornieClient } from "@/plugins/http";
-import { Codeable } from "@/types/misc";
-import { ICondition } from "@/types/ICondition";
-import { getDropdown } from "@/plugins/definitions";
-import IAppointment from "@/types/IAppointment";
-
-import IPractitioner from "@/types/IPractitioner";
-
-import { printPractitioner } from "@/plugins/utils";
-
-const patients = namespace("patients");
-const appointment = namespace("appointment");
-const practitioner = namespace("practitioner");
-
-@Options({
-  name: "ConditionExistingState",
-  components: {
-    CornieTable,
-    AddNotes,
-    ViewCondition,
-    RecordAbatement,
-    AddCondition,
-    StatusUpdate,
-    AddOccurence,
-    EditIcon,
-    NewViewIcon,
-    UpdateIcon,
-    PlusIcon,
-    HistoryIcon,
-    CornieTextArea,
-    AddProgressNote,
-    StatusModal,
-  },
-})
-export default class ExistingState extends Vue {
-  // @Prop({ type: String, default: "" })
-  // patientId!: string;
-
-  // @Prop({ type: Array })
-  // items!: [];
-
-  // patient = {} as IPatient;
-
-  // patientProgressNotes: any;
-
-  //  @patients.Action
-  //   findPatient!: (patientId: string) => Promise<IPatient>;
-
-  @practitioner.Action
-  getPractitionerById!: (id: string) => Promise<IPractitioner>;
-
-  @patients.State
-  patients!: IPatient[];
-
-  @appointment.State
-  patientappointments!: IAppointment[];
-
-  @appointment.State
-  appointments!: IAppointment[];
-
-  addingProgressnote = false;
-  addingCondition = false;
-  addingOccurence = false;
-  updatingStatus = false;
-  addingNotes = false;
-  recordingAbatement = false;
-  viewingCondition = false;
-  currentStatus = "";
-  requestId = "";
-  showStatusModal = false;
-  conditionId = "";
-
-  updatedBy = "";
-  update = "";
-  // dateUpdated: any = "";
-
-  headers = [
-    {
-      title: "identifier",
-      key: "identifier",
-      show: true,
-      noOrder: true,
+  @Options({
+    name: "ConditionExistingState",
+    components: {
+      CornieTable,
+      AddNotes,
+      ViewCondition,
+      RecordAbatement,
+      AddCondition,
+      StatusUpdate,
+      AddOccurence,
+      EditIcon,
+      NewViewIcon,
+      UpdateIcon,
+      PlusIcon,
+      HistoryIcon,
+      CornieTextArea,
+      AddProgressNote,
+      StatusModal,
     },
-    {
-      title: "recorded",
-      key: "recorded",
-      show: true,
-    },
-    {
-      title: "condition",
-      key: "condition",
-      show: true,
-    },
-    {
-      title: "primary encounter",
-      key: "primaryencounter",
-      show: true,
-    },
+  })
+  export default class ExistingState extends Vue {
+    // @Prop({ type: String, default: "" })
+    // patientId!: string;
 
-    {
-      title: "participant",
-      key: "participant",
-      show: true,
-    },
-    {
-      title: "billing account",
-      key: "billingaccount",
-      show: true,
-    },
-    {
-      title: "status",
-      key: "status",
-      show: true,
-    },
-  ];
+    // @Prop({ type: Array })
+    // items!: [];
 
-  // items = [
-  //   {
-  //     identifier: "XXXXX",
-  //     recorded: "XXXX",
-  //     primaryencounter: "XXXX",
-  //     condition: "XXXX",
-  //     participant: "XXXX",
-  //     billingaccount: "XXXX",
-  //     status: "XXXX",
-  //     id: "XXXX",
-  //   },
-  // ];
-  //  printRecorded(progress: any) {
-  //     const dateString = progress.createdAt;
-  //     const date = new Date(dateString);
-  //     return date.toLocaleDateString();
-  //   }
+    // patient = {} as IPatient;
 
-  @Prop({ type: String, default: "" })
-  patientId!: string;
+    // patientProgressNotes: any;
 
-  patient = {} as IPatient;
+    //  @patients.Action
+    //   findPatient!: (patientId: string) => Promise<IPatient>;
 
-  patientProgressNotes = [] as IProgressnote[];
+    @practitioner.Action
+    getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
-  lastElement1: any = {};
+    @practitioner.Action
+    fetchPractitioners!: (id: string) => Promise<IPractitioner>;
 
-  @patients.Action
-  findPatient!: (patientId: string) => Promise<IPatient>;
+    @patients.State
+    patients!: IPatient[];
 
-  categories: Codeable[] = [];
+    @appointment.State
+    patientappointments!: IAppointment[];
 
-  isEmpty = false;
+    @appointment.State
+    appointments!: IAppointment[];
 
-  printRecorded(progress: any) {
-    const dateString = progress.createdAt;
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  }
+    addingProgressnote = false;
+    addingCondition = false;
+    addingOccurence = false;
+    updatingStatus = false;
+    addingNotes = false;
+    recordingAbatement = false;
+    viewingCondition = false;
+    currentStatus = "";
+    requestId = "";
+    showStatusModal = false;
+    conditionId = "";
 
-  printCondition(condition: ICondition) {
-    const cat = condition.category?.replaceAll('"', "");
-    return this.categories.find((s) => (s.code = cat))?.display;
-  }
+    updatedBy = "";
+    update = "";
+    // dateUpdated: any = "";
 
-  // printPractitioner(condition.practitioner!!)
-
-  printStatus(condition: ICondition) {
-    const cat = condition.clinicalStatus?.replaceAll('"', "");
-    return cat;
-  }
-
-  // printPracName
-
-  getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
-  }
-
-  get getLastAppointment() {
-    this.lastElement1 = this.patientProgressNotes.slice(-1);
-    // ;
-    const last = new Date(this.lastElement1[0].updatedAt).toLocaleDateString(
-      "en-US"
-    );
-    return last;
-  }
-
-  // get currentStatus(){
-  //   return this.items?.status;
-  // }
-  async showStatus(value: string, value2: string, value3: string) {
-    // return ;
-    this.showStatusModal = true;
-    this.requestId = value;
-    this.currentStatus = value2;
-    this.conditionId = value3;
-    this.updatedBy = this.getPatientName(this.patientId);
-    this.update = this.getLastAppointment;
-
-    //   const dateString = progress.createdAt;
-    // const date = new Date(dateString);
-    // return date.toLocaleDateString();
-  }
-  printPractitioner(condition: ICondition) {
-    return condition.practitioner?.firstName;
-  }
-  get items() {
-    const items = this.patientProgressNotes?.map((progress: any) => ({
-      // (progress as any).createdAt = new Date(
-      //   (progress as any).createdAt
-      //  ).toDateString();
-      //   (progress as any).updatedAt = new Date(
-      //     (request as any).updatedAt
-      //  ).toDateString();
-      // this.updatedBy = this.getPatientName(this.patientId as string);
-      // this.currentStatus = request.status;
-      // this.update= progress.updatedAt
-      ...progress,
-      original: progress,
-      identifier: "XXXXX",
-      recorded: this.printRecorded(progress),
-      condition: this.printCondition(progress.condition),
-      status: this.printStatus(progress.condition),
-      // participant: this.printPractitioner(progress.condition)
-      participant: progress.practitionerId,
-      // currentStatus: this.printStatus(progress.condition),
-      // status:history.basicInfo.status
-      // code: this.printCode(condition.code),
-      // severity: this.printSeverity(condition.severity),
-      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
-      // recorder: {
-      //   name: printPractitioner(condition.practitioner!!),
-      //   department: condition.practitioner!!.department,
+    headers = [
+      {
+        title: "Progress note id",
+        key: "identifier",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "recorded",
+        key: "recordDate",
+        show: true,
+      },
+      // {
+      //   title: "condition",
+      //   key: "condition",
+      //   show: true,
       // },
-    }));
-    return items;
-  }
+      // {
+      //   title: "Further diagnosis",
+      //   key: "primaryencounter",
+      //   show: true,
+      // },
 
-  get sortProgressNotes() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
+      {
+        title: "Attending Physician",
+        key: "physician",
+        show: true,
+      },
+      {
+        title: "billing status",
+        key: "billing",
+        show: true,
+      },
+      {
+        title: "status",
+        key: "status",
+        show: true,
+      },
+    ];
 
-  async fetchProgressnotes() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/progress-notes/${this.patientId}`
-      );
-      this.patientProgressNotes = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching patient's progress notes",
-        status: "error",
-      });
+    // items = [
+    //   {
+    //     identifier: "XXXXX",
+    //     recorded: "XXXX",
+    //     primaryencounter: "XXXX",
+    //     condition: "XXXX",
+    //     participant: "XXXX",
+    //     billingaccount: "XXXX",
+    //     status: "XXXX",
+    //     id: "XXXX",
+    //   },
+    // ];
+    //  printRecorded(progress: any) {
+    //     const dateString = progress.createdAt;
+    //     const date = new Date(dateString);
+    //     return date.toLocaleDateString();
+    //   }
+
+    @Prop({ type: String, default: "" })
+    patientId!: string;
+
+    patient = {} as IPatient;
+
+    patientProgressNotes = [] as any[];
+
+    lastElement1: any = {};
+
+    @patients.Action
+    findPatient!: (patientId: string) => Promise<IPatient>;
+
+    categories: Codeable[] = [];
+
+    isEmpty = false;
+
+    printRecorded(progress: any) {
+      const dateString = progress.createdAt;
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
     }
+
+    printCondition(condition: ICondition) {
+      const cat = condition.category?.replaceAll('"', "");
+      return this.categories.find((s) => (s.code = cat))?.display;
+    }
+
+    // printPractitioner(condition.practitioner!!)
+
+    printStatus(condition: ICondition) {
+      const cat = condition.clinicalStatus?.replaceAll('"', "");
+      return cat;
+    }
+
+    // printPracName
+
+    getPatientName(id: string) {
+      const pt = this.patients.find((i: any) => i.id === id);
+      return pt ? `${pt.firstname} ${pt.lastname}` : "";
+    }
+
+    get getLastAppointment() {
+      this.lastElement1 = this.patientProgressNotes.slice(-1);
+      // ;
+      const last = new Date(this.lastElement1[0].updatedAt).toLocaleDateString(
+        "en-US"
+      );
+      return last;
+    }
+
+    // get currentStatus(){
+    //   return this.items?.status;
+    // }
+    async showStatus(value: string, value2: string, value3: string) {
+      // return ;
+      this.showStatusModal = true;
+      this.requestId = value;
+      this.currentStatus = value2;
+      this.conditionId = value3;
+      this.updatedBy = this.getPatientName(this.patientId);
+      this.update = this.getLastAppointment;
+
+      //   const dateString = progress.createdAt;
+      // const date = new Date(dateString);
+      // return date.toLocaleDateString();
+    }
+    printPractitioner(condition: ICondition) {
+      return condition.practitioner?.firstName;
+    }
+    get items() {
+      const items = this.patientProgressNotes?.map((p) => {
+        console.log("p", p);
+        let g = {
+          identifier: p.identifier,
+          recordDate: this.printRecorded(p),
+          physician: this.getPractitionerById(p.practitionerId),
+          billing: p.billing || "---",
+          status: p.status || "---",
+        };
+        return g;
+      });
+
+      // console.log("items", items);
+      return items;
+    }
+
+    async fetchProgressnotes() {
+      try {
+        const { data } = await cornieClient().get(
+          `/api/v1/progress-notes/${this.patientId}`
+        );
+        this.patientProgressNotes = data;
+        console.log("progress", this.patientProgressNotes);
+      } catch (error) {
+        window.notify({
+          msg: "There was an error when fetching patient's progress notes",
+          status: "error",
+        });
+      }
+    }
+
+    // get items() {
+    //   const items = this.patientProgressNotes.map((progress: any) => ({
+    //     ...progress,
+    //     original: progress,
+    //     identifier: "XXXXX",
+    //     recorded: this.printRecorded(progress),
+    //     condition: progress.condition.category,
+    //     status: progress.clinicalStatus,
+    //     // code: this.printCode(condition.code),
+    //     // severity: this.printSeverity(condition.severity),
+    //     // clinicalStatus: this.stripQuote(condition.clinicalStatus),
+    //     // recorder: {
+    //     //   name: printPractitioner(condition.practitioner!!),
+    //     //   department: condition.practitioner!!.department,
+    //     // },
+    //   }));
+    //   return items;
+    // }
+
+    // async fetchProgressnotes() {
+    //   ;
+    //   try {
+    //     const { data } = await cornieClient().get(
+    //       `/api/v1/progress-notes/${this.patientId}`
+    //     );
+    //     this.patientProgressNotes = data;
+    //     ;
+    //   } catch (error) {
+    //     window.notify({
+    //       msg: "There was an error when fetching patient's progress notes",
+    //       status: "error",
+    //     });
+    //   }
+    // }
+
+    async created() {
+      await this.fetchProgressnotes();
+      this.categories = await getDropdown(
+        "http://hl7.org/fhir/ValueSet/condition-category"
+      );
+      await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
+    }
+
+    // async created() {
+    //   this.fetchProgressnotes();
+
+    // }
   }
-
-  // get items() {
-  //   const items = this.patientProgressNotes.map((progress: any) => ({
-  //     ...progress,
-  //     original: progress,
-  //     identifier: "XXXXX",
-  //     recorded: this.printRecorded(progress),
-  //     condition: progress.condition.category,
-  //     status: progress.clinicalStatus,
-  //     // code: this.printCode(condition.code),
-  //     // severity: this.printSeverity(condition.severity),
-  //     // clinicalStatus: this.stripQuote(condition.clinicalStatus),
-  //     // recorder: {
-  //     //   name: printPractitioner(condition.practitioner!!),
-  //     //   department: condition.practitioner!!.department,
-  //     // },
-  //   }));
-  //   return items;
-  // }
-
-  // async fetchProgressnotes() {
-  //   ;
-  //   try {
-  //     const { data } = await cornieClient().get(
-  //       `/api/v1/progress-notes/${this.patientId}`
-  //     );
-  //     this.patientProgressNotes = data;
-  //     ;
-  //   } catch (error) {
-  //     window.notify({
-  //       msg: "There was an error when fetching patient's progress notes",
-  //       status: "error",
-  //     });
-  //   }
-  // }
-
-  async created() {
-    await this.fetchProgressnotes();
-    this.categories = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-category"
-    );
-    await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
-  }
-
-  // async created() {
-  //   this.fetchProgressnotes();
-
-  // }
-}
 </script>
