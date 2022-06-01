@@ -25,6 +25,9 @@
             {{ status }}
           </span>
         </template> -->
+        <template #physician="{ item }">
+          <div>{{ getP(item.physician).then((d) => d.firstName) }}</div>
+        </template>
         <template #actions="{ item }">
           <div
             @click="viewCondition(item)"
@@ -232,10 +235,13 @@
     //   findPatient!: (patientId: string) => Promise<IPatient>;
 
     @practitioner.Action
-    getPractitionerById!: (id: string) => Promise<IPractitioner>;
+    getPractitionerById!: (id: string) => IPractitioner;
 
     @practitioner.Action
-    fetchPractitioners!: (id: string) => Promise<IPractitioner>;
+    fetchPractitioners!: () => Promise<IPractitioner>;
+
+    @practitioner.State
+    practitioners!: any;
 
     @patients.State
     patients!: IPatient[];
@@ -302,24 +308,6 @@
       },
     ];
 
-    // items = [
-    //   {
-    //     identifier: "XXXXX",
-    //     recorded: "XXXX",
-    //     primaryencounter: "XXXX",
-    //     condition: "XXXX",
-    //     participant: "XXXX",
-    //     billingaccount: "XXXX",
-    //     status: "XXXX",
-    //     id: "XXXX",
-    //   },
-    // ];
-    //  printRecorded(progress: any) {
-    //     const dateString = progress.createdAt;
-    //     const date = new Date(dateString);
-    //     return date.toLocaleDateString();
-    //   }
-
     @Prop({ type: String, default: "" })
     patientId!: string;
 
@@ -381,21 +369,17 @@
       this.conditionId = value3;
       this.updatedBy = this.getPatientName(this.patientId);
       this.update = this.getLastAppointment;
-
-      //   const dateString = progress.createdAt;
-      // const date = new Date(dateString);
-      // return date.toLocaleDateString();
     }
     printPractitioner(condition: ICondition) {
       return condition.practitioner?.firstName;
     }
     get items() {
-      const items = this.patientProgressNotes?.map(async (p) => {
-        console.log("p", p);
+      const items = this.patientProgressNotes?.map((p) => {
+        // console.log("p", await this.getPractitionerById(p.practitionerId));
         let g = {
           identifier: p.identifier,
           recordDate: this.printRecorded(p),
-          physician: this.getPractitionerById(p.practitionerId),
+          physician: p.practitionerId,
           billing: p.billing || "---",
           status: p.status || "---",
         };
@@ -405,7 +389,9 @@
       console.log("items", items);
       return items;
     }
-
+    async getP(p: any) {
+      return await this.getPractitionerById(p);
+    }
     async fetchProgressnotes() {
       try {
         const { data } = await cornieClient().get(
@@ -461,7 +447,8 @@
       this.categories = await getDropdown(
         "http://hl7.org/fhir/ValueSet/condition-category"
       );
-      await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
+      // await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
+      await this.fetchPractitioners();
     }
 
     // async created() {
