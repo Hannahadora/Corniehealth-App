@@ -390,7 +390,7 @@
       return condition.practitioner?.firstName;
     }
     get items() {
-      const items = this.patientProgressNotes?.map((p) => {
+      const items = this.patientProgressNotes?.map(async (p) => {
         console.log("p", p);
         let g = {
           identifier: p.identifier,
@@ -402,7 +402,7 @@
         return g;
       });
 
-      // console.log("items", items);
+      console.log("items", items);
       return items;
     }
 
