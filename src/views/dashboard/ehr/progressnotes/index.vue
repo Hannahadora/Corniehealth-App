@@ -12,6 +12,7 @@
         :patient="patient"
         :patientId="patientId"
         :items="items"
+        @progress_note="() => (showNewProgressNote = true)"
       />
       <new-progress-note v-model="showNewProgressNote" />
     </div>

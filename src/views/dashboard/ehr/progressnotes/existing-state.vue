@@ -2,12 +2,12 @@
   <div class="w-full pb-80">
     <div>
       <span class="flex justify-end w-full mb-8">
-        <button
-          @click="addingProgressnote = true"
-          class="bg-danger rounded-md text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+        <div
+          @click="newProgressNote"
+          class="bg-danger p-2 rounded-xl text-white font-bold px-8 py-3 mx-2 cursor-pointer"
         >
           Add Progress Note
-        </button>
+        </div>
       </span>
       <cornie-table :columns="headers" v-model="items">
         <!-- <template #clinicalStatus="{ item: { status: status } }">
@@ -216,26 +216,14 @@
       AddProgressNote,
       StatusModal,
     },
+    emits: ["progress_note"],
   })
   export default class ExistingState extends Vue {
-    // @Prop({ type: String, default: "" })
-    // patientId!: string;
-
-    // @Prop({ type: Array })
-    // items!: [];
-
-    // patient = {} as IPatient;
-
-    // patientProgressNotes: any;
-
-    //  @patients.Action
-    //   findPatient!: (patientId: string) => Promise<IPatient>;
-
     @practitioner.Action
     getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
     @practitioner.Action
-    fetchPractitioners!: (id: string) => Promise<IPractitioner>;
+    fetchPractitioners!: () => Promise<void>;
 
     @patients.State
     patients!: IPatient[];
@@ -260,6 +248,7 @@
 
     updatedBy = "";
     update = "";
+    items: any = [];
     // dateUpdated: any = "";
 
     headers = [
@@ -302,23 +291,10 @@
       },
     ];
 
-    // items = [
-    //   {
-    //     identifier: "XXXXX",
-    //     recorded: "XXXX",
-    //     primaryencounter: "XXXX",
-    //     condition: "XXXX",
-    //     participant: "XXXX",
-    //     billingaccount: "XXXX",
-    //     status: "XXXX",
-    //     id: "XXXX",
-    //   },
-    // ];
-    //  printRecorded(progress: any) {
-    //     const dateString = progress.createdAt;
-    //     const date = new Date(dateString);
-    //     return date.toLocaleDateString();
-    //   }
+    newProgressNote() {
+      console.log("jhere");
+      this.$emit("progress_note");
+    }
 
     @Prop({ type: String, default: "" })
     patientId!: string;
@@ -389,7 +365,7 @@
     printPractitioner(condition: ICondition) {
       return condition.practitioner?.firstName;
     }
-    get items() {
+    get itemss() {
       const items = this.patientProgressNotes?.map(async (p) => {
         console.log("p", p);
         let g = {
@@ -421,47 +397,32 @@
       }
     }
 
-    // get items() {
-    //   const items = this.patientProgressNotes.map((progress: any) => ({
-    //     ...progress,
-    //     original: progress,
-    //     identifier: "XXXXX",
-    //     recorded: this.printRecorded(progress),
-    //     condition: progress.condition.category,
-    //     status: progress.clinicalStatus,
-    //     // code: this.printCode(condition.code),
-    //     // severity: this.printSeverity(condition.severity),
-    //     // clinicalStatus: this.stripQuote(condition.clinicalStatus),
-    //     // recorder: {
-    //     //   name: printPractitioner(condition.practitioner!!),
-    //     //   department: condition.practitioner!!.department,
-    //     // },
-    //   }));
-    //   return items;
-    // }
-
-    // async fetchProgressnotes() {
-    //   ;
-    //   try {
-    //     const { data } = await cornieClient().get(
-    //       `/api/v1/progress-notes/${this.patientId}`
-    //     );
-    //     this.patientProgressNotes = data;
-    //     ;
-    //   } catch (error) {
-    //     window.notify({
-    //       msg: "There was an error when fetching patient's progress notes",
-    //       status: "error",
-    //     });
-    //   }
-    // }
-
     async created() {
       await this.fetchProgressnotes();
+      await this.fetchPractitioners();
       this.categories = await getDropdown(
         "http://hl7.org/fhir/ValueSet/condition-category"
       );
-      await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
+      // await this.getPractitionerById("D4249dec-F3ab-444f-867d-5710e3c6891a");
+      this.patientProgressNotes?.map(async (p) => {
+        let g = {
+          identifier: p.identifier,
+          recordDate: this.printRecorded(p),
+          physician:
+            (await (
+              await this.getPractitionerById(p.practitionerId)
+            ).firstName) +
+            " " +
+            (await (
+              await this.getPractitionerById(p.practitionerId)
+            ).lastName),
+          billing: p.billing || "---",
+          status: p.status || "---",
+        };
+        this.items.push(g);
+        // return g;
+      });
+      console.log("item", this.items);
     }
 
     // async created() {
