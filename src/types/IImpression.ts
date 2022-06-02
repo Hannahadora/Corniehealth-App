@@ -13,7 +13,7 @@ export interface BasicInfo {
 }
 
 export interface Effective {
-  recordDate: string;
+  effectiveDate: string;
   effectivePeriod: Period;
 }
 
@@ -27,7 +27,6 @@ interface Problem {
 }
 
 export interface Investigation {
-  code: string,
   item: {
     type: string,
     details: string,
@@ -35,7 +34,6 @@ export interface Investigation {
   }
 }
 interface Findings {
-  itemCode: string,
   itemReference: Problem,
   basis: string
 }
@@ -64,7 +62,7 @@ export default interface IImpression {
   statusReason?: string;
   effective: Effective;
   investigation: Investigation[];
-  findings: Findings;
+  findings: Findings[];
   prognosis: Prognosis;
   recorded: Recorded;
   protocol: Protocol;

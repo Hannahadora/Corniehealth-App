@@ -1,29 +1,27 @@
 <template>
   <detail-card
-    height="313px"
+    height="337px"
     @view:all="
       $router.push(`/dashboard/provider/clinical/${patientId}/medications`)
     "
     @add="showMedication"
     more="View all"
-    title="Current Medications"
+    title="Medications"
     :showTotal="true"
     :count="totalMedication"
   >
-    <template #empty>
-      <div class="p-2">
-        <div class="p-5">
-          <nodrug-icon class="flex mt-5 justify-center w-full text-center" />
-          <p class="mt-8 text-sm text-gray-500 text-center">No Medications</p>
-        </div>
-      </div>
-    </template>
-
+    <div
+      class="flex flex-col items-center justify-center my-auto"
+      v-if="items?.length === 0"
+    >
+      <img class="mb-3" src="@/assets/img/no-medication-trend.svg" alt="" />
+      <p class="text-sm text-center" style="color: #667499">No Medications</p>
+    </div>
     <div class="p-2">
       <div class="w-full grid grid-cols-1 gap-y-4">
         <div
-          class="w-full flex justify-between pb-2 border-b"
-          v-for="(input, index) in items"
+          class="w-full flex items-center justify-between pb-2 border-b"
+          v-for="(input, index) in items.slice(0,2)"
           :key="index"
         >
           <div class="w-full flex space-x-2 items-center">
@@ -102,7 +100,7 @@ export default class MedicationCard extends Vue {
 
   @request.Action
   fetchrequestsById!: (patientId: string) => Promise<void>;
-  
+
   showMedicationModal = false;
   async showMedication() {
     this.showMedicationModal = true;
@@ -155,7 +153,6 @@ export default class MedicationCard extends Vue {
     return newmedicationrequest;
   }
 
- 
   async created() {
     await this.createMapper();
     await this.fetchrequestsById(this.patientId);

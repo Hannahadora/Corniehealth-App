@@ -1,6 +1,6 @@
 <template>
   <detail-card
-    height="313px"
+    height="337px"
     @view:all="
       $router.push(`/dashboard/provider/clinical/${patientId}/allergy`)
     "
