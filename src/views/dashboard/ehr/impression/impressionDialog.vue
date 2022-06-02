@@ -636,9 +636,12 @@ export default class Impression extends Vue {
     this.loading = false;
   }
   async setImpression() {
-    const impression = await this.getImpressionById(this.id);
+    const impression = await this.findImpression(this.id);
     if (!impression) return;
     this.impressionModel = impression;
+    this.conditionItems = impression?.recorded?.problem;
+    this.findingItems = impression?.findings;
+    this.investigationItems = impression?.investigation;
   }
 
   get recordedDate() {
@@ -787,7 +790,22 @@ export default class Impression extends Vue {
         status: "error",
       });
     }
+  }  
+  async findImpression(id: any) {
+    const url = `/api/v1//clinical-impressions/${id}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+       return response.data;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error when fetching Impression",
+        status: "error",
+      });
+    }
   }
+
   async fetchPractitioners() {
     const AllPractitioners = cornieClient().get("/api/v1/practitioner");
     const response = await Promise.all([AllPractitioners]);

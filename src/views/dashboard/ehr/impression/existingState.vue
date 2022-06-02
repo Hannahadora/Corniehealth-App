@@ -4,14 +4,14 @@
       <span class="flex justify-end w-full mb-8">
         <button
           class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showImpressionModal = true"
+          @click="showImpression('')"
         >
           New Impression
         </button>
       </span>
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showImpression(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
@@ -29,12 +29,31 @@
             <edit-icon class="text-purple-600 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-  
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <cancel-icon />
             <span class="ml-3 text-xs">Cancel</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'In-progress'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'Completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'Entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
           </div>
         </template>
       </cornie-table>
@@ -45,14 +64,15 @@
       @update="showImpression"
       v-model="showImpressionModal"
       :id="impressionId"
+      :impression="selectedImpression"
     />
 
     <status-modal
       :id="impressionId"
-      :updatedBy="updatedBy"
-      :currentStatus="currentStatus"
-      :updateDate="update"
+      :impression="selectedImpression"
+      :practitioners="practitioners"
       @update="showStatus"
+      @status-added="getPatientImpressions"
       v-model="showStatusModal"
     />
   </div>
@@ -139,9 +159,12 @@ export default class ImpressionExistingState extends Vue {
   currentStatus = "";
   update = "";
   practitioners = <any>[];
+  selectedImpression = {};
 
-  @Prop({ type: Array, default: [] })
-  impressions!: IImpression[];
+  impressions: IImpression[] = [];
+
+  // @Prop({ type: Array, default: [] })
+  // impressions!: IImpression[];
 
   // @impression.State
   // impressions!: IImpression[];
@@ -157,7 +180,7 @@ export default class ImpressionExistingState extends Vue {
   rawHeaders = [
     {
       title: "Clinical impression id",
-      key: "id",
+      key: "cid",
       show: true,
     },
     { title: "Date Recorded", key: "createdAt", show: true },
@@ -258,24 +281,23 @@ export default class ImpressionExistingState extends Vue {
   }
 
   get items() {
-    const impressions = this.impressions?.map((impression) => {
-      (impression as any).createdAt = new Date(
-        (impression as any).createdAt
-      ).toLocaleDateString("en-US");
-      (impression as any).updatedAt = new Date(
-        (impression as any).updatedAt
-      ).toLocaleDateString("en-US");
-      // this.updatedBy = impression.recorded.assessor;
-      this.currentStatus = impression.status;
-      this.update = impression.updatedAt;
+    const impressions = this.impressions?.map((impression: any) => {
+      impression.createdAt = new Date(impression.createdAt).toLocaleDateString(
+        "en-US"
+      );
+      impression.updatedAt = new Date(impression.updatedAt).toLocaleDateString(
+        "en-US"
+      );
       return {
         ...impression,
         action: impression.id,
         keydisplay: "XXXXXXX",
-        prognosis: impression?.prognosis?.itemCode || 'Nil',
+        cid: "XXXXXXX",
+        prognosis: impression?.prognosis?.itemCode || "Nil",
         findings: "XXXXXXX",
-        assessor: this.findPractitioner(impression?.recorded?.asserterId),
-        status: impression.status
+        assessor:
+          this.findPractitioner(impression?.recorded?.asserterId) || "Nil",
+        status: impression.status,
       };
     });
 
@@ -284,42 +306,68 @@ export default class ImpressionExistingState extends Vue {
   }
 
   async showStatus(value: string) {
-    this.showStatusModal = true;
     this.impressionId = value;
+    await  this.findImpression(value)
+    this.showStatusModal = true;
   }
 
   async showImpression(value: string) {
-    this.showImpressionModal = true;
     //this.stopEvent = true;
     this.impressionId = value;
+    await  this.findImpression(value)
+    this.showImpressionModal = true;
   }
+
+  async findImpression(id: any) {
+    const url = `/api/v1//clinical-impressions/${id}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.selectedImpression = response.data;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error when fetching Impression",
+        status: "error",
+      });
+    }
+  }
+
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
 
- async fetchPractitioners() {
-  const AllPractitioners = cornieClient().get("/api/v1/practitioner");
-    const response: any = await Promise.all([AllPractitioners]);
-    this.practitioners = response.data;
-  }
-
-   findPractitioner(id: any) {
-     const ptn = this.practitioners.find((el: any) => el.id = id)
-     return ptn.firstName + ' ' + ptn.lastName
-   }
-
-    async getPatientImpressions() {
-    const url = `/api/v1/clinical-impressions/findAllByPatient/${this.activePatientId}`;
+  async fetchPractitioners() {
+    const url = "/api/v1/practitioner";
     const response: any = await cornieClient().get(url);
     if (response.success) {
-      this.impressions = response.data;
+      this.practitioners = response.data;
+    }
+  }
+
+  findPractitioner(id: any) {
+    const ptn = this.practitioners?.find((el: any) => (el.id = id));
+    return ptn?.firstName + " " + ptn?.lastName;
+  }
+
+  async getPatientImpressions() {
+    const url = `/api/v1/clinical-impressions/findAllByPatient/${this.activePatientId}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.impressions = response.data;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error fetching Impressions",
+        status: "error",
+      });
     }
   }
 
   impressionAdded() {
-    this.impressions;
-    this.getPatientImpressions()
+    this.getPatientImpressions();
   }
 
   async deleteItem(id: string) {
@@ -341,8 +389,8 @@ export default class ImpressionExistingState extends Vue {
   }
 
   async created() {
-    await this.fetchPractitioners()
-    await this.getPatientImpressions()
+    await this.fetchPractitioners();
+    await this.getPatientImpressions();
     this.sortImpressions;
   }
 }
