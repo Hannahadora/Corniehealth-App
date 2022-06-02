@@ -8,7 +8,7 @@
       </span>
       <span class="w-full h-screen">
         <impressions-empty-state v-if="empty" />
-        <impressions-existing-state v-else :impressions="impressions" />
+        <impressions-existing-state v-else />
       </span>
     </div>
   </div>
