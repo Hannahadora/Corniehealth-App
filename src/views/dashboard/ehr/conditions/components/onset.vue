@@ -6,19 +6,20 @@
       {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
-    <div class="grid grid-cols-5 gap-4 mt-4 w-1/2">
+    <div class="grid grid-cols-5 gap-4 mt-4 w-3/4">
       <cornie-radio
         :name="name"
         v-model="type"
         value="date"
         label="Date/Time"
+        @click="setType(type)"
       />
-      <cornie-radio :name="name" v-model="type" label="Age" value="age" />
-      <cornie-radio :name="name" v-model="type" value="period" label="Period" />
-      <cornie-radio :name="name" v-model="type" value="range" label="Range" />
-      <cornie-radio :name="name" v-model="type" value="string" label="String" />
+      <cornie-radio :name="name" v-model="type" @click="setType(type)" label="Age" value="age" />
+      <cornie-radio :name="name" v-model="type" @click="setType(type)" value="period" label="Period" />
+      <cornie-radio :name="name" v-model="type" @click="setType(type)" value="range" label="Range" />
+      <cornie-radio :name="name" v-model="type" @click="setType(type)" value="string" label="String" />
     </div>
-     <div class="grid grid-cols-2 gap-4 mt-5 w-full" v-if="type == 'date'">
+    <div class="grid grid-cols-2 gap-4 mt-5 w-full" v-if="type == 'date'">
       <date-time-picker
         v-model:date="timeable.date"
         v-model:time="timeable.time"
@@ -86,14 +87,14 @@
             placeholder="0"
             class="grow w-full"
             :setfull="true"
-            v-model="timeable.minValue"
+            v-model="timeable.maxValue"
           />
           <cornie-select
             :items="['Days', 'Months', 'Years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
-            v-model="timeable.minUnit"
+            v-model="timeable.maxUnit"
           />
         </div>
       </div>
@@ -156,24 +157,29 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: timeable })
   timeable!: ITimeable;
 
-  type: "date" | "age" | "period" | "date-time" | "range" | "string" = "date";
+  //type: "date" | "age" | "period" | "range" | "string" = "date";
 
-  setType() {
-    const timeable = this.timeable;
-    if (timeable.date || timeable.time) this.type = "date-time";
-    else if (timeable.startDate || timeable.endDate) this.type = "period";
-    else if (timeable.ageValue) this.type = "age";
-    else this.type = "date";
+  type  = "date";
+
+  // setType() {
+  //   const timeable = this.timeable;
+  //   if (timeable.date || timeable.time) this.type = "date";
+  //   else if (timeable.startDate || timeable.endDate) this.type = "period";
+  //   else if (timeable.ageValue) this.type = "age";
+  //   else this.type = "date";
+  // }
+
+  setType(type:string) {
+   if(type) return this.timeable = {};
   }
-
   // mounted() {
   //   this.setType();
   // }
 
-  @Watch("timeable", { deep: true })
-  timeChanged() {
-    this.setType();
-  }
+  // @Watch("timeable", { deep: true })
+  // timeChanged() {
+  //   this.setType();
+  // }
 
   created() {
     if (!this.timeable) this.timeable = timeable as any;

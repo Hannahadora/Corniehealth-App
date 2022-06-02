@@ -845,7 +845,7 @@ export default class Medication extends Vue {
     this.fetchLocation();
     this.fetchPracticeForms();
     this.fetchPatients();
-    this.fetchAllergy();
+    if (this.patientId) await this.fetchAllergy();
     this.fetchAllPatients();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");

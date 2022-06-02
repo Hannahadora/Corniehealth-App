@@ -1,7 +1,7 @@
 <template>
-  <chart-card height="415px" title="Blood Pressure" @ordered="onOrder">
+  <chart-card height="338px" title="Blood Pressure" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
-      {{ diastolicAverage }}/{{ systolicAverage }}
+      {{ diastolicAverage || 0}}/{{ systolicAverage || 0 }}
       <span class="font-light">mmHgz</span>
     </p>
     <canvas ref="chart" style="margin: auto; width: 100%"></canvas>
@@ -39,6 +39,7 @@ export default class BloodChartt extends Vue {
   getVitals!: (patientId: string) => Promise<void>;
 
   loaded = false;
+    startDate = new Date().toISOString();
 
   raw: IStat[] = [];
   diastolicRaw: IStat[] = [];
@@ -54,6 +55,26 @@ export default class BloodChartt extends Vue {
   //   // const data = groupData(this.raw, this.order);
   //   return data;
   // }
+
+  get date(){
+    if (this.order == 'Today'){
+      return new Date().toISOString();
+    }else if(this.order == 'WTD'){
+      const  today = new Date();
+      const  nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7).toISOString();
+      return nextweek;
+    }else if(this.order == 'MTD'){
+      const Xmas95 = new Date();
+      const month = Xmas95.getMonth();
+      const newmonth = new Date(month).toISOString();
+      return newmonth;
+    }else {
+      const today = new Date();
+      const year = today.getFullYear();
+      const newyear = new Date(year).toISOString();
+       return newyear;
+    }
+  }
 
   get upperBand() {
     const values = this.sortedVitals
@@ -151,12 +172,12 @@ export default class BloodChartt extends Vue {
   get systolicAverage() {
     const values = this.systolicRaw?.map((a) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
   }
   get diastolicAverage() {
     const values = this.diastolicRaw?.map((a) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
   }
 
   chart!: Chart;
@@ -184,7 +205,11 @@ export default class BloodChartt extends Vue {
   async fetchData(patientId: string) {
     try {
       const response = await cornieClient().get(
-        `api/v1/vitals/bp/stats/${patientId}`
+        `api/v1/health-trends/bp-stats/${patientId}`,
+        {
+          start: this.startDate,
+          end: this.date,
+        }
       );
       this.diastolicRaw = response?.data?.diastolicData?.map((record: any) => {
         return { count: record.value, date: record.date };
@@ -198,9 +223,9 @@ export default class BloodChartt extends Vue {
       //   return { count: item.value, date: item.date }
       // });
       // this.chartData; //this line just  gets the vuejs reactivity system to refresh
-    } catch (error) {
+    } catch (error:any) {
       window.notify({
-        msg: "Failed to fetch blood pressure chart data",
+        msg: error.response.data.message,
         status: "error",
       });
     }
@@ -212,7 +237,7 @@ export default class BloodChartt extends Vue {
 
   mountChart() {
     const ctx: any = this.$refs.chart;
-    ctx.height = 200;
+    ctx.height = 130;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
@@ -228,6 +253,7 @@ export default class BloodChartt extends Vue {
             // data: [90, 250, 150, 408, 200, 180],
             data: this.systolicChartData ? this.systolicChartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
+            backgroundColor:"rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -241,7 +267,8 @@ export default class BloodChartt extends Vue {
             data: this.diastolicChartData
               ? this.diastolicChartData.dataSet
               : [],
-            borderColor: "rgba(254, 77, 60, 1)",
+            borderColor: "rgba(247, 181, 56, 1)",
+            backgroundColor:"rgba(247, 181, 56, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -249,6 +276,7 @@ export default class BloodChartt extends Vue {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         scales: {
           x: {
             grid: {

@@ -20,14 +20,14 @@
         <v-form ref="form">
             <span class="text-gray-500 text-xs mb-4" v-if="id">{{  practitionersnew.length }} selected</span>
                         <!-- <span class="text-gray-500 text-xs mb-4" v-esle>{{ firstPractitioner.length  }} selected</span> -->
-            <div class="flex space-x-2 w-full mb-7">
+            <div class="w-full mb-7">
                   <cornie-select
                     :items="['Practitioner']"
                     placeholder="--Select--"
-                    class="w-40"
+                    class="w-full"
                     v-model="actorType"
                 />
-                <div class="w-60">
+                <!-- <div class="w-60">
                  <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
                     <icon-input
                     autocomplete="off"
@@ -58,7 +58,7 @@
                              <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
                         </div>
                   </div>
-                </div>
+                </div> -->
             </div>
             <div v-if="actorType == 'Practitioner'">
                 <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in practitioners" :key="index">  
@@ -245,6 +245,8 @@ export default class managePractitioner extends Vue {
   practionerIds = [] as any;
   oldpractionerIds = [] as any;
 
+  outgoingPractioner = {};
+
   firstPatients = [] as any;
   patientIds = [] as any;
   schedulepractid = "";
@@ -309,13 +311,15 @@ export default class managePractitioner extends Vue {
     }else{
       this.practionerIds.push(id);
       this.firstPractitioner.push(item);
+
+      this.outgoingPractioner = item;
   
       // this.practitionerId = id;
     }
   }
 
   async updatePractitoinerData() {
-   this.$emit('practitioner-data',this.firstPractitioner,this.practionerIds);
+   this.$emit('push-data',this.firstPractitioner,this.practionerIds);
     this.done();
   }
   async updatePatientData() {
@@ -358,6 +362,7 @@ export default class managePractitioner extends Vue {
         this.payload
       );
       if(response.success){
+        this.$emit('practitioner-data',this.outgoingPractioner,this.payload);
           this.done();
         window.notify({ msg: "Practitioner added successfully", status: "success" });
       }
@@ -372,6 +377,7 @@ export default class managePractitioner extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
+        this.$emit('practitioner-data',this.outgoingPractioner,this.payload);
         window.notify({ msg: "Practitioner updated successffuly", status: "success" });
         this.done();
       }

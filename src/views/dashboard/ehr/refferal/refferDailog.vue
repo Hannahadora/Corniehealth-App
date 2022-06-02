@@ -931,7 +931,7 @@ export default class Referral extends Vue {
     this.fetchPatients();
     this.fetchAllPatients();
     this.fetchPatientConditions(this.patientId);
-    this.fetchAllergy();
+    if(this.patientId)  await this.fetchAllergy();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");

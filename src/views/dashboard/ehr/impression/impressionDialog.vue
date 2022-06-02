@@ -477,7 +477,7 @@ import AccordionComponent from "@/components/form-accordion.vue";
 import DatePicker from "./components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import Period from "@/types/IPeriod";
-import IImpression, { Effective } from "@/types/IImpression";
+import IImpression from "@/types/IImpression";
 import EncounterSelect from "./encounter-select.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import AssesorModal from "./assesor.vue";
@@ -830,12 +830,11 @@ export default class Impression extends Vue {
     const response = await Promise.all([AllAllergy]);
     this.allergy = response[0].data;
   }
-
-  created() {
+  async created() {
     this.setImpression();
     this.fetchRoles();
     this.fetchPractitioners();
-    this.fetchAllergy();
+    if (this.activePatientId) await this.fetchAllergy();
     this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();

@@ -418,7 +418,7 @@ export default class appointmentModal extends Vue {
   endTime = "00:00";
   billingType = "cash";
   venueAddress = "";
-  meetingLink = "";
+  meetingLink = "null";
   venue = "";
   patientId = [] as any;
   practitionerId = [] as any;

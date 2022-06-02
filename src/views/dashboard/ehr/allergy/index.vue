@@ -47,7 +47,7 @@ export default class AllergysIndex extends Vue {
   TaskToUpdate = {} as IAllergy;
 
   get empty() {
-    return this.historys.length < 1;
+    return this.allergys.length < 1;
   }
   get activePatientId() {
     return this.$route.params.id as string;
@@ -59,20 +59,13 @@ export default class AllergysIndex extends Vue {
   @allergy.Action
   fetchAllergys!: (patientId: string) => Promise<void>;
 
-  @history.State
-  historys!: Ihistory[];
 
-  @history.Action
-  fetchHistorys!: (patientId: string) => Promise<void>;
-
-  allergyAdded() {
+ async allergyAdded() {
     this.show = false;
-    this.allergys;
-    this.fetchAllergys(this.activePatientId);
+    await this.fetchAllergys(this.activePatientId);
   }
 
   async created() {
-    await this.fetchHistorys(this.activePatientId);
     if (this.allergys.length < 1) await this.fetchAllergys(this.activePatientId);
   }
 }

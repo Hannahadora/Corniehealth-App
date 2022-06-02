@@ -58,7 +58,7 @@
       </router-link>
     </span>
     <span
-      v-if="hasSubsection && expand"
+      v-if="hasSubsection && expand && text != 'Diagnostics'"
       @click="() => (showFullHeight = !showFullHeight)"
       class="px-3 pb-3 more cursor-pointer"
       >{{ showFullHeight ? "See less" : "See more" }}</span

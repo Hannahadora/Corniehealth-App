@@ -9,8 +9,13 @@
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3">Create New</h2>
-          <cancel-icon class="float-right cursor-pointer mt-1" @click="show = false" />
+          <h2 class="font-bold float-left text-lg text-primary ml-3">
+            Create New
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer mt-1 fill-current text-danger"
+            @click="show = false"
+          />
         </div>
       </cornie-card-title>
       <cornie-card-text>
@@ -29,11 +34,11 @@
                     </div>
                     <div
                       @click="() => (showProblemModal = true)"
-                      class="flex border rounded-md p-3 mt-0.5"
+                      class="flex items-center border rounded-md p-3 mt-0.5"
                     >
                       <div class="flex-1">Select</div>
                       <div class="flex-none self-center">
-                        <add-icon />
+                        <add-icon class="fill-current text-danger" />
                       </div>
                     </div>
                   </div>
@@ -47,7 +52,9 @@
                   <div class="col-span-1">
                     <div class="flex flex-col">
                       <div class="flex">
-                        <div class="capitalize text-black text-sm font-semibold flex-1">
+                        <div
+                          class="capitalize text-black text-sm font-semibold flex-1"
+                        >
                           Condition
                         </div>
                         <div class="flex-none">
@@ -56,17 +63,20 @@
                           </div>
                         </div>
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+
+                      <cornie-input
+                        class="w-full"
+                        :disabled="true"
+                        v-model="history.condition"
+                      />
                     </div>
                   </div>
                   <div class="col-span-1">
                     <date-time-picker
                       class="w-full h-full"
                       label="Date recorded"
-                      v-model:date="date"
-                      v-model:time="time"
+                      v-model:date="history.date.date"
+                      v-model:time="history.date.time"
                     />
                   </div>
                   <div class="col-span-1">
@@ -74,9 +84,12 @@
                       <div class="capitalize text-black text-sm font-semibold">
                         Severity
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+                      <cornie-input
+                        class="w-full"
+                        placeholder="Autoloaded"
+                        :disabled="true"
+                        v-model="history.severity"
+                      />
                     </div>
                   </div>
                   <div class="col-span-1">
@@ -84,9 +97,12 @@
                       <div class="capitalize text-black text-sm font-semibold">
                         Verification status
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        Autoloaded
-                      </div>
+                      <cornie-input
+                        class="w-full"
+                        placeholder="Autoloaded"
+                        :disabled="true"
+                        v-model="history.status"
+                      />
                     </div>
                   </div>
                 </div>
@@ -97,33 +113,44 @@
               title="Medications"
               :opened="false"
             >
-              <div class="flex w-full justify-between space-x-20 pt-3">
+              <div
+                v-for="m in allMedication"
+                class="flex w-full justify-between space-x-20 pt-3"
+              >
                 <div class="flex-none">
                   <div class="flex flex-col">
                     <div class="flex space-x-1 items-center">
-                      <div class="font-bold">Paracetamol</div>
+                      <div class="font-bold">
+                        {{ m.genericName }}
+                      </div>
                       <div class="font-light text-xxs">(Tablet)</div>
                     </div>
-                    <div class="font-light text-xs">27/12/2019</div>
+                    <div class="font-light text-xs">{{ m.createdAt }}</div>
                   </div>
                 </div>
                 <div class="flex-1 flex space-x-5">
                   <div class="flex flex-col w-full">
                     <div class="flex">
-                      <div class="capitalize text-black text-sm font-semibold flex-1">
+                      <div
+                        class="capitalize text-black text-sm font-semibold flex-1"
+                      >
                         Strength
                       </div>
                       <!-- <div class="flex-none">
                         <div class="underline-danger text-danger">View details</div>
                       </div> -->
                     </div>
-                    <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                      Autoloaded
-                    </div>
+                    <cornie-input
+                      class="w-full"
+                      :disabled="true"
+                      v-model="m.strength"
+                    />
                   </div>
                   <div class="flex flex-col w-full">
                     <div class="flex">
-                      <div class="capitalize text-black text-sm font-semibold flex-1">
+                      <div
+                        class="capitalize text-black text-sm font-semibold flex-1"
+                      >
                         Dosage
                       </div>
                       <!-- <div class="flex-none">
@@ -131,16 +158,16 @@
                       </div> -->
                     </div>
                     <div class="grid grid-cols-3 gap-x-2">
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
+                      <div class="flex border rounded-md p-3 mt-0.5">
                         2 Tabs
                       </div>
-                      <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                        1:1:1
+                      <div class="flex border rounded-md p-3 mt-0.5">
+                        {{ m.dosageInstruction }}
                       </div>
                       <div
-                        class="flex border text-white bg-blue-700 rounded-md p-3 mt-0.5"
+                        class="flex border text-white bg-blue-700 rounded-md text-sm p-3 mt-0.5"
                       >
-                        x 3 Days
+                        x {{ m.durationInDays }} Days
                       </div>
                     </div>
                   </div>
@@ -160,7 +187,9 @@
                 <div class="grid grid-cols-2 gap-6">
                   <div class="flex flex-col">
                     <div class="flex">
-                      <div class="capitalize text-black text-sm font-semibold flex-1">
+                      <div
+                        class="capitalize text-black text-sm font-semibold flex-1"
+                      >
                         Diagnostics
                       </div>
                       <div class="flex-none">
@@ -169,9 +198,11 @@
                         </div>
                       </div>
                     </div>
-                    <div class="flex border bg-gray-400 rounded-md p-3 mt-0.5">
-                      Autoloaded
-                    </div>
+                    <cornie-input
+                      class="w-full"
+                      placeholder="Autoloaded"
+                      :disabled="true"
+                    />
                   </div>
                   <date-time-picker
                     class="w-full"
@@ -200,17 +231,23 @@
                     :label="'Code'"
                     v-model="code"
                     placeholder="Select"
-                    :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                    :items="[
+                      'ASAP',
+                      'Callback results',
+                      'callback for scheduling',
+                    ]"
                   />
                   <div class="flex flex-col">
-                    <div class="capitalize text-black text-sm font-semibold">item</div>
+                    <div class="capitalize text-black text-sm font-semibold">
+                      item
+                    </div>
                     <div
                       @click="() => (showItemsModal = true)"
-                      class="flex border rounded-md p-3 mt-0.5"
+                      class="flex items-center border rounded-md p-3 mt-0.5"
                     >
                       <div class="flex-1">Select</div>
                       <div class="flex-none">
-                        <add-icon />
+                        <add-icon class="fill-current text-danger" />
                       </div>
                     </div>
                   </div>
@@ -245,7 +282,11 @@
                       :label="'Item code'"
                       v-model="assessment.summary"
                       placeholder="Enter"
-                      :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                      :items="[
+                        'ASAP',
+                        'Callback results',
+                        'callback for scheduling',
+                      ]"
                     />
                   </div>
                   <div class="col-span-1">
@@ -255,17 +296,21 @@
                       </div>
                       <div
                         @click="() => (showItemReference = true)"
-                        class="flex border rounded-md p-3 mt-0.5"
+                        class="flex items-center border rounded-md p-3 mt-0.5"
                       >
                         <div class="flex-1">Select</div>
                         <div class="flex-none self-center">
-                          <add-icon />
+                          <add-icon class="fill-current text-danger" />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-span-1">
-                    <cornie-input class="w-full" label="Basis" placeholder="Enter" />
+                    <cornie-input
+                      class="w-full"
+                      label="Basis"
+                      placeholder="Enter"
+                    />
                   </div>
                 </div>
               </div>
@@ -280,24 +325,37 @@
                   :label="'Code'"
                   v-model="code"
                   placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                  :items="[
+                    'ASAP',
+                    'Callback results',
+                    'callback for scheduling',
+                  ]"
                 />
                 <cornie-select
                   :label="'Reference'"
                   v-model="code"
                   placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                  :items="[
+                    'ASAP',
+                    'Callback results',
+                    'callback for scheduling',
+                  ]"
                 />
                 <cornie-select
                   :label="'Supporting info'"
                   v-model="code"
                   placeholder="Select"
-                  :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                  :items="[
+                    'ASAP',
+                    'Callback results',
+                    'callback for scheduling',
+                  ]"
                 />
                 <cornie-input
                   class="w-full"
-                  label="Item REference"
                   placeholder="Autoloaded"
+                  :disabled="true"
+                  label="Item Reference"
                 />
               </div>
             </accordion-component>
@@ -411,58 +469,199 @@
       </div>
     </cornie-card>
     <div>
-      <problem v-model="showProblemModal" />
+      <problem
+        :conditions="conditions"
+        :allergys="allergys"
+        v-model="showProblemModal"
+        @selectedId="setHistoryOfDisease"
+      />
       <items v-model="showItemsModal" />
       <item-reference v-model="showItemReference" />
     </div>
   </cornie-dialog>
 </template>
 <script lang="ts">
-import CornieCard from "@/components/cornie-card";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import AddIcon from "@/components/icons/plus.vue";
-import DateTimePicker from "@/views/dashboard/schedules/components/datetime-picker.vue";
-import { Options, Vue } from "vue-class-component";
-import { PropSync } from "vue-property-decorator";
-import ItemReference from "./item-reference.vue";
-import items from "./items.vue";
-import problem from "./problem.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import DateTimePicker from "@/components/date-time-picker.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import ArrowLeft from "@/components/icons/arrowleft.vue";
+  import CancelIcon from "@/components/icons/cancel.vue";
+  import AddIcon from "@/components/icons/plus.vue";
+  import IAllergy from "@/types/IAllergy";
+  import IRequest from "@/types/IRequest";
+  import { Options, Vue } from "vue-class-component";
+  import { PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import ItemReference from "./item-reference.vue";
+  import items from "./items.vue";
+  import problem from "./problem.vue";
 
-@Options({
-  components: {
-    CornieDialog,
-    ...CornieCard,
-    ArrowLeft,
-    CancelIcon,
-    AddIcon,
-    DateTimePicker,
-    AccordionComponent,
-    problem,
-    CornieSelect,
-    items,
-    ItemReference,
-    CornieInput,
-  },
-})
-export default class NewProgressNote extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  const progressNote = namespace("progressNote");
+  const medicationRequest = namespace("request");
+  const conditionR = namespace("condition");
+  const allergy = namespace("allergy");
 
-  showProblemModal = false;
-  showItemsModal = false;
-  showItemReference = false;
+  @Options({
+    components: {
+      CornieDialog,
+      ...CornieCard,
+      ArrowLeft,
+      CancelIcon,
+      AddIcon,
+      DateTimePicker,
+      AccordionComponent,
+      problem,
+      CornieSelect,
+      items,
+      ItemReference,
+      CornieInput,
+    },
+  })
+  export default class NewProgressNote extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  date = "23/04/2022";
-  time = "";
-  code = "";
-  assessment = {
-    protocol: "",
-    summary: "",
-  };
-}
+    showProblemModal = false;
+    showItemsModal = false;
+    showItemReference = false;
+    loading = false;
+
+    date = "";
+    time = "";
+    code = "";
+    assessment = {
+      protocol: "",
+      summary: "",
+    };
+    patientId = "";
+    history = {
+      condition: "lol",
+      date: {
+        date: "",
+        time: "",
+      },
+      severity: "",
+      status: "",
+    };
+
+    @progressNote.Action
+    createProgressNote!: (data: any) => Promise<void>;
+    @medicationRequest.Action
+    fetchrequestsById!: (id: string) => Promise<void>;
+    @conditionR.Action
+    fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+    @conditionR.State
+    conditions!: any;
+
+    @allergy.State
+    allergys!: IAllergy[];
+
+    @allergy.Action
+    fetchAllergys!: (patientId: string) => Promise<void>;
+
+    @medicationRequest.State
+    patientrequests!: IRequest[];
+
+    async submit() {
+      await this.createProgressNote({
+        patientId: this.$route.params.id,
+        identifier: "",
+        chiefComplaint: {
+          type: "condition",
+          condition: "string",
+          dateRecorded: "2022-05-27",
+          severity: "string",
+          verificationStatus: "string",
+          referenceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        },
+        medications: [
+          {
+            name: "string",
+            strength: "string",
+            duration: "Unknown Type: String",
+            dosage: "string",
+            requestId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          },
+        ],
+        objectiveDiagnosis: [
+          {
+            summary: "string",
+            dateReported: "2022-05-27",
+          },
+        ],
+        objectiveInvestigations: [
+          {
+            code: "string",
+            item: {
+              type: "observation",
+              details: "string",
+              id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            },
+          },
+        ],
+        protocol: "string",
+        summary: "string",
+        assessmentFindings: [
+          {
+            type: "condition",
+            referenceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            practitioner: "string",
+            practitionerSpecialty: "string",
+            description: "string",
+            details: "string",
+          },
+        ],
+        assessmentBasis: "string",
+        prognosisCode: "string",
+        prognosisReference: "string",
+        prognosisSupportingInfo: "string",
+        prognosisSupportingInfoReference: "string",
+      });
+      window.location.reload();
+    }
+
+    get allMedication() {
+      return this.patientrequests
+        .map(this.medicationRequest)
+        .flatMap((value) => value);
+    }
+
+    setHistoryOfDisease(e: any) {
+      console.log("emitted", e);
+      this.history.condition = e.code;
+      this.history.date.date = e.recordDate;
+      this.history.date.time = e.recordDate;
+      this.history.severity = e.severity;
+      this.history.status = e.verificationStatus;
+    }
+
+    medicationRequest(request: any) {
+      const { medications, ...rest } = request;
+      return medications.map((medication: any) => {
+        console.log("Each m", medication);
+        return {
+          ...medication,
+          ...rest,
+          medicationId: medication.id,
+          requestId: request.id,
+          createdAt: new Date(request.createdAt).toLocaleDateString(),
+        };
+      });
+    }
+    async created() {
+      this.patientId = this.$route.params.id as string;
+      await this.fetchPatientConditions(this.$route.params.id.toString());
+      await this.fetchAllergys(this.patientId);
+      await this.fetchrequestsById(this.patientId).then(() => {
+        console.log(
+          "medication",
+          this.patientrequests.map(this.medicationRequest)
+        );
+      });
+    }
+  }
 </script>

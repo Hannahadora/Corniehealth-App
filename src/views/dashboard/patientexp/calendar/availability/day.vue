@@ -97,7 +97,8 @@ export default class Daily extends Vue {
     }
 }
   async fetchDayCalendar() {
-   const date = this.startDate.toISOString() as any;
+    const [splitDate] = this.startDate.toISOString().split('T');
+   const date = splitDate;
      const AllCalendarDay = cornieClient().get(
         `/api/v1/calendar/organization/${this.authCurrentLocation}/day-view?date=${date}`,);
      

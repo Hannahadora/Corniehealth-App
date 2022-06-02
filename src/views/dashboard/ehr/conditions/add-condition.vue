@@ -1,5 +1,5 @@
 <template>
-  <clinical-dialog v-model="show" title="New Condition" class="">
+  <clinical-dialog v-model="show" class="w-6/12 h-full" :title="newaction ">
     <v-form ref="form">
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
         <accordion-component
@@ -63,7 +63,7 @@
           >
           <template v-slot:default>
             <div>
-                <onset-picker v-model="onsetmesurable" label="Onset" />
+                <onset-picker v-model="onsetmesurable" label="Onset" :name="'onset'" />
             </div>
           </template>
           </accordion-component>
@@ -72,10 +72,11 @@
           <accordion-component
               :opened="false"
             title="Abatement"
+            :grayCaption="true"
           >
           <template v-slot:default>
                 <div>
-                    <onset-picker v-model="abatementMeasurable" label="Onset" />
+                    <onset-picker v-model="abatementMeasurable" label="Abatement" :name="'abatement'"/>
                 </div>
           </template>
           </accordion-component>
@@ -84,16 +85,25 @@
             <accordion-component title="Recorded" :opened="false">
               <template v-slot:default>
                 <div class="mt-8 grid grid-cols-2 gap-4 w-full">
-                  <div class="mt-1">
+                  <!-- <div class="mt-1">
                     <date-time-picker  v-model:date="recordDate"  v-model:time="recordTime"  :label="'Date/Time'" />
-                  </div>
+                  </div> -->
                   <cornie-input
                     label="Recorder"
-                    class="w-full"
+                    class="-mt-5 w-full"
                     placeholder="Autoloaded"
                     :disabled="true"
                     v-model="recorder"
-                  />
+                  >
+                    <template #labelicon>
+                      <custom-checkbox
+                        :label="'Assert this record'"
+                        class="w-full"
+                        v-model="asserterId"
+                        :value="asserterId"
+                      />
+                    </template>
+                    </cornie-input>
                   <!-- <cornie-input
                     label="Recorder"
                     class="-mt-5 w-full"
@@ -126,7 +136,7 @@
               <cornie-input v-model="summary" label="Summary" />
               <assessment-select
                 :patientId="patientId"
-                v-model="assessment"
+                v-model="assessmentName"
                 label="Assessment"
                 @asses-data="assesdata"
               />
@@ -139,17 +149,19 @@
             </div>
             <div class="border-t-2 border-dashed border-gray-200 pt-5">
               <span class="text-sm text-danger">Assessment</span>
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 gap-4 w-full">
                   <div class="bg-white shadow-md p-1 w-full mt-5 rounded-lg" v-for="(item, index) in assessment" :key="index">
                     <div class="flex space-x-4 w-full">
                       <div class="w-full">
-                        <p class="font-bold text-sm">
+                  
+                        <p class="font-bold text-sm w-full">
                           {{ item.name }}
                         </p>
-                        <span class="text-gray-400 text-xs font-light">
+                        <p class="text-gray-400 text-xs font-bold">
                            {{ new Date(item.date).toLocaleDateString()}}
-                        </span>
-                        <span class="text-black text-xs font-light">
+                        </p>
+              
+                        <span class="flex space-x-3 text-black text-xs font-bold w-full">
                             Dr. {{ item.practionerName}} <span class="text-gray-400">. {{ item.department}}</span>
                         </span>
                       </div>
@@ -162,6 +174,7 @@
                         </div>
                       </div>
                     </div>
+                   
                   </div>
                 </div>
     
@@ -192,12 +205,12 @@
             />
               <cornie-input
                :rules="required"
-            v-model="evidence.note"
-                      label="Note"
-                      class="mb-5 w-full"
-                      placeholder="Enter"
-                    >
-                    </cornie-input>
+                v-model="evidence.note"
+                label="Note"
+                class="mb-5 w-full"
+                placeholder="Enter"
+                >
+                </cornie-input>
           </div>
         </template>
           <!-- <cornie-text-area
@@ -212,21 +225,6 @@
     </v-form>
     <template #optionactions>
         <div class="flex justify-end">
-          <span
-            v-if="!id"
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="SaveDraftGrn"
-          >
-            Save as draft
-          </span>
-          <span
-            v-else
-            class="text-sm font-bold text-danger float-left flex justify-start w-full cursor-pointer"
-            @click="completeDraft"
-          >
-            Complete draft
-          </span>
-
           <cornie-btn
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -285,13 +283,14 @@ import ClinicalDialog from "./clinical-dialog.vue";
 import DateTimePicker from "./date-time-picker.vue";
 import RecorderModal from "./components/recorder.vue";
 
-import { ICondition } from "@/types/ICondition";
+import { ICondition, Abatement, OnSet } from "@/types/ICondition";
 
 const condition = namespace("condition");
 
 // import { Codeable } from "@/types/misc";
 import { printPractitioner } from "@/plugins/utils";
 import Condition from "yup/lib/Condition";
+import ConditionOccurence from "./add-occurence.vue";
 
 const user = namespace("user");
 
@@ -325,7 +324,7 @@ const measurable = {
   time: null,
   endTime: null
 };
-;
+
 
 @Options({
   name: "AddCondition",
@@ -367,6 +366,10 @@ export default class AddCondition extends Vue {
   @user.Getter
   authPractitioner!: IPractitioner;
 
+  
+  @condition.Action
+  getConditionById!: (id: string) => Promise<ICondition>;
+
   required = string().required();
 
   loading = false;
@@ -380,6 +383,7 @@ export default class AddCondition extends Vue {
   referenceEncounter = "";
 
   asserter = "";
+  assessmentName = "";
 
   onsetTimeable = { ...timeable };
   onsetMeasurable = { ...measurable };
@@ -398,8 +402,10 @@ export default class AddCondition extends Vue {
   evidenceDetail = "";
   evidenceNote = "";
 
+  abatement = [] as any;
+
   recorderId = "";
-  recordDate = "";
+  recordDate = new Date().toString();
   recordTime = "";
   assessment = [] as any;
   type = "";
@@ -409,6 +415,7 @@ export default class AddCondition extends Vue {
     detail: "",
     note: ""
   };
+  asserterId = "";
 
   @Watch("authPractitioner")
   practitionerChanged(): void {
@@ -418,8 +425,46 @@ export default class AddCondition extends Vue {
   async setAsserter() {
     this.asserter = this.authPractitioner?.id || "";
   }
+ @Watch("id")
+  idChanged() {
+    this.setCondition();
+  }
+
+  async setCondition() {
+        const condition = await this.getConditionById(this.id);
+    if (!condition) return;
+    this.clinicalStatus = condition.clinicalStatus;
+    this.verificationStatus = condition.verificationStatus;
+    this.type = condition.type;
+    this.category = condition.category;
+    this.summary = condition.summary;
+    this.evidenceDetail = condition.detail;
+    this.bodySite = condition.bodySite;
+    this.assessment = condition.assessment;
+    this.severity = condition.severity;
+    this.evidenceNote = condition.evidenceNote;
+   // this.onsetmesurable.unit = condition?.onSet?.range?.unit || null;
+
+
+
+
+
+
+     this.abatement = condition.abatement;
+    this.evidence = condition.evidence;
+    this.code = condition.code;
+    this.recordDate = condition.recordDate;
+    this.recorderId = condition.recorderId;
+     this.asserterId = condition.asserterId;
+
+  }
+
+   get newaction() {
+    return this.id ? "Edit Condition" : "New Condition";
+  }
 
   assesdata(value:any){
+    this.assessmentName = value.name;
     this.assessment.push(value);
   }
 
@@ -431,45 +476,51 @@ export default class AddCondition extends Vue {
     return this.$route.params.id;
   }
 
-   get onset() {
+ get onset() {
     return {
       onsetRange: !Object.values({
         unit: this.onsetmesurable.unit,
         min: this.onsetmesurable.min,
         max: this.onsetmesurable.max,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      } : null,
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.unit,
+            min: this.onsetmesurable.min,
+            max: this.onsetmesurable.max,
+          }
+        : null,
       onsetAge: !Object.values({
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      } : null, 
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.ageUnit,
+            value: this.onsetmesurable.ageValue,
+          }
+        : null,
       onsetString: this.onsetmesurable.string || null,
       onsetPeriod: !Object.values({
         start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
-        startTime:this.onsetmesurable.startTime,
+        startTime: this.onsetmesurable.startTime,
         endTime: this.onsetmesurable.endTime,
-      }).every(o => o === null) ? {
-        start: this.onsetmesurable.startDate,
-        end: this.onsetmesurable.endDate,
-         startTime:this.onsetmesurable.startTime,
-        endTime: this.onsetmesurable.endTime,
-      } : null,
-      onsetDateTime:  this.safeBuildDateTime(
-       this.onsetmesurable.date as any,
-       this.onsetmesurable.time as any
-     ),
+      }).every((o) => o === null)
+        ? {
+            start: this.onsetmesurable.startDate,
+            end: this.onsetmesurable.endDate,
+            startTime: this.onsetmesurable.startTime,
+            endTime: this.onsetmesurable.endTime,
+          }
+        : null,
+      onsetDateTime: this.safeBuildDateTime(
+        this.onsetmesurable.date as any,
+        this.onsetmesurable.time as any
+      ),
     };
   }
-  get abatement() {
+  get setabatement() {
     return {
-      onsetRange: !Object.values({
+      range: !Object.values({
         unit: this.abatementMeasurable.unit,
         min: this.abatementMeasurable.min,
         max: this.abatementMeasurable.max,
@@ -478,15 +529,15 @@ export default class AddCondition extends Vue {
         min: this.abatementMeasurable.min,
         max: this.abatementMeasurable.max,
       } : null,
-      onsetAge: !Object.values({
+      age: !Object.values({
         unit: this.abatementMeasurable.ageUnit,
         value: this.abatementMeasurable.ageValue,
       }).every(o => o === null) ? {
         unit: this.abatementMeasurable.ageUnit,
         value: this.abatementMeasurable.ageValue,
       } : null, 
-      onsetString: this.abatementMeasurable.string || null,
-      onsetPeriod: !Object.values({
+      string: this.abatementMeasurable.string || null,
+      period: !Object.values({
         start: this.abatementMeasurable.startDate,
         end: this.abatementMeasurable.endDate,
         startTime:this.abatementMeasurable.startTime,
@@ -497,7 +548,7 @@ export default class AddCondition extends Vue {
          startTime:this.abatementMeasurable.startTime,
         endTime: this.abatementMeasurable.endTime,
       } : null,
-      onsetDateTime:  this.safeBuildDateTime(
+      dateTime:  this.safeBuildDateTime(
        this.abatementMeasurable.date as any,
        this.abatementMeasurable.time as any
      ),
@@ -570,12 +621,14 @@ export default class AddCondition extends Vue {
   }
   get recorder(){
     this.recorderId = this.authPractitioner.id;
+    this.asserterId = this.authPractitioner.id;
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
   }
   get payload() {
+    this.abatement.push(this.setabatement);
     return {
       patientId: this.patientId,
-      encounterId: this.referenceEncounter,
+      encounterId: this.referenceEncounter || null,
       clinicalStatus: this.clinicalStatus,
       verificationStatus: this.verificationStatus,
       type: this.type,
@@ -583,68 +636,57 @@ export default class AddCondition extends Vue {
       summary: this.summary,
       detail: this.evidenceDetail,
       bodySite: this.bodySite,
-      assessment: this.stageAssessment,
+      assessment: this.assessment,
       severity: this.severity,
-      evidenceNote: this.evidenceNote,
+      evidence: this.evidence,
       onSet: this.onset,
       abatement: this.abatement,
       code: this.code,
       recordDate: this.recordDate,
       recorderId: this.recorderId,
+      asserterId: this.asserterId,
 
     };
   }
 
-  async submit() {
+    async submit() {
     this.loading = true;
-    await this.create();
+    if (this.id) await this.updateCondition();
+    else await this.create();
     this.loading = false;
   }
   async create() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     try {
       const { data } = await cornieClient().post(
         "/api/v1/condition",
         this.payload
       );
       window.notify({ msg: "Condition created", status: "success" });
-      this.show = false;
-    } catch (error) {
-      window.notify({ msg: "Condition not created", status: "error" });
-    }
-  }
-  async SaveDraftGrn() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
-
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/inventory/material-request/draft",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({
-          msg: "Material request draft saved",
-          status: "success",
-        });
-        this.done();
-      }
-    } catch (error: any) {
+      this.done();
+    } catch (error:any) {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
-    async completeDraft() {
+
+   async updateCondition() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     const id = this.id;
-    const url = `/api/v1/inventory/material-request/draft/complete/${id}`;
+    const url = `/api/v1/condition/${id}`;
     const payload = this.payload;
     try {
       const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         window.notify({
-          msg: "Material Request draft completed",
+          msg: "Condition Updated",
           status: "success",
         });
         this.done();
@@ -653,13 +695,16 @@ export default class AddCondition extends Vue {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
   }
+ 
+
 
   done() {
     this.show = false;
-    this.$emit("requestAdded");
+    this.$emit("conditionAdded");
   }
 
   created() {
+    this.setCondition();
     this.setAsserter();
   }
 }

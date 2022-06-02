@@ -34,18 +34,18 @@ const condition = namespace("condition");
 })
 export default class Conditions extends Vue {
 
+  
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<void>;
-
-
+  
   @condition.State
-  conditions!: { [state: string]: ICondition[] };
+  conditions!: ICondition[];
 
     get patientId() {
        return this.$route.params.id as string;
     }
    get patientConditions() {
-    return this.conditions[this.patientId] || [];
+    return this.conditions || [];
   }
 
 
