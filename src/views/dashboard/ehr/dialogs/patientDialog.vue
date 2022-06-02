@@ -26,33 +26,42 @@
           >
             <div class="bg-white px-2 pt-3 pb-2 sm:p-3 sm:pb-2">
               <div>
-                <div class="mt-3 text-center sm:mt-0 sm:text-left">
-                  <h3
-                    class="text-lg leading-6 text-primary font-medium"
-                    id="modal-title"
-                  >
-                    My Patients (2)
-                  </h3>
-                  <div class="mt-5">
+                <div class="mt-5 text-center sm:mt-0 sm:text-left">
+                  <div class="d-flex w-full">
+                    <h3
+                      class="text-lg leading-6  text-primary font-bold"
+                      id="modal-title"
+                    >
+                      My Patients ({{ patients.length  }})
+                    </h3>
+                     <close-icon
+                      class="items-end absolute right-5 top-4 cursor-pointer fill-current text-primary"
+                      @click="show = false"
+                    />
+                  </div>
+                  <div class="mt-5 my-5" v-for="(item, index) in patients" :key="index">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
                         <avatar
+                          v-if="item.profilePhoto"
+                          class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
+                          :src="item.profilePhoto"
+                        />
+                         <avatar
+                          v-else
                           class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
                           :src="localSrc"
                         />
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
-                          Samuel Aneme
+                          {{ item.firstname +' '+ item.lastname}}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <close-icon
-                  class="items-end absolute right-5 top-5 cursor-pointer"
-                  @click="show = false"
-                />
+               
               </div>
             </div>
           </div>
@@ -62,22 +71,30 @@
   </div>
 </template>
 <script lang="ts">
+import { namespace } from "vuex-class";
+import { string } from "yup";
+import { Prop, PropSync } from "vue-property-decorator";
+import { cornieClient } from "@/plugins/http";
+import { Options, Vue } from "vue-class-component";
+import { IPatient } from "@/types/IPatient";
+
+
 import Modal from "@/components/modal.vue";
 import Textarea from "@/components/textarea.vue";
-import { Prop, PropSync } from "vue-property-decorator";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import { string } from "yup";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/eye.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
-import { cornieClient } from "@/plugins/http";
+import CloseIcon from "@/components/icons/CloseIconBlue.vue";
 import DatePicker from "@/components/daterangepicker.vue";
-import { Options, Vue } from "vue-class-component";
+
+import Avatar from "@/components/avatar.vue";
+
+const patients = namespace("patients");
 
 @Options({
-  name: "PateintModal",
+  name: "patientDialog",
   components: {
     Modal,
     CornieInput,
@@ -88,9 +105,10 @@ import { Options, Vue } from "vue-class-component";
     EyeIcon,
     DeleteIcon,
     Textarea,
+    Avatar
   },
 })
-export default class memberModal extends Vue {
+export default class patientDialog extends Vue {
   @Prop({ type: Boolean, required: true, default: false })
   visible!: boolean;
 
@@ -100,11 +118,19 @@ export default class memberModal extends Vue {
   @PropSync("visible", { type: Boolean, required: true, default: false })
   show!: boolean;
 
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
   loading = false;
   reasonsForDeactivation = "";
   deactivateTillDate = "";
   localSrc = require("../../../../assets/img/placeholder.png");
   required = string().required();
+
+  orgPatients = [];
 
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
@@ -115,5 +141,11 @@ export default class memberModal extends Vue {
       deactivateTillDate: this.deactivateTillDate,
     };
   }
+
+  async created(){
+    await this.fetchPatients();
+  }
+
+
 }
 </script>

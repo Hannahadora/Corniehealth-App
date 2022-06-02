@@ -25,6 +25,9 @@
             {{ status }}
           </span>
         </template> -->
+        <template #physician="{ item }">
+          <div>{{ getP(item.physician).then((d) => d.firstName) }}</div>
+        </template>
         <template #actions="{ item }">
           <div
             @click="viewCondition(item)"
@@ -220,7 +223,7 @@
   })
   export default class ExistingState extends Vue {
     @practitioner.Action
-    getPractitionerById!: (id: string) => Promise<IPractitioner>;
+    getPractitionerById!: (id: string) => IPractitioner;
 
     @practitioner.Action
     fetchPractitioners!: () => Promise<void>;
@@ -357,10 +360,6 @@
       this.conditionId = value3;
       this.updatedBy = this.getPatientName(this.patientId);
       this.update = this.getLastAppointment;
-
-      //   const dateString = progress.createdAt;
-      // const date = new Date(dateString);
-      // return date.toLocaleDateString();
     }
     printPractitioner(condition: ICondition) {
       return condition.practitioner?.firstName;
@@ -371,7 +370,7 @@
         let g = {
           identifier: p.identifier,
           recordDate: this.printRecorded(p),
-          physician: this.getPractitionerById(p.practitionerId),
+          physician: p.practitionerId,
           billing: p.billing || "---",
           status: p.status || "---",
         };
@@ -381,7 +380,9 @@
       console.log("items", items);
       return items;
     }
-
+    async getP(p: any) {
+      return await this.getPractitionerById(p);
+    }
     async fetchProgressnotes() {
       try {
         const { data } = await cornieClient().get(

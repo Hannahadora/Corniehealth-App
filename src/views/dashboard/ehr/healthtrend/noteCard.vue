@@ -1,5 +1,5 @@
 <template>
-  <detail-card height="313px" title="Notes"> </detail-card>
+  <detail-card height="337px" title="Notes"> </detail-card>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";

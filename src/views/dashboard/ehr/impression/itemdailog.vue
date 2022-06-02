@@ -55,7 +55,7 @@
                 type="search"
                 placeholder="Search"
                 v-bind="$attrs"
-                v-model="displayVal"
+                v-model="query"
               >
                 <template v-slot:prepend>
                   <search-icon />
@@ -66,7 +66,7 @@
           <div class="overflow-y-auto">
             <div v-if="type === 'Observation'">
               <div v-for="(input, index) in observations" :key="index">
-                <div class="w-full mt-5 p-3" @click="getValue(input)">
+                <div class="w-full mt-5 p-3" @click="setValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
@@ -80,7 +80,7 @@
             </div>
             <div v-if="type === 'Questionaire Response'">
               <div v-for="(input, index) in questions" :key="index">
-                <div class="w-full mt-2 p-3" @click="getValue(input)">
+                <div class="w-full mt-2 p-3" @click="setValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
@@ -124,11 +124,11 @@
                     </div>
                   </div>
 
-                  <div class="w-1/2">
+                  <div class="w-1/2 text-right">
                     <p class="text-sm text-dark mb-1 font-medium">
                       {{ input.conditionCode }}
                     </p>
-                    <p class="text-xs text-gray-300">{{ input.age?.year }}</p>
+                    <p class="text-xs text-gray-300">{{ getAge(input.age?.year) }}</p>
                   </div>
                 </div>
               </div>
@@ -137,7 +137,7 @@
 
           <div v-if="type === 'Diagnostic Report'">
             <div v-for="(input, index) in diagnosticReports" :key="index">
-              <div class="w-full mt-2 p-3" @click="getValue(input)">
+              <div class="w-full mt-2 p-3" @click="setValue(input)">
                 <div class="w-full">
                   <div class="w-full">
                     <p class="text-sm text-dark mb-1 font-medium">
@@ -241,9 +241,9 @@ export default class ItemDialog extends Vue {
   diagnosticReports!: IDiagnostic[];
 
   localSrc = require("../../../../assets/img/placeholder.png");
+  query = "";
   type = "Family member History";
   selectedItem: Investigation = {
-    code: "",
     item: {
       type: "",
       details: "",
@@ -265,7 +265,7 @@ export default class ItemDialog extends Vue {
   setValue(value: any) {
     if (this.type === "Family member History") {
       this.selectedItem.item.type = "family-history";
-      this.selectedItem.code = value.conditionCode;
+      // this.selectedItem.code = value.conditionCode;
       this.selectedItem.item.details = value.name;
       this.selectedItem.item.id = value.id;
     }
@@ -284,6 +284,10 @@ export default class ItemDialog extends Vue {
     if (this.type === "Imaging Study") {
       this.selectedItem.item.type = "imaging-study";
     }
+  }
+
+  getAge(x: any) {
+    return new Date().getFullYear() - x
   }
 
   apply() {
