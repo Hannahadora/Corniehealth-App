@@ -43,7 +43,7 @@
             <td    class="p-2 border-r-2 text-xs text-gray-500 border-gray-100" >{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'  }}</td>
               <template v-for="(item, index) in weekCalendar" :key="index">
                 <td class="p-3 text-sm capitalize border-r-2  border-gray-100">
-                     <actors-section :singletime="valueindex" :items="value" :range="valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'" :range2="valueindex  >= 9 ? (parseInt(valueindex) + 1) +':00' : '0' + (parseInt(valueindex) + 1) +':00'"/>
+                     <actors-section :singletime="valueindex" :items="value[index]" :range="valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'" :range2="valueindex  >= 9 ? (parseInt(valueindex) + 1) +':00' : '0' + (parseInt(valueindex) + 1) +':00'"/>
                 </td>
               </template>
             <td class="p-2 text-xs text-gray-500">{{ valueindex > 9 ? valueindex +':00' : '0' + valueindex +':00'    }}</td>
@@ -152,8 +152,8 @@ export default class Weekly extends Vue {
 
 
  async fetchweekCalendar() {
-    const date = this.startDate.toISOString() as any;
-    this.loading = true;
+    const [splitDate] = this.startDate.toISOString().split('T');
+   const date = splitDate;
     const AllCalendarDay = cornieClient().get(`/api/v1/calendar/organization/${this.authCurrentLocation}/week-view?date=${date}`,);  
      const response = await Promise.all([AllCalendarDay]);
      if(response){
