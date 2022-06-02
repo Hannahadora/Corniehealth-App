@@ -32,7 +32,7 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-dialog>
-    <register-existing v-model:visible="registerNew" />
+    <register-existing v-model:visible="registerNew" @close="show = false"/>
   </div>
 </template>
 <script lang="ts">
