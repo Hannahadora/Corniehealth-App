@@ -54,17 +54,21 @@
                   </div>
                 </div>
               </div>
-              <cornie-select
-                :label="'Category'"
-                v-model="code"
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
+                class="required w-full"
+                v-model="basic.category"
+                label="category"
                 placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                required
               />
-              <cornie-select
-                :label="'Code'"
-                v-model="code"
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
+                class="required w-full"
+                label="code"
+                v-model="basic.code"
                 placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
+                required
               />
             </div>
           </accordion-component>
@@ -313,11 +317,12 @@
                   </div>
                 </div>
               </div>
-              <cornie-select
-                :label="'Body site'"
-                v-model="code"
+              <fhir-input
+                v-model="location.body"
+                reference="http://hl7.org/fhir/ValueSet/body-site"
+                :rules="required"
+                label="Body Site"
                 placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
               />
               <cornie-select
                 :label="'Outcome'"
@@ -449,7 +454,7 @@
       <parton :observations="observations" v-model="showPartOf" />
       <actor v-model="showActor" />
       <function v-model="showFunction" />
-      <location v-model="showLocation" />
+      <locationM v-model="showLocation" />
       <reason-reference v-model="showReasonReference" />
       <report v-model="showReport" />
       <used-reference v-model="showUsedReference" />
@@ -464,6 +469,7 @@
   import CornieSelect from "@/components/cornieselect.vue";
   import CheckBox from "@/components/custom-checkbox.vue";
   import DateTimePicker from "@/components/date-time-picker.vue";
+  import FhirInput from "@/components/fhir-input.vue";
   import AccordionComponent from "@/components/form-accordion.vue";
   import ArrowLeft from "@/components/icons/arrowleft.vue";
   import CancelIcon from "@/components/icons/cancel.vue";
@@ -472,10 +478,11 @@
   import { Options, Vue } from "vue-class-component";
   import { PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
+  import { string } from "yup";
   import actor from "./actor.vue";
   import basedon from "./basedon.vue";
   import Function from "./function.vue";
-  import location from "./location.vue";
+  import locationM from "./location.vue";
   import parton from "./partof.vue";
   import reasonReference from "./reason-reference.vue";
   import report from "./report.vue";
@@ -483,6 +490,7 @@
 
   const procedure = namespace("procedure");
   const careplan = namespace("careplan");
+  const locationStore = namespace("location");
 
   @Options({
     components: {
@@ -500,11 +508,12 @@
       CornieInput,
       actor,
       Function,
-      location,
+      locationM,
       reasonReference,
       report,
       usedReference,
       CornieRadio,
+      FhirInput,
     },
   })
   export default class NewProgressNote extends Vue {
@@ -528,6 +537,12 @@
     date = "";
     time = "";
     code = "";
+    basic = {
+      basedOn: "",
+      partof: "",
+      category: "",
+      code: "",
+    };
     assessment = {
       protocol: "",
       summary: "",
@@ -665,6 +680,16 @@
         };
       }
     }
+    location = {
+      body: "",
+    };
+    required = string().required();
+
+    @locationStore.Action
+    fetchLocations!: () => Promise<any>;
+
+    @locationStore.State
+    locations!: any;
 
     async submit() {
       let g = {
