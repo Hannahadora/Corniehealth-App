@@ -119,14 +119,14 @@
                   <date-time-picker
                     class="w-full"
                     label="Start Date/time"
-                    v-model:date="date"
-                    v-model:time="time"
+                    v-model:date="period.start"
+                    v-model:time="period.startTime"
                   />
                   <date-time-picker
                     class="w-full"
                     label="End Date/time"
-                    v-model:date="date"
-                    v-model:time="time"
+                    v-model:date="period.end"
+                    v-model:time="period.endTime"
                   />
                 </div>
                 <div class="w-full mt-1" v-if="performed == 'range'">
@@ -139,14 +139,14 @@
                           placeholder=""
                           class="grow w-full"
                           :setfull="true"
-                          v-model="range.value"
+                          v-model="range.min"
                         />
                         <cornie-select
                           :items="['Day']"
                           placeholder="/ Day"
                           class="w-32 mt-0.5 flex-none"
                           :setPrimary="true"
-                          v-model="range.day"
+                          v-model="range.unit"
                         />
                       </div>
                     </div>
@@ -157,14 +157,14 @@
                           placeholder=""
                           class="grow w-full"
                           :setfull="true"
-                          v-model="range.value"
+                          v-model="range.max"
                         />
                         <cornie-select
                           :items="['Day']"
                           placeholder="/ Day"
                           class="w-32 mt-0.5 flex-none"
                           :setPrimary="true"
-                          v-model="range.day"
+                          v-model="range.unit"
                         />
                       </div>
                     </div>
@@ -175,6 +175,7 @@
                   class="w-full"
                   label="String"
                   placeholder="Enter"
+                  v-model="performerString"
                 />
               </div>
             </div>
@@ -188,19 +189,40 @@
           >
             <div class="grid grid-cols-2 gap-6 py-5">
               <div class="flex flex-col">
-                <div class="flex flex-row items-center justify-between">
+                <!-- <div class="flex flex-row items-center justify-between">
                   <div>Recorder</div>
                   <div class="flex items-center space-x-1">
                     <check-box v-model="recorderCheck" class="mr-2" />
                     <div>Assert this record</div>
                   </div>
-                </div>
+                </div> -->
                 <div>
-                  <cornie-input
+                  <!-- <cornie-input
                     :disabled="true"
                     class="w-full"
                     placeholder="Autoloaded"
-                  />
+                  /> -->
+                  <cornie-input
+                    label="Recorder"
+                    class="-mt-5 w-full"
+                    placeholder="Autoloaded"
+                    :disabled="true"
+                    v-model="recorder"
+                  >
+                    <template #labelicon>
+                      <check-box
+                        :label="'Assert this record'"
+                        class="w-full"
+                        v-model="asserterId"
+                        :value="authPractitioner"
+                      />
+                    </template>
+                    <!-- <template #append-inner>
+                      <span class="bg-primary py-2.5 px-3 -mr-2 rounded cursor-pointer" @click="showRecorder = true">
+                        <d-edit class="fill-current text-white" />
+                      </span>
+                    </template> -->
+                  </cornie-input>
                 </div>
               </div>
             </div>
@@ -423,8 +445,8 @@
       </div>
     </cornie-card>
     <div>
-      <basedon v-model="showBasedOn" />
-      <parton v-model="showPartOf" />
+      <basedon :careplan="patientCarePlans" v-model="showBasedOn" />
+      <parton :observations="observations" v-model="showPartOf" />
       <actor v-model="showActor" />
       <function v-model="showFunction" />
       <location v-model="showLocation" />
@@ -446,6 +468,7 @@
   import ArrowLeft from "@/components/icons/arrowleft.vue";
   import CancelIcon from "@/components/icons/cancel.vue";
   import AddIcon from "@/components/icons/plus.vue";
+  import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import { PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -459,6 +482,7 @@
   import usedReference from "./used-reference.vue";
 
   const procedure = namespace("procedure");
+  const careplan = namespace("careplan");
 
   @Options({
     components: {
@@ -497,7 +521,7 @@
     showReasonReference = false;
     showReport = false;
     showUsedReference = false;
-
+    patientId = "";
     performed = "range";
     recorderCheck = "";
     loading = false;
@@ -513,21 +537,139 @@
       day: "",
     };
     period = {
-      value: "",
-      day: "",
+      start: "",
+      end: "",
+      startTime: "",
+      endTime: "",
     };
     range = {
-      value: "",
-      day: "",
+      unit: "",
+      min: "",
+      max: "",
     };
-
+    performerString = "";
+    request = [];
     @procedure.Action
     createProcedure!: (procedure: any) => Promise<boolean>;
+
+    @careplan.Action
+    getPatientCarePlans!: (id: string) => Promise<any>;
+
+    @careplan.State
+    patientCarePlans!: any[];
+
+    observations: any = [];
+    recorder = "";
+    asserterId = "";
+    authPractitioner = "";
+    get performedPayload() {
+      if (this.performed == "date/time") {
+        return {
+          dateTime: this.date,
+          age: {
+            unit: undefined,
+            value: undefined,
+          },
+          period: {
+            start: undefined,
+            end: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          range: {
+            unit: undefined,
+            min: undefined,
+            max: undefined,
+          },
+          string: undefined,
+        };
+      } else if (this.performed == "age") {
+        return {
+          dateTime: undefined,
+          age: {
+            unit: this.age.day,
+            value: this.age.value,
+          },
+          period: {
+            start: undefined,
+            end: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          range: {
+            unit: undefined,
+            min: undefined,
+            max: undefined,
+          },
+          string: undefined,
+        };
+      } else if (this.performed == "period") {
+        return {
+          dateTime: undefined,
+          age: {
+            unit: undefined,
+            value: undefined,
+          },
+          period: {
+            start: this.period.start,
+            end: this.period.end,
+            startTime: this.period.startTime,
+            endTime: this.period.endTime,
+          },
+          range: {
+            unit: undefined,
+            min: undefined,
+            max: undefined,
+          },
+          string: undefined,
+        };
+      } else if (this.performed == "range") {
+        return {
+          dateTime: undefined,
+          age: {
+            unit: undefined,
+            value: undefined,
+          },
+          period: {
+            start: undefined,
+            end: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          range: {
+            unit: this.range.unit,
+            min: this.range.min,
+            max: this.range.max,
+          },
+          string: undefined,
+        };
+      } else if (this.performed == "string") {
+        return {
+          dateTime: undefined,
+          age: {
+            unit: undefined,
+            value: undefined,
+          },
+          period: {
+            start: undefined,
+            end: undefined,
+            startTime: undefined,
+            endTime: undefined,
+          },
+          range: {
+            unit: undefined,
+            min: undefined,
+            max: undefined,
+          },
+          string: this.performerString,
+        };
+      }
+    }
 
     async submit() {
       let g = {
         patientId: this.$route.params.id,
-        // recorderId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        // recorderId: "3fa85f64-5717-45 62-b3fc-2c963f66afa6",
         // asserterId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         recorder: {
           name: "string",
@@ -548,25 +690,7 @@
         category: "string",
         // code: "120006",
         status: "preparation",
-        performed: {
-          // dateTime: "2022-05-30",
-          // age: {
-          //   unit: "string",
-          //   value: 0,
-          // },
-          period: {
-            start: "2022-05-30",
-            end: "2022-05-30",
-            startTime: "2022-05-30",
-            endTime: "2022-05-30",
-          },
-          // range: {
-          //   unit: "string",
-          //   min: 0,
-          //   max: 0,
-          // },
-          // string: "string",
-        },
+        performed: this.performedPayload,
         performers: [
           {
             type: "practitioner",
@@ -640,8 +764,19 @@
       await this.createProcedure(g);
     }
 
-    mounted() {
+    async fetchObservations() {
+      const url = `/api/v1/observations/patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.observations = response.data;
+      }
+    }
+
+    async created() {
       console.log("mounted");
+      this.patientId = this.$route.params.id.toString();
+      await this.getPatientCarePlans(this.patientId);
+      await this.fetchObservations();
     }
   }
 </script>
