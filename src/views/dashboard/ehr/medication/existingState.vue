@@ -643,8 +643,8 @@ export default class RequestExistingState extends Vue {
     return this.$route.params.id as string;
   }
   async created() {
+    await this.fetchrequestsById(this.onepatientId);
      await this.createMapper();
-      await this.fetchrequestsById(this.onepatientId);
   }
 }
 </script>
