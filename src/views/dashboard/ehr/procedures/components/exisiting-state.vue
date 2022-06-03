@@ -217,21 +217,21 @@
         key: "date",
         show: true,
       },
-      // {
-      //   title: "based on",
-      //   key: "basedOn",
-      //   show: true,
-      // },
+      {
+        title: "based on",
+        key: "basedOn",
+        show: true,
+      },
       {
         title: "code",
         key: "diagnosis",
         show: true,
       },
-      // {
-      //   title: "performer",
-      //   key: "attP",
-      //   show: true,
-      // },
+      {
+        title: "performer",
+        key: "attP",
+        show: true,
+      },
       {
         title: "status",
         key: "status",
@@ -245,12 +245,12 @@
         this.procedures.length > 0
           ? this.procedures.map((p) => {
               return {
-                identifier: p.identifier || "",
+                identifier: p.id || "",
                 date: this.printRecorded(p.createdAt),
                 code: p.code || "",
                 status: p.status,
-                // performer: p,
-                // basedOn
+                performer: p.practioners.length,
+                basedOn: "care-plan",
               };
             })
           : [];
