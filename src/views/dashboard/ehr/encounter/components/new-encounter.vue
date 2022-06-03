@@ -850,7 +850,7 @@
         ...this.postData,
         patientId: this.patientId,
       }).then(() => {
-        window.location.reload();
+        // window.location.reload();
       });
     }
 
