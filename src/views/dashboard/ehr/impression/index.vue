@@ -18,6 +18,7 @@ import IImpression from "@/types/IImpression";
 import { Options, Vue } from "vue-class-component";
 import ImpressionsEmptyState from "./emptyState.vue";
 import ImpressionsExistingState from "./existingState.vue";
+import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 
 const impression = namespace("impression");
@@ -41,21 +42,27 @@ export default class ImpressionsIndex extends Vue {
     return id;
   }
 
-  @impression.State
-  impressions!: IImpression[];
-
-  @impression.Action
-  fetchImpressions!: (patientId: string) => Promise<void>;
+  impressions = <any>[];
 
   impressionAdded() {
     this.show = false;
     this.impressions;
-    this.fetchImpressions(this.activePatientId);
+    this.getPatientImpressions();
   }
 
-  created() {
-    if (this.impressions.length < 1)
-      this.fetchImpressions(this.activePatientId);
+  async getPatientImpressions() {
+    const url = `/api/v1/clinical-impressions/findAllByPatient/${this.activePatientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.impressions = response.data;
+    }
+  }
+
+  async created() {
+    if (this.impressions.length < 1) {
+      await this.getPatientImpressions();
+    }
+    await this.getPatientImpressions();
   }
 }
 </script>

@@ -1,107 +1,137 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/6 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title class="w-full">
+        <span class="pr-2 flex items-center cursor-pointer border-r-2">
+          <cornie-icon-btn @click="show = false">
+            <arrow-left-icon />
+          </cornie-icon-btn>
+        </span>
         <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">Part of</h2>
-          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Recorder
+          </h2>
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
         </div>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
-        <div class="font-bold mb-4">Reference</div>
-        <div class="grid grid-cols-3 gap-3 border-b border-dashed border-2">
-          <div
-            v-for="(r, i) in radioValues"
-            :key="r"
-            :class="i == 3 ? 'col-span-2' : 'col-span-1'"
-          >
-            <cornie-radio
-              v-model="selectedOption"
-              :value="r.toLocaleLowerCase()"
-              :label="r"
-            />
+        <div class="border-b-2 border-dashed pb-5">
+          <p class="font-bold mb-4">Recorder</p>
+          <cornie-radio :label="'Practitoner'" name="pract" />
+        </div>
+        <div>
+          <search-input placeholder="Search" v-model="query" class="py-4" />
+
+          <div v-for="(input, index) in practitioners" :key="index">
+            <div class="flex justify-between space-x-4 w-full mt-2 mb-5 p-1">
+              <div class="w-full dflex space-x-1">
+                <div class="w-10 h-10">
+                  <avatar class="mr-2" v-if="input.image" :src="input.image" />
+                  <avatar class="mr-2" v-else :src="localSrc" />
+                </div>
+                <div class="w-full">
+                  <p class="text-sm text-dark font-semibold">
+                    Dr. {{ input.firstName }}
+                    {{ input.lastName }}
+                  </p>
+                  <p class="text-xs text-gray-500 font-meduim">
+                    {{ input.jobDesignation }}
+                    {{ input.department }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="relative bottom-1">
+                <cornie-radio
+                  name="practioner"
+                  class="bg-danger focus-within:bg-danger px-6 shadow float-right"
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex flex-col">
-          <icon-input
-            autocomplete="off"
-            type="search"
-            v-model="query"
-            placeholder="Search"
-            class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
-          >
-            <template v-slot:prepend>
-              <search-icon />
-            </template>
-          </icon-input>
-        </div>
       </cornie-card-text>
+
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+            class="text-white bg-danger px-6 rounded-xl"
+          >
+            Save
+          </cornie-btn>
+        </cornie-card-text>
+      </cornie-card>
     </cornie-card>
   </cornie-dialog>
 </template>
+
 <script lang="ts">
-import AutoComplete from "@/components/autocomplete.vue";
-import CornieCard from "@/components/cornie-card";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import DateTimePicker from "@/components/date-time-picker.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
-import IconInput from "@/components/IconInput.vue";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PractionerSelect from "@/components/practitioner-select.vue";
-import { Options, Vue } from "vue-class-component";
-import { PropSync } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+  import Avatar from "@/components/avatar.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import DateTimePicker from "@/components/date-time-picker.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import SearchInput from "@/components/search-input.vue";
+  import IPractitioner from "@/types/IPractitioner";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
 
-const hierarchy = namespace("hierarchy");
-const orgFunctions = namespace("OrgFunctions");
-const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
-const patients = namespace("patients");
-const report = namespace("diagnosticReport");
+  const practitioner = namespace("practitioner");
 
-@Options({
-  name: "createReport",
-  components: {
-    CornieDialog,
-    ...CornieCard,
-    ArrowLeft,
-    IconBtn,
-    CornieInput,
-    CornieSelect,
-    CustomCheckbox,
-    CornieBtn,
-    AutoComplete,
-    CornieRadio,
-    DateTimePicker,
-    CancelIcon,
-    AccordionComponent,
-    PlusIcon,
-    PractionerSelect,
-    SearchIcon,
-    IconInput,
-  },
-})
-export default class PersonReference extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  @Options({
+    name: "itemModal",
+    components: {
+      ...CornieCard,
+      CornieIconBtn,
+      ArrowLeftIcon,
+      CornieDialog,
+      DateTimePicker,
+      SearchInput,
+      CornieRadio,
+      Avatar,
+    },
+  })
+  export default class itemModal extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  radioValues = ["Practitioner", "Practitioner role", "Patient", "Related Person"];
-  selectedOption = "";
-  query = "";
-}
+    @Prop({ type: String, default: "" })
+    id!: string;
+
+    @practitioner.State
+    practitioners!: IPractitioner[];
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    loading = false;
+
+    localSrc = require("../../../../../assets/img/placeholder.png");
+
+    query = "";
+
+    async created() {
+      await this.fetchPractitioners();
+    }
+  }
 </script>
+
+<style>
+  .dflex {
+    display: -webkit-box;
+  }
+</style>

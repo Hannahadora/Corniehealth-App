@@ -14,6 +14,7 @@
     style="height:313px"
   > -->
   <detail-card
+  height="337px"
     :title="'Recent Procedures'"
     :count="items.length"
     @add="() => (showModal = true)"

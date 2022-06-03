@@ -5,13 +5,14 @@
     <div class="w-full">
       <empty-state
         @progress_note="() => (showNewProgressNote = true)"
-        v-if="items?.length <= 0"
+        v-if="patientProgressNotes?.length <= 0"
       />
       <existing-state
         v-else
         :patient="patient"
         :patientId="patientId"
         :items="items"
+        @progress_note="() => (showNewProgressNote = true)"
       />
       <new-progress-note v-model="showNewProgressNote" />
     </div>

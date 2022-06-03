@@ -71,12 +71,15 @@
                     <div class="w-full flex items-center justify-between">
                       <div class="w-full">
                         <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input.code }}
+                          {{ codeMapper(input.code) }}
+                        </p>
+                        <p class="text-sm text-dark mb-1 font-medium">
+                          {{ severityMapper(input.severity) }}
                         </p>
                         <p class="text-xs text-gray-300">
-                          <!-- {{
-                            new Date(input?.createdAt).toLocaleDateString()
-                          }}-->
+                          {{
+                            new Date(input?.recordDate).toLocaleDateString()
+                          }}
                         </p>
                       </div>
 
@@ -103,7 +106,7 @@
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-meduim">
-                        {{ input.code }}
+                       {{ codeMapper(input.code) }}
                       </p>
                       <p class="text-xs text-gray-300">
                         <!-- {{ new Date(input.createdAt).toLocaleDateString() }} -->
@@ -158,6 +161,8 @@ import Problem from "@/types/IImpression";
 import { ICondition } from "@/types/ICondition";
 import IAllergy from "@/types/IAllergy";
 
+import { mapDisplay } from "@/plugins/definitions";
+
 @Options({
   name: "ProblemDialog",
   components: {
@@ -184,6 +189,9 @@ export default class ProblemDialog extends Vue {
   @Prop({ type: Array, default: [] })
   allergy!: IAllergy[];
 
+  severityMapper = (code: string) => "";
+  codeMapper = (code: string) => "";
+
   loading = false;
   expand = false;
   isVisible = "";
@@ -195,14 +203,25 @@ export default class ProblemDialog extends Vue {
 
   required = string().required();
 
+  
+  async loadMappers() {
+    this.severityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+  }
+
+
   getValue(value: any) {
     if (this.type === "condition") {
       this.checkProblem.referenceType = this.type;
       this.checkProblem.referenceId = value.id;
       this.checkProblem.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
-      this.checkProblem.practitionerSpecialty =value.practitioner?.jobDesignation;
-      this.checkProblem.description = value.practitioner?.description;
-      this.checkProblem.details = value.practitioner?.details;
+      this.checkProblem.practitionerSpecialty = value.practitioner?.jobDesignation;
+      this.checkProblem.description = this.codeMapper(value.code);
+      this.checkProblem.details = this.severityMapper(value.severity);
     } else if (this.type === 'allergy') {
 
     }
@@ -213,6 +232,8 @@ export default class ProblemDialog extends Vue {
     this.show = false;
   }
 
-  async created() {}
+  async created() {
+    this.loadMappers();
+  }
 }
 </script>

@@ -59,7 +59,7 @@
               >
                 <div class="flex flex-col w-full">
                   <div class="flex items-center">
-                    <div class="">{{ c.code }} -</div>
+                    <div class="">{{ printCode(c.code)?.display }} -</div>
                     <div class="font-light text-xxs">
                       {{ formatDate(c.recordDate) }}
                     </div>
@@ -144,6 +144,7 @@
   import { mapDisplay } from "@/plugins/definitions";
   import { Options, Vue } from "vue-class-component";
   import { Prop, PropSync } from "vue-property-decorator";
+  import { codes } from "../conditions/drop-downs";
 
   @Options({
     name: "createReport",
@@ -182,6 +183,9 @@
     selectedId = "";
     selectedData = "";
     query = "";
+    printCode(code: string) {
+      return codes.find((c) => c.code == code);
+    }
 
     medicationMapper = (code: string) => "";
     async createMapper() {

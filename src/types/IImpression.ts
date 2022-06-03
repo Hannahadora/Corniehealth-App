@@ -1,19 +1,18 @@
 import Period from "./IPeriod";
 
-
 export interface BasicInfo {
-  code: string,
-  description: string,
-  basedOn?  : string,
-  category?: string,
-  subject: string,
-  encounter: string,
-  partOf?: string,
-  focus?: string
+  code: string;
+  description: string;
+  basedOn?: string;
+  category?: string;
+  subject: string;
+  encounter: string;
+  partOf?: string;
+  focus?: string;
 }
 
 export interface Effective {
-  recordDate: string;
+  effectiveDate: string;
   effectivePeriod: Period;
 }
 
@@ -23,35 +22,34 @@ interface Problem {
   practitioner: string;
   practitionerSpecialty: string;
   description: string;
-  details: string
+  details: string;
 }
 
 export interface Investigation {
-  code: string,
+  code: string;
   item: {
-    type: string,
-    details: string,
-    id: string
-  }
+    type: string;
+    details: string;
+    id: string;
+  };
 }
 interface Findings {
-  itemCode: string,
-  itemReference: Problem,
-  basis: string
+  itemReference: Problem;
+  basis: string;
 }
 interface Prognosis {
-  itemCode: string,
-  itemReference: string,
-  supportingInfo: string,
-  note: string
+  itemCode: string;
+  itemReference: string;
+  supportingInfo: string;
+  note: string;
 }
 interface Recorded {
   recordDate: string;
   previous: string;
   asserterId: string;
-  problem: Problem[]
+  problem: Problem[];
 }
-interface Protocol { 
+interface Protocol {
   protocol: string;
   summary: string;
 }
@@ -59,12 +57,12 @@ export default interface IImpression {
   id?: string;
   patientId: string;
   updatedAt: string;
-  status: string; 
+  status: string;
   basicInfo: BasicInfo;
   statusReason?: string;
   effective: Effective;
   investigation: Investigation[];
-  findings: Findings;
+  findings: Findings[];
   prognosis: Prognosis;
   recorded: Recorded;
   protocol: Protocol;

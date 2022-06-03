@@ -7,21 +7,21 @@
         Health Trend
       </span>
       <div class="w-full h-full">
-        <div class="w-full grid grid-cols-2 gap-4">
+        <div class="w-full grid grid-cols-2 gap-8 mb-8">
           <blood-chart />
           <weight-chart title="Weight" />
         </div>
-        <div class="w-full grid grid-cols-3 gap-4">
-          <medication-card />
+        <div class="w-full grid grid-cols-3 gap-8">
           <condition-card />
-          <allergy-card />
           <diagnostic-card />
+          <medication-card />
+          <allergy-card />
           <procedure-card />
           <note-card />
         </div>
 
-        <div class="w-full grid">
-          <appointment-card />
+        <div class="w-full grid gap-8 mt-8">
+          <!-- <appointment-card /> -->
           <history-card />
         </div>
       </div>
