@@ -3,16 +3,20 @@
     class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
     <div class="w-full">
-      <empty-state @procedure="() => (showNewProcedure = true)" />
-      <!-- <existing-state v-else :patient="patient" :patientId="patientId" :items="items" />
-      <new-progress-note v-model="showNewProcedure" /> -->
+      <empty-state
+        v-if="procedures.length <= 0"
+        @procedure="() => (showNewProcedure = true)"
+      />
+      <exisiting-state
+        @procedure="() => (showNewProcedure = true)"
+        :procedures="procedures"
+        v-else
+      />
       <new-procedure v-model="showNewProcedure" />
     </div>
   </div>
 </template>
 <script lang="ts">
-  import { getDropdown } from "@/plugins/definitions";
-  import { cornieClient } from "@/plugins/http";
   import { ICondition } from "@/types/ICondition";
   import { IPatient } from "@/types/IPatient";
   import IProgressnote from "@/types/IProgressnote";
@@ -20,10 +24,12 @@
   import { Options, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
   import EmptyState from "./components/empty-state.vue";
+  import exisitingState from "./components/exisiting-state.vue";
   // import ExistingState from "./existing-state.vue";
   // import NewProgressNote from "./new-progress-note.vue";
   import newProcedure from "./components/new-procedure.vue";
   const patients = namespace("patients");
+  const procedure = namespace("procedure");
 
   @Options({
     name: "progressnotes",
@@ -31,23 +37,28 @@
       EmptyState,
       // ExistingState,
       // NewProgressNote,
+      exisitingState,
       newProcedure,
     },
   })
-  export default class ProgressNotes extends Vue {
+  export default class ProcedureNotes extends Vue {
     // @Prop({ type: String, default: "" })
     //   patientId!: string;
     showNewProcedure = true;
     patient = {} as IPatient;
+    // items = "";
 
     patientProgressNotes = [] as IProgressnote[];
-
-    @patients.Action
-    findPatient!: (patientId: string) => Promise<IPatient>;
 
     categories: Codeable[] = [];
 
     isEmpty = false;
+
+    @procedure.Action
+    getProcedures!: (id: string) => Promise<any>;
+
+    @procedure.State
+    procedures!: any[];
 
     printRecorded(progress: any) {
       const dateString = progress.createdAt;
@@ -65,7 +76,7 @@
       return cat;
     }
     get patientId() {
-      return this.$route.params.id;
+      return this.$route.params.id.toString();
     }
 
     get items() {
@@ -88,25 +99,10 @@
       return items;
     }
 
-    async fetchProgressnotes() {
-      try {
-        const { data } = await cornieClient().get(
-          `/api/v1/progress-notes/${this.patientId}`
-        );
-        this.patientProgressNotes = data;
-      } catch (error) {
-        window.notify({
-          msg: "There was an error when fetching patient's progress notes",
-          status: "error",
-        });
-      }
-    }
-
     async created() {
-      await this.fetchProgressnotes();
-      this.categories = await getDropdown(
-        "http://hl7.org/fhir/ValueSet/condition-category"
-      );
+      this.patientId;
+      await this.getProcedures(this.patientId);
+      console.log("procedures", this.procedures);
     }
   }
 </script>
