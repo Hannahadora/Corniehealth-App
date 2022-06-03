@@ -666,58 +666,70 @@
 
     async showItem(value: any) {
       this.showItemsModal = true;
-      console.log("item", value);
+      console.log("itemInvestigation", value);
       this.investigationItems.push(value);
     }
 
     async submit() {
-      await this.createProgressNote({
-        patientId: this.$route.params.id,
-        identifier: "",
-        chiefComplaint: {
-          type: "condition",
-          condition: this.history.condition,
-          dateRecorded: this.history.date.date,
-          severity: this.history.severity,
-          verificationStatus: this.history.status,
-          referenceId: this.history.id,
-        },
-        medications: this.allMedication,
-        objectiveDiagnosis: [
-          {
-            summary: "string",
-            dateReported: "2022-05-27",
-          },
-        ],
-        objectiveInvestigations: [
-          {
-            code: "string",
-            item: {
-              type: "observation",
-              details: "string",
-              id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            },
-          },
-        ],
-        protocol: "string",
-        summary: "string",
-        assessmentFindings: [
-          {
+      try {
+        await this.createProgressNote({
+          patientId: this.$route.params.id,
+          identifier: "",
+          chiefComplaint: {
             type: "condition",
-            referenceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            practitioner: "string",
-            practitionerSpecialty: "string",
-            description: "string",
-            details: "string",
+            condition: this.history.condition,
+            dateRecorded: this.history.date.date
+              ? new Date(this.history.date.date).toISOString()
+              : undefined,
+            severity: this.history.severity,
+            verificationStatus: this.history.status,
+            referenceId: this.history.id,
           },
-        ],
-        assessmentBasis: "string",
-        prognosisCode: "string",
-        prognosisReference: "string",
-        prognosisSupportingInfo: "string",
-        prognosisSupportingInfoReference: "string",
-      });
-      window.location.reload();
+          medications: this.allMedication.map((x) => {
+            return {
+              name: x.name || undefined,
+              strength: x.strength || undefined,
+              duration: x.durationInDays ? String(x.durationInDays) : undefined,
+              dosage: x.dosageInstruction,
+              requestId: x.id,
+            };
+          }),
+          objectiveDiagnosis: [
+            {
+              summary: "string",
+              dateReported: "2022-05-27",
+            },
+          ],
+          objectiveInvestigations: this.investigationItems,
+          protocol: this.assessment.protocol,
+          summary: this.assessment.summary,
+          assessmentFindings: this.findingsItems.map((x: any) => {
+            return {
+              type: x.typeData,
+              referenceId: x.id,
+              practitioner:
+                x.practitioner.firstName + " " + x.practitioner.lastName,
+              practitionerSpeciality: undefined,
+              description: x.summary,
+              details: this.printCode(x.code)?.display,
+            };
+          }),
+          assessmentBasis: this.assessment.basis,
+          prognosisCode: undefined,
+          prognosisReference: undefined,
+          prognosisSupportingInfo: undefined,
+          prognosisSupportingInfoReference: undefined,
+        }).then(() => {
+          window.location.reload();
+        });
+      } catch (error) {
+        window.notify({
+          msg: "There was an error when fetching patient's progress notes",
+          status: "error",
+        });
+      }
+
+      // window.location.reload();
     }
 
     get allMedication() {

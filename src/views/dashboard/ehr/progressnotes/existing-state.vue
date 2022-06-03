@@ -25,9 +25,9 @@
             {{ status }}
           </span>
         </template> -->
-        <template #physician="{ item }">
+        <!-- <template #physician="{ item }">
           <div>{{ getP(item.physician).then((d) => d.firstName) }}</div>
-        </template>
+        </template> -->
         <template #actions="{ item }">
           <div
             @click="viewCondition(item)"
@@ -364,22 +364,7 @@
     printPractitioner(condition: ICondition) {
       return condition.practitioner?.firstName;
     }
-    get itemss() {
-      const items = this.patientProgressNotes?.map(async (p) => {
-        console.log("p", p);
-        let g = {
-          identifier: p.identifier,
-          recordDate: this.printRecorded(p),
-          physician: p.practitionerId,
-          billing: p.billing || "---",
-          status: p.status || "---",
-        };
-        return g;
-      });
 
-      console.log("items", items);
-      return items;
-    }
     async getP(p: any) {
       return await this.getPractitionerById(p);
     }

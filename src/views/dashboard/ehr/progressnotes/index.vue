@@ -5,7 +5,7 @@
     <div class="w-full">
       <empty-state
         @progress_note="() => (showNewProgressNote = true)"
-        v-if="items?.length <= 0"
+        v-if="patientProgressNotes?.length <= 0"
       />
       <existing-state
         v-else
