@@ -69,6 +69,7 @@ export default class Paginator extends Vue {
 
   switchPage(num: number) {
     const newPage = this.page + num;
+    console.log(newPage, 'New{age');
     if (newPage < 1) return;
     if (newPage > this.numOfPages) return;
     this.page = newPage;

@@ -743,7 +743,7 @@ export default class scheduleModal extends Vue {
       startTime: this.startTime,
       endTime: this.endTime,
       endDate: this.endDate,
-      practitoners: this.practitonerId,
+      practitioners: this.practitonerId,
       services: this.serviceName,
       breaks: this.breaks,
       repeat: this.repeat,

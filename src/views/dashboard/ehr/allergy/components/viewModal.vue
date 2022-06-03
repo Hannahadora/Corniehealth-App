@@ -110,11 +110,12 @@
                       />
                     </template>
                   </cornie-input>
-                  <div class="" v-for="(item, index) in allergy.occurences" :key="index">
+                  <div class="">
                     <date-time-picker
                       :disabled="true"
                       :label="'Last Occurence'"
-                      v-model:date="item.time"
+                      v-model:date="occur.time"
+                       :time="separateTime(occur.time)"
                     />
                   </div>
                   <cornie-input
@@ -572,7 +573,12 @@ export default class viewAlergyModal extends Vue {
     return pt ? `${pt.department}` : "";
   }
 
+  get occur(){
+    return this.occurences[this.occurences.length - 1]
+  }
+
   async created() {
+    this.setAllergy();
     await this.loadDefinitions();
     this.fetchPractitioners();
 

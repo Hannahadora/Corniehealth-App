@@ -29,25 +29,29 @@
                 <div class="mt-5 text-center sm:mt-0 sm:text-left">
                   <div class="d-flex w-full">
                     <h3
-                      class="text-lg leading-6  text-primary font-bold"
+                      class="text-lg leading-6 text-primary font-bold"
                       id="modal-title"
                     >
-                     Upcoming Appointments ({{ appoitments?.length ?? 0  }})
+                      Upcoming Appointments ({{ appoitments?.length ?? 0 }})
                     </h3>
-                     <close-icon
+                    <close-icon
                       class="items-end absolute right-5 top-4 cursor-pointer fill-current text-primary"
                       @click="show = false"
                     />
                   </div>
-                  <div class="mt-5 my-5" v-for="(item, index) in appoitments" :key="index">
-                    <div class="dflex space-x-4" v-if="appoitments[index] != 'unavailable'">
+                  <div
+                    class="mt-5 my-5"
+                    v-for="(item, index) in appoitments"
+                    :key="index"
+                  >
+                    <div class="dflex space-x-4" v-if="appoitments.length > 0">
                       <div class="w-10 h-10">
                         <avatar
                           v-if="item.image"
                           class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
                           :src="item.image"
                         />
-                         <avatar
+                        <avatar
                           v-else
                           class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
                           :src="localSrc"
@@ -55,16 +59,17 @@
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
-                          {{ item.firstName +' '+ item.firstName}}
+                          {{ item.patientName }}
                         </p>
                       </div>
                     </div>
-                  <div v-else>
-                        <h4 class="text-center py-5 px-5 font-bold">No Upcoming appointment</h4>    
-                  </div>
+                    <div v-else>
+                      <h4 class="text-center py-5 px-5 font-bold">
+                        No Upcoming appointment
+                      </h4>
+                    </div>
                   </div>
                 </div>
-               
               </div>
             </div>
           </div>
@@ -94,7 +99,6 @@ import DatePicker from "@/components/daterangepicker.vue";
 
 import Avatar from "@/components/avatar.vue";
 
-
 const userStore = namespace("user");
 
 @Options({
@@ -109,7 +113,7 @@ const userStore = namespace("user");
     EyeIcon,
     DeleteIcon,
     Textarea,
-    Avatar
+    Avatar,
   },
 })
 export default class appoitmentDialog extends Vue {
@@ -122,10 +126,10 @@ export default class appoitmentDialog extends Vue {
   @PropSync("visible", { type: Boolean, required: true, default: false })
   show!: boolean;
 
- @userStore.Getter
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
-   @userStore.Getter
+  @userStore.Getter
   authCurrentLocation!: string;
 
   loading = false;
@@ -147,26 +151,25 @@ export default class appoitmentDialog extends Vue {
     };
   }
 
-    async fetchAppontments() {
+  async fetchAppontments() {
+    const [splitDate] = this.date.split("T");
+    const date = splitDate;
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/calendar/personal/day-view/${this.authCurrentLocation}/practitioner/${this.authPractitioner.id}/`,
-        {date: this.date}
+        `/api/v1/appointment/practitioner/get-day/${this.authCurrentLocation}`,
+        { date: date }
       );
       this.appoitments = data;
-    } catch (error:any) {
+    } catch (error) {
       window.notify({
-        msg: error.response.data.message,
+        msg: "There was an error when fetching appointments",
         status: "error",
       });
     }
   }
 
-
-  async created(){
+  async created() {
     this.fetchAppontments();
   }
-
-
 }
 </script>

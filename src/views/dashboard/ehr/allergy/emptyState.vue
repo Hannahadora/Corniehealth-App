@@ -5,9 +5,9 @@
       <h2 class="text-center text-lg  mt-5 font-bold">
         Patient currently have no allergies
       </h2>
-      <p>
+      <!-- <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum aenean mattis mi diam eget.
-      </p>
+      </p> -->
       <span class="flex justify-center w-full">
         <button
           class="bg-danger rounded-lg text-white mt-5 py-2 px-8 font-semibold focus:outline-none hover:opacity-90"

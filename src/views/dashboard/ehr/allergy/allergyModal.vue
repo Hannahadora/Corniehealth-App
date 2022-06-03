@@ -375,6 +375,20 @@ export default class AlergyModal extends Vue {
     this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
+    this.setOccurence = this.occur.time
+    this.setOccurencetime = this.separateTime(this.occur.time); 
+  }
+
+  getDate(allergy:any){
+      return allergy.map((c:any) => c.time.join(''));
+  }
+  separateTime(date:string){
+    const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
+    return date ? newtime :''
+  }
+
+   get occur(){
+    return this.occurences[this.occurences.length - 1]
   }
 
   get patientId() {
@@ -531,6 +545,7 @@ export default class AlergyModal extends Vue {
   }
 
   async created() {
+    this.setAllergy()
    
   }
 }
