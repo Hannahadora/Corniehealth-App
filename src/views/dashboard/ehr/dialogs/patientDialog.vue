@@ -32,20 +32,20 @@
                       class="text-lg leading-6  text-primary font-bold"
                       id="modal-title"
                     >
-                      My Patients ({{ patients.length  }})
+                      My Patients ({{ orgPatients.length  }})
                     </h3>
                      <close-icon
                       class="items-end absolute right-5 top-4 cursor-pointer fill-current text-primary"
                       @click="show = false"
                     />
                   </div>
-                  <div class="mt-5 my-5" v-for="(item, index) in patients" :key="index">
+                  <div class="mt-5 my-5" v-for="(item, index) in orgPatients" :key="index">
                     <div class="dflex space-x-4">
                       <div class="w-10 h-10">
                         <avatar
-                          v-if="item.profilePhoto"
+                          v-if="item.image"
                           class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
-                          :src="item.profilePhoto"
+                          :src="item.image"
                         />
                          <avatar
                           v-else
@@ -55,7 +55,7 @@
                       </div>
                       <div class="w-full">
                         <p class="text-xs text-dark font-semibold">
-                          {{ item.firstname +' '+ item.lastname}}
+                          {{ item.patientName}}
                         </p>
                       </div>
                     </div>
@@ -92,6 +92,7 @@ import DatePicker from "@/components/daterangepicker.vue";
 import Avatar from "@/components/avatar.vue";
 
 const patients = namespace("patients");
+const userStore = namespace("user");
 
 @Options({
   name: "patientDialog",
@@ -118,19 +119,22 @@ export default class patientDialog extends Vue {
   @PropSync("visible", { type: Boolean, required: true, default: false })
   show!: boolean;
 
-  @patients.State
-  patients!: IPatient[];
+  @userStore.Getter
+  authCurrentLocation!: string;
+  // @patients.State
+  // patients!: IPatient[];
 
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
+  // @patients.Action
+  // fetchPatients!: () => Promise<void>;
 
   loading = false;
   reasonsForDeactivation = "";
   deactivateTillDate = "";
   localSrc = require("../../../../assets/img/placeholder.png");
   required = string().required();
+    date = new Date().toISOString();
 
-  orgPatients = [];
+  orgPatients = [] as any;
 
   get classes() {
     return this.show ? ["flex"] : ["hidden"];
@@ -140,6 +144,23 @@ export default class patientDialog extends Vue {
       reasonsForDeactivation: this.reasonsForDeactivation,
       deactivateTillDate: this.deactivateTillDate,
     };
+  }
+
+   async fetchPatients() {
+    const [splitDate] = this.date.split("T");
+    const date = splitDate;
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/appointment/practitioner/get-day/${this.authCurrentLocation}`,
+        { date: date }
+      );
+      this.orgPatients = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching appointments",
+        status: "error",
+      });
+    }
   }
 
   async created(){

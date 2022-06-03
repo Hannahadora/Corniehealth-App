@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="flex space-x-4 float-right col-span-full mr-4">
       <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
-        Patient Queue ({{ patients.length }})
+        Patient Queue ({{ appoitments.length }})
       </p>
       <p
         class="text-xs cursor-pointer text-gray-500"
@@ -109,10 +109,12 @@ export default class ClinicalsSidebar extends Vue {
     this.showPatient = true;
   }
   async fetchAppontments() {
+    const [splitDate] = this.date.split('T');
+   const date = splitDate;
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/calendar/personal/day-view/${this.authCurrentLocation}/practitioner/${this.authPractitioner.id}/`,
-        { date: this.date }
+        `/api/v1/appointment/practitioner/get-day/${this.authCurrentLocation}`,
+        { date: date }
       );
       this.appoitments = data;
     } catch (error) {

@@ -515,7 +515,10 @@ export default class AddCondition extends Vue {
       onsetDateTime: this.safeBuildDateTime(
         this.onsetmesurable.date as any,
         this.onsetmesurable.time as any
-      ),
+      ) ? this.safeBuildDateTime(
+        this.onsetmesurable.date as any,
+        this.onsetmesurable.time as any
+      ) : null,
     };
   }
   get setabatement() {

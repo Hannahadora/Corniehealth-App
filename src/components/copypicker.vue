@@ -17,6 +17,7 @@
           <cornie-input
             class="w-full"
             readonly
+            :placeholder="' '"
             :errorClasses="{
               'border-red-500': Boolean(errorMessage),
               'border-green-400': Boolean(meta.valid),

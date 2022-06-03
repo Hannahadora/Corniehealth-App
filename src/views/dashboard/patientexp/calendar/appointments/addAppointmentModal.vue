@@ -271,6 +271,41 @@
                         />
                   </template>    
             </accordion-component>
+            <accordion-component
+            :title="'Period'"
+            :addborder="true"
+            :opened="false"
+          >
+            <template v-slot:default>
+              <div class="mt-4">
+                <date-picker
+                  label="Start Date"
+                  placeholder="--/04/2021"
+                  class="w-full"
+                  v-model="date"
+                  :disabled="[appoitmentDate ? true : false]"
+                />
+                <div class="grid mt-5 grid-cols-2 gap-4">
+                  <cornie-input
+                    :type="'time'"
+                    label="Start Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="startTime"
+                    :disabled="[range ? false : true]"
+                  />
+                  <cornie-input
+                    :type="'time'"
+                    label="End Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="endTime"
+                     :disabled="[range ? false : true]"
+                  />
+                </div>
+              </div>
+            </template>
+          </accordion-component>
             <div class="w-full mt-2 mb-2">
                 <div class="flex w-full border-dashed border-b border-gray-100">
                     <div class="w-full">
