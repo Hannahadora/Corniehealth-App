@@ -262,14 +262,19 @@
               {{ user?.designation }}
             </p>
           </li>
-        <li class="flex w-full justify-center border-b border-primary pb-5">
-          <span class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"    @click="$router.push({ name: 'Practitioner profile' })">
-            Manage Profile
-          </span>
-        </li>
+          <li class="flex w-full justify-center border-b border-primary pb-5">
+            <span
+              class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"
+              @click="$router.push({ name: 'Practitioner profile' })"
+            >
+              Manage Profile
+            </span>
+          </li>
           <li class="flex w-full py-4">
             <div class="w-full flex space-x-7">
-              <p class="font-semibold text-sm cursor-pointer"  @click="logout">Sign out</p>
+              <p class="font-semibold text-sm cursor-pointer" @click="logout">
+                Sign out
+              </p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"
@@ -303,7 +308,7 @@ import SettingsWhiteIcon from "./icons/settingswhite.vue";
 import BellIcon from "./icons/bell.vue";
 import ChevronDown from "./icons/chevrondownprimary.vue";
 import { namespace } from "vuex-class";
-import User, { CornieUser,  } from "@/types/user";
+import User, { CornieUser } from "@/types/user";
 import OrgIcon from "@/components/icons/org.vue";
 import ContactIcon from "@/components/icons/contactinfo.vue";
 import HierarchyIcon from "@/components/icons/hierarchy.vue";
@@ -378,7 +383,7 @@ export default class NavBar extends Vue {
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
 
- @account.Mutation
+  @account.Mutation
   updatePractitioner!: (practitioners: IPractitioner[]) => void;
 
   defaultLocation = "";
@@ -444,13 +449,12 @@ export default class NavBar extends Vue {
     await logout();
     this.$router.push("/login");
   }
-   mounted(){
-      this.updatePractitioner(this.authPractitioner as any)
+  mounted() {
+    this.updatePractitioner(this.authPractitioner as any);
   }
-  async created(){
+  async created() {
     this.authCurrentLocation;
-     await this.updatePractitioner(this.authPractitioner as any)
-    
+    this.updatePractitioner(this.authPractitioner as any);
   }
 }
 </script>

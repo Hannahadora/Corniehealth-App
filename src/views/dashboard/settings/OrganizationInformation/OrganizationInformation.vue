@@ -239,7 +239,7 @@ export default class PracticeInfo extends Vue {
   fetchOrgInfo!: () => Promise<IOrganization>;
 
   get hasDomain() {
-    return Boolean(this.organizationInfo?.domainName);
+    return Boolean(this.DomainName);
   }
 
   get payload() {
@@ -253,10 +253,12 @@ export default class PracticeInfo extends Vue {
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
       website: this.Website,
-      phone: {
-        number: this.PhoneNumber,
-        DialCode: this.DialCode,
-      },
+      phone: this.PhoneNumber
+        ? {
+            number: this.PhoneNumber,
+            DialCode: this.DialCode,
+          }
+        : undefined,
       email: this.EmailAddress,
       reference: this.ReferenceOrganization,
       address: this.address,
@@ -269,7 +271,6 @@ export default class PracticeInfo extends Vue {
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
       this.defaultOrgInfo = this.organizationInfo;
-      console.log(this.organizationInfo);
       this.setOrgInfo(this.organizationInfo);
     } catch (error) {}
   }
