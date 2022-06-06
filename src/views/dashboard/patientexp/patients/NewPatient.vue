@@ -60,21 +60,13 @@
               :readonly="viewOnly"
             />
             <auto-complete
-                class="w-full"
-                v-model="nationality"
-                label="Nationality"
-                :items="nationState.countries"
-                placeholder="Enter"
-                :readonly="viewOnly"
-              />
-            <!-- <cornie-input
-              label="Nationality"
               class="w-full"
-              placeholder="Enter"
               v-model="nationality"
+              label="Nationality"
+              :items="nationState.countries"
+              placeholder="Enter"
               :readonly="viewOnly"
-            >
-            </cornie-input> -->
+            />
 
             <date-picker
               class="w-full"
@@ -94,22 +86,22 @@
               v-model="gender"
               :readonly="viewOnly"
             />
-             <cornie-select
-              class="w-full mt-2"
+            <cornie-select
+              class="w-full"
               label="Blood Group"
               placeholder="Select One"
-              :items="['A','B','AB', 'O']"
+              :items="bloodGroupOptions"
               v-model="bloodGroup"
               :readonly="viewOnly"
             />
-            <cornie-input
+            <cornie-select
               label="Genotype"
-              class="w-full mt-2.5"
+              class="w-full"
               placeholder="Enter"
               v-model="genotype"
+              :items="genotypeOptions"
               :readonly="viewOnly"
-            >
-            </cornie-input>
+            />
 
             <cornie-select
               class="w-full"
@@ -149,6 +141,7 @@
               :readonly="viewOnly"
             />
             <cornie-input
+              v-if="multipleBirth"
               class="w-full"
               placeholder="Enter"
               v-model="multipleBirthInteger"
@@ -405,7 +398,10 @@
       @add-associations="addAssociations"
     />
     <!-- Now Payment account -->
-    <payment-dialog v-model="addPaymentsDialog" @setSeconinsurance="setSeconinsurance"/>
+    <payment-dialog
+      v-model="addPaymentsDialog"
+      @setSeconinsurance="setSeconinsurance"
+    />
 
     <providers-dialog
       :patient="patient"
@@ -432,7 +428,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options,setup } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Field } from "vee-validate";
 import { string, number, date, array } from "yup";
 import { Prop, Ref } from "vue-property-decorator";
@@ -464,14 +460,13 @@ import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import UrlIcon from "@/components/icons/UrlIcon.vue";
 import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
-import DemographicIcon from "@/components/icons/DemographicIcon.vue"
-import AutoComplete from "@/components/autocomplete.vue";;
+import DemographicIcon from "@/components/icons/DemographicIcon.vue";
+import AutoComplete from "@/components/autocomplete.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import DeleteIcon from "@/components/icons/delete-red.vue";
 import CornieTooltip from "@/components/tooltip.vue";
 import QuestionIcon from "@/components/icons/question.vue";
 import InfoIcon from "@/components/icons/info-blue-bg.vue";
-
 
 import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
 import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
@@ -481,8 +476,6 @@ import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
 import AssociationDialog from "./dialogs/AssociationDialog.vue";
 import PaymentDialog from "./dialogs/PaymentDialog.vue";
 import ContactInfo from "./contact-information.vue";
-
-
 
 const patients = namespace("patients");
 
@@ -545,7 +538,18 @@ export default class NewPatient extends Vue {
     { code: true, display: "Yes" },
     { code: false, display: "No" },
   ];
-
+  bloodGroupOptions = [
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "O+",
+    "O-",
+    "AB+",
+    "AB-",
+    "NOT SURE",
+  ];
+  genotypeOptions = ["AA", "AS", "AC", "SS", "SC", "NOT SURE"];
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
@@ -572,7 +576,6 @@ export default class NewPatient extends Vue {
   bloodGroup = "";
   nationState = setup(() => useCountryStates());
 
-
   contacts = [];
   emergencyContacts = [] as any;
   providers = [] as any;
@@ -581,7 +584,7 @@ export default class NewPatient extends Vue {
   labs = [] as any;
   pharmacies = [] as any;
   associations = [] as any;
-  demographics =  {};
+  demographics = {};
   practitioners = [];
 
   maritalStatus = "";
@@ -645,33 +648,32 @@ export default class NewPatient extends Vue {
     return this.associations;
   }
 
-
-  allContacts(value:any){
+  allContacts(value: any) {
     this.emergencyContacts.push(value);
   }
-  addproviders(value:any,type:string){
-    if(type == 'Pharmacy'){
-       this.pharmacies.push(value);
-    }else{
-       this.labs.push(value);
-    } 
+  addproviders(value: any, type: string) {
+    if (type == "Pharmacy") {
+      this.pharmacies.push(value);
+    } else {
+      this.labs.push(value);
+    }
   }
 
-  setSeconinsurance(value:any){
+  setSeconinsurance(value: any) {
     this.insurances.push(value);
   }
-  addedpract(value:any){
+  addedpract(value: any) {
     this.practitioners = value;
   }
-  datasent(value:any){
+  datasent(value: any) {
     this.demographics = value;
-    if(value || this.patient?.demographicsData){
+    if (value || this.patient?.demographicsData) {
       this.demographicsLength = 1;
     }
   }
-  links(value:string){
+  links(value: string) {
     this.guarantor = value;
-    if(value || this.patient?.guarantor){
+    if (value || this.patient?.guarantor) {
       this.guarantorLength = 1;
     }
   }
@@ -751,23 +753,28 @@ export default class NewPatient extends Vue {
     this.loading = false;
   }
 
-  async saveIdentity(){
-     if(this.id){
-        try {
-          const response = await cornieClient().post(
-            `/api/v1/patient/association/${this.id}`,
-            this.associations
-          );
-          if (response.success) {
-            window.notify({ msg: "Association added successfully updated", status: "success" });
-          }
-        } catch (error:any) {
-          window.notify({ msg: error.response.data.message, status: "error" });
+  async saveIdentity() {
+    if (this.id) {
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/patient/association/${this.id}`,
+          this.associations
+        );
+        if (response.success) {
+          window.notify({
+            msg: "Association added successfully updated",
+            status: "success",
+          });
         }
-     } else{
-        window.notify({ msg: "Association added successfully updated", status: "success" });
-     }
-  
+      } catch (error: any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
+    } else {
+      window.notify({
+        msg: "Association added successfully updated",
+        status: "success",
+      });
+    }
   }
 
   get payload() {
@@ -775,7 +782,7 @@ export default class NewPatient extends Vue {
       firstname: this.firstName,
       lastname: this.lastName,
       associates: this.associations,
-      middlename: this.middleName,
+      middlename: this.middleName || undefined,
       multipleBirth: this.multipleBirth,
       multipleBirthInteger: this.multipleBirthInteger,
       gender: this.gender.toLowerCase(),
@@ -798,7 +805,7 @@ export default class NewPatient extends Vue {
       preferredPharmacies: this.pharmacies,
       demographicsData: this.demographics,
       primaryDoctorDetails: this.practitioners,
-      guarantor: this.guarantor
+      guarantor: this.guarantor,
     };
     if (this.id) return basicInfo;
     return { ...basicInfo, ...others };
@@ -818,12 +825,11 @@ export default class NewPatient extends Vue {
       const patient = response.data;
       this.updatePatient(patient);
       window.notify({ msg: "Patient added successfully", status: "success" });
-        
+
       this.$router.go(-1);
-    } catch (error:any) {
+    } catch (error: any) {
       window.notify({ msg: error.response.data.message, status: "error" });
     }
-  
   }
 
   async updateData() {
@@ -835,8 +841,8 @@ export default class NewPatient extends Vue {
       const patient = response.data;
       this.updatePatient(patient);
       window.notify({ msg: "Patient Updated", status: "success" });
-        this.$router.go(-1);
-    } catch (e:any) {
+      this.$router.go(-1);
+    } catch (e: any) {
       window.notify({ msg: e?.response?.data?.message, status: "error" });
     }
   }
@@ -847,7 +853,7 @@ export default class NewPatient extends Vue {
       await this.updateData();
       this.loading = false;
     } else {
-     this.showPatientInformation = false;
+      this.showPatientInformation = false;
       window.notify({ msg: "Patient infromation Updated", status: "success" });
       this.basicCompleted = false;
     }
