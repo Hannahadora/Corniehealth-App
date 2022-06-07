@@ -8,7 +8,7 @@
   >
     <div
       class="flex flex-col items-center justify-center my-auto"
-      v-if="diagnostics?.length === 0"
+      v-if="diagnostics?.length == 0"
     >
       <img class="mb-3" src="@/assets/img/no-diagnostics-trend.svg" alt="" />
       <p class="text-sm text-center" style="color: #667499">
@@ -44,6 +44,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import DetailCard from "./detail-card.vue";
 import IDiagnostic from "@/types/IDiagnostic";
 import { namespace } from "vuex-class";
@@ -63,27 +64,14 @@ import BillIcon from "@/components/icons/ehrbill.vue";
   },
 })
 export default class DiagnosticCard extends Vue {
-  photo = require("@/assets/img/avatar.png");
+  
+  @Prop({ type: Array, default: () => [] })
+  diagnostics!: IDiagnostic[];
 
-  diagnostics: IDiagnostic[] = [];
+  photo = require("@/assets/img/avatar.png");
 
   get patientId() {
     return this.$route.params.id as string;
-  }
-
-  async fetchPatientDiagnostics() {
-    const url = `/api/v1/diagnostic/report/patient/${this.patientId}`;
-    try {
-      const response = await cornieClient().get(url);
-      if (response.success) {
-        this.diagnostics = response.data;
-      }
-    } catch (error) {
-      window.notify({
-        msg: "Error fetching Diagnostic report",
-        status: "error",
-      });
-    }
   }
 
   get count() {
@@ -98,7 +86,6 @@ export default class DiagnosticCard extends Vue {
   }
 
   async created() {
-    await this.fetchPatientDiagnostics();
   }
 }
 </script>

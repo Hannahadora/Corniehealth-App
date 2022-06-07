@@ -50,6 +50,7 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import DetailCard from "./detail-card.vue";
 import { namespace } from "vuex-class";
 import IAllergy from "@/types/IAllergy";
@@ -79,11 +80,8 @@ export default class AllergyCard extends Vue {
   }
   manifestation = "";
 
-  @allergy.State
+ @Prop({ type: Array, default: () => [] })
   allergys!: IAllergy[];
-
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
 
   get newallergys() {
     return this.sortAllergys.slice(0, 3);
@@ -123,8 +121,6 @@ export default class AllergyCard extends Vue {
 
   async created() {
     await this.createMapper();
-    await this.fetchAllergys(this.patientId);
-    ///  this.medicationMapper = this.createMapper();
   }
 }
 </script>
