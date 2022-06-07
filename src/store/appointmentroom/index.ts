@@ -38,6 +38,14 @@ export default {
       state.appointmentrooms = [...appointmentrooms];
     },
   },
+  getters: {
+    locationRooms({ appointmentrooms }, getters, rootState, rootGetters) {
+      const currentLocation = rootGetters["user/authCurrentLocation"];
+      return appointmentrooms.filter(
+        (room) => room.locationId == currentLocation
+      );
+    },
+  },
   actions: {
     async fetchAppointmentrooms(ctx) {
       const appointmentrooms = await fetchAppointmentrooms();
@@ -50,7 +58,7 @@ export default {
       if (ctx.state.appointmentrooms.length < 1)
         await ctx.dispatch("fetchAppointmentrooms");
       return ctx.state.appointmentrooms.find(
-        appointmentroom => appointmentroom.id == id
+        (appointmentroom) => appointmentroom.id == id
       );
     },
     async deleteAppointmentroom(ctx, id: string) {

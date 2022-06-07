@@ -163,12 +163,12 @@ export default class apponitmentRooms extends Vue {
     },
     {
       title: "LOCATION",
-      key: "location",
+      key: "locationName",
       show: true,
     },
     {
       title: "CUSTODIAN",
-      key: "custodian",
+      key: "custodianName",
       show: true,
     },
     {
@@ -200,21 +200,10 @@ export default class apponitmentRooms extends Vue {
       return {
         ...appointmentroom,
         action: appointmentroom.id,
-        keydisplay: "XXXXXXX",
-        location: this.getLocationName(appointmentroom.locationId),
-        custodian: this.getCustodianName(appointmentroom.custodian),
       };
     });
     if (!this.query) return appointmentrooms;
     return search.searchObjectArray(appointmentrooms, this.query);
-  }
-  getCustodianName(id: string) {
-    const pt = this.practitioner.find((i: any) => i.id === id);
-    return pt ? `${pt.firstName} ${pt.lastName}` : "";
-  }
-  getLocationName(id: string) {
-    const pt = this.location.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
   }
 
   async deleteItem(id: string) {

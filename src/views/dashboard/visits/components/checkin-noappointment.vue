@@ -158,13 +158,13 @@
               </div>
               <div class="w-full flex justify-between">
                 <span class="uppercase text-success">
-                  <span class="cursor-pointer text-success font-light text-xs"
-                    >Appointment Time</span
-                  >
+                  <span class="cursor-pointer text-success font-light text-xs">
+                    Appointment Time
+                  </span>
                   <span class="mx-1 font-light text-success">|</span>
-                  <span class="cursor-pointer text-success font-light text-xs"
-                    >Queue No: 232222</span
-                  >
+                  <span class="cursor-pointer text-success font-light text-xs">
+                    Queue No: 232222
+                  </span>
                 </span>
               </div>
             </div>
@@ -193,7 +193,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue, setup } from "vue-class-component";
 import Accordion from "@/components/accordion-component.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { namespace } from "vuex-class";
@@ -209,10 +209,14 @@ import MultiSelect from "../../schedules/components/apply-to.vue";
 import slotService from "../helper/slot-service";
 import IPractitioner from "@/types/IPractitioner";
 import { Prop, Watch } from "vue-property-decorator";
+import IAppointmentRoom from "@/types/IAppointmentRoom";
+import { useAppointmentRooms } from "../composables/useAppointmentRoom";
 
 const visitsStore = namespace("visits");
 const actors = namespace("practitioner");
 const locationsStore = namespace("location");
+
+const appointmentRoom = namespace("appointmentRoom");
 
 @Options({
   components: {
@@ -252,6 +256,17 @@ export default class CheckIn extends Vue {
 
   @visitsStore.Action
   createSlot!: (body: any) => Promise<any>;
+
+  @appointmentRoom.State
+  appointmentrooms!: IAppointmentRoom[];
+
+  @appointmentRoom.Action
+  deleteAppointmentroom!: (id: string) => Promise<boolean>;
+
+  @appointmentRoom.Action
+  fetchAppointmentrooms!: () => Promise<void>;
+
+  room = setup(() => useAppointmentRooms());
 
   showDetails = true;
   showBreaks = false;
@@ -417,10 +432,10 @@ export default class CheckIn extends Vue {
   }
 
   get rooms() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i) => {
-      return { code: i.id, display: i.name };
-    });
+    return this.room.locationRooms.map((room) => ({
+      code: room.id,
+      display: room.roomName,
+    }));
   }
 
   get slots() {
@@ -484,10 +499,9 @@ export default class CheckIn extends Vue {
   }
 
   async created() {
-    if (!this.locations || this.locations.length === 0)
-      await this.fetchLocations();
+    if (!this.locations || this.locations.length === 0) this.fetchLocations();
     if (!this.practitioners || this.practitioners.length === 0)
-      await this.fetchPractitioners();
+      this.fetchPractitioners();
   }
 }
 </script>
