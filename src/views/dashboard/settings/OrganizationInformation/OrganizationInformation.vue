@@ -217,8 +217,6 @@ export default class PracticeInfo extends Vue {
   EmailAddress = "";
   Website = "";
   address = "";
-  // IncorporationStatus = "";
-
   orgTypes = [];
   provProfiles = [];
   incTypes = [];
@@ -239,7 +237,8 @@ export default class PracticeInfo extends Vue {
   fetchOrgInfo!: () => Promise<IOrganization>;
 
   get hasDomain() {
-    return Boolean(this.DomainName);
+    const defaultDomain = this.defaultOrgInfo?.domainName || "";
+    return !isUUID(defaultDomain) && Boolean(defaultDomain);
   }
 
   get payload() {
@@ -318,6 +317,7 @@ export default class PracticeInfo extends Vue {
     if (name && isUUID(name)) return;
     this.DomainName = name || "";
   }
+
   setOrgInfo(data: IOrganization) {
     this.OrganizationName = data.name || "";
     this.image = data.image || "";
