@@ -221,7 +221,7 @@ export default class PracticeInfo extends Vue {
   provProfiles = [];
   incTypes = [];
   loading = false;
-  defaultOrgInfo?: IOrganization;
+  defaultOrgInfo = {} as IOrganization;
   urlRule = string().url();
   emailRule = string().email().required();
   requiredRule = string().required();

@@ -62,13 +62,13 @@ export default {
       return JSON.parse(corniedata)?.authDomain;
     },
     authCurrentLocation(state) {
+      if (state.currentLocation) return state.currentLocation;
       const cachedLocation = sessionStorage.getItem("authCurrentLocation");
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
-      const defaultLocation = locations?.find(location => location.default);
+      const defaultLocation = locations?.find((location) => location.default);
 
-      const currentLocation =
-        (state.currentLocation || defaultLocation?.locationId) ?? "";
+      const currentLocation = defaultLocation?.locationId ?? "";
       sessionStorage.setItem("authCurrentLocation", currentLocation);
 
       return currentLocation;
@@ -98,7 +98,7 @@ export default {
       state.currentLocation = practitioner?.defaultLocation || "";
     },
     switchCurrentLocation(state, locationId) {
-      sessionStorage.removeItem("authCurrentLocation");
+      sessionStorage.setItem("authCurrentLocation", locationId);
       state.currentLocation = locationId;
     },
     setAuthToken(state, token) {
