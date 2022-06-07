@@ -322,16 +322,16 @@
     }
 
     async submit() {
-      this.loading = true;
       if (this.categoryPayload.length == 0) return;
+      this.loading = true;
       let y = this.categoryPayload.map((c: any) => {
         return {
+          ...c,
           inventoryLocationId: c.inventoryLocationId,
           category: c.category.toLocaleLowerCase().trim(),
-          address: c.address ? c.address : undefined,
-          city: c.city ? c.city : undefined,
-          state: c.state ? c.state : undefined,
-          ...c,
+          address: c.address ? c.address : "not available",
+          city: c.city ? c.city : "not available",
+          state: c.state ? c.state : "not available",
         };
       });
       await this.createCategory(y)

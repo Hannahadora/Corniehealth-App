@@ -45,6 +45,35 @@
               <search-icon />
             </template>
           </icon-input>
+          <div
+            v-if="selectedOption == 'care plan'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-for="c in careplan">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'diagnostics request'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-for="d in diagnosticsRequest">hello</div>
+          </div>
+
+          <div
+            v-if="selectedOption == 'medication request'"
+            class="flex flex-col space-y-5"
+          >
+            heelo
+            <div v-for="d in medicationRequest">hello</div>
+          </div>
         </div>
       </cornie-card-text>
       <div class="flex items-center justify-end mt-24">
@@ -123,14 +152,37 @@
     show!: boolean;
 
     @Prop()
-    careplan!: any;
+    careplan!: any[];
 
-    radioValues = ["Care Plan", "Service Request"];
-    selectedOption = "";
+    @Prop()
+    diagnosticsRequest!: any[];
+
+    @Prop()
+    medicationRequest!: any[];
+
     query = "";
+
+    radioValues = ["Care Plan", "Diagnostics request", "Medication request"];
+    selectedOption = "";
+    selectedId = "";
+    selectedData = {};
+
+    submit() {
+      if (!this.selectedId) return;
+      let u = this.$route.params.id.toLocaleString();
+      //@ts-ignore
+      this.selectedData = this.careplan.find((x) => x.id == this.selectedId);
+      this.$emit("selectedId", {
+        typeData: this.selectedOption,
+        ...this.selectedData,
+      });
+      this.show = false;
+    }
 
     mounted() {
       console.log("careplan", this.careplan);
+      console.log("diag", this.diagnosticsRequest);
+      console.log("medication", this.medicationRequest);
     }
   }
 </script>
