@@ -3,13 +3,11 @@
     <verify-mail @nextStep="confirm" v-if="step === 1" />
     <confirmation
       @nextStep="reset"
+      :signature="signature"
       v-if="step === 2"
       :email="email"
     />
-    <password-reset v-if="step === 3" 
-      :code="code"
-      :signature="signature"
-    />
+    <password-reset v-if="step === 3" :code="code" :signature="signature" />
     <security-question v-if="step === 4" />
   </auth>
 </template>
@@ -54,7 +52,7 @@ export default class SignUp extends Vue {
   confirm(signature: any, email: any) {
     this.step = 2;
     this.signature = signature;
-    this.email = email
+    this.email = email;
   }
 
   reset(codeSync: any) {
