@@ -1,8 +1,32 @@
 <template>
   <div>
+    <div class="grid grid-cols-3 gap-6 pt-10">
+      <div v-for="n in 3" class="flex items-center p-7 shadow-md rounded-2xl">
+        <div class="flex-1">
+          <div class="flex flex-col">
+            <div class="font-light">Location</div>
+            <div class="font-bold">Total Number: {{ items.length }}</div>
+          </div>
+        </div>
+        <div class="flex-none">
+          <img src="@/assets/img/total-location.svg" height="60" width="60" />
+        </div>
+      </div>
+      <!-- <div class="flex items-center p-7 shadow-md rounded-2xl">
+        <div class="flex-1">
+          <div class="flex flex-col">
+            <div class="font-light">Location</div>
+            <div class="font-bold">Total Number: {{ items.length }}</div>
+          </div>
+        </div>
+        <div class="flex-none">
+          <img src="@/assets/img/total-location.svg" height="60" width="60" />
+        </div>
+      </div> -->
+    </div>
     <span class="flex justify-end w-full mb-8">
       <button
-        class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-7 mb-5 font-semibold focus:outline-none hover:opacity-90"
         @click="showInventoryRequest = true"
       >
         Add New
@@ -54,131 +78,141 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import EmptyState from "./emptyState.vue";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import InventoryLocationModal from "./locationModal.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import Addblue from "@/components/icons/addblue.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
-import { namespace } from "vuex-class";
-import ILocation from "@/types/ILocation";
-import ViewCategory from "./view-category.vue";
-import AddInventoryModal from "./add-inventory-modal.vue";
+  import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import Addblue from "@/components/icons/addblue.vue";
+  import CloseIcon from "@/components/icons/CloseIcon.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import NewviewIcon from "@/components/icons/newview.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import AddInventoryModal from "./add-inventory-modal.vue";
+  import EmptyState from "./emptyState.vue";
+  import InventoryLocationModal from "./locationModal.vue";
+  import ViewCategory from "./view-category.vue";
 
-const inventory = namespace("inventorysettings");
+  const inventory = namespace("inventorysettings");
 
-@Options({
-  components: {
-    EmptyState,
-    CornieTable,
-    InventoryLocationModal,
-    EditIcon,
-    Addblue,
-    NewviewIcon,
-    CloseIcon,
-    ViewCategory,
-    AddInventoryModal,
-  },
-})
-export default class InventoryLocationExistingState extends Vue {
-  @inventory.Action
-  deactivateL!: (data: any) => Promise<void>;
-
-  @inventory.State
-  locations!: ILocation;
-
-  showEditDetails = false;
-  showInventoryRequest = false;
-  showView = false;
-  showAddC = false;
-  selectedItem: any = "";
-  rawHeaders = [
-    {
-      title: "name",
-      key: "name",
-      show: true,
-      noOrder: true,
+  @Options({
+    components: {
+      EmptyState,
+      CornieTable,
+      InventoryLocationModal,
+      EditIcon,
+      Addblue,
+      NewviewIcon,
+      CloseIcon,
+      ViewCategory,
+      AddInventoryModal,
     },
-    { title: "type", key: "type", show: true, noOrder: true },
-    {
-      title: "address",
-      key: "address",
-      show: true,
-      noOrder: true,
-    },
-    {
-      title: "city/state",
-      key: "city",
-      show: true,
-      noOrder: true,
-    },
-    {
-      title: "manager",
-      key: "manager",
-      show: true,
-      noOrder: true,
-    },
-    {
-      title: "inventory category(s)",
-      key: "classes",
-      show: true,
-      noOrder: true,
-    },
+  })
+  export default class InventoryLocationExistingState extends Vue {
+    @Prop()
+    location!: any[];
 
-    {
-      title: "status",
-      key: "status",
-      show: true,
-    },
-  ];
+    @inventory.Action
+    deactivateL!: (data: any) => Promise<void>;
 
-  showViewModal(item: any) {
-    this.showEditDetails = false;
-    this.selectedItem = item;
-    this.showView = true;
-  }
+    showEditDetails = false;
+    showInventoryRequest = false;
+    showView = false;
+    showAddC = false;
+    selectedItem: any = "";
+    rawHeaders = [
+      {
+        title: "Manager",
+        key: "manager",
+        show: true,
+        noOrder: true,
+      },
 
-  showEditModal(item: any) {
-    this.showView = false;
-    this.showInventoryRequest = true;
-    this.selectedItem = item;
-  }
+      {
+        title: "address",
+        key: "address",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "city/state",
+        key: "city",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "phone",
+        key: "phone",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "Email",
+        key: "email",
+        show: true,
+        noOrder: true,
+      },
+      // {
+      //   title: "inventory category(s)",
+      //   key: "classes",
+      //   show: true,
+      //   noOrder: true,
+      // },
 
-  showAddCategory(id: string, data: any[]) {
-    this.selectedItem = {
-      id,
-      data,
-    };
-    this.showAddC = true;
-  }
+      {
+        title: "status",
+        key: "status",
+        show: true,
+      },
+    ];
 
-  async deactivateC(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "Are you sure you want to deactivate this location?",
-      yes: "Yes",
-      no: "No",
-      title: "Deactivate",
-    });
-    if (!confirmed) return;
+    showViewModal(item: any) {
+      this.showEditDetails = false;
+      this.selectedItem = item;
+      this.showView = true;
+    }
 
-    try {
-      this.deactivateL(id);
-      window.notify({
-        msg: "Authorized Locations Swtiched",
-        status: "success",
+    showEditModal(item: any) {
+      this.showView = false;
+      this.showInventoryRequest = true;
+      this.selectedItem = item;
+    }
+
+    showAddCategory(id: string, data: any[]) {
+      this.selectedItem = {
+        id,
+        data,
+      };
+      this.showAddC = true;
+    }
+
+    async deactivateC(id: string) {
+      console.log("idd", id);
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to deactivate this location?",
+        yes: "Yes",
+        no: "No",
+        title: "Deactivate",
       });
-    } catch (error) {
-      window.notify({
-        msg: "Authorized Locations not Swtiched",
-        status: "error",
-      });
+      if (!confirmed) return;
+
+      try {
+        this.deactivateL(id);
+        window.notify({
+          msg: "Locations Deactivated",
+          status: "success",
+        });
+        window.location.reload();
+      } catch (error) {
+        // window.notify({
+        //   msg: "Err",
+        //   status: "error",
+        // });
+        console.log("deactivate", error);
+      }
+    }
+
+    get items() {
+      console.log("exists", this.location);
+      return this.location;
     }
   }
-
-  get items() {
-    return this.locations;
-  }
-}
 </script>
