@@ -46,8 +46,8 @@
             this.getPdatails(l.manager).firstName +
             " " +
             this.getPdatails(l.manager).lastName,
-          address: l.address,
-          city: l.city + "/" + l.state,
+          address: l.address ? l.address : "Not available",
+          city: l.city && l.state ? l.city + "/" + l.state : "Not available",
           phone: l.phone.number,
           email: l.email,
           status: l.status,

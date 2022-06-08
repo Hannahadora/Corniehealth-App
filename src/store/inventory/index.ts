@@ -1,11 +1,13 @@
 // import { StoreOptions } from "vuex";
 // import ObjectSet from "@/lib/objectset";
 import {
+  activateC,
   activateL,
   createInventoryCategory,
   createInventoryLocation,
   createInventoryLocationClasses,
   createInventoryValuation,
+  deactivateC,
   deactivateL,
   deleteInventoryCategory,
   deleteInventoryLocation,
@@ -45,7 +47,7 @@ export default {
           // ctx.dispatch()
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -57,14 +59,36 @@ export default {
           // ctx.dispatch()
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    },
+
+    async deactivateC(ctx: any, id: string) {
+      await deactivateC(id)
+        .then(() => {
+          window.location.reload();
+          return Promise.resolve();
+        })
+        .catch((e) => {
+          return Promise.reject(e);
+        });
+    },
+
+    async activateC(ctx: any, id: string) {
+      await activateC(id)
+        .then(() => {
+          window.location.reload();
+          return Promise.resolve();
+        })
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async getCategory(ctx: any) {
       const category = await getInventoryCategory();
-      // ctx.commit('setCategories', category)
+      ctx.commit("setCategories", category);
       return Promise.resolve(category);
     },
 
@@ -74,17 +98,17 @@ export default {
           // ctx.dispatch()
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async getAllCategories(ctx: any, id: string) {
       await getInventoryCategoriesByUser(id)
-        .then(c => {
+        .then((c) => {
           ctx.commit("setCategories", c);
         })
-        .catch(e => {
+        .catch((e) => {
           // eslint-disable-next-line no-console
           console.log("error", e);
         });
@@ -96,7 +120,7 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -106,7 +130,7 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -116,7 +140,7 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -126,18 +150,18 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async getAllLocations(ctx: any) {
       await getLocationsByUser()
-        .then(l => {
+        .then((l) => {
           ctx.commit("setLocations", l);
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -148,7 +172,7 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -159,7 +183,7 @@ export default {
           // ctx.commit()
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
@@ -169,40 +193,40 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async createValuation(ctx: any, data: any) {
       await createInventoryValuation(data)
-        .then(l => {
+        .then((l) => {
           ctx.commit("setValuation", l);
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async getAllValuation(ctx: any) {
       await getAllInventoryValuation()
-        .then(l => {
+        .then((l) => {
           ctx.commit("setValuation", l);
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },
 
     async updateValuation(ctx: any, data: any) {
       await updateInventoryValuation(data)
-        .then(l => {
+        .then((l) => {
           ctx.commit("setValuation", l);
           return Promise.resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           return Promise.reject(e);
         });
     },

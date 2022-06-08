@@ -3,7 +3,8 @@
     <span class="flex justify-end w-full mb-8">
       <button
         class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-        @click="showInventoryRequest = true">
+        @click="showInventoryRequest = true"
+      >
         Add New
       </button>
     </span>
@@ -18,135 +19,175 @@
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
         <div v-if="item.status == 'inactive'">
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showDetailsModal(item)"
+          >
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View </span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="showUpdateModal(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
+          </div>
+          <div
+            @click="activateC(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <check class="text-green-600 fill-current" />
             <span class="ml-3 text-xs">Activate</span>
-          </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <span class="ml-3 text-xs">Add to locations</span>
           </div>
         </div>
 
         <div v-if="item.status == 'active'">
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDetailsModal(item)">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showDetailsModal(item)"
+          >
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View </span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-
-            <span class="ml-3 text-xs">Add to locations</span>
+          <div
+            @click="showUpdateModal(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div
+            @click="deactivateC(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
             <!-- <Check class="text-green-600 fill-current" /> -->
             <close-icon class="text-red-600 fill-current" />
             <span class="ml-3 text-xs">Deactivate</span>
           </div>
         </div>
-
       </template>
-      <template #location="{ item }">
-        <div>{{ item.location }}
+      <template #category="{ item }">
+        <div class="capitalize">{{ item.category }} Inventory</div>
+      </template>
+      <!-- <template #location="{ item }">
+        <div>
+          {{ item.location }}
           <newview-icon class="text-yellow-500 ml-2 fill-current" />
         </div>
-      </template>
+      </template> -->
       <template #status="{ item }">
-        <p class="text-xs bg-red-300 text-red-600 p-1 rounded capitalize" v-if="item.status == 'inactive'">
+        <span
+          class="text-xs bg-red-100 text-red-600 p-1 rounded capitalize"
+          v-if="item.status == 'inactive'"
+        >
           {{ item.status }}
-        </p>
-        <p class="text-xs bg-green-100 text-green-500 p-1 rounded capitalize" v-if="item.status == 'active'">
+        </span>
+        <span
+          class="text-xs bg-green-100 text-green-500 p-1 rounded capitalize"
+          v-if="item.status == 'active'"
+        >
           {{ item.status }}
-        </p>
+        </span>
       </template>
     </cornie-table>
-    <inventory-modal v-model="showInventoryRequest" />
+    <inventory-modal
+      :selectedItem="selectedItem"
+      v-model="showInventoryRequest"
+    />
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import EmptyState from "./emptyState.vue";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import User, { CornieUser } from "@/types/user";
-import { namespace } from "vuex-class";
-import InventoryModal from "./inventoryModal.vue";
-import ICategory from "@/types/ICategory";
-import NewviewIcon from "@/components/icons/newview.vue";
-import Check from "@/components/icons/check.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
+  import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import Check from "@/components/icons/check.vue";
+  import CloseIcon from "@/components/icons/CloseIcon.vue";
+  import NewviewIcon from "@/components/icons/newview.vue";
+  import UpdateReportGreen from "@/components/icons/update-report-green.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import EmptyState from "./emptyState.vue";
+  import InventoryModal from "./inventoryModal.vue";
 
+  const account = namespace("user");
+  const inventory = namespace("inventorysettings");
 
-const account = namespace("user");
-const inventory = namespace('inventorysettings')
+  @Options({
+    components: {
+      EmptyState,
+      CornieTable,
+      InventoryModal,
+      NewviewIcon,
+      Check,
+      CloseIcon,
+      UpdateReportGreen,
+    },
+  })
+  export default class InventoryExistingState extends Vue {
+    @Prop()
+    categories!: any[];
 
-@Options({
-  components: {
-    EmptyState,
-    CornieTable,
-    InventoryModal,
-    NewviewIcon,
-    Check,
-    CloseIcon
+    showInventoryRequest = false;
+    showDetails = false;
+    selectedItem = false;
+    rawHeaders = [
+      {
+        title: "identifier",
+        key: "idc",
+        show: true,
+        noOrder: true,
+      },
+      { title: "manager", key: "managerId", show: true, noOrder: true },
+      {
+        title: "category",
+        key: "category",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "phone",
+        key: "phone",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "email",
+        key: "email",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "locations",
+        key: "location",
+        show: true,
+        noOrder: true,
+      },
+
+      {
+        title: "status",
+        key: "status",
+        show: true,
+      },
+    ];
+
+    @inventory.Action
+    deactivateC!: (data: any) => Promise<void>;
+
+    @inventory.Action
+    activateC!: (data: any) => Promise<void>;
+
+    showDetailsModal(item: any) {
+      this.selectedItem = item;
+      this.showDetails = true;
+    }
+
+    showUpdateModal(item: any) {
+      this.selectedItem = item;
+      this.showInventoryRequest = true;
+    }
+
+    get items() {
+      return this.categories;
+    }
   }
-})
-
-export default class InventoryExistingState extends Vue {
-  showInventoryRequest = false
-  showDetails = false
-  selectedItem = false
-  rawHeaders = [
-    {
-      title: "identifier",
-      key: "id",
-      show: true,
-      noOrder: true
-    },
-    { title: "subject (PATIENT)", key: "subject", show: true, noOrder: true },
-    {
-      title: "created by",
-      key: "created",
-      show: true,
-      noOrder: true
-    },
-    {
-      title: "date created",
-      key: "date",
-      show: true,
-      noOrder: true
-    },
-    {
-      title: "last modified",
-      key: "modified",
-      show: true,
-      noOrder: true
-    },
-    {
-      title: "locations",
-      key: "location",
-      show: true,
-      noOrder: true
-    },
-
-    {
-      title: "status",
-      key: "status",
-      show: true,
-    },
-
-  ];
-
-  showDetailsModal(item: any) {
-    this.selectedItem = item;
-    this.showDetails = true;
-  }
-
-  @inventory.State
-  categories!: ICategory[]
-
-  get items() {
-    return this.categories
-  }
-}
 </script>

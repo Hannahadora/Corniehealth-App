@@ -449,7 +449,11 @@
         :medicationRequest="medicationRequest"
         v-model="showBasedOn"
       />
-      <parton :observations="observations" v-model="showPartOf" />
+      <parton
+        :procedures="procedures"
+        :observations="observations"
+        v-model="showPartOf"
+      />
       <actor v-model="showActor" />
       <function v-model="showFunction" />
       <locationM v-model="showLocation" />
@@ -565,6 +569,12 @@
     @procedure.Action
     createProcedure!: (procedure: any) => Promise<boolean>;
 
+    @procedure.Action
+    getProcedures!: (id: string) => Promise<any>;
+
+    @procedure.State
+    procedures!: any[];
+
     @careplan.Action
     getPatientCarePlans!: (id: string) => Promise<any>;
 
@@ -573,10 +583,11 @@
 
     observations: any[] = [];
     diagnosticsRequest: any[] = [];
-    medicationRequest: any[] = []
+    medicationRequest: any[] = [];
     recorder = "";
     asserterId = "";
     authPractitioner = "";
+    basedOn: any = {};
     get performedPayload() {
       if (this.performed == "date/time") {
         return {
@@ -682,6 +693,7 @@
     }
     setbaseOn(e: any) {
       console.log("based on ", e);
+      this.basedOn = e;
     }
 
     location = {
@@ -704,13 +716,7 @@
           name: "string",
           specialty: "string",
         },
-        basedOn: [
-          {
-            type: "care-plan",
-            date: "2022-05-30",
-            name: "string",
-          },
-        ],
+        basedOn: this.basedOn,
         partOf: {
           type: "location",
           id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -809,7 +815,7 @@
       }
     }
 
-     async fetchMedicationRequest() {
+    async fetchMedicationRequest() {
       const url = `/api/v1//medication-requests/patient/${this.$route.params.id}`;
       const response = await cornieClient().get(url);
       if (response.success) {
@@ -823,7 +829,8 @@
       await this.getPatientCarePlans(this.patientId);
       await this.fetchObservations();
       await this.fetchDiagnosticsRequest();
-      await this.fetchMedicationRequest()
+      await this.fetchMedicationRequest();
+      await this.getProcedures(this.patientId);
     }
   }
 </script>
