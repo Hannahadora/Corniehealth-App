@@ -123,14 +123,43 @@
     show!: boolean;
 
     @Prop()
-    observations!: any;
+    observations!: any[];
+
+    @Prop()
+    procedures!: any[];
 
     radioValues = ["Procedure", "Observation"];
     selectedOption = "";
+    selectedId = "";
+    selectedData = {};
     query = "";
+
+    submit() {
+      if (!this.selectedId) return;
+      let u = this.$route.params.id.toLocaleString();
+
+      if (this.selectedOption == "procedure") {
+        this.selectedData = this.procedures.find(
+          (x) => x.id == this.selectedId
+        );
+      }
+
+      if (this.selectedOption == "observation") {
+        this.selectedData = this.observations.find(
+          (x: any) => x.id == this.selectedId
+        );
+      }
+      //@ts-ignore
+      this.$emit("selectedId", {
+        typeData: this.selectedOption,
+        ...this.selectedData,
+      });
+      this.show = false;
+    }
 
     mounted() {
       console.log("observation", this.observations);
+      console.log("procc", this.procedures);
     }
   }
 </script>

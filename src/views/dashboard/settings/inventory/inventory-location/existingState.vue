@@ -68,6 +68,20 @@
           <span class="ml-3 text-xs">Deactivate</span>
         </div>
       </template>
+      <template #status="{ item }">
+        <span
+          class="text-xs bg-red-100 text-red-600 p-1 rounded capitalize"
+          v-if="item.status == 'inactive'"
+        >
+          {{ item.status }}
+        </span>
+        <span
+          class="text-xs bg-green-100 text-green-500 p-1 rounded capitalize"
+          v-if="item.status == 'active'"
+        >
+          {{ item.status }}
+        </span>
+      </template>
     </cornie-table>
     <inventory-location-modal
       v-model="showInventoryRequest"

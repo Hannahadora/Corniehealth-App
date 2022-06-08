@@ -16,12 +16,42 @@ export async function createInventoryCategory(data: any) {
 export async function updateInventoryCategory(id: string, data: any) {
   try {
     const response = await cornieClient().put(
-      `/api/v1/inventory/classes/${id}`,
+      `/api/v1/inventory/settings/category/${id}`,
       data
     );
     return response.data;
   } catch (error) {
     notify({ msg: "There was an error updating categories", status: "error" });
+  }
+}
+
+export async function deactivateC(id: string) {
+  try {
+    const response = await cornieClient().patch(
+      `/api/v1/inventory/settings/category/deactivate/${id}`,
+      {}
+    );
+    return response.data;
+  } catch (error) {
+    notify({
+      msg: "There was an error deactivating category",
+      status: "error",
+    });
+  }
+}
+
+export async function activateC(id: string) {
+  try {
+    const response = await cornieClient().patch(
+      `/api/v1/inventory/settings/category/activate/${id}`,
+      {}
+    );
+    return response.data;
+  } catch (error) {
+    notify({
+      msg: "There was an error activating category",
+      status: "error",
+    });
   }
 }
 

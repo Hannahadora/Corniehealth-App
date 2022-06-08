@@ -1,11 +1,13 @@
 // import { StoreOptions } from "vuex";
 // import ObjectSet from "@/lib/objectset";
 import {
+  activateC,
   activateL,
   createInventoryCategory,
   createInventoryLocation,
   createInventoryLocationClasses,
   createInventoryValuation,
+  deactivateC,
   deactivateL,
   deleteInventoryCategory,
   deleteInventoryLocation,
@@ -62,9 +64,31 @@ export default {
         });
     },
 
+    async deactivateC(ctx: any, id: string) {
+      await deactivateC(id)
+        .then(() => {
+          window.location.reload();
+          return Promise.resolve();
+        })
+        .catch(e => {
+          return Promise.reject(e);
+        });
+    },
+
+    async activateC(ctx: any, id: string) {
+      await activateC(id)
+        .then(() => {
+          window.location.reload();
+          return Promise.resolve();
+        })
+        .catch(e => {
+          return Promise.reject(e);
+        });
+    },
+
     async getCategory(ctx: any) {
       const category = await getInventoryCategory();
-      // ctx.commit('setCategories', category)
+      ctx.commit("setCategories", category);
       return Promise.resolve(category);
     },
 

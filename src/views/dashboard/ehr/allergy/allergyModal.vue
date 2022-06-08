@@ -111,7 +111,7 @@
                     class="mb-5 w-full"
                     placeholder="Enter"
                     v-model="note"
-                  >
+                  >   
                   </cornie-input>
                 </div>
               </template>
