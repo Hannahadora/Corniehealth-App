@@ -672,7 +672,7 @@ export default class AddCondition extends Vue {
       window.notify({ msg: "Condition created", status: "success" });
       this.done();
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Condition not created", status: "error" });
     }
   }
 
@@ -695,7 +695,7 @@ export default class AddCondition extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Condition Not Updated", status: "error" });
     }
   }
  

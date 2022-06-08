@@ -68,10 +68,10 @@
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
-          @click="showHistory = true"
+          @click="show = false"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
         >
-          View History
+          Close
         </cornie-btn>
         <cornie-btn
         v-if="active == 'clinical'"

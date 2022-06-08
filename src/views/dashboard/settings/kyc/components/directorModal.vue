@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{newaction}} New Director
+            Add New Director
           </h2>
           <!-- <cancel-icon
             class="float-right cursor-pointer"
@@ -239,7 +239,7 @@ idFileUploaded(fileUrl: string) {
  fileIndex = 0;
 
     fullName = "";
-    dateOfBirth  =  "2021-07-16";
+    dateOfBirth  =  "";
     nationality = "";
     emailAddress = "";
     phoneNumber =  {

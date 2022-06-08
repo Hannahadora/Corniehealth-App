@@ -513,7 +513,7 @@ export default class AlergyModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Saved", status: "error" });
     }
   }
   async updateAllergy() {
@@ -535,7 +535,7 @@ export default class AlergyModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Updated", status: "error" });
     }
   }
  
