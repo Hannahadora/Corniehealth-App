@@ -42,8 +42,8 @@ export default class BloodChartt extends Vue {
     startDate = new Date().toISOString();
 
   raw: IStat[] = [];
-  diastolicRaw: IStat[] = [];
-  systolicRaw: IStat[] = [];
+  diastolicRaw = [] as any;
+  systolicRaw = [] as any;
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   get sortedVitals() {
@@ -166,14 +166,14 @@ export default class BloodChartt extends Vue {
   }
 
   get systolicAverage() {
-    const values = this.systolicRaw?.map((a) => a.count);
+    const values = this.systolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
   get diastolicAverage() {
-    const values = this.diastolicRaw?.map((a) => a.count);
+    const values = this.diastolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
 
   chart!: Chart;
@@ -219,28 +219,17 @@ export default class BloodChartt extends Vue {
           end: date,
         }
       );
-       console.log(response.data,'record')
       this.raw = response.data;
 
-     for (const [key, value] of Object.entries(response?.data?.diastolic)) {
-        console.log(`${key}: ${value}`);
-        return   { count: key, date: value };
-      }
+      const diastolic = response.data.diastolic
+      this.diastolicRaw = Object.entries(diastolic).map((key, value) => {
+          return {count: value, date: key}
+      })
 
-
-        // this.diastolicRaw = Object.entries(response?.data?.diastolic).map((record: any) => {
-        //   return { count: record.value, date: record.date };
-        // });
-  
-        // this.systolicRaw = response?.data?.diastolic?.map((record: any) => {
-        //   return { count: record.value, date: record.date };
-        // });
-      
-
-      // this.raw = response.data?.map((item: any) => {
-      //   return { count: item.value, date: item.date }
-      // });
-     // this.chartData; //this line just  gets the vuejs reactivity system to refresh
+       const systolic = response.data.systolic
+      this.systolicRaw = Object.entries(systolic).map((key, value) => {
+          return {count: value, date: key}
+      })
     } catch (error:any) {
       // window.notify({
       //   msg: error.response.data.message,

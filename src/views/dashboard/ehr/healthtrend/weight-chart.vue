@@ -80,16 +80,16 @@ export default class WeightChart extends Vue {
   }
 
   get average() {
-    const values = this.raw?.map((a) => a.count);
+    const values = this.raw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
+    return (values.reduce((a:any, b:any) => a + b) / values?.length).toFixed(1);
   }
 
   get labels() {
     return getDatesAsChartLabel(this.vitals);
   }
 
-  raw: IStat[] = [];
+  raw = [] as any;
 
   async fetchData(patientId: string) {
     const [splitDate] = this.startDate.split('T');
@@ -104,10 +104,12 @@ export default class WeightChart extends Vue {
           end: date,
         }
       );
-       console.log(response.data,'record')
-      this.raw = response.data?.map((item: any) => {
-        return { count: item.value, date: item.date };
-      });
+       console.log(response.data,'weight record')
+   
+      const rawdata = response.data
+      this.raw = Object.entries(rawdata).map((key, value) => {
+          return {count: value, date: key}
+      })
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error:any) {
       window.notify({
