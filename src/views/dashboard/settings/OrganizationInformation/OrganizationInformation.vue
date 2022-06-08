@@ -208,7 +208,7 @@ export default class PracticeInfo extends Vue {
   OrganizationType = "";
   ReferenceOrganization = "";
   RegistrationNumber = "";
-  DialCode = "+234";
+  DialCode = "";
   PhoneNumber = "";
   DomainName = "";
   OrganizationIdentifier = "";
@@ -221,7 +221,7 @@ export default class PracticeInfo extends Vue {
   provProfiles = [];
   incTypes = [];
   loading = false;
-  defaultOrgInfo?: IOrganization;
+  defaultOrgInfo = {} as IOrganization;
   urlRule = string().url();
   emailRule = string().email().required();
   requiredRule = string().required();
@@ -255,7 +255,7 @@ export default class PracticeInfo extends Vue {
       phone: this.PhoneNumber
         ? {
             number: this.PhoneNumber,
-            DialCode: this.DialCode,
+            dialCode: this.DialCode,
           }
         : undefined,
       email: this.EmailAddress,

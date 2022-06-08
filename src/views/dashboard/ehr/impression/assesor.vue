@@ -129,7 +129,7 @@
                   >
                     <input
                       v-model="check3.practitioners"
-                      :value="input.name"
+                      :value="input"
                       type="checkbox"
                       class="bg-danger focus-within:bg-danger px-6 shadow float-right"
                     />
@@ -142,21 +142,7 @@
       </cornie-card-text>
 
       <div class="flex justify-end pb-6 px-2">
-        <div class="flex justify-end w-full mt-auto" v-if="practitionerFilter">
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-        <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
+        <div class="flex justify-end w-full mt-auto">
           <button
             class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"

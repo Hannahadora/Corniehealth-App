@@ -47,7 +47,6 @@
         <vue-countdown :time="500 * 1000" v-slot="{ minutes, seconds }">
           {{ minutes }} : {{ seconds }}
         </vue-countdown>
-        <!-- (1:00) -->
       </div>
       <div class="mt-9 flex items-center justify-center">
         <cornie-btn
@@ -68,6 +67,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import MultiInput from "@/components/multi-input.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import { quantumClient } from "@/plugins/http";
 
 type CreatedUser = { id: string; email: string };
 
@@ -79,34 +79,24 @@ type CreatedUser = { id: string; email: string };
   },
 })
 export default class SignUp extends Vue {
-  user = {} as CreatedUser;
   loading = false;
   show = false;
-
-  userCreated = false;
-  emailVerified = false;
 
   codeLength = 6;
   countDown = 10;
 
   codeSync = "";
 
-  
+  @Prop({ reuired: true, type: String })
+  signature!: string;
+
   @Prop({ required: true, type: String })
   email!: string;
-  
+
   @Prop({ required: true, type: String })
   code!: string;
 
-  // @PropSync("code", { required: true })
-  // codeSync!: string;
-
   status: "loading" | "success" | "error" | "default" = "default";
-
-  @Watch("user", { deep: true })
-  userChanged(user: CreatedUser) {
-    if (user.id) this.userCreated = true;
-  }
 
   get customClass() {
     if (this.status == "loading") return "border-blue-400";
@@ -115,21 +105,26 @@ export default class SignUp extends Vue {
     return "";
   }
 
-  countDownTimer() {
-    if (this.countDown > 0) {
-      setTimeout(() => {
-        this.countDown -= 1;
-        this.countDownTimer();
-      }, 10000);
+  get payload() {
+    return {
+      code: this.codeSync,
+      signature: this.signature,
+    };
+  }
+  async verify() {
+    this.loading = true;
+    try {
+      await quantumClient().post("/auth/validate-reset-code", this.payload);
+      this.verified();
+    } catch (error) {
+      window.notify({ msg: "Invalid code", status: "error" });
     }
+    this.loading = false;
   }
 
-  verify() {
+  verified() {
     this.show = false;
-    this.$emit('nextStep', this.codeSync)
-  }
-  async created() {
-    this.countDownTimer();
+    this.$emit("nextStep", this.codeSync);
   }
 }
 </script>

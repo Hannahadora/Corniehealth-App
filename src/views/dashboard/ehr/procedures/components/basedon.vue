@@ -170,8 +170,22 @@
     submit() {
       if (!this.selectedId) return;
       let u = this.$route.params.id.toLocaleString();
+      if (this.selectedOption == "care plan") {
+        this.selectedData = this.careplan.find(
+          (x: any) => x.id == this.selectedId
+        );
+      }
+      if (this.selectedOption == "diagnostics request") {
+        this.selectedData = this.diagnosticsRequest.find(
+          (x: any) => x.id == this.selectedId
+        );
+      }
+      if (this.selectedOption == "medication request") {
+        this.selectedData = this.medicationRequest.find(
+          (x: any) => x.id == this.selectedId
+        );
+      }
       //@ts-ignore
-      this.selectedData = this.careplan.find((x) => x.id == this.selectedId);
       this.$emit("selectedId", {
         typeData: this.selectedOption,
         ...this.selectedData,

@@ -12,10 +12,10 @@
           <weight-chart title="Weight" />
         </div>
         <div class="w-full grid grid-cols-3 gap-8">
-          <condition-card />
-          <diagnostic-card />
-          <medication-card />
-          <allergy-card />
+          <condition-card :conditions="conditions" />
+          <diagnostic-card :diagnostics="diagnostics" />
+          <medication-card :medications="medications" />
+          <allergy-card :allergys="allergies" />
           <procedure-card />
           <note-card />
         </div>
@@ -40,6 +40,7 @@ import ProcedureCard from "./procedureCard.vue";
 import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
+import { cornieClient } from "@/plugins/http";
 
 //for the empty state
 // import conditionCardd from "./conditionCardd.vue";
@@ -77,14 +78,47 @@ import WeightChart from "./weight-chart.vue";
     conditionCard,
     BloodChart,
     AllergyCard,
-
     DiagnosticCard,
-
     ProcedureCard,
     NoteCard,
     AppointmentCard,
     HistoryCard,
   },
 })
-export default class HelthTrends extends Vue {}
+export default class HelthTrends extends Vue {
+  diagnostics = <any>[];
+  medications = <any>[];
+  allergies = <any>[];
+  appointments = <any>[];
+  referrals = <any>[];
+  conditions = <any>[];
+
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
+  async fetchHealthTrend() {
+    const url = `/api/v1/health-trends/all/${this.patientId}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.diagnostics = response.data.diagnostics;
+        this.medications = response.data.medication;
+        this.allergies = response.data.allergies;
+        this.appointments = response.data.appointments;
+        this.referrals = response.data.referrals;
+        this.conditions = response.data.conditions;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error when fetching health trends",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchHealthTrend();
+  }
+}
 </script>

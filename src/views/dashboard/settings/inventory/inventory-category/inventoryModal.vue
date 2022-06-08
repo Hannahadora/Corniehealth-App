@@ -20,9 +20,9 @@
         <v-form ref="form">
           <div class="grid grid-cols-2 gap-6">
             <cornie-select
-              class="required"
+              class="required capitalize"
               :rules="required"
-              :items="['Pharmacy', ' Diagnostics', 'In-patient']"
+              :items="['pharmacy', ' diagnostics', 'in-patient']"
               label="Category"
               placeholder="--Select--"
               v-model="temp.category"
@@ -36,9 +36,24 @@
               v-model="temp.location"
             />
             <div class="">
-              <div class="flex flex-row items-center justify-between">
-                <div class="font-semibold">Manager</div>
-                <div class="flex items-center space-x-1">
+              <div
+                :class="{
+                  'mt-2.5': selectedItem.id,
+                }"
+                class="flex flex-row items-center justify-between"
+              >
+                <div
+                  class="font-semibold"
+                  :class="{
+                    'mb-0.5': selectedItem.id,
+                  }"
+                >
+                  Manager
+                </div>
+                <div
+                  v-if="!selectedItem.id"
+                  class="flex items-center space-x-1"
+                >
                   <check-box v-model="managerCheck" class="mr-1" />
                   <div class="text-xs">Same as location manager</div>
                 </div>
@@ -98,6 +113,7 @@
             class="flex w-full items-center justify-end border-dashed border-b-2 pb-4"
           >
             <div
+              v-if="!selectedItem.id"
               @click="addCategory"
               class="px-5 py-2 space-x-2 capitalize cursor-pointer items-center font-bold text-primary border-primary rounded-full border-2 flex"
             >
@@ -195,8 +211,8 @@
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
-    @Prop({ type: Object, default: undefined })
-    selectedId!: string;
+    @Prop({ type: Object, default: {} })
+    selectedItem!: any;
 
     Cname = "";
     Cdescription = "";
@@ -222,6 +238,9 @@
 
     @inventory.Action
     createCategory!: (data: any) => Promise<void>;
+
+    @inventory.Action
+    updateCategory!: (data: any) => Promise<void>;
 
     @inventory.Action
     getAllLocations!: () => Promise<void>;
@@ -251,7 +270,15 @@
       if (!this.temp.category || !this.temp.location) {
         return;
       }
-      let chosenLocationId = this.getLocation(this.temp.location).id;
+      // let chosenLocationId = this.getLocation(this.temp.location).id;
+      let chosenLocationId = this.inventoryLocations.find(
+        (x) => x.locationId == this.getLocation(this.temp.location).id
+      ).id;
+      console.log(
+        "chosen id",
+        chosenLocationId,
+        this.getFormerDetails(chosenLocationId)
+      );
       let p;
       if (this.managerCheck) {
         p = {
@@ -301,15 +328,15 @@
       this.categoryPayload.splice(i, 1);
     }
 
-    @Watch("selectedId", { immediate: true })
+    @Watch("selectedItem", { immediate: true })
     setItems() {
-      if (!this.selectedId || this.selectedId == "") {
+      const { id, category, manager } = this.selectedItem;
+      if (!id) {
         return;
       }
-      let data = this.getCategoryDetails(this.selectedId);
-      this.Cname = data.name;
-      this.Cdescription = data.description;
-      this.Clocation = data.locations;
+
+      this.temp.category = category;
+      this.manager.id = manager;
     }
 
     getCategoryDetails(id: string) {
@@ -322,6 +349,58 @@
     }
 
     async submit() {
+      if (this.selectedItem.id) {
+        if (
+          !this.temp.location ||
+          !this.temp.category ||
+          !this.manager.phone ||
+          !this.manager.email
+        )
+          return;
+        console.log("id yes", this.selectedItem.id);
+        this.loading = true;
+        let chosenLocationId = this.inventoryLocations.find(
+          (x) => x.locationId == this.getLocation(this.temp.location).id
+        ).id;
+        console.log(
+          "chosenn id",
+          chosenLocationId,
+          this.getFormerDetails(chosenLocationId),
+          this.locations
+        );
+        let x = {
+          inventoryLocationId: chosenLocationId,
+          locationN: this.temp.location,
+          category: this.temp.category.trim().toLocaleLowerCase(),
+          manager: this.manager.id,
+          phone: this.manager.phone,
+          email: this.manager.email,
+          address: this.getCurrentDetails(chosenLocationId)?.address
+            ? this.getCurrentDetails(chosenLocationId)?.address
+            : "not available",
+          city: this.getCurrentDetails(chosenLocationId)?.city
+            ? this.getCurrentDetails(chosenLocationId)?.city
+            : "not available",
+          state: this.getCurrentDetails(chosenLocationId)?.state
+            ? this.getCurrentDetails(chosenLocationId)?.state
+            : "not available",
+          country: this.getCurrentDetails(chosenLocationId)?.country
+            ? this.getCurrentDetails(chosenLocationId)?.country
+            : "not available",
+        };
+
+        await this.updateCategory({ id: this.selectedItem.id, data: x })
+          .then(() => {
+            console.log("updated");
+            window.location.reload();
+          })
+          .catch((e) => {
+            console.log("error cat", e);
+          });
+        this.loading = false;
+
+        return;
+      }
       if (this.categoryPayload.length == 0) return;
       this.loading = true;
       let y = this.categoryPayload.map((c: any) => {
@@ -355,7 +434,7 @@
     }
 
     get allLocationNames() {
-      console.log("locationNNN", this.inventoryLocations);
+      console.log("locationNNN", this.locations);
       return this.inventoryLocations.map((x) => {
         //@ts-ignore
         let a = this.locations.find((location) => location.id == x.locationId);
@@ -366,7 +445,7 @@
     async mounted() {
       await this.getAllLocations();
       await this.fetchLocations();
-      // console.log("locationss", this.inventoryLocations);
+      console.log("locationIn", this.inventoryLocations);
     }
   }
 </script>
