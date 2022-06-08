@@ -507,7 +507,8 @@ const emptyImpression = {
   },
   effective: {
     effectiveDate: undefined,
-    effectivePeriod: {} as Period,
+    // effectivePeriod: {} as Period,
+    effectivePeriod: undefined,
   },
   investigation: [] as { item: any }[],
   findings: [] as { itemReference: any, basis: "" }[],
@@ -518,14 +519,14 @@ const emptyImpression = {
     note: undefined,
   },
   recorded: {
-    recordDate: "",
-    previous: "",
-    asserterId: "",
+    recordDate: undefined,
+    previous: undefined,
+    asserterId: undefined,
     problem: <any>[],
   },
   protocol: {
-    protocol: "",
-    summary: "",
+    protocol: undefined,
+    summary: undefined,
   },
 };
 
@@ -600,7 +601,7 @@ export default class Impression extends Vue {
     endTime: undefined,
   };
   assertRecord = true;
-  assessorItem = "";
+  assessorItem = <any>{};
   conditionItems = <any>[];
   problemItems = <any>[];
   investigationItems = <any>[];
@@ -697,13 +698,13 @@ export default class Impression extends Vue {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
-    } else return this.assessorItem;
+    } else return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
   }
 
   get asseterId() {
     if (!this.assessorItem) {
       return this.authPractitioner.id;
-    } else return this.assessorItem;
+    } else return this.assessorItem.id;
   }
 
   get findingItem() {
@@ -792,7 +793,7 @@ export default class Impression extends Vue {
     }
   }  
   async findImpression(id: any) {
-    const url = `/api/v1//clinical-impressions/${id}`;
+    const url = `/api/v1/clinical-impressions/${id}`;
     try {
       const response: any = await cornieClient().get(url);
       if (response.success) {

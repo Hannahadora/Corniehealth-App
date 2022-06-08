@@ -8,16 +8,16 @@
     more="View all"
     title="Medications"
     :showTotal="true"
-    :count="totalMedication"
+    :count="medications?.length"
   >
     <div
       class="flex flex-col items-center justify-center my-auto"
-      v-if="items?.length === 0"
+      v-if="medications?.length === 0"
     >
       <img class="mb-3" src="@/assets/img/no-medication-trend.svg" alt="" />
       <p class="text-sm text-center" style="color: #667499">No Medications</p>
     </div>
-    <div class="p-2">
+    <div class="p-2" v-else>
       <div class="w-full grid grid-cols-1 gap-y-4">
         <div
           class="w-full flex items-center justify-between pb-2 border-b"
@@ -28,15 +28,18 @@
             <drug-icon />
             <div class="text-xs flex flex-col">
               <span class="font-semibold text-sm mb-2 text-primary">
-                {{ input.medicationCode }}
+                {{ input.medication }}
               </span>
               <span class="">
                 <span class="text-gray-500">
-                  <h3>{{ input.dosageInstruction }}</h3></span
+                  <h3>{{ input.dateRequested }}</h3></span
                 >
                 <!-- <span class="text-gray-600">
                           | 45 respondent | 45 feedback |
                         </span> -->
+              </span>
+               <span class="font-semibold text-sm mb-2 text-primary">
+                {{ input.status }}
               </span>
             </div>
           </div>
@@ -61,10 +64,11 @@
       </div>
     </div>
   </detail-card>
-  <medication-modal :columns="practitioner" v-model="showMedicationModal" />
+  <!-- <medication-modal :columns="practitioner" v-model="showMedicationModal" /> -->
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import DetailCard from "./detail-card.vue";
 import Avatar from "@/components/avatar.vue";
 import AddIcon from "@/components/icons/add.vue";
@@ -92,21 +96,17 @@ const request = namespace("request");
 })
 export default class MedicationCard extends Vue {
   photo = require("@/assets/img/avatar.png");
+
   medicationMapper = (code: string) => "";
   dosageInstructions = "";
 
-  @request.State
-  patientrequests!: any;
-
-  @request.Action
-  fetchrequestsById!: (patientId: string) => Promise<void>;
+  @Prop({ type: Array, default: () => [] })
+  medications!: any[];
 
   showMedicationModal = false;
+
   async showMedication() {
     this.showMedicationModal = true;
-  }
-  get newmedicationrequest() {
-    return this.patientrequests.slice(0, 3);
   }
   get patientId() {
     return this.$route.params.id as string;
@@ -118,9 +118,6 @@ export default class MedicationCard extends Vue {
     });
   }
 
-  get totalMedication() {
-    return this.patientrequests?.length;
-  }
   oldclinicalStatus = "";
 
   async createMapper() {
@@ -130,7 +127,7 @@ export default class MedicationCard extends Vue {
   }
 
   get items() {
-    const newmedicationrequest = this.newmedicationrequest?.map(
+    const newmedicationrequest = this.medications?.map(
       (medication: any) => {
         medication?.Medications?.map((codeme: any) => {
           this.oldclinicalStatus = this.medicationMapper(
@@ -145,8 +142,11 @@ export default class MedicationCard extends Vue {
         });
         return {
           ...medication,
-          medicationCode: this.oldclinicalStatus,
-          dosageInstruction: this.dosageInstructions,
+          // medicationCode: this.oldclinicalStatus,
+          // dosageInstruction: this.dosageInstructions,
+          status: medication.status,
+          dateRequested: new Date (medication.dateRequested.toLocaleDateString()),
+          medication: medication.medication
         };
       }
     );
@@ -155,7 +155,6 @@ export default class MedicationCard extends Vue {
 
   async created() {
     await this.createMapper();
-    await this.fetchrequestsById(this.patientId);
   }
 }
 </script>

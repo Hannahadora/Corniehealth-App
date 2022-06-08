@@ -495,7 +495,7 @@ export default class VitalsForm extends Vue {
   vitalData = {
     status: "preliminary",
     bodyTemperature: {
-      unit: "",
+      unit: "°C",
       value: undefined,
     },
     respiration: {
@@ -512,25 +512,25 @@ export default class VitalsForm extends Vue {
         value: undefined,
       },
       bloodGlucoseLevel: {
-        unit: "",
+        unit: "mm/dL",
         value: undefined,
       },
     },
     bloodPressure: [] as IBloodPressure[],
     circumferences: {
       bodyHeight: {
-        unit: "",
+        unit: "cm",
         value: undefined,
       },
       headCircumferences: {
-        unit: "",
+        unit: "cm",
         value: undefined,
       },
     },
 
     bodyWeight: {
       bodyWeight: {
-        unit: "",
+        unit: "kg",
         value: undefined,
       },
       bodyMassIndex: {
@@ -599,7 +599,7 @@ export default class VitalsForm extends Vue {
   resetVitalData() {
     this.vitalData = {
       bodyTemperature: {
-        unit: "",
+        unit: "°C",
         // value: 0,
       },
       respiration: {
@@ -616,25 +616,25 @@ export default class VitalsForm extends Vue {
           // value: 0,
         },
         bloodGlucoseLevel: {
-          unit: "",
+          unit: "mm/dL",
           // value: 0,
         },
       },
       bloodPressure: [] as IBloodPressure[],
       circumferences: {
         bodyHeight: {
-          unit: "",
+          unit: "cm",
           // value: 0,
         },
         headCircumferences: {
-          unit: "",
+          unit: "cm",
           // value: 0,
         },
       },
 
       bodyWeight: {
         bodyWeight: {
-          unit: "",
+          unit: "kg",
           // value: 0,
         },
         bodyMassIndex: {
