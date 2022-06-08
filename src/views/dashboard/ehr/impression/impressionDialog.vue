@@ -382,7 +382,7 @@
             <cornie-select
               class="w-full"
               label="Item Reference"
-              :items="observations.map(el => el.code)"
+              :items="observations.map((el) => el.code)"
               v-model="impressionModel.prognosis.itemReference"
             >
             </cornie-select>
@@ -495,7 +495,7 @@ import ClinicalDialog from "../conditions/clinical-dialog.vue";
 const impression = namespace("impression");
 const user = namespace("user");
 
-const emptyImpression = {
+const emptyImpression: any = {
   patientId: "",
   status: "Completed",
   updatedAt: "",
@@ -508,10 +508,13 @@ const emptyImpression = {
   effective: {
     effectiveDate: undefined,
     // effectivePeriod: {} as Period,
-    effectivePeriod: undefined,
+    effectivePeriod: {
+      start: undefined,
+      end: undefined,
+    } as any
   },
   investigation: [] as { item: any }[],
-  findings: [] as { itemReference: any, basis: "" }[],
+  findings: [] as { itemReference: any; basis: "" }[],
   prognosis: {
     itemCode: undefined,
     itemReference: undefined,
@@ -528,7 +531,7 @@ const emptyImpression = {
     protocol: undefined,
     summary: undefined,
   },
-};
+} as any;
 
 @Options({
   name: "impressionDialog",
@@ -698,7 +701,8 @@ export default class Impression extends Vue {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
-    } else return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
+    } else
+      return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
   }
 
   get asseterId() {
@@ -739,9 +743,9 @@ export default class Impression extends Vue {
   }
 
   async createImpression() {
-    this.payload.effective.effectiveDate = this.data.date;
-    this.payload.effective.effectivePeriod.start = this.data.startDate;
-    this.payload.effective.effectivePeriod.end = this.data.endDate;
+    (this.payload.effective.effectiveDate as any) = this.data.date;
+    (this.payload.effective.effectivePeriod.start as any) = this.data.startDate;
+    (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
     this.payload.recorded.asserterId = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
@@ -791,13 +795,13 @@ export default class Impression extends Vue {
         status: "error",
       });
     }
-  }  
+  }
   async findImpression(id: any) {
     const url = `/api/v1/clinical-impressions/${id}`;
     try {
       const response: any = await cornieClient().get(url);
       if (response.success) {
-       return response.data;
+        return response.data;
       }
     } catch (e: any) {
       window.notify({
@@ -850,7 +854,9 @@ export default class Impression extends Vue {
     this.allergy = response[0].data;
   }
   async created() {
-    this.setImpression();
+    if (this.id) {
+      await this.setImpression();
+    }
     this.fetchRoles();
     this.fetchPractitioners();
     if (this.activePatientId) await this.fetchAllergy();

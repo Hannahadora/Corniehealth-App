@@ -100,7 +100,7 @@
                       <cornie-radio
                         type="radio"
                         v-model="check3.practitioners"
-                        :value="input.firstName + ' ' + input.lastName"
+                        :value="input"
                         class=""
                       />
                     </div>

@@ -319,7 +319,7 @@ export default class ImpressionExistingState extends Vue {
   }
 
   async findImpression(id: any) {
-    const url = `/api/v1//clinical-impressions/${id}`;
+    const url = `/api/v1/clinical-impressions/${this.impressionId}`;
     try {
       const response: any = await cornieClient().get(url);
       if (response.success) {
