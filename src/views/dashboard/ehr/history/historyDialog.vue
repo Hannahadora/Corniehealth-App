@@ -672,7 +672,7 @@ export default class HistoryDialog extends Vue {
 
   async created() {
     this.setHistory();
-    if (this.patientId) await this.fetchAllergy();
+    if(this.patientId) this.fetchAllergy();
     await this.fetchPractitioners();
   }
 }

@@ -6,7 +6,7 @@
       {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
-    <div class="grid grid-cols-5 gap-4 mt-4 w-3/4">
+    <div class="grid grid-cols-5 gap-4 mt-4 w-full">
       <cornie-radio
         :name="name"
         v-model="type"

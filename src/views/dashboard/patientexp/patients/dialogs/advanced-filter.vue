@@ -1,6 +1,6 @@
 <template>
   <cornie-dialog v-model="show" right class="w-1/3 h-full">
-    <cornie-card height="100%" class="flex flex-col overflow-auto relative">
+    <cornie-card height="100%" class="flex flex-col ">
       <cornie-card-title>
         <cornie-icon-btn @click="show = false">
           <arrow-left-icon />
@@ -11,52 +11,56 @@
           Advanced filters
         </span>
       </cornie-card-title>
-      <filter-box
-        :items="locationOptions"
-        class="mb-3"
-        v-model="filters.location"
-        title="Filter by Locations"
-        :opened="true"
-      />
-      <filter-box
-        class="mb-3"
-        title="Filter by Gender"
-        :opened="true"
-        :searchable="false"
-        v-model="filters.gender"
-        :items="genderOptions"
-      />
-      <date-filter
-        v-model:start="filters.dob.start"
-        v-model:end="filters.dob.stop"
-        class="mb-3"
-        title="Filter D.O.B"
-      />
-      <filter-box
-        class="mb-3"
-        v-model="filters.accountType"
-        :items="['Family', 'Corporate', 'Individual']"
-        title="Profile Type"
-      />
-      <filter-box
-        v-model="filters.payer"
-        :items="payerOptions"
-        class="mb-3"
-        title="Filter by Payer"
-      />
-      <filter-box
-        class="mb-3"
-        :items="providerOptions"
-        title="Filter by Provider"
-        v-model="filters.provider"
-      />
-      <filter-box
-        v-model="filters.specialty"
-        class="mb-3"
-        title="Filter by Specialty"
-      />
 
-      <cornie-card class="px-4 mt-auto fixed">
+    <cornie-card-text class="flex-grow scrollable">
+
+        <filter-box
+          :items="locationOptions"
+          class="mb-3"
+          v-model="filters.location"
+          title="Filter by Locations"
+          :opened="true"
+        />
+        <filter-box
+          class="mb-3"
+          title="Filter by Gender"
+          :opened="true"
+          :searchable="false"
+          v-model="filters.gender"
+          :items="genderOptions"
+        />
+        <date-filter
+          v-model:start="filters.dob.start"
+          v-model:end="filters.dob.stop"
+          class="mb-3"
+          title="Filter D.O.B"
+        />
+        <filter-box
+          class="mb-3"
+          v-model="filters.accountType"
+          :items="['Family', 'Corporate', 'Individual']"
+          title="Profile Type"
+        />
+        <filter-box
+          v-model="filters.payer"
+          :items="payerOptions"
+          class="mb-3"
+          title="Filter by Payer"
+        />
+        <filter-box
+          class="mb-3"
+          :items="providerOptions"
+          title="Filter by Provider"
+          v-model="filters.provider"
+        />
+        <filter-box
+          v-model="filters.specialty"
+          class="mb-3"
+          title="Filter by Specialty"
+        />
+    </cornie-card-text>
+
+      <cornie-card class="px-4">
         <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"

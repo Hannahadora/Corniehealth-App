@@ -361,7 +361,7 @@ export default class appointmentModal extends Vue {
   fetchPatients!: () => Promise<void>;
 
   @user.State
-   currentLocation!: string;
+  authCurrentLocation!: string;
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -404,7 +404,7 @@ export default class appointmentModal extends Vue {
   period = {} as Period;
   participantDetail = [];
   Practitioners = [] as any;
-  Devices = [];
+  Devices = [] as any;
   Patients = [] as any;
   Locations = [];
   HealthCare = [];
@@ -453,12 +453,13 @@ export default class appointmentModal extends Vue {
   }
 
 get payload(){
+  console.log(this.authCurrentLocation,'this.authCurrentLocation');
   return {
     appointmentType: this.appointmentType,
     description: this.description,
     venue: this.venue,
-    meetingLink: this.meetingLink,
-    venueAddress: this.venueAddress,
+    meetingLink: this.meetingLink || undefined,
+    venueAddress: this.venueAddress || undefined,
     billingType: this.billingType,
     services : this.serviceId,
     Practitioners: this.practitionerId,
@@ -470,7 +471,7 @@ get payload(){
     startTime: this.startTime,
     endTime : this.endTime,
     locationId : this.locationId,
-    bookingLocationId: this.bookingLocationId,
+    bookingLocationId: this.bookingLocationId || undefined,
     practitionerId: this.singlePractitonerId,
     patientId: this.patientrouteId,
 
@@ -486,9 +487,8 @@ get payload(){
 
 
   async createAppointment() {
-    this.locationId = this.currentLocation;
-
-    if(this.currentLocation){
+    console.log(this.authCurrentLocation,'this.authCurrentLocation');
+    this.payload.locationId = this.authCurrentLocation;
       try {
         const response = await cornieClient().post(
           "/api/v1/appointment",
@@ -501,10 +501,6 @@ get payload(){
       } catch (error) {
         window.notify({ msg: "Appointment not created", status: "error" });
       }
-    }else{
-      window.notify({ msg: "Kindly switch default location", status: "error" });
-    }
-
 
   }
 

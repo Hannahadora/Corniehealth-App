@@ -19,6 +19,7 @@ import { formatDate, sortListByDate } from "./chart-filter";
 import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
 import { getChartData } from "./helper/vitals-chart-helper";
+import moment from "moment";
 
 const vitalsStore = namespace("vitals");
 
@@ -52,25 +53,22 @@ export default class WeightChart extends Vue {
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
+    this.fetchData(this.$route.params.id.toString())
   }
  
   get date(){
     if (this.order == 'Today'){
       return new Date().toISOString();
     }else if(this.order == 'WTD'){
-      const  today = new Date();
-      const  nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7).toISOString();
-      return nextweek;
+      var oneWeekAgo = moment().subtract(1, 'week');
+      console.log(oneWeekAgo, 'week');
+      return oneWeekAgo.format();
     }else if(this.order == 'MTD'){
-      const Xmas95 = new Date();
-      const month = Xmas95.getMonth();
-      const newmonth = new Date(month).toISOString();
-      return newmonth;
+      var oneMonthsAgo = moment().subtract(1, 'months');
+      return oneMonthsAgo.format();
     }else {
-      const today = new Date();
-      const year = today.getFullYear();
-      const newyear = new Date(year).toISOString();
-       return newyear;
+      var oneYearAgo = moment().subtract(1, 'year');
+      return oneYearAgo.format();
     }
   }
 
@@ -94,14 +92,19 @@ export default class WeightChart extends Vue {
   raw: IStat[] = [];
 
   async fetchData(patientId: string) {
+    const [splitDate] = this.startDate.split('T');
+   const date = splitDate;
+   const [splitDate2] = this.date.split('T');
+   const date2 = splitDate2;
     try {
       const response = await cornieClient().get(
         `api/v1/health-trends/weight-stats/${patientId}`,
         {
-          start: this.startDate,
-          end: this.date,
+          start: date2,
+          end: date,
         }
       );
+       console.log(response.data,'record')
       this.raw = response.data?.map((item: any) => {
         return { count: item.value, date: item.date };
       });

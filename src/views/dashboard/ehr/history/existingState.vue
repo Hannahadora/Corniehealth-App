@@ -9,7 +9,7 @@
            Create New
         </button>
       </span>
-      <cornie-table :columns="headers" v-model="sortHistory">
+      <cornie-table :columns="headers" v-model="sortHistory" @refresh="fetchHistorys">
         <template #actions="{ item }">
           <div
             @click="viewHistory(item.id)"
@@ -211,7 +211,6 @@ export default class ExistingState extends Vue {
       title: "history id",
       key: "identifier",
       show: true,
-      noOrder: true,
     },
     {
       title: "date recorded",
@@ -292,7 +291,7 @@ export default class ExistingState extends Vue {
 
     if (await this.deleteHistory(id))
       window.notify({ msg: "Family history deleted", status: "success" });
-    else window.notify({ msg: "Family history noy deleted", status: "error" });
+    else window.notify({ msg: "Family history not deleted", status: "error" });
   }
 
   async viewHistory(value: string) {
