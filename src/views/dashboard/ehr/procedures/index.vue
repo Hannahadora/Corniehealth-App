@@ -44,7 +44,7 @@
   export default class ProcedureNotes extends Vue {
     // @Prop({ type: String, default: "" })
     //   patientId!: string;
-    showNewProcedure = true;
+    showNewProcedure = false;
     patient = {} as IPatient;
     // items = "";
 

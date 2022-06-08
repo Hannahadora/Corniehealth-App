@@ -1,9 +1,6 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-1/2 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
+    <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title class="">
         <icon-btn class="cursor-pointer" @click="show = false">
           <arrow-left stroke="#ffffff" />
@@ -19,9 +16,9 @@
         </div>
       </cornie-card-title>
       <cornie-card-text>
-        <v-form class="flex-grow flex flex-col">
+        <v-form ref="form">
           <accordion-component
-            class="rounded-none border-none text-primary"
+            class="text-primary"
             title="Basic Info"
             :opened="false"
           >
@@ -128,7 +125,6 @@
               </div>
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none border-none text-primary"
@@ -209,7 +205,6 @@
               </div>
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none border-none text-primary"
@@ -277,7 +272,6 @@
               </div>
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <!-- <accordion-component
             class="rounded-none border-none text-primary"
@@ -386,7 +380,6 @@
               />
             </div>
           </accordion-component> -->
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none border-none text-primary"
@@ -440,7 +433,7 @@
           </accordion-component>
         </v-form>
       </cornie-card-text>
-      <div class="flex items-center justify-end mt-24">
+      <div class="flex justify-end mx-4 mt-auto mb-4">
         <div class="flex items-center mb-6">
           <cornie-btn
             @click="show = false"
@@ -850,7 +843,7 @@
         ...this.postData,
         patientId: this.patientId,
       }).then(() => {
-        window.location.reload();
+        // window.location.reload();
       });
     }
 

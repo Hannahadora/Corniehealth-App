@@ -38,6 +38,14 @@ export default {
       state.appointmentrooms = [...appointmentrooms];
     },
   },
+  getters: {
+    locationRooms({ appointmentrooms }, getters, rootState, rootGetters) {
+      const currentLocation = rootGetters["user/authCurrentLocation"];
+      return appointmentrooms.filter(
+        room => room.locationId == currentLocation
+      );
+    },
+  },
   actions: {
     async fetchAppointmentrooms(ctx) {
       const appointmentrooms = await fetchAppointmentrooms();

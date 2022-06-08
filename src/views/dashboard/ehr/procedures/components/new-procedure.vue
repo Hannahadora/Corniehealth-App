@@ -1,9 +1,6 @@
 <template>
   <cornie-dialog v-model="show" right class="w-1/2 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
+    <cornie-card height="100%" class="flex flex-col h-full bg-white">
       <cornie-card-title class="">
         <icon-btn class="cursor-pointer" @click="show = false">
           <arrow-left stroke="#ffffff" />
@@ -72,7 +69,6 @@
               />
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none border-none text-primary"
@@ -184,7 +180,6 @@
               </div>
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none text-primary"
@@ -231,7 +226,6 @@
               </div>
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none text-primary"
@@ -275,7 +269,6 @@
               />
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none text-primary"
@@ -369,7 +362,7 @@
               />
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
+
           <accordion-component
             class="rounded-none text-primary"
             title="Focal Device"
@@ -390,7 +383,6 @@
               />
             </div>
           </accordion-component>
-          <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <accordion-component
             class="rounded-none text-primary"
@@ -450,7 +442,13 @@
       </div>
     </cornie-card>
     <div>
-      <basedon :careplan="patientCarePlans" v-model="showBasedOn" />
+      <basedon
+        @selectedId="setbaseOn"
+        :careplan="patientCarePlans"
+        :diagnosticsRequest="diagnosticsRequest"
+        :medicationRequest="medicationRequest"
+        v-model="showBasedOn"
+      />
       <parton :observations="observations" v-model="showPartOf" />
       <actor v-model="showActor" />
       <function v-model="showFunction" />
@@ -573,7 +571,9 @@
     @careplan.State
     patientCarePlans!: any[];
 
-    observations: any = [];
+    observations: any[] = [];
+    diagnosticsRequest: any[] = [];
+    medicationRequest: any[] = []
     recorder = "";
     asserterId = "";
     authPractitioner = "";
@@ -680,6 +680,10 @@
         };
       }
     }
+    setbaseOn(e: any) {
+      console.log("based on ", e);
+    }
+
     location = {
       body: "",
     };
@@ -797,11 +801,29 @@
       }
     }
 
+    async fetchDiagnosticsRequest() {
+      const url = `/api/v1//diagnostic-requests/patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.diagnosticsRequest = response.data;
+      }
+    }
+
+     async fetchMedicationRequest() {
+      const url = `/api/v1//medication-requests/patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.medicationRequest = response.data;
+      }
+    }
+
     async created() {
       console.log("mounted");
       this.patientId = this.$route.params.id.toString();
       await this.getPatientCarePlans(this.patientId);
       await this.fetchObservations();
+      await this.fetchDiagnosticsRequest();
+      await this.fetchMedicationRequest()
     }
   }
 </script>

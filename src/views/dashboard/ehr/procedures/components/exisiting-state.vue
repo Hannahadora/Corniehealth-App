@@ -249,7 +249,7 @@
                 date: this.printRecorded(p.createdAt),
                 code: p.code || "",
                 status: p.status,
-                performer: p.practioners.length,
+                attP: p.performers.length,
                 basedOn: "care-plan",
               };
             })
