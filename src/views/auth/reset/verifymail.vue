@@ -1,5 +1,5 @@
 <template>
-  <div class="block rounded-lg bg-white -mt-4 px-6 py-12 mt-4">
+  <div class="block rounded-lg bg-white px-6 py-12">
     <div class="lg:w-full xl:w-full md:w-full block">
       <div class="flex items-center justify-center pb-9">
         <img src="../../../assets/img/passwordreset.png" alt="" />
@@ -16,6 +16,7 @@
           v-model="email"
           class="w-full"
           placeholder="Enter"
+          :rules="requiredEmailRule"
           label="Email Address"
         />
         <div class="mt-9 flex items-center justify-between">
@@ -49,9 +50,9 @@ import TickIcon from "@/components/icons/tick.vue";
 import MultiInput from "@/components/multi-input.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import store from "@/store";
 import User, { CornieUser } from "@/types/user";
 import { namespace } from "vuex-class";
+import { string } from "yup";
 
 const user = namespace("user");
 
@@ -81,9 +82,11 @@ export default class SignUp extends Vue {
   email = "";
   loading = false;
 
+  requiredEmailRule = string().email().required();
+
   get payload() {
     return {
-      email: this.email,
+      email: this.email.toLowerCase(),
     };
   }
 
@@ -96,8 +99,7 @@ export default class SignUp extends Vue {
         this.payload
       );
       if (data.success) {
-        // this.verifiedSync = true;
-        this.signature = data.data.signature
+        this.signature = data.data.signature;
         this.next(this.signature, this.email);
         this.loading = false;
       } else {

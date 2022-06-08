@@ -380,7 +380,7 @@ export default class NavBar extends Vue {
   @account.Getter
   cornieUser!: CornieUser;
 
-  @account.Mutation
+  @account.Mutation 
   switchCurrentLocation!: (locationId: any) => void;
 
   @account.Mutation
