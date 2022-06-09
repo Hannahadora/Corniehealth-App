@@ -227,6 +227,7 @@ export default class PracticeInfo extends Vue {
   requiredRule = string().required();
   image = "";
 
+  imagePlaceholder = require("@/assets/img/avatar.svg");
   @organization.State
   organizationInfo!: IOrganization;
 
@@ -244,7 +245,7 @@ export default class PracticeInfo extends Vue {
   get payload() {
     return {
       name: this.OrganizationName,
-      image: this.image,
+      image: this.image || this.imagePlaceholder,
       alias: this.alias,
       organisationType: this.OrganizationType,
       registrationNumber: this.RegistrationNumber || undefined,
