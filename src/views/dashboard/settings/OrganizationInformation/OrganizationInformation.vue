@@ -139,7 +139,7 @@
               :rules="urlRule"
               label="Website"
               v-model="Website"
-              placeholder="--Enter--"
+              placeholder="http://example.com"
             />
           </div>
           <div class="col-span-4">
@@ -247,7 +247,7 @@ export default class PracticeInfo extends Vue {
       image: this.image,
       alias: this.alias,
       organisationType: this.OrganizationType,
-      registrationNumber: this.RegistrationNumber,
+      registrationNumber: this.RegistrationNumber || undefined,
       domainName: this.DomainName,
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
