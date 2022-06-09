@@ -45,6 +45,22 @@
               <search-icon />
             </template>
           </icon-input>
+
+          <div
+            v-if="selectedOption == 'procedure'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-for="c in procedures">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </cornie-card-text>
       <div class="flex items-center justify-end mt-24">
