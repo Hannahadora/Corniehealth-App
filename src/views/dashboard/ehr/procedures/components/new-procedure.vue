@@ -15,7 +15,7 @@
           />
         </div>
       </cornie-card-title>
-      <cornie-card-text>
+      <cornie-card-text class="overflow-y-auto h-full">
         <v-form class="flex-grow flex flex-col">
           <accordion-component
             class="rounded-none border-none text-primary"
@@ -186,43 +186,42 @@
             title="Recorder"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-6 py-5">
-              <div class="flex flex-col">
-                <!-- <div class="flex flex-row items-center justify-between">
-                  <div>Recorder</div>
-                  <div class="flex items-center space-x-1">
-                    <check-box v-model="recorderCheck" class="mr-2" />
-                    <div>Assert this record</div>
-                  </div>
-                </div> -->
-                <div>
-                  <!-- <cornie-input
+            <div class="flex py-5 w-1/2">
+              <div class="flex-1 w-full">
+                <!-- <cornie-input
                     :disabled="true"
                     class="w-full"
                     placeholder="Autoloaded"
                   /> -->
-                  <cornie-input
-                    label="Recorder"
-                    class="-mt-5 w-full"
-                    placeholder="Autoloaded"
-                    :disabled="true"
-                    v-model="recorder"
-                  >
-                    <template #labelicon>
-                      <check-box
-                        :label="'Assert this record'"
-                        class="w-full"
-                        v-model="asserterId"
-                        :value="authPractitioner"
-                      />
-                    </template>
-                    <!-- <template #append-inner>
+                <cornie-input
+                  label="Recorder"
+                  class="-mt-5 w-full"
+                  placeholder="Autoloaded"
+                  :disabled="true"
+                  v-model="recorderP"
+                >
+                  <template #labelicon>
+                    <check-box
+                      :label="'Assert this record'"
+                      class="w-full"
+                      v-model="asserterId"
+                      :value="authPractitioner.id"
+                    />
+                  </template>
+                  <!-- <template #append-inner>
                       <span class="bg-primary py-2.5 px-3 -mr-2 rounded cursor-pointer" @click="showRecorder = true">
                         <d-edit class="fill-current text-white" />
                       </span>
                     </template> -->
-                  </cornie-input>
-                </div>
+                </cornie-input>
+              </div>
+              <div class="flex-none">
+                <img
+                  @click="() => (showAssessorModal = true)"
+                  src="@/assets/img/asseor-update.svg"
+                  class="ml-2 mt-5"
+                  alt=""
+                />
               </div>
             </div>
           </accordion-component>
@@ -453,13 +452,32 @@
         :procedures="procedures"
         :observations="observations"
         v-model="showPartOf"
+        @selectedId="setPartOf"
       />
-      <actor v-model="showActor" />
-      <function v-model="showFunction" />
+      <actor
+        :practitioners="practitioner"
+        :patient="patient"
+        :device="device"
+        :organisation="organisation"
+        :related="familyHistories"
+        v-model="showActor"
+      />
+      <function
+        :procedures="procedures"
+        :observations="observations"
+        v-model="showFunction"
+      />
       <locationM v-model="showLocation" />
       <reason-reference v-model="showReasonReference" />
       <report v-model="showReport" />
       <used-reference v-model="showUsedReference" />
+      <assesor-modal
+        :practitioners="practitioner"
+        :patient="patient"
+        :related="familyHistories"
+        @selectedId="showAssessor"
+        v-model="showAssessorModal"
+      />
     </div>
   </cornie-dialog>
 </template>
@@ -477,6 +495,7 @@
   import CancelIcon from "@/components/icons/cancel.vue";
   import AddIcon from "@/components/icons/plus.vue";
   import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
   import { Options, Vue } from "vue-class-component";
   import { PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -487,12 +506,14 @@
   import locationM from "./location.vue";
   import parton from "./partof.vue";
   import reasonReference from "./reason-reference.vue";
+  import AssesorModal from "./recorder.vue";
   import report from "./report.vue";
   import usedReference from "./used-reference.vue";
 
   const procedure = namespace("procedure");
   const careplan = namespace("careplan");
   const locationStore = namespace("location");
+  const user = namespace("user");
 
   @Options({
     components: {
@@ -500,6 +521,7 @@
       ...CornieCard,
       ArrowLeft,
       CancelIcon,
+      AssesorModal,
       AddIcon,
       DateTimePicker,
       AccordionComponent,
@@ -521,6 +543,9 @@
   export default class NewProgressNote extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
+
+    @user.Getter
+    authPractitioner!: IPractitioner;
 
     performedOptions = ["Date/Time", "Age", "Period", "Range", "String"];
     showBasedOn = false;
@@ -566,6 +591,8 @@
     };
     performerString = "";
     request = [];
+    practitioner: any[] = [];
+
     @procedure.Action
     createProcedure!: (procedure: any) => Promise<boolean>;
 
@@ -584,10 +611,23 @@
     observations: any[] = [];
     diagnosticsRequest: any[] = [];
     medicationRequest: any[] = [];
-    recorder = "";
-    asserterId = "";
-    authPractitioner = "";
+    patient: any[] = [];
+    device: any[] = [];
+    organisation: any[] = [];
+
+    asserterId = true;
+
     basedOn: any = {};
+    partOf: any = {};
+    recorder: any = {};
+    showAssessorModal = false;
+    familyHistories = <any>[];
+    get recorderP() {
+      this.recorder.id = this.authPractitioner.id;
+      return (
+        this.authPractitioner.firstName + " " + this.authPractitioner.lastName
+      );
+    }
     get performedPayload() {
       if (this.performed == "date/time") {
         return {
@@ -696,6 +736,18 @@
       this.basedOn = e;
     }
 
+    setPartOf(e: any) {
+      console.log("part of ", e);
+      this.partOf = e;
+    }
+
+    showAssessor(valueforrole: any) {
+      // this.assessorItem = valueforrole;
+      console.log("recorder", valueforrole);
+      this.recorder = valueforrole;
+      this.recorder.assert = valueforrole.id;
+    }
+
     location = {
       body: "",
     };
@@ -710,21 +762,14 @@
     async submit() {
       let g = {
         patientId: this.$route.params.id,
-        // recorderId: "3fa85f64-5717-45 62-b3fc-2c963f66afa6",
-        // asserterId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        recorderId: this.recorder.id,
+        asserterId: this.asserterId ? this.recorder.assert : undefined,
         recorder: {
-          name: "string",
-          specialty: "string",
+          name: this.recorder.name,
+          specialty: this.recorder.specialty || "",
         },
-        basedOn: this.basedOn,
-        partOf: {
-          type: "location",
-          id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          name: "string",
-        },
-        category: "string",
-        // code: "120006",
-        status: "preparation",
+        basedOn: { type: this.basedOn.typeData, date: this.basedOn.createdAt },
+        partOf: { type: this.partOf.typeData, id: this.partOf.id },
         performed: this.performedPayload,
         performers: [
           {
@@ -823,6 +868,45 @@
       }
     }
 
+    async fetchPractitioners() {
+      const AllPractitioners = cornieClient().get("/api/v1/practitioner");
+      const response = await Promise.all([AllPractitioners]);
+      this.practitioner = response[0].data;
+    }
+
+    async fetchPatientRequest() {
+      const url = "/api/v1/patient";
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.patient = response.data;
+      }
+    }
+
+    async fetchFamilyHistories() {
+      const url = `/api/v1/family-history/get-for-patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.familyHistories = response.data;
+      }
+    }
+
+    async fetchOrganisation() {
+      const url = "/api/v1/organization";
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.organisation = response.data;
+        console.log("organisation", this.organisation);
+      }
+    }
+    async fetchDevices() {
+      const url = "/api/v1/devices";
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.device = response.data;
+        // console.log("devvice", this.device);
+      }
+    }
+
     async created() {
       console.log("mounted");
       this.patientId = this.$route.params.id.toString();
@@ -830,7 +914,12 @@
       await this.fetchObservations();
       await this.fetchDiagnosticsRequest();
       await this.fetchMedicationRequest();
+      await this.fetchPractitioners();
       await this.getProcedures(this.patientId);
+      await this.fetchPatientRequest();
+      await this.fetchFamilyHistories();
+      await this.fetchOrganisation();
+      await this.fetchDevices();
     }
   }
 </script>
