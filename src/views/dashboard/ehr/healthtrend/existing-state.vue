@@ -17,7 +17,7 @@
           <condition-card />
           <allergy-card />
           <diagnostic-card />
-          <procedure-card />
+          <referral-card />
           <note-card />
           <!-- <appointment-card/>
                 <medication-card/>
@@ -51,7 +51,7 @@ import MedicationCard from "./medicationCard.vue";
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
 import DiagnosticCard from "./diagnosticCard.vue";
-import ProcedureCard from "./procedureCard.vue";
+import ReferralCard from "./ReferralCard.vue";
 import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
@@ -83,7 +83,7 @@ export default {
     conditionCard,
     AllergyCard,
     DiagnosticCard,
-    ProcedureCard,
+    ReferralCard,
     NoteCard,
     AppointmentCard,
     HistoryCard,
