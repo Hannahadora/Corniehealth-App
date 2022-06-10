@@ -24,7 +24,7 @@
           <div class="border-b-2 pb-3 border-dashed">
             <label
               for="ecounter"
-              class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
+              class="flex capitalize mb-5 text-black text-sm font-bold"
               >Reference
             </label>
             <div class="w-full flex space-x-4">
