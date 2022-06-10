@@ -15,7 +15,7 @@
               </cornie-icon-btn>
             </span>
 
-            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Assesor</h2>
+            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Assessor</h2>
           </div>
           <delete-icon
             class="text-danger fill-current cursor-pointer"
@@ -29,7 +29,7 @@
           <div class="border-b-2 pb-3 border-dashed">
             <label
               for="ecounter"
-              class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
+              class="flex capitalize mb-5 text-black text-sm font-bold"
               >Reference
             </label>
             <div class="w-full flex space-x-4">
@@ -43,11 +43,6 @@
             </div>
           </div>
           <div class="w-full">
-            <div class="mt-4 mb-4">
-              <p class="text-gray-400 text-xs">
-                {{ check3.practitioners.length }} selected
-              </p>
-            </div>
             <div class="relative bottom-2">
               <icon-input
                 autocomplete="off"

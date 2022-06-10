@@ -70,7 +70,7 @@
               <date-time-picker
                 v-model:date="data.startDate"
                 v-model:time="data.startTime"
-                label="Date/Time"
+                label="Start Date/Time"
                 width="w-11/12"
               />
             </div>
@@ -78,7 +78,7 @@
               <date-time-picker
                 v-model:date="data.endDate"
                 v-model:time="data.endTime"
-                label="Date/Time"
+                label="End Date/Time"
                 width="w-11/12"
               />
             </div>
