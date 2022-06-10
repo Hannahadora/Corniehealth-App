@@ -16,8 +16,9 @@
           <diagnostic-card :diagnostics="diagnostics" />
           <medication-card :medications="medications" />
           <allergy-card :allergys="allergies" />
-          <procedure-card />
-          <note-card />
+          <referral-card :referrals="referrals"/>
+          <!-- <note-card /> -->
+          <appointment-card :appointments="appointments"/>
         </div>
 
         <div class="w-full grid gap-8 mt-8">
@@ -36,17 +37,11 @@ import MedicationCard from "./medicationCard.vue";
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
 import DiagnosticCard from "./diagnosticCard.vue";
-import ProcedureCard from "./procedureCard.vue";
+import ReferralCard from "./referralCard.vue";
 import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
 import { cornieClient } from "@/plugins/http";
-
-//for the empty state
-// import conditionCardd from "./conditionCardd.vue";
-// import DiagnosticCardd from "./diagnosticCardd.vue";
-// import NoteCardd from "./noteCardd.vue";
-// import HistoryCardd from "./historyCardd.vue";
 
 import RegistrationChart from "./registration-chart.vue";
 import ChartCard from "./chart-card.vue";
@@ -79,7 +74,7 @@ import WeightChart from "./weight-chart.vue";
     BloodChart,
     AllergyCard,
     DiagnosticCard,
-    ProcedureCard,
+    ReferralCard,
     NoteCard,
     AppointmentCard,
     HistoryCard,
