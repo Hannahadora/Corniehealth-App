@@ -4,7 +4,7 @@
       <span class="flex justify-end w-full mb-8">
         <button
           class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showImpressionModal = true; impressionId = ''"
+          @click="createNewImpression"
         >
           New Impression
         </button>
@@ -319,7 +319,7 @@ export default class ImpressionExistingState extends Vue {
   }
 
   async findImpression(id: any) {
-    const url = `/api/v1//clinical-impressions/${id}`;
+    const url = `/api/v1/clinical-impressions/${this.impressionId}`;
     try {
       const response: any = await cornieClient().get(url);
       if (response.success) {
@@ -364,6 +364,12 @@ export default class ImpressionExistingState extends Vue {
         status: "error",
       });
     }
+  }
+
+  createNewImpression() {
+    this.showImpressionModal = true; 
+    this.impressionId = ''; 
+    this.selectedImpression = {}
   }
 
   impressionAdded() {

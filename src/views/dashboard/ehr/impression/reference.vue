@@ -218,7 +218,10 @@ export default class ReferenceDialog extends Vue {
 
   loading = false;
 
-  selectedRef = <any>{};
+  selectedRef = {
+    itemReference: <any>{},
+    basis: ""
+  };
   type = "condition";
   refBasis = "";
   query = "";
