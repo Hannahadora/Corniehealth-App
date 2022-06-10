@@ -341,14 +341,17 @@
                 :key="index"
               >
                 <p class="text-red-500 text-sm font-medium mb-2">
-                  {{ record?.itemCode }}
+                  {{ record?.itemReference.referenceType }}
                 </p>
                 <div class="w-11/12" style="border-right: 1px dashed #878e99">
                   <div class="w-full flex items-center">
                     <div class="w-8/12 flex flex-col">
                       <div>
                         <p>
-                          {{ record?.itemReferences }}
+                          {{ record?.itemReference.description }}
+                        </p>
+                        <p>
+                          {{ record?.itemReference.details }}
                         </p>
                       </div>
                     </div>
@@ -606,7 +609,7 @@ export default class Impression extends Vue {
     endTime: undefined,
   };
   assertRecord = true;
-  assessorItem: any;
+  assessorItems = <any>[];
   conditionItems = <any>[];
   problemItems = <any>[];
   investigationItems = <any>[];
@@ -699,18 +702,18 @@ export default class Impression extends Vue {
   }
 
   get asessor() {
-    if (!this.assessorItem) {
+    if (this.assessorItems.length === 0) {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
     } else 
-      return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
+      return this.assessorItems[0].firstName + " " + this.assessorItems[0].lastName;
   }
 
   get asseterId() {
-    if (!this.assessorItem) {
+    if (this.assessorItems.length === 0) {
       return this.authPractitioner.id;
-    } else return this.assessorItem.id;
+    } else return this.assessorItems[0].id;
   }
 
   get findingItem() {
@@ -725,7 +728,7 @@ export default class Impression extends Vue {
   }
 
   showAssessor(valueforrole: any) {
-    this.assessorItem = valueforrole;
+    this.assessorItems.push(valueforrole)
   }
   showProblem(value: any) {
     this.conditionItems.push(value);
