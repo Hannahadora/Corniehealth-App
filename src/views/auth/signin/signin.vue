@@ -44,7 +44,7 @@
               v-model="email"
               :rules="emailRule"
               class="w-full mb-2"
-              label="Mobile Number or Email Address"
+              label="Email Address"
             />
             <label for="password" class="flex flex-col">
               <span class="block mb-1 text-xs font-bold"> Password </span>
@@ -139,7 +139,7 @@ export default class Signin extends Vue {
         this.$router.push("/dashboard");
       } else {
         this.$emit("logged-in");
-        console.log('2fa')
+        console.log("2fa");
       }
 
       if (this.domainName) setAuthDomain(this.domainName);
