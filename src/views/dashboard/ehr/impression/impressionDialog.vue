@@ -423,7 +423,7 @@
   </clinical-dialog>
   <assesor-modal
     :practitioners="practitioner"
-    @update:preferred="showAssessor"
+    @getAssessor="showAssessor"
     v-model="showAssessorModal"
   />
   <problem-modal
@@ -511,7 +511,7 @@ const emptyImpression: any = {
     effectivePeriod: {
       start: undefined,
       end: undefined,
-    } as any
+    } as any,
   },
   investigation: [] as { item: any }[],
   findings: [] as { itemReference: any; basis: "" }[],
@@ -590,7 +590,9 @@ export default class Impression extends Vue {
 
   @Watch("id")
   idChanged() {
-    this.setImpression();
+    if (this.id) {
+      this.setImpression();
+    }
   }
 
   effectiveType = "date-time";
@@ -604,7 +606,7 @@ export default class Impression extends Vue {
     endTime: undefined,
   };
   assertRecord = true;
-  assessorItem = <any>{};
+  assessorItem: any;
   conditionItems = <any>[];
   problemItems = <any>[];
   investigationItems = <any>[];
@@ -701,7 +703,7 @@ export default class Impression extends Vue {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
-    } else
+    } else 
       return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
   }
 
@@ -744,12 +746,16 @@ export default class Impression extends Vue {
 
   async createImpression() {
     (this.payload.effective.effectiveDate as any) = this.data.date;
-    (this.payload.effective.effectivePeriod.start as any) = this.data.startDate;
-    (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
+    if (this.data.startDate && this.data.endDate) {
+      (this.payload.effective.effectivePeriod.start as any) =
+        this.data.startDate;
+      (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
+    }
     this.payload.recorded.asserterId = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
-    }
+    } else (this.payload.effective.effectivePeriod as any) = undefined
+
     this.payload.recorded.recordDate = this.buildDateTime(
       this.recordedDate,
       this.recordedTime
