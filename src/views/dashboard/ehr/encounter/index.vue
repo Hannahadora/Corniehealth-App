@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-65-screen"
   >
     <div class="" v-if="encounters.length > 0">
       <exisiting-state
@@ -158,44 +158,7 @@
 </script>
 
 <style scoped>
-  .active-tab {
-    border-bottom-width: 4px;
-    margin-bottom: -0.22rem;
-  }
-
-  .active-color {
-    border-color: #fe4d3c;
-  }
-
-  .status-active {
-    background: #f3fcf8;
-    color: #35ba83;
-  }
-
-  .status-inactive {
-    background: #fff1f0;
-    color: #fe4d3c;
-  }
-
-  .border-b-4 {
-    border-bottom: 4px solid #f0f4fe;
-  }
-
-  .content-con {
-    max-width: 30.65rem;
-    min-width: 590px;
-  }
-
-  .cancel-btn {
-    border: 1px solid #080056;
-    box-sizing: border-box;
-    border-radius: 124px;
-    color: #080056;
-  }
-
-  .primary-border {
-    border: 1px solid #080056;
-    box-sizing: border-box;
-    border-radius: 124px;
+  .h-65-screen {
+    min-height: 80vh;
   }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div>
+   
     <cornie-dialog v-model="show" right class="w-1/2 h-full">
       <cornie-card height="100%" class="flex flex-col">
         <cornie-card-title class="w-full">
@@ -73,6 +74,7 @@
   import { getCountries, getStates } from "@/plugins/nation-states";
   import ICategory from "@/types/ICategory";
   import IPractitioner from "@/types/IPractitioner";
+  import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import Multiselect from "@vueform/multiselect";
   import { Options, Vue } from "vue-class-component";
   import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -101,6 +103,7 @@
       FhirInput,
       PractionerSelect,
       InventoryModal,
+      ClinicalDialog,
       Multiselect,
       DeleteRed,
       AddIcon,
