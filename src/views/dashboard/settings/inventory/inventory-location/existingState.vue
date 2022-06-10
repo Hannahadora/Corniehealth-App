@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="grid grid-cols-3 gap-6 pt-10">
-      <div v-for="n in 3" class="flex items-center p-7 shadow-md rounded-2xl">
+      <div class="flex items-center p-7 shadow-md rounded-2xl">
         <div class="flex-1">
           <div class="flex flex-col">
             <div class="font-light">Location</div>
@@ -12,21 +12,43 @@
           <img src="@/assets/img/total-location.svg" height="60" width="60" />
         </div>
       </div>
-      <!-- <div class="flex items-center p-7 shadow-md rounded-2xl">
+      <div class="flex items-center p-7 shadow-md rounded-2xl">
         <div class="flex-1">
           <div class="flex flex-col">
-            <div class="font-light">Location</div>
-            <div class="font-bold">Total Number: {{ items.length }}</div>
+            <div class="font-light">Geographical Spread</div>
+            <div class="font-bold flex">
+              {{ geoDisplay.country }} Country, {{ geoDisplay.state }} States,
+              {{ geoDisplay.city }} Cities
+            </div>
           </div>
         </div>
         <div class="flex-none">
-          <img src="@/assets/img/total-location.svg" height="60" width="60" />
+          <img src="@/assets/img/total-geo.svg" height="60" width="60" />
         </div>
-      </div> -->
+      </div>
+      <div class="flex items-center p-7 shadow-md rounded-2xl">
+        <div class="flex-1">
+          <div class="flex flex-col">
+            <div class="font-light">Location Types</div>
+            <div class="font-bold flex">
+              {{ locationTypes.hospital }} Hospital,
+              {{ locationTypes.clinics }} Clinics,
+              {{ locationTypes.pharmacy }} Pharmacy
+            </div>
+          </div>
+        </div>
+        <div class="flex-none">
+          <img
+            src="@/assets/img/total-location-type.svg"
+            height="60"
+            width="60"
+          />
+        </div>
+      </div>
     </div>
     <span class="flex justify-end w-full mb-8">
       <button
-        class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-7 mb-5 font-semibold focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-lg text-white w-40 mt-5 py-3 pr-5 pl-5 px-10 mb-5 font-semibold focus:outline-none hover:opacity-90"
         @click="showInventoryRequest = true"
       >
         Add New
@@ -41,31 +63,57 @@
       </span>
     </div> -->
     <cornie-table :columns="rawHeaders" v-model="items">
+      <template #phone="{ item }">
+        <div>{{ item.phone.number }}</div>
+      </template>
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <edit-icon class="text-purple-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+        <div v-if="item.status == 'inactive'">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showViewModal(item)"
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View </span>
+          </div>
+          <div
+            @click="showEditModal(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
+          </div>
+          <div
+            @click="activateC(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <check class="text-green-600 fill-current" />
+            <span class="ml-3 text-xs">Activate</span>
+          </div>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showViewModal(item.classes)"
-        >
-          <newview-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">View Inventory Category(s)</span>
-        </div>
-        <div
-          @click="showAddCategory(item.id, item.classes)"
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <add-blue />
-          <span class="ml-3 text-xs">Add Inventory Category(s)</span>
-        </div>
-        <div
-          @click="deactivateC(item.id)"
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <close-icon class="text-red-600 fill-current" />
-          <span class="ml-3 text-xs">Deactivate</span>
+
+        <div v-if="item.status == 'active'">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showViewModal(item)"
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View </span>
+          </div>
+          <div
+            @click="showEditModal(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update</span>
+          </div>
+          <div
+            @click="deactivateC(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <!-- <Check class="text-green-600 fill-current" /> -->
+            <close-icon class="text-red-600 fill-current" />
+            <span class="ml-3 text-xs">Deactivate</span>
+          </div>
         </div>
       </template>
       <template #status="{ item }">
@@ -94,9 +142,11 @@
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import Addblue from "@/components/icons/addblue.vue";
+  import Check from "@/components/icons/check.vue";
   import CloseIcon from "@/components/icons/CloseIcon.vue";
   import EditIcon from "@/components/icons/edit.vue";
   import NewviewIcon from "@/components/icons/newview.vue";
+  import UpdateReportGreen from "@/components/icons/update-report-green.vue";
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -110,6 +160,7 @@
   @Options({
     components: {
       EmptyState,
+      Check,
       CornieTable,
       InventoryLocationModal,
       EditIcon,
@@ -118,6 +169,7 @@
       CloseIcon,
       ViewCategory,
       AddInventoryModal,
+      UpdateReportGreen,
     },
   })
   export default class InventoryLocationExistingState extends Vue {
@@ -126,6 +178,12 @@
 
     @inventory.Action
     deactivateL!: (data: any) => Promise<void>;
+
+    @inventory.Action
+    activateL!: (data: any) => Promise<void>;
+
+    @inventory.Action
+    getAllLocations!: () => Promise<void>;
 
     showEditDetails = false;
     showInventoryRequest = false;
@@ -198,6 +256,37 @@
       this.showAddC = true;
     }
 
+    get geoDisplay() {
+      let a = {
+        country: 0,
+        state: 0,
+        city: 0,
+      };
+
+      this.location.forEach((l) => {
+        a.country =
+          l.country && l.country !== "Not available"
+            ? (a.country += 1)
+            : (a.country += 0);
+        a.state =
+          l.state && l.state !== "Not available"
+            ? (a.state += 1)
+            : (a.state += 0);
+        a.city =
+          l.city && l.city !== "Not available" ? (a.city += 1) : (a.city += 0);
+      });
+      return a;
+    }
+
+    get locationTypes() {
+      let a = {
+        hospital: 0,
+        clinics: 0,
+        pharmacy: 0,
+      };
+
+      return a;
+    }
     async deactivateC(id: string) {
       console.log("idd", id);
       const confirmed = await window.confirmAction({
@@ -207,21 +296,37 @@
         title: "Deactivate",
       });
       if (!confirmed) return;
-
-      try {
-        this.deactivateL(id);
-        window.notify({
-          msg: "Locations Deactivated",
-          status: "success",
+      this.deactivateL(id)
+        .then(async () => {
+          window.notify({
+            msg: "Locations Deactivated",
+            status: "success",
+          });
+          await this.getAllLocations();
+        })
+        .catch(() => {
+          window.notify({
+            msg: "There was an error deactivating location",
+            status: "error",
+          });
         });
-        window.location.reload();
-      } catch (error) {
-        // window.notify({
-        //   msg: "Err",
-        //   status: "error",
-        // });
-        console.log("deactivate", error);
-      }
+    }
+
+    async activateC(id: string) {
+      this.activateL(id)
+        .then(async () => {
+          window.notify({
+            msg: "Locations activated",
+            status: "success",
+          });
+          await this.getAllLocations();
+        })
+        .catch(() => {
+          window.notify({
+            msg: "There was an error activating location",
+            status: "error",
+          });
+        });
     }
 
     get items() {

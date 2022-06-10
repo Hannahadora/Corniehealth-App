@@ -49,7 +49,10 @@
                 :rules="emailRule"
               />
             </div>
-            <div class="flex w-full items-center justify-end">
+            <div
+              v-if="!selectedItem"
+              class="flex w-full items-center justify-end"
+            >
               <div
                 @click="addLocationP"
                 class="px-5 py-2 space-x-2 capitalize cursor-pointer items-center font-bold text-primary border-primary rounded-full border-2 flex"
@@ -75,120 +78,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="border-b-2 pb-5 border-dashed border-gray-200">
-              <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                <cornie-input
-                  label="Location Name"
-                  placeholder="--Enter--"
-                  class="w-full"
-                  v-model="name"
-                />
-                <cornie-select
-                  class="required"
-                  :rules="required"
-                  :items="['Hospital', 'Labs', 'Pharmacy']"
-                  label="Location Type"
-                  placeholder="--Select--"
-                  v-model="type"
-                >
-                </cornie-select>
-                <cornie-input
-                  label="Address"
-                  placeholder="--Enter--"
-                  class="w-full"
-                  v-model="address"
-                />
-                <auto-complete
-                  :rules="required"
-                  v-model="country"
-                  required
-                  label="Country"
-                  :items="countries"
-                  class="w-full"
-                />
-                <auto-complete
-                  required
-                  :rules="required"
-                  :items="states"
-                  v-model="state"
-                  label="State"
-                  class="w-full"
-                />
-                <cornie-input
-                  label="City"
-                  :rules="required"
-                  placeholder="--Enter--"
-                  class="w-full"
-                  v-model="city"
-                />
-
-                <cornie-input
-                  label="Postal/Zip Code *"
-                  placeholder="--Enter--"
-                  class="w-full"
-                  v-model="zip"
-                />
-
-                <div class="flex flex-col space-y-2">
-                  <div
-                    class="flex capitalize items-center mb-1 text-black text-sm font-semibold"
-                  >
-                    Inventory Category
-                  </div>
-                  <Multiselect
-                    label="Inventory Category"
-                    v-model="category"
-                    mode="tags"
-                    :hide-selected="true"
-                    :options="allInventoryCategories"
-                    placeholder="--Select--"
-                    class="w-full"
-                  >
-                    <template
-                      v-slot:tag="{ option, handleTagRemove, disabled }"
-                    >
-                      <div class="multiselect-tag is-user">
-                        {{ option.label }}
-                        <span
-                          v-if="!disabled"
-                          class="multiselect-tag-remove"
-                          @mousedown.prevent="handleTagRemove(option, $event)"
-                        >
-                          <span class="multiselect-tag-remove-icon"></span>
-                        </span>
-                      </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <span class="w-full text-sm">{{ option.label }}</span>
-                    </template>
-                  </Multiselect>
-                </div>
-              </div>
-              <span
-                @click="showInventoryRequest = true"
-                class="text-red-600 cursor-pointer"
-              >
-                + Add New Category
-              </span>
-
-              <div class="grid grid-cols-3 w-full">
-                <div
-                  v-for="(c, i) in displaySelectedCategories"
-                  :key="i"
-                  class="col-span-1"
-                >
-                  <div class="flex flex-row">
-                    <div class="flex flex-col">
-                      <div class="font-bold text-lg">{{ c.name }}</div>
-                      <div class="text-xxs">{{ c.description }}</div>
-                    </div>
-                    <div>
-                      <DeleteRed />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </v-form>
         </cornie-card-text>
 
@@ -231,6 +120,7 @@
   import PractionerSelect from "@/components/practitioner-select.vue";
   import { getCountries, getStates } from "@/plugins/nation-states";
   import ICategory from "@/types/ICategory";
+  import IPractitioner from "@/types/IPractitioner";
   import Multiselect from "@vueform/multiselect";
   import { Options, Vue } from "vue-class-component";
   import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -272,6 +162,9 @@
 
     @Prop({ type: Object, default: undefined })
     selectedItem!: any;
+
+    @inventory.Action
+    getAllLocations!: () => Promise<void>;
 
     countries = countries;
     states = [] as any;
@@ -324,6 +217,12 @@
     @practitioners.Action
     getPractitionerById!: (id: string) => any;
 
+    @practitioners.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    @practitioners.State
+    practitioners!: IPractitioner[];
+
     locationsPayload: any = [];
 
     @Watch("selectedItem", { immediate: true })
@@ -332,19 +231,30 @@
         return;
       }
 
-      // this.name = this.selectedItem.name;
-      // this.type = this.selectedItem.type;
-      // this.manager = this.selectedItem.manager;
-      // this.address = this.selectedItem.address;
-      // this.country = this.selectedItem.country;
-      // this.state = this.selectedItem.state;
-      // this.city = this.selectedItem.city;
-      // this.zip = this.selectedItem.zip;
-      // this.category = this.selectedItem.classes;
+      console.log("selectedITem", this.selectedItem);
+      this.temp.chosenLocation = this.findLocationName(
+        this.selectedItem.locationId
+      ).name;
+
+      this.temp.manager = this.selectedItem.manager;
+      this.temp.phone = this.selectedItem.phone;
+      this.temp.email = this.selectedItem.email;
+    }
+
+    findLocationName(y: any) {
+      return this.locations.find((x) => x.id == y);
+    }
+
+    findPractioner(y: string) {
+      let a = this.practitioners.find(
+        (x) => x.firstName + " " + x.lastName == y
+      );
+      console.log("found P", a);
+      return a?.id;
     }
 
     async submit() {
-      if (this.locationsPayload.length == 0) return;
+      if (this.locationsPayload.length == 0 && !this.selectedItem) return;
       this.loading = true;
       let p = this.locationsPayload.map((x: any) => {
         return {
@@ -355,31 +265,52 @@
           address: this.getLocation(x.chosenLocation)?.address,
           city: this.getLocation(x.chosenLocation)?.city,
           state: this.getLocation(x.chosenLocation)?.state,
-          country: this.getLocation(x.chosenLocation)?.country,
+          country: this.getLocation(x.chosenLocation)?.country || null,
         };
       });
       if (this.selectedItem == undefined || !this.selectedItem) {
         try {
           await this.createLocation(p);
-          window.location.reload();
+          // window.location.reload();
+          this.loading = false;
+          this.show = false;
+          notify({ msg: "Location created successfully", status: "success" });
+          await this.getAllLocations();
         } catch (error) {
           console.log("create location error", error);
+          notify({
+            msg: "There was an error creating location",
+            status: "error",
+          });
         }
       } else {
         await this.updateLocation({
           id: this.selectedItem.id,
           data: {
-            // name: this.name,
-            // type: this.type,
-            // manager: this.manager,
-            // address: this.address,
-            // country: this.country,
-            // state: this.state,
-            // city: this.city,
-            // zipCode: this.zip,
-            // classes: this.category,
+            locationId: this.getLocation(this.temp.chosenLocation).id,
+            manager: this.findPractioner(this.temp.manager) as any,
+            phone: this.temp.phone,
+            email: this.temp.email,
+            address: this.getLocation(this.temp.chosenLocation)?.address,
+            city: this.getLocation(this.temp.chosenLocation)?.city,
+            state: this.getLocation(this.temp.chosenLocation)?.state,
+            country:
+              this.getLocation(this.temp.chosenLocation)?.country || null,
           },
-        });
+        })
+          .then(async () => {
+            notify({ msg: "Location updated successfully", status: "success" });
+            // window.location.reload();
+            this.loading = false;
+            this.show = false;
+            await this.getAllLocations();
+          })
+          .catch(() => {
+            notify({
+              msg: "There was an error updating location",
+              status: "error",
+            });
+          });
       }
 
       this.loading = false;
@@ -458,6 +389,7 @@
     }
     async mounted() {
       await this.fetchLocations();
+      await this.fetchPractitioners();
       console.log("locariont", this.locations);
     }
   }
