@@ -67,7 +67,7 @@ export default {
     async deactivateC(ctx: any, id: string) {
       await deactivateC(id)
         .then(() => {
-          window.location.reload();
+          // window.location.reload();
           return Promise.resolve();
         })
         .catch(e => {
@@ -78,7 +78,7 @@ export default {
     async activateC(ctx: any, id: string) {
       await activateC(id)
         .then(() => {
-          window.location.reload();
+          // window.location.reload();
           return Promise.resolve();
         })
         .catch(e => {
@@ -131,6 +131,7 @@ export default {
           return Promise.resolve();
         })
         .catch(e => {
+          console.log("create error", e);
           return Promise.reject(e);
         });
     },

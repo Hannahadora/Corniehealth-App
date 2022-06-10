@@ -22,7 +22,7 @@
             <cornie-select
               class="required capitalize"
               :rules="required"
-              :items="['pharmacy', ' diagnostics', 'in-patient']"
+              :items="['pharmacy', 'diagnostics', 'in-patient']"
               label="Category"
               placeholder="--Select--"
               v-model="temp.category"
@@ -240,6 +240,9 @@
     createCategory!: (data: any) => Promise<void>;
 
     @inventory.Action
+    getCategory!: () => Promise<void>;
+
+    @inventory.Action
     updateCategory!: (data: any) => Promise<void>;
 
     @inventory.Action
@@ -277,7 +280,8 @@
       console.log(
         "chosen id",
         chosenLocationId,
-        this.getFormerDetails(chosenLocationId)
+        this.getFormerDetails(chosenLocationId),
+        this.inventoryLocations
       );
       let p;
       if (this.managerCheck) {
@@ -330,17 +334,28 @@
 
     @Watch("selectedItem", { immediate: true })
     setItems() {
+      console.log("selectedC", this.selectedItem);
+      console.log("inv l", this.inventoryLocations);
       const { id, category, manager } = this.selectedItem;
       if (!id) {
         return;
       }
 
       this.temp.category = category;
+      this.temp.location = this.findLocationName(
+        this.selectedItem.inventoryLocationId
+      )?.name as any;
       this.manager.id = manager;
+      this.manager.phone = this.selectedItem.phone;
+      this.manager.email = this.selectedItem.email;
     }
 
     getCategoryDetails(id: string) {
       return this.categories.filter((x) => x.id == id)[0];
+    }
+    findLocationName(y: any) {
+      let z = this.inventoryLocations.find((x) => x.id == y).locationId;
+      return this.locations.find((x) => x.id == z);
     }
 
     getLocation(y: string): any {
@@ -357,7 +372,7 @@
           !this.manager.email
         )
           return;
-        console.log("id yes", this.selectedItem.id);
+        console.log("id yes", this.manager.id);
         this.loading = true;
         let chosenLocationId = this.inventoryLocations.find(
           (x) => x.locationId == this.getLocation(this.temp.location).id
@@ -390,12 +405,16 @@
         };
 
         await this.updateCategory({ id: this.selectedItem.id, data: x })
-          .then(() => {
-            console.log("updated");
-            window.location.reload();
+          .then(async () => {
+            this.show = false;
+            notify({ msg: "Category updated successfully", status: "success" });
+            await this.getCategory();
           })
           .catch((e) => {
-            console.log("error cat", e);
+            notify({
+              msg: "There was an error updating categories",
+              status: "error",
+            });
           });
         this.loading = false;
 
@@ -414,17 +433,22 @@
         };
       });
       await this.createCategory(y)
-        .then(() => {
-          console.log("fdcxcx");
+        .then(async () => {
+          notify({ msg: "Category created successfully", status: "success" });
+          this.show = false;
+          await this.getCategory();
         })
         .catch((e) => {
-          console.log("error cat", e);
+          notify({
+            msg: "There was an error creating categories",
+            status: "error",
+          });
         });
       this.loading = false;
     }
 
     getFormerDetails(locationId: string) {
-      return this.inventoryLocations.find((x) => x.locationId == locationId);
+      return this.inventoryLocations.find((x) => x.id == locationId);
     }
 
     getCurrentDetails(id: any) {
