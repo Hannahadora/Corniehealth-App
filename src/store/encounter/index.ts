@@ -21,18 +21,18 @@ export default {
         .then(() => {
           return Promise.resolve();
         })
-        .catch((e) => {
+        .catch(e => {
           return Promise.reject(e);
         });
     },
     async getEncounters(ctx, id) {
       await getEncounters(id)
-        .then((res) => {
+        .then(res => {
           console.log("encounterrr", res.data);
           ctx.commit("setEncounters", res.data);
           return Promise.resolve();
         })
-        .catch((e) => {
+        .catch(e => {
           return Promise.reject(e);
         });
     },
