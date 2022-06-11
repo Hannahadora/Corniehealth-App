@@ -283,10 +283,10 @@ export default class ImpressionExistingState extends Vue {
   get items() {
     const impressions = this.impressions?.map((impression: any) => {
       impression.createdAt = new Date(impression.createdAt).toLocaleDateString(
-        "en-US"
+        "en-GB"
       );
       impression.updatedAt = new Date(impression.updatedAt).toLocaleDateString(
-        "en-US"
+        "en-GB"
       );
       return {
         ...impression,
