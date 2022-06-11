@@ -165,7 +165,7 @@
                 v-for="(record, index) in conditionItems"
                 :key="index"
               >
-                <p class="text-red-500 text-sm font-medium">
+                <p class="capitalize text-red-500 text-sm font-medium">
                   {{ record?.referenceType }}
                 </p>
                 <div class="w-11/12 mt-4" style="border-right: 1px dashed #878e99">

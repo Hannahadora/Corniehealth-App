@@ -85,7 +85,7 @@
 
                       <div>
                         <p class="capitalize text-sm">
-                          <span>{{ input?.practitioner?.firstName }}</span>
+                          <span>{{ input?.practitioner?.firstName }} </span>
                           <span>{{ input?.practitioner?.lastName }}</span>
                         </p>
                         <p class="capitalize text-xs text-gray-300">
@@ -267,6 +267,7 @@ export default class ProblemDialog extends Vue {
   apply() {
     this.$emit("getProblem", this.checkProblem);
     this.show = false;
+    this.checkProblem = {}
   }
 
   async created() {
