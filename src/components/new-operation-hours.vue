@@ -49,115 +49,123 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import { Prop, Watch } from "vue-property-decorator";
-import { HoursOfOperation } from "@/types/ILocation";
-import { Field } from "vee-validate";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import { HoursOfOperation } from "@/types/ILocation";
+  import { Field } from "vee-validate";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, Watch } from "vue-property-decorator";
 
-const opHours = [
-  {
-    selected: true,
-    day: "Monday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Tuesday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Wednesday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Thursday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Friday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Saturday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-  {
-    selected: true,
-    day: "Sunday",
-    openTime: "08:00",
-    closeTime: "16:00",
-  },
-];
-
-const pad = (x: number) => {
-  if (x < 10) return `0${x}00`;
-  return `${x}00`;
-};
-const splitTime = (time: string) => {
-  const hour = time.slice(0, 2);
-  const minutes = time.slice(2, 4);
-  return `${hour}:${minutes}`;
-};
-
-const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
-@Options({
-  name: "HoursOfOperation",
-  components: {
-    CornieInput,
-    CornieSelect,
-    Field,
-  },
-})
-export default class OperationHours extends Vue {
-  @Prop({ type: Array, default: opHours })
-  modelValue!: HoursOfOperation[];
-
-  opHours = opHours;
-
-  all = true;
-
-  get operationHours() {
-    return this.modelValue;
-  }
-  set operationHours(val: HoursOfOperation[]) {
-    this.$emit("update:modelValue", val);
-  }
-
-  changed() {
-    this.operationHours = this.operationHours;
-  }
-  @Watch("all")
-  allWeek(all: boolean) {
-    if (!all) return;
-    const opHours = [...this.operationHours].map((opHour) => ({
-      ...opHour,
+  const opHours = [
+    {
       selected: true,
-    }));
-    this.operationHours = opHours;
-  }
+      day: "Monday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Tuesday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Wednesday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Thursday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Friday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Saturday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+    {
+      selected: true,
+      day: "Sunday",
+      openTime: "08:00",
+      closeTime: "16:00",
+    },
+  ];
 
-  wholeDay = workHours;
+  const pad = (x: number) => {
+    if (x < 10) return `0${x}00`;
+    return `${x}00`;
+  };
+  const splitTime = (time: string) => {
+    const hour = time.slice(0, 2);
+    const minutes = time.slice(2, 4);
+    return `${hour}:${minutes}`;
+  };
 
-  created() {
-    if (!this.modelValue || this.modelValue.length < 1)
+  const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
+  @Options({
+    name: "HoursOfOperation",
+    components: {
+      CornieInput,
+      CornieSelect,
+      Field,
+    },
+  })
+  export default class OperationHours extends Vue {
+    @Prop({ type: Array, default: opHours })
+    modelValue!: HoursOfOperation[];
+
+    opHours = opHours;
+
+    all = true;
+
+    get operationHours() {
+      return this.modelValue;
+    }
+    set operationHours(val: HoursOfOperation[]) {
+      this.$emit("update:modelValue", val);
+    }
+
+    changed() {
+      this.operationHours = this.operationHours;
+    }
+    @Watch("all")
+    allWeek(all: boolean) {
+      if (!all) {
+        const opHours = [...this.operationHours].map((opHour) => ({
+          ...opHour,
+          selected: false,
+        }));
+        this.operationHours = opHours;
+
+        return;
+      }
+      const opHours = [...this.operationHours].map((opHour) => ({
+        ...opHour,
+        selected: true,
+      }));
       this.operationHours = opHours;
+    }
+
+    wholeDay = workHours;
+
+    created() {
+      if (!this.modelValue || this.modelValue.length < 1)
+        this.operationHours = opHours;
+    }
   }
-}
 </script>
 <style scoped>
-.day-grid {
-  grid-template-columns: 34% 75%;
-}
+  .day-grid {
+    grid-template-columns: 34% 75%;
+  }
 </style>
