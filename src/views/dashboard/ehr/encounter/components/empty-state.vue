@@ -5,11 +5,13 @@
     >
       Encounter
     </div>
-    <div class="flex flex-col justify-center text-center w-full h-96 pt-40 items-center">
+    <div
+      class="flex flex-col justify-center text-center w-full h-96 pt-40 items-center"
+    >
       <div class="self-center">
-        <empty-icon />
+        <img src="@/assets/img/no-impression.svg" />
       </div>
-      <div class="font-bold text-3xl">No Encounter on Record</div>
+      <div class="font-bold text-2xl mt-3">No Encounter on Record</div>
       <div class="flex flex-col pt-5">
         <div></div>
         <div class="">
@@ -25,18 +27,18 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import EmptyIcon from "./empty-icon.vue";
+  import { Options, Vue } from "vue-class-component";
+  import EmptyIcon from "./empty-icon.vue";
 
-@Options({
-  components: {
-    EmptyIcon,
-  },
-  emits: ["new_encounter"],
-})
-export default class EmptyState extends Vue {
-  newEncounter() {
-    this.$emit("new_encounter");
+  @Options({
+    components: {
+      EmptyIcon,
+    },
+    emits: ["new_encounter"],
+  })
+  export default class EmptyState extends Vue {
+    newEncounter() {
+      this.$emit("new_encounter");
+    }
   }
-}
 </script>
