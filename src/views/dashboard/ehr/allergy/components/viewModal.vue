@@ -135,16 +135,16 @@
             <accordion-component title="Onset" :opened="true">
               <template v-slot:default>
                 <div class="mt-5">
-              <div class="mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.dateTime != null">
+              <div class="mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onset?.dateTime != null">
                 <date-time-picker
-                  v-model:date="allergy.onSet.dateTime"
-                  :time="separateTime(allergy.onSet.dateTime)"
+                  v-model:date="allergy.onset.dateTime"
+                  :time="separateTime(allergy.onset.dateTime)"
                   label="Date/Time"
                   width="w-11/12"
                   :disabled="true"
                 />
               </div>
-              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.age != null">
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onset?.age != null">
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3">Age</span>
                   <div class="flex space-x-2 w-full">
@@ -152,7 +152,7 @@
                       placeholder="0"
                       class="grow w-full"
                       :setfull="true"
-                      v-model="allergy.onSet.age.value"
+                      v-model="allergy.onset.age.value"
                       :disabled="true"
                     />
                     <cornie-select
@@ -160,29 +160,29 @@
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
-                      v-model="allergy.onSet.age.unit"
+                      v-model="allergy.onset.age.unit"
                       :disabled="true"
                     />
                   </div>
                 </div>
               </div>
-              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.period != null">
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onset?.period != null">
                 <date-time-picker
-                  v-model:date="allergy.onSet.period.start"
-                  :time="separateTime(allergy.onSet.period.startTime)"
+                  v-model:date="allergy.onset.period.start"
+                  :time="separateTime(allergy.onset.period.startTime)"
                   label="Start Date/Time"
                   width="w-11/12"
                   :disabled="true"
                 />
                 <date-time-picker
-                  v-model:date="allergy.onSet.period.end"
-                  :time="separateTime(allergy.onSet.period.endTime)"
+                  v-model:date="allergy.onset.period.end"
+                  :time="separateTime(allergy.onset.period.endTime)"
                   label="End Date/Time"
                   width="w-11/12"
                   :disabled="true"
                 />
               </div>
-              <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="allergy?.onSet?.range != null">
+              <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="allergy?.onset?.range != null">
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3">Range (min)</span>
                   <div class="flex space-x-2 w-full">
@@ -190,7 +190,7 @@
                       placeholder="0"
                       class="grow w-full"
                       :setfull="true"
-                      v-model="allergy.onSet.range.min"
+                      v-model="allergy.onset.range.min"
                       :disabled="true"
                     />
                     <cornie-select
@@ -198,7 +198,7 @@
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
-                      v-model="allergy.onSet.range.unit"
+                      v-model="allergy.onset.range.unit"
                       :disabled="true"
                     />
                   </div>
@@ -210,7 +210,7 @@
                       placeholder="0"
                       class="grow w-full"
                       :setfull="true"
-                     v-model="allergy.onSet.range.max"
+                     v-model="allergy.onset.range.max"
                      :disabled="true"
                     />
                     <cornie-select
@@ -218,14 +218,14 @@
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
-                      v-model="allergy.onSet.range.min"
+                      v-model="allergy.onset.range.min"
                      :disabled="true"
                     />
                   </div>
                 </div>
               </div>
-              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onSet?.string != null">
-                 <cornie-input label="String" v-model="allergy.onSet.string"  :disabled="true" />
+              <div class="w-full mt-5 grid grid-cols-2 gap-4" v-if="allergy?.onset?.string != null">
+                 <cornie-input label="String" v-model="allergy.onset.string"  :disabled="true" />
               </div>
             </div>
               </template>
@@ -517,7 +517,7 @@ export default class viewAlergyModal extends Vue {
     // this.category = allergy.category;
     // this.criticality = allergy.criticality;
     // this.code = allergy.code;
-    //this.onset = allergy.onSet;
+    //this.onset = allergy.onset;
     this.occurences = allergy.occurences;
     this.note = allergy.note;
     this.reaction = allergy.reaction;

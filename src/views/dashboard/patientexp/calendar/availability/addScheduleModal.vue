@@ -686,7 +686,12 @@ export default class scheduleModal extends Vue {
   endDate = "";
   repeat = {
     days:[],
+    end: {
+      type: '',
+      value: '',
+   }
   } as any;
+
   serviceType = "serviceType";
   serviceName = [] as any;
   slotSize = 0;
@@ -746,7 +751,7 @@ export default class scheduleModal extends Vue {
       practitioners: this.practitonerId,
       services: this.serviceName,
       breaks: this.breaks,
-      repeat: this.repeat,
+      repeat: this.repeat.interval ? this.repeat : undefined,
       serviceType: this.serviceType,
       slotSize: this.slotSize,
       organizationId: this.authPractitioner.organizationId,

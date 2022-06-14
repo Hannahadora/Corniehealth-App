@@ -397,7 +397,7 @@ export default class AlergyModal extends Vue {
 
   get onset() {
     return {
-      onsetRange: !Object.values({
+      range: !Object.values({
         unit: this.onsetmesurable.unit,
         min: this.onsetmesurable.min,
         max: this.onsetmesurable.max,
@@ -408,7 +408,7 @@ export default class AlergyModal extends Vue {
             max: this.onsetmesurable.max,
           }
         : null,
-      onsetAge: !Object.values({
+      age: !Object.values({
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
       }).every((o) => o === null)
@@ -417,8 +417,8 @@ export default class AlergyModal extends Vue {
             value: this.onsetmesurable.ageValue,
           }
         : null,
-      onsetString: this.onsetmesurable.string || null,
-      onsetPeriod: !Object.values({
+      string: this.onsetmesurable.string || null,
+      period: !Object.values({
         start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
         startTime: this.onsetmesurable.startTime,
@@ -431,7 +431,7 @@ export default class AlergyModal extends Vue {
             endTime: this.onsetmesurable.endTime,
           }
         : null,
-      onsetDateTime: this.safeBuildDateTime(
+      dateTime: this.safeBuildDateTime(
         this.onsetmesurable.date as any,
         this.onsetmesurable.time as any
       ),
@@ -478,7 +478,7 @@ export default class AlergyModal extends Vue {
       category: this.category,
       criticality: this.criticality,
       code: this.code,
-      onSet: this.onset,
+      onset: this.onset,
       reaction: this.reaction,
       occurences: newoccur,
       recordDate: this.recordDate,

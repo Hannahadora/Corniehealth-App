@@ -123,20 +123,20 @@
                 <div class="overflow-y-auto h-96">
                 <div>
                     <div v-if="refType == 'condition'">
-                    <!-- <div v-for="(input, index) in conditions" :key="index"> -->
+                    <div v-for="(input, index) in conditions" :key="index">
                     <div
                         class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     >
                         <div class="w-full">
                         <div class="w-full">
                             <p class="text-sm text-dark mb-1 font-medium">
-                            [Identifier]
+                            {{ medicationMapper(input.type) }}
                             </p>
                             <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
                         </div>
                         </div>
                     </div>
-                    <!-- </div> -->
+                    </div>
                     </div>
                 </div>
                 <div v-if="refType == 'allergy'">
@@ -206,7 +206,7 @@ import { string } from "yup";
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-
+import { mapDisplay } from "@/plugins/definitions";
 
 import IAllergy from "@/types/IAllergy";
 import { ICondition } from "@/types/ICondition";
@@ -285,8 +285,9 @@ export default class ReasonReference extends Vue {
     @condition.Action
     fetchPatientConditions!: (patientId: string) => Promise<void>;
 
-    @condition.State
-    conditions!: { [state: string]: ICondition[] };
+  
+  @condition.State
+  conditions!: ICondition[];
 
 
     orderBy: Sorter = () => 1;
@@ -296,6 +297,15 @@ export default class ReasonReference extends Vue {
     refType = "allergy";
     query = "";
     localSrc = require("../../../../assets/img/placeholder.png");
+
+
+    medicationMapper = (code: string) => "";
+
+    async createMapper() {
+      this.medicationMapper = await mapDisplay(
+        "http://hl7.org/fhir/ValueSet/substance-code"
+      );
+    }
 
 
     get filteredItems() {
