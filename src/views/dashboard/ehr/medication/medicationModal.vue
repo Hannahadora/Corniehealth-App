@@ -164,7 +164,7 @@
                         >
                         </cornie-select>
                         <div class="w-full -mt-1">
-                            <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
+                            <span class="text-sm font-semibold mb-3">Dosage Interval</span>
                             <div class="flex space-x-2 w-full">
                               <div>
                                 <cornie-input
@@ -219,7 +219,7 @@
                     >
                     <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                           <div class="w-full -mt-1">
-                                <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
+                                <span class="text-sm font-semibold mb-3">Dosage Interval</span>
                             <div class="flex space-x-2 w-full">
                                     <cornie-input
                                         placeholder="--Enter--"

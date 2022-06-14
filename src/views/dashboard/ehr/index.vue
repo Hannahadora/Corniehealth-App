@@ -30,7 +30,7 @@
         <div
           class="w-full md:flex-1 overflow-auto h-screen pb-72 max-h-full mb-5 p-3 border-l-none -mt-3"
         >
-          <router-view />
+          <router-view :patientId="patientId"/>
         </div>
       </div>
     </div>

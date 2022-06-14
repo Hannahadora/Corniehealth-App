@@ -145,7 +145,7 @@ export default class MedicationCard extends Vue {
           // medicationCode: this.oldclinicalStatus,
           // dosageInstruction: this.dosageInstructions,
           status: medication.status,
-          dateRequested: new Date (medication.dateRequested.toLocaleDateString()),
+          // dateRequested: new Date (medication?.dateRequested?.toLocaleDateString()),
           medication: medication.medication
         };
       }

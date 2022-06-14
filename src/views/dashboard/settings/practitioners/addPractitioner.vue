@@ -461,7 +461,7 @@
                     class="-mt-1 text-danger font-bold cursor-pointer"
                     @click="addAccessRole = true"
                   >
-                    Location(s) & privileges</span
+                    Add Location(s) & privileges</span
                   >
                   <plus-icon class="fill-current text-danger font-bold w-3" />
                 </div>
@@ -847,7 +847,7 @@ export default class AddPractitioner extends Vue {
       ...this.licenses,
     ];
 
-    this.licenseIssuer = this.licenseNumber = "";
+    this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
   }
 
   dobValidator = date().max(

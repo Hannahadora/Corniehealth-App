@@ -108,7 +108,7 @@ export default class AllergyCard extends Vue {
     if (!this.medicationMapper) return [];
     const newallergys = this.newallergys.map((allergy) => {
       const manifestationStatus = this.medicationMapper(
-        allergy.reaction.manifestation
+        allergy?.reaction?.manifestation
       );
       this.manifestation = manifestationStatus as string;
       return {

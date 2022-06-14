@@ -106,7 +106,7 @@
                   v-model="emptyMedicationDetails.courseOfTherapy">
                 </cornie-select>
                 <div class="w-full -mt-1">
-                  <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
+                  <span class="text-sm font-semibold mb-3">Dosage Interval</span>
                   <div class="flex space-x-2 w-full">
                     <cornie-input :rules="required" v-maska="'#*:#*:#*'" placeholder="0:0:0" class="grow w-full"
                       :setfull="true" v-model="emptyMedicationDetails.dosageInstruction" />
@@ -141,7 +141,7 @@
               <accordion-component title="Refill" :opened="false" :grayCaption="true" :check="true">
                 <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                   <div class="w-full -mt-1">
-                    <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
+                    <span class="text-sm font-semibold mb-3">Dosage Interval</span>
                     <div class="flex space-x-2 w-full">
                       <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
                         v-model="emptyRefill.interval" />
