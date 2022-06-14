@@ -48,9 +48,10 @@
             this.getPdatails(l.manager).lastName,
           address: l.address ? l.address : "Not available",
           city: l.city && l.state ? l.city + "/" + l.state : "Not available",
-          phone: l.phone.number,
+          phone: l.phone,
           email: l.email,
           status: l.status,
+          country: l.country || "Not available",
         };
       });
     }

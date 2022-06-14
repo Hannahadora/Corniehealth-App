@@ -17,6 +17,9 @@
       </span>
     </div> -->
     <cornie-table :columns="rawHeaders" v-model="items">
+      <template #phone="{ item }">
+        <div>{{ item.phone.number }}</div>
+      </template>
       <template #actions="{ item }">
         <div v-if="item.status == 'inactive'">
           <div
@@ -34,7 +37,7 @@
             <span class="ml-3 text-xs">Update</span>
           </div>
           <div
-            @click="activateC(item.id)"
+            @click="activateCat(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <check class="text-green-600 fill-current" />
@@ -58,7 +61,7 @@
             <span class="ml-3 text-xs">Update</span>
           </div>
           <div
-            @click="deactivateC(item.id)"
+            @click="deactivateCat(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <!-- <Check class="text-green-600 fill-current" /> -->
@@ -91,6 +94,7 @@
         </span>
       </template>
     </cornie-table>
+    <view-category :selectedItem="selectedItem" v-model="showDetails" />
     <inventory-modal
       :selectedItem="selectedItem"
       v-model="showInventoryRequest"
@@ -108,6 +112,7 @@
   import { namespace } from "vuex-class";
   import EmptyState from "./emptyState.vue";
   import InventoryModal from "./inventoryModal.vue";
+  import viewCategory from "./viewCategories.vue";
 
   const account = namespace("user");
   const inventory = namespace("inventorysettings");
@@ -121,6 +126,7 @@
       Check,
       CloseIcon,
       UpdateReportGreen,
+      viewCategory,
     },
   })
   export default class InventoryExistingState extends Vue {
@@ -176,6 +182,9 @@
     @inventory.Action
     activateC!: (data: any) => Promise<void>;
 
+    @inventory.Action
+    getCategory!: () => Promise<void>;
+
     showDetailsModal(item: any) {
       this.selectedItem = item;
       this.showDetails = true;
@@ -184,6 +193,48 @@
     showUpdateModal(item: any) {
       this.selectedItem = item;
       this.showInventoryRequest = true;
+    }
+
+    async deactivateCat(id: string) {
+      console.log("idd", id);
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to deactivate this category?",
+        yes: "Yes",
+        no: "No",
+        title: "Deactivate",
+      });
+      if (!confirmed) return;
+      this.deactivateC(id)
+        .then(async () => {
+          window.notify({
+            msg: "Category Deactivated",
+            status: "success",
+          });
+          await this.getCategory();
+        })
+        .catch(() => {
+          window.notify({
+            msg: "There was an error deactivating category",
+            status: "error",
+          });
+        });
+    }
+
+    async activateCat(id: string) {
+      this.activateC(id)
+        .then(async () => {
+          window.notify({
+            msg: "Category activated",
+            status: "success",
+          });
+          await this.getCategory();
+        })
+        .catch(() => {
+          window.notify({
+            msg: "There was an error activating category",
+            status: "error",
+          });
+        });
     }
 
     get items() {

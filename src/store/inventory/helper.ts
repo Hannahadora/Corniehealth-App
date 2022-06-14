@@ -2,57 +2,28 @@ import { cornieClient } from "@/plugins/http";
 
 //Inventory Category
 export async function createInventoryCategory(data: any) {
-  try {
-    const response = await cornieClient().post(
-      "/api/v1/inventory/settings/category",
-      data
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error creating category", status: "error" });
-  }
+  return await cornieClient().post("/api/v1/inventory/settings/category", data);
 }
 
 export async function updateInventoryCategory(id: string, data: any) {
-  try {
-    const response = await cornieClient().put(
-      `/api/v1/inventory/settings/category/${id}`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error updating categories", status: "error" });
-  }
+  return await cornieClient().put(
+    `/api/v1/inventory/settings/category/${id}`,
+    data
+  );
 }
 
 export async function deactivateC(id: string) {
-  try {
-    const response = await cornieClient().patch(
-      `/api/v1/inventory/settings/category/deactivate/${id}`,
-      {}
-    );
-    return response.data;
-  } catch (error) {
-    notify({
-      msg: "There was an error deactivating category",
-      status: "error",
-    });
-  }
+  return await cornieClient().patch(
+    `/api/v1/inventory/settings/category/deactivate/${id}`,
+    {}
+  );
 }
 
 export async function activateC(id: string) {
-  try {
-    const response = await cornieClient().patch(
-      `/api/v1/inventory/settings/category/activate/${id}`,
-      {}
-    );
-    return response.data;
-  } catch (error) {
-    notify({
-      msg: "There was an error activating category",
-      status: "error",
-    });
-  }
+  return await cornieClient().patch(
+    `/api/v1/inventory/settings/category/activate/${id}`,
+    {}
+  );
 }
 
 export async function getInventoryCategory() {
@@ -67,14 +38,7 @@ export async function getInventoryCategory() {
 }
 
 export async function deleteInventoryCategory(id: string) {
-  try {
-    const response = await cornieClient().delete(
-      `/api/v1/inventory/classes/${id}`
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error deleting category", status: "error" });
-  }
+  return await cornieClient().delete(`/api/v1/inventory/classes/${id}`);
 }
 
 export async function getInventoryCategoriesByUser(id: string) {
@@ -102,45 +66,31 @@ export async function createInventoryLocationClasses(data: any) {
 }
 
 export async function createInventoryLocation(data: any) {
-  try {
-    const response = await cornieClient().post(
-      "/api/v1/inventory/settings/location",
-      data
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error creating location", status: "error" });
-  }
+  return await cornieClient().post("/api/v1/inventory/settings/location", data);
+  // try {
+  //   const response = await cornieClient().post(
+  //     "/api/v1/inventory/settings/location",
+  //     data
+  //   );
+  //   return response.data;
+  // } catch (error) {
+  //   notify({ msg: "There was an error creating location", status: "error" });
+  //   return error;
+  // }
 }
 
 export async function deactivateL(id: string) {
-  try {
-    const response = await cornieClient().patch(
-      `/api/v1/inventory/settings/location/deactivate/${id}`,
-      {}
-    );
-    return response.data;
-  } catch (error) {
-    notify({
-      msg: "There was an error deactivating location",
-      status: "error",
-    });
-  }
+  return await cornieClient().patch(
+    `/api/v1/inventory/settings/location/deactivate/${id}`,
+    {}
+  );
 }
 
 export async function activateL(id: string) {
-  try {
-    const response = await cornieClient().patch(
-      `/api/v1/inventory/settings/location/activate/${id}`,
-      {}
-    );
-    return response.data;
-  } catch (error) {
-    notify({
-      msg: "There was an error activating location",
-      status: "error",
-    });
-  }
+  return await cornieClient().patch(
+    `/api/v1/inventory/settings/location/activate/${id}`,
+    {}
+  );
 }
 
 export async function getLocationsByUser() {
@@ -154,27 +104,11 @@ export async function getLocationsByUser() {
   }
 }
 
-export async function getLocationsByManager(id: string) {
-  try {
-    const response = await cornieClient().get(
-      `/api/v1/inventory/locations/findAllByManager/${id}`
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error fetching locations", status: "error" });
-  }
-}
-
 export async function updateInventoryLocation(id: string, data: any) {
-  try {
-    const response = await cornieClient().put(
-      `/api/v1/inventory/locations/${id}`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    notify({ msg: "There was an error updating Location", status: "error" });
-  }
+  return await cornieClient().put(
+    `/api/v1/inventory/settings/location/${id}`,
+    data
+  );
 }
 
 export async function getInventoryLocation(id: string) {

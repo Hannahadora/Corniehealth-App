@@ -27,12 +27,15 @@
         >
           <div class="w-full flex items-center">
             <div class="text-xs flex flex-col">
-              <span class="font-semibold text-primary">
-                {{ input.manifestation }}
+              <span class="font-semibold text-primary capitalize">
+                {{ input.name }}
               </span>
               <span class="">
+                <span class="text-gray-600 capitalize">
+                  <h5>{{ input.recordDate }}</h5></span
+                >
                 <span class="text-gray-600">
-                  <h5>{{ input.reaction.description }}</h5></span
+                  <h5>{{ input.severity }}</h5></span
                 >
               </span>
             </div>
@@ -80,8 +83,8 @@ export default class AllergyCard extends Vue {
   }
   manifestation = "";
 
- @Prop({ type: Array, default: () => [] })
-  allergys!: IAllergy[];
+  @Prop({ type: Array, default: () => [] })
+  allergys!: any[];
 
   get newallergys() {
     return this.sortAllergys.slice(0, 3);
@@ -98,29 +101,30 @@ export default class AllergyCard extends Vue {
   get totalAllergeis() {
     return this.allergys.length;
   }
-  async createMapper() {
-    this.medicationMapper = await mapDisplay(
-      "http://hl7.org/fhir/ValueSet/clinical-findings"
+   severityMapper = (code: string) => "";
+  codeMapper = (code: string) => "";
+
+  async loadMappers() {
+    this.severityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-code"
     );
   }
 
   get items() {
     if (!this.medicationMapper) return [];
-    const newallergys = this.newallergys.map((allergy) => {
-      const manifestationStatus = this.medicationMapper(
-        allergy?.reaction?.manifestation
-      );
-      this.manifestation = manifestationStatus as string;
-      return {
-        ...allergy,
-        manifestation: this.manifestation,
-      };
-    });
+    const newallergys = this.newallergys.map((allergy) => ({
+      name: allergy.name,
+      severity: this.severityMapper(allergy.severity),
+      recordDate: new Date(allergy.recordDate).toLocaleString('en-US'),
+    }));
     return newallergys;
   }
 
   async created() {
-    await this.createMapper();
+    this.loadMappers();
   }
 }
 </script>

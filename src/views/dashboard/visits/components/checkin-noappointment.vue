@@ -211,6 +211,7 @@ import IPractitioner from "@/types/IPractitioner";
 import { Prop, Watch } from "vue-property-decorator";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import { useAppointmentRooms } from "../composables/useAppointmentRoom";
+import { usePractitionerSlots } from "../composables/usePractitionerSlots";
 
 const visitsStore = namespace("visits");
 const actors = namespace("practitioner");
@@ -315,11 +316,12 @@ export default class CheckIn extends Vue {
 
   checkinData: any = { time: new Date().toTimeString().substring(0, 5) };
 
+  slot = setup(() => usePractitionerSlots());
+
   selectPractitioner(actor: any, index: number) {
     if (this.selectedActors.findIndex((i: any) => i.code === actor.code) < 0) {
       this.checkinData.practitioner = actor.code;
-      this.getSlots(actor.code);
-      this.testSlots(actor.code);
+      this.slot.practitionerId = actor.code;
       this.selectedActors.push(actor);
     } else {
       this.selectedActors.splice(index, 1);
@@ -462,41 +464,6 @@ export default class CheckIn extends Vue {
   }
 
   arr = [] as any[];
-
-  get newSlots() {
-    if (this.arr?.length <= 0) return [];
-    const slots = this.arr.map((item: any, index: number) => {
-      return {
-        code: item.id ? item.id : `${item.scheduleId}_${index}`,
-        display: `${new Date(item.startTime).toLocaleDateString()}, ${new Date(
-          item.startTime
-        )
-          .toLocaleTimeString()
-          ?.substring(0, 5)} - ${new Date(
-          item.endTime
-        ).toLocaleDateString()}, ${new Date(item.endTime)
-          .toLocaleTimeString()
-          ?.substring(0, 5)}`,
-      };
-    });
-    return slots;
-  }
-
-  testSlots(id: string) {
-    this.arr = [];
-    this.schedulesByPractitioner(id).then((res) => {
-      if (!res || res.length == 0) return;
-
-      this.arr = slotService.slots(res, this.date);
-    });
-  }
-
-  @Watch("date", { immediate: true, deep: true })
-  updateArr() {
-    if (this.checkinData.practitioner) {
-      this.testSlots(this.checkinData.practitioner);
-    }
-  }
 
   async created() {
     if (!this.locations || this.locations.length === 0) this.fetchLocations();

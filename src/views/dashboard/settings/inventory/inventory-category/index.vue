@@ -50,7 +50,7 @@
             this.getPdatails(c.manager).firstName +
             " " +
             this.getPdatails(c.manager).lastName,
-          phone: c.phone.number,
+          phone: c.phone,
           location:
             c.city == "not available" || c.state == "not available"
               ? "Not available"

@@ -10,18 +10,21 @@
     :showTotal="true"
     :count="medications?.length"
   >
-    <div
-      class="flex flex-col items-center justify-center my-auto"
-      v-if="medications?.length === 0"
-    >
-      <img class="mb-3" src="@/assets/img/no-medication-trend.svg" alt="" />
-      <p class="text-sm text-center" style="color: #667499">No Medications</p>
-    </div>
-    <div class="p-2" v-else>
+    <template #empty>
+      <div
+        class="flex flex-col items-center justify-center my-auto"
+        v-if="medications.length === 0"
+      >
+        <img class="mb-3" src="@/assets/img/no-medication-trend.svg" alt="" />
+        <p class="text-sm text-center" style="color: #667499">No Medications</p>
+      </div>
+    </template>
+
+    <div class="p-2">
       <div class="w-full grid grid-cols-1 gap-y-4">
         <div
           class="w-full flex items-center justify-between pb-2 border-b"
-          v-for="(input, index) in items.slice(0,2)"
+          v-for="(input, index) in items.slice(0, 2)"
           :key="index"
         >
           <div class="w-full flex space-x-2 items-center">
@@ -38,7 +41,7 @@
                           | 45 respondent | 45 feedback |
                         </span> -->
               </span>
-               <span class="font-semibold text-sm mb-2 text-primary">
+              <span class="font-semibold text-sm mb-2 text-primary">
                 {{ input.status }}
               </span>
             </div>
@@ -127,29 +130,18 @@ export default class MedicationCard extends Vue {
   }
 
   get items() {
-    const newmedicationrequest = this.medications?.map(
-      (medication: any) => {
-        medication?.Medications?.map((codeme: any) => {
-          this.oldclinicalStatus = this.medicationMapper(
-            codeme.medicationDetails.medicationCode
-          );
-          this.dosageInstructions = codeme.medicationDetails.dosageInstruction;
-
-          return {
-            ...codeme,
-            medicationCode: this.oldclinicalStatus,
-          };
-        });
-        return {
-          ...medication,
-          // medicationCode: this.oldclinicalStatus,
-          // dosageInstruction: this.dosageInstructions,
-          status: medication.status,
-          // dateRequested: new Date (medication?.dateRequested?.toLocaleDateString()),
-          medication: medication.medication
-        };
-      }
-    );
+    const newmedicationrequest = this.medications?.map((medication: any) => ({
+      medication: medication.medication,
+      status: medication.status,
+      dateRequested: new Date(medication.dateRequested).toLocaleDateString(
+        "en-US",
+        {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }
+      ),
+    }));
     return newmedicationrequest;
   }
 

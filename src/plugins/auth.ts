@@ -18,7 +18,7 @@ export async function login(payload: AuthPayload) {
   const data = await quantumClient().post("/auth/login", payload);
   store.commit("user/setLoginInfo", data.data);
   const cornieData = await fetchCornieData();
-  
+
   store.commit("user/setCornieData", cornieData);
   return data;
 }
@@ -48,7 +48,7 @@ function getSessionData(key: string) {
 
 export async function refreshUser() {
   const user = store.state.user.user;
-  if (user?.id) return;
+  if (user?.user?.id) return;
   const data = await fetchUserData();
 
   if (!data) return;

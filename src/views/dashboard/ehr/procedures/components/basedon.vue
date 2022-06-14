@@ -64,7 +64,16 @@
             v-if="selectedOption == 'diagnostics request'"
             class="flex flex-col space-y-5"
           >
-            <div v-for="d in diagnosticsRequest">hello</div>
+            <div v-for="c in diagnosticsRequest">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
           </div>
 
           <div
@@ -187,7 +196,7 @@
       }
       //@ts-ignore
       this.$emit("selectedId", {
-        typeData: this.selectedOption,
+        typeData: this.selectedOption.trim().replace(" ", "-"),
         ...this.selectedData,
       });
       this.show = false;

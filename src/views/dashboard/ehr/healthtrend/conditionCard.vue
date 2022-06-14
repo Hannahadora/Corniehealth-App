@@ -6,12 +6,14 @@
     more="View all"
     @add="$router.push('condition')"
   >
-    <div class="flex flex-col items-center justify-center my-auto" v-if="conditions.length === 0">
+   <template #empty>
+      <div class="flex flex-col items-center justify-center my-auto" v-if="conditions.length === 0">
       <img class="mb-3" src="@/assets/img/no-condition-trend.svg" alt="" />
       <p class="text-sm text-center" style="color: #667499">No Conditions</p>
     </div>
+    </template>
+    
     <div
-      v-else
       class="w-full flex items-start justify-between gap-1 text-sm py-4 border-b border-gray-200"
       v-for="(item, i) in items.slice(0,2)"
       :key="i"

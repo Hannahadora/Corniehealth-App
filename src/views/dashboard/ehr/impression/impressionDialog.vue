@@ -70,7 +70,7 @@
               <date-time-picker
                 v-model:date="data.startDate"
                 v-model:time="data.startTime"
-                label="Date/Time"
+                label="Start Date/Time"
                 width="w-11/12"
               />
             </div>
@@ -78,7 +78,7 @@
               <date-time-picker
                 v-model:date="data.endDate"
                 v-model:time="data.endTime"
-                label="Date/Time"
+                label="End Date/Time"
                 width="w-11/12"
               />
             </div>
@@ -165,20 +165,20 @@
                 v-for="(record, index) in conditionItems"
                 :key="index"
               >
-                <p class="text-red-500 text-sm font-medium mb-2">
+                <p class="text-red-500 text-sm font-medium">
                   {{ record?.referenceType }}
                 </p>
-                <div class="w-11/12" style="border-right: 1px dashed #878e99">
+                <div class="w-11/12 mt-4" style="border-right: 1px dashed #878e99">
                   <div class="w-full flex items-center">
-                    <div class="w-8/12 flex flex-col">
+                    <div class="w-8/12 flex flex-col text-sm">
                       <span class="font-semibold">{{
                         record?.description
                       }}</span>
-                      <div>
-                        <p>
-                          {{ record?.practitioner }}
-                        </p>
-                        <p>{{ record?.practitionerSpecialty }}</p>
+                      <div class="" style="font-size: 10px">
+                        <span class="">
+                          {{ record?.practitioner }} - 
+                        </span>
+                        <span class="text-gray-500">{{ record?.practitionerSpecialty }}</span>
                       </div>
                     </div>
                     <div class="w-4/12 flex items-center justify-center">
@@ -341,14 +341,17 @@
                 :key="index"
               >
                 <p class="text-red-500 text-sm font-medium mb-2">
-                  {{ record?.itemCode }}
+                  {{ record?.itemReference.referenceType }}
                 </p>
                 <div class="w-11/12" style="border-right: 1px dashed #878e99">
                   <div class="w-full flex items-center">
                     <div class="w-8/12 flex flex-col">
                       <div>
                         <p>
-                          {{ record?.itemReferences }}
+                          {{ record?.itemReference.description }}
+                        </p>
+                        <p>
+                          {{ record?.itemReference.details }}
                         </p>
                       </div>
                     </div>
@@ -382,7 +385,7 @@
             <cornie-select
               class="w-full"
               label="Item Reference"
-              :items="observations.map(el => el.code)"
+              :items="observations.map((el) => el.code)"
               v-model="impressionModel.prognosis.itemReference"
             >
             </cornie-select>
@@ -423,12 +426,13 @@
   </clinical-dialog>
   <assesor-modal
     :practitioners="practitioner"
-    @update:preferred="showAssessor"
+    @getAssessor="showAssessor"
     v-model="showAssessorModal"
   />
   <problem-modal
     :conditions="conditions"
-    :allergy="allergy"
+    :allergys="allergy"
+    :practitioners="practitioner"
     @getProblem="showProblem"
     v-model="showProblemModal"
   />
@@ -495,7 +499,7 @@ import ClinicalDialog from "../conditions/clinical-dialog.vue";
 const impression = namespace("impression");
 const user = namespace("user");
 
-const emptyImpression = {
+const emptyImpression: any = {
   patientId: "",
   status: "Completed",
   updatedAt: "",
@@ -508,10 +512,13 @@ const emptyImpression = {
   effective: {
     effectiveDate: undefined,
     // effectivePeriod: {} as Period,
-    effectivePeriod: undefined,
+    effectivePeriod: {
+      start: undefined,
+      end: undefined,
+    } as any,
   },
   investigation: [] as { item: any }[],
-  findings: [] as { itemReference: any, basis: "" }[],
+  findings: [] as { itemReference: any; basis: "" }[],
   prognosis: {
     itemCode: undefined,
     itemReference: undefined,
@@ -528,7 +535,7 @@ const emptyImpression = {
     protocol: undefined,
     summary: undefined,
   },
-};
+} as any;
 
 @Options({
   name: "impressionDialog",
@@ -587,7 +594,9 @@ export default class Impression extends Vue {
 
   @Watch("id")
   idChanged() {
-    this.setImpression();
+    if (this.id) {
+      this.setImpression();
+    }
   }
 
   effectiveType = "date-time";
@@ -601,7 +610,7 @@ export default class Impression extends Vue {
     endTime: undefined,
   };
   assertRecord = true;
-  assessorItem = <any>{};
+  assessorItems = <any>[];
   conditionItems = <any>[];
   problemItems = <any>[];
   investigationItems = <any>[];
@@ -694,17 +703,18 @@ export default class Impression extends Vue {
   }
 
   get asessor() {
-    if (!this.assessorItem) {
+    if (this.assessorItems.length === 0) {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
-    } else return this.assessorItem?.firstName + " " + this.assessorItem?.lastName;
+    } else 
+      return this.assessorItems[0].firstName + " " + this.assessorItems[0].lastName;
   }
 
   get asseterId() {
-    if (!this.assessorItem) {
+    if (this.assessorItems.length === 0) {
       return this.authPractitioner.id;
-    } else return this.assessorItem.id;
+    } else return this.assessorItems[0].id;
   }
 
   get findingItem() {
@@ -719,7 +729,7 @@ export default class Impression extends Vue {
   }
 
   showAssessor(valueforrole: any) {
-    this.assessorItem = valueforrole;
+    this.assessorItems.push(valueforrole)
   }
   showProblem(value: any) {
     this.conditionItems.push(value);
@@ -739,13 +749,17 @@ export default class Impression extends Vue {
   }
 
   async createImpression() {
-    this.payload.effective.effectiveDate = this.data.date;
-    this.payload.effective.effectivePeriod.start = this.data.startDate;
-    this.payload.effective.effectivePeriod.end = this.data.endDate;
+    (this.payload.effective.effectiveDate as any) = this.data.date;
+    if (this.data.startDate && this.data.endDate) {
+      (this.payload.effective.effectivePeriod.start as any) =
+        this.data.startDate;
+      (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
+    }
     this.payload.recorded.asserterId = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
-    }
+    } else (this.payload.effective.effectivePeriod as any) = undefined
+
     this.payload.recorded.recordDate = this.buildDateTime(
       this.recordedDate,
       this.recordedTime
@@ -791,13 +805,13 @@ export default class Impression extends Vue {
         status: "error",
       });
     }
-  }  
+  }
   async findImpression(id: any) {
     const url = `/api/v1/clinical-impressions/${id}`;
     try {
       const response: any = await cornieClient().get(url);
       if (response.success) {
-       return response.data;
+        return response.data;
       }
     } catch (e: any) {
       window.notify({
@@ -843,20 +857,23 @@ export default class Impression extends Vue {
   }
 
   async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.activePatientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data;
+    const url = `/api/v1/allergy/findAllByPatient/${this.activePatientId}`;
+     const response = await cornieClient().get(url);
+    if (response.success) {
+      this.allergy = response.data;
+    }
   }
   async created() {
-    this.setImpression();
+    if (this.id) {
+      await this.setImpression();
+    }
     this.fetchRoles();
     this.fetchPractitioners();
     if (this.activePatientId) this.fetchAllergy();
     this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();
+    this.fetchAllergy();
     this.fetchFamilyHistories();
   }
 }
