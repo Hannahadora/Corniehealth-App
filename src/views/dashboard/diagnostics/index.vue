@@ -125,8 +125,8 @@
       </div>
     </div>
   </div>
-  <diagnostic-dialog v-model="showRecord" :id="typeId" @sales-added="salesAdded" />
-  <view-result v-model="showResult" :id="typeId" />
+  <update-status v-model="showRecord" :id="typeId" @sales-added="salesAdded" />
+  <report-dialog v-model="showResult" :id="typeId" />
 </template>
 <script lang="ts">
 import ColumnFilter from "@/components/columnfilter.vue";
@@ -149,8 +149,8 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
-import DiagnosticDialog from "./DiagnosticDialog.vue";
-import ViewResult from "./ViewResult.vue";
+import UpdateStatus from "./updateStatus.vue";
+import ReportDialog from "./ReportDialog.vue";
 
 const location = namespace("location");
 
@@ -172,8 +172,8 @@ const location = namespace("location");
     TableOptions,
     UpdateStatusYellow,
     UpdateReportGreen,
-    DiagnosticDialog,
-    ViewResult,
+    UpdateStatus,
+    ReportDialog,
   },
 })
 export default class DiagnosticReport extends Vue {

@@ -2,7 +2,7 @@
   <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card
       height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
+      class="flex flex-col h-full bg-white overflow-y-scroll"
     >
       <cornie-card-title class="">
         <icon-btn @click="show = false">
@@ -10,19 +10,23 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ title || "Create Report" }}
+            {{ newAction }} Diagnostic Report
           </h2>
-          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
         </div>
       </cornie-card-title>
+
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
+        <v-form class="flex-grow flex flex-col gap-10" @submit="submit">
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="General"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-6 py-6">
+            <div class="grid grid-cols-2 gap-6 w-full mt-5">
               <cornie-select
                 class="w-full"
                 label="Status"
@@ -60,13 +64,6 @@
                 :disabled="true"
                 :rules="required"
               />
-              <!-- <cornie-select
-                class="w-full"
-                label="Code"
-                placeholder="Code"
-                v-model="general.code"
-                :items="statuses"
-              /> -->
               <fhir-input
                 reference="http://hl7.org/fhir/ValueSet/report-codes"
                 class="required w-full"
@@ -75,15 +72,6 @@
                 placeholder="Code"
               />
 
-              <!-- <cornie-input
-                class="w-full"
-                label="Patient"
-                placeholder="Patient"
-                v-model="patient"
-                :disabled="true"
-                :rules="required"
-              /> -->
-
               <cornie-select
                 class="w-full"
                 label="Patient"
@@ -91,29 +79,27 @@
                 v-model="general.patient"
                 :items="allPatients"
               />
-              <!-- <cornie-input
-              class="w-full"
-              label="Updated By"
-              placeholder="Updated By"
-              v-model="updatedBy"
-              :disabled="true"
-              :rules="required"
-            />
-            <date-picker
-              class="w-full"
-              label="Last Updated"
-              v-model="lastUpdated"
-              :rules="required"
-            /> -->
+              <cornie-input
+                class="w-full"
+                label="Encounter"
+                placeholder="Autogenrated"
+                v-model="general.encounter"
+                :disabled="true"
+                :rules="required"
+              />
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Effective"
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-3 mt-5 w-1/2">
-              <cornie-radio v-model="type" label="Date/Time" value="date-time" />
+              <cornie-radio
+                v-model="type"
+                label="Date/Time"
+                value="date-time"
+              />
               <cornie-radio v-model="type" value="period" label="Period" />
             </div>
             <div class="grid grid-cols-2 gap-6 py-6">
@@ -141,11 +127,11 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Issue Info"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-6 py-6">
+            <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <div class="col-span-2 grid grid-cols-2 gap-6">
                 <date-time-picker
                   class="w-full"
@@ -169,15 +155,11 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Result"
             :opened="false"
           >
-            <!-- <div class="flex items-center my-6 justify-end">
-              <plus-icon />
-              <span class="text-danger text-sm ml-2">Add Another</span>
-            </div> -->
-            <div class="grid grid-cols-2 gap-6 pt-6 pb-1">
+            <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <cornie-select
                 class="w-full"
                 label="Reference Observation"
@@ -185,33 +167,7 @@
                 v-model="obs"
                 :items="observations"
               />
-              <!-- <cornie-select
-                class="w-full"
-                label="Media(optional)"
-                placeholder="Media"
-                v-model="result.image"
-                :items="statuses"
-              /> -->
-              <!-- <file-picker
-                @uploaded="idFileUploaded"
-                v-model="certificateOfIncoporation"
-                :label="'Certificate of Incorporation'"
-                class=""
-              /> -->
-              <!-- <uploader v-model="file" v-model:meta="fileInfo" /> -->
-              <cornie-input
-                class="w-full"
-                label="Media(optional)"
-                placeholder="Media"
-                v-model="result.image"
-              />
-              <!-- <cornie-select
-                class="w-full"
-                label="Imaging Studying"
-                placeholder="Imaging Studying"
-                v-model="result.imaging_Study"
-                :items="basis"
-              /> -->
+              <choose-file class="w-full" label="Media" @uploaded="getFile" />
             </div>
             <div class="flex flex-col space-y-3 pb-5">
               <cornie-input
@@ -229,13 +185,57 @@
                 :rules="required"
               />
             </div>
+
+            <div class="flex items-center my-6 justify-end">
+              <plus-icon />
+              <span class="text-danger text-sm ml-2" @click="addResult"
+                >Add</span
+              >
+            </div>
+
+            <div v-if="collectedResults.length > 0">
+              <div class="w-full flex items-center py-5">
+                <div
+                  class="w-4/12"
+                  v-for="(result, index) in collectedResults"
+                  :key="index"
+                >
+                  <p class="capitalize text-red-500 text-sm font-medium">
+                    {{ result?.observation }}
+                  </p>
+                  <div
+                    class="w-11/12 mt-4"
+                    style="border-right: 1px dashed #878e99"
+                  >
+                    <div class="w-full flex items-center">
+                      <div class="w-8/12 flex flex-col text-sm">
+                        <img :src="result?.image"/>
+                        <div class="" style="font-size: 10px">
+                          <span class=""> {{ result?.imaging_Study }}</span>
+                        </div>
+                        <div class="" style="font-size: 10px">
+                          <span class=""> {{ result?.comments }}</span>
+                        </div>
+                      </div>
+                      <div class="w-4/12 flex items-center justify-center">
+                        <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                        <span class="mx-2 cursor-pointer"
+                          ><delete-icon
+                            @click="removeItem(index, collectedResults)"
+                        /></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Conclusion"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-6 py-6">
+            <div class="grid grid-cols-2 gap-4 w-full mt-5">
               <cornie-select
                 class="w-full"
                 label="Conclusion"
@@ -243,13 +243,6 @@
                 v-model="conclusion.conclu"
                 :items="[]"
               />
-              <!-- <cornie-select
-                class="w-full"
-                label="Conclusion Code"
-                placeholder="Conclusion Code"
-                v-model="conclusion.code"
-                :items="[]"
-              /> -->
               <fhir-input
                 reference="http://hl7.org/fhir/ValueSet/clinical-findings"
                 class="required w-full"
@@ -297,12 +290,13 @@ import DateTimePicker from "@/components/date-time-picker.vue";
 import AccordionComponent from "@/components/dialog-accordion.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
+import CancelIcon from "@/components/icons/cancel-red-bg.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import PractionerSelect from "@/components/practitioner-select.vue";
 import { cornieClient } from "@/plugins/http";
 import { IPatient } from "@/types/IPatient";
 import uploader from "@/views/dashboard/ehr/attachments/uploader.vue";
+import ChooseFile from "@/views/dashboard/settings/kyc/components/choose-file.vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
@@ -316,7 +310,7 @@ const patients = namespace("patients");
 const report = namespace("diagnosticReport");
 
 @Options({
-  name: "createReport",
+  name: "DiagnosticReportDialog",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -335,9 +329,10 @@ const report = namespace("diagnosticReport");
     PractionerSelect,
     uploader,
     FhirInput,
+    ChooseFile,
   },
 })
-export default class ViewResult extends Vue {
+export default class DiagnosticReportDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -375,6 +370,7 @@ export default class ViewResult extends Vue {
   file = "";
   fileInfo = "";
   obs = "";
+  collectedResults = <any>[];
 
   general = {
     status: "",
@@ -387,7 +383,7 @@ export default class ViewResult extends Vue {
   };
 
   effective = {
-    date: "2022-05-13",
+    date: "",
     time: "",
     period: {
       startTime: "",
@@ -419,12 +415,12 @@ export default class ViewResult extends Vue {
     code: "",
   };
 
-  @Watch("obs")
-  setObservations() {
-    if (this.obs !== "" || this.obs !== undefined) {
-      this.result.observation = this.findObservationId(this.obs);
-    }
-  }
+  // @Watch("obs")
+  // setObservations() {
+  //   if (this.obs !== "" || this.obs !== undefined) {
+  //     this.result.observation = this.findObservationId(this.obs);
+  //   }
+  // }
 
   get statuses() {
     return [
@@ -439,6 +435,10 @@ export default class ViewResult extends Vue {
       "Entered-in-Errors",
       "Unknown",
     ];
+  }
+
+  get newaction() {
+    return this.id ? "Update" : "Create New";
   }
 
   get allPatients() {
@@ -459,6 +459,20 @@ export default class ViewResult extends Vue {
       ? this.allObservations.find((x: any) => x.reasonInfo.note == g).id
       : "";
     // return "";
+  }
+  addResult() {
+    if (this.result.image && this.result?.comments) {
+      this.collectedResults.push(this.result);
+      this.result = {
+        observation: this.findObservationId(this.obs),
+        image: "",
+        comments: "",
+        imaging_Study: "",
+      };
+    }
+  }
+  removeItem(index: number, items: any) {
+    items.splice(index, 1);
   }
   async fetchObservations() {
     try {
@@ -487,14 +501,21 @@ export default class ViewResult extends Vue {
 
   findePatientId(name: string) {
     if (!name) return "";
-    return this.patients.find((x) => x.firstname + " " + x.lastname == name)?.id;
+    return this.patients.find((x) => x.firstname + " " + x.lastname == name)
+      ?.id;
+  }
+
+  getFile(fileUrl: any) {
+    this.result.image = fileUrl;
   }
 
   submit() {
     this.loading = true;
 
     let s = {
-      status: this.general.status ? this.general.status.toLocaleLowerCase() : "final",
+      status: this.general.status
+        ? this.general.status.toLocaleLowerCase()
+        : "final",
       // statusHistory: {
       //   value: "string",
       //   start: "2022-05-13",
@@ -522,19 +543,12 @@ export default class ViewResult extends Vue {
               },
             },
       issueInfo: {
-        issued: this.issues.issued.date + this.issues.issued.time,
+        issuedDate: this.issues.issued.date + this.issues.issued.time,
         performer: this.issues.performer,
         resultInterpreter: this.issues.resultInterpreter,
         // dateTime: this.issues.issued.date + this.issues.issued.time,
       },
-      result: [
-        {
-          referenceObservation: this.result.observation,
-          image: this.result.image,
-          comments: this.result.comments,
-          imagingStudy: this.result.imaging_Study,
-        },
-      ],
+      result: this.collectedResults,
       conclusion: {
         conclusion: this.conclusion.conclu || ";lkoladjksklmdkls",
         conclusionCode: this.conclusion.code || "nkxicujxizojcoxkjc",
