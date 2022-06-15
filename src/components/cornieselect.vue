@@ -185,7 +185,7 @@ export default class CornieSelect extends Vue {
 
   get selectedItem() {
     const selected = this.items.find(
-      (item) => item.code == this.modelValue ?? item == this.modelValue
+      (item) => item.code == this.modelValue || item == this.modelValue
     );
     return selected;
   }
