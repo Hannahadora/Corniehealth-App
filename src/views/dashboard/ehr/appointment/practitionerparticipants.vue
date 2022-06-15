@@ -23,10 +23,10 @@
                   <cornie-select
                     :items="['Practitioner','Device']"
                     placeholder="--Select--"
-                    class="w-40"
+                    class="w-full"
                     v-model="actorType"
                 />
-                <div class="w-60">
+                <!-- <div class="w-60">
                  <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
                     <icon-input
                     autocomplete="off"
@@ -57,7 +57,7 @@
                              <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
                         </div>
                   </div>
-                </div>
+                </div> -->
             </div>
             <div v-if="actorType == 'Practitioner'">
                 <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in practitioners" :key="index">  

@@ -5,12 +5,12 @@
         You’ve made no requests!<br />
         Make a new service reques by clicking on “New Request” above
     </h3>
-    <button
+    <!-- <button
     @click="showRefferalModal = true"
       class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90"
     >
       New Requests
-    </button>
+    </button> -->
   </div>
   <refferal-modal v-model="showRefferalModal"/>
 </template>

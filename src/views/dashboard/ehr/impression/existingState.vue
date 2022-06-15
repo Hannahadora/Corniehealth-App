@@ -4,23 +4,16 @@
       <span class="flex justify-end w-full mb-8">
         <button
           class="bg-danger rounded-full text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showImpression('false')"
+          @click="createNewImpression"
         >
           New Impression
         </button>
       </span>
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showImpression(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showImpression(item.id)"
-          >
-            <edit-icon class="text-purple-600 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -29,62 +22,57 @@
             <update-icon class="text-purple-800 fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
-          <!-- <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showStatus(item.id)"
-          >
-            <update-icon class="text-purple-800 fill-current" />
-            <span class="ml-3 text-xs">Update Prognosis</span>
-          </div> -->
-          <!-- <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="
-              $router.push('/dashboard/provider/experience/add-appointment')
-            "
-          >
-            <plus-icon class="text-green-400 fill-current" />
-            <span class="ml-3 text-xs">Add Occurrence</span>
-          </div> -->
-          <!-- <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="
-              $router.push('/dashboard/provider/experience/add-appointment')
-            "
-          >
-            <plus-icon class="text-green-400 fill-current" />
-            <span class="ml-3 text-xs">Add Condition</span>
-          </div> -->
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-  
+            @click="showImpression(item.id)"
           >
+            <edit-icon class="text-purple-600 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <cancel-icon />
             <span class="ml-3 text-xs">Cancel</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'In-progress'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'Completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'Entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
           </div>
         </template>
       </cornie-table>
     </div>
 
     <impression-modal
-      v-if="impressionId == 'false'"
       @impression-added="impressionAdded"
-      @update:preferred="showImpression"
+      @update="showImpression"
       v-model="showImpressionModal"
-    />
-
-    <impression-modal
-      v-else
       :id="impressionId"
-
-      @update:preferred="showImpression"
-      v-model="showImpressionModal"
+      :impression="selectedImpression"
     />
+
     <status-modal
       :id="impressionId"
-      :updatedBy="updatedBy"
-      :currentStatus="currentStatus"
-      :updateDate="update"
-      @update:preferred="showStatus"
+      :impression="selectedImpression"
+      :practitioners="practitioners"
+      @update="showStatus"
+      @status-added="getPatientImpressions"
       v-model="showStatusModal"
     />
   </div>
@@ -170,12 +158,16 @@ export default class ImpressionExistingState extends Vue {
   updatedBy = "";
   currentStatus = "";
   update = "";
+  practitioners = <any>[];
+  selectedImpression = {};
+
+  impressions: IImpression[] = [];
 
   // @Prop({ type: Array, default: [] })
   // impressions!: IImpression[];
 
-  @impression.State
-  impressions!: IImpression[];
+  // @impression.State
+  // impressions!: IImpression[];
 
   @impression.Action
   deleteImpression!: (id: string) => Promise<boolean>;
@@ -187,28 +179,28 @@ export default class ImpressionExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "identifier",
-      key: "id",
+      title: "Clinical impression id",
+      key: "cid",
       show: true,
     },
-    { title: "Recorded", key: "createdAt", show: true },
+    { title: "Date Recorded", key: "createdAt", show: true },
     {
       title: "problem",
       key: "problem",
-      show: true,
+      show: false,
     },
     {
       title: "investigation type",
       key: "investigation",
-      show: true,
-    },
-    {
-      title: "finding code",
-      key: "code",
       show: false,
     },
     {
-      title: "prognosis",
+      title: "finding code",
+      key: "findings",
+      show: true,
+    },
+    {
+      title: "prognosis code",
       key: "prognosis",
       show: true,
     },
@@ -218,9 +210,9 @@ export default class ImpressionExistingState extends Vue {
       show: true,
     },
     {
-      title: "status",
+      title: "verification status",
       key: "status",
-      show: false,
+      show: true,
     },
     {
       title: "Status Reason",
@@ -289,24 +281,23 @@ export default class ImpressionExistingState extends Vue {
   }
 
   get items() {
-    const impressions = this.impressions?.map((impression) => {
-      (impression as any).createdAt = new Date(
-        (impression as any).createdAt
-      ).toLocaleDateString("en-US");
-      (impression as any).updatedAt = new Date(
-        (impression as any).updatedAt
-      ).toLocaleDateString("en-US");
-      // this.updatedBy = impression.recorded.assessor;
-      this.currentStatus = impression.status;
-      this.update = impression.updatedAt;
+    const impressions = this.impressions?.map((impression: any) => {
+      impression.createdAt = new Date(impression.createdAt).toLocaleDateString(
+        "en-GB"
+      );
+      impression.updatedAt = new Date(impression.updatedAt).toLocaleDateString(
+        "en-GB"
+      );
       return {
         ...impression,
         action: impression.id,
         keydisplay: "XXXXXXX",
-        // problem: impression.recorded.problem,
-        // investigation: impression.investigation.item,
-        // prognosis: impression.prognosis.prognosis,
-        // assessor: impression.recorded.assessor,
+        cid: "XXXXXXX",
+        prognosis: impression?.prognosis?.itemCode || "Nil",
+        findings: "XXXXXXX",
+        assessor:
+          this.findPractitioner(impression?.recorded?.asserterId) || "Nil",
+        status: impression.status,
       };
     });
 
@@ -315,23 +306,74 @@ export default class ImpressionExistingState extends Vue {
   }
 
   async showStatus(value: string) {
-    this.showStatusModal = true;
     this.impressionId = value;
+    await  this.findImpression(value)
+    this.showStatusModal = true;
   }
 
   async showImpression(value: string) {
-    this.showImpressionModal = true;
     //this.stopEvent = true;
     this.impressionId = value;
+    await  this.findImpression(value)
+    this.showImpressionModal = true;
   }
+
+  async findImpression(id: any) {
+    const url = `/api/v1/clinical-impressions/${this.impressionId}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.selectedImpression = response.data;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error when fetching Impression",
+        status: "error",
+      });
+    }
+  }
+
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
 
+  async fetchPractitioners() {
+    const url = "/api/v1/practitioner";
+    const response: any = await cornieClient().get(url);
+    if (response.success) {
+      this.practitioners = response.data;
+    }
+  }
+
+  findPractitioner(id: any) {
+    const ptn = this.practitioners?.find((el: any) => (el.id = id));
+    return ptn?.firstName + " " + ptn?.lastName;
+  }
+
+  async getPatientImpressions() {
+    const url = `/api/v1/clinical-impressions/findAllByPatient/${this.activePatientId}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.impressions = response.data;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error fetching Impressions",
+        status: "error",
+      });
+    }
+  }
+
+  createNewImpression() {
+    this.showImpressionModal = true; 
+    this.impressionId = ''; 
+    this.selectedImpression = {}
+  }
+
   impressionAdded() {
-    this.impressions;
-    this.fetchImpressions(this.activePatientId);
+    this.getPatientImpressions();
   }
 
   async deleteItem(id: string) {
@@ -352,9 +394,10 @@ export default class ImpressionExistingState extends Vue {
     });
   }
 
-  created() {
+  async created() {
+    await this.fetchPractitioners();
+    await this.getPatientImpressions();
     this.sortImpressions;
-    this.fetchImpressions(this.activePatientId);
   }
 }
 </script>

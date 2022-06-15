@@ -17,7 +17,16 @@
               class="w-full"
               v-model="name"
             />
-            <cornie-select
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+              class="w-full"
+              v-model="relationship"
+              label="Relationship"
+              placeholder="Select"
+              :rules="required"
+              required
+            />
+            <!-- <cornie-select
               class="w-full"
               label="Relationship"
               :rules="required"
@@ -27,7 +36,7 @@
               ]"
               :placeholder="'Select'"
               v-model="relationship"
-            />
+            /> -->
               <cornie-select
               class="w-full"
               label="Sex"
@@ -56,7 +65,7 @@
            title="Age"
           :opened="false"
         >
-        <measurable label="Age" v-model="agemesurable" />
+        <age-measurable label="Age" v-model="agemesurable" />
          <div class="mt-5">
            <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
           <div class="flex space-x-4 mt-5">
@@ -78,8 +87,8 @@
                   <cornie-radio name="Deceased" :value="true" label="Yes" v-model="deceased"/>
                   <cornie-radio name="Deceased"  label="No" :value="false" v-model="deceased"/>
                 </div>
-              <measurable label="Deceased Age" v-model="deceasedmeasurable" />
-              <div class="mt-5">
+              <deaceased-measurable label="Deceased Age" v-model="deceasedmeasurable"  v-if="deceased == true"/>
+              <div class="mt-5" v-if="deceased == true">
                 <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
                 <div class="flex space-x-4 mt-5">
                   <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedDeceased"/>
@@ -113,7 +122,15 @@
                 title="Reason for History (Patient)"
               >
                 <div class="grid grid-cols-2 gap-2 mt-5">
-                  <cornie-select
+                  <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+                    class="w-full"
+                     label="Reason Code"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                    v-model="reasonCode"
+                  />
+                  <!-- <cornie-select
                     class="w-full"
                     label="Reason Code"
                     :items="[
@@ -126,8 +143,14 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                     v-model="reasonCode"
-                  />
-                  <cornie-select
+                  /> -->
+                  <div>
+                    <p class="text-sm text-black font-semibold mb-1">Reason Reference</p>
+                    <div class="border-2 border-gray-200 bg-gray-100 rounded-lg py-5 px-4 cursor-pointer" @click="showRefModal = true">
+                        {{ reasonReference }}
+                    </div>
+                  </div>
+                  <!-- <cornie-select
                     v-model="reasonReference"
                     label="Reason Reference"
                     class="w-full"
@@ -142,12 +165,11 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
-                  />
+                  /> -->
                   <cornie-input
                     v-model="note"
                     class="w-full"
                     label="Note"
-                    :rules="required"
                     :placeholder="'Enter'"
                   />
                 </div>
@@ -159,7 +181,15 @@
                 title="Condition (Related Person)"
               >
                 <div class="grid grid-cols-2 gap-2 mt-5">
-                  <cornie-select
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/condition-code"
+                    class="w-full"
+                     label="Condition Code"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                    v-model="conditionCode"
+                  />
+                  <!-- <cornie-select
                     class="w-full"
                     v-model="conditionCode"
                     label="Condition Code"
@@ -172,8 +202,16 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
+                  /> -->
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/condition-outcome"
+                    class="w-full"
+                     label="Outcome"
+                    :rules="required"
+                    :placeholder="'--Select--'"
+                    v-model="conditionOutcome"
                   />
-                  <cornie-select
+                  <!-- <cornie-select
                     v-model="conditionOutcome"
                     label="Outcome"
                     class="w-full"
@@ -188,7 +226,7 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
-                  />
+                  /> -->
                  <div class="mt-5">
                     <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
                     <div class="flex space-x-4 mt-5">
@@ -206,7 +244,7 @@
           >
           <onset-picker v-model="onsetmesurable" label="Onset"/>
             <cornie-text-area
-              :rules="required"
+            
               v-model="onsetNote"
               placeholder="Placeholder"
               label="Notes"
@@ -254,7 +292,8 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
 import CornieTextArea from "@/components/textarea.vue";
-import Measurable from "@/components/measurable.vue";
+import AgeMeasurable from "./components/ageMeasurable.vue";
+import DeaceasedMeasurable from "./components/deaceasedMeasurable.vue";
 import plusIcon from "@/components/icons/plus.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -264,6 +303,7 @@ import BornPicker from "@/components/bornable.vue";
 import OnsetPicker from "@/components/onset.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import FhirInput from "@/components/fhir-input.vue";
 
 import DatePicker from "./datepicker.vue";
 import ReferenceModal from "./reference.vue";
@@ -296,15 +336,13 @@ const measurable = {
   day: null,
   unit: null,
   min: null,
-  minUnit: null,
-  minValue: null,
   max: null,
-  maxUnit: null,
-  maxValue: null,
   string: null,
   startDate: null,
   startTime: null,
   endDate: null,
+   minUnit: null,
+ maxUnit: null,
 };
 @Options({
   name: "HistoryDialog",
@@ -318,7 +356,8 @@ const measurable = {
     DeceasedPicker,
     DatePicker,
     OnsetPicker,
-    Measurable,
+    AgeMeasurable,
+    DeaceasedMeasurable,
     plusIcon,
     AccordionComponent,
     ReferenceModal,
@@ -327,7 +366,9 @@ const measurable = {
     CornieRadio,
     CornieTextArea,
     BornPicker,
+    FhirInput,
   },
+
 })
 export default class HistoryDialog extends Vue {
   @Prop({ type: Boolean, default: false })
@@ -374,7 +415,7 @@ export default class HistoryDialog extends Vue {
   name = "";
   relationship =  "";
   sex = "";
-  status = "partial";
+  status = "completed";
   // born = { ...timeable };
 
   // age = { ...measurable };
@@ -496,14 +537,17 @@ export default class HistoryDialog extends Vue {
       estimated: this.estimatedAge || null,
       year: this.agemesurable.string || null,
       range: !Object.values({
-          unit: this.agemesurable.unit,
-          min: this.agemesurable.min,
-          max: this.agemesurable.max
-      }).every(o => o === null) ?  {
-          unit: this.agemesurable.unit,
-          min: this.agemesurable.min,
-          max: this.agemesurable.max
-      } : null,
+        unit: this.agemesurable.minUnit,
+        min: this.agemesurable.min,
+        max: this.agemesurable.max,
+      }).every((o) => o === null)
+        ? {
+            unit: this.agemesurable.minUnit,
+            min: this.agemesurable.min,
+            max: this.agemesurable.max,
+          }
+        : null,
+
       age: !Object.values({
         unit: this.agemesurable.ageUnit,
         value: this.agemesurable.ageValue,
@@ -520,11 +564,11 @@ export default class HistoryDialog extends Vue {
        estimated: this.estimatedDeceased,
         year: this.deceasedmeasurable.string || null,
         range: !Object.values({
-          unit: this.deceasedmeasurable.unit,
+          unit: this.deceasedmeasurable.minUnit,
           min:  this.deceasedmeasurable.min,
           max: this.deceasedmeasurable.max
         }).every(o => o === null) ? {
-          unit: this.deceasedmeasurable.unit,
+          unit: this.deceasedmeasurable.minUnit,
           min:  this.deceasedmeasurable.min,
           max: this.deceasedmeasurable.max
         } : null,
@@ -596,14 +640,14 @@ export default class HistoryDialog extends Vue {
       onset: this.onset,
       reasonCode: this.reasonCode,
       reasonReference: this.reasonReference,
-      note: this.note,
+      note: this.note || undefined,
       conditionCode: this.conditionCode,
       conditionOutcome: this.conditionOutcome,
       conditionContributedToDeath: this.conditionContributedToDeath,
       name: this.name,
       relationship: this.relationship,
       sex: this.sex,
-      deceasedAge: this.deceasedAge,
+      deceasedAge: this.deceasedAge || null,
    
     };
   }
@@ -642,7 +686,7 @@ export default class HistoryDialog extends Vue {
       }
     } catch (error:any) {
       window.notify({
-        msg: error.response.data.message,
+        msg: "Medical family history not created",
         status: "error",
       });
     }
@@ -672,7 +716,7 @@ export default class HistoryDialog extends Vue {
 
   async created() {
     this.setHistory();
-    this.fetchAllergy();
+    if(this.patientId) this.fetchAllergy();
     await this.fetchPractitioners();
   }
 }

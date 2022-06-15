@@ -111,7 +111,7 @@
                     class="mb-5 w-full"
                     placeholder="Enter"
                     v-model="note"
-                  >
+                  >   
                   </cornie-input>
                 </div>
               </template>
@@ -375,6 +375,20 @@ export default class AlergyModal extends Vue {
     this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
+    this.setOccurence = this.occur.time
+    this.setOccurencetime = this.separateTime(this.occur.time); 
+  }
+
+  getDate(allergy:any){
+      return allergy.map((c:any) => c.time.join(''));
+  }
+  separateTime(date:string){
+    const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
+    return date ? newtime :''
+  }
+
+   get occur(){
+    return this.occurences[this.occurences.length - 1]
   }
 
   get patientId() {
@@ -383,7 +397,7 @@ export default class AlergyModal extends Vue {
 
   get onset() {
     return {
-      onsetRange: !Object.values({
+      range: !Object.values({
         unit: this.onsetmesurable.unit,
         min: this.onsetmesurable.min,
         max: this.onsetmesurable.max,
@@ -394,7 +408,7 @@ export default class AlergyModal extends Vue {
             max: this.onsetmesurable.max,
           }
         : null,
-      onsetAge: !Object.values({
+      age: !Object.values({
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
       }).every((o) => o === null)
@@ -403,8 +417,8 @@ export default class AlergyModal extends Vue {
             value: this.onsetmesurable.ageValue,
           }
         : null,
-      onsetString: this.onsetmesurable.string || null,
-      onsetPeriod: !Object.values({
+      string: this.onsetmesurable.string || null,
+      period: !Object.values({
         start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
         startTime: this.onsetmesurable.startTime,
@@ -417,7 +431,7 @@ export default class AlergyModal extends Vue {
             endTime: this.onsetmesurable.endTime,
           }
         : null,
-      onsetDateTime: this.safeBuildDateTime(
+      dateTime: this.safeBuildDateTime(
         this.onsetmesurable.date as any,
         this.onsetmesurable.time as any
       ),
@@ -464,7 +478,7 @@ export default class AlergyModal extends Vue {
       category: this.category,
       criticality: this.criticality,
       code: this.code,
-      onSet: this.onset,
+      onset: this.onset,
       reaction: this.reaction,
       occurences: newoccur,
       recordDate: this.recordDate,
@@ -487,6 +501,8 @@ export default class AlergyModal extends Vue {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
 
+    this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     try {
       const response = await cornieClient().post(
         "/api/v1/allergy",
@@ -497,12 +513,15 @@ export default class AlergyModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Saved", status: "error" });
     }
   }
   async updateAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     const id = this.id;
     const url = `/api/v1/allergy/${id}`;
     const payload = this.payload;
@@ -516,7 +535,7 @@ export default class AlergyModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Updated", status: "error" });
     }
   }
  
@@ -526,6 +545,7 @@ export default class AlergyModal extends Vue {
   }
 
   async created() {
+    this.setAllergy()
    
   }
 }

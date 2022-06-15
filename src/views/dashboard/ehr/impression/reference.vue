@@ -2,7 +2,7 @@
   <cornie-dialog
     v-model="show"
     right
-    class="w-4/12 h-full"
+    class="w-5/12 h-full"
     style="z-index: 999"
   >
     <cornie-card height="100%" class="flex flex-col bg-white">
@@ -66,7 +66,7 @@
                 type="search"
                 placeholder="Search"
                 v-bind="$attrs"
-                v-model="displayVal"
+                v-model="query"
               >
                 <template v-slot:prepend>
                   <search-icon />
@@ -85,11 +85,14 @@
                     <div class="w-full flex items-center justify-between">
                       <div class="w-full">
                         <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input.code }}
+                          {{ codeMapper(input.code) }}
+                        </p>
+                        <p class="text-sm text-dark mb-1 font-medium">
+                          {{ severityMapper(input.severity) }}
                         </p>
                         <p class="text-xs text-gray-300">
                           {{
-                            new Date(input?.recordedDate).toLocaleDateString()
+                            new Date(input?.recordDate).toLocaleDateString()
                           }}
                         </p>
                       </div>
@@ -129,28 +132,8 @@
         </div>
       </cornie-card-text>
 
-      <div class="flex justify-end pb-6 px-2">
-        <div
-          class="flex justify-end w-full mt-auto"
-          v-if="type === 'condition'"
-        >
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-        <div
-          class="flex justify-end w-full mt-auto"
-          v-if="type === 'observation'"
-        >
+      <div class="flex items-center justify-end pb-6 px-2">
+        <div class="flex justify-end w-full mt-auto">
           <button
             class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
@@ -168,8 +151,10 @@
     </cornie-card>
   </cornie-dialog>
 </template>
-<script>
-import { setup } from "vue-class-component";
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Modal from "@/components/practitionermodal.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
@@ -191,10 +176,13 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
-const copy = (original) => JSON.parse(JSON.stringify(original));
+import { ICondition } from "@/types/ICondition";
+import { IObservation } from "@/types/IObservation";
 
-export default {
-  name: "reference",
+import { mapDisplay } from "@/plugins/definitions";
+
+@Options({
+  name: "ReferenceDialog",
   components: {
     ...CornieCard,
     Modal,
@@ -214,63 +202,67 @@ export default {
     Avatar,
     CornieRadio,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    selected: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    conditions: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    observations: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
+})
+export default class ReferenceDialog extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
 
-  data() {
-    return {
-     selectedRef: {},
-     type: "",
-    };
-  },
-  computed: {
-    patientId() {
-      return this.$route.params.id;
-    },
-  },
-  methods: {
-    getValue(value) {
-      this.selectedRef = value;
-    },
-    apply() {
-      this.$emit("update:preferred", this.selectedRef, this.type);
-      this.show = false;
-    },
-  },
+  @Prop({ type: Array, default: [] })
+  conditions!: ICondition[];
+
+  @Prop({ type: Array, default: [] })
+  observations!: IObservation[];
+
+    severityMapper = (code: string) => "";
+  codeMapper = (code: string) => "";
+
+  loading = false;
+
+  selectedRef = {
+    itemReference: <any>{},
+    basis: ""
+  };
+  type = "condition";
+  refBasis = "";
+  query = "";
+
+  get patientId() {
+    return this.$route.params.id;
+  }
+
+   async loadMappers() {
+    this.severityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+  }
+
+
+  getValue(value: any) {
+    if (this.type === "condition") {
+      this.selectedRef.itemReference.referenceType = this.type;
+      this.selectedRef.itemReference.referenceId = value.id;
+      this.selectedRef.itemReference.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
+      this.selectedRef.itemReference.practitionerSpecialty =
+        value.practitioner?.jobDesignation;
+      this.selectedRef.itemReference.description = this.codeMapper(value.code);
+      this.selectedRef.itemReference.details = this.severityMapper(value.severity);
+      this.selectedRef.basis = value.code
+    } else if (this.type === "observation") {
+    }
+  }
+
+  apply() {
+    this.$emit("update", this.selectedRef, this.type);
+    this.show = false;
+  }
 
   async created() {
-  },
-};
+    this.loadMappers();
+    }
+}
 </script>
 <style scoped>
 .custom-checkbox {

@@ -62,7 +62,9 @@
          <span v-if="item.status == 'no Show'" class="text-gray-600 bg-gray-50 rounded-full py-2 px-6 text-xs">No Show</span>
       </template>
     </cornie-table>
+    <pagination :items="items" :itemsPerPage="20" :pagedItems="items"/>
   </div>
+
   <schedule-modal
   :id="scheduleId"
     v-model="showScheduleModal"
@@ -97,6 +99,8 @@ import ActorModal from "../availability/actors.vue";
 import ISchedule,{Break, Repeat} from "@/types/ISchedule";
 import ApproveIcon from "@/components/icons/approval.vue";
 
+import Pagination from "@/components/paginator.vue"
+
 const practitioner = namespace("practitioner");
 const schedulesStore = namespace("schedules");
 
@@ -123,6 +127,7 @@ const schedulesStore = namespace("schedules");
     TableOptions,
     ShareIcon,
     PlusIcon,
+    Pagination,
   },
 })
 export default class SchedulesExistingState extends Vue {

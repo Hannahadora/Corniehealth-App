@@ -185,6 +185,7 @@
 
     created() {
       if (!this.practitioners?.length) this.fetchPractitioners();
+      console.log("practttt", this.practitioners);
     }
   }
 </script>

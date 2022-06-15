@@ -81,7 +81,7 @@ import ActorsModal from "./add-monthactors.vue";
     ActorsModal
   },
 })
-export default class ActorsList extends Vue {
+export default class monthsActors extends Vue {
 //   @Prop()
 //   items!: IPractitioner[];
 

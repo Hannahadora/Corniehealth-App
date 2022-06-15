@@ -461,7 +461,7 @@
                     class="-mt-1 text-danger font-bold cursor-pointer"
                     @click="addAccessRole = true"
                   >
-                    Location(s) & privileges</span
+                    Add Location(s) & privileges</span
                   >
                   <plus-icon class="fill-current text-danger font-bold w-3" />
                 </div>
@@ -556,11 +556,11 @@
                     class="w-full"
                     :required="true"
                   />
-                  <period-picker
+                  <date-picker
                     class="w-full mb-5"
                     label="Year of Graduation"
                     v-model="graduationYear"
-                    :rules="required"
+                    :rules="dobRule"
                     :required="true"
                   />
                 </div>
@@ -587,9 +587,8 @@
                   <div class="text-gray-600 text-sm flex items-center">
                     <div>{{ item.qualification }}</div>
                     <div class="font-bold text-xs leading-none mx-1">•</div>
-                    <div>{{ new Date(item.graduationYear)  .toLocaleDateString()
-                          .toString()
-                          .split("/")[2] }}</div>
+                    <div>{{ item.graduationYear
+                          }}</div>
                   </div>
                 </div>
               </div>
@@ -810,6 +809,11 @@ export default class AddPractitioner extends Vue {
   licenses = [] as any;
   disabled=false;
 
+   dobRule = date().max(
+    new Date(),
+    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+  );
+
   addEducation() {
     if (
       !this.graduationYear ||
@@ -827,7 +831,7 @@ export default class AddPractitioner extends Vue {
       ...this.educations,
     ];
 
-    this.qualificationIssuer = this.qualificationCode = "";
+    this.qualificationIssuer = this.qualificationCode = this.graduationYear = "";
   }
 
   addLicense() {
@@ -843,7 +847,7 @@ export default class AddPractitioner extends Vue {
       ...this.licenses,
     ];
 
-    this.licenseIssuer = this.licenseNumber = "";
+    this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
   }
 
   dobValidator = date().max(
@@ -942,7 +946,7 @@ export default class AddPractitioner extends Vue {
     value: 0,
     unit: "Hour",
   };
-  graduationYear = "" as any;
+  graduationYear = "";
   licenseIssuer = "";
   newservices = [] as any;
   licensePeriod = "" as any;

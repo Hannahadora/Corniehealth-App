@@ -201,8 +201,8 @@
                 v-model="idNumber"
                 :rules="requiredRule"
               >
-                <template #prepend class="-0">
-                  <cornie-menu class="cursor-pointer">
+                <template #prepend class="0">
+                  <!-- <cornie-menu class="cursor-pointer">
                     <template #activator="{ on }">
                       <div v-on="on" class="flex items-center">
                         <span class="mr-3"> {{ idType }}</span>
@@ -218,7 +218,10 @@
                     >
                       {{ idOption }}
                     </div>
-                  </cornie-menu>
+                  </cornie-menu> -->
+                  <div>
+                    {{ idType }}
+                  </div>
                 </template>
               </cornie-input>
             </div>
@@ -428,54 +431,54 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
-import { Field } from "vee-validate";
-import { string, number, date, array } from "yup";
-import { Prop, Ref } from "vue-property-decorator";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
 import { useCountryStates } from "@/composables/useCountryStates";
+import { cornieClient } from "@/plugins/http";
+import { Field } from "vee-validate";
+import { Options, setup, Vue } from "vue-class-component";
+import { Prop, Ref } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { array, date, number, string } from "yup";
 
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+import { IPatient } from "@/types/IPatient";
 
-import CornieCard from "@/components/cornie-card/index";
-import CornieSpacer from "@/components/CornieSpacer.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import DatePicker from "@/components/datepicker.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieMenu from "@/components/CornieMenu.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CompletedIcon from "@/components/icons/CompletedIcon.vue";
-import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
-import AddIcon from "@/components/icons/add.vue";
-import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
-import MedicineIcon from "@/components/icons/MedicineIcon.vue";
-import ScienceIcon from "@/components/icons/ScienceIcon.vue";
-import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
-import LinkIcon from "@/components/icons/LinkIcon.vue";
-import UrlIcon from "@/components/icons/UrlIcon.vue";
-import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
-import DemographicIcon from "@/components/icons/DemographicIcon.vue";
 import AutoComplete from "@/components/autocomplete.vue";
-import PlusIcon from "@/components/icons/plus.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import CornieCard from "@/components/cornie-card/index";
+import CornieBtn from "@/components/CornieBtn.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieMenu from "@/components/CornieMenu.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CornieSpacer from "@/components/CornieSpacer.vue";
+import CustomCheckbox from "@/components/custom-checkbox.vue";
+import DatePicker from "@/components/datepicker.vue";
+import AddIcon from "@/components/icons/add.vue";
+import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+import ChevronRightIcon from "@/components/icons/chevronright.vue";
+import CompletedIcon from "@/components/icons/CompletedIcon.vue";
 import DeleteIcon from "@/components/icons/delete-red.vue";
-import CornieTooltip from "@/components/tooltip.vue";
-import QuestionIcon from "@/components/icons/question.vue";
+import DemographicIcon from "@/components/icons/DemographicIcon.vue";
+import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
+import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
 import InfoIcon from "@/components/icons/info-blue-bg.vue";
+import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
+import LinkIcon from "@/components/icons/LinkIcon.vue";
+import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
+import MedicineIcon from "@/components/icons/MedicineIcon.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import QuestionIcon from "@/components/icons/question.vue";
+import ScienceIcon from "@/components/icons/ScienceIcon.vue";
+import UrlIcon from "@/components/icons/UrlIcon.vue";
+import CornieTooltip from "@/components/tooltip.vue";
 
+import ContactInfo from "./contact-information.vue";
+import AssociationDialog from "./dialogs/AssociationDialog.vue";
 import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
 import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
 import LinksDialog from "./dialogs/LinksDialog.vue";
-import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
-import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
-import AssociationDialog from "./dialogs/AssociationDialog.vue";
 import PaymentDialog from "./dialogs/PaymentDialog.vue";
-import ContactInfo from "./contact-information.vue";
+import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 
 const patients = namespace("patients");
 
@@ -528,7 +531,7 @@ export default class NewPatient extends Vue {
   showPatientIdentity = true;
   showContactInfo = true;
   showOptionalInformation = false;
-  idOptions = ["NIN", "BVN"];
+  idOptions = ["NIN"];
   genderOptions = [
     { code: "male", display: "Male" },
     { code: "female", display: "Female" },
@@ -745,6 +748,8 @@ export default class NewPatient extends Vue {
   }
 
   async submit() {
+    // const report = await (this.$refs.basic as any).validate();
+    // if (!report.valid) return;
     this.loading = true;
     if (this.id) await this.updateData();
     else await this.registerPatient();
@@ -852,7 +857,10 @@ export default class NewPatient extends Vue {
       this.loading = false;
     } else {
       this.showPatientInformation = false;
-      window.notify({ msg: "Patient infromation Updated", status: "success" });
+      window.notify({
+        msg: "Patient infromation Updated",
+        status: "success",
+      });
       this.basicCompleted = false;
     }
   }

@@ -10,6 +10,7 @@ export async function fetchProgressNote(patientId: string) {
       return response.data;
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log("fetch error", error);
   }
   return [];

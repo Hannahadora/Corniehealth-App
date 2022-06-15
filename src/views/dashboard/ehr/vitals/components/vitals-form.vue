@@ -446,11 +446,11 @@ export default class VitalsForm extends Vue {
   newBp: any = {
     position: "",
     systolicBloodPressure: {
-      unit: "",
+      unit: "mmHg",
       value: 0,
     },
     diastolicBloodPressure: {
-      unit: "",
+      unit: "mmHg",
       value: 0,
     },
     date: "",
@@ -492,50 +492,50 @@ export default class VitalsForm extends Vue {
     },
   };
 
-  vitalData: IVital = {
+  vitalData = {
     status: "preliminary",
     bodyTemperature: {
-      unit: "",
-      value: 0,
+      unit: "°C",
+      value: undefined,
     },
     respiration: {
       respiratoryRate: {
         unit: "/min",
-        value: 0,
+        value: undefined,
       },
       heartRate: {
         unit: "/min",
-        value: 0,
+        value: undefined,
       },
       oxygenSaturation: {
         unit: "%",
-        value: 0,
+        value: undefined,
       },
       bloodGlucoseLevel: {
-        unit: "",
-        value: 0,
+        unit: "mm/dL",
+        value: undefined,
       },
     },
     bloodPressure: [] as IBloodPressure[],
     circumferences: {
       bodyHeight: {
-        unit: "",
-        value: 0,
+        unit: "cm",
+        value: undefined,
       },
       headCircumferences: {
-        unit: "",
-        value: 0,
+        unit: "cm",
+        value: undefined,
       },
     },
 
     bodyWeight: {
       bodyWeight: {
-        unit: "",
-        value: 0,
+        unit: "kg",
+        value: undefined,
       },
       bodyMassIndex: {
         unit: "kg/m³",
-        value: 0,
+        value: undefined,
       },
     },
     date: new Date().toISOString(),
@@ -544,8 +544,7 @@ export default class VitalsForm extends Vue {
     patientId: this.$route?.params?.id,
     // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
     practitionerId: this.practitionerId,
-    // pulse: 78,
-  } as IVital;
+  };
 
   temperatureUnits = [
     { display: "°F", code: "fahrenheit" },
@@ -559,21 +558,23 @@ export default class VitalsForm extends Vue {
   get bmi () {
     const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
     const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
-    if(heightValue !== 0 && weightValue !== 0) {
-       return (weightValue / this.convertHeightValue()).toFixed(2) || 0
+    if(heightValue && weightValue) {
+       return (weightValue / Number(this.convertHeightValue()) * 2).toFixed(2) || 0
     } else return 0.00
   }
 
   convertHeightValue() {
     const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
     const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit
-    if(heightUnit === 'cm') {
-      return heightValue / 1000000;
+   if(heightValue) {
+      if(heightUnit === 'cm') {
+      return Number(heightValue / 100);
     } else if(heightUnit === 'in') {
-      return heightValue / 61024
+      return Number(heightValue / 61024)
     } else if(heightUnit === 'ft') {
-      return heightValue / 35.315
-    } else return heightValue
+      return Number(heightValue / 35.315)
+    } else return Number(heightValue)
+   }
   }
 
   removePresure(index: number) {
@@ -598,42 +599,42 @@ export default class VitalsForm extends Vue {
   resetVitalData() {
     this.vitalData = {
       bodyTemperature: {
-        unit: "",
+        unit: "°C",
         // value: 0,
       },
       respiration: {
         respiratoryRate: {
-          unit: "",
+          unit: "/min",
           // value: 0,
         },
         heartRate: {
-          unit: "",
+          unit: "/min",
           // value: 0,
         },
         oxygenSaturation: {
-          unit: "",
+          unit: "%",
           // value: 0,
         },
         bloodGlucoseLevel: {
-          unit: "",
+          unit: "mm/dL",
           // value: 0,
         },
       },
       bloodPressure: [] as IBloodPressure[],
       circumferences: {
         bodyHeight: {
-          unit: "",
+          unit: "cm",
           // value: 0,
         },
         headCircumferences: {
-          unit: "",
+          unit: "cm",
           // value: 0,
         },
       },
 
       bodyWeight: {
         bodyWeight: {
-          unit: "",
+          unit: "kg",
           // value: 0,
         },
         bodyMassIndex: {
@@ -649,7 +650,7 @@ export default class VitalsForm extends Vue {
       patientId: this.$route?.params?.id,
       // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
       practitionerId: this.practitionerId,
-    } as IVital;
+    } as any;
   }
 
   get newaction() {
@@ -665,11 +666,11 @@ export default class VitalsForm extends Vue {
     this.newBp = {
       position: "",
       systolicBloodPressure: {
-        unit: "",
+        unit: "mmHg",
         value: 0,
       },
       diastolicBloodPressure: {
-        unit: "",
+        unit: "mmHg",
         value: 0,
       },
       date: "",
@@ -696,9 +697,9 @@ export default class VitalsForm extends Vue {
       this.vitalData.practitionerId = this.practitionerId;
       this.vitalData.patientId = this.patientId;
       this.vitalData.bloodPressure = this.collectedPressures;
-      this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi as number;
+     ( this.vitalData.bodyWeight.bodyMassIndex.value as any) = this.bmi as number;
 
-      const res: any = await this.createVital(this.vitalData);
+      const res: any = await this.createVital(this.vitalData as any);
       if (res.success) {
         this.getVitals(this.patientId);
         this.loading = false;
@@ -714,10 +715,10 @@ export default class VitalsForm extends Vue {
     if (this.id !== "") {
       const xVital = this.vital;
       if (xVital) {
-        (this.vitalData.bodyTemperature = xVital?.bodyTemperature),
-          (this.vitalData.respiration = xVital?.respiration),
-          (this.vitalData.circumferences = xVital?.circumferences),
-          (this.vitalData.bodyWeight = xVital?.bodyWeight),
+        (this.vitalData.bodyTemperature as any) = xVital?.bodyTemperature,
+          (this.vitalData.respiration as any) = xVital?.respiration,
+          (this.vitalData.circumferences as any) = xVital?.circumferences,
+          (this.vitalData.bodyWeight as any) = xVital?.bodyWeight,
           (this.vitalData.bloodPressure = xVital?.bloodPressure),
           (this.collectedPressures = xVital?.bloodPressure);
       }
@@ -727,8 +728,8 @@ export default class VitalsForm extends Vue {
   }
 
   done() {
-    this.$emit("vitals-added");
     this.show = false;
+    this.$emit("vitals-added");
     this.resetVitalData();
   }
 

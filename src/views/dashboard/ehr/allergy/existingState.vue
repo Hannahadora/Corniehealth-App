@@ -439,10 +439,10 @@ export default class AllergyExistingState extends Vue {
   }
 
   async created() {
+     this.fetchAllergys(this.$route.params.id as string);
     await this.createMapper();
     this.getPractitioners();
     this.sortAllergys;
-    await this.fetchAllergys(this.patientId);
   }
 }
 </script>

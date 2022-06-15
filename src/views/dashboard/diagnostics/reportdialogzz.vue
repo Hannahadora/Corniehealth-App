@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            View Result
+           {{ newAction }} Diagnostic Report
           </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
@@ -18,7 +18,7 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form class="flex-grow flex flex-col" @submit="submit">
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="General"
             :opened="false"
           >
@@ -88,7 +88,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Effective"
             :opened="false"
           >
@@ -126,7 +126,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Issue Info"
             :opened="false"
           >
@@ -156,7 +156,7 @@
             </div>
           </accordion-component>
           <accordion-component
-            class="shadow-none rounded-none border-none text-primary"
+            class="text-primary"
             title="Result"
             :opened="false"
           >
@@ -172,12 +172,17 @@
                 v-model="refernceObs"
                 :items="statuses"
               />
-              <cornie-select
+              <!-- <cornie-select
                 class="w-full"
                 label="Media(optional)"
                 placeholder="Media"
                 v-model="media"
                 :items="statuses"
+              /> -->
+
+              <choose-file
+                class="w-full"
+                label="Media"
               />
 
               <cornie-input
@@ -250,14 +255,13 @@ import { namespace } from "vuex-class";
 import { CornieUser } from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
-
+import ChooseFile from "@/views/dashboard/settings/kyc/components/choose-file.vue"
 import DateTimePicker from "@/components/date-time-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
-
-import AccordionComponent from "@/components/dialog-accordion.vue";
 
 const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
@@ -281,6 +285,7 @@ const appointmentRoom = namespace("appointmentRoom");
     CancelIcon,
     AccordionComponent,
     PlusIcon,
+    ChooseFile,
   },
 })
 export default class ViewResult extends Vue {
@@ -315,6 +320,12 @@ export default class ViewResult extends Vue {
       "Entered-in-Errors",
       "Unknown",
     ];
+  }
+
+  get newAction() {
+    if(this.id) {
+      return "Create New"
+    } else return "Edit"
   }
 }
 </script>

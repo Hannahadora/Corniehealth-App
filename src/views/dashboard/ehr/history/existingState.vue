@@ -9,7 +9,7 @@
            Create New
         </button>
       </span>
-      <cornie-table :columns="headers" v-model="sortHistory">
+      <cornie-table :columns="headers" v-model="sortHistory" @refresh="fetchHistorys">
         <template #actions="{ item }">
           <div
             @click="viewHistory(item.id)"
@@ -32,11 +32,11 @@
             <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs"> Update Status </span>
           </div>
-           <div
+           <!-- <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
               <cancel-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
-            </div> 
+            </div>  -->
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
@@ -106,6 +106,7 @@
       </cornie-table>
     </div>
 
+  </div>
     <history-modal
       :id="historyId"
       @history-added="historyAdded"
@@ -129,10 +130,10 @@
       @show:modal="viewHistory"
       v-model="viewHistoryModal"
     />
-  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 
@@ -174,6 +175,10 @@ const allergy = namespace("allergy");
   },
 })
 export default class ExistingState extends Vue {
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
+
   @patients.State
   patients!: IPatient[];
 
@@ -211,7 +216,6 @@ export default class ExistingState extends Vue {
       title: "history id",
       key: "identifier",
       show: true,
-      noOrder: true,
     },
     {
       title: "date recorded",
@@ -249,10 +253,6 @@ export default class ExistingState extends Vue {
     //   show: true,
     // },
   ];
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
-  }
 
   get items() {
     const historys = this.historys.map((history:any) => {
@@ -280,7 +280,7 @@ export default class ExistingState extends Vue {
     });
   }
   async historyAdded() {
-    await this.fetchHistorys(this.activepatientId);
+    await this.fetchHistorys(this.patientId);
   }
 
   async deleteItem(id: string) {
@@ -292,7 +292,7 @@ export default class ExistingState extends Vue {
 
     if (await this.deleteHistory(id))
       window.notify({ msg: "Family history deleted", status: "success" });
-    else window.notify({ msg: "Family history noy deleted", status: "error" });
+    else window.notify({ msg: "Family history not deleted", status: "error" });
   }
 
   async viewHistory(value: string) {
@@ -309,8 +309,7 @@ export default class ExistingState extends Vue {
     this.historyId = value;
   }
   async created() {
-    this.sortHistory;
-     if (this.activepatientId) await this.fetchHistorys(this.activepatientId);
+    await this.fetchHistorys(this.patientId);
   }
 }
 </script>

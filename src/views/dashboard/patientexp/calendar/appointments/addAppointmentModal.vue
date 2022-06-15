@@ -41,7 +41,7 @@
                
             </div>
             <div class="w-full mt-5">
-                <div class="flex w-full border-dashed border-b border-gray-100">
+                <div class="flex w-full border-dashed border-b-2 border-gray-200 pb-5">
                     <div class="w-full">
                      <span class="text-sm font-bold">Patient</span>
                     </div>
@@ -99,7 +99,7 @@
                 </div>
             </div>
              <div class="w-full mt-2 mb-2">
-                <div class="flex w-full border-dashed border-b border-gray-100">
+                <div class="flex w-full border-dashed border-b-2 border-gray-200 pb-5">
                     <div class="w-full">
                      <span class="text-sm font-bold">Other Participants <span class="text-xs text-gray-500">(Optional)</span></span>
                     </div>
@@ -271,6 +271,41 @@
                         />
                   </template>    
             </accordion-component>
+            <accordion-component
+            :title="'Period'"
+            :addborder="true"
+            :opened="false"
+          >
+            <template v-slot:default>
+              <div class="mt-4">
+                <date-picker
+                  label="Start Date"
+                  placeholder="--/04/2021"
+                  class="w-full"
+                  v-model="date"
+                  :disabled="[appoitmentDate ? true : false]"
+                />
+                <div class="grid mt-5 grid-cols-2 gap-4">
+                  <cornie-input
+                    :type="'time'"
+                    label="Start Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="startTime"
+                    :disabled="[range ? false : true]"
+                  />
+                  <cornie-input
+                    :type="'time'"
+                    label="End Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="endTime"
+                     :disabled="[range ? false : true]"
+                  />
+                </div>
+              </div>
+            </template>
+          </accordion-component>
             <div class="w-full mt-2 mb-2">
                 <div class="flex w-full border-dashed border-b border-gray-100">
                     <div class="w-full">
@@ -489,11 +524,15 @@ export default class appointmentModal extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-  @user.State
-   currentLocation!: string;
 
   @practitioner.State
   practitioners!: IPractitioner[];
+
+  @user.Getter
+  authCurrentLocation!: string;
+
+  @user.Getter
+  authPractitioner!: IPractitioner;
 
 
   @practitioner.Action
@@ -570,14 +609,15 @@ export default class appointmentModal extends Vue {
     this.appointmentType = appointment.appointmentType;
     this.description = appointment.description;
     this.venue = appointment.venue;
-    this.meetingLink = appointment.meetingLink;
-    this.venueAddress = appointment.venueAddress;
+    this.meetingLink = appointment?.meetingLink;
+    this.venueAddress = appointment?.venueAddress;
     this.billingType = appointment.billingType;
     this.Practitioners = appointment.Practitioners;
     this.Patients = appointment.Patients;
     this.services = appointment.services;
     this.comment = appointment.comment;
     this.newPractitioners = appointment.Practitioners[0];
+    this.bookingLocationId = appointment?.bookingLocationId;
    
 
   }
@@ -587,8 +627,8 @@ export default class appointmentModal extends Vue {
       appointmentType: this.appointmentType,
       description: this.description,
       venue: this.venue,
-      meetingLink: this.meetingLink,
-      venueAddress: this.venueAddress,
+      meetingLink: this.meetingLink  || undefined,
+      venueAddress: this.venueAddress || undefined,
       billingType: this.billingType,
       services : this.serviceId,
       Practitioners: this.practitionerId,
@@ -600,8 +640,8 @@ export default class appointmentModal extends Vue {
       startTime: this.startTime,
       endTime : this.endTime,
       locationId : this.locationId,
-      bookingLocationId: this.bookingLocationId,
-      practitionerId: this.appoimtentId,
+      bookingLocationId: this.bookingLocationId || undefined,
+      practitionerId: this.authPractitioner.id,
       patientId: this.singlePatientId
 
     }
@@ -616,12 +656,12 @@ export default class appointmentModal extends Vue {
 
 
   async createAppointment() {
-    this.locationId = this.currentLocation;
+    this.locationId = this.authCurrentLocation;
     this.payload.startTime = this.range;
     this.payload.endTime = this.range2;
     this.payload.date = this.appoitmentDate;
 
-    if(this.currentLocation){
+    if(this.authCurrentLocation){
       try {
         const response = await cornieClient().post(
           "/api/v1/appointment",

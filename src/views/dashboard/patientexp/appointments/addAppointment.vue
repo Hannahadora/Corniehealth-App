@@ -1008,7 +1008,7 @@ export default class AddAppointment extends Vue {
     this.dropdowns2 = data2;
     this.slotObject;
     await this.setAppointment();
-    await this.getPractionerSlot();
+    if(this.practitionersId) await this.getPractionerSlot();
 
     
     this.fetchDevices();

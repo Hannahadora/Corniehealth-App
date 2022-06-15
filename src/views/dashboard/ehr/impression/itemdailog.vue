@@ -55,7 +55,7 @@
                 type="search"
                 placeholder="Search"
                 v-bind="$attrs"
-                v-model="displayVal"
+                v-model="query"
               >
                 <template v-slot:prepend>
                   <search-icon />
@@ -66,7 +66,7 @@
           <div class="overflow-y-auto">
             <div v-if="type === 'Observation'">
               <div v-for="(input, index) in observations" :key="index">
-                <div class="w-full mt-5 p-3" @click="getValue(input)">
+                <div class="w-full mt-5 p-3" @click="setValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
@@ -80,7 +80,7 @@
             </div>
             <div v-if="type === 'Questionaire Response'">
               <div v-for="(input, index) in questions" :key="index">
-                <div class="w-full mt-2 p-3" @click="getValue(input)">
+                <div class="w-full mt-2 p-3" @click="setValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
@@ -124,11 +124,13 @@
                     </div>
                   </div>
 
-                  <div class="w-1/2">
+                  <div class="w-1/2 text-right">
                     <p class="text-sm text-dark mb-1 font-medium">
                       {{ input.conditionCode }}
                     </p>
-                    <p class="text-xs text-gray-300">{{ input.age?.year }}</p>
+                    <p class="text-xs text-gray-300">
+                      {{ getAge(input.age?.year) }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -137,7 +139,7 @@
 
           <div v-if="type === 'Diagnostic Report'">
             <div v-for="(input, index) in diagnosticReports" :key="index">
-              <div class="w-full mt-2 p-3" @click="getValue(input)">
+              <div class="w-full mt-2 p-3" @click="setValue(input)">
                 <div class="w-full">
                   <div class="w-full">
                     <p class="text-sm text-dark mb-1 font-medium">
@@ -174,166 +176,166 @@
   </cornie-dialog>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { setup } from "vue-class-component";
-import Modal from "@/components/practitionermodal.vue";
-import DragIcon from "@/components/icons/draggable.vue";
-import Draggable from "vuedraggable";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieCard from "@/components/cornie-card";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import IconInput from "@/components/IconInput.vue";
-import Availability from "@/components/availability.vue";
-import Profile from "@/components/profile.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import Avatar from "@/components/avatar.vue";
-import { cornieClient } from "@/plugins/http";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieCheckbox from "@/components/corniecheckbox.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import DatePicker from "@/components/daterangepicker.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import Period from "@/types/IPeriod";
-import { initial } from "lodash";
-import { IObservation } from "@/types/IObservation";
-import IDiagnostic from "@/types/IDiagnostic";
-import { Investigation } from "@/types/IImpression";
+  import Availability from "@/components/availability.vue";
+  import Avatar from "@/components/avatar.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieCheckbox from "@/components/corniecheckbox.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import DatePicker from "@/components/daterangepicker.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
+  import DragIcon from "@/components/icons/draggable.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import Modal from "@/components/practitionermodal.vue";
+  import Profile from "@/components/profile.vue";
+  import IDiagnostic from "@/types/IDiagnostic";
+  import { Investigation } from "@/types/IImpression";
+  import { IObservation } from "@/types/IObservation";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import Draggable from "vuedraggable";
 
-@Options({
-  name: "ItemDialog",
-  components: {
-    ...CornieCard,
-    Modal,
-    DragIcon,
-    CornieSelect,
-    CornieCheckbox,
-    ArrowLeftIcon,
-    CornieIconBtn,
-    CancelIcon,
-    Draggable,
-    DatePicker,
-    Availability,
-    CornieDialog,
-    IconInput,
-    SearchIcon,
-    Profile,
-    Avatar,
-    CornieRadio,
-  },
-})
-export default class ItemDialog extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
-
-  @Prop({ type: Array, default: [] })
-  observations!: IObservation[];
-
-  @Prop({ type: Array, default: [] })
-  questions!: any[];
-
-  @Prop({ type: Array, default: [] })
-  familyHistories!: any[];
-
-  @Prop({ type: Array, default: [] })
-  diagnosticReports!: IDiagnostic[];
-
-  localSrc = require("../../../../assets/img/placeholder.png");
-  type = "Family member History";
-  selectedItem: Investigation = {
-    code: "",
-    item: {
-      type: "",
-      details: "",
-      id: "",
+  @Options({
+    name: "ItemDialog",
+    components: {
+      ...CornieCard,
+      Modal,
+      DragIcon,
+      CornieSelect,
+      CornieCheckbox,
+      ArrowLeftIcon,
+      CornieIconBtn,
+      CancelIcon,
+      Draggable,
+      DatePicker,
+      Availability,
+      CornieDialog,
+      IconInput,
+      SearchIcon,
+      Profile,
+      Avatar,
+      CornieRadio,
     },
-  };
-  practitionerId = "";
-  checkedValue = <any>{};
+  })
+  export default class ItemDialog extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  setType(type: any) {
-    this.type = type;
+    @Prop({ type: Array, default: [] })
+    observations!: IObservation[];
+
+    @Prop({ type: Array, default: [] })
+    questions!: any[];
+
+    @Prop({ type: Array, default: [] })
+    familyHistories!: any[];
+
+    @Prop({ type: Array, default: [] })
+    diagnosticReports!: IDiagnostic[];
+
+    localSrc = require("../../../../assets/img/placeholder.png");
+    query = "";
+    type = "Family member History";
+    selectedItem: Investigation = {
+      code: "",
+      item: {
+        type: "",
+        details: "",
+        id: "",
+      },
+    };
+    practitionerId = "";
+    checkedValue = <any>{};
+
+    setType(type: any) {
+      this.type = type;
+    }
+
+    @Watch("checkedValue")
+    valueChanged() {
+      this.setValue(this.checkedValue);
+    }
+
+    setValue(value: any) {
+      if (this.type === "Family member History") {
+        this.selectedItem.item.type = "family-history";
+        // this.selectedItem.code = value.conditionCode;
+        this.selectedItem.item.details = value.name;
+        this.selectedItem.item.id = value.id;
+      }
+      if (this.type === "Observation") {
+        this.selectedItem.item.type = "observation";
+      }
+      if (this.type === "Diagnostic report") {
+        this.selectedItem.item.type = "diagnostic-report";
+      }
+      if (this.type === "Risk Assessment") {
+        this.selectedItem.item.type = "risk-assessment";
+      }
+      if (this.type === "Media") {
+        this.selectedItem.item.type = "media";
+      }
+      if (this.type === "Imaging Study") {
+        this.selectedItem.item.type = "imaging-study";
+      }
+    }
+
+    getAge(x: any) {
+      return new Date().getFullYear() - x;
+    }
+
+    apply() {
+      this.$emit("getItem", this.selectedItem);
+      this.show = false;
+    }
+
+    created() {}
   }
-
-  @Watch("checkedValue")
-  valueChanged() {
-    this.setValue(this.checkedValue);
-  }
-
-  setValue(value: any) {
-    if (this.type === "Family member History") {
-      this.selectedItem.item.type = "family-history";
-      this.selectedItem.code = value.conditionCode;
-      this.selectedItem.item.details = value.name;
-      this.selectedItem.item.id = value.id;
-    }
-    if (this.type === "Observation") {
-      this.selectedItem.item.type = "observation";
-    }
-    if (this.type === "Diagnostic report") {
-      this.selectedItem.item.type = "diagnostic-report";
-    }
-    if (this.type === "Risk Assessment") {
-      this.selectedItem.item.type = "risk-assessment";
-    }
-    if (this.type === "Media") {
-      this.selectedItem.item.type = "media";
-    }
-    if (this.type === "Imaging Study") {
-      this.selectedItem.item.type = "imaging-study";
-    }
-  }
-
-  apply() {
-    this.$emit("getItem", this.selectedItem);
-    this.show = false;
-  }
-
-  created() {}
-}
 </script>
 <style scoped>
-.dflex {
-  display: -webkit-box;
-}
-.hide {
-  display: none;
-}
-/* Large checkboxes */
+  .dflex {
+    display: -webkit-box;
+  }
+  .hide {
+    display: none;
+  }
+  /* Large checkboxes */
 
-input[type="checkbox"] {
-  height: 22px;
-  width: 22px;
-}
+  input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+  }
 
-input[type="checkbox"]:before {
-  width: 24px;
-  border: hidden;
-  height: 20px;
-}
+  input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+  }
 
-input[type="checkbox"]:after {
-  top: -20px;
-  width: 22px;
-  height: 22px;
-}
+  input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+  }
 
-input[type="checkbox"]:checked:after {
-  background-image: url("../../../../assets/tick.svg");
-  background-color: #fe4d3c;
-}
-input[type="checkbox"]:after {
-  position: relative;
-  display: block;
-  left: 0px;
-  content: "";
-  background: white;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-radius: 3px;
-  text-align: center;
-  border: 1px solid #fe4d3c;
-}
+  input[type="checkbox"]:checked:after {
+    background-image: url("../../../../assets/tick.svg");
+    background-color: #fe4d3c;
+  }
+  input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #fe4d3c;
+  }
 </style>

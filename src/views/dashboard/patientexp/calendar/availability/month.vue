@@ -109,7 +109,8 @@ export default class Monthly extends Vue {
 
 
 async fetchMonthCalendar() {
-   const date = this.startDate.toISOString() as any;
+    const [splitDate] = this.startDate.toISOString().split('T');
+   const date = splitDate;
      const AllCalendarDay = cornieClient().get(
       `/api/v1/calendar/organization/${this.authCurrentLocation}/month-view?date=${date}`,);
      
@@ -172,7 +173,9 @@ async fetchMonthCalendar() {
   }
 
   get monthlyData(){
-    const monthDates = this.getMonthDates(new Date('2021-10-12'))  // 2022-03-12
+      const [splitDate] = this.startDate.toISOString().split('T');
+   const date = splitDate;
+    const monthDates = this.getMonthDates(date)  // 2022-03-12
     const [firstDay, ..._] = monthDates
     const lastDay = [...monthDates].pop()
     const frontPad = this.fillDates(firstDay)

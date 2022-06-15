@@ -1,9 +1,9 @@
 <template>
-  <chart-card height="343px" title="Weight" @ordered="onOrder">
+  <chart-card height="338px" title="Weight" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
       {{ average }}<span class="font-light">kg</span>
     </p>
-    <canvas ref="registration_chart" style="margin: auto; width: 100%"></canvas>
+    <canvas ref="registration_chart" style="margin: auto; width: 90%"></canvas>
   </chart-card>
 </template>
 <script lang="ts">
@@ -19,11 +19,12 @@ import { formatDate, sortListByDate } from "./chart-filter";
 import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
 import { getChartData } from "./helper/vitals-chart-helper";
+import moment from "moment";
 
 const vitalsStore = namespace("vitals");
 
 @Options({
-  name: "BloodChart",
+  name: "weightChart",
   components: {
     ChartCard,
   },
@@ -46,11 +47,31 @@ export default class WeightChart extends Vue {
 
   chart!: Chart;
 
-  height = "643px";
+  height = "443px";
+  startDate = new Date().toISOString();
+  endDate = "";
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
+    this.fetchData(this.$route.params.id.toString())
   }
+ 
+  get date(){
+    if (this.order == 'Today'){
+      return new Date().toISOString();
+    }else if(this.order == 'WTD'){
+      var oneWeekAgo = moment().subtract(1, 'week');
+      console.log(oneWeekAgo, 'week');
+      return oneWeekAgo.format();
+    }else if(this.order == 'MTD'){
+      var oneMonthsAgo = moment().subtract(1, 'months');
+      return oneMonthsAgo.format();
+    }else {
+      var oneYearAgo = moment().subtract(1, 'year');
+      return oneYearAgo.format();
+    }
+  }
+
 
   get chartData() {
     const data = getChartData(this.raw, this.order);
@@ -59,29 +80,40 @@ export default class WeightChart extends Vue {
   }
 
   get average() {
-    const values = this.raw?.map((a) => a.count);
+    const values = this.raw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
+    return (values.reduce((a:any, b:any) => a + b) / values?.length).toFixed(1);
   }
 
   get labels() {
     return getDatesAsChartLabel(this.vitals);
   }
 
-  raw: IStat[] = [];
+  raw = [] as any;
 
   async fetchData(patientId: string) {
+    const [splitDate] = this.startDate.split('T');
+   const date = splitDate;
+   const [splitDate2] = this.date.split('T');
+   const date2 = splitDate2;
     try {
       const response = await cornieClient().get(
-        `api/v1/vitals/weight-stats/${patientId}`
+        `api/v1/health-trends/weight-stats/${patientId}`,
+        {
+          start: date2,
+          end: date,
+        }
       );
-      this.raw = response.data?.map((item: any) => {
-        return { count: item.value, date: item.date };
-      });
+       console.log(response.data,'weight record')
+   
+      const rawdata = response.data
+      this.raw = Object.entries(rawdata).map((key, value) => {
+          return {count: value, date: key}
+      })
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
-    } catch (error) {
+    } catch (error:any) {
       window.notify({
-        msg: "Failed to fetch weight chart data",
+        msg: error.response.data.message,
         status: "error",
       });
     }
@@ -122,6 +154,7 @@ export default class WeightChart extends Vue {
             label: "Patient Weight Stats",
             data: this.chartData ? this.chartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
+            backgroundColor: "rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -129,6 +162,8 @@ export default class WeightChart extends Vue {
       },
       options: {
         responsive: true,
+         maintainAspectRatio: true,
+         aspectRatio: 2.3,
         scales: {
           x: {
             grid: {

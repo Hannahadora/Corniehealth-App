@@ -24,7 +24,7 @@
           <div class="border-b-2 pb-3 border-dashed">
             <label
               for="ecounter"
-              class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
+              class="flex capitalize mb-5 text-black text-sm font-bold"
               >Reference
             </label>
             <div class="w-full flex space-x-4">
@@ -36,7 +36,7 @@
                 v-model="type"
               />
               <cornie-radio
-                label="Allergy/Intolerance"
+                label="Allergy Intolerance"
                 class="text-xs"
                 name="role"
                 value="allergy"
@@ -70,22 +70,25 @@
                   >
                     <div class="w-full flex items-center justify-between">
                       <div class="w-full">
-                        <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input.code }}
+                        <p class="capitalize text-sm text-dark mb-1 font-medium">
+                          {{ codeMapper(input.code) }}
                         </p>
-                        <p class="text-xs text-gray-300">
-                          <!-- {{
-                            new Date(input?.createdAt).toLocaleDateString()
-                          }}-->
+                        <p class="capitalize text-sm text-dark mb-1 font-medium">
+                          {{ severityMapper(input.severity) }}
+                        </p>
+                        <p class="capitalize text-xs text-gray-300">
+                          {{
+                            new Date(input?.recordDate).toLocaleDateString('en-GB')
+                          }}
                         </p>
                       </div>
 
                       <div>
-                        <p class="text-sm">
-                          <span>{{ input?.practitioner?.firstName }}</span>
+                        <p class="capitalize text-sm">
+                          <span>{{ input?.practitioner?.firstName }} </span>
                           <span>{{ input?.practitioner?.lastName }}</span>
                         </p>
-                        <p class="text-xs text-gray-300">
+                        <p class="capitalize text-xs text-gray-300">
                           {{ input?.practitioner?.jobDesignation }}
                         </p>
                       </div>
@@ -95,21 +98,34 @@
               </div>
             </div>
             <div v-if="type === 'allergy'">
-              <div v-for="(input, index) in allergy" :key="index">
+              <div v-for="(input, index) in allergys" :key="index">
                 <div
                   class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                   @click="getValue(input)"
                 >
                   <div class="w-full">
                     <div class="w-full">
-                      <p class="text-sm text-dark mb-1 font-meduim">
-                        {{ input.code }}
+                      <p class="capitalize text-sm text-dark mb-1 font-meduim">
+                       {{ codeMapper(input.code) }} {{ input.category }}
                       </p>
-                      <p class="text-xs text-gray-300">
-                        <!-- {{ new Date(input.createdAt).toLocaleDateString() }} -->
-                        <!-- , {{ new Date(input.createdAt).toLocaleTimeString() }} -->
-                      </p>
+                      <p class="capitalize text-sm text-dark mb-1 font-medium">
+                          {{ input.criticality }}
+                        </p>
+                        <p class="capitalize text-xs text-gray-300">
+                          {{
+                            new Date(input?.recordDate).toLocaleDateString('en-GB')
+                          }}
+                        </p>
                     </div>
+
+                     <div>
+                        <p class="capitalize text-sm">
+                          <span>{{ findPractitionerName(input?.practitionerId) }}</span>
+                        </p>
+                        <p class="capitalize text-xs text-gray-300">
+                          {{ findPractitionerSpecialty(input?.practitionerId) }}
+                        </p>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -158,6 +174,8 @@ import Problem from "@/types/IImpression";
 import { ICondition } from "@/types/ICondition";
 import IAllergy from "@/types/IAllergy";
 
+import { mapDisplay } from "@/plugins/definitions";
+
 @Options({
   name: "ProblemDialog",
   components: {
@@ -182,7 +200,13 @@ export default class ProblemDialog extends Vue {
   conditions!: ICondition[];
 
   @Prop({ type: Array, default: [] })
-  allergy!: IAllergy[];
+  allergys!: IAllergy[];
+
+  @Prop({ type: Array, default: [] })
+  practitioners!: any[];
+
+  severityMapper = (code: string) => "";
+  codeMapper = (code: string) => "";
 
   loading = false;
   expand = false;
@@ -195,24 +219,59 @@ export default class ProblemDialog extends Vue {
 
   required = string().required();
 
+  
+  async loadMappers() {
+    this.severityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-severity"
+    );
+    this.codeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+  }
+
+
   getValue(value: any) {
     if (this.type === "condition") {
       this.checkProblem.referenceType = this.type;
       this.checkProblem.referenceId = value.id;
       this.checkProblem.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
-      this.checkProblem.practitionerSpecialty =value.practitioner?.jobDesignation;
-      this.checkProblem.description = value.practitioner?.description;
-      this.checkProblem.details = value.practitioner?.details;
+      this.checkProblem.practitionerSpecialty = value.practitioner?.jobDesignation;
+      this.checkProblem.description = this.codeMapper(value.code);
+      this.checkProblem.details = this.severityMapper(value.severity);
     } else if (this.type === 'allergy') {
-
+       this.checkProblem.referenceType = this.type;
+      this.checkProblem.referenceId = value.id;
+      this.checkProblem.practitioner = this.findPractitionerName(value?.practitionerId);
+      this.checkProblem.practitionerSpecialty = this.findPractitionerSpecialty(value?.practitionerId);
+      this.checkProblem.description = this.codeMapper(value.code) + '-' + value.category;
+      this.checkProblem.details = value.criticality;
     }
   }
+
+  findPractitionerName(id: any) {
+    const p = this.practitioners?.find((el: any) => {
+      el.id === id
+    })
+    return `${p?.firstName} ${p?.lastName}` || ""
+  }
+
+  findPractitionerSpecialty(id: any) {
+    const p = this.practitioners?.find((el: any) => {
+      el.id === id
+    })
+    return `${p?.jobDesignation}` || ""
+  }
+
+
 
   apply() {
     this.$emit("getProblem", this.checkProblem);
     this.show = false;
+    this.checkProblem = {}
   }
 
-  async created() {}
+  async created() {
+    this.loadMappers();
+  }
 }
 </script>

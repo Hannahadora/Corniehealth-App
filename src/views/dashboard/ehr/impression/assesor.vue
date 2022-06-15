@@ -15,7 +15,7 @@
               </cornie-icon-btn>
             </span>
 
-            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Assesor</h2>
+            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Assessor</h2>
           </div>
           <delete-icon
             class="text-danger fill-current cursor-pointer"
@@ -29,7 +29,7 @@
           <div class="border-b-2 pb-3 border-dashed">
             <label
               for="ecounter"
-              class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
+              class="flex capitalize mb-5 text-black text-sm font-bold"
               >Reference
             </label>
             <div class="w-full flex space-x-4">
@@ -37,24 +37,12 @@
                 label="Practitioner"
                 class="text-xs"
                 name="practice"
-                :checked="check"
-                @click="setValue('Practitioner')"
+                value="Practitioner"
+                v-model="type"
               />
-              <!-- <cornie-radio
-              label="Practitioner role"
-              class="text-xs"
-              name="role"
-              :checked="check2"
-              @click="setValue('Role')"
-            /> -->
             </div>
           </div>
           <div class="w-full">
-            <div class="mt-4 mb-4">
-              <p class="text-gray-400 text-xs">
-                {{ check3.practitioners.length }} selected
-              </p>
-            </div>
             <div class="relative bottom-2">
               <icon-input
                 autocomplete="off"
@@ -62,7 +50,7 @@
                 type="search"
                 placeholder="Search"
                 v-bind="$attrs"
-                v-model="displayVal"
+                v-model="query"
               >
                 <template v-slot:prepend>
                   <search-icon />
@@ -72,7 +60,7 @@
           </div>
           <div class="overflow-y-auto">
             <div>
-              <div v-if="practitionerFilter">
+              <div v-if="type === 'Practitioner'">
                 <div v-for="(input, index) in practitioners" :key="index">
                   <div class="flex justify-between w-full mt-2 p-3">
                     <div class="w-full dflex space-x-4 w-11/12">
@@ -100,39 +88,10 @@
                       <cornie-radio
                         type="radio"
                         v-model="check3.practitioners"
-                        :value="input.firstName + ' ' + input.lastName"
+                        :value="input"
                         class=""
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div v-if="roleFilter">
-              <div v-for="(input, index) in roles" :key="index">
-                <div class="grid grid-cols-2 gap-4 w-full col-span-full p-3">
-                  <div class="dflex space-x-4">
-                    <div class="w-10 h-10">
-                      <avatar class="mr-2" :src="localSrc" />
-                    </div>
-                    <div class="w-full">
-                      <p class="text-xs text-dark font-semibold">
-                        {{ input.name }}
-                      </p>
-                      <p class="text-xs text-gray font-light">
-                        {{ input.description }}
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
-                  >
-                    <input
-                      v-model="check3.practitioners"
-                      :value="input.name"
-                      type="checkbox"
-                      class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                    />
                   </div>
                 </div>
               </div>
@@ -142,21 +101,7 @@
       </cornie-card-text>
 
       <div class="flex justify-end pb-6 px-2">
-        <div class="flex justify-end w-full mt-auto" v-if="practitionerFilter">
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-        <div class="flex justify-end w-full mt-auto" v-if="roleFilter">
+        <div class="flex justify-end w-full mt-auto">
           <button
             class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
             @click="show = false"
@@ -174,8 +119,10 @@
     </cornie-card>
   </cornie-dialog>
 </template>
-<script>
-import { setup } from "vue-class-component";
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Modal from "@/components/practitionermodal.vue";
 import DragIcon from "@/components/icons/draggable.vue";
 import Draggable from "vuedraggable";
@@ -197,10 +144,9 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
-const copy = (original) => JSON.parse(JSON.stringify(original));
 
-export default {
-  name: "assesor",
+@Options({
+  name: "AssessorDialog",
   components: {
     ...CornieCard,
     Modal,
@@ -219,115 +165,47 @@ export default {
     Profile,
     Avatar,
     CornieRadio,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    practitioners: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    roles: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
-  data() {
-    return {
-      selected: 0,
-      localSrc: require("../../../../assets/img/placeholder.png"),
-      check: true,
-      check2: false,
-      check3: {
-        practitioners: [],
-      },
-      Patients: [],
-      Practitioners: [],
-      Devices: [],
-      activeState: "",
-      practitionerType: "",
-      columnsProxy: [],
-      indexvalue: [],
-      valueid: [],
-      available: [],
-      type: "Practitioner",
-      assesorPractitionerValue: [],
-      assesorRoleValue: [],
-      availableFilter: false,
-      practitionername: "",
-      profileFilter: false,
-      practitionerFilter: true,
-      deviceFilter: false,
-      patientFilter: false,
-      roleFilter: false,
-      practitionerId: "",
-    };
-  },
-  watch: {
-    columns(val) {
-      this.columnsProxy = copy(val);
-    },
-    visible() {
-      const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      //this.columnsProxy = copy([...active]);
-    },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-  methods: {
-    setValue(value) {
-      if (value == "Practitioner") {
-        this.practitionerFilter = true;
-        this.roleFilter = false;
-        this.check = true;
-        this.check2 = false;
-        this.type = value;
-      } else if (value == "Role") {
-        this.roleFilter = true;
-        this.practitionerFilter = false;
-        this.type = value;
-        this.check2 = true;
-        this.check = false;
-      }
-    },
+ },
+})
+export default class AssessorDialog extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: Array, default: [] })
+  practitioners!: any[];
+
+  @Prop({ type: Array, default: [] })
+  roles!: any[];
+ 
+
+
+      localSrc = require("../../../../assets/img/placeholder.png");
+
+      check3 = {
+        practitioners: <any>{},
+      };
+      Practitioners = <any>{};
+      practitionerType = "";
+      valueid = <any>{};
+      available = <any>{};
+      type = "Practitioner";
+      assesorPractitionerValue = <any>{};
+      assesorRoleValue = <any>{};
+      availableFilter = false;
+      practitionername = "";
+      practitionerId = "";
+      query = "";
+  
+
     apply() {
-      this.$emit("update:preferred", this.check3.practitioners);
+      this.$emit("getAssessor", this.check3.practitioners);
       this.show = false;
-    },
-    select(i) {
-      this.selected = i;
-    },
-  },
-  mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
-  },
+    }
+
+
   created() {
-    this.setValue();
-  },
-};
+  }
+}
 </script>
 <style scoped>
 .dflex {

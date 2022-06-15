@@ -2,53 +2,72 @@
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span class="w-full">
-        <inventory-category-empty-state v-if="empty" />
-        <inventory-category-existing-state v-else />
+        <inventory-category-empty-state v-if="categories.length == 0" />
+        <inventory-category-existing-state
+          :categories="categoryDisplay"
+          v-else
+        />
       </span>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import inventoryCategoryEmptyState from "./emptyState.vue";
-import inventoryCategoryExistingState from "./existingState.vue";
-import { IOrganization } from "@/types/IOrganization";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import inventoryCategoryEmptyState from "./emptyState.vue";
+  import inventoryCategoryExistingState from "./existingState.vue";
 
-import { namespace } from "vuex-class";
+  const inventory = namespace("inventorysettings");
+  const practitioner = namespace("practitioner");
 
-const organization = namespace("organization");
-const inventory = namespace('inventorysettings')
-const location = namespace("location");
+  @Options({
+    components: {
+      inventoryCategoryEmptyState,
+      inventoryCategoryExistingState,
+    },
+  })
+  export default class InventoryCategoryIndex extends Vue {
+    empty = false;
 
-@Options({
-  components: {
-    inventoryCategoryEmptyState,
-    inventoryCategoryExistingState
+    @inventory.Action
+    getCategory!: () => Promise<void>;
+
+    @inventory.State
+    categories!: any[];
+
+    @practitioner.State
+    practitioners!: any[];
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    get categoryDisplay() {
+      return this.categories.map((c) => {
+        return {
+          ...c,
+          idc: c.id,
+          managerId:
+            this.getPdatails(c.manager).firstName +
+            " " +
+            this.getPdatails(c.manager).lastName,
+          phone: c.phone,
+          location:
+            c.city == "not available" || c.state == "not available"
+              ? "Not available"
+              : c.city + ", " + c.state,
+        };
+      });
+    }
+
+    getPdatails(id: string) {
+      return this.practitioners.find((p) => p.id == id);
+    }
+
+    async mounted() {
+      await this.getCategory();
+      await this.fetchPractitioners();
+
+      console.log("inventory cat", this.categories);
+    }
   }
-})
-
-export default class InventoryCategoryIndex extends Vue {
-  empty = false
-
-  @organization.State
-  organizationInfo!: IOrganization;
-
-  @organization.Action
-  fetchOrgInfo!: () => Promise<void>;
-
-  @inventory.Action
-  getAllCategories!: (id: string) => void
-
-  @location.Action
-  fetchLocations!: () => Promise<void>;
-
-  async mounted() {
-    await this.fetchOrgInfo().then(async () => {
-      await this.fetchLocations()
-    }).then(async () => {
-      console.log('organization', this.organizationInfo)
-      const t = await this.getAllCategories(this.organizationInfo.id)
-    })
-  }
-}
 </script>

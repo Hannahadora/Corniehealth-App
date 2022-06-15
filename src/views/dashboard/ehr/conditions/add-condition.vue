@@ -476,41 +476,50 @@ export default class AddCondition extends Vue {
     return this.$route.params.id;
   }
 
-   get onset() {
-    return  {
-      range: !Object.values({
+ get onset() {
+    return {
+      onsetRange: !Object.values({
         unit: this.onsetmesurable.unit,
         min: this.onsetmesurable.min,
         max: this.onsetmesurable.max,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      } : null,
-      age: !Object.values({
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.unit,
+            min: this.onsetmesurable.min,
+            max: this.onsetmesurable.max,
+          }
+        : null,
+      onsetAge: !Object.values({
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      } : null, 
-      string: this.onsetmesurable.string || null,
-      period: !Object.values({
+      }).every((o) => o === null)
+        ? {
+            unit: this.onsetmesurable.ageUnit,
+            value: this.onsetmesurable.ageValue,
+          }
+        : null,
+      onsetString: this.onsetmesurable.string || null,
+      onsetPeriod: !Object.values({
         start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
-        startTime:this.onsetmesurable.startTime,
+        startTime: this.onsetmesurable.startTime,
         endTime: this.onsetmesurable.endTime,
-      }).every(o => o === null) ? {
-        start: this.onsetmesurable.startDate,
-        end: this.onsetmesurable.endDate,
-         startTime:this.onsetmesurable.startTime,
-        endTime: this.onsetmesurable.endTime,
-      } : null,
-      dateTime:  this.safeBuildDateTime(
-       this.onsetmesurable.date as any,
-       this.onsetmesurable.time as any
-     ),
-    } as any;
+      }).every((o) => o === null)
+        ? {
+            start: this.onsetmesurable.startDate,
+            end: this.onsetmesurable.endDate,
+            startTime: this.onsetmesurable.startTime,
+            endTime: this.onsetmesurable.endTime,
+          }
+        : null,
+      onsetDateTime: this.safeBuildDateTime(
+        this.onsetmesurable.date as any,
+        this.onsetmesurable.time as any
+      ) ? this.safeBuildDateTime(
+        this.onsetmesurable.date as any,
+        this.onsetmesurable.time as any
+      ) : null,
+    };
   }
   get setabatement() {
     return {
@@ -652,6 +661,9 @@ export default class AddCondition extends Vue {
   async create() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     try {
       const { data } = await cornieClient().post(
         "/api/v1/condition",
@@ -659,7 +671,7 @@ export default class AddCondition extends Vue {
       );
       window.notify({ msg: "Condition created", status: "success" });
       this.done();
-    } catch (error) {
+    } catch (error:any) {
       window.notify({ msg: "Condition not created", status: "error" });
     }
   }
@@ -667,6 +679,9 @@ export default class AddCondition extends Vue {
    async updateCondition() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
+
+     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+
     const id = this.id;
     const url = `/api/v1/condition/${id}`;
     const payload = this.payload;
@@ -680,7 +695,7 @@ export default class AddCondition extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Condition Not Updated", status: "error" });
     }
   }
  

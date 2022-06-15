@@ -58,7 +58,7 @@ export default class PatientIndex extends Vue {
   }
 
   created() {
-    if (this.activePatientId) this.fetchHistorys(this.activePatientId);
+    this.fetchHistorys('1ca76818-8586-4e00-bae8-7f4619f2b581');
     this.fetchAllergys(this.activePatientId);
   }
 }
