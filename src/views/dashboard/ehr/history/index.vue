@@ -43,7 +43,9 @@ export default class HistoryIndex extends Vue {
   fetchHistorys!: (patientId: string) => Promise<void>;
 
 
-
+  mounted(){
+    this.fetchHistorys(this.patientId);
+  }
   async created() {
     await this.fetchHistorys(this.patientId);
   }

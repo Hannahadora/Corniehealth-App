@@ -103,15 +103,19 @@
                       </span>
                     </template> -->
                   </cornie-input>
-                  <div >
-                    <date-time-picker :label="'Last Occurence'" v-model:date="setOccurence" v-model:time="setOccurencetime"/>
+                  <div>
+                    <date-time-picker
+                      :label="'Last Occurence'"
+                      v-model:date="setOccurence"
+                      v-model:time="setOccurencetime"
+                    />
                   </div>
                   <cornie-input
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
                     v-model="note"
-                  >   
+                  >
                   </cornie-input>
                 </div>
               </template>
@@ -144,7 +148,7 @@
                   >
                   </cornie-input>
                   <div class="-mt-5">
-                    <date-picker :label="'Onset'" v-model="reaction.onset"/>
+                    <date-picker :label="'Onset'" v-model="reaction.onset" />
                   </div>
                   <cornie-select
                     class="w-full"
@@ -165,7 +169,7 @@
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
-                     v-model="reaction.note"
+                    v-model="reaction.note"
                   >
                   </cornie-input>
                 </div>
@@ -376,7 +380,7 @@ export default class AlergyModal extends Vue {
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
     this.setOccurence = this.occur.time
-    this.setOccurencetime = this.separateTime(this.occur.time); 
+    this.setOccurencetime = this.separateTime(this.occur.time);
   }
 
   getDate(allergy:any){
@@ -466,7 +470,21 @@ export default class AlergyModal extends Vue {
     this.recorderId = this.authPractitioner.id;
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
   }
+    newoccurpp = this.occurences.filter((c:any) => c.time !== undefined)
 
+  reset(){
+     this.clinicalStatus = '',
+       this.verificationStatus = '',
+    this.type = '',
+      this.category = '',
+this.criticality = '',
+this.code = '',
+      this.newoccurpp = [],
+      this.recordDate = '',
+      this.note = '',
+       this.authPractitioner.id = '',
+      this.recorderId = ''
+  }
 
   get payload() {
     const newoccur = this.occurences.filter((c:any) => c.time !== undefined)
@@ -511,6 +529,7 @@ export default class AlergyModal extends Vue {
       if (response.success) {
         window.notify({ msg: "Allergy Saved", status: "success" });
         this.done();
+        this.reset();
       }
     } catch (error: any) {
       window.notify({ msg: "Allergy Not Saved", status: "error" });
@@ -538,7 +557,7 @@ export default class AlergyModal extends Vue {
       window.notify({ msg: "Allergy Not Updated", status: "error" });
     }
   }
- 
+
   done() {
     this.$emit("allergy-added");
     this.show = false;
@@ -546,7 +565,7 @@ export default class AlergyModal extends Vue {
 
   async created() {
     this.setAllergy()
-   
+
   }
 }
 </script>

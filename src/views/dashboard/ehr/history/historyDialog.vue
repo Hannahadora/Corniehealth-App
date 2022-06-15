@@ -16,6 +16,7 @@
               label="Name"
               class="w-full"
               v-model="name"
+              required
             />
             <fhir-input
               reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
@@ -48,6 +49,7 @@
               ]"
               :placeholder="'Select'"
               v-model="sex"
+              required
             />
           </div>
         </accordion-component>
@@ -57,7 +59,7 @@
           title="Born"
           :opened="false"
         >
-          <born-picker label="Year" v-model="bornTimeable" class="w-full mb-5"/>
+          <born-picker label="Year" v-model="bornTimeable" class="w-full mb-5" required/>
         </accordion-component>
       </div>
        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -67,7 +69,7 @@
         >
         <age-measurable label="Age" v-model="agemesurable" />
          <div class="mt-5">
-           <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
+           <span class="text-sm font-semibold mb-3 text-black">Estimated Age? </span>
           <div class="flex space-x-4 mt-5">
             <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedAge"/>
             <cornie-radio name="estimate"  :label="'No'" :value="false" v-model="estimatedAge"/>
@@ -129,6 +131,7 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                     v-model="reasonCode"
+                    required
                   />
                   <!-- <cornie-select
                     class="w-full"
@@ -146,8 +149,11 @@
                   /> -->
                   <div>
                     <p class="text-sm text-black font-semibold mb-1">Reason Reference</p>
-                    <div class="border-2 border-gray-200 bg-gray-100 rounded-lg py-5 px-4 cursor-pointer" @click="showRefModal = true">
-                        {{ reasonReference }}
+                    <div class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer" @click="showRefModal = true">
+                       <span class="w-full">{{ reasonReference }}</span> 
+                        <span class="flex justify-end w-full">
+                          <plusIcon class="fill-current text-danger  mt-1"/>
+                        </span>
                     </div>
                   </div>
                   <!-- <cornie-select
@@ -188,6 +194,7 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                     v-model="conditionCode"
+                    required
                   />
                   <!-- <cornie-select
                     class="w-full"
@@ -210,6 +217,7 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                     v-model="conditionOutcome"
+                    required
                   />
                   <!-- <cornie-select
                     v-model="conditionOutcome"
@@ -427,7 +435,7 @@ export default class HistoryDialog extends Vue {
   // deceasedAge = { ...measurable };
 
   reasonCode = "";
-  reasonReference = "";
+  reasonReference = "Reason Reference";
   note = "";
   conditionCode = "";
   conditionOutcome = "";
@@ -658,8 +666,10 @@ export default class HistoryDialog extends Vue {
     this.showRefModal = true;
     this.reasonReference = value;
   }
-  refvalue(value:any){
+  refvalue(value:any, type:string){
     this.references.push(value);
+    this.reasonReference = type;
+    console.log(value, 'npm install numeral');
   }
   done() {
     this.$emit("history-added");
@@ -672,6 +682,9 @@ export default class HistoryDialog extends Vue {
     this.loading = false;
   }
   async createhistory() {
+     const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
     try {
       const response = await cornieClient().post(
         "/api/v1/family-history",

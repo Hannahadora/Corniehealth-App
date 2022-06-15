@@ -27,7 +27,10 @@
                     <date-time-picker :label="'DateTime'" v-model:date="nowoccurences[index].time" v-model:time="setOccurencetime"/>
                 </div>
           </div>
-          <div class="flex justify-end w-full mt-5">
+          <div class="flex justify-end w-full mt-5" v-if="nowoccurences.length > 0">
+                <span class="text-gray-400 text-sm cursor-pointer"> <span class="text-xl">+</span> Add Occurence</span>
+          </div>
+           <div class="flex justify-end w-full mt-5" v-else>
                 <span class="text-danger text-sm cursor-pointer" @click="addOccur"> <span class="text-xl">+</span> Add Occurence</span>
           </div>
       
@@ -126,6 +129,10 @@ export default class occurenceModal extends Vue {
     date.setMinutes(Number(minute));
     date.setHours(Number(hour));
     return date.toISOString();
+  }
+
+  checkTime(occur:any){
+    return occur.map((c:any) => c.time !='');
   }
 
   // parseDate(datTime: any){
