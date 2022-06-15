@@ -11,7 +11,9 @@
       <registration-chart class="w-full" :height="100" />
       <span class="w-full bg-danger">
         <span class="flex justify-end w-full mb-5">
-          <cornie-btn class="text-primary border-2 font-semibold border-primary m-5">
+          <cornie-btn
+            class="text-primary border-2 font-semibold border-primary m-5"
+          >
             Export Register
           </cornie-btn>
           <cornie-btn
@@ -76,7 +78,7 @@
         </template>
       </cornie-table>
     </div>
-    <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
+    <check-in-dialog :patient="checkInPatient" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
     <advanced-filter
       v-model:filtered="filteredPatients"
