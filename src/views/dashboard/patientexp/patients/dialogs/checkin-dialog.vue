@@ -12,7 +12,7 @@
         </span>
       </cornie-card-title>
 
-      <check-in :patientId="patientId" @close="show = false" />
+      <check-in :patient="patient" @close="show = false" />
     </cornie-card>
   </cornie-dialog>
 </template>
@@ -25,6 +25,7 @@ import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CheckIn from "@/views/dashboard/visits/components/checkin-noappointment.vue";
+import { IPatient } from "@/types/IPatient";
 
 @Options({
   name: "checkin-dialog",
@@ -40,8 +41,8 @@ export default class CheckInDialog extends Vue {
   @PropSync("modelValue")
   show!: boolean;
 
-  @Prop({ type: String, required: true })
-  patientId!: string;
+  @Prop({ type: Object, required: true })
+  patient!: any;
 }
 </script>
 

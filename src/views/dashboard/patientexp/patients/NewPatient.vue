@@ -141,7 +141,7 @@
               :readonly="viewOnly"
             />
             <cornie-input
-              v-if="multipleBirth"
+              v-if="multipleBirth == true"
               class="w-full"
               placeholder="Enter"
               v-model="multipleBirthInteger"
@@ -745,8 +745,6 @@ export default class NewPatient extends Vue {
   }
 
   async submit() {
-    // const report = await (this.$refs.basic as any).validate();
-    // if (!report.valid) return;
     this.loading = true;
     if (this.id) await this.updateData();
     else await this.registerPatient();
