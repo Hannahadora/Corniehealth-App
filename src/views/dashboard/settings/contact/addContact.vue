@@ -227,7 +227,7 @@ export default class AddContact extends Vue {
     this.state = contact.state;
     this.city = contact.city;
     this.address = contact.address;
-    this.image = contact.image;
+    this.image = contact.image ?? "";
   }
 
   get isUpdate() {
@@ -282,7 +282,7 @@ export default class AddContact extends Vue {
       lname: this.lname,
       purpose: this.purpose,
       gender: this.gender,
-      image: this.image || this.placeholderImage,
+      image: this.image || undefined,
       country: this.nationState.country,
       state: this.state,
       city: this.city,
