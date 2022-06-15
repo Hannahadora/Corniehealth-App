@@ -296,7 +296,7 @@
           <template v-slot:default>
             <div class="grid grid-cols-2 gap-4 mt-5">
               <cornie-input
-                v-model="summary"
+                v-model="summary.display"
                 :disabled="true"
                 label="Summary"
               />
@@ -519,6 +519,9 @@ export default class ViewCondtionModal extends Vue {
   stage = setup(() =>
     useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-stage-type")
   );
+  summary = setup(() =>
+    useFHIRDefinition("http://hl7.org/fhir/ValueSet/condition-stage")
+  );
 
 
   required = string().required();
@@ -535,7 +538,7 @@ export default class ViewCondtionModal extends Vue {
   recordTime = "";
   assessment = [] as any;
   type = "";
-  summary = "";
+  // summary = "";
   evidence = {
     code: "",
     detail: "",
@@ -582,7 +585,7 @@ export default class ViewCondtionModal extends Vue {
     if (!condition) return;
     this.loadDefinitions();
     this.bodySite = condition.bodySite;
-    this.summary = condition.summary;
+    // this.summary = condition.summary;
     this.assessment = condition.assessment;
     this.evidence = condition.evidence;
     this.recordDate = condition.recordDate;
@@ -695,6 +698,7 @@ export default class ViewCondtionModal extends Vue {
     this.evidencecode.code = this.condition?.evidence.code;
     this.bodysite.code = this.condition?.bodySite;
     this.stage.code = this.condition?.type;
+    this.summary.code = this.condition?.summary
   }
 
 

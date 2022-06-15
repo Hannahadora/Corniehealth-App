@@ -133,7 +133,13 @@
           >
           <template v-slot:default>
             <div class="grid grid-cols-2 gap-4 mt-5">
-              <cornie-input v-model="summary" label="Summary" />
+              <!-- <cornie-input v-model="summary" label="Summary" /> -->
+               <fhir-input
+                v-model="summary"
+                reference="http://hl7.org/fhir/ValueSet/condition-stage"
+                label="Summary"
+                placeholder="Select"
+              />
               <assessment-select
                 :patientId="patientId"
                 v-model="assessmentName"

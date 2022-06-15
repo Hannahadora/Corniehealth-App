@@ -24,35 +24,24 @@
             <div>
                 <span class="text-sm font-semibold mb-1">Specialty</span>
                 <Multiselect
-                   v-model="names"
-                 mode="multiple"
+                v-model="name"
+                   mode="multiple"
+                  :close-on-select="false"
+                  :options="spaciallItems"
+
+                 
                   name="object_true" :native="false" :object="true"
                   :searchable = true
-                  :options="Specilaitems"
                   :clear-on-select="false"
-                  label-prop="display"
-                  value-prop="display"
-                  trackBy="display"
-                  label="display"
+                  label-prop="name"
+                  value-prop="name"
+                  trackBy="name"
+                  label="name"
                   placeholder="--Select--"
                   class="w-full"
                 >
-                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                    <div class="multiselect-tag is-user">
-                      {{ option.display }}
-                      <span
-                        v-if="!disabled"
-                        class="multiselect-tag-remove"
-                        @mousedown.prevent="handleTagRemove(option, $event)"
-                      >
-                        <span class="multiselect-tag-remove-icon"></span>
-                      </span>
-                    </div>
-                  </template>
-                  <template v-slot:option="{ option }">
-                    <select-option  @click="check(option.display)" :label="option.display"/>
-                  </template>
-                  <!-- <template v-slot:tag="{ option, handleTagRemove, disabled }">
+
+                   <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
                       {{ option.name }}
                       <span
@@ -65,8 +54,11 @@
                     </div>
                   </template>
                   <template v-slot:option="{ option }">
+                       {{ option.name }}
+                  </template> 
+                  <!-- <template v-slot:option="{ option }">
                         <select-option  :value="option.name" :label="option.name" />
-                  </template> -->
+                  </template>  -->
                 </Multiselect>
             </div>
             <div class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -74,10 +66,10 @@
                 <div class="grid grid-cols-2 gap-4 mt-3">
                 <div
                 class="flex space-x-4 w-auto bg-primary rounded-full text-white py-2 px-4"
-                v-for="(item, index) in names"
+                v-for="(item, index) in name"
                 :key="index"
                 >
-                <span class="text-xs w-full justify-between">{{ item.display }}</span>
+                <span class="text-xs w-full justify-between">{{ item.name }}</span>
                 <close-icon
                         class="cursor-pointer"
                         @click="removearray(index)"
@@ -180,6 +172,12 @@ export default class SpecialModal extends Vue {
   @special.Action
   fetchSpecialNames!: () => Promise<void>;
 
+  @special.State
+  specials!: ISpecial[];
+
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
+
 dropdownData = {} as IIndexableObject;
   Specilaitems: Codeable[] = [];
 
@@ -190,9 +188,25 @@ dropdownData = {} as IIndexableObject;
     this.loading = false;
   }
    get spaciallItems() {
-    return {
-      text: this.name,
-    };
+    let foundDuplicate = false;
+    this.specials.some(existingItem => {
+      this.Specilaitems = this.Specilaitems.filter(item=> {
+        if (existingItem.name != item.display) {
+          return item;
+        } else {
+          foundDuplicate = true;
+        }
+      });
+      return foundDuplicate;
+    });
+
+      const newArray = this.Specilaitems.filter(val => !this.specials.includes(val as any));
+   
+    return newArray.map((c) => {
+      return {
+        name: c.display
+      }
+    })
   }
    addArray() {
        console.log("hello")
@@ -200,7 +214,8 @@ dropdownData = {} as IIndexableObject;
     }
 
     check(value:string){
-      this.name.push({"name": value})
+         this.name.pop({"name": value})
+      
     }
 
    removearray(index: number) {
@@ -229,7 +244,7 @@ dropdownData = {} as IIndexableObject;
         window.notify({ msg: "Speciality saved successfully", status: "success" });
       }
     } catch (error) {
-      window.notify({ msg: "Speciality not saved", status: "error" });
+      window.notify({ msg: "Speciality exist already!", status: "error" });
     }
   }
   
@@ -248,6 +263,8 @@ dropdownData = {} as IIndexableObject;
     }
   }
 
+
+
  
   done() {
     this.$emit("special-added");
@@ -258,6 +275,7 @@ dropdownData = {} as IIndexableObject;
   async created() {
      await this.setRefs();
     await this.fetchSpecialNames();
+    await this.fetchSpecials();
   }
 }
 </script>

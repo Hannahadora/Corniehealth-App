@@ -115,7 +115,7 @@
                       :disabled="true"
                       :label="'Last Occurence'"
                       v-model:date="occur.time"
-                       :time="separateTime(occur.time)"
+                       :time="separateTime(occur?.time)"
                     />
                   </div>
                   <cornie-input
@@ -574,7 +574,7 @@ export default class viewAlergyModal extends Vue {
   }
 
   get occur(){
-    return this.occurences[this.occurences.length - 1]
+    return this.occurences[this.occurences?.length - 1] as any
   }
 
   async created() {

@@ -9,8 +9,7 @@
       <span class="w-full h-screen">
         <allergys-empty-state v-if="empty"></allergys-empty-state>
         <allergys-existing-state
-          @allergy-added="allergyAdded"
-          :allergys="allergys"
+    
           v-else
         />
 
@@ -60,10 +59,13 @@ export default class AllergysIndex extends Vue {
     this.show = false;
     await this.fetchAllergys(this.activePatientId);
   }
-
-  async created() {
-    if (this.allergys.length < 1)
-      await this.fetchAllergys(this.activePatientId);
+  mounted(){
+    this.fetchAllergys(this.activePatientId);
   }
+
+  //  created() {
+
+  //      this.fetchAllergys(this.activePatientId);
+  // }
 }
 </script>
