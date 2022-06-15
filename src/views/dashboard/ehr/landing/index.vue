@@ -49,7 +49,7 @@
         <template #actions="{ item }">
           <table-action @click="goToEHR(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">ViewChart</span>
+            <span class="ml-3 text-xs">View chart</span>
           </table-action>
           <table-action
             @click="
