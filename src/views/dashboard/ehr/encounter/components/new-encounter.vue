@@ -153,23 +153,22 @@
               v-model="diagnosisTemp.use"
               placeholder="Select"
             />
-            <div class="flex">
-              <cornie-input
-                class="w-full"
-                label="Rank"
-                placeholder="Enter"
-                v-model="diagnosisTemp.rank"
-              />
-              <span class="font-bold text-sm text-jet_black">
-                <tooltip-section
-                  :text="'Ranking of the diagnosis (for each role type)'"
-                >
-                  <template>
-                    <information-icon />
-                  </template>
-                </tooltip-section>
-              </span>
-            </div>
+            <cornie-input
+              label="Rank"
+              class="w-full"
+              placeholder="Enter"
+              v-model="diagnosisTemp.rank"
+            >
+              <template #labelicon>
+                <span class="font-bold text-sm text-jet_black">
+                  <tooltip-section
+                    :text="'Ranking of the diagnosis (for each role type)'"
+                  >
+                    <img class="h-5 w-5" src="@/assets/img/Info.svg" />
+                  </tooltip-section>
+                </span>
+              </template>
+            </cornie-input>
           </div>
           <div class="flex w-full items-center justify-end">
             <div
@@ -188,10 +187,10 @@
                 {{ s.typeData }}
               </div>
               <div class="flex items-center p-3 shadow-md rounded-md">
-                <div class="flex-1">
-                  <div class="font-bold text-sm mb-0.5 truncate">
+                <div class="flex-1 flex-wrap truncateT">
+                  <p class="font-bold text-sm mb-0.5 truncateT">
                     {{ s.conditionDescription }}
-                  </div>
+                  </p>
                   <div class="font-bold text-xxs text-gray-400">XXXXXX</div>
                   <div class="flex items-center">
                     <div class="font-semibold text-xs">
@@ -203,7 +202,9 @@
                     </div>
                   </div>
                 </div>
-                <delete-icon @click="removeDiagnosis(i)" />
+                <div class="p-5 bg-gray-100">
+                  <delete-icon @click="removeDiagnosis(i)" />
+                </div>
               </div>
             </div>
           </div>
@@ -215,21 +216,30 @@
           :opened="false"
         >
           <div class="grid grid-cols-2 gap-6 py-6">
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/encounter-participant-type"
+              class="w-full"
+              label=" Participant type"
+              v-model="participantTemp.typeData"
+              placeholder="Select"
+            />
             <div class="flex flex-col">
               <div class="capitalize text-black text-sm font-semibold">
-                Participant type
+                Person
               </div>
               <div
                 @click="() => (showPersonReference = true)"
                 class="flex items-center border rounded-md p-3 mt-0.5"
               >
-                <div class="flex-1">Practitioner</div>
+                <div class="flex-1">
+                  {{ participantTemp?.name ? participantTemp?.name : "Person" }}
+                </div>
                 <div class="flex-none">
                   <add-icon class="fill-current text-danger" />
                 </div>
               </div>
             </div>
-            <cornie-input
+            <!-- <cornie-input
               :disabled="true"
               class="w-full cursor-pointer"
               label="Person"
@@ -237,7 +247,7 @@
               :placeholder="
                 participantTemp?.name ? participantTemp?.name : 'Person'
               "
-            />
+            /> -->
             <date-time-picker
               class="w-full"
               label="Start date/time"
@@ -263,21 +273,18 @@
 
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
           <div class="grid grid-cols-3 gap-3">
-            <div
-              class="p-3 shadow-md rounded-md"
-              v-for="(p, i) in participantsVal"
-            >
-              <div class="flex items-center">
+            <div class="" v-for="(p, i) in participantsVal">
+              <div class="font-bold text-danger capitalize">Person</div>
+              <div class="flex items-center p-3 shadow-md rounded-md">
                 <div class="flex-1">
-                  <div class="font-bold text-danger capitalize">
-                    {{ p.typeData }}
-                  </div>
                   <div class="flex flex-col">
                     <div class="font-bold text-sm truncate">{{ p.name }}</div>
                     <div class="text-xxs">{{ p.department }}</div>
                   </div>
                 </div>
-                <delete-icon @click="removePerson(i)" />
+                <div class="p-5 bg-gray-100">
+                  <delete-icon @click="removePerson(i)" />
+                </div>
               </div>
             </div>
           </div>
@@ -649,6 +656,7 @@
       startTime: "",
       endTime: "",
       name: "",
+      department: "",
     };
     participantsVal: any = [];
     encounterClass = "";
@@ -701,21 +709,36 @@
     }
     setPersonReference(e: any) {
       console.log("practioner", e);
-      this.participantTemp.typeData = "participant";
+      // this.participantTemp.typeData = "participant";
       this.participantTemp.referenceId = e.id;
       this.participantTemp.startDate = e.startDate;
       this.participantTemp.endDate = e.endDate;
       this.participantTemp.startTime = e.startTime;
       this.participantTemp.endTime = e.endTime;
       this.participantTemp.name = e.name;
+      this.participantTemp.department = e.department;
       console.log("temp", this.participantTemp);
     }
     addPerson() {
       // const {} = this.participantTemp
       if (!this.participantTemp.referenceId) return;
-      this.participantsVal.push(this.participantTemp);
+      let newO = Object.assign({}, this.participantTemp);
+      this.participantsVal.push(newO);
+      this.participantTemp.referenceId = "";
+      this.participantTemp.name = "";
+      this.participantTemp.department = "";
+      this.participantTemp.typeData = "";
+      // this.participantTemp = {
+      //   typeData: "",
+      //   referenceId: "",
+      //   startDate: "",
+      //   endDate: "",
+      //   startTime: "",
+      //   endTime: "",
+      //   name: "",
+      //   department: "",
+      // };
       console.log("reference", this.participantsVal);
-      // this.participantTemp.referenceId = "";
     }
     removePerson(i: any) {
       this.participantsVal.splice(i, 1);
@@ -924,4 +947,9 @@
     overflow-y: scroll;
     overflow: hidden;
 } */
+  .truncateT {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
 </style>
