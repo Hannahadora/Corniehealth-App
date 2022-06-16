@@ -148,7 +148,7 @@
 
     headers = [
       {
-        title: "Name",
+        title: "NAME",
         key: "name",
         show: true,
       },
