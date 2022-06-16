@@ -13,39 +13,39 @@
 </template>
 
 <script>
-export default {
-  props: {
-    text: {
-      type: String,
-      required: true,
+  export default {
+    props: {
+      text: {
+        type: String,
+        required: true,
+      },
     },
-  },
-};
+  };
 </script>
 
 <style scoped>
-.tooltip-box {
-  position: relative;
-  display: inline-block;
-}
+  .tooltip-box {
+    position: relative;
+    display: inline-block;
+  }
 
-.tooltip-box:hover .tooltip {
-  opacity: 1;
-}
-.tooltip {
-  color: #ffffff;
-  text-align: center;
-  padding: 9px;
-  border-radius: 4px;
-  width: 150px;
-  bottom: 100%;
-  opacity: 0;
-  transition: opacity 1s;
-  position: absolute;
-  z-index: 1;
-  background-color: #080056;
-}
-/*.tooltip { 
+  .tooltip-box:hover .tooltip {
+    opacity: 1;
+  }
+  .tooltip {
+    color: #ffffff;
+    text-align: center;
+    padding: 9px;
+    border-radius: 4px;
+    width: 150px;
+    bottom: 100%;
+    opacity: 0;
+    transition: opacity 1s;
+    position: absolute;
+    z-index: 1;
+    background-color: #080056;
+  }
+  /*.tooltip { 
   color: #ffffff;
   text-align: center;
   padding: 5px 0;
@@ -65,7 +65,7 @@ export default {
   background: #080056;
 }*/
 
-.text::after {
+  /* .text::after {
   content: " ";
   position: absolute;
   top: 100%;
@@ -74,5 +74,5 @@ export default {
   border-width: 5px;
   border-style: solid;
   border-color: #a782e8 transparent transparent transparent;
-}
+} */
 </style>
