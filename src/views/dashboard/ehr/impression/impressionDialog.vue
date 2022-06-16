@@ -70,7 +70,7 @@
               <date-time-picker
                 v-model:date="data.startDate"
                 v-model:time="data.startTime"
-                label="Date/Time"
+                label="Start Date/Time"
                 width="w-11/12"
               />
             </div>
@@ -78,7 +78,7 @@
               <date-time-picker
                 v-model:date="data.endDate"
                 v-model:time="data.endTime"
-                label="Date/Time"
+                label="End Date/Time"
                 width="w-11/12"
               />
             </div>
@@ -165,20 +165,20 @@
                 v-for="(record, index) in conditionItems"
                 :key="index"
               >
-                <p class="text-red-500 text-sm font-medium mb-2">
+                <p class="capitalize text-red-500 text-sm font-medium">
                   {{ record?.referenceType }}
                 </p>
-                <div class="w-11/12" style="border-right: 1px dashed #878e99">
+                <div class="w-11/12 mt-4" style="border-right: 1px dashed #878e99">
                   <div class="w-full flex items-center">
-                    <div class="w-8/12 flex flex-col">
+                    <div class="w-8/12 flex flex-col text-sm">
                       <span class="font-semibold">{{
                         record?.description
                       }}</span>
-                      <div>
-                        <p>
-                          {{ record?.practitioner }}
-                        </p>
-                        <p>{{ record?.practitionerSpecialty }}</p>
+                      <div class="" style="font-size: 10px">
+                        <span class="">
+                          {{ record?.practitioner }} - 
+                        </span>
+                        <span class="text-gray-500">{{ record?.practitionerSpecialty }}</span>
                       </div>
                     </div>
                     <div class="w-4/12 flex items-center justify-center">
@@ -431,7 +431,8 @@
   />
   <problem-modal
     :conditions="conditions"
-    :allergy="allergy"
+    :allergys="allergy"
+    :practitioners="practitioner"
     @getProblem="showProblem"
     v-model="showProblemModal"
   />
@@ -856,11 +857,11 @@ export default class Impression extends Vue {
   }
 
   async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.activePatientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data;
+    const url = `/api/v1/allergy/findAllByPatient/${this.activePatientId}`;
+     const response = await cornieClient().get(url);
+    if (response.success) {
+      this.allergy = response.data;
+    }
   }
   async created() {
     if (this.id) {
@@ -872,6 +873,7 @@ export default class Impression extends Vue {
     this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();
+    this.fetchAllergy();
     this.fetchFamilyHistories();
   }
 }

@@ -20,7 +20,12 @@
               <span class="ml-1 mb-1" v-if="$slots.labelicon">
                 <slot name="labelicon" />
               </span>
-               <span class="float-right flex justify-end w-full text-blue-500"  v-if="labelText"> {{ innerlabel }} </span>
+              <span
+                class="float-right flex justify-end w-full text-blue-500"
+                v-if="labelText"
+              >
+                {{ innerlabel }}
+              </span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -34,14 +39,17 @@
                   'border-red-500': Boolean(errorMessage),
                   'border-green-400': meta.valid && meta.touched,
                   'bg-gray-50 border-gray-50': disabled || readonly,
-                  'bg-primary border-primary' : setPrimary ,
-                  'bg-white  border-gray-300' :!setPrimary
+                  'bg-primary border-primary': setPrimary,
+                  'bg-white  border-gray-300': !setPrimary,
                 }"
                 class="p-1 flex border-1 rounded-md"
               >
                 <span
                   v-if="Boolean($slots.selected)"
-                  :class="{'text-gray-800':!setPrimary, 'text-white':setPrimary}"
+                  :class="{
+                    'text-gray-800': !setPrimary,
+                    'text-white': setPrimary,
+                  }"
                   class="p-1 pl-2 bg-transparent appearance-none outline-none w-full"
                 >
                   <slot name="selected" :item="selectedItem" />
@@ -51,7 +59,11 @@
                   :placeholder="$attrs.placeholder"
                   :readonly="readonly || disabled"
                   :value="displayVal"
-                   :class="{ 'bg-gray-50 border-gray-50': disabled || readonly, 'bg-primary border-primary text-white' : setPrimary,'text-gray-800':!setPrimary }"
+                  :class="{
+                    'bg-gray-50 border-gray-50': disabled || readonly,
+                    'bg-primary border-primary text-white': setPrimary,
+                    'text-gray-800': !setPrimary,
+                  }"
                   class="p-1 pl-2 bg-transparent appearance-none outline-none w-full"
                   @change="handleChange"
                 />
@@ -59,8 +71,8 @@
                 <div
                   class="text-gray-300 py-1 pr-1 flex items-center border-gray-200"
                 >
-                  <chevron-down-icon v-if="!setPrimary"/>
-                  <chevron-white-icon v-else/>
+                  <chevron-down-icon v-if="!setPrimary" />
+                  <chevron-white-icon v-else />
                 </div>
               </div>
               <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -86,10 +98,10 @@
                   v-else
                   class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative capitalize"
                 >
-                <!-- <select-option 
+                  <!-- <select-option 
                 v-model="item.display"
                 /> -->
-                 
+
                   {{ item.display || item }}
                 </div>
               </div>
@@ -115,7 +127,7 @@ import SelectOption from "@/components/custom-checkbox.vue";
     ChevronDownIcon,
     ChevronWhiteIcon,
     Field,
-    SelectOption
+    SelectOption,
   },
 })
 export default class CornieSelect extends Vue {
@@ -134,10 +146,10 @@ export default class CornieSelect extends Vue {
   @Prop({ type: Boolean, default: false })
   required!: boolean;
 
-   @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
-   @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   setPrimary!: boolean;
 
   @Prop({ type: Boolean, default: false })
@@ -145,7 +157,7 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: Boolean, default: false })
   labelText!: boolean;
-  
+
   @Prop({ type: Boolean, default: false })
   setCheck!: boolean;
 
@@ -154,7 +166,6 @@ export default class CornieSelect extends Vue {
 
   @Prop({ type: String, default: "" })
   innerlabel!: string;
-
 
   @Prop({ type: String })
   label!: string;
@@ -187,7 +198,7 @@ export default class CornieSelect extends Vue {
   selected(item: any) {
     nextTick(() => {
       this.showDatalist = false;
-      this.modelValueSync = item.code || item;
+      this.modelValueSync = item.code ?? item;
     });
 
     this.$emit("selected", item);

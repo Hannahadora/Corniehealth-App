@@ -3,7 +3,7 @@
     <div class="w-full mx-5">
       <span class="w-full">
          <history-empty-state v-if="empty" />
-        <history-existing-state v-else />
+        <history-existing-state v-else :patientId="patientId"/>
       </span>
     </div>
   </div>
@@ -14,7 +14,7 @@ import { Options, Vue } from "vue-class-component";
 import HistoryEmptyState from "./emptyState.vue";
 import HistoryExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
-
+import { Prop } from "vue-property-decorator";
 
 const history = namespace("history");
 
@@ -29,29 +29,25 @@ export default class HistoryIndex extends Vue {
   addHistory = false;
   show = false;
 
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
   get empty() {
-    return this.historys.length < 1;
+    return this.historys?.length < 1;
   }
-  get activePatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
-  }
-
-
+ 
   @history.State
   historys!: Ihistory[];
 
   @history.Action
   fetchHistorys!: (patientId: string) => Promise<void>;
 
-  historyAdded() {
-    this.show = false;
-    this.historys;
-    this.fetchHistorys(this.activePatientId);
-  }
 
+  mounted(){
+    this.fetchHistorys(this.patientId);
+  }
   async created() {
-    await this.fetchHistorys(this.activePatientId);
+    await this.fetchHistorys(this.patientId);
   }
 }
 </script>

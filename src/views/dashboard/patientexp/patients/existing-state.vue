@@ -78,7 +78,7 @@
         </template>
       </cornie-table>
     </div>
-    <check-in-dialog :patientId="checkInPatient?.id" v-model="checkingIn" />
+    <check-in-dialog :patient="checkInPatient" v-model="checkingIn" />
     <registration-dialog v-model="registerNew" />
     <advanced-filter
       v-model:filtered="filteredPatients"

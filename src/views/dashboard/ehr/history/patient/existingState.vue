@@ -317,9 +317,9 @@ export default class PatientExistingState extends Vue {
     this.historyId = value;
   }
   async created() {
-    this.sortHistory;
-     if (this.activepatientId) await this.fetchHistorys(this.activepatientId);
-     if (this.activepatientId) await this.fetchAllergys(this.activepatientId);
+   // this.sortHistory;
+      await this.fetchHistorys('1ca76818-8586-4e00-bae8-7f4619f2b581');
+      await this.fetchAllergys('1ca76818-8586-4e00-bae8-7f4619f2b581');
   }
 }
 </script>

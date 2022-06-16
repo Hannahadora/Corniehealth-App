@@ -8,51 +8,51 @@
           :opened="false"
         >
           <div class="grid grid-cols-2 gap-6 py-6">
-            <cornie-select
-              :label="'Class'"
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/v3-ActEncounterCode"
+              class="w-full"
+              label="Class"
               v-model="basic.class"
-              :items="['inpatient', 'outpatient', 'ambulatory', 'emmergency']"
+              placeholder="Select"
             />
-            <cornie-select
-              :label="'Service Type'"
+
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/service-type"
+              class="w-full"
+              label="Service Type"
               v-model="basic.serviceType"
-              :items="[
-                'Cardiology',
-                'Aged Care Assessment',
-                'Friendly Visiting',
-                'Personal Alarms/Alerts',
-                'Acupuncture',
-                'Aromatherapy',
-                'Bowen Therapy',
-              ]"
+              placeholder="Select"
             />
-            <cornie-select
-              :label="'Priority'"
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/v3-ActPriority"
+              class="w-full"
+              label="Priority"
               v-model="basic.priority"
-              :items="['ASAP', 'Callback results', 'callback for scheduling']"
+              placeholder="Select"
             />
-            <cornie-select
-              v-model="basic.baseOn"
-              :label="'Based on'"
-              :items="[
-                'Care Plan',
-                'Medication Request',
-                'Service Request',
-                'Immunization Recommendation',
-              ]"
+
+            <cornie-input
+              class="w-full"
+              label="Based on"
+              :placeholder="basedOn"
+              :disabled="true"
             />
+
             <cornie-select
+              v-if="appointmentList.length > 0"
               v-model="appointmentVal"
               :label="'Appointment'"
               :items="appointmentList"
             />
-            <!-- <auto-complete :label="'Appointment'" v-model="encounter.appointmentId" :items="appointmentList" /> -->
-            <!-- <appointment-list /> -->
-            <!-- <cornie-select
-                :label="'Reason code'"
-                v-model="encounter.priority"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              /> -->
+
+            <cornie-input
+              v-else
+              class="w-full"
+              label="Appointment"
+              :placeholder="'Not applicable'"
+              :disabled="true"
+            />
+
             <div class="flex flex-col">
               <div class="capitalize text-black text-sm font-semibold">
                 Reason reference
@@ -99,7 +99,7 @@
                   <div class="font-bold text-danger capitalize">
                     {{ s.typeData }}
                   </div>
-                  <div class="font-bold text-sm mb-0.5">
+                  <div class="font-bold text-sm mb-0.5 truncate">
                     {{ printCode(s.code)?.display }}
                   </div>
                   <div class="font-bold text-sm">XXXXXX</div>
@@ -145,18 +145,31 @@
                 </div>
               </div>
             </div>
-            <cornie-select
-              :label="'Use'"
+
+            <fhir-input
+              reference="http://hl7.org/fhir/CodeSystem/diagnosis-role"
+              class="w-full"
+              label="Use"
               v-model="diagnosisTemp.use"
               placeholder="Select"
-              :items="roles"
             />
-            <cornie-input
-              class="w-full"
-              label="Rank"
-              placeholder="Enter"
-              v-model="diagnosisTemp.rank"
-            />
+            <div class="flex">
+              <cornie-input
+                class="w-full"
+                label="Rank"
+                placeholder="Enter"
+                v-model="diagnosisTemp.rank"
+              />
+              <span class="font-bold text-sm text-jet_black">
+                <tooltip-section
+                  :text="'Ranking of the diagnosis (for each role type)'"
+                >
+                  <template>
+                    <information-icon />
+                  </template>
+                </tooltip-section>
+              </span>
+            </div>
           </div>
           <div class="flex w-full items-center justify-end">
             <div
@@ -170,19 +183,16 @@
           <div class="border-2 h-1 border-dashed w-full my-4"></div>
 
           <div class="grid grid-cols-3 gap-4">
-            <div
-              v-for="(s, i) in diagnosisVal"
-              class="p-3 shadow-md rounded-md"
-            >
-              <div class="flex items-center">
+            <div v-for="(s, i) in diagnosisVal" class="">
+              <div class="font-bold text-danger capitalize">
+                {{ s.typeData }}
+              </div>
+              <div class="flex items-center p-3 shadow-md rounded-md">
                 <div class="flex-1">
-                  <div class="font-bold text-danger capitalize">
-                    {{ s.typeData }}
-                  </div>
-                  <div class="font-bold text-sm mb-0.5">
+                  <div class="font-bold text-sm mb-0.5 truncate">
                     {{ s.conditionDescription }}
                   </div>
-                  <div class="font-bold text-sm">XXXXXX</div>
+                  <div class="font-bold text-xxs text-gray-400">XXXXXX</div>
                   <div class="flex items-center">
                     <div class="font-semibold text-xs">
                       {{ s.practitioner.firstName }}
@@ -221,8 +231,9 @@
             </div>
             <cornie-input
               :disabled="true"
-              class="w-full"
+              class="w-full cursor-pointer"
               label="Person"
+              @click="() => (showPersonReference = true)"
               :placeholder="
                 participantTemp?.name ? participantTemp?.name : 'Person'
               "
@@ -232,6 +243,12 @@
               label="Start date/time"
               v-model:date="participantTemp.startDate"
               v-model:time="participantTemp.startTime"
+            />
+            <date-time-picker
+              class="w-full"
+              label="End date/time"
+              v-model:date="participantTemp.endDate"
+              v-model:time="participantTemp.endTime"
             />
           </div>
           <div class="flex w-full items-center justify-end">
@@ -256,7 +273,7 @@
                     {{ p.typeData }}
                   </div>
                   <div class="flex flex-col">
-                    <div class="font-bold text-sm">{{ p.name }}</div>
+                    <div class="font-bold text-sm truncate">{{ p.name }}</div>
                     <div class="text-xxs">{{ p.department }}</div>
                   </div>
                 </div>
@@ -430,9 +447,9 @@
       <div class="flex justify-end space-x-3">
         <cornie-btn
           @click="show = false"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
         >
-          Cancel
+          Pause Encounter
         </cornie-btn>
         <cornie-btn
           :loading="loading"
@@ -480,8 +497,11 @@
   import ArrowLeft from "@/components/icons/arrowleft.vue";
   import CancelIcon from "@/components/icons/cancel.vue";
   import DeleteIcon from "@/components/icons/deleteorange.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import InformationIcon from "@/components/icons/InformationIcon.vue";
   import AddIcon from "@/components/icons/plus.vue";
   import Modal from "@/components/modal.vue";
+  import TooltipSection from "@/components/tooltip.vue";
   import { cornieClient } from "@/plugins/http";
   import IAppointment from "@/types/IAppointment";
   import IEncounter from "@/types/IEncounter";
@@ -491,7 +511,7 @@
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import SelectBoxes from "@/views/dashboard/schedules/components/apply-to.vue";
   import { Options, Vue } from "vue-class-component";
-  import { PropSync } from "vue-property-decorator";
+  import { Prop, PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
   import { codes } from "../../conditions/drop-downs";
   import AppointmentList from "./appointments-list.vue";
@@ -519,7 +539,10 @@
     components: {
       CornieDialog,
       ...CornieCard,
+      InformationIcon,
       ArrowLeft,
+      TooltipSection,
+      InfoIcon,
       DeleteIcon,
       ClinicalDialog,
       CancelIcon,
@@ -548,6 +571,10 @@
   export default class NewEncounter extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
+
+    @Prop({ type: String, default: "Not applicable" })
+    basedOn!: string;
+
     showReference = false;
     showCondition = false;
     showPersonReference = false;
@@ -558,6 +585,7 @@
       time: "",
     };
     // conditions = [];
+
     @encounterM.Action
     postEncounter!: (data: any) => Promise<void>;
 
@@ -630,7 +658,7 @@
       endDate: "",
       endTime: "",
     };
-    basedOn = "";
+
     type = "";
     patientId = "";
 
@@ -643,10 +671,6 @@
     }
     setReasonReference(e: any) {
       this.selectedReasonReference.push(e);
-      // this.postData.hospitalization.preAdmissionIdentifier.identifier =
-      //   this.selectedReasonReference[0].id;
-      // this.postData.reasonReferences[0].identifier =
-      //   this.selectedReasonReference[0].id;
     }
     removeReference(i: any) {
       this.selectedReasonReference.splice(i, 1);
@@ -663,13 +687,6 @@
         this.diagnosisTemp;
       if (!typeData || !reference) return;
 
-      // this.diagnosisVal.push({
-      //   type,
-      //   reference,
-      //   conditionDescription,
-      //   use,
-      //   rank,
-      // });
       this.diagnosisVal.push(this.diagnosisTemp);
       this.diagnosisTemp = {
         typeData: "",
@@ -739,7 +756,7 @@
         class: this.basic.class,
         status: "active",
         serviceType: this.basic.serviceType,
-        // appointmentId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        appointmentId: this.appointmentId,
         hospitalization: {
           preAdmissionIdentifier: {
             type: "condition",
@@ -868,6 +885,13 @@
         .map((app) => {
           return app?.description;
         });
+    }
+
+    get appointmentId() {
+      if (!this.appointmentVal) return "Not applicable";
+      return this.patientappointments.find(
+        (x) => x.description == this.appointmentVal
+      )?.id;
     }
 
     get locationList() {

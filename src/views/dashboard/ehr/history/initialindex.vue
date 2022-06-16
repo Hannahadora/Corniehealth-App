@@ -9,10 +9,10 @@
        History
       </span>
       <span class="w-full h-screen">
-          <tabs :items="tabLinks" v-model="currentTab">
-            <family-section/>
+        <family-section :patientId="patientId"/>
+          <!-- <tabs :items="tabLinks" v-model="currentTab">
             <patient-section />
-          </tabs>
+          </tabs> -->
         
       </span>
     </div>
@@ -32,7 +32,7 @@ import PatientSection from "./patient/index.vue";
 
 
 @Options({
-  name: "HistoryIndex",
+  name: "HistoryInitialIndex",
   components: {
     Tabs,
     FamilySection,
@@ -40,13 +40,15 @@ import PatientSection from "./patient/index.vue";
 
   },
 })
-export default class HistoryIndex extends Vue {
+export default class HistoryInitialIndex extends Vue {
   @Prop({ type: String, default: "" })
   practitionerId!: string;
 
+  @Prop({ type: String, default: "" })
+  patientId!: string;
+
   tabLinks = [
     "Family Member History",
-    "Patient Medical",
   ];
   currentTab = 0;
 }

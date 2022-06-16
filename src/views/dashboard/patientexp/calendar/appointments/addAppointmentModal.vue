@@ -283,7 +283,7 @@
                   placeholder="--/04/2021"
                   class="w-full"
                   v-model="date"
-                  :disabled="[appoitmentDate ? true : false]"
+                  :disabled="[appoitmentDate != '' ? false : true]"
                 />
                 <div class="grid mt-5 grid-cols-2 gap-4">
                   <cornie-input
@@ -292,7 +292,7 @@
                     placeholder="00:00"
                     class="w-full"
                     v-model="startTime"
-                    :disabled="[range ? false : true]"
+                  
                   />
                   <cornie-input
                     :type="'time'"
@@ -300,7 +300,7 @@
                     placeholder="00:00"
                     class="w-full"
                     v-model="endTime"
-                     :disabled="[range ? false : true]"
+                     :disabled="[range2 != '' ? true : false]"
                   />
                 </div>
               </div>
@@ -672,7 +672,7 @@ export default class appointmentModal extends Vue {
          this.done();
         }
       } catch (error:any) {
-        window.notify({ msg: error.response.data.message, status: "error" });
+        window.notify({ msg: "Appointment not created", status: "error" });
       }
     }else{
       window.notify({ msg: "Kindly switch default location", status: "error" });
@@ -690,7 +690,7 @@ export default class appointmentModal extends Vue {
         this.$router.push("/dashboard/provider/experience/calendar");
       }
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
 

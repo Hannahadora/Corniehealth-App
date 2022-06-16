@@ -152,3 +152,8 @@ export function splitDate(date: Date) {
   const [dateStr, ..._] = date.toISOString().split("T");
   return dateStr;
 }
+
+export function splitTime(date: Date) {
+  const [time, ..._] = date.toTimeString().split(" ");
+  return time;
+}

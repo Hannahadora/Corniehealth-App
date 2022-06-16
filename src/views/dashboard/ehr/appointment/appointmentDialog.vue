@@ -360,7 +360,8 @@ export default class appointmentModal extends Vue {
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
-  @user.State
+
+  @user.Getter
   authCurrentLocation!: string;
 
   @practitioner.State
@@ -453,7 +454,6 @@ export default class appointmentModal extends Vue {
   }
 
 get payload(){
-  console.log(this.authCurrentLocation,'this.authCurrentLocation');
   return {
     appointmentType: this.appointmentType,
     description: this.description,
@@ -470,7 +470,7 @@ get payload(){
     date: this.date,
     startTime: this.startTime,
     endTime : this.endTime,
-    locationId : this.locationId,
+    locationId : this.authCurrentLocation,
     bookingLocationId: this.bookingLocationId || undefined,
     practitionerId: this.singlePractitonerId,
     patientId: this.patientrouteId,
@@ -487,8 +487,6 @@ get payload(){
 
 
   async createAppointment() {
-    console.log(this.authCurrentLocation,'this.authCurrentLocation');
-    this.payload.locationId = this.authCurrentLocation;
       try {
         const response = await cornieClient().post(
           "/api/v1/appointment",

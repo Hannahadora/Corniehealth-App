@@ -20,7 +20,7 @@
           New Allergy
         </button>
       </span>
-      <cornie-table  :columns="rawHeaders" v-model="sortAllergys">
+      <cornie-table  :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
         <div
             @click="showAllergy(item.id)"
@@ -439,10 +439,10 @@ export default class AllergyExistingState extends Vue {
   }
 
   async created() {
+     await this.fetchAllergys(this.$route.params.id as string);
     await this.createMapper();
     this.getPractitioners();
-    this.sortAllergys;
-    await this.fetchAllergys(this.patientId);
+    // this.sortAllergys;
   }
 }
 </script>

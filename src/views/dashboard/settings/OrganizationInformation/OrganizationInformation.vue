@@ -46,7 +46,12 @@
               :modelValue="`https://${DomainName}.corniehealth.com`"
               disabled
             />
-            <domain-input v-else label="Domain Name" v-model="DomainName" />
+            <domain-input
+              required
+              v-else
+              label="Domain Name"
+              v-model="DomainName"
+            />
           </div>
           <div class="col-span-4">
             <cornie-select
@@ -66,6 +71,7 @@
               class="w-full"
               v-model="ProviderProfile"
               :rules="requiredRule"
+              :disabled="hasProfile"
             />
           </div>
           <div class="col-span-4 -mt-3.5">
@@ -103,6 +109,7 @@
             <cornie-input
               v-model="RegistrationNumber"
               class="w-full"
+              required
               label="Incorporation Number"
               :rules="requiredRule"
               placeholder="--Enter--"
@@ -186,6 +193,9 @@ import QuestionIcon from "@/components/icons/question.vue";
 import DomainInput from "@/components/newdomaininput.vue";
 import { isUUID } from "@/plugins/utils";
 
+const URLRegex =
+  /^((https?|ftp):\/\/)?(www.)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+
 const organization = namespace("organization");
 @Options({
   name: "PracticeInformation",
@@ -222,12 +232,11 @@ export default class PracticeInfo extends Vue {
   incTypes = [];
   loading = false;
   defaultOrgInfo = {} as IOrganization;
-  urlRule = string().url();
+  urlRule = string().optional().matches(URLRegex, "Invalid URL");
   emailRule = string().email().required();
   requiredRule = string().required();
   image = "";
 
-  imagePlaceholder = require("@/assets/img/avatar.svg");
   @organization.State
   organizationInfo!: IOrganization;
 
@@ -242,17 +251,21 @@ export default class PracticeInfo extends Vue {
     return !isUUID(defaultDomain) && Boolean(defaultDomain);
   }
 
+  get hasProfile() {
+    return Boolean(this.defaultOrgInfo?.providerProfile);
+  }
+
   get payload() {
     return {
       name: this.OrganizationName,
-      image: this.image || this.imagePlaceholder,
-      alias: this.alias,
+      image: this.image || undefined,
+      alias: this.alias || undefined,
       organisationType: this.OrganizationType,
       registrationNumber: this.RegistrationNumber || undefined,
       domainName: this.DomainName,
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
-      website: this.Website,
+      website: this.Website || undefined,
       phone: this.PhoneNumber
         ? {
             number: this.PhoneNumber,
@@ -260,8 +273,8 @@ export default class PracticeInfo extends Vue {
           }
         : undefined,
       email: this.EmailAddress,
-      reference: this.ReferenceOrganization,
-      address: this.address,
+      reference: this.ReferenceOrganization || undefined,
+      address: this.address || undefined,
     };
   }
 

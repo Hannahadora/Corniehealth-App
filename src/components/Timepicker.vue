@@ -1,18 +1,15 @@
 <template>
-<cornie-input>
-
-
-</cornie-input>
-    <v-date-picker
-      v-model="date"
-      mode="time"
-      color="red"
-      :model-config="{
-        type: 'string',
-        mask: '00:00',
-      }"
-      style="width: 100%"
-    />
+  <cornie-input> </cornie-input>
+  <v-date-picker
+    v-model="date"
+    mode="time"
+    color="red"
+    :model-config="{
+      type: 'string',
+      mask: '00:00',
+    }"
+    style="width: 100%"
+  />
 </template>
 
 <script lang="ts">
