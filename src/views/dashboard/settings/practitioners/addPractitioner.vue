@@ -1,16 +1,4 @@
 <template>
-  <access-role
-    v-model="addAccessRole"
-    :deletedRole="deletedRole"
-    @close-access-diag="addAccessRole = false"
-    @add-access-roles="addAccessRoles"
-    @role-deleted="deletedRole = {}"
-    :locationId="locationId"
-    :roleId="roleId"
-    :id="id"
-    :locationRoleId="locationRoleId"
-    :setRoles="locationRoles"
-  />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
@@ -694,6 +682,22 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
+  <locationrole-modal  v-model="addAccessRole" :id="id"  :locationId="locationId"
+    :roleId="roleId"     :locationRoleId="locationRoleId"
+    :setRoles="locationRoles" :deletedRole="deletedRole"  @add-access-roles="addAccessRoles"/>
+
+    <!-- <access-role
+    v-model="addAccessRole"
+    :deletedRole="deletedRole"
+    @close-access-diag="addAccessRole = false"
+    @add-access-roles="addAccessRoles"
+    @role-deleted="deletedRole = {}"
+    :locationId="locationId"
+    :roleId="roleId"
+    :id="id"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+  /> -->
 </template>
 <script lang="ts">
 import { Options, setup, Vue } from "vue-class-component";
@@ -729,6 +733,7 @@ import SpecialityModal from "./specialModal.vue";
 import ISpecial from "@/types/ISpecial";
 import ILocation from "@/types/ILocation";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
+import LocationroleModal from "./LocationRoles.vue";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
@@ -759,6 +764,7 @@ const location = namespace("location");
     DeleteRed,
     EditIcon,
     CornieRadio,
+    LocationroleModal,
   },
 })
 export default class AddPractitioner extends Vue {
@@ -1260,9 +1266,13 @@ export default class AddPractitioner extends Vue {
       title: "Delete location role",
     });
     if (!confirmed) return;
-    if (await this.deleteLocationrole({id, roleId}))
-      window.notify({ msg: "Location role deleted", status: "success" });
-    else window.notify({ msg: "Location role not deleted", status: "error" });
+    if (await this.deleteLocationrole({id, roleId})){
+       window.notify({ msg: "Location role deleted", status: "success" });
+      await this.fetchLocation()
+    }else{
+        window.notify({ msg: "Location role not deleted", status: "error" });
+    }
+     
   }
   async done(){
      await this.fetchPractitioners();
