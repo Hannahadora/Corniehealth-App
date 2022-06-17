@@ -1,16 +1,4 @@
 <template>
-  <access-role
-    v-model="addAccessRole"
-    :deletedRole="deletedRole"
-    @close-access-diag="addAccessRole = false"
-    @add-access-roles="addAccessRoles"
-    @role-deleted="deletedRole = {}"
-    :locationId="locationId"
-    :roleId="roleId"
-    :id="id"
-    :locationRoleId="locationRoleId"
-    :setRoles="locationRoles"
-  />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
@@ -697,126 +685,144 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
+  <locationrole-modal  v-model="addAccessRole" :id="id"  :locationId="locationId"
+    :roleId="roleId"     :locationRoleId="locationRoleId"
+    :setRoles="locationRoles" :deletedRole="deletedRole"  @add-access-roles="addAccessRoles"/>
+
+    <!-- <access-role
+    v-model="addAccessRole"
+    :deletedRole="deletedRole"
+    @close-access-diag="addAccessRole = false"
+    @add-access-roles="addAccessRoles"
+    @role-deleted="deletedRole = {}"
+    :locationId="locationId"
+    :roleId="roleId"
+    :id="id"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+  /> -->
 </template>
 <script lang="ts">
-  import AutoComplete from "@/components/autocomplete.vue";
-  import Avatar from "@/components/avatar.vue";
-  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-  import CornieInput from "@/components/cornieinput.vue";
-  import CornieRadio from "@/components/cornieradio.vue";
-  import CornieSelect from "@/components/cornieselect.vue";
-  import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import DatePicker from "@/components/datepicker.vue";
-  import PeriodPicker from "@/components/daterangepicker.vue";
-  import AccordionComponent from "@/components/form-accordion.vue";
-  import {
-    default as AddBlueIcon,
-    default as AddIcon,
-  } from "@/components/icons/addblue.vue";
-  import DeleteRed from "@/components/icons/delete-red.vue";
-  import EditIcon from "@/components/icons/edit.vue";
-  import InfoIcon from "@/components/icons/info.vue";
-  import PlusIcon from "@/components/icons/plus.vue";
-  import OperationHours from "@/components/new-operation-hours.vue";
-  import PhoneInput from "@/components/phone-input.vue";
-  import { useCountryStates } from "@/composables/useCountryStates";
-  import { useHandleImage } from "@/composables/useHandleImage";
-  import { cornieClient } from "@/plugins/http";
-  import { createDate } from "@/plugins/utils";
-  import ILocation from "@/types/ILocation";
-  import Period from "@/types/IPeriod";
-  import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-  import ISpecial from "@/types/ISpecial";
-  import { Options, setup, Vue } from "vue-class-component";
-  import { Prop, Watch } from "vue-property-decorator";
-  import { namespace } from "vuex-class";
-  import { date, string } from "yup";
-  import AccessRole from "./AccessRoles.vue";
-  import SpecialityModal from "./specialModal.vue";
+import { Options, setup, Vue } from "vue-class-component";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { string, date } from "yup";
+import DatePicker from "@/components/datepicker.vue";
+import { Prop, Watch } from "vue-property-decorator";
+import { useHandleImage } from "@/composables/useHandleImage";
+import PeriodPicker from "@/components/daterangepicker.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import AddBlueIcon from "@/components/icons/addblue.vue";
+import Multiselect from "@vueform/multiselect";
+import Avatar from "@/components/avatar.vue";
+import Period from "@/types/IPeriod";
+import { createDate } from "@/plugins/utils";
+import PlusIcon from "@/components/icons/plus.vue";
+import AccessRole from "./AccessRoles.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import { useCountryStates } from "@/composables/useCountryStates";
+import AutoComplete from "@/components/autocomplete.vue";
+import AddIcon from "@/components/icons/addblue.vue";
+import SpecialityModal from "./specialModal.vue";
+import ISpecial from "@/types/ISpecial";
+import ILocation from "@/types/ILocation";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import LocationroleModal from "./LocationRoles.vue";
 
-  const dropdown = namespace("dropdown");
-  const practitioner = namespace("practitioner");
-  const roles = namespace("roles");
-  const special = namespace("special");
-  const location = namespace("location");
+const dropdown = namespace("dropdown");
+const practitioner = namespace("practitioner");
+const roles = namespace("roles");
+const special = namespace("special");
+const location = namespace("location");
 
-  @Options({
-    name: "AddPractitioner",
-    components: {
-      CornieCheckbox,
-      AccessRole,
-      PlusIcon,
-      CornieInput,
-      CornieSelect,
-      AccordionComponent,
-      SpecialityModal,
-      InfoIcon,
-      PhoneInput,
-      AddIcon,
-      PeriodPicker,
-      OperationHours,
-      DatePicker,
-      Avatar,
-      AutoComplete,
-      CornieAvatarField,
-      AddBlueIcon,
-      DeleteRed,
-      EditIcon,
-      CornieRadio,
-    },
-  })
-  export default class AddPractitioner extends Vue {
-    @Prop({ type: String, default: "" })
-    id!: string;
+@Options({
+  name: "AddPractitioner",
+  components: {
+    CornieCheckbox,
+    AccessRole,
+    PlusIcon,
+    CornieInput,
+    CornieSelect,
+    AccordionComponent,
+    SpecialityModal,
+    InfoIcon,
+    PhoneInput,
+    AddIcon,
+    PeriodPicker,
+    OperationHours,
+    DatePicker,
+    Avatar,
+    AutoComplete,
+    CornieAvatarField,
+    AddBlueIcon,
+    DeleteRed,
+    EditIcon,
+    CornieRadio,
+    LocationroleModal,
+  },
+})
+export default class AddPractitioner extends Vue {
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-    img = setup(() => useHandleImage());
+  img = setup(() => useHandleImage());
 
-    @roles.State
-    roles!: { id: string; name: string }[];
+  @roles.State
+  roles!: { id: string; name: string }[];
 
-    @roles.Action
-    getRoles!: () => Promise<void>;
+  @roles.Action
+  getRoles!: () => Promise<void>;
 
-    @practitioner.Action
-    getPractitionerById!: (id: string) => Promise<IPractitioner>;
+  @practitioner.Action
+  getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
-    @practitioner.Mutation
-    updatePractitioners!: (practitioners: IPractitioner[]) => void;
+  @practitioner.Mutation
+  updatePractitioners!: (practitioners: IPractitioner[]) => void;
 
-    @location.State
-    locations!: ILocation[];
+  @location.State
+  locations!: ILocation[];
 
-    @location.Action
-    fetchLocations!: () => Promise<void>;
+  @location.Action
+  fetchLocations!: () => Promise<void>;
 
-    @practitioner.State
-    practitioners!: IPractitioner[];
+  @practitioner.State
+  practitioners!: IPractitioner[];
 
-    @practitioner.Action
-    deletePractitioner!: (id: string) => Promise<boolean>;
+  @practitioner.Action
+  deletePractitioner!: (id: string) => Promise<boolean>;
 
-    @practitioner.Action
-    fetchPractitioners!: () => Promise<void>;
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
 
-    @practitioner.Action
-    deleteLocationrole!: ({ id, roleId }: any) => Promise<boolean>;
+  @practitioner.Action
+  deleteLocationrole!: ({ id, roleId} : any) => Promise<boolean>;
 
-    @special.State
-    specials!: ISpecial[];
+  @special.State
+  specials!: ISpecial[];
 
-    @special.Action
-    fetchSpecials!: () => Promise<void>;
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
 
-    loading = false;
+  loading = false;
 
-    educations = [] as any;
-    licenses = [] as any;
-    disabled = false;
+  educations = [] as any;
+  licenses = [] as any;
+  disabled=false;
 
-    dobRule = date().max(
-      new Date(),
-      `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
-    );
+   dobRule = date().max(
+    new Date(),
+    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+  );
+
 
     addEducation() {
       if (
@@ -1306,14 +1312,8 @@
       if (!this.roles.length) await this.getRoles();
     }
   }
-</script>
-<style src="@vueform/multiselect/themes/default.css"></style>
-
-<style scoped>
-  .multiselect-option.is-selected {
-    background: #fe4d3c;
-    color: var(--ms-option-color-selected, #fff);
-  }
+  </script>
+  <style>
   .multiselect-option.is-selected.is-pointed {
     background: var(--ms-option-bg-selected-pointed, #fe4d3c);
     color: var(--ms-option-color-selected-pointed, #fff);

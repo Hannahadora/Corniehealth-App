@@ -293,7 +293,7 @@
                   <div class="flex space-x-2" v-if="repeattype == 'After'">
                     <cornie-input
                       :rules="required"
-                      placeholder="20"
+                      placeholder="0"
                       class="grow"
                       v-model="repeat.end.value"
                       :setfull="true"
@@ -687,8 +687,8 @@ export default class scheduleModal extends Vue {
   repeat = {
     days:[],
     end: {
-      type: '',
-      value: '',
+      type: 'events',
+      value: '0',
    }
   } as any;
 
@@ -794,7 +794,7 @@ cancel(){
         window.notify({ msg: "Availability created", status: "success" });
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Availability not created", status: "error" });
     }
   }
 
