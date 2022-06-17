@@ -185,6 +185,7 @@ export default class AutoComplete extends Vue {
       this.showDatalist = false;
       this.modelValueSync = item.code || item;
     });
+    this.$emit("selected", item);
   }
   get inputName() {
     const id = Math.random().toString(36).substring(2, 9);

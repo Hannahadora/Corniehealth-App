@@ -2,6 +2,7 @@
   <div>
     <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
+      <span class="text-danger ml-1" v-if="required"> * </span>
     </label>
     <field
       :name="inputName"
@@ -94,6 +95,9 @@ export default class DomainInput extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
 
   get customRule() {
     const domainRule = string()

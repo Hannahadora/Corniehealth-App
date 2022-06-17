@@ -4,6 +4,7 @@
     v-model="practitioner"
     :filter="filter"
     :items="items"
+    @selected="selected"
   >
     <template #item="{ item }">
       <div class="w-full flex items-center my-1 justify-between">
@@ -67,6 +68,9 @@ export default class PractitionerSelect extends Vue {
     }));
   }
 
+  selected(item: IPractitioner) {
+    this.$emit("selected", item);
+  }
   created() {
     if (!this.practitioners?.length) this.fetchPractitioners();
   }

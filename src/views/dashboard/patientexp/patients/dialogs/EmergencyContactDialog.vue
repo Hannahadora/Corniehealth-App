@@ -21,6 +21,7 @@
             class="w-full"
             placeholder="David Alabi Smith"
             v-model="name"
+            :rules="required"
           />
           <cornie-select
             label="Gender"
@@ -28,19 +29,32 @@
             placeholder="Select One"
             :items="genderOptions"
             v-model="gender"
+            :rules="required"
           />
-          <cornie-select
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+            class="w-full"
+            v-model="relationship"
+            label="Relationship"
+            placeholder="Select"
+            :rules="required"
+            required
+          />
+          <!-- <cornie-select
             label="Relationship"
             class="w-full"
             placeholder="Select"
             :items="relationshipOptions"
             v-model="relationship"
-          />
+            :required="true"
+            :rules="required"
+          /> -->
           <cornie-input
             label="Mailing Address"
             class="w-full"
             placeholder="Enter"
             v-model="mailingAddress"
+            :rules="required"
           />
 
           <auto-complete
@@ -49,6 +63,7 @@
             placeholder="Enter"
             v-model="country"
             :items="nationState.countries"
+            :rules="required"
           />
 
           <auto-complete
@@ -57,6 +72,7 @@
             placeholder="Enter"
             v-model="state"
             :items="nationState.states"
+            :rules="required"
           />
 
           <cornie-input
@@ -64,18 +80,21 @@
             class="w-full"
             placeholder="Enter"
             v-model="city"
+            :rules="required"
           />
           <cornie-input
             label="Suite or Apt No"
             class="w-full"
             placeholder="Enter"
             v-model="aptNumber"
+            :rules="required"
           />
           <cornie-input
             label="Post Code"
             class="w-full"
             placeholder="Enter"
             v-model="postCode"
+            :rules="required"
           />
           <cornie-phone-input
             label="Mobile Number 1"
@@ -86,11 +105,13 @@
           />
 
           <cornie-phone-input
-            label="Mobile Number 2"
+            label="Mobile Number 2 (optional)"
             class="w-full mb-6"
             placeholder="Enter"
             v-model="secondaryPhone.number"
             v-model:code="secondaryPhone.dialCode"
+            :rules="undefined"
+            :notRequired="true"
           />
           <cornie-input
             label="Email"
@@ -110,6 +131,7 @@
               label="Period (from - to)"
               class="mr-1 w-full"
               v-model="period"
+              :rules="required"
             />
           </div>
         </v-form>
@@ -155,6 +177,7 @@
   import CornieSelect from "@/components/cornieselect.vue";
   import CornieDatePicker from "@/components/datepicker.vue";
   import PeriodPicker from "@/components/daterangepicker.vue";
+  import FhirInput from "@/components/fhir-input.vue";
   import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
   import CorniePhoneInput from "@/components/phone-input.vue";
   import { useCountryStates } from "@/composables/useCountryStates";
@@ -166,6 +189,7 @@
     components: {
       ...CornieCard,
       AutoComplete,
+      FhirInput,
       PeriodPicker,
       CornieIconBtn,
       ArrowLeftIcon,
@@ -205,6 +229,7 @@
     primaryPhone = { number: "", dialCode: "+234" };
     secondaryPhone = { number: "", dialCode: "+234" };
     emailRule = string().email().required();
+    required = string().required();
     genderOptions = [
       { code: "male", display: "Male" },
       { code: "female", display: "Female" },
@@ -268,6 +293,21 @@
       else this.batch();
       this.loading = false;
     }
+    reset() {
+      this.name = "";
+      this.gender = "";
+      this.relationship = "";
+      this.country = "";
+      this.state = "";
+      this.city = "";
+      this.aptNumber = "";
+      this.email = "";
+      this.organization = "";
+      this.postCode = "";
+      this.period = { start: "", end: "" };
+      this.primaryPhone = { number: "", dialCode: "+234" };
+      this.mailingAddress = "";
+    }
 
     batch() {
       this.loading = true;
@@ -304,6 +344,7 @@
         field: "emergencyContacts",
         data: [data],
       });
+      this.reset();
     }
 
     async createNew() {
