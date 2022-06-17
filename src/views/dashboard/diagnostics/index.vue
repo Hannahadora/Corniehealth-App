@@ -20,11 +20,26 @@
     </div>
     <div class="w-full pb-7">
       <request-table v-if="type === 'requests'" @viewRequest="createReport" />
-      <report-table v-if="type === 'reports'" @viewRequest="viewItem" />
+      <report-table
+        v-if="type === 'reports'"
+        @viewReport="viewItem"
+        @updateStatus="showStatusModal"
+      />
     </div>
   </div>
-  <update-status v-model="showRecord" :reportId="typeId" :requestId="requestId" @sales-added="salesAdded" />
-  <report-dialog v-model="showResult" :id="typeId" :report="selectedReport" />
+  <update-status
+    v-model="statusUpdateModal"
+    :id="reportId"
+    @status-updated="statusUpdated"
+    :report="selectedReport"
+  />
+  <report-dialog
+    v-model="showResult"
+    :reportId="reportId"
+    :requestId="requestId"
+    :report="selectedReport"
+    :request="selectedRequest"
+  />
 </template>
 <script lang="ts">
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -76,29 +91,38 @@ export default class DiagnosticReport extends Vue {
   query = "";
   requestId = "";
   reportId = "";
-  showRecord = false;
+  statusUpdateModal = false;
   showResult = false;
   updatedBy = "";
   currentStatus = "";
-  showStatusModal = false;
   selectedReport = <any>{};
+  selectedRequest = <any>{};
   type = "reports";
 
-  showItem(value: string) {
-    this.showRecord = true;
+  showStatusModal(value: string, item: any) {
+    this.statusUpdateModal = true;
     this.reportId = value;
+    this.selectedReport = item;
   }
 
   createReport(itemId?: string, item?: any) {
     if (itemId) {
       this.requestId = itemId;
+      this.selectedRequest = item;
+    }
+    this.showResult = true;
+  }
+
+  viewItem(itemId?: string, item?: any) {
+    if (itemId) {
+      this.reportId = itemId;
       this.selectedReport = item;
     }
     this.showResult = true;
   }
 
   closeModal() {
-    this.showRecord = false;
+    this.statusUpdateModal = false;
   }
 }
 </script>
