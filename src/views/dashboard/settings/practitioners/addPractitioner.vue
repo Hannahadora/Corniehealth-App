@@ -11,7 +11,7 @@
     :locationRoleId="locationRoleId"
     :setRoles="locationRoles"
   />
-  <div class="h-screen flex justify-center">
+  <div class="h-screen flex justify-center"> 
     <div class="w-full h-screen mx-5 pb-5">
       <span
         class="flex border-b-2 w-full font-semibold text-lg text-primary py-2 mx-auto"
@@ -377,13 +377,21 @@
                   </template>
                 </cornie-input>
 
-                <cornie-select
-                  :items="['a', 'b']"
+                <fhir-input
+                  reference="http://hl7.org/fhir/ValueSet/performer-role"
+                  class="w-full"
                   label="Job Designation"
-                  placeholder="--Select--"
-                  class="mt-0.5 flex-none"
                   v-model="jobDesignation"
+                  placeholder="Select"
                 />
+
+                <!-- <cornie-input
+                  :rules="required"
+                  v-model="jobDesignation"
+                  placeholder="--Enter--"
+                  class="grow w-full"
+                  
+                /> -->
 
                 <cornie-select
                   :items="dropdown.CommunicationLanguage"
@@ -708,6 +716,7 @@
   import CornieCheckbox from "@/components/custom-checkbox.vue";
   import DatePicker from "@/components/datepicker.vue";
   import PeriodPicker from "@/components/daterangepicker.vue";
+  import FhirInput from "@/components/fhir-input.vue";
   import AccordionComponent from "@/components/form-accordion.vue";
   import {
     default as AddBlueIcon,
@@ -763,6 +772,7 @@
       DeleteRed,
       EditIcon,
       CornieRadio,
+      FhirInput,
     },
   })
   export default class AddPractitioner extends Vue {
