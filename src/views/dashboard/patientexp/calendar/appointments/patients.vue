@@ -56,7 +56,7 @@
                         </p>
                         </div>
                     </div>
-                    <select-option @click="pushValue(item,item.id)" :value="item.id"/>
+                    <select-option @click="pushValue(item,item.id,index)" name="itempatient" :value="item.id"/>
                 </div>
          
           
@@ -107,7 +107,7 @@ import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import ISpecial from "@/types/ISpecial";
-import SelectOption from "@/components/custom-checkbox.vue";
+import SelectOption from "@/components/cornieradio.vue";
 import search from "@/plugins/search";
 import { IPatient } from "@/types/IPatient";
 
@@ -185,10 +185,19 @@ export default class Patients extends Vue {
       .sort(this.orderBy);
   }
 
-  pushValue(item:any,id:string){
-    this.patientIds.push({patientId: id, required: true });
-    this.firstPatient.push(item);
-    this.singlePatientId = id;
+  pushValue(item:any,id:string,index:number){
+    if(this.firstPatient.length > 0){
+       this.firstPatient.shift();
+       this.patientIds.shift();
+
+       this.patientIds.push({patientId: id, required: true });
+      this.firstPatient.push(item);
+      this.singlePatientId = id;
+    }else{
+      this.patientIds.push({patientId: id, required: true });
+      this.firstPatient.push(item);
+      this.singlePatientId = id;
+    }
   }
 
    async submit() {

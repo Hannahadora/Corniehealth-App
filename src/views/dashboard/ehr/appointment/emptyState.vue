@@ -16,7 +16,7 @@
           </span>
         </div>
 
-    <appointment-modal v-model="showAppointmentModal" />
+    <appointment-modal v-model="showAppointmentModal" @appointment-added="appointmentAdded"/>
   </div>
 </template>
 <script lang="ts">
@@ -26,6 +26,9 @@ import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
 import AppointmentModal from "./appointmentDialog.vue";
+import { namespace } from "vuex-class";
+
+const appointment = namespace("appointment");
 @Options({
   components: {
     ChevronDownIcon,
@@ -44,6 +47,13 @@ export default class AppointmentEmptyState extends Vue {
 
   select(i: number) {
     this.selected = i;
+  }
+
+  @appointment.Action
+  fetchByIdAppointments!: (patientId: string) => Promise<void>;
+
+  appointmentAdded() {
+    this.fetchByIdAppointments(this.$route.params.id.toString());
   }
 }
 </script>

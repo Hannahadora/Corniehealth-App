@@ -271,7 +271,7 @@
                         />
                   </template>    
             </accordion-component>
-            <accordion-component
+            <!-- <accordion-component
             :title="'Period'"
             :addborder="true"
             :opened="false"
@@ -305,7 +305,7 @@
                 </div>
               </div>
             </template>
-          </accordion-component>
+          </accordion-component> -->
             <div class="w-full mt-2 mb-2">
                 <div class="flex w-full border-dashed border-b border-gray-100">
                     <div class="w-full">
@@ -507,10 +507,10 @@ export default class appointmentModal extends Vue {
   appoitmentDate!: string;
 
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "00:00" })
   range!: string;
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "00:00" })
   range2!: string;
 
 
@@ -657,9 +657,7 @@ export default class appointmentModal extends Vue {
 
   async createAppointment() {
     this.locationId = this.authCurrentLocation;
-    this.payload.startTime = this.range;
-    this.payload.endTime = this.range2;
-    this.payload.date = this.appoitmentDate;
+    this.payload.date = this.appoitmentDate || new Date().toISOString();
 
     if(this.authCurrentLocation){
       try {
@@ -707,14 +705,12 @@ export default class appointmentModal extends Vue {
       this.patientId = valueId;
       this.singlePatientId = id;
 
-      console.log(value,"THIS IS VALUE");
   }
 
   practitionerdata(value:any,valueId:any){
       this.Practitioners.push(...value);
       this.practitionerId.push(...valueId);
      
-     console.log(this.practitionerId,"FDFk");
   }
   devicedata(value:any,valueId:any){
       this.Devices = value;
