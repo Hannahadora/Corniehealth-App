@@ -11,7 +11,7 @@
     :locationRoleId="locationRoleId"
     :setRoles="locationRoles"
   />
-  <div class="h-screen flex justify-center"> 
+  <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
         class="flex border-b-2 w-full font-semibold text-lg text-primary py-2 mx-auto"
@@ -245,12 +245,13 @@
                   placeholder="--Enter--"
                   label="Name"
                 />
-                <cornie-select
-                  :rules="required"
-                  v-model="emergency.relationship"
+                <fhir-input
+                  reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+                  class="w-full"
                   label="Relationship"
-                  :items="['Sibling', 'Friend']"
-                  placeholder="--Select--"
+                  v-model="emergency.relationship"
+                  placeholder="Select"
+                  :rules="required"
                   :required="true"
                 />
                 <cornie-input
@@ -283,7 +284,7 @@
                 <auto-complete
                   class="w-full"
                   v-model="emergency.state"
-                  label="State or Origin"
+                  label="State or Region"
                   :items="nationState.states"
                   placeholder="Enter"
                   :rules="required"
@@ -335,13 +336,21 @@
           <accordion-component title="Work" :opened="false">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                <cornie-input
+                <cornie-select
                   :rules="required"
                   v-model="employmentType"
                   label="Employment Type"
-                  placeholder="--Enter--"
+                  :items="[
+                    'Full-time',
+                    'Part-time',
+                    'Contract',
+                    'Probation',
+                    'Internship',
+                  ]"
+                  placeholder="--Select--"
                   :required="true"
                 />
+
                 <div v-if="specialties.length > 0">
                   <span class="text-sm mb-4 font-semibold">Specialty</span>
                   <div
@@ -402,14 +411,45 @@
                   :required="true"
                 />
 
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   v-model="consultationChannel"
                   label="Visit Type"
                   :items="dropdown.ConsultationChannel"
                   placeholder="--Select--"
                   :required="true"
-                />
+                /> -->
+                <div class="flex flex-col space-y-0.5">
+                  <div class="text-sm font-semibold mb-1">Visit Type</div>
+
+                  <Multiselect
+                    label="Visit Type"
+                    v-model="consultationChannel"
+                    mode="tags"
+                    :hide-selected="true"
+                    :options="visitType"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                    <template
+                      v-slot:tag="{ option, handleTagRemove, disabled }"
+                    >
+                      <div class="multiselect-tag is-user">
+                        {{ option.label }}
+                        <span
+                          v-if="!disabled"
+                          class="multiselect-tag-remove"
+                          @mousedown.prevent="handleTagRemove(option, $event)"
+                        >
+                          <span class="multiselect-tag-remove-icon"></span>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <span class="w-full text-sm">{{ option.label }}</span>
+                    </template>
+                  </Multiselect>
+                </div>
 
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3"
@@ -736,6 +776,7 @@
   import Period from "@/types/IPeriod";
   import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
   import ISpecial from "@/types/ISpecial";
+  import Multiselect from "@vueform/multiselect";
   import { Options, setup, Vue } from "vue-class-component";
   import { Prop, Watch } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -772,6 +813,8 @@
       DeleteRed,
       EditIcon,
       CornieRadio,
+      Multiselect,
+
       FhirInput,
     },
   })
@@ -878,9 +921,9 @@
     nationState = setup(() => useCountryStates());
 
     consultationRatevalue = 0;
-    consultationRateunit = "";
+    consultationRateunit = "Hour";
     practiceDurationvalue = 0;
-    practiceDurationunit = "";
+    practiceDurationunit = "Year";
     newspecialties = [] as any;
 
     qualificationCode = "";
@@ -909,7 +952,20 @@
     issuer = "";
     graduation = "";
     showSpecial = false;
-
+    visitType = [
+      {
+        label: "In-person",
+        value: "in-person",
+      },
+      {
+        label: "Virtual",
+        value: "virtual",
+      },
+      {
+        label: "At home",
+        value: "at home",
+      },
+    ];
     qualificationIdentifier = "1122";
     qualificationIssuer = "";
     licenseNumber = "";
@@ -918,7 +974,7 @@
     practitionerId = "";
     communicationLanguage = "";
     availabilityExceptions = "availabilityExceptions";
-    consultationChannel = "";
+    consultationChannel: any = [];
     defaultLocation = "";
     hoursOfOperation: HoursOfOperation[] = [];
     organizationId = "";
@@ -1304,7 +1360,7 @@
       const data = await this.getDropdowns("practitioner");
       this.dropdown = data;
 
-      console.log(data);
+      console.log("dropdowns", data);
     }
     async created() {
       this.fetchSpecials();
