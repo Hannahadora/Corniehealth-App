@@ -102,10 +102,7 @@
               v-model="IncorporationType"
             />
           </div>
-          <div
-            class="col-span-4"
-            v-show="IncorporationType !== 'Not Registered'"
-          >
+          <div class="col-span-4" v-if="IncorporationType !== 'Not Registered'">
             <cornie-input
               v-model="RegistrationNumber"
               class="w-full"
@@ -255,13 +252,18 @@ export default class PracticeInfo extends Vue {
     return Boolean(this.defaultOrgInfo?.providerProfile);
   }
 
+  get isRegisteredCompany() {
+    return this.IncorporationType != "Not Registered";
+  }
   get payload() {
     return {
       name: this.OrganizationName,
       image: this.image || undefined,
       alias: this.alias || undefined,
       organisationType: this.OrganizationType,
-      registrationNumber: this.RegistrationNumber || undefined,
+      registrationNumber: this.isRegisteredCompany
+        ? this.RegistrationNumber || undefined
+        : undefined,
       domainName: this.DomainName,
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
@@ -350,7 +352,7 @@ export default class PracticeInfo extends Vue {
     this.address = data?.address || "";
   }
 }
-</script> 
+</script>
 
 <style scoped>
 /* Chrome, Safari, Edge, Opera */
