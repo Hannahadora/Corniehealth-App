@@ -1,6 +1,6 @@
 <template>
   <div>
-    <bread-crumbs />
+    <!-- <bread-crumbs /> -->
     <div class="pb-4 mt-6 border-b border-gray-300">
       <p class="text-xl font-bold">Diagnostics {{ type }}</p>
     </div>
@@ -30,7 +30,7 @@
   <update-status
     v-model="statusUpdateModal"
     :id="reportId"
-    @status-updated="statusUpdated"
+    @status-updated="fetchDiagnosticReports"
     :report="selectedReport"
   />
   <report-dialog
@@ -58,6 +58,7 @@ import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
 import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
+import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import UpdateStatus from "./updateStatus.vue";
 import ReportDialog from "./ReportDialog.vue";
@@ -123,6 +124,18 @@ export default class DiagnosticReport extends Vue {
 
   closeModal() {
     this.statusUpdateModal = false;
+  }
+
+  async fetchDiagnosticReports() {
+    try {
+      const data = await cornieClient().get("/api/v1/diagnostic/report");
+      // this.diagnosticReports = data.data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching Diagnostics Reports",
+        status: "error",
+      });
+    }
   }
 }
 </script>

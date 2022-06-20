@@ -35,7 +35,7 @@
                 disabled
                 label="Date Last Updated"
                 class="w-full mb-4"
-                v-model="xUpdatedAt"
+                v-model="updateDate"
               />
 
               <cornie-select

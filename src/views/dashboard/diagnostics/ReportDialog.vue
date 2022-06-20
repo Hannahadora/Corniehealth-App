@@ -116,7 +116,7 @@
                 class="w-full"
                 label="End Date/Time"
                 v-model:date="effective.period.endTime"
-                v-model:time="effective.period.time2"
+                v-model:time="effective.period.time"
                 v-if="type == 'period'"
               />
               <date-time-picker
@@ -138,8 +138,8 @@
                 <date-time-picker
                   class="w-full"
                   label="Issued"
-                  v-model:date="reportModel.issued.date"
-                  v-model:time="reportModel.issued.time"
+                  v-model:date="issued.date"
+                  v-model:time="issued.time"
                 />
               </div>
               <practioner-select
@@ -359,6 +359,9 @@ export default class DiagnosticReportDialog extends Vue {
   @report.Action
   createDReport!: (s: any) => Promise<void>;
 
+  @report.Action
+  updateDReport!: (s: any) => Promise<void>;
+
   required = string().required();
 
   loading = false;
@@ -378,7 +381,7 @@ export default class DiagnosticReportDialog extends Vue {
   fileInfo = "";
   obs = "";
   result = {
-    referenceObservation: this.findObservationId(this.obs),
+    referenceObservation: this.obs || this.findObservationId(this.obs),
     image: "",
     comments: "",
     imagingStudy: "",
@@ -393,17 +396,6 @@ export default class DiagnosticReportDialog extends Vue {
     basedOn: "",
     category: "",
     code: "",
-    effective: {
-      dateTime: undefined,
-      period: {
-        start: undefined,
-        end: undefined,
-      },
-    },
-    issued: {
-      date: "",
-      time: "",
-    },
     performerId: "",
     interpreterId: "",
     result: <any>[],
@@ -411,6 +403,11 @@ export default class DiagnosticReportDialog extends Vue {
       conclusion: "",
       conclusionCode: "",
     },
+  };
+
+  issued = {
+    date: "",
+    time: "",
   };
 
   effective = {
@@ -486,7 +483,7 @@ export default class DiagnosticReportDialog extends Vue {
     if (this.result.image && this.result?.comments) {
       this.collectedResults.push(this.result);
       this.result = {
-        referenceObservation: this.findObservationId(this.obs),
+        referenceObservation: this.obs || this.findObservationId(this.obs),
         image: "",
         comments: "",
         imagingStudy: "",
@@ -531,11 +528,28 @@ export default class DiagnosticReportDialog extends Vue {
     this.result.image = fileUrl;
   }
 
+  setEffectiveType() {
+    if ((this.report as any).effective?.date) {
+      this.type == "date-time";
+      this.effective.date = (this.report as any).effective?.date;
+    } else {
+      this.type == "period";
+      this.effective.period.startTime = (
+        this.report as any
+      ).effective?.period.startTime;
+      this.effective.period.endTime = (
+        this.report as any
+      ).effective?.period.endTime;
+    }
+  }
+
   setDiagnoticRecord() {
     if (this.report) {
       (this.reportModel as any) = this.report;
       this.reportModel.conclusion = (this.report as any).conclusion;
       this.collectedResults = (this.report as any).result;
+      this.setEffectiveType();
+      this.issued.date = (this.report as any).issuedDate
     }
   }
   setDiagnoticRequest() {
@@ -569,7 +583,7 @@ export default class DiagnosticReportDialog extends Vue {
               },
             },
       issueDate:
-        this.reportModel?.issued?.date + this.reportModel?.issued?.time,
+        this.issued?.date + this.issued?.time,
       performerId: this.reportModel.performerId,
       interpreterId: this.reportModel.interpreterId,
       result: this.collectedResults,
@@ -582,8 +596,16 @@ export default class DiagnosticReportDialog extends Vue {
 
   submit() {
     this.loading = true;
-    this.createDReport(this.payload);
-    this.show = false
+    if (this.reportId) {
+      const payload = {
+        id: this.reportId,
+        data: this.payload,
+      };
+      this.updateDReport(payload);
+    } else {
+      this.createDReport(this.payload);
+    }
+    this.show = false;
     this.loading = false;
   }
 

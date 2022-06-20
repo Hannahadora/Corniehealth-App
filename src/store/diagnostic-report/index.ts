@@ -55,7 +55,7 @@ export default {
           ctx.dispatch("getAllReports");
           notify({
             msg: "Diagnostic report updated successfully!!",
-            status: "error",
+            status: "success",
           });
         })
         .catch(d => {
@@ -70,6 +70,7 @@ export default {
     async updateRStatus(ctx: any, payload: any) {
       await updateReportStatus(payload)
         .then(e => {
+          ctx.dispatch("getAllReports");
           // eslint-disable-next-line no-console
           console.log("updateSuccess", e);
         })
