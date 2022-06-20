@@ -199,14 +199,16 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
-                  <cornie-input
+                  <cornie-select
                     :rules="required"
                     required
                     v-model="openTo"
-                    label="Open To"
-                    placeholder="--Enter--"
+                    :items="['Out-patient', 'In-patient', 'All']"
+                    label="Open to"
+                    placeholder="--Select--"
                     class="w-full"
                   />
+
                   <cornie-select
                     :rules="required"
                     required

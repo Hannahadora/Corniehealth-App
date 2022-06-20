@@ -233,12 +233,13 @@
                   placeholder="--Enter--"
                   label="Name"
                 />
-                <cornie-select
-                  :rules="required"
-                  v-model="emergency.relationship"
+                <fhir-input
+                  reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+                  class="w-full"
                   label="Relationship"
-                  :items="['Sibling', 'Friend']"
-                  placeholder="--Select--"
+                  v-model="emergency.relationship"
+                  placeholder="Select"
+                  :rules="required"
                   :required="true"
                 />
                 <cornie-input
@@ -271,7 +272,7 @@
                 <auto-complete
                   class="w-full"
                   v-model="emergency.state"
-                  label="State or Origin"
+                  label="State or Region"
                   :items="nationState.states"
                   placeholder="Enter"
                   :rules="required"
@@ -323,13 +324,21 @@
           <accordion-component title="Work" :opened="false">
             <template v-slot:default>
               <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                <cornie-input
+                <cornie-select
                   :rules="required"
                   v-model="employmentType"
                   label="Employment Type"
-                  placeholder="--Enter--"
+                  :items="[
+                    'Full-time',
+                    'Part-time',
+                    'Contract',
+                    'Probation',
+                    'Internship',
+                  ]"
+                  placeholder="--Select--"
                   :required="true"
                 />
+
                 <div v-if="specialties.length > 0">
                   <span class="text-sm mb-4 font-semibold">Specialty</span>
                   <div
@@ -365,13 +374,21 @@
                   </template>
                 </cornie-input>
 
-                <cornie-select
-                  :items="['a', 'b']"
+                <fhir-input
+                  reference="http://hl7.org/fhir/ValueSet/performer-role"
+                  class="w-full"
                   label="Job Designation"
-                  placeholder="--Select--"
-                  class="mt-0.5 flex-none"
                   v-model="jobDesignation"
+                  placeholder="Select"
                 />
+
+                <!-- <cornie-input
+                  :rules="required"
+                  v-model="jobDesignation"
+                  placeholder="--Enter--"
+                  class="grow w-full"
+                  
+                /> -->
 
                 <cornie-select
                   :items="dropdown.CommunicationLanguage"
@@ -382,14 +399,45 @@
                   :required="true"
                 />
 
-                <cornie-select
+                <!-- <cornie-select
                   :rules="required"
                   v-model="consultationChannel"
                   label="Visit Type"
                   :items="dropdown.ConsultationChannel"
                   placeholder="--Select--"
                   :required="true"
-                />
+                /> -->
+                <div class="flex flex-col space-y-0.5">
+                  <div class="text-sm font-semibold mb-1">Visit Type</div>
+
+                  <Multiselect
+                    label="Visit Type"
+                    v-model="consultationChannel"
+                    mode="tags"
+                    :hide-selected="true"
+                    :options="visitType"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                    <template
+                      v-slot:tag="{ option, handleTagRemove, disabled }"
+                    >
+                      <div class="multiselect-tag is-user">
+                        {{ option.label }}
+                        <span
+                          v-if="!disabled"
+                          class="multiselect-tag-remove"
+                          @mousedown.prevent="handleTagRemove(option, $event)"
+                        >
+                          <span class="multiselect-tag-remove-icon"></span>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <span class="w-full text-sm">{{ option.label }}</span>
+                    </template>
+                  </Multiselect>
+                </div>
 
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3"
@@ -703,126 +751,129 @@
   /> -->
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string, date } from "yup";
-import DatePicker from "@/components/datepicker.vue";
-import { Prop, Watch } from "vue-property-decorator";
-import { useHandleImage } from "@/composables/useHandleImage";
-import PeriodPicker from "@/components/daterangepicker.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import AddBlueIcon from "@/components/icons/addblue.vue";
-import Multiselect from "@vueform/multiselect";
-import Avatar from "@/components/avatar.vue";
-import Period from "@/types/IPeriod";
-import { createDate } from "@/plugins/utils";
-import PlusIcon from "@/components/icons/plus.vue";
-import AccessRole from "./AccessRoles.vue";
-import DeleteRed from "@/components/icons/delete-red.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import { useCountryStates } from "@/composables/useCountryStates";
-import AutoComplete from "@/components/autocomplete.vue";
-import AddIcon from "@/components/icons/addblue.vue";
-import SpecialityModal from "./specialModal.vue";
-import ISpecial from "@/types/ISpecial";
-import ILocation from "@/types/ILocation";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import LocationroleModal from "./LocationRoles.vue";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import Avatar from "@/components/avatar.vue";
+  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import PeriodPicker from "@/components/daterangepicker.vue";
+  import FhirInput from "@/components/fhir-input.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import {
+    default as AddBlueIcon,
+    default as AddIcon,
+  } from "@/components/icons/addblue.vue";
+  import DeleteRed from "@/components/icons/delete-red.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import PlusIcon from "@/components/icons/plus.vue";
+  import OperationHours from "@/components/new-operation-hours.vue";
+  import PhoneInput from "@/components/phone-input.vue";
+  import { useCountryStates } from "@/composables/useCountryStates";
+  import { useHandleImage } from "@/composables/useHandleImage";
+  import { cornieClient } from "@/plugins/http";
+  import { createDate } from "@/plugins/utils";
+  import ILocation from "@/types/ILocation";
+  import Period from "@/types/IPeriod";
+  import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+  import ISpecial from "@/types/ISpecial";
+  import Multiselect from "@vueform/multiselect";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { Prop, Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { date, string } from "yup";
+  import AccessRole from "./AccessRoles.vue";
+  import SpecialityModal from "./specialModal.vue";
 
-const dropdown = namespace("dropdown");
-const practitioner = namespace("practitioner");
-const roles = namespace("roles");
-const special = namespace("special");
-const location = namespace("location");
+  const dropdown = namespace("dropdown");
+  const practitioner = namespace("practitioner");
+  const roles = namespace("roles");
+  const special = namespace("special");
+  const location = namespace("location");
 
-@Options({
-  name: "AddPractitioner",
-  components: {
-    CornieCheckbox,
-    AccessRole,
-    PlusIcon,
-    CornieInput,
-    CornieSelect,
-    AccordionComponent,
-    SpecialityModal,
-    InfoIcon,
-    PhoneInput,
-    AddIcon,
-    PeriodPicker,
-    OperationHours,
-    DatePicker,
-    Avatar,
-    AutoComplete,
-    CornieAvatarField,
-    AddBlueIcon,
-    DeleteRed,
-    EditIcon,
-    CornieRadio,
-    LocationroleModal,
-  },
-})
-export default class AddPractitioner extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
+  @Options({
+    name: "AddPractitioner",
+    components: {
+      CornieCheckbox,
+      AccessRole,
+      PlusIcon,
+      CornieInput,
+      CornieSelect,
+      AccordionComponent,
+      SpecialityModal,
+      InfoIcon,
+      PhoneInput,
+      AddIcon,
+      PeriodPicker,
+      OperationHours,
+      DatePicker,
+      Avatar,
+      AutoComplete,
+      CornieAvatarField,
+      AddBlueIcon,
+      DeleteRed,
+      EditIcon,
+      CornieRadio,
+      Multiselect,
 
-  img = setup(() => useHandleImage());
+      FhirInput,
+    },
+  })
+  export default class AddPractitioner extends Vue {
+    @Prop({ type: String, default: "" })
+    id!: string;
 
-  @roles.State
-  roles!: { id: string; name: string }[];
+    img = setup(() => useHandleImage());
 
-  @roles.Action
-  getRoles!: () => Promise<void>;
+    @roles.State
+    roles!: { id: string; name: string }[];
 
-  @practitioner.Action
-  getPractitionerById!: (id: string) => Promise<IPractitioner>;
+    @roles.Action
+    getRoles!: () => Promise<void>;
 
-  @practitioner.Mutation
-  updatePractitioners!: (practitioners: IPractitioner[]) => void;
+    @practitioner.Action
+    getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
-  @location.State
-  locations!: ILocation[];
+    @practitioner.Mutation
+    updatePractitioners!: (practitioners: IPractitioner[]) => void;
 
-  @location.Action
-  fetchLocations!: () => Promise<void>;
+    @location.State
+    locations!: ILocation[];
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+    @location.Action
+    fetchLocations!: () => Promise<void>;
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
+    @practitioner.State
+    practitioners!: IPractitioner[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+    @practitioner.Action
+    deletePractitioner!: (id: string) => Promise<boolean>;
 
-  @practitioner.Action
-  deleteLocationrole!: ({ id, roleId} : any) => Promise<boolean>;
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
 
-  @special.State
-  specials!: ISpecial[];
+    @practitioner.Action
+    deleteLocationrole!: ({ id, roleId }: any) => Promise<boolean>;
 
-  @special.Action
-  fetchSpecials!: () => Promise<void>;
+    @special.State
+    specials!: ISpecial[];
 
-  loading = false;
+    @special.Action
+    fetchSpecials!: () => Promise<void>;
 
-  educations = [] as any;
-  licenses = [] as any;
-  disabled=false;
+    loading = false;
 
-   dobRule = date().max(
-    new Date(),
-    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
-  );
+    educations = [] as any;
+    licenses = [] as any;
+    disabled = false;
 
+    dobRule = date().max(
+      new Date(),
+      `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+    );
 
     addEducation() {
       if (
@@ -874,9 +925,9 @@ export default class AddPractitioner extends Vue {
     nationState = setup(() => useCountryStates());
 
     consultationRatevalue = 0;
-    consultationRateunit = "";
+    consultationRateunit = "Hour";
     practiceDurationvalue = 0;
-    practiceDurationunit = "";
+    practiceDurationunit = "Year";
     newspecialties = [] as any;
 
     qualificationCode = "";
@@ -905,7 +956,20 @@ export default class AddPractitioner extends Vue {
     issuer = "";
     graduation = "";
     showSpecial = false;
-
+    visitType = [
+      {
+        label: "In-person",
+        value: "in-person",
+      },
+      {
+        label: "Virtual",
+        value: "virtual",
+      },
+      {
+        label: "At home",
+        value: "at home",
+      },
+    ];
     qualificationIdentifier = "1122";
     qualificationIssuer = "";
     licenseNumber = "";
@@ -914,7 +978,7 @@ export default class AddPractitioner extends Vue {
     practitionerId = "";
     communicationLanguage = "";
     availabilityExceptions = "availabilityExceptions";
-    consultationChannel = "";
+    consultationChannel: any = [];
     defaultLocation = "";
     hoursOfOperation: HoursOfOperation[] = [];
     organizationId = "";
@@ -1300,7 +1364,7 @@ export default class AddPractitioner extends Vue {
       const data = await this.getDropdowns("practitioner");
       this.dropdown = data;
 
-      console.log(data);
+      console.log("dropdowns", data);
     }
     async created() {
       this.fetchSpecials();

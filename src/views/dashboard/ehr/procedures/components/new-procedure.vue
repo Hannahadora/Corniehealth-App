@@ -1,485 +1,461 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-1/2 h-full">
-    <cornie-card height="100%" class="flex flex-col h-full bg-white">
-      <cornie-card-title class="">
-        <icon-btn class="cursor-pointer" @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3">
-            Create New
-          </h2>
-          <cancel-icon
-            class="float-right fill-current text-danger cursor-pointer mt-1"
-            @click="show = false"
+  <clinical-dialog v-model="show" :title="'Create New'" class="">
+    <v-form class="flex-grow flex flex-col">
+      <accordion-component
+        class="rounded-none border-none text-primary"
+        title="Basic info"
+        :opened="false"
+      >
+        <div class="grid grid-cols-2 gap-6 py-6">
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Based on
+            </div>
+            <div
+              @click="() => (showBasedOn = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Part of
+            </div>
+            <div
+              @click="() => (showPartOf = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
+            class="required w-full"
+            v-model="basic.category"
+            label="category"
+            placeholder="Select"
+            required
+          />
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
+            class="required w-full"
+            label="code"
+            v-model="basic.code"
+            placeholder="Select"
+            required
           />
         </div>
-      </cornie-card-title>
-      <cornie-card-text class="overflow-y-auto h-full">
-        <v-form class="flex-grow flex flex-col">
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Basic info"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Based on
-                </div>
-                <div
-                  @click="() => (showBasedOn = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Part of
-                </div>
-                <div
-                  @click="() => (showPartOf = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
-                class="required w-full"
-                v-model="basic.category"
-                label="category"
-                placeholder="Select"
-                required
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/allergyintolerance-code"
-                class="required w-full"
-                label="code"
-                v-model="basic.code"
-                placeholder="Select"
-                required
+      </accordion-component>
+
+      <accordion-component
+        class="rounded-none border-none text-primary"
+        title="Performed"
+        :opened="false"
+      >
+        <div class="flex flex-col">
+          <div>Performed</div>
+          <div class="flex space-x-3 w-full mt-3">
+            <div v-for="r in performedOptions" :key="r">
+              <cornie-radio
+                v-model="performed"
+                :value="r.toLocaleLowerCase()"
+                :label="r"
               />
             </div>
-          </accordion-component>
-
-          <accordion-component
-            class="rounded-none border-none text-primary"
-            title="Performed"
-            :opened="false"
-          >
-            <div class="flex flex-col">
-              <div>Performed</div>
-              <div class="flex space-x-3 w-full mt-3">
-                <div v-for="r in performedOptions" :key="r">
-                  <cornie-radio
-                    v-model="performed"
-                    :value="r.toLocaleLowerCase()"
-                    :label="r"
-                  />
-                </div>
-              </div>
-              <div class="mt-2">
-                <date-time-picker
-                  v-if="performed == 'date/time'"
-                  class="w-full"
-                  label="Date reported"
-                  v-model:date="date"
-                  v-model:time="time"
+          </div>
+          <div class="mt-2">
+            <date-time-picker
+              v-if="performed == 'date/time'"
+              class="w-full"
+              label="Date reported"
+              v-model:date="date"
+              v-model:time="time"
+            />
+            <div class="w-full mt-1" v-if="performed == 'age'">
+              <span class="text-sm font-semibold mb-3">Age</span>
+              <div class="flex space-x-2 w-full">
+                <cornie-input
+                  placeholder="0"
+                  class="grow w-full"
+                  :setfull="true"
+                  v-model="age.value"
                 />
-                <div class="w-full mt-1" v-if="performed == 'age'">
-                  <span class="text-sm font-semibold mb-3">Age</span>
+                <cornie-select
+                  :items="['Day']"
+                  placeholder="/ Day"
+                  class="w-32 mt-0.5 flex-none"
+                  :setPrimary="true"
+                  v-model="age.day"
+                />
+              </div>
+            </div>
+            <div v-if="performed == 'period'" class="grid grid-cols-2 gap-6">
+              <date-time-picker
+                class="w-full"
+                label="Start Date/time"
+                v-model:date="period.start"
+                v-model:time="period.startTime"
+              />
+              <date-time-picker
+                class="w-full"
+                label="End Date/time"
+                v-model:date="period.end"
+                v-model:time="period.endTime"
+              />
+            </div>
+            <div class="w-full mt-1" v-if="performed == 'range'">
+              <!-- <span class="text-sm font-semibold mb-3">Range</span> -->
+              <div class="grid grid-cols-2 gap-6">
+                <div class="flex flex-col">
+                  <div>Range (min)</div>
                   <div class="flex space-x-2 w-full">
                     <cornie-input
-                      placeholder="0"
+                      placeholder=""
                       class="grow w-full"
                       :setfull="true"
-                      v-model="age.value"
+                      v-model="range.min"
                     />
                     <cornie-select
                       :items="['Day']"
                       placeholder="/ Day"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
-                      v-model="age.day"
+                      v-model="range.unit"
                     />
                   </div>
                 </div>
-                <div
-                  v-if="performed == 'period'"
-                  class="grid grid-cols-2 gap-6"
-                >
-                  <date-time-picker
-                    class="w-full"
-                    label="Start Date/time"
-                    v-model:date="period.start"
-                    v-model:time="period.startTime"
-                  />
-                  <date-time-picker
-                    class="w-full"
-                    label="End Date/time"
-                    v-model:date="period.end"
-                    v-model:time="period.endTime"
-                  />
-                </div>
-                <div class="w-full mt-1" v-if="performed == 'range'">
-                  <!-- <span class="text-sm font-semibold mb-3">Range</span> -->
-                  <div class="grid grid-cols-2 gap-6">
-                    <div class="flex flex-col">
-                      <div>Range (min)</div>
-                      <div class="flex space-x-2 w-full">
-                        <cornie-input
-                          placeholder=""
-                          class="grow w-full"
-                          :setfull="true"
-                          v-model="range.min"
-                        />
-                        <cornie-select
-                          :items="['Day']"
-                          placeholder="/ Day"
-                          class="w-32 mt-0.5 flex-none"
-                          :setPrimary="true"
-                          v-model="range.unit"
-                        />
-                      </div>
-                    </div>
-                    <div class="flex flex-col">
-                      <div>Range (max)</div>
-                      <div class="flex space-x-2 w-full">
-                        <cornie-input
-                          placeholder=""
-                          class="grow w-full"
-                          :setfull="true"
-                          v-model="range.max"
-                        />
-                        <cornie-select
-                          :items="['Day']"
-                          placeholder="/ Day"
-                          class="w-32 mt-0.5 flex-none"
-                          :setPrimary="true"
-                          v-model="range.unit"
-                        />
-                      </div>
-                    </div>
+                <div class="flex flex-col">
+                  <div>Range (max)</div>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      placeholder=""
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="range.max"
+                    />
+                    <cornie-select
+                      :items="['Day']"
+                      placeholder="/ Day"
+                      class="w-32 mt-0.5 flex-none"
+                      :setPrimary="true"
+                      v-model="range.unit"
+                    />
                   </div>
                 </div>
-                <cornie-input
-                  v-if="performed == 'string'"
-                  class="w-full"
-                  label="String"
-                  placeholder="Enter"
-                  v-model="performerString"
-                />
               </div>
             </div>
-          </accordion-component>
+            <cornie-input
+              v-if="performed == 'string'"
+              class="w-full"
+              label="String"
+              placeholder="Enter"
+              v-model="performerString"
+            />
+          </div>
+        </div>
+      </accordion-component>
 
-          <accordion-component
-            class="rounded-none text-primary"
-            title="Recorder"
-            :opened="false"
-          >
-            <div class="flex py-5 w-1/2">
-              <div class="flex-1 w-full">
-                <!-- <cornie-input
+      <accordion-component
+        class="rounded-none text-primary"
+        title="Recorder"
+        :opened="false"
+      >
+        <div class="flex py-5 w-1/2">
+          <div class="flex-1 w-full">
+            <!-- <cornie-input
                     :disabled="true"
                     class="w-full"
                     placeholder="Autoloaded"
                   /> -->
-                <cornie-input
-                  label="Recorder"
-                  class="-mt-5 w-full"
-                  placeholder="Autoloaded"
-                  :disabled="true"
-                  v-model="recorderP"
-                >
-                  <template #labelicon>
-                    <check-box
-                      :label="'Assert this record'"
-                      class="w-full"
-                      v-model="asserterId"
-                      :value="authPractitioner.id"
-                    />
-                  </template>
-                  <!-- <template #append-inner>
+            <cornie-input
+              label="Recorder"
+              class="-mt-5 w-full"
+              placeholder="Autoloaded"
+              :disabled="true"
+              v-model="recorderP"
+            >
+              <template #labelicon>
+                <check-box
+                  :label="'Assert this record'"
+                  class="w-full"
+                  v-model="asserterId"
+                  :value="authPractitioner.id"
+                />
+              </template>
+              <!-- <template #append-inner>
                       <span class="bg-primary py-2.5 px-3 -mr-2 rounded cursor-pointer" @click="showRecorder = true">
                         <d-edit class="fill-current text-white" />
                       </span>
                     </template> -->
-                </cornie-input>
-              </div>
-              <div class="flex-none">
-                <img
-                  @click="() => (showAssessorModal = true)"
-                  src="@/assets/img/asseor-update.svg"
-                  class="ml-2 mt-5"
-                  alt=""
-                />
-              </div>
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="rounded-none text-primary"
-            title="Performer"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Actor
-                </div>
-                <div
-                  @click="() => (showActor = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Function
-                </div>
-                <div
-                  @click="() => (showFunction = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <cornie-select
-                :label="'On Behalf'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="rounded-none text-primary"
-            title="Location"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Location
-                </div>
-                <div
-                  @click="() => (showLocation = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <cornie-select
-                :label="'Reason Code'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Reason Reference
-                </div>
-                <div
-                  @click="() => (showReasonReference = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <fhir-input
-                v-model="location.body"
-                reference="http://hl7.org/fhir/ValueSet/body-site"
-                :rules="required"
-                label="Body Site"
-                placeholder="Select"
-              />
-              <cornie-select
-                :label="'Outcome'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Report
-                </div>
-                <div
-                  @click="() => (showReport = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <cornie-select
-                :label="'Complication'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <cornie-select
-                :label="'Complication Detail'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <cornie-select
-                :label="'Follow Up'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <cornie-input
-                class="w-full"
-                :label="'Note'"
-                placeholder="Autoloaded"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="rounded-none text-primary"
-            title="Focal Device"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
-                :label="'Action'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-              <cornie-select
-                :label="'Manipulated'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="rounded-none text-primary"
-            title="Used items"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <div class="flex flex-col w-full">
-                <div class="capitalize text-black text-sm font-semibold">
-                  Used reference
-                </div>
-                <div
-                  @click="() => (showUsedReference = true)"
-                  class="flex items-center border rounded-md p-3 mt-0.5"
-                >
-                  <div class="flex-1">Select</div>
-                  <div class="flex-none self-center">
-                    <add-icon class="fill-current text-danger" />
-                  </div>
-                </div>
-              </div>
-              <cornie-select
-                :label="'Used Code'"
-                v-model="code"
-                placeholder="Select"
-                :items="['ASAP', 'Callback results', 'callback for scheduling']"
-              />
-            </div>
-            <div class="flex w-full justify-end">
-              <div
-                class="rounded-full space-x-3 font-bold px-6 py-3 flex text-primary items-center justify-center border border-primary"
-              >
-                <add-icon />
-                <div>Add</div>
-              </div>
-            </div>
-          </accordion-component>
-        </v-form>
-      </cornie-card-text>
-      <div class="flex items-center justify-end mt-24">
-        <div class="flex items-center mb-6">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="submit"
-            type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
-          >
-            Save
-          </cornie-btn>
+            </cornie-input>
+          </div>
+          <div class="flex-none">
+            <img
+              @click="() => (showAssessorModal = true)"
+              src="@/assets/img/asseor-update.svg"
+              class="ml-2 mt-5"
+              alt=""
+            />
+          </div>
         </div>
+      </accordion-component>
+
+      <accordion-component
+        class="rounded-none text-primary"
+        title="Performer"
+        :opened="false"
+      >
+        <div class="grid grid-cols-2 gap-6 py-6">
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">Actor</div>
+            <div
+              @click="() => (showActor = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Function
+            </div>
+            <div
+              @click="() => (showFunction = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <cornie-select
+            :label="'On Behalf'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+        </div>
+      </accordion-component>
+
+      <accordion-component
+        class="rounded-none text-primary"
+        title="Location"
+        :opened="false"
+      >
+        <div class="grid grid-cols-2 gap-6 py-6">
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Location
+            </div>
+            <div
+              @click="() => (showLocation = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <cornie-select
+            :label="'Reason Code'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Reason Reference
+            </div>
+            <div
+              @click="() => (showReasonReference = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <fhir-input
+            v-model="location.body"
+            reference="http://hl7.org/fhir/ValueSet/body-site"
+            :rules="required"
+            label="Body Site"
+            placeholder="Select"
+          />
+          <cornie-select
+            :label="'Outcome'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Report
+            </div>
+            <div
+              @click="() => (showReport = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <cornie-select
+            :label="'Complication'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <cornie-select
+            :label="'Complication Detail'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <cornie-select
+            :label="'Follow Up'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <cornie-input
+            class="w-full"
+            :label="'Note'"
+            placeholder="Autoloaded"
+          />
+        </div>
+      </accordion-component>
+
+      <accordion-component
+        class="rounded-none text-primary"
+        title="Focal Device"
+        :opened="false"
+      >
+        <div class="grid grid-cols-2 gap-6 py-6">
+          <cornie-select
+            :label="'Action'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+          <cornie-select
+            :label="'Manipulated'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+        </div>
+      </accordion-component>
+
+      <accordion-component
+        class="rounded-none text-primary"
+        title="Used items"
+        :opened="false"
+      >
+        <div class="grid grid-cols-2 gap-6 py-6">
+          <div class="flex flex-col w-full">
+            <div class="capitalize text-black text-sm font-semibold">
+              Used reference
+            </div>
+            <div
+              @click="() => (showUsedReference = true)"
+              class="flex items-center border rounded-md p-3 mt-0.5"
+            >
+              <div class="flex-1">Select</div>
+              <div class="flex-none self-center">
+                <add-icon class="fill-current text-danger" />
+              </div>
+            </div>
+          </div>
+          <cornie-select
+            :label="'Used Code'"
+            v-model="code"
+            placeholder="Select"
+            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          />
+        </div>
+        <div class="flex w-full justify-end">
+          <div
+            class="rounded-full space-x-3 font-bold px-6 py-3 flex text-primary items-center justify-center border border-primary"
+          >
+            <add-icon />
+            <div>Add</div>
+          </div>
+        </div>
+      </accordion-component>
+    </v-form>
+    <template #optionactions>
+      <div class="flex justify-end space-x-3">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
+        >
+          Pause Encounter
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="submit"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
       </div>
-    </cornie-card>
-    <div>
-      <basedon
-        @selectedId="setbaseOn"
-        :careplan="patientCarePlans"
-        :diagnosticsRequest="diagnosticsRequest"
-        :medicationRequest="medicationRequest"
-        v-model="showBasedOn"
-      />
-      <parton
-        :procedures="procedures"
-        :observations="observations"
-        v-model="showPartOf"
-        @selectedId="setPartOf"
-      />
-      <actor
-        :practitioners="practitioner"
-        :patient="patient"
-        :device="device"
-        :organisation="organisation"
-        :related="familyHistories"
-        v-model="showActor"
-      />
-      <function
-        :procedures="procedures"
-        :observations="observations"
-        v-model="showFunction"
-      />
-      <locationM v-model="showLocation" />
-      <reason-reference v-model="showReasonReference" />
-      <report v-model="showReport" />
-      <used-reference v-model="showUsedReference" />
-      <assesor-modal
-        :practitioners="practitioner"
-        :patient="patient"
-        :related="familyHistories"
-        @selectedId="showAssessor"
-        v-model="showAssessorModal"
-      />
-    </div>
-  </cornie-dialog>
+    </template>
+  </clinical-dialog>
+  <div>
+    <basedon
+      @selectedId="setbaseOn"
+      :careplan="patientCarePlans"
+      :diagnosticsRequest="diagnosticsRequest"
+      :medicationRequest="medicationRequest"
+      v-model="showBasedOn"
+    />
+    <parton
+      :procedures="procedures"
+      :observations="observations"
+      v-model="showPartOf"
+      @selectedId="setPartOf"
+    />
+    <actor
+      :practitioners="practitioner"
+      :patient="patient"
+      :device="device"
+      :organisation="organisation"
+      :related="familyHistories"
+      v-model="showActor"
+    />
+    <function
+      :procedures="procedures"
+      :observations="observations"
+      v-model="showFunction"
+    />
+    <locationM v-model="showLocation" />
+    <reason-reference v-model="showReasonReference" />
+    <report v-model="showReport" />
+    <used-reference v-model="showUsedReference" />
+    <assesor-modal
+      :practitioners="practitioner"
+      :patient="patient"
+      :related="familyHistories"
+      @selectedId="showAssessor"
+      v-model="showAssessorModal"
+    />
+  </div>
 </template>
 <script lang="ts">
   import CornieCard from "@/components/cornie-card";
@@ -496,6 +472,7 @@
   import AddIcon from "@/components/icons/plus.vue";
   import { cornieClient } from "@/plugins/http";
   import IPractitioner from "@/types/IPractitioner";
+  import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import { Options, Vue } from "vue-class-component";
   import { PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -522,6 +499,7 @@
       ArrowLeft,
       CancelIcon,
       AssesorModal,
+      ClinicalDialog,
       AddIcon,
       DateTimePicker,
       AccordionComponent,

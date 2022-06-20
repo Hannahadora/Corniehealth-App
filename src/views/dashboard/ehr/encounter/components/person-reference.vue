@@ -20,7 +20,7 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <div class="font-bold mb-4">Reference</div>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-3 gap-3 border-b border-dashed pb-3 mb-3">
           <div
             v-for="(r, i) in radioValues"
             :key="r"
@@ -76,6 +76,42 @@
               </div>
             </div>
           </div>
+          <div v-if="selectedOption == 'related person'">
+            <div
+              @click="() => (selectedId = input.id)"
+              :class="`rounded-full flex px-5 py-3 cursor-pointer`"
+              v-for="(input, index) in related"
+              :key="index"
+            >
+              <div
+                class="flex justify-between items-center space-x-4 w-full mt-2 mb-5 p-1"
+              >
+                <div class="w-full flex items-center space-x-1">
+                  <div class="w-10 h-10">
+                    <avatar
+                      class="mr-2"
+                      v-if="input.profilePhoto"
+                      :src="input.profilePhoto"
+                    />
+                    <avatar class="mr-2" v-else :src="localSrc" />
+                  </div>
+                  <div class="w-full">
+                    <p class="text-sm text-dark font-semibold">
+                      {{ input.name }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="relative bottom-1">
+                  <cornie-radio
+                    v-model="selectedId"
+                    :value="input.id"
+                    class="bg-danger focus-within:bg-danger px-6 shadow float-right"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </cornie-card-text>
       <div class="flex items-center justify-end mt-24">
@@ -120,7 +156,7 @@
   import { printPractitioner } from "@/plugins/utils";
   import IPractitioner from "@/types/IPractitioner";
   import { Options, Vue } from "vue-class-component";
-  import { PropSync } from "vue-property-decorator";
+  import { Prop, PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
 
   const practitioners = namespace("practitioner");
@@ -152,7 +188,10 @@
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
-    radioValues = ["Practitioner"];
+    @Prop({ type: String, default: "" })
+    related!: any[];
+
+    radioValues = ["Practitioner", "Related person"];
     selectedOption = "";
     selectedId = "";
     selectedData: any = [];
@@ -173,19 +212,30 @@
     }
     submit() {
       if (!this.selectedId) return;
-      this.selectedData = this.practitioners.find(
-        (x) => x.id == this.selectedId
-      );
-      this.$emit("selectedId", {
-        ...this.selectedData,
-        name: printPractitioner(this.selectedData),
-      });
+      let d = {};
+      if (this.selectedOption == "practitioner") {
+        this.selectedData = this.practitioners.find(
+          (x) => x.id == this.selectedId
+        );
+        d = {
+          ...this.selectedData,
+          name: printPractitioner(this.selectedData),
+        };
+      }
+      if (this.selectedOption == "related person") {
+        let e = this.related.find((x: any) => x.id == this.selectedId);
+        d = { ...e };
+      }
+
+      this.$emit("selectedId", d);
       this.show = false;
     }
 
+    localSrc = require("../../../../../assets/img/placeholder.png");
+
     created() {
       if (!this.practitioners?.length) this.fetchPractitioners();
-      console.log("practttt", this.practitioners);
+      // console.log("practttt", this.practitioners);
     }
   }
 </script>
