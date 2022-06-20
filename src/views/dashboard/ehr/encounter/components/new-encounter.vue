@@ -485,6 +485,7 @@
     <person-reference
       @selectedId="setPersonReference"
       v-model="showPersonReference"
+      :related="familyHistories"
     />
     <pre-admission-identifier v-model="showPreAdmission" />
     <origin v-model="showOrigin" />
@@ -667,6 +668,8 @@
       endTime: "",
     };
 
+    familyHistories = [];
+
     type = "";
     patientId = "";
 
@@ -762,6 +765,14 @@
         return;
       } else this.roles = [];
       console.log("roles", this.roles);
+    }
+
+    async fetchFamilyHistories() {
+      const url = `/api/v1/family-history/get-for-patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.familyHistories = response.data;
+      }
     }
 
     // async fetchLocations() {
@@ -936,6 +947,7 @@
       await this.fetchByIdAppointments(this.$route.params.id.toString());
       await this.fetchObservations();
       await this.fetchRoles();
+      await this.fetchFamilyHistories();
     }
   }
 </script>
