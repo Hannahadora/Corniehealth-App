@@ -350,7 +350,7 @@ export default class PracticeInfo extends Vue {
     this.address = data?.address || "";
   }
 }
-</script>
+</script> 
 
 <style scoped>
 /* Chrome, Safari, Edge, Opera */

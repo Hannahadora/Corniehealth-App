@@ -39,40 +39,12 @@
                 class="w-full"
               />
             </div>
-
-            <!-- <div class="col-span-12">
-              <span class="text-primary text-sm font-semibold mb-5"> Available Days </span>
-              <div class="grid grid-cols-7 gap-4 w-full mt-4">
-                <div :class="{'active' : isActiveMon}" @click="setActive('mon')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Mon
-                </div>
-                <div :class="{'active' : isActiveTue}" @click="setActive('tue')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Tue
-                </div>
-                <div :class="{'active' : isActiveWed}" @click="setActive('wed')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Wed
-                </div>
-                <div :class="{'active' : isActiveThu}" @click="setActive('thu')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Thu
-                </div>
-                <div :class="{'active' : isActiveFir}" @click="setActive('fri')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Fri
-                </div>
-                <div :class="{'active' : isActiveSat}" @click="setActive('sat')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                 Sat
-                </div>
-                 <div :class="{'active' : isActiveSun}" @click="setActive('sun')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                  Sun
-                </div>
-
-              </div>
-            </div> -->
             <div
               class="col-span-12 flex justify-start mt-5 border-b-2 border-dashed border-gray-200 pb-4"
             >
               <span
                 class="text-danger font-semibold text-sm cursor-pointer"
-                @click="add"
+                @click="addaRole"
               >
                 <span class="text-lg">+</span> Add
               </span>
@@ -82,7 +54,7 @@
                 Change default location
               </div>
               <template v-if="accessRoles.length">
-                <div v-if="id">
+                <div>
                   <div
                     class="flex justify-between mb-4"
                     v-for="(access, index) in accessRoles"
@@ -91,18 +63,14 @@
                     <div class="flex justify-center items-center">
                       <cornie-radio
                         v-model="accessRoles[index].default"
-                        name="default"
-                        :value="true"
+                       :id="index" name="option-selected"
+                        :value="access.default"
+                        @click="onChangeOption(access.roleId, $event)"
                         @update:modelValue="setDefault(access.locationId)"
                       ></cornie-radio>
                       <div class="flex flex-col">
                         <div class="mb-0 font-bold text-sm">
-                          {{ access.location.name ? access.location.name : access.location  }}
-                          <!-- <span class="ml-5 text-gray-400 text-xs font-light">
-                            {{ isActiveMon ? data?.mon : '' }} {{isActiveTue ? data?.tue : ''}}  {{isActiveWed ? data?.wed : ''}}
-                              {{isActiveThu ? data?.thu : ''}}  {{isActiveFir ? data?.fri : ''}}  {{isActiveSat ? data?.sat : ''}}
-                              {{isActiveSun ? data?.sun : ''}}
-                          </span> -->
+                          {{ getLocationName(access.locationId) }}
                         </div>
                         <div class="text-xs text-gray-400">
                           {{ getRoleName(access.roleId) }}
@@ -115,13 +83,13 @@
                       </button>
                       <button
                       class="border-0"
-                      @click="deleteItem(access.id)">
+                      @click="deleteItem(access.id, index)">
                       <delete-red />
                     </button>
                     </div>
                   </div>
                 </div>
-                <div
+                <!-- <div
                   v-else
                   class="flex justify-between mb-4"
                   v-for="(access, index) in accessRoles"
@@ -151,7 +119,7 @@
                       <delete-red />
                     </button>
                   </div>
-                </div>
+                </div> -->
               </template>
             </div>
           </div>
@@ -206,6 +174,7 @@ import SearchIcon from "@/components/icons/search.vue";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
+import ILocation from "@/types/ILocation";
 
 const dropdown = namespace("dropdown");
 const roles = namespace("roles");
@@ -279,9 +248,9 @@ export default class Accessrole extends Vue {
   isVisible = "";
   location = "";
   role = "";
-  locations = [];
+  locations = [] as any;
   defaultVal = "";
-  isDefault = false;
+  isDefault = true;
 
   isActiveMon = false;
   isActiveTue = false;
@@ -376,42 +345,19 @@ export default class Accessrole extends Vue {
     this.role = roleId;
   }
 
-   async add() {
-    if (this.role && this.location) {
-      // const added = this.accessRoles.some(
-      //   (item: any) =>
-      //     item.roleId === this.role && item.locationId === this.location
-      // );
+  addaRole(){
+    this.accessRoles.push({id: this.locationRoleId, roleId: this.role, locationId: this.location, default: true})
 
-      // if (added) {
-      //   this.location = "";
-      //   this.role = "";
-      //   return;
-      // }
-      //this.setDefault(this.location as string);
-      let access = {
-        roleId: this.role,
-        locationId: this.location,
-        role: this.practitionerRoles.find((item) => item.code === this.role)
-          ?.display,
-        location: this.allLocation.find((item) => item.code === this.location)
-          ?.display,
-        default: this.isDefault,
-        // days: this.data
-      };
-       let accessRoles = {
-        id: this.id,
-        roleId: this.role,
-        locationId: this.location,
-        default: this.isDefault,
-      };
-      this.accessRoles.push(access);
-      this.payloadAccessroles.push(accessRoles)
-
-      this.location = "";
-      this.role = "";
-    }
+    this.role = '';
+    this.location = '';
   }
+
+  getLocationName(id: string){
+    const pt = this.locations.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
+   
    async submit() {
     this.loading = true;
     if (this.id) await this.apply();
@@ -470,19 +416,26 @@ export default class Accessrole extends Vue {
     this.accessRoles.splice(index, 1);
   }
 
-async deleteItem(roleId: string) {
-  console.log(this.id, roleId, "role");
-  const id = this.id;
-    const confirmed = await window.confirmAction({
-       message:
-        "Are you sure you want to delete this location role? This action cannot be undone.",
-      title: "Delete location role",
-    });
-    if (!confirmed) return;
-    if (await this.deleteLocationrole({id, roleId}))
-      window.notify({ msg: "Location role deleted", status: "success" });
-    else window.notify({ msg: "Location role not deleted", status: "error" });
-  }
+async deleteItem(roleId: string, index: number) {
+    if(this.id){
+        const id = this.id;
+          const confirmed = await window.confirmAction({
+             message:
+              "Are you sure you want to delete this location role? This action cannot be undone.",
+            title: "Delete location role",
+          });
+          if (!confirmed) return;
+          if (await this.deleteLocationrole({id, roleId})){
+            window.notify({ msg: "Location role deleted", status: "success" });
+            this.accessRoles
+          }else{
+            window.notify({ msg: "Location role not deleted", status: "error" });
+          }
+        
+    }else{
+         this.accessRoles.splice(index, 1);
+    }
+}
 
  
 
@@ -491,40 +444,40 @@ async deleteItem(roleId: string) {
   }
 
  
-
-  // async setDefault(val: string) {
-
-    
-  //   const [roleId, locationId] = val.split("?");
-  //   let item = this.accessRoles.find(
-  //     (item: any) => item.roleId === roleId && item.locationId === locationId
-  //   );
-
-  //   if (item) item.default = true;
-  // }
-
    async setDefault(location:string) {
-    const url = `/api/v1/practitioner/location-roles/default/`;
-    const body = {
-      locationId: location,
-      practitionerId: this.id,
-    };
-    try {
-      const response = await cornieClient().patch(url, body);
-      if (response.success) {
-        this.isDefault = true;
-      console.log('Default set');
-      }
-    } catch (error) {
-       this.isDefault = false;
-      window.notify({ msg: "Cannot set default location", status: "error" });
-    }
+    if(this.id){
+        const url = `/api/v1/practitioner/location-roles/default/`;
+        const body = {
+          locationId: location,
+          practitionerId: this.id,
+        };
+        try {
+          const response = await cornieClient().patch(url, body);
+          if (response.success) {
+            this.isDefault = true;
+          }
+        } catch (error) {
+           this.isDefault = false;
+          window.notify({ msg: "Cannot set default location", status: "error" });
+        }
+    } 
+  }
+
+  onChangeOption(id:string, event:Event){
+    this.accessRoles.forEach((option:any) => {
+        if (option.roleId === id) {
+            option['default'] = (event.target  as HTMLInputElement).checked
+            window.notify({ msg: "Default location has been set", status: "success" });
+          } else {
+            option['default'] = false
+          }
+    })
   }
 
   async save() {
-    if (!this.accessRoles.length) return;
+   if (!this.accessRoles.length) return;
     this.$emit("add-access-roles", this.accessRoles);
-    this.$emit("close-access-diag");
+    this.show = false;
   }
 
   async fetchLocation() {

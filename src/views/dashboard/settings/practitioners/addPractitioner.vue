@@ -1,16 +1,4 @@
 <template>
-  <access-role
-    v-model="addAccessRole"
-    :deletedRole="deletedRole"
-    @close-access-diag="addAccessRole = false"
-    @add-access-roles="addAccessRoles"
-    @role-deleted="deletedRole = {}"
-    :locationId="locationId"
-    :roleId="roleId"
-    :id="id"
-    :locationRoleId="locationRoleId"
-    :setRoles="locationRoles"
-  />
   <div class="h-screen flex justify-center">
     <div class="w-full h-screen mx-5 pb-5">
       <span
@@ -745,6 +733,22 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
+  <locationrole-modal  v-model="addAccessRole" :id="id"  :locationId="locationId"
+    :roleId="roleId"     :locationRoleId="locationRoleId"
+    :setRoles="locationRoles" :deletedRole="deletedRole"  @add-access-roles="addAccessRoles"/>
+
+    <!-- <access-role
+    v-model="addAccessRole"
+    :deletedRole="deletedRole"
+    @close-access-diag="addAccessRole = false"
+    @add-access-roles="addAccessRoles"
+    @role-deleted="deletedRole = {}"
+    :locationId="locationId"
+    :roleId="roleId"
+    :id="id"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+  /> -->
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -1372,14 +1376,8 @@
       if (!this.roles.length) await this.getRoles();
     }
   }
-</script>
-<style src="@vueform/multiselect/themes/default.css"></style>
-
-<style scoped>
-  .multiselect-option.is-selected {
-    background: #fe4d3c;
-    color: var(--ms-option-color-selected, #fff);
-  }
+  </script>
+  <style>
   .multiselect-option.is-selected.is-pointed {
     background: var(--ms-option-bg-selected-pointed, #fe4d3c);
     color: var(--ms-option-color-selected-pointed, #fff);

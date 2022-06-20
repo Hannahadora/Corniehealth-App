@@ -15,13 +15,13 @@
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
           <div class="w-full pb-2 mb-3">
-            <span class="text-dark text-sm font-medium"
-              >Send an email invite to your practitioners to complete their
+            <span class="text-dark text-sm font-medium">
+              Send an email invite to your practitioners to complete their
               registration.
             </span>
           </div>
           <div class="border-b-2 border-gray-100 pb-3 border-dashed">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-2">
               <div>
                 <cornie-input
                   label="Full name"
@@ -35,11 +35,13 @@
                   placeholder="Enter email address"
                   v-model="email"
                 />
-                <span class="block text-xs text-red-500" v-if="invalid"
-                  >The practitioner information provided does not exit.</span
-                >
               </div>
             </div>
+            <cornie-select
+              v-model="accessRole"
+              label="Access Role"
+              :items="accessRoles"
+            />
             <span
               class="text-sm text-danger font-semibold cursor-pointer"
               @click="addPractioner"
@@ -114,6 +116,7 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import CornieInput from "@/components/cornieinput.vue";
 
 const practitioner = namespace("practitioner");
+const roles = namespace("roles");
 
 @Options({
   name: "spcialModal",
@@ -144,6 +147,12 @@ export default class SpecialModal extends Vue {
   specialarray = [] as any;
   special = "";
 
+  @roles.State
+  roles!: { id: string; name: string }[];
+
+  @roles.Action
+  getRoles!: () => Promise<void>;
+
   @practitioner.State
   practitioners!: IPractitioner[];
 
@@ -153,36 +162,24 @@ export default class SpecialModal extends Vue {
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
-  get Mail() {
-    return this.practitioners.map((i: any) => {
-      return {
-        value: i.id,
-        display: i.email,
-      };
-    });
+  get accessRoles() {
+    return this.roles.map((role) => ({ code: role.id, display: role.name }));
   }
+
   name = "";
   email = "";
   accessRole = "" as any;
-  practitionerList = [] as any;
+  practitionerList = [] as {
+    id: number;
+    accessRole: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  }[];
   invalid = false;
 
-  @Watch("email")
-  validateEmail() {
-    let valid = this.Mail.some((item: any) => item.display === this.email);
-
-    if (valid) {
-      this.accessRole = this.Mail.find(
-        (item: any) => item.display === this.email
-      )?.value;
-      this.invalid = false;
-    } else {
-      this.invalid = true;
-    }
-  }
   addPractioner() {
     if (!this.name || !this.email) return;
-    console.log(this.Mail);
 
     const [firstName, lastName] = this.name.split(" ");
     this.practitionerList = [
@@ -196,7 +193,9 @@ export default class SpecialModal extends Vue {
       ...this.practitionerList,
     ];
 
-    this.name = this.email = "";
+    this.name = "";
+    this.email = "";
+    this.email = "";
   }
 
   del(id: any) {
@@ -205,13 +204,16 @@ export default class SpecialModal extends Vue {
     );
   }
 
+  get payload() {
+    return this.practitionerList.map(({ id, ...rest }) => rest);
+  }
   async submit() {
     if (!this.practitionerList.length) return;
     this.loading = true;
     try {
       const response = await cornieClient().post(
         `/api/v1/practitioner/invite`,
-        this.practitionerList
+        this.payload
       );
       if (response.success) {
         this.show = false;
@@ -222,9 +224,16 @@ export default class SpecialModal extends Vue {
         this.loading = false;
       }
     } catch (error) {
-      window.notify({ msg: "Invitation not sent. Email already exist.", status: "error" });
+      window.notify({
+        msg: "Invitation not sent. Email already exist.",
+        status: "error",
+      });
       this.loading = false;
     }
+  }
+
+  created() {
+    if (!this.roles.length) this.getRoles();
   }
 }
 </script>

@@ -5,7 +5,8 @@
     <div class="w-full">
       <span class="w-full h-screen">
         <tabs :items="tabLinks" v-model="currentTab">
-          <practitioner-section :showSetup="showSetup" />
+          <empty-state v-if="empty" />
+          <practitioner-section v-else />
           <bio />
           <user-security />
         </tabs>
@@ -24,11 +25,9 @@ import User from "@/types/user";
 import IPractitioner from "@/types/IPractitioner";
 import { useHandleImage } from "@/composables/useHandleImage";
 import Avatar from "@/components/avatar.vue";
+import EmptyState from "./empty-state.vue";
 
-const roles = namespace("roles");
-const dropdown = namespace("dropdown");
 const userStore = namespace("user");
-const userSettingsStore = namespace("usersettings");
 
 @Options({
   components: {
@@ -36,11 +35,19 @@ const userSettingsStore = namespace("usersettings");
     PractitionerSection,
     UserSecurity,
     Bio,
+    EmptyState,
   },
 })
 export default class UserProfile extends Vue {
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
+
   currentTab = 0;
   tabLinks = ["Practitioner Profile", "Bio", "User Security"];
+
+  get empty() {
+    return !Boolean(this.authPractitioner);
+  }
 }
 </script>
 <style>
