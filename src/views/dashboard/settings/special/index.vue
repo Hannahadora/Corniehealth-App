@@ -8,7 +8,7 @@
       </span>
       <span class="w-full">
         <special-empty-state v-if="empty" />
-        <special-existing-state v-else />
+        <special-existing-state v-else @special-added="specialadded"/>
       </span>
     </div>
   </div>
@@ -44,6 +44,10 @@ export default class SpecialIndex extends Vue {
 
   @special.Action
   fetchSpecials!: () => Promise<void>;
+
+   async specialadded(){
+     await this.fetchSpecials();
+  }
 
    created() {
      this.fetchSpecials();

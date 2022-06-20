@@ -118,7 +118,7 @@
       :id="allergyId"
     />
     <occur-modal  v-model="showOccur" :id="allergyId"  @allergy-added="allergyAdded"/>
-    <view-modal v-model="showView" :id="allergyId" :allergy="selectedItem"/>
+    <view-modal v-model="showView" :id="allergyId" :allergy="selectedItem" @close="resetAllegry"/>
     <status-modal :allergy="currentAllergy" @allergy-added="allergyAdded" v-model="updatingStatus"/>
 </template>
 <script lang="ts">
@@ -376,6 +376,10 @@ export default class AllergyExistingState extends Vue {
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  resetAllegry(){
+    this.allergyId = "";
+    this.selectedItem = {}
   }
   async showAllergy(value: string) {
     this.showAllergyModal = true;

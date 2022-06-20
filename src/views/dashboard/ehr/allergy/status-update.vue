@@ -168,12 +168,12 @@ export default class StatusUpdate extends Vue {
     const histories =
       this.active == "clinical"
         ? this.allergy.clinicalStatusHistory
-        : this.allergy.verificationSatusHistory;
+        : this.allergy.verificationStatusHistory;
     return histories || [];
   }
 
   get updatedBy() {
-    const histories = this.histories;
+     const histories = this.histories;
     const latest = [...histories].pop();
     return latest?.practitionerName || "";
   }

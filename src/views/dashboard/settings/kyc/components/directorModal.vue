@@ -122,28 +122,6 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-    <assesor-modal
-      :practitioners="practitioner"
-      :roles="role"
-      @update:preferred="showAssessor"
-      v-model:visible="showAssessorModal"
-    />
-    <problem-modal
-      :conditions="conditions"
-      :allergy="allergy"
-      @update:preferred="showProblem"
-      v-model:visible="showProblemModal"
-    />
-    <item-modal
-      :observations="observations"
-      :questions="questions"
-      @update:preferred="showItem"
-      v-model:visible="showItemModal"
-    />
-    <reference-modal
-      @update:preferred="showFindings"
-      v-model:visible="showFindingModal"
-    />
   </cornie-dialog>
 </template>
 
@@ -312,7 +290,23 @@ idFileUploaded(fileUrl: string) {
     return this.id ? "Update" : "Add";
   }
 
- 
+ reset(){
+    this.fullName = '',
+    this.dateOfBirth = '',
+    this.nationality = '',
+    this.emailAddress = '',
+    this.phoneNumber =  {
+        number: "",
+        dialCode: "+234",
+    },
+    this.taxIdentificationNumber = '',
+    this.identificationDocumentNumber = '',
+    this.practiceLicenseDocument = '',
+    this.practiceLicenseNumber = '',
+    this.practiceLicenseDocumentType = '',
+    this.identificationDocumentType = '',
+     this.identificationDocumentType = ''
+ }
  
   async saveDirector() {
       try {
@@ -322,6 +316,7 @@ idFileUploaded(fileUrl: string) {
       );
       if(response.success){
           this.done();
+          this.reset();
         window.notify({ msg: "Director added successfully", status: "success" });
       }
     } catch (error) {

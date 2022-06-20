@@ -344,11 +344,11 @@ export default class AlergyModal extends Vue {
   reaction = {
     substance: "",
     manifestation: "",
-    description: "",
+    description: "" as any,
     onset: "",
     severity: "",
     exposureRoute: "",
-    note: "",
+    note: "" as any,
   };
   recorderId = "";
   asserterId = "";
@@ -375,7 +375,7 @@ export default class AlergyModal extends Vue {
     //this.onset = allergy.onSet;
     this.occurences = allergy.occurences;
      this.note = allergy.note;
-    this.reaction = allergy.reaction;
+    this.reaction = allergy?.reaction;
     this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
@@ -500,7 +500,7 @@ this.code = '',
       reaction: this.reaction,
       occurences: newoccur,
       recordDate: this.recordDate,
-      note: this.note,
+      note: this.note || undefined,
       asserterId: this.authPractitioner.id,
       recorderId: this.recorderId,
 
@@ -520,6 +520,8 @@ this.code = '',
     if (!valid) return;
 
     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+    this.payload.reaction.description = this.reaction.description || undefined;
+     this.payload.reaction.note = this.reaction.note || undefined;
 
     try {
       const response = await cornieClient().post(

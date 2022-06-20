@@ -46,6 +46,7 @@ export default class MedicationIndex extends Vue {
   @request.Action
   fetchrequestsById!: (patientId: string) => Promise<void>;
 
+  
 
   async created() {
     await this.fetchrequestsById(this.patientId);

@@ -15,12 +15,15 @@
   
   </div>
 
-  <medication-modal v-model="showMedication" />
+  <medication-modal v-model="showMedication" @medication-added="medicationadded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import MedicationModal from "./medicationModal.vue";
+import IRequest from "@/types/IRequest";
+import { namespace } from "vuex-class";
 
+const request = namespace("request");
 @Options({
   components: {
       MedicationModal
@@ -28,5 +31,20 @@ import MedicationModal from "./medicationModal.vue";
 })
 export default class medicationEmptyState extends Vue {
     showMedication  = false;
+
+     get patientId() {
+    return this.$route.params.id as string;
+  }
+
+  @request.State
+  patientrequests!: IRequest[];
+
+  @request.Action
+  fetchrequestsById!: (patientId: string) => Promise<void>;
+
+    async medicationadded(){
+    await this.fetchrequestsById(this.patientId);
+  }
+
 }
 </script>

@@ -230,7 +230,9 @@ dropdownData = {} as IIndexableObject;
   get newaction() {
     return this.id ? "Update" : "Add";
   }
-
+  reset(){
+    this.name = [];
+  }
  
  
   async save() {
@@ -241,6 +243,7 @@ dropdownData = {} as IIndexableObject;
       );
       if(response.success){
           this.done();
+          this.reset();
         window.notify({ msg: "Speciality saved successfully", status: "success" });
       }
     } catch (error) {

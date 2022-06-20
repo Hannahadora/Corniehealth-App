@@ -153,7 +153,17 @@ export default class NominateRefree extends Vue {
       notified: false
     };
   }
- 
+
+
+ reset(){
+     this.name = '',
+      this.email = '',
+     this.phone = {
+    dialCode: "+234",
+    number: "",
+  },
+      this.notified = false
+ }
 
   async submit() {
 
@@ -183,6 +193,7 @@ export default class NominateRefree extends Vue {
       if(response.success){
         window.notify({ msg: "Refree added successfully,kindly check email", status: "success" });
           this.done();
+          this.reset();
       }
     } catch (error) {
       window.notify({ msg: "Referee not added", status: "error" });

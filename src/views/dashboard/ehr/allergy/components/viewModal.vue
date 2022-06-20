@@ -5,7 +5,7 @@
         <span
           class="pr-2 flex items-center cursor, Templates-pointer border-r-2"
         >
-          <cornie-icon-btn @click="show = false">
+          <cornie-icon-btn @click="closeModal">
             <arrow-left-icon />
           </cornie-icon-btn>
         </span>
@@ -15,7 +15,7 @@
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="closeModal"
           />
         </div>
       </cornie-card-title>
@@ -155,14 +155,21 @@
                       v-model="allergy.onset.age.value"
                       :disabled="true"
                     />
-                    <cornie-select
+                     <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="allergy.onset.age.unit"
+                      :disabled="true"
+                    />
+                    <!-- <cornie-select
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
                       v-model="allergy.onset.age.unit"
                       :disabled="true"
-                    />
+                    /> -->
                   </div>
                 </div>
               </div>
@@ -288,7 +295,7 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
-            @click="show = false"
+            @click="closeModal"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Close
@@ -446,7 +453,7 @@ export default class viewAlergyModal extends Vue {
   // category = "";
   // criticality = "";
   // code = "";
-  reaction = {
+reaction = {
     substance: "",
     manifestation: "",
     description: "",
@@ -454,7 +461,7 @@ export default class viewAlergyModal extends Vue {
     severity: "",
     exposureRoute: "",
     note: "",
-  };
+  }; 
   recorderId = "";
   asserterId = "";
   occurences = [] as any;
@@ -534,6 +541,13 @@ export default class viewAlergyModal extends Vue {
     return new Date(this.recordDate).toLocaleDateString()
   }
 
+  closeModal(){
+    this.show = false ;
+    this.id = "";
+    this.allergy = {}
+    this.$emit('close')
+  }
+
    get recorder(){
     this.recorderId = this.authPractitioner.id;
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
@@ -574,7 +588,7 @@ export default class viewAlergyModal extends Vue {
   }
 
   get occur(){
-    return this.occurences[this.occurences?.length - 1] as any
+    return this.occurences[this.occurences?.length - 1] as any || ""
   }
 
   async created() {

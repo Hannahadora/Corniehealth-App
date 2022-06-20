@@ -11,11 +11,17 @@
   </div>
    <schedule-modal
     v-model="showScheduleModal"
+    @schedule-added="scheduleadded"
   />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ScheduleModal from "../availability/addScheduleModal.vue";
+import { namespace } from "vuex-class";
+import ISchedule,{Break, Repeat} from "@/types/ISchedule";
+
+
+const schedulesStore = namespace("schedules");
 @Options({
   components: {
     ScheduleModal
@@ -24,5 +30,13 @@ import ScheduleModal from "../availability/addScheduleModal.vue";
 export default class SchedulesEmptyState extends Vue {
 
   showScheduleModal = false;
+
+  
+  @schedulesStore.Action
+  getSchedules!: () => Promise<void>;
+
+     async scheduleadded(){
+      await this.getSchedules();
+    }
 }
 </script>

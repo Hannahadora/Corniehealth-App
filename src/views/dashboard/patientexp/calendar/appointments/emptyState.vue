@@ -17,6 +17,11 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import AppointmentModal from './addAppointmentModal.vue';
+import { namespace } from "vuex-class";
+
+
+const appointment = namespace("appointment");
+
 @Options({
   components: {
     AppointmentModal

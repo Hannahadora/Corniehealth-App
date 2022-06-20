@@ -18,15 +18,19 @@
         </div>
       </template>
     </cornie-empty-state>
-    <add-condition v-model="addCondition" />
+    <add-condition v-model="addCondition" @conditionAdded="conditionAdded"/>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+
 import CornieEmptyState from "@/components/CornieEmptyState.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import AddCondition from "./add-condition.vue";
+import { ICondition } from "@/types/ICondition";
 
+const condition = namespace("condition");
 @Options({
   name: "ConditionEmptyState",
   components: {
@@ -37,5 +41,17 @@ import AddCondition from "./add-condition.vue";
 })
 export default class EmptyState extends Vue {
   addCondition = false;
+
+  
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
+   async conditionAdded(){
+    await  this.fetchPatientConditions(this.patientId);
+  }
 }
 </script>

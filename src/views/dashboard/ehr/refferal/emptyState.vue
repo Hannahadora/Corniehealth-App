@@ -12,11 +12,16 @@
       New Requests
     </button>
   </div>
-  <refferal-modal v-model="showRefferalModal"/>
+  <refferal-modal v-model="showRefferalModal"  @medication-added="medicationadded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import RefferalModal from "./refferalModal.vue";
+import { namespace } from "vuex-class";
+import IRefferal from "@/types/IRefferal";
+
+
+const refferal = namespace("refferal");
 @Options({
   components: {
     RefferalModal
@@ -24,5 +29,17 @@ import RefferalModal from "./refferalModal.vue";
 })
 export default class refferalEmptyState extends Vue {
   showRefferalModal = false;
+
+   get patientId() {
+    return this.$route.params.id as string;
+  }
+
+  @refferal.Action
+  fetchRefferalById!: (patientId: string) => Promise<void>;
+
+    async medicationadded(){
+    await this.fetchRefferalById(this.patientId);
+  }
+
 }
 </script>
