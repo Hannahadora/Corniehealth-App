@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ newAction }} Diagnostic Report
+            {{ newAction }}
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
@@ -440,6 +440,15 @@ export default class DiagnosticReportDialog extends Vue {
       this.setDiagnoticRequest();
     }
   }
+  @Watch("type")
+  typeChange() {
+    if (this.type === 'date-time') {
+      (this.effective.period.startTime as any) = undefined;
+      (this.effective.period.endTime as any) = undefined;
+    } else if(this.type === 'period') {
+      (this.effective.date as any) = undefined
+    }
+  }
 
   get statuses() {
     return [
@@ -457,7 +466,13 @@ export default class DiagnosticReportDialog extends Vue {
   }
 
   get newAction() {
-    return this.reportId ? "Update" : "Create New";
+    if(this.reportId) {
+     return "Update Diagnostic Report"
+    } else if(this.requestId) {
+     return "Create Diagnostic Report"
+    } else {
+     return "View Result"
+    }
   }
 
   get allPatients() {
