@@ -89,16 +89,16 @@ import IMeasurable from "@/types/IMeasurable";
 import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
-  age: "",
-  ageUnit: "",
-  ageValue: "",
-  day: "" ,
-  unit: "",
-  min: "",
-  max: "",
-  string: "",
-  minUnit: "",
- maxUnit: "",
+  age: "" || null,
+  ageUnit: "" || null,
+  ageValue: "" || null,
+  day: "" || null,
+  unit: "" || null,
+  min: "" || null,
+  max: "" || null,
+  string: "" || null,
+  minUnit: "" || null,
+ maxUnit: "" || null,
 };
 
 @Options({
@@ -143,7 +143,8 @@ export default class TimeablePicker extends Vue {
   // }
 
   setType(type:string) {
-   if(type) return null;
+   if(type) return this.measurable = {};
+
   }
 
   created() {

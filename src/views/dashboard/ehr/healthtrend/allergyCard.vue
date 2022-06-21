@@ -60,7 +60,7 @@ import IAllergy from "@/types/IAllergy";
 import AddIcon from "@/components/icons/add.vue";
 import { mapDisplay } from "@/plugins/definitions";
 import { string } from "yup/lib/locale";
-import AllergyModal from "@/views/dashboard/ehr/allergy/allergydialog.vue";
+import AllergyModal from "@/views/dashboard/ehr/allergy/allergyModal.vue";
 import NoallergyIcon from "@/components/icons/noallergy.vue";
 
 const allergy = namespace("allergy");

@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="float-right flex space-x-7 justify-end w-full">
-                <span class="cursor-pointer" v-if="currentLocation && avaialbleStatus == 'available'">
+                <span class="cursor-pointer" v-if="authCurrentLocation && avaialbleStatus == 'available'">
                     <cornie-menu top="30px" >
                     <template #activator="{ on }">
                         <icon-btn v-on="on">
@@ -137,8 +137,10 @@ export default class AvailableActors extends Vue {
      @Prop({ type: String, default: 0 })
      singletime!: number;
 
-    @user.State
-    currentLocation!: string;
+ 
+
+    @user.Getter
+    authCurrentLocation!: string;
 
     localSrc = require("../../../../../assets/img/placeholder.png");
     responseData = [];
@@ -164,8 +166,10 @@ export default class AvailableActors extends Vue {
 
 
     async Available(){
+         const [splitDate] = this.date.toISOString().split('T');
+   const date = splitDate;
         const AllCalendarDay = cornieClient().get(
-        `/api/v1/calendar/personal/day-view/${this.currentLocation}/${this.actorname}/${this.id}?date=${this.date.toISOString()}`,);
+        `/api/v1/calendar/personal/day-view/${this.authCurrentLocation}/${this.actorname}/${this.id}?date=${date}`,);
         
         const response = await Promise.all([AllCalendarDay]);
         this.responseData = response[0].data;
@@ -176,7 +180,7 @@ export default class AvailableActors extends Vue {
     }
 
     async created(){
-      if(this.currentLocation) await this.Available();
+     await this.Available();
         
     }
 
