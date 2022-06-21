@@ -1,155 +1,313 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
-    >
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
+  <cornie-dialog v-model="show" center class="w-4/12 h-2/3">
+    <cornie-card height="100%" class="flex flex-col">
+      <cornie-card-title class="w-full">
+        <cornie-icon-btn @click="show = false">
+          <arrow-left-icon />
+        </cornie-icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             Update Status
           </h2>
-          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="submit">
-          <cornie-input
-            class="w-full"
-            label="Current Status"
-            placeholder="Current Status"
-            v-model="currentStatus"
-            :disabled="true"
-            :rules="required"
-          />
-          <cornie-input
-            class="w-full"
-            label="Updated By"
-            placeholder="Updated By"
-            v-model="updatedBy"
-            :disabled="true"
-            :rules="required"
-          />
-          <date-picker
-            class="w-full"
-            label="Last Updated"
-            v-model="lastUpdated"
-            :rules="required"
-          />
+        <div class="w-full">
+          <div class="container content-con">
+            <div class="w-full py-3">
+              <cornie-input
+                disabled
+                label="Current Status"
+                v-model="currentStatus"
+                class="w-full mb-4"
+              />
+              <cornie-input
+                disabled
+                label="Updated By"
+                class="w-full mb-4"
+                v-model="updatedBy"
+              />
+              <cornie-input
+                disabled
+                label="Date Last Updated"
+                class="w-full mb-4"
+                v-model="updateDate"
+              />
 
-          <cornie-select
-            class="w-full mt-6"
-            label="Update Status"
-            placeholder="--Select one--"
-            v-model="newStatus"
-            :items="statuses"
-          />
-        </v-form>
+              <cornie-select
+                :label="'New Status'"
+                v-model="status"
+                :items="[
+                  'Registered',
+                  'Partial',
+                  'Preliminary',
+                  'Final',
+                  'Ammended',
+                  'Corrected',
+                  'Appended',
+                  'Cancelled',
+                  'Entered-in-Errors',
+                  'Unknown',
+                ]"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+        </div>
       </cornie-card-text>
-
-      <div class="flex items-center justify-end mt-24">
-        <div class="flex items-center mb-6">
+      <cornie-card>
+        <cornie-card-text class="flex justify-end">
           <cornie-btn
             @click="show = false"
-            class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
-            View History
+            Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
+            @click="apply"
+            class="text-white bg-danger px-6 rounded-xl"
           >
             Update
           </cornie-btn>
-        </div>
-      </div>
+        </cornie-card-text>
+      </cornie-card>
     </cornie-card>
   </cornie-dialog>
 </template>
+
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieCard from "@/components/cornie-card";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
+import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieBtn from "@/components/CornieBtn.vue";
-import { namespace } from "vuex-class";
-import { CornieUser } from "@/types/user";
-import { string } from "yup";
-import AutoComplete from "@/components/autocomplete.vue";
-import { cornieClient } from "@/plugins/http";
+import CornieCard from "@/components/cornie-card";
+import Textarea from "@/components/textarea.vue";
+import CornieIconBtn from "@/components/CornieIconBtn.vue";
+import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieRadio from "@/components/cornieradio.vue";
-import IAppointmentRoom from "@/types/IAppointmentRoom";
-
+import CornieDialog from "@/components/CornieDialog.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/autocomplete.vue";
+import MainCornieSelect from "@/components/cornieselect.vue";
+import UpdateIcon from "@/components/icons/blueupdate.vue";
+import CorniePhoneInput from "@/components/phone-input.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CheckIcon from "@/components/icons/authcheck.vue";
+import NoteIcon from "@/components/icons/graynote.vue";
+import { cornieClient } from "@/plugins/http";
+import DEdit from "@/components/icons/aedit.vue";
+import RangeSlider from "@/components/range.vue";
+import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
+import CDelete from "@/components/icons/adelete.vue";
+import CancelIcon from "@/components/icons/CloseIcon.vue";
+import BluecheckIcon from "@/components/icons/bluecheck.vue";
+import IconInput from "@/components/IconInput.vue";
+import SearchIcon from "@/components/icons/search.vue";
+import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/daterangepicker.vue";
-import { first, getTableKeyValue } from "@/plugins/utils";
+import { string } from "yup";
+import IAppointment from "@/types/IAppointment";
+import { namespace } from "vuex-class";
 
-const hierarchy = namespace("hierarchy");
-const orgFunctions = namespace("OrgFunctions");
-const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
-const report = namespace("diagnosticReport");
-
+const appointment = namespace("appointment");
 @Options({
-  name: "DialogStatus-UpdateStatus",
+  name: "statusDialog",
   components: {
-    CornieDialog,
     ...CornieCard,
-    ArrowLeft,
-    IconBtn,
+    CornieIconBtn,
+    NoteIcon,
+    ArrowLeftIcon,
+    DatePicker,
+    CDelete,
+    RangeSlider,
+    UpdateIcon,
+    DeleteorangeIcon,
+    CheckIcon,
+    BluecheckIcon,
+    DEdit,
+    CancelIcon,
+    InfoIcon,
+    CornieDialog,
+    SearchIcon,
+    AccordionComponent,
+    IconInput,
+    Textarea,
     CornieInput,
     CornieSelect,
-    CustomCheckbox,
-    CornieBtn,
-    AutoComplete,
+    CorniePhoneInput,
     CornieRadio,
-    DatePicker,
-    CancelIcon,
+    CornieBtn,
+    MainCornieSelect,
   },
 })
-export default class DiagnosticDialog extends Vue {
+export default class Medication extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  @Prop({ type: Object, default: <any>{} })
+  report!: {};
+
+  practitioners = <any>[];
+
+  status = "";
+  loading = false;
+  expand = false;
+  isVisible = "";
+
   required = string().required();
 
-  loading = false;
-  activeTab = "Full Payment";
-
-  reference = "";
-  salesDate = 0;
-  customers = "";
-  types = "";
-
-  get statuses() {
-    return [
-      "Registered",
-      "Partial",
-      "Preliminary",
-      "Final",
-      "Ammended",
-      "Corrected",
-      "Appended",
-      "Cancelled",
-      "Entered-in-Errors",
-      "Unknown",
-    ];
+  get updateDate() {
+    return new Date((this.report as any).updatedAt).toLocaleDateString("en-NG");
   }
 
-  submit() {
-    console.log("submitt");
+  get currentStatus() {
+    return (this.report as any).status;
+  }
+
+  get updatedBy() {
+    return this.findPractitioner((this.report as any).recorderId);
+  }
+
+  async updateStatus() {
+    const id = this.id;
+    const url = `/api/v1/diagnostic/report/status/${id}`;
+    const body = {
+      status: this.status.toLowerCase(),
+    };
+    try {
+      const response = await cornieClient().patch(url, body);
+      if (response.success) {
+        window.notify({ msg: "Status Updated", status: "success" });
+        this.done();
+      }
+    } catch (error) {
+      window.notify({ msg: "Status Not Updated", status: "error" });
+      this.loading = false;
+    }
+  }
+
+  async fetchPractitioners() {
+    const url = "/api/v1/practitioner";
+    const response = await cornieClient().get(url);
+    this.practitioners = response.data;
+  }
+
+  findPractitioner(id: any) {
+    const ptn = this.practitioners?.find((el: any) => (el.id = id));
+    return ptn?.firstName + " " + ptn?.lastName;
+  }
+
+  done() {
+    this.$emit("status-updated");
+    this.show = false;
+  }
+  async apply() {
+    this.loading = true;
+    await this.updateStatus();
+    this.loading = false;
+  }
+
+  async created() {
+    this.fetchPractitioners();
   }
 }
 </script>
 
-<style scoped>
-td {
-  padding: 16px;
+<style>
+.bg-gray {
+  background-color: #f6f8f9;
+}
+.icon-wrap {
+  content: counter(step);
+  counter-increment: step;
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -54em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
+}
+.icon-wrap2 {
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: -7.5em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
+}
+.icon-wrap3 {
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: -1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 52em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
+}
+.icon-wrap4 {
+  background: #fff;
+  border-radius: 50%;
+  top: -0.3em;
+  z-index: 1;
+  color: #fff;
+  border: 2px solid #fe4d3c;
+  display: block;
+  height: 1.4em;
+  margin: 0 auto -0.6em;
+  left: 42em;
+  right: 0;
+  position: absolute;
+  width: 1.4em;
+}
+.icon-check-mark {
+  top: 1.3em;
+  z-index: 1;
+  left: 5em;
+  right: 0;
+  position: absolute;
+}
+.icon-check-mark2 {
+  top: 1.3em;
+  z-index: 1;
+  left: 23em;
+  right: 0;
+  position: absolute;
+}
+.icon-check-mark3 {
+  top: 1.3em;
+  z-index: 1;
+  left: 45.5em;
+  right: 0;
+  position: absolute;
+}
+.bg-danger-100 {
+  background-color: #fe4d3c;
 }
 </style>

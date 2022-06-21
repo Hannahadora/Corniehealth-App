@@ -1,75 +1,91 @@
 <template>
   <div>
-    <cornie-table class="mt-28" :columns="rawHeaders" v-model="items">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$emit('ViewRequest', item.id, item)"
-        >
-          <eye-blue class="text-danger fill-current" />
-          <span class="ml-3 text-xs">View Report</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$emit('ViewRequest', item.id, item)"
-        >
-          <plus-icon-black class="text-danger fill-current" />
-          <span class="ml-3 text-xs">create Report</span>
-        </div>
-      </template>
-      <template #status="{ item }">                                                         
-        <div class="flex items-center">
-          <p
-            class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'draft'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
-            v-if="item.status == 'on-hold'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-green-100 text-green-500 p-1 rounded"
-            v-if="item.status == 'active'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'unknown'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-green-100 text-green-400 p-1 rounded"
-            v-if="item.status == 'completed'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-red-100 text-red-600 p-1 rounded"
-            v-if="item.status == 'revoked' || item.status == 'cancelled'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-            v-if="item.status == 'entered-in-error'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-            v-if="item.status == 'do-not-perform'"
-          >
-            {{ item.status }}
+    <div class="w-full pb-80" v-if="diagnosticsRequests.length < 1">
+      <div class="w-full flex flex-col justify-center items-center h-96">
+        <div class="w-1/2 flex flex-col items-center justify-center mt-20">
+          <img src="@/assets/img/no-impression.svg" />
+          <h3 class="text-center mt-8 text-2xl font-bold">
+            No Request on Record
+          </h3>
+          <p class="text-base text-center" style="color: #667499">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum
+            aenean mattis mi diam eget.
           </p>
         </div>
-      </template>
-    </cornie-table>
+      </div>
+    </div>
+    <div v-else>
+      <cornie-table class="mt-28" :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$emit('ViewRequest', item.id, item)"
+          >
+            <eye-blue class="text-danger fill-current" />
+            <span class="ml-3 text-xs">View Report</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$emit('ViewRequest', item.id, item)"
+          >
+            <plus-icon-black class="text-danger fill-current" />
+            <span class="ml-3 text-xs">create Report</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
+          </div>
+        </template>
+      </cornie-table>
+    </div>
     <div class="flex justify-between m-3">
       <div class="flex justify-around">
         <p class="text-sm">show</p>
@@ -199,7 +215,7 @@ export default class RequestTable extends Vue {
         category: request.category,
         serviceName: request.serviceName || "XXXX",
         subject: `${request.patient?.firstname} ${request.patient?.middlename} ${request.patient?.lastname}`,
-        requester:  this.findPractitionerName(request.requesterId) || "XXXX",
+        requester: this.findPractitionerName(request.requesterId) || "XXXX",
         performer: this.findPractitionerName(request?.performerId) || "XXXX",
         status: request.status,
       };
@@ -224,9 +240,9 @@ export default class RequestTable extends Vue {
 
   printIdentifier(identifier?: any) {
     const i: any = identifier.split("-");
-    const idn: any = `${i[0]}-${i[1]}`
-    const idd: any = `${i[2]}-${i[3]}`
-    return idn + "\n" + idd
+    const idn: any = `${i[0]}-${i[1]}`;
+    const idd: any = `${i[2]}-${i[3]}`;
+    return idn + "\n" + idd;
   }
 
   async fetchPractitioners() {

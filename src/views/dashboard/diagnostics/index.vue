@@ -1,6 +1,6 @@
 <template>
   <div>
-    <bread-crumbs />
+    <!-- <bread-crumbs /> -->
     <div class="pb-4 mt-6 border-b border-gray-300">
       <p class="text-xl font-bold">Diagnostics {{ type }}</p>
     </div>
@@ -20,11 +20,26 @@
     </div>
     <div class="w-full pb-7">
       <request-table v-if="type === 'requests'" @viewRequest="createReport" />
-      <report-table v-if="type === 'reports'" @viewRequest="viewItem" />
+      <report-table
+        v-if="type === 'reports'"
+        @viewReport="viewItem"
+        @updateStatus="showStatusModal"
+      />
     </div>
   </div>
-  <update-status v-model="showRecord" :reportId="typeId" :requestId="requestId" @sales-added="salesAdded" />
-  <report-dialog v-model="showResult" :id="typeId" :report="selectedReport" />
+  <update-status
+    v-model="statusUpdateModal"
+    :id="reportId"
+    @status-updated="fetchDiagnosticReports"
+    :report="selectedReport"
+  />
+  <report-dialog
+    v-model="showResult"
+    :reportId="reportId"
+    :requestId="requestId"
+    :report="selectedReport"
+    :request="selectedRequest"
+  />
 </template>
 <script lang="ts">
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -43,6 +58,7 @@ import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
 import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
+import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import UpdateStatus from "./updateStatus.vue";
 import ReportDialog from "./ReportDialog.vue";
@@ -76,29 +92,52 @@ export default class DiagnosticReport extends Vue {
   query = "";
   requestId = "";
   reportId = "";
-  showRecord = false;
+  statusUpdateModal = false;
   showResult = false;
   updatedBy = "";
   currentStatus = "";
-  showStatusModal = false;
   selectedReport = <any>{};
+  selectedRequest = <any>{};
   type = "reports";
 
-  showItem(value: string) {
-    this.showRecord = true;
+  showStatusModal(value: string, item: any) {
+    this.statusUpdateModal = true;
     this.reportId = value;
+    this.selectedReport = item;
   }
 
   createReport(itemId?: string, item?: any) {
+    this.requestId = "";
+    this.selectedReport = {};
     if (itemId) {
       this.requestId = itemId;
+      this.selectedRequest = item;
+    }
+    this.showResult = true;
+  }
+
+  viewItem(itemId?: string, item?: any) {
+    if (itemId) {
+      this.reportId = itemId;
       this.selectedReport = item;
     }
     this.showResult = true;
   }
 
   closeModal() {
-    this.showRecord = false;
+    this.statusUpdateModal = false;
+  }
+
+  async fetchDiagnosticReports() {
+    try {
+      const data = await cornieClient().get("/api/v1/diagnostic/report");
+      // this.diagnosticReports = data.data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching Diagnostics Reports",
+        status: "error",
+      });
+    }
   }
 }
 </script>

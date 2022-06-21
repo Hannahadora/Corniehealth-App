@@ -81,6 +81,7 @@
             </field>
           </div>
           <div
+            v-if="!disabled"
             :class="{ hidden: !showDatalist }"
             class="absolute shadow bg-white top-100 z-40 w-full lef-0 border border-gray-400 rounded max-h-select overflow-y-auto mt-2 svelte-5uyqqj"
           >
