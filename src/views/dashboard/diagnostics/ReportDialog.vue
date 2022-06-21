@@ -66,14 +66,21 @@
                 v-model="reportModel.code"
                 placeholder="Code"
               />
-
-              <cornie-select
+              <cornie-input
+                class="w-full"
+                label="Patient"
+                placeholder="Patient"
+                :modelValue="findePatientName(reportModel.patientId)"
+                :disabled="true"
+                :rules="required"
+              />
+              <!-- <cornie-select
                 class="w-full"
                 label="Patient"
                 placeholder="Patient"
                 v-model="reportModel.patientId"
                 :items="allPatients"
-              />
+              /> -->
               <cornie-input
                 class="w-full"
                 label="Encounter"
@@ -109,7 +116,7 @@
                 class="w-full"
                 label="End Date/Time"
                 v-model:date="effective.period.endTime"
-                v-model:time="effective.period.time2"
+                v-model:time="effective.period.time"
                 v-if="type == 'period'"
               />
               <date-time-picker
@@ -131,8 +138,8 @@
                 <date-time-picker
                   class="w-full"
                   label="Issued"
-                  v-model:date="reportModel.issued.date"
-                  v-model:time="reportModel.issued.time"
+                  v-model:date="issued.date"
+                  v-model:time="issued.time"
                 />
               </div>
               <practioner-select
@@ -160,7 +167,7 @@
                 label="Reference Observation"
                 placeholder="Reference Observation"
                 v-model="obs"
-                :items="observations"
+                :items="observations || ['a', 'b']"
               />
               <choose-file class="w-full" label="Media" @uploaded="getFile" />
             </div>
@@ -176,7 +183,7 @@
                 class="w-full"
                 label="Imaging Studying"
                 placeholder="Imaging Studying"
-                v-model="result.imaging_Study"
+                v-model="result.imagingStudy"
                 :rules="required"
               />
             </div>
@@ -196,7 +203,7 @@
                   :key="index"
                 >
                   <p class="capitalize text-red-500 text-sm font-medium">
-                    {{ result?.observation }}
+                    {{ result?.referenceObservation }}
                   </p>
                   <div
                     class="w-11/12 mt-4"
@@ -206,7 +213,7 @@
                       <div class="w-8/12 flex flex-col text-sm">
                         <img :src="result?.image" />
                         <div class="" style="font-size: 10px">
-                          <span class=""> {{ result?.imaging_Study }}</span>
+                          <span class=""> {{ result?.imagingStudy }}</span>
                         </div>
                         <div class="" style="font-size: 10px">
                           <span class=""> {{ result?.comments }}</span>
@@ -236,7 +243,7 @@
                 label="Conclusion"
                 placeholder="Conclusion"
                 v-model="reportModel.conclusion.conclusion"
-                :items="[]"
+                :items="['a', 'b']"
               />
               <fhir-input
                 reference="http://hl7.org/fhir/ValueSet/clinical-findings"
@@ -352,6 +359,9 @@ export default class DiagnosticReportDialog extends Vue {
   @report.Action
   createDReport!: (s: any) => Promise<void>;
 
+  @report.Action
+  updateDReport!: (s: any) => Promise<void>;
+
   required = string().required();
 
   loading = false;
@@ -371,32 +381,21 @@ export default class DiagnosticReportDialog extends Vue {
   fileInfo = "";
   obs = "";
   result = {
-    observation: this.findObservationId(this.obs),
+    referenceObservation: this.obs || this.findObservationId(this.obs),
     image: "",
     comments: "",
-    imaging_Study: "",
+    imagingStudy: "",
   };
   collectedResults = <any>[];
 
   reportModel = {
     id: "",
-    status: (this.request as any).status,
-    patientId: (this.request as any).patientId,
+    status: "",
+    patientId: "",
     specimenId: "",
-    basedOn: (this.request as any).id,
+    basedOn: "",
     category: "",
     code: "",
-    effective: {
-      dateTime: undefined,
-      period: {
-        start: undefined,
-        end: undefined,
-      },
-    },
-    issued: {
-      date: "",
-      time: "",
-    },
     performerId: "",
     interpreterId: "",
     result: <any>[],
@@ -404,6 +403,11 @@ export default class DiagnosticReportDialog extends Vue {
       conclusion: "",
       conclusionCode: "",
     },
+  };
+
+  issued = {
+    date: "",
+    time: "",
   };
 
   effective = {
@@ -428,6 +432,12 @@ export default class DiagnosticReportDialog extends Vue {
   reportIdChanged() {
     if (this.reportId) {
       this.setDiagnoticRecord();
+    }
+  }
+  @Watch("requestId")
+  requestIdChanged() {
+    if (this.requestId) {
+      this.setDiagnoticRequest();
     }
   }
 
@@ -473,10 +483,10 @@ export default class DiagnosticReportDialog extends Vue {
     if (this.result.image && this.result?.comments) {
       this.collectedResults.push(this.result);
       this.result = {
-        observation: this.findObservationId(this.obs),
+        referenceObservation: this.obs || this.findObservationId(this.obs),
         image: "",
         comments: "",
-        imaging_Study: "",
+        imagingStudy: "",
       };
     }
   }
@@ -508,15 +518,47 @@ export default class DiagnosticReportDialog extends Vue {
       ?.id;
   }
 
+  findePatientName(id: string) {
+    if (!id) return "";
+    const p = this.patients.find((x: any) => x.id == id);
+    return p?.firstname + " " + p?.lastname;
+  }
+
   getFile(fileUrl: any) {
     this.result.image = fileUrl;
   }
 
+  setEffectiveType() {
+    if ((this.report as any).effective?.date) {
+      this.type == "date-time";
+      this.effective.date = (this.report as any).effective?.date;
+    } else {
+      this.type == "period";
+      this.effective.period.startTime = (
+        this.report as any
+      ).effective?.period.startTime;
+      this.effective.period.endTime = (
+        this.report as any
+      ).effective?.period.endTime;
+    }
+  }
+
   setDiagnoticRecord() {
-    if (this.report as any) {
+    if (this.report) {
       (this.reportModel as any) = this.report;
       this.reportModel.conclusion = (this.report as any).conclusion;
       this.collectedResults = (this.report as any).result;
+      this.setEffectiveType();
+      this.issued.date = (this.report as any).issuedDate
+    }
+  }
+  setDiagnoticRequest() {
+    if (this.request) {
+      // (this.reportModel as any) = this.request;
+      this.reportModel.basedOn = (this.request as any).id;
+      this.reportModel.status = (this.request as any).status;
+      this.reportModel.patientId = (this.request as any).patientId;
+      this.reportModel.category = (this.request as any).category;
     }
   }
 
@@ -525,7 +567,7 @@ export default class DiagnosticReportDialog extends Vue {
       status: this.reportModel.status
         ? this.reportModel.status.toLocaleLowerCase()
         : "final",
-      patientId: this.findePatientId(this.reportModel?.patientId),
+      patientId: this.reportModel?.patientId,
       // practitionerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       // specimenId: this.reportModel.specimenId,
       basedOn: this.reportModel.basedOn,
@@ -541,7 +583,7 @@ export default class DiagnosticReportDialog extends Vue {
               },
             },
       issueDate:
-        this.reportModel?.issued?.date + this.reportModel?.issued?.time,
+        this.issued?.date + this.issued?.time,
       performerId: this.reportModel.performerId,
       interpreterId: this.reportModel.interpreterId,
       result: this.collectedResults,
@@ -554,16 +596,27 @@ export default class DiagnosticReportDialog extends Vue {
 
   submit() {
     this.loading = true;
-    this.createDReport(this.payload);
+    if (this.reportId) {
+      const payload = {
+        id: this.reportId,
+        data: this.payload,
+      };
+      this.updateDReport(payload);
+    } else {
+      this.createDReport(this.payload);
+    }
+    this.show = false;
     this.loading = false;
   }
 
-  async ceated() {
-    await this.fetchPatients().then(async () => {
-      await this.fetchObservations();
-    });
+  async created() {
+    await this.fetchPatients();
+    await this.fetchObservations();
     if (this.reportId) {
       this.setDiagnoticRecord();
+    }
+    if (this.requestId) {
+      this.setDiagnoticRequest();
     }
   }
 }

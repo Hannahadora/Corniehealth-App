@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-10/12 h-full">
+  <cornie-dialog v-model="show" right class="w-3/4 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -46,13 +46,13 @@
               <img class="w-24 h-24" :src="organization.image" alt="" />
             </div>
 
-            <div class="flex flex-col text-right">
+            <div class="text-right">
               <div class="font-bold text-base mb-4">
                 {{ organization?.name }}
               </div>
               <div>{{ organization?.address }}</div>
-              <div class="flex items-center">
-                <div class="mr-2">{{ organization?.phone || "Nil" }}</div>
+              <div class="">
+                <div class="mr-2">{{ organization?.phone ? `${organization?.phone.dialCode}${organization?.phone.number}` : 'Nil' }}</div>
                 <div
                   class="w-2 h-2 rounded-full"
                   style="background: '#C2C7D6'"
