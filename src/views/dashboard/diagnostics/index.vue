@@ -107,6 +107,8 @@ export default class DiagnosticReport extends Vue {
   }
 
   createReport(itemId?: string, item?: any) {
+    this.requestId = "";
+    this.selectedReport = {};
     if (itemId) {
       this.requestId = itemId;
       this.selectedRequest = item;

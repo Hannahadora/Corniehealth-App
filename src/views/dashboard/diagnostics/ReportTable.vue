@@ -1,88 +1,110 @@
 <template>
   <div>
-    <cornie-table class="mt-28" :columns="rawHeaders" v-model="items">
-      <template #actions="{ item }">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$emit('ViewReport', item.id, item)"
-        >
-          <eye-blue class="text-danger fill-current" />
-          <span class="ml-3 text-xs">View Report</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$emit('updateStatus', item.id, item)"
-        >
-          <update-status-yellow class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Update Status</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <plus-icon-black class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Add Appointment</span>
-        </div>
-         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$emit('updateReport', item.id, item)"
-        >
-          <update-report-green class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Update Report</span>
-        </div>
-      </template>
-      <template #status="{ item }">
-        <div class="flex items-center">
-          <p
-            class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'draft'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
-            v-if="item.status == 'partial' || item.status == 'corrected' || item.status == 'ammended'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-green-100 text-green-500 p-1 rounded"
-            v-if="item.status == 'active'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'unknown' || item.status == 'registered'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-green-100 text-green-400 p-1 rounded"
-            v-if="item.status == 'completed' || item.status == 'final'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-red-100 text-red-600 p-1 rounded"
-            v-if="item.status == 'revoked' || item.status == 'cancelled'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-            v-if="item.status == 'entered-in-error' || item.status == 'preliminary' || item.status == 'appended'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-            v-if="item.status == 'do-not-perform'"
-          >
-            {{ item.status }}
+    <div class="w-full pb-80" v-if="diagnosticReports.length < 1">
+      <div class="w-full flex flex-col justify-center items-center h-96">
+        <div class="w-1/2 flex flex-col items-center justify-center mt-20">
+          <img src="@/assets/img/no-impression.svg" />
+          <h3 class="text-center mt-8 text-2xl font-bold">
+            No Report on Record
+          </h3>
+          <p class="text-base text-center" style="color: #667499">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum
+            aenean mattis mi diam eget.
           </p>
         </div>
-      </template>
-    </cornie-table>
+      </div>
+    </div>
+    <div v-else>
+      <cornie-table class="mt-28" :columns="rawHeaders" v-model="items">
+        <template #actions="{ item }">
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$emit('ViewReport', item.id, item)"
+          >
+            <eye-blue class="text-danger fill-current" />
+            <span class="ml-3 text-xs">View Report</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$emit('updateStatus', item.id, item)"
+          >
+            <update-status-yellow class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update Status</span>
+          </div>
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <plus-icon-black class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Add Appointment</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="$emit('updateReport', item.id, item)"
+          >
+            <update-report-green class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Update Report</span>
+          </div>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="
+                item.status == 'partial' ||
+                item.status == 'corrected' ||
+                item.status == 'ammended'
+              "
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown' || item.status == 'registered'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed' || item.status == 'final'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="
+                item.status == 'entered-in-error' ||
+                item.status == 'preliminary' ||
+                item.status == 'appended'
+              "
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'do-not-perform'"
+            >
+              {{ item.status }}
+            </p>
+          </div>
+        </template>
+      </cornie-table>
+    </div>
     <div class="flex justify-between m-3">
       <div class="flex justify-around">
         <p class="text-sm">show</p>
