@@ -58,6 +58,15 @@
                     placeholder="--Enter--"
                     class="w-full"
                   />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="openTo"
+                    :items="['Out-patient', 'In-patient', 'All']"
+                    label="Open to"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
                   <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
                     class="required w-full"
@@ -199,21 +208,12 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
-                  <cornie-select
-                    :rules="required"
-                    required
-                    v-model="openTo"
-                    :items="['Out-patient', 'In-patient', 'All']"
-                    label="Open to"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
 
                   <cornie-select
                     :rules="required"
                     required
                     v-model="careOptions"
-                    label="Care Channel"
+                    label="Visit Type"
                     :items="['Hospital/Clinic', 'Virtual', 'At Home']"
                     placeholder="--Select--"
                     class="w-full"
@@ -247,227 +247,224 @@
   </div>
 </template>
 <script lang="ts">
-  import AutoComplete from "@/components/autocomplete.vue";
-  import CornieInput from "@/components/cornieinput.vue";
-  import CornieSelect from "@/components/cornieselect.vue";
-  import FhirInput from "@/components/fhir-input.vue";
-  import AccordionComponent from "@/components/form-accordion.vue";
-  import InfoIcon from "@/components/icons/info.vue";
-  import OperationHours from "@/components/new-operation-hours.vue";
-  import PhoneInput from "@/components/phone-input.vue";
-  import Textarea from "@/components/textarea.vue";
-  import { IndexableObject } from "@/lib/http";
-  import { cornieClient } from "@/plugins/http";
-  import { getCountries, getStates } from "@/plugins/nation-states";
-  import ILocation, { HoursOfOperation } from "@/types/ILocation";
-  import IPhone from "@/types/IPhone";
-  import { Options, Vue } from "vue-class-component";
-  import { Prop, Watch } from "vue-property-decorator";
-  import { namespace } from "vuex-class";
-  import { string } from "yup";
+import AutoComplete from "@/components/autocomplete.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import Textarea from "@/components/textarea.vue";
+import { IndexableObject } from "@/lib/http";
+import { cornieClient } from "@/plugins/http";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import IPhone from "@/types/IPhone";
+import { Options, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { string } from "yup";
 
-  const countries = getCountries();
+const countries = getCountries();
 
-  const dropdown = namespace("dropdown");
-  const location = namespace("location");
+const dropdown = namespace("dropdown");
+const location = namespace("location");
 
-  @Options({
-    components: {
-      CornieInput,
-      AutoComplete,
-      CornieSelect,
-      InfoIcon,
-      PhoneInput,
-      OperationHours,
-      Textarea,
-      FhirInput,
-      AccordionComponent,
-    },
-  })
-  export default class AddLocation extends Vue {
-    @Prop({ type: String, default: "" })
-    id!: string;
+@Options({
+  components: {
+    CornieInput,
+    AutoComplete,
+    CornieSelect,
+    InfoIcon,
+    PhoneInput,
+    OperationHours,
+    Textarea,
+    FhirInput,
+    AccordionComponent,
+  },
+})
+export default class AddLocation extends Vue {
+  @Prop({ type: String, default: "" })
+  id!: string;
 
-    @location.Action
-    getLocationById!: (id: string) => Promise<any | ILocation>;
+  @location.Action
+  getLocationById!: (id: string) => Promise<any | ILocation>;
 
-    loading = false;
+  loading = false;
 
-    name = "";
-    locationStatus = "";
-    operationalStatus = "";
-    description = "";
-    alias = "";
-    mode = "";
-    type = "";
-    phoneNumber = "";
-    dialCode = "+234";
-    email = "";
-    address = "";
-    country = "";
-    state = "";
-    city = "";
-    physicalType = "";
-    latitude = "";
-    longitude = "";
-    altitude = "";
-    managingOrg = "";
-    partOf = "";
-    availabilityExceptions = "";
-    careOptions = "";
-    openTo = "";
-    hoursOfOperation: HoursOfOperation[] = [];
+  name = "";
+  locationStatus = "";
+  operationalStatus = "";
+  description = "";
+  alias = "";
+  mode = "";
+  type = "";
+  phoneNumber = "";
+  dialCode = "+234";
+  email = "";
+  address = "";
+  country = "";
+  state = "";
+  city = "";
+  physicalType = "";
+  latitude = "";
+  longitude = "";
+  altitude = "";
+  managingOrg = "";
+  partOf = "";
+  availabilityExceptions = "";
+  careOptions = "";
+  openTo = "";
+  hoursOfOperation: HoursOfOperation[] = [];
 
-    operationalStatusDropdown = {} as IndexableObject;
+  operationalStatusDropdown = {} as IndexableObject;
 
-    dropdowns = {} as IIndexableObject;
+  dropdowns = {} as IIndexableObject;
 
-    required = string().required();
-    requiredEmail = string().required().email();
+  required = string().required();
+  requiredEmail = string().required().email();
 
-    @dropdown.Action
-    getDropdowns!: (a: string) => Promise<IIndexableObject>;
+  @dropdown.Action
+  getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-    get identifier() {
-      return this.id || "System generated";
-    }
+  get identifier() {
+    return this.id || "System generated";
+  }
 
-    @Watch("id")
-    idChanged() {
-      this.setLocation();
-    }
+  @Watch("id")
+  idChanged() {
+    this.setLocation();
+  }
 
-    // get coordinatesCB() {
-    //   const address = `${this.address}, ${this.state} ${this.country}`;
-    //   return () => getCoordinates(address);
-    // }
+  // get coordinatesCB() {
+  //   const address = `${this.address}, ${this.state} ${this.country}`;
+  //   return () => getCoordinates(address);
+  // }
 
-    // @Watch("coordinatesCB")
-    // async coordinatesFetched(cb: () => Promise<any>) {
-    //   const data = await cb();
-    //   this.longitude = String(data.longitude);
-    //   this.latitude = String(data.latitude);
-    // }
+  // @Watch("coordinatesCB")
+  // async coordinatesFetched(cb: () => Promise<any>) {
+  //   const data = await cb();
+  //   this.longitude = String(data.longitude);
+  //   this.latitude = String(data.latitude);
+  // }
 
-    states = [] as any;
-    countries = countries;
+  states = [] as any;
+  countries = countries;
 
-    @Watch("country")
-    async countryPicked(country: string) {
-      const states = await getStates(country);
-      this.states = states;
-    }
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
+  }
 
-    async setLocation() {
-      const location = await this.getLocationById(this.id);
-      console.log(location);
-      if (!location) return;
-      this.name = location.name;
-      this.locationStatus = location.locationStatus;
-      this.operationalStatus = location.operationalStatus;
-      this.description = location.description;
-      this.alias = location.alias;
-      this.mode = location.mode;
+  async setLocation() {
+    const location = await this.getLocationById(this.id);
+    console.log(location);
+    if (!location) return;
+    this.name = location.name;
+    this.locationStatus = location.locationStatus;
+    this.operationalStatus = location.operationalStatus;
+    this.description = location.description;
+    this.alias = location.alias;
+    this.mode = location.mode;
 
-      this.type = location.type;
-      this.phoneNumber = location.phone.number;
-      this.dialCode = location.phone.dialCode;
-      this.email = location.email;
-      this.address = location.address;
-      this.country = location.country;
-      this.state = location.state;
-      this.city = location.city;
-      this.physicalType = location.physicalType;
-      // this.latitude = location.latitude;
-      // this.longitude = location.longitude;
-      // this.altitude = location.altitude;
-      this.managingOrg = location.managingOrg;
-      this.partOf = location.partOf;
-      this.availabilityExceptions = location.availabilityExceptions;
-      this.careOptions = location.careOptions;
-      this.openTo = location.openTo;
-      this.hoursOfOperation = location.hoursOfOperation;
-    }
+    this.type = location.type;
+    this.phoneNumber = location.phone.number;
+    this.dialCode = location.phone.dialCode;
+    this.email = location.email;
+    this.address = location.address;
+    this.country = location.country;
+    this.state = location.state;
+    this.city = location.city;
+    this.physicalType = location.physicalType;
+    // this.latitude = location.latitude;
+    // this.longitude = location.longitude;
+    // this.altitude = location.altitude;
+    this.managingOrg = location.managingOrg;
+    this.partOf = location.partOf;
+    this.availabilityExceptions = location.availabilityExceptions;
+    this.careOptions = location.careOptions;
+    this.openTo = location.openTo;
+    this.hoursOfOperation = location.hoursOfOperation;
+  }
 
-    get payload() {
-      return {
-        name: this.name,
-        locationStatus: this.locationStatus,
-        operationalStatus: this.operationalStatus,
-        description: this.description,
-        alias: this.alias,
-        mode: this.mode,
-        type: this.type,
-        phone: {
-          number: this.phoneNumber,
-          dialCode: this.dialCode,
-        } as any as IPhone,
-        email: this.email,
-        address: this.address,
-        country: this.country,
-        state: this.state,
-        city: this.city,
-        physicalType: this.physicalType,
-        // latitude: this.latitude,
-        // longitude: this.longitude,
-        // altitude: this.altitude,
-        managingOrg: this.managingOrg,
-        partOf: this.partOf,
-        availabilityExceptions: this.availabilityExceptions,
-        careOptions: this.careOptions,
-        openTo: this.openTo,
-        hoursOfOperation: this.hoursOfOperation,
-      };
-    }
+  get payload() {
+    return {
+      name: this.name,
+      locationStatus: this.locationStatus,
+      operationalStatus: this.operationalStatus,
+      description: this.description,
+      alias: this.alias,
+      mode: this.mode,
+      type: this.type,
+      phone: {
+        number: this.phoneNumber,
+        dialCode: this.dialCode,
+      } as any as IPhone,
+      email: this.email,
+      address: this.address,
+      country: this.country,
+      state: this.state,
+      city: this.city,
+      physicalType: this.physicalType,
+      // latitude: this.latitude,
+      // longitude: this.longitude,
+      // altitude: this.altitude,
+      managingOrg: this.managingOrg,
+      partOf: this.partOf,
+      availabilityExceptions: this.availabilityExceptions,
+      careOptions: this.careOptions,
+      openTo: this.openTo,
+      hoursOfOperation: this.hoursOfOperation,
+    };
+  }
 
-    async submit() {
-      this.loading = true;
-      if (this.id) await this.updateLocation();
-      else await this.createLocation();
-      this.loading = false;
-    }
+  async submit() {
+    this.loading = true;
+    if (this.id) await this.updateLocation();
+    else await this.createLocation();
+    this.loading = false;
+  }
 
-    async createLocation() {
-      try {
-        const response = await cornieClient().post(
-          "/api/v1/location",
-          this.payload
-        );
-        if (response.success) {
-          window.notify({ msg: "Location Created", status: "success" });
-          this.$router.push("/dashboard/provider/practice/locations");
-        }
-      } catch (error) {
-        window.notify({ msg: "Location not Created", status: "error" });
-      }
-    }
-
-    async updateLocation() {
-      const url = `/api/v1/location/${this.id}`;
-      const payload = { ...this.payload, id: this.id };
-      try {
-        const response = await cornieClient().put(url, payload);
-        window.notify({ msg: "Location Updated", status: "success" });
-        this.$router.push("/dashboard/provider/practice/locations");
-      } catch (error) {
-        window.notify({ msg: "Location not Updated", status: "error" });
-      }
-    }
-
-    async created() {
-      this.setLocation();
-      const data = await this.getDropdowns("location");
-
-      this.dropdowns = data;
-
-      let op = this.dropdowns.operationalStatus.filter(
-        (item: any) => item.code !== "U"
+  async createLocation() {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/location",
+        this.payload
       );
-
-      this.operationalStatusDropdown = [
-        { code: "U", display: "Opened" },
-        ...op,
-      ];
+      if (response.success) {
+        window.notify({ msg: "Location Created", status: "success" });
+        this.$router.push("/dashboard/provider/practice/locations");
+      }
+    } catch (error) {
+      window.notify({ msg: "Location not Created", status: "error" });
     }
   }
+
+  async updateLocation() {
+    const url = `/api/v1/location/${this.id}`;
+    const payload = { ...this.payload, id: this.id };
+    try {
+      const response = await cornieClient().put(url, payload);
+      window.notify({ msg: "Location Updated", status: "success" });
+      this.$router.push("/dashboard/provider/practice/locations");
+    } catch (error) {
+      window.notify({ msg: "Location not Updated", status: "error" });
+    }
+  }
+
+  async created() {
+    this.setLocation();
+    const data = await this.getDropdowns("location");
+
+    this.dropdowns = data;
+
+    let op = this.dropdowns.operationalStatus.filter(
+      (item: any) => item.code !== "U"
+    );
+
+    this.operationalStatusDropdown = [{ code: "U", display: "Opened" }, ...op];
+  }
+}
 </script>
