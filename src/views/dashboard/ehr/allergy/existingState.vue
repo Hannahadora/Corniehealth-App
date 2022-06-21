@@ -15,7 +15,7 @@
             focus:outline-none
             hover:opacity-90
           "
-          @click="showAllergyModal = true"
+          @click="showNewModal"
         >
           New Allergy
         </button>
@@ -371,6 +371,11 @@ export default class AllergyExistingState extends Vue {
   updateStatus(allergy: MutantAllergy) {
     this.currentAllergy = allergy;
     this.updatingStatus = true;
+  }
+
+  showNewModal(){
+    this.showAllergyModal = true;
+    this.resetAllegry()
   }
 
   getPractitionerName(id: string) {

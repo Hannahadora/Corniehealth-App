@@ -58,7 +58,15 @@
                             
                             </template>
                         </cornie-select>
-                        <cornie-select
+                          <fhir-input
+                            required
+                            class="required w-full"
+                          label="priority"
+                          v-model="priority"
+                          placeholder="--Select--"
+                          reference="http://hl7.org/fhir/ValueSet/request-priority"
+                        />
+                        <!-- <cornie-select
                         required
                           class="required"
                           :rules="required"
@@ -71,7 +79,7 @@
                           label="priority"
                           v-model="priority"
                           placeholder="--Select--">
-                        </cornie-select>
+                        </cornie-select> -->
                         <cornie-select
                         required
                             class="required w-full"
@@ -228,15 +236,15 @@
                                         v-model="emptyRefill.interval"
                                     />
                                     <cornie-select
-                                    :items="['Kg','Mg','G']"
-                                    placeholder="/ Kg"
+                                    :items="['Days','Week','Month']"
+                                    placeholder="/ Days"
                                     class="w-32 mt-0.5 flex-none"
                                     :setPrimary="true"
                                      v-model="emptyRefill.intervalUnit"
                                 />
                             </div>
                           </div>
-                            <date-picker :label="'Start Date'" v-model="emptyRefill.startDate" class="w-full"/>
+                            <DRangePicker :label="'Validity Period'" v-model="emptyRefill.startDate" class="w-full"/>
                             <cornie-input
                                 class="w-full"
                                 label="Quantity"
@@ -335,7 +343,7 @@
                         </cornie-select>
                         <cornie-select
                             :items="['reason reference']"
-                            label="reason for prohibition"
+                            label="Reason Reference "
                             placeholder="--Select--"
                             class="w-full"
                              v-model="reasonReference"
@@ -441,14 +449,21 @@
                             v-model="performer"
                         >
                         </cornie-select>
-                        <cornie-select
+                          <fhir-input
+                           v-model="performerRole"
+                            label="Performer Role"
+                            placeholder="Select"
+                            reference="http://hl7.org/fhir/ValueSet/performer-role"
+                            class="w-full"
+                          />
+                        <!-- <cornie-select
                         class="w-full"
                         :items="allRoles"
                         label="Performer Role"
                         placeholder="Select"
                          v-model="performerRole"
                         >
-                        </cornie-select>
+                        </cornie-select> -->
                     </div>  
                 </div>
 
@@ -693,9 +708,9 @@ export default class MedicationModal extends Vue {
   requesterId = "";
   patientId = "";
   dispenserId = "";
-  supportingInformation = "";
+  supportingInformation = "" ;
   medications = [] as any;
-  status = "draft";
+  status = "active";
   reasonCode = null;
   reasonReference = null;
   note = null;
@@ -878,7 +893,7 @@ export default class MedicationModal extends Vue {
       requesterId: this.requesterId,
       patientId: this.onepatientId,
       dispenserId: this.dispenserId,
-      supportingInformation: this.supportingInformation,
+      supportingInformation: this.supportingInformation || undefined,
       medications: this.medications,
       status: this.status,
       reasonCode: this.reasonCode,

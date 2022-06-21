@@ -8,7 +8,7 @@
       </button>
     </span> -->
      <div class="flex justify-center space-x-6 w-full -mb-10">
-        <span class="flex space-x-4">
+        <span class="flex space-x-4 text-sm ml-20">
           <medication-drug class="mr-2"/> Substitution Permitted
         </span>
         <span class="flex space-x-4">

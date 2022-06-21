@@ -1,15 +1,8 @@
 <template>
-  <big-dialog
-    v-model="show"
-    :title="newaction"
-    class=""
-  >
+  <big-dialog v-model="show" :title="newaction" class="">
     <v-form ref="form">
-      <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-          title="Basic Info"
-          :opened="true"
-        >
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Basic Info" :opened="true">
           <div class="grid grid-cols-2 gap-3 mt-3">
             <cornie-input
               :rules="required"
@@ -38,15 +31,11 @@
               :placeholder="'Select'"
               v-model="relationship"
             /> -->
-              <cornie-select
+            <cornie-select
               class="w-full"
               label="Sex"
               :rules="required"
-              :items="[
-                'Male',
-                'Female',
-                'Other',
-              ]"
+              :items="['Male', 'Female', 'Other']"
               :placeholder="'Select'"
               v-model="sex"
               required
@@ -54,51 +43,84 @@
           </div>
         </accordion-component>
       </div>
-       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-          title="Born"
-          :opened="false"
-        >
-          <born-picker label="Year" v-model="bornTimeable" class="w-full mb-5" required/>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Born" :opened="false">
+          <born-picker
+            label="Year"
+            v-model="bornTimeable"
+            class="w-full mb-5"
+            required
+          />
         </accordion-component>
       </div>
-       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-           title="Age"
-          :opened="false"
-        >
-        <age-measurable label="Age" v-model="agemesurable" />
-         <div class="mt-5">
-           <span class="text-sm font-semibold mb-3 text-black">Estimated Age? </span>
-          <div class="flex space-x-4 mt-5">
-            <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedAge"/>
-            <cornie-radio name="estimate"  :label="'No'" :value="false" v-model="estimatedAge"/>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Age" :opened="false">
+          <age-measurable label="Age" v-model="agemesurable" />
+          <div class="mt-5">
+            <span class="text-sm font-semibold mb-3 text-black"
+              >Estimated Age?
+            </span>
+            <div class="flex space-x-4 mt-5">
+              <cornie-radio
+                name="estimate"
+                :value="true"
+                label="Yes"
+                v-model="estimatedAge"
+              />
+              <cornie-radio
+                name="estimate"
+                :label="'No'"
+                :value="false"
+                v-model="estimatedAge"
+              />
+            </div>
           </div>
-        </div>
-        
         </accordion-component>
-       </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-            <accordion-component
-               :opened="false"
-              title="Deceased"
-            >
-              <div class="mt-5">
-                <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
-                <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="Deceased" :value="true" label="Yes" v-model="deceased"/>
-                  <cornie-radio name="Deceased"  label="No" :value="false" v-model="deceased"/>
-                </div>
-              <deaceased-measurable label="Deceased Age" v-model="deceasedmeasurable"  v-if="deceased == true"/>
-              <div class="mt-5" v-if="deceased == true">
-                <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
-                <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedDeceased"/>
-                  <cornie-radio name="estimate"  label="No" :value="false" v-model="estimatedDeceased"/>
-                </div>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Deceased">
+          <div class="mt-5">
+            <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
+            <div class="flex space-x-4 mt-5">
+              <cornie-radio
+                name="Deceased"
+                :value="true"
+                label="Yes"
+                v-model="deceased"
+              />
+              <cornie-radio
+                name="Deceased"
+                label="No"
+                :value="false"
+                v-model="deceased"
+              />
+            </div>
+            <deaceased-measurable
+              label="Deceased Age"
+              v-model="deceasedmeasurable"
+              v-if="deceased == true"
+            />
+            <div class="mt-5" v-if="deceased == true">
+              <span class="text-sm font-semibold mb-3 text-black"
+                >Estimated Age?</span
+              >
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                  name="estimate"
+                  :value="true"
+                  label="Yes"
+                  v-model="estimatedDeceased"
+                />
+                <cornie-radio
+                  name="estimate"
+                  label="No"
+                  :value="false"
+                  v-model="estimatedDeceased"
+                />
               </div>
             </div>
-            <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
+          </div>
+          <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
               <div class="bg-white shadow-md rounded-lg p-3" v-for="(item, i) in references"
                                   :key="i">
                 <span class="text-danger font-bold">Reason Reference</span>
@@ -116,24 +138,24 @@
 
               </div>
             </div> -->
-            </accordion-component>
-        </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-              <accordion-component
-                :opened="false"
-                title="Reason for History (Patient)"
-              >
-                <div class="grid grid-cols-2 gap-2 mt-5">
-                  <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/clinical-findings"
-                    class="w-full"
-                     label="Reason Code"
-                    :rules="required"
-                    :placeholder="'--Select--'"
-                    v-model="reasonCode"
-                    required
-                  />
-                  <!-- <cornie-select
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component
+          :opened="false"
+          title="Reason for History (Patient)"
+        >
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+              class="w-full"
+              label="Reason Code"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="reasonCode"
+              required
+            />
+            <!-- <cornie-select
                     class="w-full"
                     label="Reason Code"
                     :items="[
@@ -147,16 +169,21 @@
                     :placeholder="'--Select--'"
                     v-model="reasonCode"
                   /> -->
-                  <div>
-                    <p class="text-sm text-black font-semibold mb-1">Reason Reference</p>
-                    <div class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer" @click="showRefModal = true">
-                       <span class="w-full">{{ reasonReference }}</span> 
-                        <span class="flex justify-end w-full">
-                          <plusIcon class="fill-current text-danger  mt-1"/>
-                        </span>
-                    </div>
-                  </div>
-                  <!-- <cornie-select
+            <div>
+              <p class="text-sm text-black font-semibold mb-1">
+                Reason Reference
+              </p>
+              <div
+                class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                @click="showRefModal = true"
+              >
+                <span class="w-full">{{ reasonReference }}</span>
+                <span class="flex justify-end w-full">
+                  <plusIcon class="fill-current text-danger mt-1" />
+                </span>
+              </div>
+            </div>
+            <!-- <cornie-select
                     v-model="reasonReference"
                     label="Reason Reference"
                     class="w-full"
@@ -172,31 +199,28 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                   /> -->
-                  <cornie-input
-                    v-model="note"
-                    class="w-full"
-                    label="Note"
-                    :placeholder="'Enter'"
-                  />
-                </div>
-              </accordion-component>
-        </div>
-         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-              <accordion-component
-                :opened="false"
-                title="Condition (Related Person)"
-              >
-                <div class="grid grid-cols-2 gap-2 mt-5">
-                   <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/condition-code"
-                    class="w-full"
-                     label="Condition Code"
-                    :rules="required"
-                    :placeholder="'--Select--'"
-                    v-model="conditionCode"
-                    required
-                  />
-                  <!-- <cornie-select
+            <cornie-input
+              v-model="note"
+              class="w-full"
+              label="Note"
+              :placeholder="'Enter'"
+            />
+          </div>
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Condition (Related Person)">
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/condition-code"
+              class="w-full"
+              label="Condition Code"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="conditionCode"
+              required
+            />
+            <!-- <cornie-select
                     class="w-full"
                     v-model="conditionCode"
                     label="Condition Code"
@@ -210,16 +234,16 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                   /> -->
-                   <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/condition-outcome"
-                    class="w-full"
-                     label="Outcome"
-                    :rules="required"
-                    :placeholder="'--Select--'"
-                    v-model="conditionOutcome"
-                    required
-                  />
-                  <!-- <cornie-select
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/condition-outcome"
+              class="w-full"
+              label="Outcome"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="conditionOutcome"
+              required
+            />
+            <!-- <cornie-select
                     v-model="conditionOutcome"
                     label="Outcome"
                     class="w-full"
@@ -235,32 +259,40 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                   /> -->
-                 <div class="mt-5">
-                    <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
-                    <div class="flex space-x-4 mt-5">
-                      <cornie-radio name="to" :value="true" label="Yes"  v-model="conditionContributedToDeath"/>
-                      <cornie-radio name="to"  label="No" :value="false" v-model="conditionContributedToDeath"/>
-                    </div>
-                  </div>
-                </div>
-              </accordion-component>
-        </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-          <accordion-component
-             :opened="false"
-            title="Onset"
-          >
-          <onset-picker v-model="onsetmesurable" label="Onset"/>
-            <cornie-text-area
-            
-              v-model="onsetNote"
-              placeholder="Placeholder"
-              label="Notes"
-              class="w-full"
-              rows="4"
-            />
-          </accordion-component>
-        </div>
+            <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black"
+                >Contributed to Death?</span
+              >
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                  name="to"
+                  :value="true"
+                  label="Yes"
+                  v-model="conditionContributedToDeath"
+                />
+                <cornie-radio
+                  name="to"
+                  label="No"
+                  :value="false"
+                  v-model="conditionContributedToDeath"
+                />
+              </div>
+            </div>
+          </div>
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Onset">
+          <onset-picker v-model="onsetmesurable" label="Onset" />
+          <cornie-text-area
+            v-model="onsetNote"
+            placeholder="Placeholder"
+            label="Notes"
+            class="w-full"
+            rows="4"
+          />
+        </accordion-component>
+      </div>
     </v-form>
     <template #actions>
       <cornie-btn
@@ -278,10 +310,7 @@
       </cornie-btn>
     </template>
   </big-dialog>
-  <reference-modal
-    @ref-value="refvalue"
-    v-model="showRefModal"
-  />
+  <reference-modal @ref-value="refvalue" v-model="showRefModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -512,7 +541,7 @@ export default class HistoryDialog extends Vue {
       }).every(o => o === null) ? {
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
-      } : null, 
+      } : null,
       year: this.onsetmesurable.string || null,
       // period: !Object.values({
       //   start: this.onsetmesurable.startDate,
@@ -528,10 +557,10 @@ export default class HistoryDialog extends Vue {
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
       period: !Object.values({
-          start: this.bornTimeable.startDate, 
+          start: this.bornTimeable.startDate,
           end: this.bornTimeable.endDate
         }).every(o => o === null) ? {
-          start: this.bornTimeable.startDate, 
+          start: this.bornTimeable.startDate,
           end: this.bornTimeable.endDate
         } : null,
       dateTime: this.bornTimeable.date || null,
@@ -539,7 +568,7 @@ export default class HistoryDialog extends Vue {
     };
   }
 
- 
+
   get age() {
     return {
       estimated: this.estimatedAge || null,
@@ -563,7 +592,7 @@ export default class HistoryDialog extends Vue {
         unit: this.agemesurable.ageUnit,
         value: this.agemesurable.ageValue,
       } : null,
-     
+
     };
   }
 
@@ -656,8 +685,20 @@ export default class HistoryDialog extends Vue {
       relationship: this.relationship,
       sex: this.sex,
       deceasedAge: this.deceasedAge || null,
-   
+
     };
+  }
+  reset(){
+    this.status ="";
+    this.reasonCode = "";
+    this.reasonReference ="";
+    this.note = "";
+    this.conditionCode = "";
+    this.conditionOutcome = "";
+    this.conditionContributedToDeath = false;
+    this.name = "";
+    this.relationship = "";
+    this.sex = "";
   }
   get newaction() {
     return this.id ? "Update History" : "Create New";
@@ -696,6 +737,7 @@ export default class HistoryDialog extends Vue {
           status: "success",
         });
         this.done();
+        this.reset();
       }
     } catch (error:any) {
       window.notify({

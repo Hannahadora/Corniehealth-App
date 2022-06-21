@@ -5,7 +5,7 @@
         <span
           class="pr-2 flex items-center cursor, Templates-pointer border-r-2"
         >
-          <cornie-icon-btn @click="show = false">
+          <cornie-icon-btn @click="closeModal">
             <arrow-left-icon />
           </cornie-icon-btn>
         </span>
@@ -15,7 +15,7 @@
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="closeModal"
           />
         </div>
       </cornie-card-title>
@@ -182,7 +182,7 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
-            @click="show = false"
+            @click="closeModal"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
@@ -365,9 +365,9 @@ export default class AlergyModal extends Vue {
 
   async setAllergy() {
     const allergy = await this.getAllergyById(this.id);
-    if (!allergy) return;
-    this.clinicalStatus = allergy.clinicalStatus;
-    this.verificationStatus = allergy.verificationStatus;
+    if (!allergy) this.reset();
+    this.clinicalStatus = allergy?.clinicalStatus;
+    this.verificationStatus = allergy?.verificationStatus;
     this.type = allergy.type;
     this.category = allergy.category;
     this.criticality = allergy.criticality;
@@ -379,8 +379,8 @@ export default class AlergyModal extends Vue {
     this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
-    this.setOccurence = this.occur.time
-    this.setOccurencetime = this.separateTime(this.occur.time);
+    this.setOccurence = this?.occur?.time
+    this.setOccurencetime = this.separateTime(this?.occur?.time);
   }
 
   getDate(allergy:any){
@@ -462,7 +462,6 @@ export default class AlergyModal extends Vue {
   }
 
    setOccurenceTIme(date:string, time:string){
-     console.log('Hello')
         this.occurences.push({time: this.safeBuildDateTime(date, time)})
   }
     get recorder(){
@@ -506,7 +505,9 @@ this.code = '',
 
     };
   }
-
+  closeModal(){
+    this.show = false;
+  }
   async submit() {
     this.loading = true;
     if (this.id) await this.updateAllergy();
