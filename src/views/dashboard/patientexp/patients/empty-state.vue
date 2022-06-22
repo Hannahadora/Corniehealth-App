@@ -4,7 +4,7 @@
       <h1
         class="font-extrabold text-lg text-primary border-b-2 border-gray py-3 mx-3"
       >
-        Patients
+      Patients Experience Management
       </h1>
     </cornie-card-text>
     <cornie-card-text class="flex-grow flex items-center justify-center">

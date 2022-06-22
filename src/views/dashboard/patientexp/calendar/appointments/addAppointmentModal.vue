@@ -31,12 +31,17 @@
                     ]"
                     class="w-full mt-4"
                     v-model="appointmentType"
+                    :rules="required"
+                    required
+               
                 />
                 <cornie-input
                     label="Description"
                     class="w-full mb-5"
                     placeholder="--Enter--"
                     v-model="description"
+                    :rules="required"
+                    required
                 />
                
             </div>
@@ -452,7 +457,7 @@ import Avatar from "@/components/avatar.vue";
 import IAppointment from "@/types/IAppointment";
 import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
-
+import { string } from "yup";
 
 const appointment = namespace("appointment");
 const location = namespace("location");
@@ -594,6 +599,7 @@ export default class appointmentModal extends Vue {
    localSrc = require("../../../../../assets/img/placeholder.png");
    errmsg = "" as any;
    singlePatientId = "";
+   required = string().required();
 
 
 
@@ -641,7 +647,7 @@ export default class appointmentModal extends Vue {
       endTime : this.endTime,
       locationId : this.locationId,
       bookingLocationId: this.bookingLocationId || undefined,
-      practitionerId: this.authPractitioner.id,
+      practitionerId: this.appoimtentId,
       patientId: this.singlePatientId
 
     }
@@ -658,6 +664,11 @@ export default class appointmentModal extends Vue {
   async createAppointment() {
     this.locationId = this.authCurrentLocation;
     this.payload.date = this.appoitmentDate || new Date().toISOString();
+    this.payload.startTime = this.range;
+    this.payload.endTime = this.range2;
+
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
 
     if(this.authCurrentLocation){
       try {
@@ -670,7 +681,7 @@ export default class appointmentModal extends Vue {
          this.done();
         }
       } catch (error:any) {
-        window.notify({ msg: "Appointment not created", status: "error" });
+        window.notify({ msg: "This time is already booked", status: "error" });
       }
     }else{
       window.notify({ msg: "Kindly switch default location", status: "error" });
