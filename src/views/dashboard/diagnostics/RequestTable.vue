@@ -167,7 +167,7 @@ export default class RequestTable extends Vue {
   rawHeaders = [
     {
       title: "REQUEST ID",
-      key: "requestId",
+      key: "requisitiontId",
       show: true,
     },
     {
@@ -211,7 +211,7 @@ export default class RequestTable extends Vue {
         ...request,
         // action: sale.id,
         keydisplay: "XXXXXXX",
-        requestId: this.printIdentifier(request?.identifier),
+        requisitionId: this.printIdentifier(request?.identifier),
         category: request.category,
         serviceName: request.serviceName || "XXXX",
         subject: `${request.patient?.firstname} ${request.patient?.middlename} ${request.patient?.lastname}`,

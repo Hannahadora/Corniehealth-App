@@ -30,28 +30,6 @@
 
           <accordion-component
             class="text-primary"
-            title="Issue Info"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <date-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="issueInfo.dateTime"
-                v-model:time="issueInfo.time"
-              />
-              <cornie-select
-                class="w-full"
-                label="Performer"
-                placeholder="Select"
-                v-model="issueInfo.performer"
-                :items="['a', 'b']"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
             title="Effective"
             :opened="false"
           >
@@ -107,6 +85,28 @@
                 v-model="effective.instant.timeZone"
                 :items="['a', 'b']"
                 v-if="effectiveType == 'instant'"
+              />
+            </div>
+          </accordion-component>
+          
+          <accordion-component
+            class="text-primary"
+            title="Issue Info"
+            :opened="false"
+          >
+            <div class="grid grid-cols-2 gap-6 py-6">
+              <date-picker
+                class="w-full"
+                label="Date/Time"
+                v-model:date="issueInfo.dateTime"
+                v-model:time="issueInfo.time"
+              />
+              <cornie-select
+                class="w-full"
+                label="Performer"
+                placeholder="Select"
+                v-model="issueInfo.performer"
+                :items="['a', 'b']"
               />
             </div>
           </accordion-component>
