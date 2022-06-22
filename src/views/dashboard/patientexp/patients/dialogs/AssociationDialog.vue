@@ -18,7 +18,7 @@
             label="Account Type"
             class="w-full"
             placeholder="Select One"
-            :items="['Family Account', 'Personal Account']"
+            :items="['Family Account', 'Personal Account', 'Corporate Account']"
             v-model="accountType"
           />
           <div class="flex flex-col">

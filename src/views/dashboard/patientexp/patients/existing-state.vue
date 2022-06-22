@@ -6,7 +6,7 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-5 text-xl text-primary py-2"
       >
-        Patients
+       Patients Experience Management
       </span>
       <registration-chart class="w-full" :height="100" />
       <span class="w-full bg-danger">
