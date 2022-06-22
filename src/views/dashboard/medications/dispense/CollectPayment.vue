@@ -1,11 +1,11 @@
 <template>
   <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card
-      v-if="type === 'Post Bill'"
+      v-if="type === 'CollectPayment'"
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
     >
-      <post-bill :request="request" :bill="bill" @closeModal="show = false" />
+      <collect-payment :request="request" :bill="bill" @closeModal="show = false" />
     </cornie-card>
 
     <cornie-card
@@ -47,7 +47,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import IDispenseInfo from "@/types/IDispenseInfo";
 import IBill from "@/types/IBill";
 
-import PostBill from "./components/PostBill.vue";
+import CollectPayment from "./components/Payment.vue";
 import PostClaim from "./components/PostClaim.vue";
 import SharePayLink from "./components/SharePayLink.vue";
 
@@ -59,7 +59,7 @@ const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 
 @Options({
-  name: "CollectPayment",
+  name: "PaymentModal",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -73,12 +73,12 @@ const user = namespace("user");
     CancelIcon,
     IconInput,
     SearchIcon,
-    PostBill,
+    CollectPayment,
     PostClaim,
     SharePayLink
   },
 })
-export default class CollectPayment extends Vue {
+export default class PaymentModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 

@@ -52,7 +52,13 @@
               </div>
               <div>{{ organization?.address }}</div>
               <div class="">
-                <div class="mr-2">{{ organization?.phone ? `${organization?.phone.dialCode}${organization?.phone.number}` : 'Nil' }}</div>
+                <div class="mr-2">
+                  {{
+                    organization?.phone
+                      ? `${organization?.phone.dialCode}${organization?.phone.number}`
+                      : "Nil"
+                  }}
+                </div>
                 <div
                   class="w-2 h-2 rounded-full"
                   style="background: '#C2C7D6'"
@@ -89,27 +95,29 @@
             <p class="font-bold mb-4">Request Information</p>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Date Reqested</span>
-              <span class="">{{ convertDate(request.createdAt) }}</span>
+              <span class="text-right">{{
+                convertDate(request.createdAt)
+              }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Encounter ID</span>
-              <span class="">{{ request?.identifier }}</span>
+              <span class="text-right">{{ request?.identifier }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">ICD-11 Code</span>
-              <span class="">{{ request?.reasonCode }}</span>
+              <span class="text-right">{{ request?.reasonCode }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Priority</span>
-              <span class="">{{ request?.priority }}</span>
+              <span class="text-right">{{ request?.priority }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Requester ID</span>
-              <span class="">{{ request?.requester.id }}</span>
+              <span class="text-right">{{ request?.requester.id }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Practitioner ID</span>
-              <span class="">{{ request?.perfomer }}</span>
+              <span class="text-right">{{ request?.perfomer }}</span>
             </div>
           </div>
           <div class="w-bg1">
@@ -124,26 +132,30 @@
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
-              <span class="">{{ request?.patient?.mrn }}</span>
+              <span class="text-right">{{ request?.patient?.mrn }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ request?.patient?.paymentInfo }}</span>
+              <span class="text-right">{{
+                request?.patient?.paymentInfo
+              }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class=""
+              <span class="text-right"
                 >{{ request?.patient?.contactInfo[0].phone.dialCode }}
                 {{ request?.patient?.contactInfo[0].phone.number }}</span
               >
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ request?.patient?.contactInfo[0].email }}</span>
+              <span class="text-right">{{
+                request?.patient?.contactInfo[0].email
+              }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{
+              <span class="text-right">{{
                 request?.patient?.contactInfo[0].primaryAddress
               }}</span>
             </div>
@@ -152,27 +164,27 @@
             <p class="font-bold mb-4">Performer Information</p>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Patient Name</span>
-              <span class="">{{ request?.perfomer }}</span>
+              <span class="text-right">{{ request?.perfomer }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">MRN #</span>
-              <span class="">{{ request?.performer?.mrn }}</span>
+              <span class="text-right">{{ request?.performer?.mrn }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Payment Info</span>
-              <span class="">{{ request?.performer?.phone }}</span>
+              <span class="text-right">{{ request?.performer?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Phone Number</span>
-              <span class="">{{ request?.performer?.phone }}</span>
+              <span class="text-right">{{ request?.performer?.phone }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Email</span>
-              <span class="">{{ request?.performer?.email }}</span>
+              <span class="text-right">{{ request?.performer?.email }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Address</span>
-              <span class="">{{ request?.performer?.address }}</span>
+              <span class="text-right">{{ request?.performer?.address }}</span>
             </div>
           </div>
         </div>
@@ -219,8 +231,8 @@
           </template>
         </cornie-table>
 
-        <div class="mt-8 flex items-start justify-between">
-          <div
+        <div class="mt-8 flex items-start justify-end">
+          <!-- <div
             class="p-4 border rounded-md flex items-center justify-between w-1/4"
           >
             <span class="w-2/3 text-sm">Coupon | Promo Code</span>
@@ -230,17 +242,17 @@
               v-model="request.coupon"
               placeholder="----"
             />
-          </div>
+          </div> -->
 
           <div class="w-1/3">
             <table class="w-full">
               <tbody>
-                <tr>
+                <!-- <tr>
                   <td>Total Discount</td>
                   <td>
                     {{ request.totalDiscount ? request.totalDiscount : "0" }}
                   </td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td>Sub Total</td>
                   <td>{{ request.subTotal ? request.subTotal : "0" }}</td>
@@ -278,7 +290,7 @@
                 label="Medication Administration"
                 placeholder="Select one"
                 v-model="medicationAdministration"
-                :items="medicationAdministrations"
+                :items="['Community', 'Inpatient', 'Outpatient']"
               />
             </div>
           </div>
@@ -293,8 +305,8 @@
           Cancel
         </div>
         <div class="flex items-center mb-6">
-          <div class="relative">
-            <cornie-btn
+          <!-- <div class="relative">
+           <cornie-btn
               @click="openPostOptions = true"
               class="border-primary border-2 px-6 py-1 mr-3 font-medium rounded-lg text-primary"
             >
@@ -302,7 +314,7 @@
               {{ postMethod }}
             </cornie-btn>
 
-            <div
+             <div
               class="absolute w-full bg-white shadow rounded-lg py-4 px-2 mt-2"
               v-if="openPostOptions"
             >
@@ -339,7 +351,13 @@
                 </li>
               </ul>
             </div>
-          </div>
+          </div> -->
+          <cornie-btn
+            @click="PostBill"
+            class="border-primary border-2 px-6 py-1 mr-3 font-medium rounded-lg text-primary"
+          >
+            PostBill
+          </cornie-btn>
           <cornie-btn
             :loading="loading"
             type="submit"
@@ -491,7 +509,7 @@ export default class ViewRequest extends Vue {
   query = "";
   bill = "";
 
-  postMethod = "Post Bill";
+  postMethod = "CollectPayment";
   loading = false;
   notes = "";
   selectedMedication = {} as IMedication;
@@ -506,7 +524,7 @@ export default class ViewRequest extends Vue {
 
   @user.Getter
   authCurrentLocation!: any;
-  
+
   @dispense.State
   medicationRequest!: any[];
 
@@ -521,10 +539,6 @@ export default class ViewRequest extends Vue {
 
   get statuses() {
     return ["Active", "Substituted", "On-Hold", "Dispensed"];
-  }
-
-  get medicationAdministrations() {
-    return [];
   }
 
   get locationId() {
@@ -605,15 +619,17 @@ export default class ViewRequest extends Vue {
     this.selectedMedication = med;
   }
 
-  collectPayment() {
+  async collectPayment() {
     this.completePaymentModal = true;
     this.medicationRequest.filter((el: any) => {
       if (el.id == this.id) {
         this.viewedRequest = el;
       }
     });
-    // this.setRequest();
-    this.generateBill();
+
+    // await this.setRequest();
+    await this.dispenseRequest();
+    await this.generateBill();
   }
 
   async setRequest() {
@@ -631,6 +647,27 @@ export default class ViewRequest extends Vue {
     }
   }
 
+  async dispenseRequest() {
+    try {
+      const { data } = await cornieClient().post(
+        `/api/v1/pharmacy/dispense-request/${this.locationId}/${this.id}`,
+        this.request.medications.map((product) => {
+          return {
+            // ...product,
+            dispensedProductId: product.id,
+            reasonforSubstitution: product.reasonForSubstitution,
+            quantity: product.quantity || 1,
+          };
+        })
+      );
+    } catch (error) {
+      window.notify({
+        msg: "There was an error dispensing request",
+        status: "error",
+      });
+    }
+  }
+
   async generateBill() {
     try {
       const { data } = await cornieClient().post(
@@ -640,10 +677,16 @@ export default class ViewRequest extends Vue {
       this.bill = data;
     } catch (error) {
       window.notify({
-        msg: "There was an error geneating bill",
+        msg: "There was an error generating bill",
         status: "error",
       });
     }
+  }
+
+  async PostBill() {
+    await this.setRequest();
+    await this.dispenseRequest();
+    await this.generateBill();
   }
 
   async created() {
