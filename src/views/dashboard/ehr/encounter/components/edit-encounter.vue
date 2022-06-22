@@ -1,5 +1,5 @@
 <template>
-  <clinical-dialog v-model="show" :title="'Create New'" class="">
+  <clinical-dialog v-model="show" :title="'Edit Encounter'" class="">
     <v-form ref="form">
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
         <accordion-component
@@ -7,6 +7,7 @@
           title="Basic Info"
           :opened="false"
         >
+          class : {{ basic.class }}
           <div class="grid grid-cols-2 gap-6 py-6">
             <fhir-input
               reference="http://hl7.org/fhir/ValueSet/v3-ActEncounterCode"
@@ -456,7 +457,7 @@
           @click="show = false"
           class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
         >
-          Cancel
+          Pause Encounter
         </cornie-btn>
         <cornie-btn
           :loading="loading"
@@ -583,6 +584,9 @@
     @Prop({ type: String, default: "Not applicable" })
     basedOn!: string;
 
+    @Prop({ type: Object, default: {} })
+    encounterDetails!: any;
+
     showReference = false;
     showCondition = false;
     showPersonReference = false;
@@ -593,6 +597,9 @@
       time: "",
     };
     // conditions = [];
+
+    @encounterM.State
+    encounters!: any[];
 
     @encounterM.Action
     postEncounter!: (data: any) => Promise<void>;
@@ -938,6 +945,13 @@
       });
     }
 
+    get editDetails() {
+      // console.log("encou", this.encounterDetails);
+      let a = this.encounters.find((x) => x.id == this.encounterDetails);
+      // console.log("hello", a);
+      return a;
+    }
+
     async created() {
       this.patientId = this.$route.params.id as string;
       if (this.locations?.length <= 0) await this.fetchLocations();
@@ -948,6 +962,11 @@
       await this.fetchObservations();
       await this.fetchRoles();
       await this.fetchFamilyHistories();
+      this.basic.class = this.editDetails.class;
+    }
+
+    mounted() {
+      console.log("details", this.editDetails);
     }
   }
 </script>
