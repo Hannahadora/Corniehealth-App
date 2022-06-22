@@ -12,7 +12,7 @@
         <!-- <empty-icon /> -->
         <img src="@/assets/img/no-impression.svg" />
       </div>
-      <div class="font-bold text-2xl mt-3">
+      <div class="font-bold text-xl mt-3">
         Patient currently have no procedure on record
       </div>
       <div class="flex flex-col pt-5">
