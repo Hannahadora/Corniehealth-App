@@ -5,6 +5,7 @@
     <div class="" v-if="encounters.length > 0">
       <exisiting-state
         @view_encounter="setView"
+        @edit_encounter="setEdit"
         @new_encounter="() => (showNewEncounterModal = true)"
       />
     </div>
@@ -16,6 +17,11 @@
     <view-encounter
       :encounterDetails="encounterDetails"
       v-model="showViewEncounterModal"
+    />
+
+    <edit-encounter
+      :encounterDetails="encounterId"
+      v-model="showEditEncounterModal"
     />
 
     <!-- <side-modal
@@ -76,6 +82,7 @@
   import SearchDropdown from "../careteam/components/search-dropdown.vue";
   import EmptyState from "./components/empty-state.vue";
   // import CornieBtn from "@/components/CornieBtn.vue";
+  import EditEncounter from "./components/edit-encounter.vue";
   import ExisitingState from "./components/existing-state.vue";
   import NewEncounter from "./components/new-encounter.vue";
   import ViewEncounter from "./components/view-encounter.vue";
@@ -98,6 +105,7 @@
       CancelIcon,
       Avatar,
       CornieCardTitle,
+      EditEncounter,
       CornieCardText,
       CornieBtn,
       CornieTable,
@@ -120,7 +128,9 @@
     showw = false;
     showNewEncounterModal = false;
     showViewEncounterModal = false;
+    showEditEncounterModal = false;
     encounterDetails: any = {};
+    encounterId: any = "";
 
     @encounter.State
     encounters!: any[];
@@ -148,6 +158,13 @@
       console.log("view", e);
       this.encounterDetails = e;
       this.showViewEncounterModal = true;
+    }
+
+    setEdit(e: any) {
+      console.log("edit", e.id);
+      this.encounterDetails = {};
+      this.encounterId = e.id;
+      this.showEditEncounterModal = true;
     }
 
     async created() {
