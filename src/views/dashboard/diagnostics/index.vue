@@ -107,7 +107,7 @@ export default class DiagnosticReport extends Vue {
   }
 
   createReport(itemId?: string, item?: any) {
-    this.requestId = "";
+    this.reportId = "";
     this.selectedReport = {};
     if (itemId) {
       this.requestId = itemId;
@@ -117,6 +117,8 @@ export default class DiagnosticReport extends Vue {
   }
 
   viewItem(itemId?: string, item?: any) {
+     this.requestId = "";
+    this.selectedRequest = {};
     if (itemId) {
       this.reportId = itemId;
       this.selectedReport = item;

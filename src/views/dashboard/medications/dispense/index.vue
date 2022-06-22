@@ -191,11 +191,11 @@
       </div>
     </div>
 
-    <dispense-modal
+    <status-modal
       :id="requestId"
-      v-model="openDispense"
+      v-model="statusModal"
       :request="request"
-      @closesidemodal="closeModal"
+      @status-updated="closeModal"
     />
 
     <view-dispense
@@ -232,7 +232,7 @@ import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import DispenseModal from "./DispenseModal.vue";
+import StatusModal from "./UpdateStatus.vue";
 import ViewDispense from "./ViewDispense.vue";
 
 import IMedicationReq from "@/types/ImedicationReq";
@@ -266,7 +266,7 @@ const organization = namespace("organization");
 
     ArrowLeftIcon,
     ArrowRightIcon,
-    DispenseModal,
+    StatusModal,
     ViewDispense,
   },
 })
@@ -276,7 +276,7 @@ export default class DISPENSE extends Vue {
   request = "";
   organization = "";
   requestId = "";
-  openDispense = false;
+  statusModal = false;
   viewDispenseDetails = false;
   practitioner = [] as any;
   location = [] as any;
@@ -486,9 +486,14 @@ export default class DISPENSE extends Vue {
   }
 
   showItem(value: string) {
-    this.openDispense = true;
-    this.requestId = value;
-    this.setRequest();
+    this.statusModal = true;
+    this.requestId = value; 
+    this.medicationRequest.filter((el: any) => {
+      if (el.id == value) {
+        this.request = el;
+      }
+    });
+    // this.setRequest();
   }
 
   viewItem(value: string) {
@@ -519,7 +524,8 @@ export default class DISPENSE extends Vue {
   }
 
   closeModal() {
-    this.openDispense = false;
+    this.statusModal = false;
+    this.fetchMedReq()
   }
 
   async created() {
