@@ -697,7 +697,7 @@ export default class MedicationModal extends Vue {
   medications = [] as any;
   status = "draft";
   reasonCode = null;
-  reasonReference = null;
+  reasonReference = "";
   note = null;
   allergies = [] as any;
   aconditions = [] as any;
