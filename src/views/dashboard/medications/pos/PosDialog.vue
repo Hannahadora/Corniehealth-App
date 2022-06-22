@@ -10,7 +10,7 @@
         </icon-btn>
         <div class="w-full">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            New Sales
+            {{ id ? "View" : "New" }} Sales
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
@@ -73,7 +73,7 @@
                 label="Type"
                 placeholder="--Select--"
                 v-model="type"
-                :items="['pickup', 'delivery']"
+                :items="['pickup']"
                 :disabled="salesData && checkSales"
               />
             </div>
@@ -138,8 +138,8 @@
             </template>
           </cornie-table>
 
-          <div class="mt-8 flex items-start justify-between">
-            <div class="w-1/3">
+          <div class="mt-8 flex items-start justify-end">
+            <!-- <div class="w-1/3">
               <div
                 class="px-4 py-3 text-sm border rounded-md flex items-center justify-between w-full"
               >
@@ -167,7 +167,7 @@
                   :disabled="salesData"
                 />
               </div>
-            </div>
+            </div> -->
 
             <div class="w-1/3">
               <table class="w-full">
@@ -257,7 +257,7 @@
                 class="w-full"
                 label="Payment Type"
                 placeholder="--Search--"
-                v-model="paymentType"
+                v-model="payment.paymentType"
                 :items="['pos', 'cash']"
                 :disabled="salesData"
               />
@@ -395,23 +395,21 @@ export default class PosDialog extends Vue {
 
   query = "";
   addCustomerModal = false;
-  paymentType = "";
 
   loading = false;
   activeTab = "Full Payment";
   customerDetails = <any>[];
 
-  status = this.sales?.status || "";
-  type = this.sales?.type || "";
-  coupon = this.sales?.coupon || "";
-  customerId = this.sales?.customer || "";
+  status = "";
+  type = "";
+  coupon = undefined;
+  customerId = "";
   customer = {
-    name: this.sales?.customer || "",
+    name: "",
   };
-  reference = this.sales?.identifier || "";
-  // salesDate = new Date(this.sales?.createdAt).toLocaleDateString("en-US");
+  reference = "";
   salesDate = "";
-  medications = this.sales?.medications || <any>[];
+  medications = <any>[];
 
   @user.Getter
   authCurrentLocation!: any;
@@ -502,17 +500,18 @@ export default class PosDialog extends Vue {
     return Number(this.subTotal + this.shippingCost).toFixed(2);
   }
 
+  get lineTotal() {
+    return this.items?.map((item: any) => item.quantity * item.unitPrice);
+  }
+
   get payments() {
-    if (this.sales) {
-      return this.sales?.payments;
-    } else
-      return [
-        {
-          amount: this.grandTotal,
-          paymentType: this.paymentType,
-          total: this.grandTotal,
-        },
-      ];
+    return [
+      {
+        amount: this.grandTotal,
+        paymentType: "",
+        total: this.grandTotal,
+      },
+    ];
   }
 
   fetchCustomers(query: string) {
@@ -595,6 +594,18 @@ export default class PosDialog extends Vue {
     }
   }
 
+  setData() {
+    if (this.sales) {
+      (this.customerId as any) = this.sales?.customer;
+      ((this.customer.name as any) = this.sales?.customer),
+        (this.reference = this.sales?.identifier);
+      this.salesDate = new Date(this.sales?.createdAt).toLocaleDateString(
+        "en-GB"
+      );
+      this.medications = this.sales?.medications;
+    }
+  }
+
   deleteItem(itemId: string) {
     this.medications.find((el: any) => {
       el.id === itemId;
@@ -604,7 +615,11 @@ export default class PosDialog extends Vue {
 
   showItem(id: any) {}
 
-  created() {}
+  created() {
+    if (this.id) {
+      this.setData();
+    }
+  }
 }
 </script>
 
