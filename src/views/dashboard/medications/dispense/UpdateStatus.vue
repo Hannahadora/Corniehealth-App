@@ -52,7 +52,7 @@
                   'Stopped',
                   'Do-not-perform',
                   'Unknown',
-                  'Entered=in-error',
+                  'Entered-in-error',
                   'Ordered',
                 ]"
                 style="width: 100%"

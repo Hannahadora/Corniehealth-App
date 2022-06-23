@@ -324,8 +324,8 @@ export default class POSSALES extends Vue {
         date: new Date(sale.createdAt).toLocaleDateString("en-US"),
         customer: sale.customer,
         type: sale.type,
-        salesTotal: sale.medications.flatMap((value: any) =>(value.quantity * value.unitPrice) + (value.quantity * value.unitPrice)),
-        paymentStatus: sale.payments.map((value: any) => value.paymentStatus),
+        salesTotal: sale.payments[0].total,
+        paymentStatus: sale.payments[0].status,
         status: sale.status,
       };
     });
@@ -362,7 +362,9 @@ export default class POSSALES extends Vue {
   viewItem(value: string) {
     this.showRecord = true;
     this.salesId = value;
-    this.findSales(this.salesId);
+     this.sales = this.allPosSales.find((sales: any) => sales.id === value);
+    this.salesData = true;
+    // this.findSales(this.salesId);
   }
 
   findSales(value: any) {

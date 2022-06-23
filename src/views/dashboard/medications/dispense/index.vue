@@ -122,7 +122,7 @@
             </p>
             <p
               class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
-              v-if="item.status == 'on-hold'"
+              v-if="item.status == 'on-hold' || item.status == 'substituted'"
             >
               {{ item.status }}
             </p>
@@ -140,13 +140,13 @@
             </p>
             <p
               class="text-xs bg-green-100 text-green-400 p-1 rounded"
-              v-if="item.status == 'completed'"
+              v-if="item.status == 'completed' || item.status == 'ordered'"
             >
               {{ item.status }}
             </p>
             <p
               class="text-xs bg-red-100 text-red-600 p-1 rounded"
-              v-if="item.status == 'revoked' || item.status == 'cancelled'"
+              v-if="item.status == 'revoked' || item.status == 'cancelled' || item.status == 'stopped'"
             >
               {{ item.status }}
             </p>
@@ -158,7 +158,7 @@
             </p>
             <p
               class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-              v-if="item.status == 'do-not-perform'"
+              v-if="item.status == 'do-not-perform' || item.status == 'dispensed'"
             >
               {{ item.status }}
             </p>
