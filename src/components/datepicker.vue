@@ -102,23 +102,28 @@ export default class DatePicker extends Vue {
   @Prop({ type: Boolean, default: false })
   right!: boolean;
   visible = false;
+
   toggleDropdown(): void {
     if (this.disabled) return;
     this.visible = !this.visible;
   }
+
   get customRules() {
-    const defaultRule = date();
+    const defaultRule = date().typeError("Invalid date");
     if (this.rules) return defaultRule.concat(this.rules);
     return defaultRule;
   }
+
   @Watch("date")
   changed() {
     this.visible = false;
   }
+
   get inputFieldText() {
     if (!this.date) return "dd/mm/yyyy";
     return new Date(this.date).toLocaleDateString("en-NG");
   }
+
   @Prop({ type: String, default: "" })
   name: any;
   @Prop({ type: String, default: "" })
