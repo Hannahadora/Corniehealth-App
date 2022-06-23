@@ -39,18 +39,21 @@
                 v-model="effectiveType"
                 label="Date/Time"
                 value="date-time"
+                @change="effectiveType = 'date-time'"
               />
               <cornie-radio
                 name="effective"
                 v-model="effectiveType"
                 value="period"
                 label="Period"
+                @change="effectiveType = 'period'"
               />
               <cornie-radio
                 name="effective"
                 v-model="effectiveType"
                 value="instant"
                 label="Instant"
+                @change="effectiveType = 'instant'"
               />
             </div>
             <div class="grid grid-cols-2 gap-6 py-6">
@@ -88,7 +91,7 @@
               />
             </div>
           </accordion-component>
-          
+
           <accordion-component
             class="text-primary"
             title="Issue Info"
@@ -415,7 +418,7 @@ export default class ObservationDialog extends Vue {
 
   required = string().required();
 
-  customers = <any>[]
+  customers = <any>[];
 
   loading = false;
   activeTab = "Full Payment";
@@ -445,7 +448,17 @@ export default class ObservationDialog extends Vue {
     code: "",
     focus: "",
   };
-  effective = <any>{};
+  effective = {
+    dateTime: "",
+    period: {
+      start: "",
+      end: "",
+    },
+    instant: {
+      timeZone: "",
+      dateTime: "",
+    },
+  };
   issueInfo = <any>{};
   value = <any>{};
   reasonInfo = <any>{};
@@ -463,6 +476,11 @@ export default class ObservationDialog extends Vue {
   @Watch("id")
   idChanged() {
     this.setObservation();
+  }
+
+  @Watch("effectiveType")
+  typeChanged() {
+    this.validateEffective();
   }
 
   get organizationId() {
@@ -490,11 +508,11 @@ export default class ObservationDialog extends Vue {
   }
 
   setCustomers(data: any) {
-    this.customers = data
+    this.customers = data;
   }
 
   setValue(data: any) {
-    this.value = data
+    this.value = data;
   }
 
   async setObservation() {
@@ -514,6 +532,23 @@ export default class ObservationDialog extends Vue {
     if (this.id) await this.updateObservation();
     else await this.createObservation();
     this.loading = false;
+  }
+
+  validateEffective() {
+    if (this.effectiveType === "date-time") {
+      (this.effective.period.start as any) = undefined;
+      (this.effective.period.end as any) = undefined;
+      (this.effective.instant.timeZone as any) = undefined;
+      (this.effective.instant.dateTime as any) = undefined;
+    } else if (this.effectiveType === "period") {
+      (this.effective.instant.timeZone as any) = undefined;
+      (this.effective.instant.dateTime as any) = undefined;
+      (this.effective.dateTime as any) = undefined;
+    } else if (this.effectiveType === "instant") {
+      (this.effective.period.start as any) = undefined;
+      (this.effective.period.end as any) = undefined;
+      (this.effective.dateTime as any) = undefined;
+    }
   }
 
   get payload() {
