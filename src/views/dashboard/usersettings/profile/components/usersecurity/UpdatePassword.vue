@@ -42,7 +42,8 @@
         @click="updatePassword()"
         :loading="loading"
         :disabled="!validPassword"
-        class="py-1 px-4 mb-5 mt-5 text-white appearance-none border-none bg-danger rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        :class="{ 'bg-danger': validPassword, 'bg-line_gray': !validPassword }"
+        class="py-1 px-4 mb-5 mt-5 text-white appearance-none border-none rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
       </cornie-btn>
