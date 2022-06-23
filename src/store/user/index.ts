@@ -66,7 +66,7 @@ export default {
       const cachedLocation = sessionStorage.getItem("authCurrentLocation");
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
-      const defaultLocation = locations?.find(location => location.default);
+      const defaultLocation = locations?.find((location) => location.default);
 
       const currentLocation = defaultLocation?.locationId ?? "";
       sessionStorage.setItem("authCurrentLocation", currentLocation);
@@ -110,7 +110,7 @@ export default {
       state.domain = domain;
     },
     setLoginInfo(state, payload) {
-      state.user = payload;
+      state.user = payload.user;
 
       state.authTime = new Date();
       rememberLogin(payload.token);
