@@ -31,7 +31,7 @@
         <password-input
           class="appearance-none w-full border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           placeholder="--Confirm new password--"
-          v-model="ConfirmPassword"
+          v-model="confirmPassword"
         />
       </div>
     </div>
@@ -41,7 +41,9 @@
         type="submit"
         @click="updatePassword()"
         :loading="loading"
-        class="py-1 px-4 mb-5 mt-5 text-white appearance-none border-none bg-danger rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        :disabled="!validPassword"
+        :class="{ 'bg-danger': validPassword, 'bg-line_gray': !validPassword }"
+        class="py-1 px-4 mb-5 mt-5 text-white appearance-none border-none rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
       >
         Save
       </cornie-btn>
@@ -65,6 +67,7 @@ export default {
     return {
       currentPassword: "",
       newPassword: "",
+      confirmPassword: "",
       userId: "",
       loading: false,
     };
@@ -75,12 +78,20 @@ export default {
       return {
         previousPassword: this.currentPassword,
         newPassword: this.newPassword,
-        userId: store.state.user.user.id,
+        userId: store.state.user.user.user.id,
       };
+    },
+    validPassword() {
+      return (
+        Boolean(this.currentPassword) &&
+        Boolean(this.newPassword) &&
+        this.newPassword == this.confirmPassword
+      );
     },
   },
   methods: {
     async updatePassword() {
+      if (!this.validPassword) return;
       this.loading = true;
       try {
         await quantumClient().post("auth/change-password", this.payload);

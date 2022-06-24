@@ -64,6 +64,13 @@
             />
           </div>
           <div class="col-span-4">
+            <cornie-input
+              v-if="hasProfile"
+              :modelValue="ProviderProfile"
+              :disabled="true"
+              class="w-full"
+              label="Provider Profile"
+            />
             <cornie-select
               required
               :items="provProfiles"
@@ -71,7 +78,7 @@
               class="w-full"
               v-model="ProviderProfile"
               :rules="requiredRule"
-              :disabled="hasProfile"
+              v-else
             />
           </div>
           <div class="col-span-4 -mt-3.5">

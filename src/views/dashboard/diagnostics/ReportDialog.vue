@@ -570,7 +570,7 @@ export default class DiagnosticReportDialog extends Vue {
   setDiagnoticRequest() {
     if (this.request) {
       // (this.reportModel as any) = this.request;
-      this.reportModel.basedOn = (this.request as any).id;
+      this.reportModel.basedOn = (this.request as any).identifier;
       this.reportModel.status = (this.request as any).status;
       this.reportModel.patientId = (this.request as any).patientId;
       this.reportModel.category = (this.request as any).category;

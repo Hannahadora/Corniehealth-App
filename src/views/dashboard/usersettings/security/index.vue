@@ -33,7 +33,7 @@
               v-if="!willUpdatePassword"
             >
               <span
-                class="text-gray-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full"
+                class="curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full"
               >
                 Update Password
               </span>
@@ -82,7 +82,7 @@
                       :rules="password"
                       type="password"
                       name="newPassword"
-                      v-model="data.newPassword"
+                      v-model="newPassword"
                       placeholder="New Password"
                     />
                     <div
@@ -143,8 +143,9 @@
                     data.confirmPassword &&
                     data.confirmPassword !== data.newPassword
                   "
-                  >password does not match</span
                 >
+                  password does not match
+                </span>
               </div>
             </div>
 
@@ -152,11 +153,7 @@
               <Button
                 :loading="loading"
                 class="focus:outline-none"
-                :disabled="
-                  !data.newPassword ||
-                  data.newPassword.length < 6 ||
-                  data.confirmPassword !== data.newPassword
-                "
+                :disabled="!validPassword"
               >
                 <span
                   style="background: #fe4d3c"
@@ -290,6 +287,9 @@ export default class UserSecurity extends Vue {
 
   data: any = {};
 
+  oldPassword = "";
+  newPassword = "";
+  newPasswordConfirmation = "";
   required = string().required();
   password = string()
     .required("Please Enter your password")
@@ -298,6 +298,14 @@ export default class UserSecurity extends Vue {
       "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
     );
 
+  get validPassword() {
+    const inputValid =
+      Boolean(this.oldPassword) &&
+      Boolean(this.newPassword) &&
+      Boolean(this.newPasswordConfirmation);
+
+    return this.checkPassword && inputValid;
+  }
   get checkPassword() {
     if (!this.data.newPassword) return false;
     return this.data.newPassword.match(

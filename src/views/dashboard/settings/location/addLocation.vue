@@ -44,6 +44,15 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="careOptions"
+                    label="Visit Type"
+                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
                   <cornie-input
                     :rules="required"
                     required
@@ -205,16 +214,6 @@
                     v-model="availabilityExceptions"
                     :items="['X-MAS', 'SALAH']"
                     label="Availability Exceptions"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
-
-                  <cornie-select
-                    :rules="required"
-                    required
-                    v-model="careOptions"
-                    label="Visit Type"
-                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
                     placeholder="--Select--"
                     class="w-full"
                   />
