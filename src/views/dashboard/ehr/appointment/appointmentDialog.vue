@@ -453,6 +453,20 @@ export default class appointmentModal extends Vue {
 
   }
 
+  resetForm(){
+    this.appointmentType = "";
+    this.description = "";
+    this.venue = "";
+    this.meetingLink = "";
+    this.venueAddress = "";
+    this.billingType = "";
+    this.Practitioners = [];
+    this.Patients = "";
+    this.services = [];
+    this.comment = "";
+   
+  }
+
 get payload(){
   return {
     appointmentType: this.appointmentType,
@@ -495,6 +509,7 @@ get payload(){
         if (response.success) {
           window.notify({ msg: "Appointment created", status: "success" });
           this.done();
+          this.resetForm();
         }
       } catch (error) {
         window.notify({ msg: "Appointment not created", status: "error" });

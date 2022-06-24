@@ -51,7 +51,20 @@
                 :label="'Certificate of Incorporation'"
                 class=""
               />
-              <cornie-input
+              <file-picker
+                @uploaded="idFileUploadedCAC"
+                v-model="formCAC"
+                :label="'Form CAC 1.1'"
+                class=""
+              />
+              <file-picker
+                @uploaded="idFileUploadedASSo"
+                v-model="memorandumAndArticleOfAssociation"
+                :label="'Memorandum & Articles of Association'"
+                class=""
+              />
+
+              <!-- <cornie-input
                 v-model="formCAC"
                 :label="'Form CAC 1.1'"
                 placeholder="--Enter--"
@@ -60,7 +73,7 @@
                 v-model="memorandumAndArticleOfAssociation"
                 :label="'Memorandum & Articles of Association'"
                 placeholder="--Enter--"
-              />
+              /> -->
               <cornie-input
                 v-model="taxIdentificationNumber"
                 :label="'Tax Identification Number'"
@@ -431,6 +444,14 @@ export default class KYC extends Vue {
     this.director.uploadedIdentificationDocument = fileUrl;
     this.certificateOfIncoporation = fileUrl;
     this.proofOfAddressUpload = fileUrl;
+    this.formCAC = fileUrl;
+    this.memorandumAndArticleOfAssociation = fileUrl
+  }
+   idFileUploadedCAC(fileUrl: string) {
+    this.formCAC = fileUrl;
+  }
+   idFileUploadedASSo(fileUrl: string) {
+    this.memorandumAndArticleOfAssociation = fileUrl;
   }
 
   sendIndex(index: number) {

@@ -193,6 +193,7 @@
   import TrendIcon from "@/components/icons/ehrtrend.vue";
   import VisitIcon from "@/components/icons/ehrvisits.vue";
   import VitalIcon from "@/components/icons/ehrvital.vue";
+  import FormIcon from "@/components/icons/ehrforms.vue";
   import PartnersIcon from "@/components/icons/partners.vue";
   import PlanIcon from "@/components/icons/plan.vue";
   import SearchIcon from "@/components/icons/search.vue";
@@ -235,6 +236,7 @@
       BillIcon,
       CorrespondIcon,
       AttachIcon,
+      FormIcon,
     },
   })
   export default class Settings extends Vue {
@@ -262,7 +264,7 @@
           icon: "allergy-icon",
         },
         { name: "Vital Signs", to: "vital-signs", icon: "vital-icon" },
-        { name: "Condition", to: "condition", icon: "condition-icon" },
+        { name: "Condition/Problem", to: "condition", icon: "condition-icon" },
         {
           name: "Appointments",
           to: "appointments",
@@ -270,40 +272,45 @@
         },
         { name: "Visits", to: "visits", icon: "visit-icon" },
         { name: "Encounter", to: "encounter", icon: "encounter-icon" },
-        {
-          name: "Clinical Impression",
-          to: "clinical-impressions",
-          icon: "impression-icon",
-        },
-        {
-          name: "Medication",
-          to: "medications-request",
-          icon: "medication-icon",
-        },
-        { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
-        { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
-        { name: "Procedure", to: "procedure", icon: "proceed-icon" },
-        { name: "Referral", to: "referral", icon: "reffer-icon" },
-        { name: "Care Team", to: "care-team", icon: "care-icon" },
-        { name: "Care Partner", to: "care-partners", icon: "partners-icon" },
-        { name: "Care Plans", to: "care-plan", icon: "plan-icon" },
-        { name: "Billing Data", to: "billing-data", icon: "bill-icon" },
-        {
-          name: "Correspondence",
-          to: "correspondence",
-          icon: "correspond-icon",
-        },
-        { name: "Attachments", to: "attachments", icon: "attach-icon" },
-        {
+         {
           name: "Progress Notes",
           to: "progress-notes/",
           icon: "proceed-icon",
         },
         {
-          name: "Risk Assesment",
-          to: "/risk-assessment/",
-          icon: "diag-icon",
+          name: "Clinical Impression",
+          to: "clinical-impressions",
+          icon: "impression-icon",
         },
+         { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
+        {
+          name: "Medications",
+          to: "medications-request",
+          icon: "medication-icon",
+        },
+        { name: "Referral", to: "referral", icon: "reffer-icon" },
+        { name: "Procedure", to: "procedure", icon: "proceed-icon" },
+        { name: "Care Plan", to: "care-plan", icon: "plan-icon" },
+        { name: "Care Team", to: "care-team", icon: "care-icon" },
+       { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
+       { name: "Form | Questionaires | Survey", to: "forms-questionaires", icon: "form-icon" },
+        { name: "Billing & Payments", to: "billing-data", icon: "bill-icon" },
+       
+      
+      // { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
+      //   { name: "Care Partner", to: "care-partners", icon: "partners-icon" },
+      //   {
+      //     name: "Correspondence",
+      //     to: "correspondence",
+      //     icon: "correspond-icon",
+      //   },
+      //   { name: "Attachments", to: "attachments", icon: "attach-icon" },
+       
+      //   {
+      //     name: "Risk Assesment",
+      //     to: "/risk-assessment/",
+      //     icon: "diag-icon",
+      //   },
       ];
     }
     get settings() {
