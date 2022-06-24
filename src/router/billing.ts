@@ -1,29 +1,36 @@
 import { RouteRecordRaw } from "vue-router";
 
-export const ExperienceRoutes: RouteRecordRaw = {
-  path: "experience/",
-  name: "Patients Experience Management",
-  component: () => import("@/views/dashboard/patientexp/index.vue"),
+export const BillingRoutes: RouteRecordRaw = {
+  path: "billing/",
+  name: "Billing & payments",
+  component: () => import("@/views/dashboard/billing/index.vue"),
   redirect: () => "patients",
   children: [
     {
-      path: "patients",
-      name: "Patients",
-      component: () =>
-        import("@/views/dashboard/patientexp/patients/Index.vue"),
+      path: "overview",
+      name: "billing overview",
+      component: () => import("@/views/dashboard/billing/overview.vue"),
     },
     {
-      path: "settings/:id",
+      path: "transaction",
       props: true,
-      name: "Patient Experience Settings",
-      component: () =>
-        import("@/views/dashboard/patientexp/patients/settings/index.vue"),
+      name: "billing transactions",
+      component: () => import("@/views/dashboard/billing/transactions.vue"),
     },
     {
-      path: "new-patients",
-      name: "New Patient",
-      component: () =>
-        import("@/views/dashboard/patientexp/patients/NewPatient.vue"),
+      path: "receivables",
+      name: "billing account receivables",
+      component: () => import("@/views/dashboard/billing/receivables.vue"),
+    },
+    {
+      path: "collections",
+      name: "billing collections",
+      component: () => import("@/views/dashboard/billing/collections.vue"),
+    },
+    {
+      path: "unbilled",
+      name: "unbilled transaction",
+      component: () => import("@/views/dashboard/billing/unbilled.vue"),
     },
     {
       path: "view-patient/:id",

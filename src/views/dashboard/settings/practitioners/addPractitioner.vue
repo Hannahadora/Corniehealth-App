@@ -105,13 +105,15 @@
                   label="Name (First and Last)"
                   placeholder="--Enter--"
                 />
-                <cornie-select
+
+                <auto-complete
+                  class="w-full"
+                  v-model="nationality"
                   :label="'Nationality'"
                   :items="nationState.countries"
-                  placeholder="--Select--"
-                  class="w-full"
-                  :required="true"
-                  v-model="nationality"
+                  placeholder="Enter"
+                  :rules="requiredString"
+                  :readonly="readonly"
                 />
                 <cornie-select
                   :rules="required"
@@ -733,11 +735,18 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
-  <locationrole-modal  v-model="addAccessRole" :id="id"  :locationId="locationId"
-    :roleId="roleId"     :locationRoleId="locationRoleId"
-    :setRoles="locationRoles" :deletedRole="deletedRole"  @add-access-roles="addAccessRoles"/>
+  <!-- <locationrole-modal
+    v-model="addAccessRole"
+    :id="id"
+    :locationId="locationId"
+    :roleId="roleId"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+    :deletedRole="deletedRole"
+    @add-access-roles="addAccessRoles"
+  /> -->
 
-    <!-- <access-role
+  <access-role
     v-model="addAccessRole"
     :deletedRole="deletedRole"
     @close-access-diag="addAccessRole = false"
@@ -748,7 +757,7 @@
     :id="id"
     :locationRoleId="locationRoleId"
     :setRoles="locationRoles"
-  /> -->
+  />
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -915,8 +924,8 @@
     }
 
     dobValidator = date().max(
-      createDate(0, 0, -16),
-      "Practitioner must be at least 16yrs."
+      createDate(0, 0, -18),
+      "Practitioner must be at least 18yrs."
     );
 
     get readonly() {
@@ -1376,8 +1385,8 @@
       if (!this.roles.length) await this.getRoles();
     }
   }
-  </script>
-  <style>
+</script>
+<style>
   .multiselect-option.is-selected.is-pointed {
     background: var(--ms-option-bg-selected-pointed, #fe4d3c);
     color: var(--ms-option-color-selected-pointed, #fff);
