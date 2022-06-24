@@ -524,45 +524,50 @@ export default class HistoryDialog extends Vue {
         this.references.splice(index, 1);
   }
 
+   isEmptyObject(object:any){
+  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+  return nonNulls.length <1
+}
+
   get onset() {
+   const range = {
+      unit: this.onsetmesurable.unit,
+      min: this.onsetmesurable.min,
+      max: this.onsetmesurable.max
+    
+    }; 
+    const age = {
+       unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+    
+    }; 
+    // const period = {
+    //    start: this.onsetmesurable.startDate,
+    //     end: this.onsetmesurable.endDate,
+    //     startTime: this.onsetmesurable.startTime,
+    //     endTime: this.onsetmesurable.endTime,
+    
+    // }; 
     return {
-      range: !Object.values({
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      } : null,
-      age: !Object.values({
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      } : null,
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
       year: this.onsetmesurable.string || null,
-      // period: !Object.values({
-      //   start: this.onsetmesurable.startDate,
-      //   end: this.onsetmesurable.endDate,
-      // }).every(o => o === null) ? {
-      //   start: this.onsetmesurable.startDate,
-      //   end: this.onsetmesurable.endDate,
-      // } : null,
+     // period:this.isEmptyObject (period) ? undefined : period,
     };
   }
 
+
+
+
   get born() {
+     const period = {
+      start: this.bornTimeable.startDate,
+          end: this.bornTimeable.endDate
+    
+    }; 
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
-      period: !Object.values({
-          start: this.bornTimeable.startDate,
-          end: this.bornTimeable.endDate
-        }).every(o => o === null) ? {
-          start: this.bornTimeable.startDate,
-          end: this.bornTimeable.endDate
-        } : null,
+     period:this.isEmptyObject (period) ? undefined : period,
       dateTime: this.bornTimeable.date || null,
       year: this.bornTimeable.age || null,
     };
@@ -570,52 +575,43 @@ export default class HistoryDialog extends Vue {
 
 
   get age() {
+    const range = {
+       unit: this.agemesurable.minUnit,
+        min: this.agemesurable.min,
+        max: this.agemesurable.max,
+    
+    }; 
+    const age = {
+      unit: this.agemesurable.ageUnit,
+        value: this.agemesurable.ageValue,
+    
+    }; 
     return {
       estimated: this.estimatedAge || null,
       year: this.agemesurable.string || null,
-      range: !Object.values({
-        unit: this.agemesurable.minUnit,
-        min: this.agemesurable.min,
-        max: this.agemesurable.max,
-      }).every((o) => o === null)
-        ? {
-            unit: this.agemesurable.minUnit,
-            min: this.agemesurable.min,
-            max: this.agemesurable.max,
-          }
-        : null,
-
-      age: !Object.values({
-        unit: this.agemesurable.ageUnit,
-        value: this.agemesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.agemesurable.ageUnit,
-        value: this.agemesurable.ageValue,
-      } : null,
+      range: this.isEmptyObject (range) ? undefined : range,
+     age: this.isEmptyObject (age) ? undefined : age,
 
     };
   }
 
   get deceasedAge() {
+      const range = {
+       unit: this.deceasedmeasurable.minUnit,
+          min:  this.deceasedmeasurable.min,
+          max: this.deceasedmeasurable.max
+    
+    }; 
+    const age = {
+       unit: this.deceasedmeasurable.ageUnit,
+          value: this.deceasedmeasurable.ageValue,
+    
+    };
     return {
        estimated: this.estimatedDeceased,
         year: this.deceasedmeasurable.string || null,
-        range: !Object.values({
-          unit: this.deceasedmeasurable.minUnit,
-          min:  this.deceasedmeasurable.min,
-          max: this.deceasedmeasurable.max
-        }).every(o => o === null) ? {
-          unit: this.deceasedmeasurable.minUnit,
-          min:  this.deceasedmeasurable.min,
-          max: this.deceasedmeasurable.max
-        } : null,
-        age: !Object.values({
-          unit: this.deceasedmeasurable.ageUnit,
-          value: this.deceasedmeasurable.ageValue,
-        }).every(o => o === null) ? {
-          unit: this.deceasedmeasurable.ageUnit,
-          value: this.deceasedmeasurable.ageValue,
-        } :  null,
+        range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
     };
   }
   async setNewHistoryModel() {

@@ -136,5 +136,11 @@ export const ClinicalsRoute: RouteRecordRaw = {
       name: "Referral",
       component: () => import("@/views/dashboard/ehr/refferal/index.vue"),
     },
+    {
+      path: "forms-questionaires",
+      props: true,
+      name: "Form | Questionaires | Survey",
+      component: () => import("@/views/dashboard/ehr/forms/index.vue"),
+    },
   ],
 };

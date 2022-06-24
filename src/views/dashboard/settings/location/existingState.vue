@@ -13,6 +13,7 @@
       :columns="rawHeaders"
       v-model="sortLocations"
       :check="false"
+      :fixeHeight="true"
     >
       <template #actions="{ item }">
         <div

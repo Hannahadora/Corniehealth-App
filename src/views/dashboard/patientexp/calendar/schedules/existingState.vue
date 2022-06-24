@@ -1,7 +1,7 @@
 <template>
   <div class="w-full pb-7">
     <span class="flex justify-end float-right w-86">
-      <date-picker class="w-full mt-3 mr-4" />
+      <date-picker class="w-full mt-3 mr-4" @click="filterSchdeule" v-model="period"/>
       <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-2.5 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="showScheduleModal = true"
@@ -132,6 +132,10 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import search from "@/plugins/search";
+
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -141,9 +145,9 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
+
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import { namespace } from "vuex-class";
+
 import TableOptions from "@/components/table-options.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
 import EyeIcon from "@/components/icons/newview.vue";
@@ -195,6 +199,11 @@ export default class SchedulesExistingState extends Vue {
   scheduleId = "";
   showScheduleModal = false;
   showActor = false;
+  period= {
+    start: new Date(),
+    end: new Date(),
+  }
+  responseData = [];
 
   @schedulesStore.State
   schedules!: ISchedule[];
@@ -255,7 +264,8 @@ export default class SchedulesExistingState extends Vue {
   ];
 
   get items() {
-    const schedules = this.schedules.map((schedule) => {
+    const schduledata = this.responseData.length > 0 ? this.responseData : this.schedules;
+    const schedules = schduledata.map((schedule) => {
       return {
         ...schedule,
         action: schedule.id,
@@ -322,7 +332,41 @@ export default class SchedulesExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  async scheduleadded() {
+
+ async filterSchdeule() {
+       const [splitDate] = this.period.start.toISOString().split('T');
+      const date = splitDate;
+
+      const [splitEndDate] = this.period.end.toISOString().split('T');
+      const end = splitEndDate;
+
+      try {
+        const response = await cornieClient().get(
+          `/api/v1/schedule?start=${date}&end=${end}`);
+        if (response.success) {
+           this.responseData = response.data
+          // window.notify({ msg: "Break added successfully", status: "success" });
+        }
+      } catch (error:any) {
+        window.notify({ msg: error.response.data.message, status: "error" });
+      }
+   
+  }
+  // async filterSchdeule(){
+  //     const [splitDate] = this.period.start.toISOString().split('T');
+  //     const date = splitDate;
+
+  //     const [splitEndDate] = this.period.end.toISOString().split('T');
+  //     const end = splitEndDate;
+
+
+  //       const allSchedulesFilter = cornieClient().get(
+  //       `/api/v1/schedule?start=${date}&end=${end}`,);
+        
+  //       const response = await Promise.all([allSchedulesFilter]);
+  //       this.responseData = response[0].data;
+  // }
+  async scheduleadded(){
     await this.getSchedules();
   }
   async created() {

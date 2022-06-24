@@ -167,11 +167,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
     },
-    // {
-    //   path: "group",
-    //   name: "Group",
-    //   component: () => import("@/views/dashboard/settings/group/index.vue"),
-    // },
+    {
+      path: "group",
+      name: "Group",
+      component: () => import("@/views/dashboard/settings/group/index.vue"),
+    },
     {
       path: "practice-templates",
       name: "Practice Forms/Templates",

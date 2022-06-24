@@ -176,7 +176,7 @@
             <span class="text-black text-xs">24</span>
           </span>
         </div>
-        <p class="text-sm text-black mb-1">{{ orgInfo.website }}</p>
+        <a href="orgInfo.website" target="_blank" class="text-sm mb-1">{{ orgInfo.website }}</a>
         <div></div>
 
         <div class="flex space-x-4 items-center justify-center mt-2">
@@ -195,7 +195,7 @@
         <div class="flex items-center justify-between mt-7 border-t pt-6">
           <span class="text-gray-300 text-xs"
             >Account Owner:
-            <span class="text-black text-xs">{{ orgInfo.website }}</span>
+            <span class="text-black text-xs"><a :href="orgInfo.website" target="_blank">{{ orgInfo.website }}</a></span>
           </span>
         </div>
 
@@ -203,7 +203,7 @@
           <cornie-btn
             class="border-primary border-2 px-0 mr-3 rounded-xl text-primary"
           >
-            <view-icon class="mr-2" /> View
+            <copy-icon class="mr-2" /> Copy Link
           </cornie-btn>
           <cornie-btn class="text-white bg-danger px-0 rounded-xl">
             <share-icon class="mr-2" /> Share
@@ -367,6 +367,8 @@ import EditIcon from "@/components/icons/aedit.vue";
 import IPractitioner from "@/types/IPractitioner";
 import IPracticeInformation from "@/types/IPracticeInformation";
 import IPracticeHour from "@/types/IPracticeHours";
+import CopyIcon from "@/components/icons/copy.vue";
+
 const userStore = namespace("user");
 
 const phoneRegex =
@@ -459,6 +461,7 @@ const workHours = Array.from(Array(24), (_, x) => splitTime(pad(x)));
     ViewIcon,
     Field,
     PhotoSection,
+    CopyIcon,
   },
 })
 export default class CarePartnersExistingState extends Vue {
@@ -512,7 +515,7 @@ export default class CarePartnersExistingState extends Vue {
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
-  orgInfo = [];
+  orgInfo = [] as any;
   dialCode = "+234";
   dateoptions = {
     weekday: "long",

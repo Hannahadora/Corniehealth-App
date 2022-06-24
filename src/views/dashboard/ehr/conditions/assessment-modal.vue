@@ -48,7 +48,7 @@
       </div>
       <cornie-card-text class="overflow-y-auto flex-col">
         <div
-          class="flex items-center cursor-pointer hover:bg-gray-50 rounded-full justify-between py-2 my-1 text-sm"
+          class="flex items-center cursor-pointer hover:bg-gray-50 rounded-full justify-between p-4 my-1 text-sm"
           :class="{ 'bg-gray-100': isSelected(item) }"
           v-for="(item, i) in items"
           :key="i"
@@ -177,15 +177,16 @@ export default class AssessmentModal extends Vue {
 
   loading = false;
 
-  isSelected(impression: IClinicalImpression) {
-    return impression.id == this.selected.id;
+  isSelected(impression: any) {
+    console.log(impression.id, this.selected.id, 'this.selected.id')
+    return impression.id === this.selected.id;
   }
 
   select(impression: any) {
-    // this.selected = {
-    //   id: impression.id!!,
-    //   reference: this.active,
-    // };
+    this.selected = {
+      id: impression.id!!,
+      reference: this.active,
+    };
     if(this.active == 'Clinical Impression'){
       this.assesData = {
        id: impression.id,

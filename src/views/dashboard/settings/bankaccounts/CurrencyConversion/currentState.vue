@@ -2,7 +2,7 @@
   <div class="w-full mx-5">
     <span class="flex justify-end">
       <button
-        class="bg-danger rounded-full text-white mt-5 text-sm mb-5 py-2 px-3 focus:outline-none hover:opacity-90 flex mr-6"
+        class="bg-danger rounded-lg text-white mt-5 text-sm mb-5 py-2 px-3 focus:outline-none hover:opacity-90 flex mr-6"
         @click="showDefaultCurrencyModal = true"
       >
         <bank-add-icon class="mt-1 mr-2" />
