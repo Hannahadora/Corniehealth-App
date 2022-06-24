@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="flex flex-wrap space-x-8 space-y-4 mt-6">
+    <label class="mt-6" for="valueType">Value</label>
+    <br />
+    <div class="flex flex-wrap space-x-8 space-y-4 mt-4">
       <cornie-radio
         v-for="(vType, i) in valueTypes"
         :key="i"
         name="value"
         class="mr-4"
+        id="valueType"
         v-model="valueType"
         :value="vType"
         :label="vType"
@@ -68,27 +71,27 @@
       <date-picker
         class="w-full"
         label="Start Date/Time"
-        :modelValue:date="value.period.startDate"
-        :modelValue:time="value.period.startTime"
+        :modelValue:date="date.startDate"
+        :modelValue:time="date.startTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="End Date/Time"
-        :modelValue:date="value.period.endDate"
-        :modelValue:time="value.period.endTime"
+        :modelValue:date="date.endDate"
+        :modelValue:time="date.endTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        :modelValue:date="value.period.dateTime"
+        :modelValue:date="date.dateTime"
         v-if="valueType === 'date-time'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        :modelValue:date="value.period.time"
+        :modelValue:date="date.time"
         v-if="valueType === 'time'"
       />
     </div>
@@ -115,7 +118,7 @@
         <cornie-input
           label="Range(min)"
           placeholder="0"
-          :modelValue="value?.range?.min"
+          :modelValue="range.min"
           class="grow w-full"
           :setfull="true"
         />
@@ -124,14 +127,14 @@
           placeholder="Days"
           class="w-32 mt-3 flex-none"
           :setPrimary="true"
-          :modelValue="value?.range?.unit"
+          :modelValue="range.unit"
         />
       </div>
       <div class="flex space-x-2 w-full">
         <cornie-input
           label="Range(max)"
           placeholder="0"
-          v-model="value.range.max"
+          v-model="range.max"
           class="grow w-full"
           :setfull="true"
         />
@@ -140,7 +143,7 @@
           placeholder="Days"
           class="w-32 mt-3 flex-none"
           :setPrimary="true"
-          v-model="value.range.unit"
+          v-model="range.unit"
         />
       </div>
     </div>
@@ -186,7 +189,6 @@ export default class ValueForm extends Vue {
 
   value = <any>{};
 
-
   valueTypes = [
     "quantity",
     "code",
@@ -203,9 +205,43 @@ export default class ValueForm extends Vue {
 
   valueType = "quantity";
 
+  range = {
+    min: "",
+    max: "",
+    unit: "Days",
+  };
+
+  date = {
+    dateTime: "",
+    time: "",
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+  };
+
   @Watch("valueType")
   valueChanged() {
     this.$emit("get-value", this.value);
+  }
+
+  @Watch("range")
+  onInput() {
+    this.value.range.min = this.range.min;
+    this.value.range.max = this.range.max;
+    this.value.range.unit = this.range.unit;
+  }
+
+  @Watch("date")
+  onUpdate() {
+    this.value.dateTime = this.buildDateTime(this.date.dateTime, this.date.time);
+    this.value.time = this.date.time;
+    this.value.period = this.buildPeriod(
+      this.date.startDate,
+      this.date.startTime,
+      this.date.endDate,
+      this.date.endTime
+    );
   }
 
   nullify() {
@@ -214,6 +250,29 @@ export default class ValueForm extends Vue {
         delete this.value[key];
       }
     });
+  }
+
+  buildPeriod(
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string
+  ) {
+    try {
+      const start = this.buildDateTime(startDate, startTime);
+      const end = this.buildDateTime(endDate, endTime);
+      return { start, end };
+    } catch (error) {
+      return;
+    }
+  }
+
+  buildDateTime(dateString: string, time: string) {
+    const date = new Date(dateString);
+    const [hour, minute] = time.split(":");
+    date.setMinutes(Number(minute));
+    date.setHours(Number(hour));
+    return date.toISOString();
   }
 }
 </script>

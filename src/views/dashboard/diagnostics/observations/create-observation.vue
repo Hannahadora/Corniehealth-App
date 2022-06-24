@@ -1,8 +1,8 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/3 h-full">
+  <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card
       height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
+      class="flex flex-col h-full bg-white overflow-y-scroll"
     >
       <cornie-card-title class="">
         <icon-btn @click="show = false">
@@ -188,19 +188,17 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
+              <cornie-input
                 class="w-full"
                 label="Low"
                 placeholder="Select"
                 v-model="referenceRange.low"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <cornie-input
                 class="w-full"
                 label="high"
                 placeholder="High"
                 v-model="referenceRange.high"
-                :items="['a', 'b']"
               />
               <cornie-select
                 class="w-full"
@@ -216,19 +214,17 @@
                 v-model="referenceRange.appliesTo"
                 :items="['a', 'b']"
               />
-              <cornie-select
+              <cornie-input
                 class="w-full"
                 label="Age"
                 placeholder="Enter"
                 v-model="referenceRange.age"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <cornie-input
                 class="w-full"
                 label="Text"
-                placeholder="text"
+                placeholder="Enter"
                 v-model="referenceRange.text"
-                :items="['a', 'b']"
               />
             </div>
           </accordion-component>
@@ -244,14 +240,14 @@
                 label="Has Member"
                 placeholder="Select"
                 v-model="member.hasMemer"
-                :items="['a', 'b']"
+                :items="['Observation', 'QuestionnaireResponse', 'MolecularSequence']"
               />
               <cornie-select
                 class="w-full"
                 label="Derived From"
                 placeholder="Select"
                 v-model="member.derivedFrom"
-                :items="['a', 'b']"
+                :items="['DocumentReference', 'ImagingStudy', 'Media', 'QuestionnaireResponse', 'Observation', 'MolecularSequence']"
               />
             </div>
           </accordion-component>
@@ -266,7 +262,7 @@
                 label="Code"
                 placeholder="Select"
                 v-model="component.code"
-                :items="['a', 'b']"
+                :items="['Observation', 'QuestionnaireResponse', 'MolecularSequence']"
               />
             </div>
           </accordion-component>
@@ -321,16 +317,18 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-between mt-24">
-        <div class="text-red-500 py-1 px-2 text-sm">Cancel</div>
+        <div class="text-red-500 py-1 px-2 text-sm cursor-pointer" @click="show = false">
+          Cancel
+        </div>
         <div class="flex items-center mb-6">
           <cornie-btn
-            @click="show = false"
+            @click="save('draft')"
             class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
           >
             Save As Draft
           </cornie-btn>
           <cornie-btn
-            @click="save"
+            @click="save('')"
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -527,10 +525,10 @@ export default class ObservationDialog extends Vue {
       (this.member = xObservation?.member);
   }
 
-  async save() {
+  async save(s?: any) {
     this.loading = true;
     if (this.id) await this.updateObservation();
-    else await this.createObservation();
+    else await this.createObservation(s);
     this.loading = false;
   }
 
@@ -564,6 +562,7 @@ export default class ObservationDialog extends Vue {
       reasonInfo: this.reasonInfo,
       referenceRange: this.referenceRange,
       member: this.member,
+      status: undefined,
     };
   }
 
@@ -583,8 +582,11 @@ export default class ObservationDialog extends Vue {
     }
   }
 
-  async createObservation() {
+  async createObservation(s?: any) {
     try {
+      if (s === "draft") {
+        (this.payload.status as any) = "draft";
+      }
       const { data } = await cornieClient().post(`/api/v1/observations`, {
         ...this.payload,
       });

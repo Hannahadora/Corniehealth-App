@@ -100,28 +100,16 @@
             :check="false"
             class="mt-7"
           >
-            <template #actions="{ item }">
+            <template #actions="{ index }">
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showItem(item.id)"
-              >
-                <edit-icon class="text-danger fill-current" />
-                <span class="ml-3 text-xs">Update</span>
-              </div>
-              <div
-                class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.id)"
+                @click="deleteItem(index)"
               >
                 <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
             <template #quantity="{ item }">
-              <!-- <cornieinput
-                class="w-full"
-                placeholder="Enter"
-                v-model="quantity[index]"
-              /> -->
               <input
                 class="border p-1"
                 type="number"
@@ -603,11 +591,13 @@ export default class PosDialog extends Vue {
     }
   }
 
-  deleteItem(itemId: string) {
-    this.medications.find((el: any) => {
-      el.id === itemId;
-      this.medications.slice(el);
-    });
+  deleteItem(index: any) {
+    // this.medications.find((el: any) => {
+    //   el.id === itemId;
+    //   this.medications.splice(el);
+    // });
+    // this.medications.filter((el: any) => el.id !== itemId)
+      this.medications.splice(index, 1);
   }
 
   showItem(id: any) {}
