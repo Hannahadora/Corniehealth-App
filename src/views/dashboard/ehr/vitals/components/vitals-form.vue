@@ -559,8 +559,12 @@ export default class VitalsForm extends Vue {
     const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
     const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
     if(heightValue && weightValue) {
-       return (weightValue / Number(this.convertHeightValue()) * 2).toFixed(2) || 0
+       return (weightValue / Number(this.squaredHeight)).toFixed(2) || 0
     } else return 0.00
+  }
+
+  get squaredHeight() {
+    return  Number(this.convertHeightValue()) * Number(this.convertHeightValue())
   }
 
   convertHeightValue() {
@@ -570,9 +574,9 @@ export default class VitalsForm extends Vue {
       if(heightUnit === 'cm') {
       return Number(heightValue / 100);
     } else if(heightUnit === 'in') {
-      return Number(heightValue / 61024)
+      return Number(heightValue / 39.37)
     } else if(heightUnit === 'ft') {
-      return Number(heightValue / 35.315)
+      return Number(heightValue / 3.281)
     } else return Number(heightValue)
    }
   }

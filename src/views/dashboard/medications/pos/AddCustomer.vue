@@ -19,7 +19,7 @@
         </div>
       </cornie-card-title>
       <div class="">
-        <cornie-card-text class="flex-grow scrollable">
+        <cornie-card-text class="flex-grow scrollable h-96">
           <v-form class="flex-grow flex flex-col">
             <cornie-input
               class="w-full"
@@ -158,9 +158,10 @@ export default class AppointmentRoomDialog extends Vue {
         { ...newData }
       );
       this.show = false;
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error)
       window.notify({
-        msg: "An error occured",
+        msg: error.message,
         status: "error",
       });
     }
