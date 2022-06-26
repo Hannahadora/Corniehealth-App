@@ -524,50 +524,69 @@
                             ?.toUpperCase()}`
                         }}
                       </div>
-                      <div>
-                        <div class="text-black flex text-sm">
-                          {{ getLocationName(access?.locationId) }}
-                          <div class="text-black ml-1" v-if="access?.default">
-                            •
+                      <div class="flex flex-col">
+                        <div class="flex items-center space-x-3">
+                          <div class="flex-1">
+                            <div class="flex">
+                              <div class="flex flex-col">
+                                <div class="text-sm">
+                                  {{ getLocationName(access?.locationId) }}
+                                </div>
+                                <div
+                                  class="text-xxs float-left text-gray-400 mb-1"
+                                >
+                                  {{ getRoleName(access.roleId) }}
+                                </div>
+                              </div>
+                              <div class="flex items-start text-black text-sm">
+                                <div
+                                  class="text-black ml-1"
+                                  v-if="access?.default"
+                                >
+                                  •
+                                </div>
+                                <div class="text-blue-600 ml-1 text-xxs">
+                                  {{ access?.default ? "Default" : "" }}
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <span class="text-blue-600 ml-1 text-xs">
-                            {{ access?.default ? "Default" : "" }}</span
+                          <div class="flex-none">
+                            <div class="flex justify-center items-center">
+                              <button class="border-0 mr-3" type="button">
+                                <edit-icon
+                                  class="fill-current text-primary"
+                                  @click="
+                                    showEditAccess(
+                                      access.id,
+                                      access.roleId,
+                                      access.locationId
+                                    )
+                                  "
+                                />
+                              </button>
+                              <button
+                                class="border-0"
+                                type="button"
+                                @click="deleteItem(access.locationId, index)"
+                              >
+                                <delete-red />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <span
+                            class="text-danger text-xs font-semibold cursor-pointer"
+                            @click="
+                              $router.push(
+                                '/dashboard/provider/settings/roles-privileges'
+                              )
+                            "
+                            >View privileges</span
                           >
                         </div>
-                        <p class="text-xs text-gray-400 mb-1">
-                          {{ getRoleName(access.roleId) }}
-                        </p>
-                        <span
-                          class="text-danger text-xs font-semibold cursor-pointer"
-                          @click="
-                            $router.push(
-                              '/dashboard/provider/settings/roles-privileges'
-                            )
-                          "
-                          >View privileges</span
-                        >
                       </div>
-                    </div>
-                    <div class="flex -mt-6 justify-center items-center">
-                      <button class="border-0 mr-5" type="button">
-                        <edit-icon
-                          class="fill-current text-primary"
-                          @click="
-                            showEditAccess(
-                              access.id,
-                              access.roleId,
-                              access.locationId
-                            )
-                          "
-                        />
-                      </button>
-                      <button
-                        class="border-0"
-                        type="button"
-                        @click="deleteItem(access.locationId)"
-                      >
-                        <delete-red />
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -735,7 +754,7 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
-  <!-- <locationrole-modal
+  <location-role
     v-model="addAccessRole"
     :id="id"
     :locationId="locationId"
@@ -744,9 +763,9 @@
     :setRoles="locationRoles"
     :deletedRole="deletedRole"
     @add-access-roles="addAccessRoles"
-  /> -->
+  />
 
-  <access-role
+  <!-- <access-role
     v-model="addAccessRole"
     :deletedRole="deletedRole"
     @close-access-diag="addAccessRole = false"
@@ -757,7 +776,7 @@
     :id="id"
     :locationRoleId="locationRoleId"
     :setRoles="locationRoles"
-  />
+  /> -->
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -795,6 +814,7 @@
   import { namespace } from "vuex-class";
   import { date, string } from "yup";
   import AccessRole from "./AccessRoles.vue";
+  import locationRole from "./LocationRoles.vue";
   import SpecialityModal from "./specialModal.vue";
 
   const dropdown = namespace("dropdown");
@@ -813,6 +833,7 @@
       CornieSelect,
       AccordionComponent,
       SpecialityModal,
+      locationRole,
       InfoIcon,
       PhoneInput,
       AddIcon,
@@ -1001,7 +1022,7 @@
     generatedIdentifier = "";
     addAccessRole = false;
     accessRoles = [] as any;
-    locationRoles = [] as any;
+    locationRoles = [] as any[];
     locationId = "";
     roleId = "";
     setRoles = [] as any[];
@@ -1139,6 +1160,7 @@
       this.hoursOfOperation = practitioner.hoursOfOperation;
       this.qualificationCode = practitioner.qualificationCode || "";
       this.period = practitioner.period || {};
+      //@ts-ignore
       this.locationRoles = practitioner.locationRoles;
       this.services = practitioner.services;
       this.nationality = practitioner.nationality;
@@ -1347,7 +1369,7 @@
         window.notify({ msg: "Practitioner not updated", status: "error" });
       }
     }
-    async deleteItem(roleId: string) {
+    async deleteItem(roleId: string, itemId: number) {
       console.log(this.id, roleId, "role");
       const id = this.id;
       const confirmed = await window.confirmAction({
@@ -1356,6 +1378,11 @@
         title: "Delete location role",
       });
       if (!confirmed) return;
+      console.log("locaiton roles", this.locationRoles);
+      if (!id) {
+        this.locationRoles.splice(itemId, 1);
+        return;
+      }
       if (await this.deleteLocationrole({ id, roleId }))
         window.notify({ msg: "Location role deleted", status: "success" });
       else window.notify({ msg: "Location role not deleted", status: "error" });
