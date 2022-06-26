@@ -19,9 +19,16 @@ export async function deletePractitioner(id: string) {
   return false;
 }
 
-export async function deleteLocationrole(practitionerId: string, roleId: string){
+export async function deleteLocationrole(
+  practitionerId: string,
+  roleId: string
+) {
+  console.log("delete role", practitionerId, roleId);
   try {
-    const response = await cornieClient().delete(`/api/v1/practitioner/location-roles/${practitionerId}`,[roleId]);
+    const response = await cornieClient().delete(
+      `/api/v1/practitioner/location-roles/${practitionerId}`,
+      [roleId]
+    );
     if (response.success) return true;
   } catch (error) {
     return false;
