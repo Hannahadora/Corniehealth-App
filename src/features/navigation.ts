@@ -97,7 +97,7 @@ const links: ISidebarLink[] = [
     hasSubsection: true,
     children: [
       {
-        name: "Medication",
+        name: "Requests",
         to: "/dashboard/provider/settings/medication",
         hasSubsection: false,
       },
