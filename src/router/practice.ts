@@ -61,10 +61,10 @@ export const PracticeRoutes: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/location/addLocation.vue"),
     },
-    // {
-    //   path: "group",
-    //   name: "Group",
-    //   component: () => import("@/views/dashboard/settings/group/index.vue"),
-    // },
+    {
+      path: "group",
+      name: "Practice Group",
+      component: () => import("@/views/dashboard/settings/group/index.vue"),
+    },
   ],
 };
