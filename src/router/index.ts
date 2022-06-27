@@ -1,13 +1,14 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
-import Dashboard from "../views/dashboard/dashboard.vue";
-import { SettingsRoute } from "./settings";
-import { ClinicalsRoute } from "./clinical";
-import { UserRoute } from "./user";
-import { ExperienceRoutes } from "./experience";
-import { PracticeRoutes } from "./practice";
-import { NewSettingsRoutes } from "./newsettings";
 import Settings from "@/views/dashboard/settings/index.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import Dashboard from "../views/dashboard/dashboard.vue";
+import Home from "../views/Home.vue";
+import { BillingRoutes } from "./billing";
+import { ClinicalsRoute } from "./clinical";
+import { ExperienceRoutes } from "./experience";
+import { NewSettingsRoutes } from "./newsettings";
+import { PracticeRoutes } from "./practice";
+import { SettingsRoute } from "./settings";
+import { UserRoute } from "./user";
 
 import { InPatientRoutes } from "./in-patient";
 
@@ -52,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: to => `${to.path}/home`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
@@ -99,6 +100,7 @@ const routes: Array<RouteRecordRaw> = [
       InPatientRoutes,
       NewSettingsRoutes,
       PracticeRoutes,
+      BillingRoutes,
       {
         path: "/settings/",
         name: "Settings",

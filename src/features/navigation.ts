@@ -88,7 +88,7 @@ const links: ISidebarLink[] = [
         to: "/dashboard/provider/settings/observations",
         hasSubsection: false,
       },
-    ]
+    ],
   },
   {
     name: "Medications",
@@ -135,14 +135,41 @@ const links: ISidebarLink[] = [
         name: "Virtual Pharmacy Orders",
         to: "/dashboard/provider/settings/pharmacy-orders",
         hasSubsection: false,
-      }
-    ]
+      },
+    ],
   },
   {
     name: "Bills & Payments",
-    to: "bills",
+    to: "Billing & payments",
     icon: "debit-card-icon",
-    hasSubsection: false,
+    hasSubsection: true,
+    children: [
+      {
+        name: "Overview",
+        to: "/dashboard/billing/overview",
+        hasSubsection: false,
+      },
+      {
+        name: "All Transactions",
+        to: "/dashboard/billing/transaction",
+        hasSubsection: false,
+      },
+      {
+        name: "Account Receivables",
+        to: "/dashboard/billing/receivables",
+        hasSubsection: false,
+      },
+      {
+        name: "Collections",
+        to: "/dashboard/billing/collections",
+        hasSubsection: false,
+      },
+      {
+        name: "Unbilled Transactions",
+        to: "/dashboard/billing/unbilled",
+        hasSubsection: false,
+      },
+    ],
   },
   {
     name: "Analytics",
@@ -209,14 +236,12 @@ const links: ISidebarLink[] = [
     ],
   },
 
-
   // {
   //   name: "In-Patient",
   //   to: "in-patient",
   //   icon: "clinic-icon",
   //   hasSubsection: false,
   // },
- 
 
   // {
   //   name: "Accounting",
@@ -224,7 +249,7 @@ const links: ISidebarLink[] = [
   //   icon: "wallet-icon",
   //   hasSubsection: false,
   // },
-  
+
   // { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
   // {
   //   name: "Categories",
@@ -294,14 +319,19 @@ const soloLinks = [
     icon: "book-icon",
     hasSubsection: false,
   },
-  {
-    name: "Billing & Payments",
-    to: "bills",
-    icon: "debit-card-icon",
-    hasSubsection: false,
-  },
+  // {
+  //   name: "Billing & Payments",
+  //   to: "bills",
+  //   icon: "debit-card-icon",
+  //   hasSubsection: false,
+  // },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
-  { name: "CAtegories", to: "categories", icon: "categories-icon", hasSubsection: true },
+  {
+    name: "CAtegories",
+    to: "categories",
+    icon: "categories-icon",
+    hasSubsection: true,
+  },
 ];
 export function getPracticeNav(type: EPracticeType) {
   if (type == EPracticeType.Solo) return soloLinks;

@@ -6,14 +6,28 @@
         label="Based On"
         placeholder="Select"
         v-model="basicInfo.basedOn"
-        :items="['Care plan', 'Device request', 'Immunization recommendation', 'Medication request', 'Nutrition order', 'Service request']"
+        :items="[
+          'Care plan',
+          'Device request',
+          'Immunization recommendation',
+          'Medication request',
+          'Nutrition order',
+          'Service request',
+        ]"
       />
       <cornie-select
         class="w-full"
         label="Part of"
         placeholder="Select"
         v-model="basicInfo.partOf"
-        :items="['Medication administration', 'Medication dispense', 'Medication statement', 'Procedure', 'Immunization', 'Imaging study']"
+        :items="[
+          'Medication administration',
+          'Medication dispense',
+          'Medication statement',
+          'Procedure',
+          'Immunization',
+          'Imaging study',
+        ]"
       />
       <cornie-select
         class="w-full"
@@ -50,13 +64,21 @@
           </div>
         </template>
       </auto-complete>
-      <cornie-select
-        class="w-full"
-        label="Focus (Optional)"
-        placeholder="Select"
-        v-model="basicInfo.focus"
-        :items="['a', 'b']"
-      />
+
+      <div class="">
+        <cornie-input
+          class="w-full"
+          label="Focus (Optional)"
+          placeholder="Enter"
+          v-model="basicInfo.focus"
+        />
+        <Tooltip
+          class="text-white text-sm dropdown-menu"
+          text="What the observation is about when it is not about the subject of record
+                "
+        >
+        </Tooltip>
+      </div>
       <cornie-select
         class="w-full"
         label="Encounter"
@@ -86,6 +108,7 @@ import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { IObservationBasicInfo } from "@/types/IObservationBasicInfo";
 
+import Tooltip from "@/components/tooltip.vue";
 import { debounce } from "lodash";
 import search from "@/plugins/search";
 
@@ -100,6 +123,7 @@ import search from "@/plugins/search";
     CornieRadio,
     DateTimePicker,
     DatePicker,
+    Tooltip,
   },
 })
 export default class BasicInfo extends Vue {
@@ -111,10 +135,9 @@ export default class BasicInfo extends Vue {
   customerDetails = [];
   query = "";
 
-  
   @Watch("customers")
   queryUpdate() {
-    this.$emit('get-customers', this.customerDetails);
+    this.$emit("get-customers", this.customerDetails);
   }
 
   fetchCustomers(query: string) {
@@ -148,10 +171,9 @@ export default class BasicInfo extends Vue {
     return search.searchObjectArray(xCustomers, this.query);
   }
 
-  async created () {
-    this.$emit('get-customers', this.customerDetails)
+  async created() {
+    this.$emit("get-customers", this.customerDetails);
   }
-
 }
 </script>
 
