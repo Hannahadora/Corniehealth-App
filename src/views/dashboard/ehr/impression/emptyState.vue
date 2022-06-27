@@ -6,10 +6,10 @@
         <h3 class="text-center mt-8 text-2xl font-bold">
           No Impressions on Record
         </h3>
-        <p class="text-base text-center" style="color: #667499">
+        <!-- <p class="text-base text-center" style="color: #667499">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum
           aenean mattis mi diam eget.
-        </p>
+        </p> -->
         <span class="flex justify-center w-full mt-8">
           <button
             class="bg-danger rounded-xl text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"

@@ -115,12 +115,13 @@
                 type="number"
                 placeholder="Enter"
                 v-model="item.quantity"
+                @input="printLineTotal(item)"
               />
             </template>
             <template #lineTotal="{ item }">
               <div class="flex space-x-3">
                 <span>
-                  {{  item.unitPrice * item.quantity || 0.0 }}
+                  {{ printLineTotal(item) }}
                 </span>
               </div>
             </template>
@@ -450,20 +451,17 @@ export default class PosDialog extends Vue {
         itemName: medication.name,
         unitPrice: medication.unitPrice,
         quantity: medication.quantity,
-        // lineTotal: medication.lineTotal,
-        // lineTotal: Number(medication.unitPrice * medication.quantity),
       };
     });
     if (!this.query) return dMed;
     return search.searchObjectArray(dMed, this.query);
   }
 
-  @Watch("items", { immediate: true, deep: true })
-  getLineTotal() {
-    this.items.forEach((item: any) => {
-      item.lineTotal = item.quantity * item.unitPrice;
-    });
-  }
+printLineTotal(item: any) {
+  const lineTotal = item.quantity * item.unitPrice
+  console.log('lineTotal', lineTotal)
+  return lineTotal
+}
 
   get totalDiscount() {
     // if (this.discount) {
