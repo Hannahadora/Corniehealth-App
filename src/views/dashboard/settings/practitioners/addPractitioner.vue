@@ -261,7 +261,19 @@
                   placeholder="--Enter--"
                   :disabled="disabled"
                 />
+
+                <cornie-input
+                  class="w-full"
+                  v-model="emergency.country"
+                  label="Country"
+                  placeholder="Enter"
+                  :rules="required"
+                  :readonly="readonly"
+                  :disabled="disabled"
+                  v-if="disabled"
+                />
                 <auto-complete
+                  v-else
                   class="w-full"
                   v-model="emergency.country"
                   label="Country"
@@ -271,10 +283,21 @@
                   :items="nationState.countries"
                   :disabled="disabled"
                 />
-                <auto-complete
+                <cornie-input
                   class="w-full"
                   v-model="emergency.state"
-                  label="State or Region"
+                  label="State"
+                  placeholder="Enter"
+                  :rules="required"
+                  :readonly="readonly"
+                  :disabled="disabled"
+                  v-if="disabled"
+                />
+                <auto-complete
+                  v-else
+                  class="w-full"
+                  v-model="emergency.state"
+                  label="State"
                   :items="nationState.states"
                   placeholder="Enter"
                   :rules="required"
@@ -346,19 +369,22 @@
                   <div
                     class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1"
                   >
-                    <div class="flex space-x-2 w-full">
-                      <div>
-                        <span
-                          class="text-xs"
-                          v-for="(item, index) in specialties"
-                          :key="index"
-                        >
-                          {{ getSpecialityName(item) || item?.name }} ,
-                        </span>
+                    <div class="flex space-x-2 w-full items-center truncate">
+                      <div class="flex-1 truncate text-xs">
+                        {{specialties.map((x:any) => getSpecialityName(x) || x?.name).join(', ')}}
+                        <!-- <div class="flex">
+                          <span
+                            class="text-xs"
+                            v-for="(item, index) in specialties"
+                            :key="index"
+                          >
+                            {{ getSpecialityName(item) || item?.name }} ,
+                          </span>
+                        </div> -->
                       </div>
-                    </div>
-                    <div class="w-full flex justify-end">
-                      <add-icon @click="showSpecialModal" />
+                      <div class="flex-none justify-end">
+                        <add-icon @click="showSpecialModal" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -370,6 +396,7 @@
                   :required="true"
                   placeholder="Add Specialty"
                   :appendleft="true"
+                  :disabled="true"
                 >
                   <template v-slot:append>
                     <add-icon @click="showSpecialModal" />
@@ -507,7 +534,7 @@
                     v-for="(access, index) in locationRoles"
                     :key="index"
                   >
-                    <div class="flex">
+                    <div class="flex w-full">
                       <div
                         class="w-10 h-10 rounded-full flex justify-center items-center bg-blue-600 text-white text-lg text-center font-bold mr-2"
                       >
@@ -524,67 +551,71 @@
                             ?.toUpperCase()}`
                         }}
                       </div>
-                      <div class="flex flex-col">
-                        <div class="flex items-center space-x-3">
-                          <div class="flex-1">
-                            <div class="flex">
-                              <div class="flex flex-col">
-                                <div class="text-sm">
-                                  {{ getLocationName(access?.locationId) }}
+                      <div class="flex-1">
+                        <div class="flex flex-col">
+                          <div class="flex items-center w-full space-x-3">
+                            <div class="flex-1">
+                              <div class="flex w-full">
+                                <div class="flex flex-col">
+                                  <div class="text-sm">
+                                    {{ getLocationName(access?.locationId) }}
+                                  </div>
+                                  <div
+                                    class="text-xxs float-left text-gray-400 mb-1"
+                                  >
+                                    {{ getRoleName(access.roleId) }}
+                                  </div>
                                 </div>
                                 <div
-                                  class="text-xxs float-left text-gray-400 mb-1"
+                                  class="flex items-start text-black text-sm"
                                 >
-                                  {{ getRoleName(access.roleId) }}
-                                </div>
-                              </div>
-                              <div class="flex items-start text-black text-sm">
-                                <div
-                                  class="text-black ml-1"
-                                  v-if="access?.default"
-                                >
-                                  •
-                                </div>
-                                <div class="text-blue-600 ml-1 text-xxs">
-                                  {{ access?.default ? "Default" : "" }}
+                                  <div
+                                    class="text-black ml-1"
+                                    v-if="access?.default"
+                                  >
+                                    •
+                                  </div>
+                                  <div class="text-blue-600 ml-1 text-xxs">
+                                    {{ access?.default ? "Default" : "" }}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div class="flex-none">
-                            <div class="flex justify-center items-center">
-                              <button class="border-0 mr-3" type="button">
-                                <edit-icon
-                                  class="fill-current text-primary"
-                                  @click="
-                                    showEditAccess(
-                                      access.id,
-                                      access.roleId,
-                                      access.locationId
-                                    )
-                                  "
-                                />
-                              </button>
-                              <button
-                                class="border-0"
-                                type="button"
-                                @click="deleteItem(access.locationId, index)"
-                              >
-                                <delete-red />
-                              </button>
+                            <div class="flex-none">
+                              <div class="flex justify-center items-center">
+                                <button class="border-0 mr-3" type="button">
+                                  <edit-icon
+                                    class="fill-current text-primary"
+                                    @click="
+                                      showEditAccess(
+                                        access.id,
+                                        access.roleId,
+                                        access.locationId
+                                      )
+                                    "
+                                  />
+                                </button>
+                                <button
+                                  class="border-0"
+                                  type="button"
+                                  @click="deleteItem(access.locationId, index)"
+                                >
+                                  <delete-red />
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div>
-                          <span
-                            class="text-danger text-xs font-semibold cursor-pointer"
-                            @click="
-                              $router.push(
-                                '/dashboard/provider/settings/roles-privileges'
-                              )
-                            "
-                            >View privileges</span
-                          >
+                          <div>
+                            <span
+                              class="text-danger text-xs font-semibold cursor-pointer"
+                              @click="
+                                $router.push(
+                                  '/dashboard/provider/settings/roles-privileges'
+                                )
+                              "
+                              >View privileges</span
+                            >
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -642,13 +673,26 @@
                   :key="index"
                   :class="index !== educations.length - 1 ? 'border-r-2' : ''"
                 >
-                  <p class="text-black font-semibold">
-                    {{ item.issuer }}
-                  </p>
-                  <div class="text-gray-600 text-sm flex items-center">
-                    <div>{{ item.qualification }}</div>
-                    <div class="font-bold text-xs leading-none mx-1">•</div>
-                    <div>{{ item.graduationYear }}</div>
+                  <div class="flex w-full items-center">
+                    <div class="flex-1">
+                      <p class="text-black font-semibold">
+                        {{ item.issuer }}
+                      </p>
+                      <div class="text-gray-600 text-sm flex items-center">
+                        <div>{{ item.qualification }}</div>
+                        <div class="font-bold text-xs leading-none mx-1">•</div>
+                        <div>{{ item.graduationYear }}</div>
+                      </div>
+                    </div>
+                    <div class="flex-none">
+                      <button
+                        class="border-0"
+                        type="button"
+                        @click="removeEducation(index)"
+                      >
+                        <delete-red />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -703,20 +747,33 @@
                   :key="index"
                   :class="index !== licenses.length - 1 ? 'border-r-2' : ''"
                 >
-                  <p class="text-black font-semibold">
-                    {{ item.issuer
-                    }}<span class="text-gray-400 font-light text-sm"
-                      >({{ item.licenseNumber }})</span
-                    >
-                  </p>
-                  <div class="text-gray-600 text-sm flex items-center">
-                    <div>
-                      {{
-                        new Date(item.period.start)
-                          .toLocaleDateString()
-                          .toString()
-                          .split("/")[2]
-                      }}
+                  <div class="flex w-full">
+                    <div class="flex-1">
+                      <p class="text-black font-semibold">
+                        {{ item.issuer
+                        }}<span class="text-gray-400 font-light text-sm"
+                          >({{ item.licenseNumber }})</span
+                        >
+                      </p>
+                      <div class="text-gray-600 text-sm flex items-center">
+                        <div>
+                          {{
+                            new Date(item.period.start)
+                              .toLocaleDateString()
+                              .toString()
+                              .split("/")[2]
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-none">
+                      <button
+                        class="border-0"
+                        type="button"
+                        @click="removeLicense(index)"
+                      >
+                        <delete-red />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -922,10 +979,12 @@
         ...this.educations,
       ];
 
-      this.qualificationIssuer =
-        this.qualificationCode =
-        this.graduationYear =
-          "";
+      this.qualificationIssuer = this.qualificationCode = "";
+      // this.graduationYear =
+      //   "";
+    }
+    removeEducation(i: number) {
+      this.educations.splice(i, 1);
     }
 
     addLicense() {
@@ -942,6 +1001,10 @@
       ];
 
       this.licenseIssuer = this.licenseNumber = "";
+    }
+
+    removeLicense(i: number) {
+      this.licenses.splice(i, 1);
     }
 
     dobValidator = date().max(
@@ -977,8 +1040,8 @@
     accessRole = "";
     singleLocation = "";
     nationality = "Nigeria";
-    country = "Nigeria";
-    state = "Abia";
+    country = "";
+    state = "";
     postCode = "";
     city = "";
     specialty = "";
@@ -1084,6 +1147,14 @@
         this.emergency.aptNumber = this.aptNumber;
       } else {
         this.emergency.address = "";
+        this.emergency.phone = "";
+        this.emergency.email = "";
+        this.emergency.country = "";
+        this.emergency.state = "";
+        this.emergency.city = "";
+        this.emergency.postCode = "";
+        this.emergency.aptNumber = "";
+        this.disabled = false;
       }
     }
 
@@ -1200,7 +1271,7 @@
         type: this.type,
         address: this.address,
         dateOfBirth: this.serializeDate(this.dateOfBirth),
-        image: this.img.url,
+        image: this.img.url ? this.img.url : undefined,
         jobDesignation: this.jobDesignation,
         department: this.department,
         accessRole: this.accessRole,
@@ -1210,7 +1281,8 @@
         communicationLanguage: this.communicationLanguage,
         qualificationCode: this.qualificationCode,
         availabilityExceptions: this.availabilityExceptions,
-        consultationChannel: this.consultationChannel,
+        // consultationChannel: this.consultationChannel,
+        visitType: this.consultationChannel,
         organizationId: this.organizationId,
         hoursOfOperation: this.hoursOfOperation,
         period: this.period,
