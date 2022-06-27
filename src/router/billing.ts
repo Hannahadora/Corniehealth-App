@@ -116,7 +116,7 @@ export const BillingRoutes: RouteRecordRaw = {
     {
       path: "calendar/:practitionerId?",
       props: (route) => ({ practitionerId: route.query.practitioner }),
-      name: "Calendar",
+      name: "Billing Calendar",
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },
