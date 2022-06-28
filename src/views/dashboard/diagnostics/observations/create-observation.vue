@@ -25,7 +25,7 @@
             title="Basic Info"
             :opened="false"
           >
-            <basic-info :basicInfo="basicInfo" @get-customers="setCustomers" />
+            <basic-info :basicInfo="basicInfo" @get-customers="setCustomers" @openReferenceModal="openReferenceModal" />
           </accordion-component>
 
           <accordion-component
@@ -234,31 +234,51 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
-                class="w-full"
-                label="Has Member"
-                placeholder="Select"
-                v-model="member.hasMemer"
-                :items="[
-                  'Observation',
-                  'QuestionnaireResponse',
-                  'MolecularSequence',
-                ]"
-              />
-              <cornie-select
-                class="w-full"
-                label="Derived From"
-                placeholder="Select"
-                v-model="member.derivedFrom"
-                :items="[
+              <div
+                class="w-full cursor-pointer"
+                @click="
+                  openReferenceModal([
+                    'Observation',
+                    'QuestionnaireResponse',
+                    'MolecularSequence',
+                  ])
+                "
+              >
+                <cornie-input
+                  v-bind="$attrs"
+                  label="Has Member"
+                  placeholder="Select"
+                  v-model="member.hasMemer"
+                >
+                  <template #append-inner>
+                    <plus-icon class="fill-current text-danger" />
+                  </template>
+                </cornie-input>
+              </div>
+              <div
+                class="w-full cursor-pointer"
+                @click="
+                  openReferenceModal([
                   'DocumentReference',
                   'ImagingStudy',
                   'Media',
                   'QuestionnaireResponse',
                   'Observation',
                   'MolecularSequence',
-                ]"
-              />
+                  ])
+                "
+              >
+                <cornie-input
+                  v-bind="$attrs"
+                  label="Derived From"
+                  placeholder="Select"
+                  v-model="member.derivedFrom"
+                >
+                  <template #append-inner>
+                    <plus-icon class="fill-current text-danger" />
+                  </template>
+                </cornie-input>
+              </div>
             </div>
           </accordion-component>
           <accordion-component
@@ -352,6 +372,11 @@
       </div>
     </cornie-card>
   </cornie-dialog>
+
+  <reference-modal
+    v-model="showReferenceModal"
+    :referenceOptions="referenceOptions"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -375,6 +400,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import { IObservation } from "@/types/IObservation";
 import { IPatient } from "@/types/IPatient";
 import PractitionerSelect from "./components/practitioner-select.vue";
+import ReferenceModal from "./components/reference-modal.vue";
 
 import FhirInput from "@/components/fhir-input.vue";
 import DateTimePicker from "@/components/date-time-picker.vue";
@@ -413,6 +439,7 @@ const patients = namespace("patients");
     BasicInfo,
     FhirInput,
     PractitionerSelect,
+    ReferenceModal,
   },
 })
 export default class ObservationDialog extends Vue {
@@ -439,6 +466,8 @@ export default class ObservationDialog extends Vue {
   activeTab = "Full Payment";
   opened = true;
   effectiveType = "date-time";
+  showReferenceModal = false;
+  referenceOptions = <any>[];
 
   statusHistory = [
     {
@@ -528,6 +557,11 @@ export default class ObservationDialog extends Vue {
 
   setValue(data: any) {
     this.value = data;
+  }
+
+  openReferenceModal(options: any) {
+    this.showReferenceModal = true;
+    this.referenceOptions = options;
   }
 
   async setObservation() {
