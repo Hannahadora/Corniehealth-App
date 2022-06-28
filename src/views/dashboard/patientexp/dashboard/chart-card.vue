@@ -4,28 +4,21 @@
     :style="{ height }"
   >
     <div class="w-full p-2">
-      <span
-        class="flex w-full justify-between mb-2 text-primary py-2"
-      >
+      <span class="flex w-full justify-between mb-2 text-primary py-2">
         <span class="font-bold text-2xl">{{ title }}</span>
         <div class="flex items-center">
-          <span class="mx-2 text-sm font-semibold cursor-pointer" style="color: #FE4D3C;">{{ action }}</span>
-          <!-- <span class="mx-2">{{ order }}</span> -->
-          <!-- <chevron-down-icon
-            @click="filter = !filter"
-            class="stroke-current cursor-pointer text-danger"
-          />
-          <drop-down v-model="filter">
-            <div class="text-base font-semibold grid grid-cols-1 gap-2">
-              <span class="cursor-pointer" @click="order = 'Today'">Today</span>
-              <span class="cursor-pointer" @click="order = 'WTD'">WTD</span>
-              <span class="cursor-pointer" @click="order = 'MTD'">MTD</span>
-              <span class="cursor-pointer" @click="order = 'YTD'">YTD</span>
-            </div>
-          </drop-down> -->
+          <span
+            class="mx-2 text-sm font-semibold cursor-pointer"
+            style="color: #fe4d3c"
+            @click="$emit('more')"
+          >
+            {{ action }}
+          </span>
         </div>
       </span>
-      <span class="text-sm font-bold" style="color: #667499;">{{ subtitle }}</span>
+      <span class="text-sm font-bold" style="color: #667499">{{
+        subtitle
+      }}</span>
       <slot />
     </div>
   </div>
@@ -42,6 +35,7 @@ import { Prop } from "vue-property-decorator";
     ChevronDownIcon,
     DropDown,
   },
+  emits: ["more"],
 })
 export default class ChartCard extends Vue {
   filter = false;
