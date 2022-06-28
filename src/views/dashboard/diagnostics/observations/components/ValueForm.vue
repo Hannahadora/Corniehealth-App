@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="mt-6" for="valueType">Value</label>
+    <label class="mt-6 font-bold" for="valueType">Value</label>
     <br />
     <div class="flex flex-wrap space-x-8 space-y-4 mt-4">
       <cornie-radio

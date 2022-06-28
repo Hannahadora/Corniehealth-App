@@ -104,12 +104,12 @@
                 v-model:date="issueInfo.dateTime"
                 v-model:time="issueInfo.time"
               />
-              <cornie-select
+              <practitioner-select
+                :rules="required"
                 class="w-full"
                 label="Performer"
                 placeholder="Select"
                 v-model="issueInfo.performer"
-                :items="['a', 'b']"
               />
             </div>
           </accordion-component>
@@ -130,19 +130,19 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
+              <fhir-input
+                reference="http://terminology.hl7.org/CodeSystem/data-absent-reason"
                 class="w-full"
                 label="Date Absent Reason"
                 placeholder="Select"
                 v-model="reasonInfo.dateAbsentReason"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/observation-interpretation"
                 class="w-full"
                 label="Interpretion"
                 placeholder="Interpretion"
                 v-model="reasonInfo.interpretation"
-                :items="['a', 'b']"
               />
 
               <cornie-input
@@ -150,26 +150,25 @@
                 label="Note"
                 placeholder="Note"
                 v-model="reasonInfo.note"
-                :rules="required"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/body-site"
                 class="w-full"
                 label="Body Site"
                 placeholder="Select"
                 v-model="reasonInfo.bodysite"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/-observation-methods"
                 class="w-full"
-                label="Method"
-                placeholder="Method"
-                v-model="reasonInfo.method"
-                :items="['a', 'b']"
+                label="Body Site"
+                placeholder="Select"
+                v-model="reasonInfo.bodysite"
               />
-              <cornie-select
+              <cornie-input
                 class="w-full"
                 label="Specimen"
-                placeholder="Select"
+                placeholder="Autoloaded"
                 v-model="reasonInfo.specimen"
               />
               <cornie-select
@@ -200,19 +199,19 @@
                 placeholder="High"
                 v-model="referenceRange.high"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/observation-methods"
                 class="w-full"
                 label="Type"
                 placeholder="Select"
                 v-model="referenceRange.type"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/referencerange-appliesto"
                 class="w-full"
                 label="Applies To"
                 placeholder="Select"
                 v-model="referenceRange.appliesTo"
-                :items="['a', 'b']"
               />
               <cornie-input
                 class="w-full"
@@ -240,14 +239,25 @@
                 label="Has Member"
                 placeholder="Select"
                 v-model="member.hasMemer"
-                :items="['Observation', 'QuestionnaireResponse', 'MolecularSequence']"
+                :items="[
+                  'Observation',
+                  'QuestionnaireResponse',
+                  'MolecularSequence',
+                ]"
               />
               <cornie-select
                 class="w-full"
                 label="Derived From"
                 placeholder="Select"
                 v-model="member.derivedFrom"
-                :items="['DocumentReference', 'ImagingStudy', 'Media', 'QuestionnaireResponse', 'Observation', 'MolecularSequence']"
+                :items="[
+                  'DocumentReference',
+                  'ImagingStudy',
+                  'Media',
+                  'QuestionnaireResponse',
+                  'Observation',
+                  'MolecularSequence',
+                ]"
               />
             </div>
           </accordion-component>
@@ -257,12 +267,12 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/observation-codes"
                 class="w-full"
                 label="Code"
                 placeholder="Select"
                 v-model="component.code"
-                :items="['Observation', 'QuestionnaireResponse', 'MolecularSequence']"
               />
             </div>
           </accordion-component>
@@ -283,19 +293,19 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-select
+              <fhir-input
+                reference="http://terminology.hl7.org/CodeSystem/data-absent-reason"
                 class="w-full"
                 label="Date Absent Reason"
                 placeholder="Select"
                 v-model="reasonInfo.dateAbsentReason"
-                :items="['a', 'b']"
               />
-              <cornie-select
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/observation-interpretation"
                 class="w-full"
                 label="Interpretion"
                 placeholder="Interpretion"
                 v-model="reasonInfo.interpretation"
-                :items="['a', 'b']"
               />
               <cornie-input
                 class="w-full"
@@ -317,7 +327,10 @@
       </cornie-card-text>
 
       <div class="flex items-center justify-between mt-24">
-        <div class="text-red-500 py-1 px-2 text-sm cursor-pointer" @click="show = false">
+        <div
+          class="text-red-500 py-1 px-2 text-sm cursor-pointer"
+          @click="show = false"
+        >
           Cancel
         </div>
         <div class="flex items-center mb-6">
@@ -361,7 +374,9 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import { IObservation } from "@/types/IObservation";
 import { IPatient } from "@/types/IPatient";
+import PractitionerSelect from "./components/practitioner-select.vue";
 
+import FhirInput from "@/components/fhir-input.vue";
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -396,6 +411,8 @@ const patients = namespace("patients");
     DatePicker,
     ValueForm,
     BasicInfo,
+    FhirInput,
+    PractitionerSelect,
   },
 })
 export default class ObservationDialog extends Vue {
