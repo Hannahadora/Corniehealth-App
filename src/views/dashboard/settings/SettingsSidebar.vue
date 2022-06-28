@@ -1,5 +1,9 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-full animated fadeIn z-50">
+  <cornie-dialog
+    v-model="show"
+    right
+    class="w-4/12 h-full animated fadeIn z-50"
+  >
     <cornie-card height="100%" class="flex flex-col animated fadeInUp">
       <cornie-card-title class="w-full p-3">
         <cornie-icon-btn @click="show = false">
@@ -15,20 +19,44 @@
         <div class="flex flex-col h-full w-full overflow-auto max-h-full">
           <div class="mt-3" v-for="(setting, key, i) in settings" :key="i">
             <span>
-              <div class="w-full justify-between flex xl:pr-4 md:pr-2 items-center">
-                <h2 @click="open = open == i ? -1 : i" class="font-bold cursor-pointer capitalize mb-3 text-sm">
+              <div
+                class="w-full justify-between flex xl:pr-4 md:pr-2 items-center"
+              >
+                <h2
+                  @click="open = open == i ? -1 : i"
+                  class="font-bold cursor-pointer capitalize mb-3 text-sm"
+                >
                   {{ key }}
                 </h2>
 
-                <chevron-down-icon v-if="open == i" @click="open = -1" class="cursor-pointer" />
-                <chevron-right-icon @click="open = i" v-else class="cursor-pointer" />
+                <chevron-down-icon
+                  v-if="open == i"
+                  @click="open = -1"
+                  class="cursor-pointer"
+                />
+                <chevron-right-icon
+                  @click="open = i"
+                  v-else
+                  class="cursor-pointer"
+                />
               </div>
-              <div class="flex flex-col mt-1 text-black font-light text-xs" :class="{ hidden: open != i }">
-                <s-bar-link :name="item.name" :to="mapUrl(item.to)" v-for="(item, index) in setting" :key="index"
-                  @click="clicked">
+              <div
+                class="flex flex-col mt-1 text-black font-light text-xs"
+                :class="{ hidden: open != i }"
+              >
+                <s-bar-link
+                  :name="item.name"
+                  :to="mapUrl(item.to)"
+                  v-for="(item, index) in setting"
+                  :key="index"
+                  @click="clicked"
+                >
                   <template v-slot="{ active }">
                     <keep-alive>
-                      <component :is="item.icon" :class="{ fill: active }"></component>
+                      <component
+                        :is="item.icon"
+                        :class="{ fill: active }"
+                      ></component>
                     </keep-alive>
                   </template>
                 </s-bar-link>
@@ -129,14 +157,14 @@ export default class Settings extends Vue {
       { name: "Specialties", to: "specialties", icon: "special-icon" },
       { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
-        name: "Location",
-        to: "location",
-        icon: "location-icon",
-      },
-      {
         name: "Organization Hierarchy",
         to: "org-hierarchy",
         icon: "hierarchy-icon",
+      },
+      {
+        name: "Locations",
+        to: "locations",
+        icon: "location-icon",
       },
     ];
   }
@@ -254,5 +282,4 @@ export default class Settings extends Vue {
   }
 }
 </script>
-<style scoped>
-</style>
+<style scoped></style>

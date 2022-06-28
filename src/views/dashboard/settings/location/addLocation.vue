@@ -44,6 +44,15 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="careOptions"
+                    label="Visit Type"
+                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
+                    placeholder="--Select--"
+                    class="w-full"
+                  />
                   <cornie-input
                     :rules="required"
                     required
@@ -56,6 +65,15 @@
                     v-model="alias"
                     label="Alias"
                     placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="openTo"
+                    :items="['Out-patient', 'In-patient', 'All']"
+                    label="Open to"
+                    placeholder="--Select--"
                     class="w-full"
                   />
                   <fhir-input
@@ -199,23 +217,6 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
-                  <cornie-input
-                    :rules="required"
-                    required
-                    v-model="openTo"
-                    label="Open To"
-                    placeholder="--Enter--"
-                    class="w-full"
-                  />
-                  <cornie-select
-                    :rules="required"
-                    required
-                    v-model="careOptions"
-                    label="Care Channel"
-                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
                 </div>
               </div>
             </template>
@@ -245,25 +246,24 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import AutoComplete from "@/components/autocomplete.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string } from "yup";
-import { Prop, Watch } from "vue-property-decorator";
-import { getCoordinates } from "@/plugins/utils";
-import { getCountries, getStates } from "@/plugins/nation-states";
-import AutoComplete from "@/components/autocomplete.vue";
+import FhirInput from "@/components/fhir-input.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import InfoIcon from "@/components/icons/info.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import PhoneInput from "@/components/phone-input.vue";
 import Textarea from "@/components/textarea.vue";
-import FhirInput from "@/components/fhir-input.vue";
-import IPhone from "@/types/IPhone";
 import { IndexableObject } from "@/lib/http";
+import { cornieClient } from "@/plugins/http";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import IPhone from "@/types/IPhone";
+import { Options, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { string } from "yup";
 
 const countries = getCountries();
 
@@ -434,7 +434,7 @@ export default class AddLocation extends Vue {
       );
       if (response.success) {
         window.notify({ msg: "Location Created", status: "success" });
-        this.$router.push("/dashboard/provider/settings/location");
+        this.$router.push("/dashboard/provider/practice/locations");
       }
     } catch (error) {
       window.notify({ msg: "Location not Created", status: "error" });
@@ -447,7 +447,7 @@ export default class AddLocation extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       window.notify({ msg: "Location Updated", status: "success" });
-      this.$router.push("/dashboard/provider/settings/location");
+      this.$router.push("/dashboard/provider/practice/locations");
     } catch (error) {
       window.notify({ msg: "Location not Updated", status: "error" });
     }

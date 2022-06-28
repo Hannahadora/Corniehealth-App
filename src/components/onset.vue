@@ -7,9 +7,9 @@
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
     <div class="grid grid-cols-4 gap-4 mt-4 w-1/2">
-      <cornie-radio :name="name" v-model="type" value="age" label="Age" />
-       <cornie-radio :name="name" v-model="type" label="Range" value="range" />
-      <cornie-radio :name="name" v-model="type" value="string" label="Year" />
+      <cornie-radio :name="name" v-model="type" value="age" label="Age"  @click="setType(type)"/>
+       <cornie-radio :name="name" v-model="type" label="Range" value="range" @click="setType(type)"/>
+      <cornie-radio :name="name" v-model="type" value="string" label="Year" @click="setType(type)"/>
     </div>
      <div class="grid grid-cols-2 gap-4 mt-4" v-if="type == 'age'">
        <div class="w-full -mt-1">
@@ -146,23 +146,21 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: timeable })
   timeable!: ITimeable;
 
-  type: "age" | "period" | "date-time" | "range" | "string" = "age";
+  type = "age";
 
-  setType() {
-    const timeable = this.timeable;
-    if (timeable.date || timeable.time) this.type = "date-time";
-    else if (timeable.startDate || timeable.endDate) this.type = "period";
-    else this.type = "age";
+setType(type:string) {
+   if(type) return this.timeable = {};
+
   }
 
-  mounted() {
-    this.setType();
-  }
+  // mounted() {
+  //   this.setType();
+  // }
 
-  @Watch("timeable", { deep: true })
-  timeChanged() {
-    this.setType();
-  }
+  // @Watch("timeable", { deep: true })
+  // timeChanged() {
+  //   this.setType();
+  // }
 
   created() {
     if (!this.timeable) this.timeable = timeable as any;

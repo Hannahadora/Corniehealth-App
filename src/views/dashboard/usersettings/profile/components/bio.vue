@@ -12,7 +12,8 @@
         placeholder="Write a brief experience summary."
         :rows="5"
         class="w-full"
-      ></text-area>
+      >
+      </text-area>
 
       <span class="flex justify-end mt-2 w-full">
         <cornie-btn
@@ -35,6 +36,7 @@ import TextArea from "@/components/textarea.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
+import { ErrorResponse } from "@/lib/http";
 
 @Options({
   name: "BioProfile",
@@ -57,14 +59,17 @@ export default class Bio extends Vue {
 
   async fetchBio() {
     try {
-      let bio = cornieClient().get("/api/v1/user/practitioner/bio");
-      const response = await Promise.all([bio]);
-      this.setBio(response[0].data.text);
+      let bio = await cornieClient().get("/api/v1/user/practitioner/bio");
+      this.setBio(bio.data.text);
     } catch (err) {
-      window.notify({
-        msg: "An error occured while fetching your bio.",
-        status: "error",
-      });
+      if (!(err instanceof ErrorResponse))
+        return window.notify({
+          msg: "An error occured while fetching your bio.",
+          status: "error",
+        });
+      const response = err.response;
+      if (response.status == 403) return;
+      window.notify({ msg: response.message, status: "error" });
     }
   }
 

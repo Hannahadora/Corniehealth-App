@@ -34,7 +34,7 @@ export default interface IRequest {
   medications: Medications[];
   status: string;
   reasonCode: null;
-  reasonReference: null;
+  reasonReference: string;
   note: null;
   allergies?: string[] ;
   conditions: string[];

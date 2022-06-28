@@ -892,7 +892,7 @@ export default class Impression extends Vue {
     }
     this.fetchRoles();
     this.fetchPractitioners();
-    if (this.activePatientId) await this.fetchAllergy();
+    if (this.activePatientId) this.fetchAllergy();
     this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();

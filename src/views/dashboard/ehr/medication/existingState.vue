@@ -8,10 +8,10 @@
           </button>
     </span>
       <div class="flex justify-center space-x-6 w-full -mb-10">
-        <span class="flex space-x-4">
+        <span class="flex space-x-4 text-sm ml-20">
           <medication-drug class="mr-2"/> Substitution Permitted
         </span>
-        <span class="flex space-x-4">
+        <span class="flex space-x-4 text-sm">
           <refill-drug class="mr-2"/> Refilled Required
         </span>
       </div>
@@ -29,14 +29,14 @@
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
+          <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medId)">
               <refill-icon />
               <span class="ml-3 text-xs">Refill Request</span>
           </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
           <cancel-icon class="text-danger fill-current"/>
           <span class="ml-3 text-xs">Cancel</span>
-        </div>
+        </div> -->
       </template>
       <template #prescription="{ item }">
           <p>{{ item.identifier }}</p>
@@ -417,7 +417,7 @@ export default class RequestExistingState extends Vue {
     },
     {
       title: "quantity",
-      key: "quantity",
+      key: "newquantity",
       show: true,
       noOrder: true
     },
@@ -506,7 +506,7 @@ export default class RequestExistingState extends Vue {
   medicationRequest( request: any){
     const { medications, ...rest} = request;
     return medications.map((medication:any) => {
-      return {...medication, ...rest, medicationId: medication.id, requestId: request.id, createdAt: new Date(request.createdAt).toLocaleDateString()}
+      return {...medication, ...rest, medicationId: medication.id, requestId: request.id, createdAt: new Date(request.createdAt).toLocaleDateString(), newquantity: (medication.dosageInstruction.split(":").map(Number).reduce ((a:any,b:any) => a+b, 0)) * (medication.durationInDays)}
     } )
   }
   getPatientName(id: string) {
@@ -643,8 +643,8 @@ export default class RequestExistingState extends Vue {
     return this.$route.params.id as string;
   }
   async created() {
+    await this.fetchrequestsById(this.onepatientId);
      await this.createMapper();
-      await this.fetchrequestsById(this.onepatientId);
   }
 }
 </script>

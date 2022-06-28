@@ -2,6 +2,7 @@
   <div>
     <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
+      <span class="text-danger ml-1" v-if="required"> * </span>
     </label>
     <field
       :name="inputName"
@@ -30,7 +31,7 @@
           style="width: 50%"
           class="appearance-none border border-gray-300 bgcolor px-3 py-2 rounded placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           disabled
-          placeholder="corniehealth.com/booking/gp-consultation"
+          placeholder="corniehealth.com"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -94,6 +95,9 @@ export default class DomainInput extends Vue {
 
   @Prop({ type: Object })
   rules!: any;
+
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
 
   get customRule() {
     const domainRule = string()

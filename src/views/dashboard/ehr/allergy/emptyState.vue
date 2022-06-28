@@ -5,9 +5,9 @@
       <h2 class="text-center text-lg  mt-5 font-bold">
         Patient currently have no allergies
       </h2>
-      <p>
+      <!-- <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum aenean mattis mi diam eget.
-      </p>
+      </p> -->
       <span class="flex justify-center w-full">
         <button
           class="bg-danger rounded-lg text-white mt-5 py-2 px-8 font-semibold focus:outline-none hover:opacity-90"
@@ -17,7 +17,7 @@
         </button>
       </span>
     </div>
-    <allergy-modal v-model="showAllergyModal" />
+    <allergy-modal v-model="showAllergyModal" @allergy-added="allergyAdded"/>
   </div>
 </template>
 <script lang="ts">
@@ -27,6 +27,9 @@ import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
 import AllergyModal from "./allergyModal.vue";
+import { namespace } from "vuex-class";
+
+const allergy = namespace("allergy");
 @Options({
   components: {
     ChevronDownIcon,
@@ -40,6 +43,16 @@ export default class AllergysEmptyState extends Vue {
   showAllergyModal = false;
   async showAllergy() {
     this.showAllergyModal = true;
+  }
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
+   get patientId() {
+    return this.$route.params.id as string;
+  }
+  
+  async allergyAdded() {
+    await this.fetchAllergys(this.patientId);
   }
 }
 </script>

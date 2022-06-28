@@ -5,7 +5,7 @@
         <span
           class="pr-2 flex items-center cursor, Templates-pointer border-r-2"
         >
-          <cornie-icon-btn @click="show = false">
+          <cornie-icon-btn @click="closeModal">
             <arrow-left-icon />
           </cornie-icon-btn>
         </span>
@@ -15,7 +15,7 @@
           </h2>
           <cancel-icon
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="closeModal"
           />
         </div>
       </cornie-card-title>
@@ -103,8 +103,12 @@
                       </span>
                     </template> -->
                   </cornie-input>
-                  <div >
-                    <date-time-picker :label="'Last Occurence'" v-model:date="setOccurence" v-model:time="setOccurencetime"/>
+                  <div>
+                    <date-time-picker
+                      :label="'Last Occurence'"
+                      v-model:date="setOccurence"
+                      v-model:time="setOccurencetime"
+                    />
                   </div>
                   <cornie-input
                     label="Note"
@@ -144,7 +148,7 @@
                   >
                   </cornie-input>
                   <div class="-mt-5">
-                    <date-picker :label="'Onset'" v-model="reaction.onset"/>
+                    <date-picker :label="'Onset'" v-model="reaction.onset" />
                   </div>
                   <cornie-select
                     class="w-full"
@@ -165,7 +169,7 @@
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
-                     v-model="reaction.note"
+                    v-model="reaction.note"
                   >
                   </cornie-input>
                 </div>
@@ -178,7 +182,7 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
-            @click="show = false"
+            @click="closeModal"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
@@ -340,11 +344,11 @@ export default class AlergyModal extends Vue {
   reaction = {
     substance: "",
     manifestation: "",
-    description: "",
+    description: "" as any,
     onset: "",
     severity: "",
     exposureRoute: "",
-    note: "",
+    note: "" as any,
   };
   recorderId = "";
   asserterId = "";
@@ -361,9 +365,9 @@ export default class AlergyModal extends Vue {
 
   async setAllergy() {
     const allergy = await this.getAllergyById(this.id);
-    if (!allergy) return;
-    this.clinicalStatus = allergy.clinicalStatus;
-    this.verificationStatus = allergy.verificationStatus;
+    if (!allergy) this.reset();
+    this.clinicalStatus = allergy?.clinicalStatus;
+    this.verificationStatus = allergy?.verificationStatus;
     this.type = allergy.type;
     this.category = allergy.category;
     this.criticality = allergy.criticality;
@@ -371,10 +375,24 @@ export default class AlergyModal extends Vue {
     //this.onset = allergy.onSet;
     this.occurences = allergy.occurences;
      this.note = allergy.note;
-    this.reaction = allergy.reaction;
+    this.reaction = allergy?.reaction;
     this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy.asserterId;
     this.recorderId = allergy.recorderId;
+    this.setOccurence = this?.occur?.time
+    this.setOccurencetime = this.separateTime(this?.occur?.time);
+  }
+
+  getDate(allergy:any){
+      return allergy.map((c:any) => c.time.join(''));
+  }
+  separateTime(date:string){
+    const [newtime, ..._]  = new Date(date).toTimeString().split(" ")
+    return date ? newtime :''
+  }
+
+   get occur(){
+    return this.occurences[this.occurences.length - 1]
   }
 
   get patientId() {
@@ -383,7 +401,7 @@ export default class AlergyModal extends Vue {
 
   get onset() {
     return {
-      onsetRange: !Object.values({
+      range: !Object.values({
         unit: this.onsetmesurable.unit,
         min: this.onsetmesurable.min,
         max: this.onsetmesurable.max,
@@ -394,7 +412,7 @@ export default class AlergyModal extends Vue {
             max: this.onsetmesurable.max,
           }
         : null,
-      onsetAge: !Object.values({
+      age: !Object.values({
         unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
       }).every((o) => o === null)
@@ -403,8 +421,8 @@ export default class AlergyModal extends Vue {
             value: this.onsetmesurable.ageValue,
           }
         : null,
-      onsetString: this.onsetmesurable.string || null,
-      onsetPeriod: !Object.values({
+      string: this.onsetmesurable.string || null,
+      period: !Object.values({
         start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
         startTime: this.onsetmesurable.startTime,
@@ -417,7 +435,7 @@ export default class AlergyModal extends Vue {
             endTime: this.onsetmesurable.endTime,
           }
         : null,
-      onsetDateTime: this.safeBuildDateTime(
+      dateTime: this.safeBuildDateTime(
         this.onsetmesurable.date as any,
         this.onsetmesurable.time as any
       ),
@@ -444,7 +462,6 @@ export default class AlergyModal extends Vue {
   }
 
    setOccurenceTIme(date:string, time:string){
-     console.log('Hello')
         this.occurences.push({time: this.safeBuildDateTime(date, time)})
   }
     get recorder(){
@@ -452,7 +469,21 @@ export default class AlergyModal extends Vue {
     this.recorderId = this.authPractitioner.id;
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
   }
+    newoccurpp = this.occurences.filter((c:any) => c.time !== undefined)
 
+  reset(){
+     this.clinicalStatus = '',
+       this.verificationStatus = '',
+    this.type = '',
+      this.category = '',
+this.criticality = '',
+this.code = '',
+      this.newoccurpp = [],
+      this.recordDate = '',
+      this.note = '',
+       this.authPractitioner.id = '',
+      this.recorderId = ''
+  }
 
   get payload() {
     const newoccur = this.occurences.filter((c:any) => c.time !== undefined)
@@ -464,17 +495,19 @@ export default class AlergyModal extends Vue {
       category: this.category,
       criticality: this.criticality,
       code: this.code,
-      onSet: this.onset,
+      onset: this.onset,
       reaction: this.reaction,
       occurences: newoccur,
       recordDate: this.recordDate,
-      note: this.note,
+      note: this.note || undefined,
       asserterId: this.authPractitioner.id,
       recorderId: this.recorderId,
 
     };
   }
-
+  closeModal(){
+    this.show = false;
+  }
   async submit() {
     this.loading = true;
     if (this.id) await this.updateAllergy();
@@ -488,6 +521,8 @@ export default class AlergyModal extends Vue {
     if (!valid) return;
 
     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
+    this.payload.reaction.description = this.reaction.description || undefined;
+     this.payload.reaction.note = this.reaction.note || undefined;
 
     try {
       const response = await cornieClient().post(
@@ -497,9 +532,10 @@ export default class AlergyModal extends Vue {
       if (response.success) {
         window.notify({ msg: "Allergy Saved", status: "success" });
         this.done();
+        this.reset();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Saved", status: "error" });
     }
   }
   async updateAllergy() {
@@ -521,17 +557,18 @@ export default class AlergyModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Allergy Not Updated", status: "error" });
     }
   }
- 
+
   done() {
     this.$emit("allergy-added");
     this.show = false;
   }
 
   async created() {
-   
+    this.setAllergy()
+
   }
 }
 </script>

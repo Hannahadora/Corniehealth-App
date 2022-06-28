@@ -77,6 +77,21 @@
               </div>
             </div>
           </div>
+          <div
+            v-if="selectedOption == 'procedure'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-for="c in procedures">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
           <div v-if="selectedOption === 'observation'">
             <div v-for="(input, index) in observations" :key="index">
               <div

@@ -29,46 +29,58 @@ export const ExperienceRoutes: RouteRecordRaw = {
       path: "view-patient/:id",
       name: "View Patient",
       props: true,
-      component: () => import("@/views/dashboard/patientexp/patients/ViewPatient.vue"),
+      component: () =>
+        import("@/views/dashboard/patientexp/patients/ViewPatient.vue"),
       children: [
         {
           path: "transactions/appointments",
           name: "Patient Appointments",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/appointment.vue"),
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/appointment.vue"
+            ),
         },
         {
           path: "transactions/specialist",
           name: "Patient Specialist Refferals",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/specialist.vue"),
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/specialist.vue"
+            ),
         },
         {
           path: "transactions/visits",
           name: "Patient Visits",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/visits.vue"),
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/visits.vue"
+            ),
         },
         {
           path: "transactions/medications",
           name: "Patient Medication",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/medications.vue"),
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/medications.vue"
+            ),
         },
         {
           path: "transactions/diagnostics",
           name: "Patient Diagnostics",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/diagnostics.vue"),
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/diagnostics.vue"
+            ),
         },
         {
           path: "transactions/bills",
           name: "Patient Bills",
           component: () =>
-            import("@/views/dashboard/patientexp/patients/viewscreens/bills.vue"),
-        }
-      
-      ]
+            import(
+              "@/views/dashboard/patientexp/patients/viewscreens/bills.vue"
+            ),
+        },
+      ],
     },
     {
       path: "edit-patient/:id",
@@ -79,7 +91,11 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "add-appointment/:id?",
-      props: route => ({slotId: route.query.slot, id: route.params.id, practitionersId: route.query.practitioner}),
+      props: (route) => ({
+        slotId: route.query.slot,
+        id: route.params.id,
+        practitionersId: route.query.practitioner,
+      }),
       name: "Create Appointment",
       component: () =>
         import("@/views/dashboard/patientexp/appointments/addAppointment.vue"),
@@ -92,14 +108,14 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "calendar/:practitionerId?",
-      props: route => ({practitionerId: route.query.practitioner}),
+      props: (route) => ({ practitionerId: route.query.practitioner }),
       name: "Calendar",
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },
     {
       path: "actor-calendar/:practitionerId?",
-      props: route => ({practitionerId: route.query.practitioner}),
+      props: (route) => ({ practitionerId: route.query.practitioner }),
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },

@@ -6,7 +6,7 @@
       {{ label }}
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
-    <div class="grid grid-cols-5 gap-4 mt-4 w-3/4">
+    <div class="grid grid-cols-5 gap-4 mt-4 w-full">
       <cornie-radio
         :name="name"
         v-model="type"
@@ -116,24 +116,24 @@ import { ITimeable } from "@/types/ITimeable";
 import CornieSelect from "@/components/cornieselect.vue";
 
 const timeable = {
-  age: "",
-  day: "",
-  startDate: "",
-  startTime: "",
-  endDate: "",
-  endTime: "",
-  date: "",
-  time: "",
-  unit: "",
-  min: "",
-  max: "",
-  ageValue: "",
-  ageUnit: "",
-  string: "",
-  minUnit: "",
-  minValue: "",
-  maxUnit: "",
-  maxValue: "",
+  age: "" || null,
+  day: "" || null,
+  startDate: "" || null,
+  startTime: "" || null,
+  endDate: "" || null,
+  endTime: "" || null,
+  date: "" || null,
+  time: "" || null,
+  unit: "" || null,
+  min: "" || null,
+  max: "" || null,
+  ageValue: "" || null,
+  ageUnit: "" || null,
+  string: "" || null,
+  minUnit: "" || null,
+  minValue: "" || null,
+  maxUnit: "" || null,
+  maxValue: "" || null,
 };
 
 @Options({

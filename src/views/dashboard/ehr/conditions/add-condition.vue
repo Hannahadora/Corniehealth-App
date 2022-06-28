@@ -133,7 +133,13 @@
           >
           <template v-slot:default>
             <div class="grid grid-cols-2 gap-4 mt-5">
-              <cornie-input v-model="summary" label="Summary" />
+              <!-- <cornie-input v-model="summary" label="Summary" /> -->
+               <fhir-input
+                v-model="summary"
+                reference="http://hl7.org/fhir/ValueSet/condition-stage"
+                label="Summary"
+                placeholder="Select"
+              />
               <assessment-select
                 :patientId="patientId"
                 v-model="assessmentName"
@@ -445,11 +451,6 @@ export default class AddCondition extends Vue {
     this.evidenceNote = condition.evidenceNote;
    // this.onsetmesurable.unit = condition?.onSet?.range?.unit || null;
 
-
-
-
-
-
      this.abatement = condition.abatement;
     this.evidence = condition.evidence;
     this.code = condition.code;
@@ -461,6 +462,24 @@ export default class AddCondition extends Vue {
 
    get newaction() {
     return this.id ? "Edit Condition" : "New Condition";
+  }
+
+  resetForm(){
+    this.clinicalStatus = "";
+    this.verificationStatus ="";
+    this.type = "";
+    this.category = "";
+    this.summary = "";
+    this.evidenceDetail = "";
+    this.bodySite = "";
+    this.assessment = "";
+    this.severity = "";
+    this.evidenceNote = "";
+     this.abatement = "";
+    this.code = "";
+    this.recordDate = "";
+    this.recorderId = "";
+     this.asserterId = "";
   }
 
   assesdata(value:any){
@@ -476,78 +495,60 @@ export default class AddCondition extends Vue {
     return this.$route.params.id;
   }
 
- get onset() {
-    return {
-      onsetRange: !Object.values({
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      }).every((o) => o === null)
-        ? {
-            unit: this.onsetmesurable.unit,
-            min: this.onsetmesurable.min,
-            max: this.onsetmesurable.max,
-          }
-        : null,
-      onsetAge: !Object.values({
-        unit: this.onsetmesurable.ageUnit,
+isEmptyObject(object:any){
+  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+  return nonNulls.length <1
+}
+get onset() {
+   const range = {
+      unit: this.onsetmesurable.unit,
+      min: this.onsetmesurable.min,
+      max: this.onsetmesurable.max
+    
+    }; 
+    const age = {
+       unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
-      }).every((o) => o === null)
-        ? {
-            unit: this.onsetmesurable.ageUnit,
-            value: this.onsetmesurable.ageValue,
-          }
-        : null,
-      onsetString: this.onsetmesurable.string || null,
-      onsetPeriod: !Object.values({
-        start: this.onsetmesurable.startDate,
+    
+    }; 
+    const period = {
+       start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
         startTime: this.onsetmesurable.startTime,
         endTime: this.onsetmesurable.endTime,
-      }).every((o) => o === null)
-        ? {
-            start: this.onsetmesurable.startDate,
-            end: this.onsetmesurable.endDate,
-            startTime: this.onsetmesurable.startTime,
-            endTime: this.onsetmesurable.endTime,
-          }
-        : null,
-      onsetDateTime: this.safeBuildDateTime(
-        this.onsetmesurable.date as any,
-        this.onsetmesurable.time as any
-      ),
+    
+    }; 
+    return {
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
+      string: this.onsetmesurable.string || null,
+      period:this.isEmptyObject (period) ? undefined : period,
     };
   }
   get setabatement() {
-    return {
-      range: !Object.values({
+    const range = {
         unit: this.abatementMeasurable.unit,
         min: this.abatementMeasurable.min,
         max: this.abatementMeasurable.max,
-      }).every(o => o === null) ? {
-        unit: this.abatementMeasurable.unit,
-        min: this.abatementMeasurable.min,
-        max: this.abatementMeasurable.max,
-      } : null,
-      age: !Object.values({
-        unit: this.abatementMeasurable.ageUnit,
+    
+    }; 
+    const age = {
+       unit: this.abatementMeasurable.ageUnit,
         value: this.abatementMeasurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.abatementMeasurable.ageUnit,
-        value: this.abatementMeasurable.ageValue,
-      } : null, 
-      string: this.abatementMeasurable.string || null,
-      period: !Object.values({
-        start: this.abatementMeasurable.startDate,
+    }; 
+    const period = {
+       start: this.abatementMeasurable.startDate,
         end: this.abatementMeasurable.endDate,
         startTime:this.abatementMeasurable.startTime,
         endTime: this.abatementMeasurable.endTime,
-      }).every(o => o === null) ? {
-        start: this.abatementMeasurable.startDate,
-        end: this.abatementMeasurable.endDate,
-         startTime:this.abatementMeasurable.startTime,
-        endTime: this.abatementMeasurable.endTime,
-      } : null,
+    
+    }; 
+
+    return {
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
+      string: this.abatementMeasurable.string || null,
+      period:this.isEmptyObject (period) ? undefined : period,
       dateTime:  this.safeBuildDateTime(
        this.abatementMeasurable.date as any,
        this.abatementMeasurable.time as any
@@ -643,7 +644,7 @@ export default class AddCondition extends Vue {
       abatement: this.abatement,
       code: this.code,
       recordDate: this.recordDate,
-      recorderId: this.recorderId,
+      recorderId: this.authPractitioner.id,
       asserterId: this.asserterId,
 
     };
@@ -668,8 +669,9 @@ export default class AddCondition extends Vue {
       );
       window.notify({ msg: "Condition created", status: "success" });
       this.done();
+      this.resetForm();
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Condition not created", status: "error" });
     }
   }
 
@@ -692,7 +694,7 @@ export default class AddCondition extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Condition Not Updated", status: "error" });
     }
   }
  

@@ -17,6 +17,7 @@
     </div>
     <history-modal
       v-model="showHistoryModal"
+       @history-added="historyAdded"
     />
   </div>
 </template>
@@ -27,6 +28,10 @@ import Select from "@/components/newautocomplete.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import IconInput from "@/components/IconInput.vue";
 import HistoryModal from "./historyDialog.vue";
+import Ihistory from "@/types/Ihistory";
+import { namespace } from "vuex-class";
+
+const history = namespace("history");
 @Options({
   components: {
     ChevronDownIcon,
@@ -41,6 +46,19 @@ export default class HistoryEmptyState extends Vue {
   async showHistory() {
     this.showHistoryModal = true;
   }
+
+  @history.Action
+  fetchHistorys!: (patientId: string) => Promise<void>;
+
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
+   async historyAdded() {
+    await this.fetchHistorys(this.patientId);
+  }
+
+
 }
 </script>
 <style>

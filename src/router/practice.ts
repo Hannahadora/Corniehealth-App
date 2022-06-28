@@ -16,12 +16,14 @@ export const PracticeRoutes: RouteRecordRaw = {
       path: "inventory",
       props: true,
       name: "Inventory",
-      component: () => import("@/views/dashboard/practice/inventorystock/index.vue"),
+      component: () =>
+        import("@/views/dashboard/practice/inventorystock/index.vue"),
     },
     {
       path: "care-partners",
       name: "Care Partners",
-      component: () => import("@/views/dashboard/practice/carepartners/index.vue"),
+      component: () =>
+        import("@/views/dashboard/practice/carepartners/index.vue"),
     },
     {
       path: "care-plan",
@@ -38,34 +40,30 @@ export const PracticeRoutes: RouteRecordRaw = {
       name: "New Service",
       props: true,
       component: () =>
-        import(
-          "@/views/dashboard/practice/cdm/components/new-service.vue"
-        ),
+        import("@/views/dashboard/practice/cdm/components/new-service.vue"),
     },
     {
       path: "newproduct/:id?",
       name: "New Product",
       props: true,
       component: () =>
-        import(
-          "@/views/dashboard/practice/cdm/components/new-products.vue"
-        ),
+        import("@/views/dashboard/practice/cdm/components/new-products.vue"),
     },
     {
       path: "locations",
-      name: "Locations",
+      name: "Practice Locations",
       component: () => import("@/views/dashboard/settings/location/index.vue"),
     },
     {
       path: "add-location/:id?",
       props: true,
-      name: "New Location",
+      name: "New Practice Location",
       component: () =>
         import("@/views/dashboard/settings/location/addLocation.vue"),
     },
     {
       path: "group",
-      name: "Group",
+      name: "Practice Group",
       component: () => import("@/views/dashboard/settings/group/index.vue"),
     },
   ],

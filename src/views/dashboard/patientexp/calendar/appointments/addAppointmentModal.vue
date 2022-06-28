@@ -31,12 +31,17 @@
                     ]"
                     class="w-full mt-4"
                     v-model="appointmentType"
+                    :rules="required"
+                    required
+               
                 />
                 <cornie-input
                     label="Description"
                     class="w-full mb-5"
                     placeholder="--Enter--"
                     v-model="description"
+                    :rules="required"
+                    required
                 />
                
             </div>
@@ -271,6 +276,41 @@
                         />
                   </template>    
             </accordion-component>
+            <!-- <accordion-component
+            :title="'Period'"
+            :addborder="true"
+            :opened="false"
+          >
+            <template v-slot:default>
+              <div class="mt-4">
+                <date-picker
+                  label="Start Date"
+                  placeholder="--/04/2021"
+                  class="w-full"
+                  v-model="date"
+                  :disabled="[appoitmentDate != '' ? false : true]"
+                />
+                <div class="grid mt-5 grid-cols-2 gap-4">
+                  <cornie-input
+                    :type="'time'"
+                    label="Start Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="startTime"
+                  
+                  />
+                  <cornie-input
+                    :type="'time'"
+                    label="End Time"
+                    placeholder="00:00"
+                    class="w-full"
+                    v-model="endTime"
+                     :disabled="[range2 != '' ? true : false]"
+                  />
+                </div>
+              </div>
+            </template>
+          </accordion-component> -->
             <div class="w-full mt-2 mb-2">
                 <div class="flex w-full border-dashed border-b border-gray-100">
                     <div class="w-full">
@@ -417,7 +457,7 @@ import Avatar from "@/components/avatar.vue";
 import IAppointment from "@/types/IAppointment";
 import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
-
+import { string } from "yup";
 
 const appointment = namespace("appointment");
 const location = namespace("location");
@@ -472,10 +512,10 @@ export default class appointmentModal extends Vue {
   appoitmentDate!: string;
 
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "00:00" })
   range!: string;
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "00:00" })
   range2!: string;
 
 
@@ -559,6 +599,7 @@ export default class appointmentModal extends Vue {
    localSrc = require("../../../../../assets/img/placeholder.png");
    errmsg = "" as any;
    singlePatientId = "";
+   required = string().required();
 
 
 
@@ -606,7 +647,7 @@ export default class appointmentModal extends Vue {
       endTime : this.endTime,
       locationId : this.locationId,
       bookingLocationId: this.bookingLocationId || undefined,
-      practitionerId: this.authPractitioner.id,
+      practitionerId: this.appoimtentId,
       patientId: this.singlePatientId
 
     }
@@ -622,9 +663,12 @@ export default class appointmentModal extends Vue {
 
   async createAppointment() {
     this.locationId = this.authCurrentLocation;
+    this.payload.date = this.appoitmentDate || new Date().toISOString();
     this.payload.startTime = this.range;
     this.payload.endTime = this.range2;
-    this.payload.date = this.appoitmentDate;
+
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
 
     if(this.authCurrentLocation){
       try {
@@ -637,7 +681,7 @@ export default class appointmentModal extends Vue {
          this.done();
         }
       } catch (error:any) {
-        window.notify({ msg: error.response.data.message, status: "error" });
+        window.notify({ msg: "This time is already booked", status: "error" });
       }
     }else{
       window.notify({ msg: "Kindly switch default location", status: "error" });
@@ -655,7 +699,7 @@ export default class appointmentModal extends Vue {
         this.$router.push("/dashboard/provider/experience/calendar");
       }
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Appointment not updated", status: "error" });
     }
   }
 
@@ -672,14 +716,12 @@ export default class appointmentModal extends Vue {
       this.patientId = valueId;
       this.singlePatientId = id;
 
-      console.log(value,"THIS IS VALUE");
   }
 
   practitionerdata(value:any,valueId:any){
       this.Practitioners.push(...value);
       this.practitionerId.push(...valueId);
      
-     console.log(this.practitionerId,"FDFk");
   }
   devicedata(value:any,valueId:any){
       this.Devices = value;

@@ -4,7 +4,7 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        Medicaitons
+        Medicatons
       </span>
       <span class="w-full h-screen">
        <medication-empty-state v-if="empty" />
@@ -46,6 +46,7 @@ export default class MedicationIndex extends Vue {
   @request.Action
   fetchrequestsById!: (patientId: string) => Promise<void>;
 
+  
 
   async created() {
     await this.fetchrequestsById(this.patientId);

@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -7,73 +7,122 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Create Medication Request
+          {{ newaction }} Medication Request
           </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <v-form ref="form">
-          <div class="border-b-2 pb-5 border-dashed border-gray-200">
-            <accordion-component title="Basic Info" :opened="true">
-              <template v-slot:default>
-                <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                  <cornie-select class="required" :rules="required" :items="[
-                    'CarePlan',
-                    'MedicationRequest',
-                    'ServiceRequest',
-                    'ImmunizationRecommendation',
-                  ]" label="based on" placeholder="--Select--" v-model="basedOn">
-                  </cornie-select>
-                  <cornie-select class="required" :rules="required" :items="[
-                    'proposal',
-                    'plan',
-                    'order',
-                    'original-order',
-                    'reflex-order',
-                    'filler-order',
-                    'instance-order',
-                    'option',
-                  ]" v-model="intent" label="intent" placeholder="--Select--">
-                    <template #labelicon>
-                      <span class="text-xs text-gray-500">(Optional)</span>
-
-                    </template>
-                  </cornie-select>
-                  <cornie-select class="required" :rules="required" :items="[
-                    'Inpatient',
-                    'Outpatient',
-                    'Community',
-                    'Discharge',
-                  ]" label="priority" v-model="priority" placeholder="--Select--">
-                  </cornie-select>
-                  <cornie-select class="required" :rules="required" :items="[
-                    'Inpatient',
-                    'Outpatient',
-                    'Community',
-                    'Discharge',
-                  ]" label="category" v-model="category" placeholder="--Select--">
-                  </cornie-select>
-                  <cornie-select class="required" :rules="required" :items="allPerformer" label="requester"
-                    placeholder="--Select--" v-model="requesterId">
-                  </cornie-select>
-                  <!-- <cornie-select
+         <v-form ref="form">
+         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
+            <accordion-component
+                title="Basic Info"
+                :opened="true"
+                >
+                <template v-slot:default>
+                    <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
+                        <cornie-select
+                        required
+                            class="required w-full"
+                            :rules="required"
+                          :items="[
+                              'CarePlan',
+                              'MedicationRequest',
+                              'ServiceRequest',
+                              'ImmunizationRecommendation',
+                          ]"
+                          label="based on"
+                          placeholder="--Select--"
+                          v-model="basedOn"
+                        >
+                        </cornie-select>
+                        <cornie-select
+                        class="w-full"
+                        :items="[
+                        'proposal',
+                        'plan',
+                        'order',
+                        'original-order',
+                        'reflex-order',
+                        'filler-order',
+                        'instance-order',
+                        'option',
+                        ]"
+                         v-model="intent"
+                        label="intent"
+                        placeholder="--Select--"
+                    >
+                            <template #labelicon>
+                            <span class="text-xs text-gray-500">(Optional)</span>
+                            
+                            </template>
+                        </cornie-select>
+                          <fhir-input
+                            required
+                            class="required w-full"
+                          label="priority"
+                          v-model="priority"
+                          placeholder="--Select--"
+                          reference="http://hl7.org/fhir/ValueSet/request-priority"
+                        />
+                        <!-- <cornie-select
+                        required
+                          class="required"
+                          :rules="required"
+                          :items="[
+                            'Inpatient',
+                            'Outpatient',
+                            'Community',
+                            'Discharge',
+                          ]"
+                          label="priority"
+                          v-model="priority"
+                          placeholder="--Select--">
+                        </cornie-select> -->
+                        <cornie-select
+                        required
+                            class="required w-full"
+                            :rules="required"
+                            :items="[
+                            'Inpatient',
+                            'Outpatient',
+                            'Community',
+                            'Discharge',
+                            ]"
+                            label="category"
+                            v-model="category"
+                            placeholder="--Select--"
+                        >
+                        </cornie-select>
+                        <cornie-select
+                            class="required w-full"
+                            required
+                            :rules="required"
+                            :items="allPerformer"
+                            label="requester"
+                            placeholder="--Select--"
+                            v-model="requesterId"
+                            >
+                        </cornie-select>
+                  
+                        <cornie-select
+                            class="required cursor-pointer"
+                            :items="allPerformerDispenser"
+                            label="dispenser"
+                            placeholder="--Select--"
+                            v-model="dispenserId"
+                            >
+                        </cornie-select>
+                        <cornie-input
+                        required
                             class="required"
                             :rules="required"
-                            :items="allRequester"
-                            label="Patient"
-                            placeholder="--Select--"
-                            @selected="fetchResults"
-                             v-model="patientId"
+                            label="supporting information"
+                            placeholder="Enter"
+                            v-model="supportingInformation"
                             >
-                        </cornie-select> -->
-                  <cornie-select class="required cursor-pointer" :items="allPerformerDispenser" label="dispenser"
-                    placeholder="--Select--" v-model="dispenserId">
-                  </cornie-select>
-                  <cornie-input class="required" :rules="required" label="supporting information" placeholder="Enter"
-                    v-model="supportingInformation">
-                  </cornie-input>
+                        </cornie-input>
 
                 </div>
               </template>
@@ -84,84 +133,151 @@
           <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Medication" :opened="false">
               <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                <!-- <fhir-input
-                          reference="http://hl7.org/fhir/ValueSet/medication-codes"
-                          class="required w-full"
-                          :rules="required"
-                          v-model="emptyMedicationDetails.code"
-                          label="medication code"
-                          placeholder="--Select--"
-                        /> -->
-                <auto-complete :label="'medication code'" @click="resultData(emptyMedicationDetails.genericCode)"
-                  :items="allDrug" @input="search" v-model="emptyMedicationDetails.genericCode"
-                  :placeholder="'Select'" />
-                <cornie-select :label="'Brand Name'" :items="allBrand" v-model="emptyMedicationDetails.genericName"
-                  :placeholder="'Select'" />
-                <cornie-select class="w-full" :items="['Condition', 'Observation']" label="medication reference"
-                  placeholder="--Select--" v-model="emptyMedicationDetails.reference">
-                </cornie-select>
-                <cornie-select class="required w-full" :rules="required" :items="['Continuous', 'Acute', 'Seasonal']"
-                  label="course of therapy type" placeholder="--Select--"
-                  v-model="emptyMedicationDetails.courseOfTherapy">
-                </cornie-select>
-                <div class="w-full -mt-1">
-                  <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
-                  <div class="flex space-x-2 w-full">
-                    <cornie-input :rules="required" v-maska="'#*:#*:#*'" placeholder="0:0:0" class="grow w-full"
-                      :setfull="true" v-model="emptyMedicationDetails.dosageInstruction" />
-                    <cornie-select :items="['Day']" placeholder="/ Day" class="w-32 mt-0.5 flex-none" :setPrimary="true"
-                      v-model="days2" />
-                  </div>
-                </div>
-
+                    <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
+                    <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
+                    <cornie-select
+                        class="w-full"
+                        :items="['Condition', 'Observation']"
+                        label="medication reference"
+                        placeholder="--Select--"
+                        v-model="emptyMedicationDetails.reference"
+                    >
+                    </cornie-select>
+                    <cornie-select
+                        class="required w-full"
+                        :rules="required"
+                        :items="['Continuous', 'Acute', 'Seasonal']"
+                        label="course of therapy type"
+                        placeholder="--Select--"
+                        v-model="emptyMedicationDetails.courseOfTherapy"
+                    >
+                    </cornie-select>
+                    <div class="w-full -mt-1">
+                        <span class="text-sm font-semibold mb-3">Dosage Interval</span>
+                        <div class="flex space-x-2 w-full">
+                          <div>
+                            <cornie-input
+                            v-maska="'#*:#*:#*'"
+                            :rules="required"
+                            placeholder="0:0:0"
+                            class="grow w-full"
+                            :setfull="true"
+                            v-model="emptyMedicationDetails.dosageInstruction"
+                            />
+                            <span class="text-xs text-gray-600">Press the space bar to add <span class="text-sm font-bold">' : '</span> </span>
+                          </div>
+                            <cornie-select
+                            :items="['Day']"
+                            placeholder="/ Day"
+                            class="w-32 mt-0.5 flex-none"
+                            :setPrimary="true"
+                            v-model="days2"
+                            />
+                        </div>
+                    </div>
+  
               </div>
+              <div class="px-4">
+
+                <p class="text-danger text-sm float-right font-semibold cursor-pointer  mt-4 mb-5"
+                       @click="addMedicationDetails"><span class="text-xl">+</span> Add</p>
+              </div>
+                <div>
+                  <div class="w-full grid grid-cols-3 gap-4 mt-5">
+                    <div class="border-r-2 border-dashed" v-for="(input, index) in medications" :key="`-${index}`">
+                      <div class="flex space-x-10">
+                        <div class="mb-0 p-2">
+                          <p class="text-xs text-primary font-semibold">
+                            {{ input.genericName }}
+                          </p>
+                          <p class="text-xs text-gray-500 font-light">
+                            {{ input.dosageInstruction }}
+                          </p>
+                        </div>
+                        <span>
+                          <deleteorange-icon class="float-right cursor-pointer mt-4 ml-14"
+                            @click="removemedication(index)" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+   
+             
               <accordion-component title="Dispense Request - Initial Fill" :opened="true">
-                <div class="grid grid-cols-2 gap-4 mt-5 w-full">
+                  <template v-slot:default>
 
-                  <div class="w-full -mt-1">
-                    <span class="text-sm font-semibold mb-3">Duration</span>
-                    <div class="flex space-x-2 w-full">
-                      <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
-                        v-model="emptyMedicationDetails.durationInDays" />
-                      <cornie-select :items="['Days']" placeholder="Days" class="w-32 mt-0.5 flex-none"
-                        :setPrimary="true" v-model="days" />
+                    <div class="grid grid-cols-2 gap-4 mt-5 w-full">
+                      <div class="w-full -mt-1">
+                        <span class="text-sm font-semibold mb-3">Duration</span>
+                        <div class="flex space-x-2 w-full">
+                          <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
+                            v-model="emptyMedicationDetails.durationInDays" />
+                          <cornie-select :items="['Days']" placeholder="Days" class="w-32 mt-0.5 flex-none"
+                            :setPrimary="true" v-model="days" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <!-- <cornie-input
-                                    class="w-full"
-                                    label="reason"
-                                    placeholder="Autotlaoded"
-                                    :disabled="true">
-                            </cornie-input> -->
-                </div>
+                    
 
+                  </template>   
               </accordion-component>
 
-              <accordion-component title="Refill" :opened="false" :grayCaption="true" :check="true">
-                <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                  <div class="w-full -mt-1">
-                    <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
-                    <div class="flex space-x-2 w-full">
-                      <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
-                        v-model="emptyRefill.interval" />
-                      <cornie-select :items="['Kg', 'Mg', 'G']" placeholder="/ Kg" class="w-32 mt-0.5 flex-none"
-                        :setPrimary="true" v-model="emptyRefill.intervalUnit" />
-                    </div>
+              <accordion-component
+                  title="Refill"
+                  :opened="false"
+                  :grayCaption="true"
+                  :check="true"
+                  >
+                  <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
+                        <div class="w-full -mt-1">
+                              <span class="text-sm font-semibold mb-3">Dosage Interval</span>
+                          <div class="flex space-x-2 w-full">
+                                  <cornie-input
+                                      placeholder="--Enter--"
+                                      class="grow w-full"
+                                      :setfull="true"
+                                      v-model="emptyRefill.interval"
+                                  />
+                                  <cornie-select
+                                  :items="['Days','Week','Month']"
+                                  placeholder="/ Days"
+                                  class="w-32 mt-0.5 flex-none"
+                                  :setPrimary="true"
+                                    v-model="emptyRefill.intervalUnit"
+                              />
+                          </div>
+                        </div>
+                          <DRangePicker :label="'Validity Period'" v-model="emptyRefill.startDate" class="w-full"/>
+                          <cornie-input
+                              class="w-full"
+                              label="Quantity"
+                              placeholder="Enter"
+                              v-model="emptyRefill.quantity"
+                          >
+                          </cornie-input>
+                          <div class="w-full -mt-1">
+                              <span class="text-sm font-semibold mb-3">Supply Duration</span>
+                              <div class="flex space-x-2 w-full">
+                                  <cornie-input
+                                      placeholder="--Enter--"
+                                      class="grow w-full"
+                                      :setfull="true"
+                                      v-model="emptyRefill.supplyDuration"
+                                  />
+                                  <cornie-select
+                                  :items="['Day']"
+                                  placeholder="/ Day"
+                                  class="w-32 mt-0.5 flex-none"
+                                  :setPrimary="true"
+                                  v-model="emptyRefill.supplyDurationUnit"
+                                  />
+                              </div>
+                          </div>
                   </div>
-                  <date-picker :label="'Start Date'" v-model="emptyRefill.startDate" class="w-full" />
-                  <cornie-input class="w-full" label="Quantity" placeholder="Enter" v-model="emptyRefill.quantity">
-                  </cornie-input>
-                  <div class="w-full -mt-1">
-                    <span class="text-sm font-semibold mb-3">Supply Duration</span>
-                    <div class="flex space-x-2 w-full">
-                      <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
-                        v-model="emptyRefill.supplyDuration" />
-                      <cornie-select :items="['Day']" placeholder="/ Day" class="w-32 mt-0.5 flex-none"
-                        :setPrimary="true" v-model="emptyRefill.supplyDurationUnit" />
-                    </div>
-                  </div>
-                </div>
               </accordion-component>
+
+             
 
               <accordion-component title="Substitution Allowed?" :opened="false">
                 <div class="flex space-x-4 w-full mt-5">
@@ -171,10 +287,18 @@
                     name="allowed" />
                 </div>
                 <div class="w-full grid grid-cols-2 gap-4 mt-5 pb-5">
-                  <cornie-select class="required w-full" :rules="required" :items="['reason']"
+                  <fhir-input
+                          reference="http://hl7.org/fhir/ValueSet/medication-codes"
+                          class="required w-full"
+                          :rules="required"
+                          v-model="emptyMedicationDetails.substitutionCode"
+                          label="Medication Substitution Code"
+                          placeholder="--Select--"
+                        />
+                  <!-- <cornie-select class="required w-full" :rules="required" :items="['reason']"
                     label="Medication Substitution Code" placeholder="Select"
                     v-model="emptyMedicationDetails.substitutionCode">
-                  </cornie-select>
+                  </cornie-select> -->
                   <cornie-input v-if="emptyMedicationDetails.substitutionAllowed == true" class="w-full"
                     label="Reason for Substitution" placeholder="Enter"
                     v-model="emptyMedicationDetails.reasonForSubstitution">
@@ -185,32 +309,8 @@
                 </div>
               </accordion-component>
 
-              <p class="text-danger text-sm float-right font-semibold cursor-pointer py-20 mt-4 mb-5"
-                @click="addMedicationDetails"><span class="text-xl">+</span> Add</p>
-
-
+             
             </accordion-component>
-
-            <div>
-              <div class="w-full grid grid-cols-3 gap-4 mt-5">
-                <div class="border-r-2 border-dashed" v-for="(input, index) in medications" :key="`-${index}`">
-                  <div class="flex space-x-10">
-                    <div class="mb-0 p-2">
-                      <p class="text-xs text-primary font-semibold">
-                        {{ input.code }}
-                      </p>
-                      <p class="text-xs text-gray-500 font-light">
-                        {{ input.dosageInstruction }}
-                      </p>
-                    </div>
-                    <span>
-                      <deleteorange-icon class="float-right cursor-pointer mt-4 ml-14"
-                        @click="removemedication(index)" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <accordion-component title="Optional Section"
@@ -220,33 +320,45 @@
             <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3">
               <span class="w-full font-semibold text-gray-600">Reason</span>
               <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-
-                <cornie-select class="required w-full" :rules="required" :items="['reason code']" label="do not perform"
-                  placeholder="--Select--" v-model="reasonCode">
-                </cornie-select>
-                <cornie-select :rules="required" :items="['reason reference']" label="reason for prohibition"
-                  placeholder="--Select--" class="w-full" v-model="reasonReference">
-                </cornie-select>
-              </div>
-              <div class="-mt-10 w-full">
-                <text-area :label="'Note'" v-model="note" class="w-full" :placeholder="'Type your text here'" />
-              </div>
-            </div>
+                        <fhir-input
+                          reference="http://hl7.org/fhir/ValueSet/condition-code"
+                          class="required w-full"
+                          :rules="required"
+                          v-model="reasonCode"
+                          label="Reason Code"
+                          placeholder="--Select--"
+                        />
+                         <div>
+                            <p class="text-sm text-black font-semibold mb-1">
+                              Reason Reference
+                            </p>
+                            <div
+                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                              @click="showRefModal = true"
+                            >
+                              <span class="w-full">{{ reasonReference }}</span>
+                              <span class="flex justify-end w-full">
+                                <plusIcon class="fill-current text-danger mt-1" />
+                              </span>
+                            </div>
+                          </div>
+                        <!-- <cornie-select
+                            :items="['reason reference']"
+                            label="Reason Reference "
+                            placeholder="--Select--"
+                            class="w-full"
+                             v-model="reasonReference"
+                        >
+                        </cornie-select> -->
+                    </div>  
+                    <div class="-mt-10 w-full">
+                            <text-area :label="'Note'" v-model="note" class="w-full" :placeholder="'Type your text here'" />  
+                    </div>
+                </div>
 
             <div class="border-b-2 border-gray-200 border-dashed mt-5 pb-3 w-full">
               <span class="w-full font-semibold text-gray-600">Medication Allergies & Existing Conditions</span>
               <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-
-                <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['reason code']"
-                            label="Medication Allergies"
-                            v-model="allergies"
-                            placeholder="Select"
-                           
-                        >
-                        </cornie-select> -->
                 <div class="mb-5">
                   <span class="text-sm font-semibold mb-1">Medication Allergies</span>
                   <Multiselect v-model="allergies" mode="tags" :hide-selected="false" id="field-id"
@@ -285,15 +397,6 @@
                     </template>
                   </Multiselect>
                 </div>
-                <!-- <cornie-select
-                        :rules="required"
-                        :items="['reason reference']"
-                        label="Existing Conditions"
-                        placeholder="Select"
-                        v-model="conditions"
-                        
-                        >
-                        </cornie-select> -->
               </div>
             </div>
             <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3 w-full">
@@ -316,55 +419,70 @@
                     value="hospital-address" name="PickUp" />
                 </div>
 
-              </div>
-              <div class="w-full mt-2">
-                <span class="text-sm font-semibold mb-4">Priority Shipping</span>
-                <div class="flex space-x-4 w-full mt-5">
-                  <cornie-radio :label="'Yes'" :value="true" v-model="priorityShipping" name="Shipping" />
-                  <cornie-radio :label="'No'" :value="false" v-model="priorityShipping" name="Shipping" />
+                <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3 w-full">   
+                    <span class="w-full font-semibold text-gray-600">Medication Administration</span>
+                    <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
+                        <cornie-select
+                            class="w-full"
+                            :items="allPerformer"
+                            label="Performer"
+                            placeholder="Select"
+                            v-model="performer"
+                        >
+                        </cornie-select>
+                          <fhir-input
+                           v-model="performerRole"
+                            label="Performer Role"
+                            placeholder="Select"
+                            reference="http://hl7.org/fhir/ValueSet/performer-role"
+                            class="w-full"
+                          />
+                    </div>  
                 </div>
 
-              </div>
-            </div>
-
-            <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3 w-full">
-              <span class="w-full font-semibold text-gray-600">Medication Administration</span>
-              <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-                <cornie-select class="required" :rules="required" :items="allPerformer" label="Performer"
-                  placeholder="Select" v-model="performer">
-                </cornie-select>
-                <cornie-select :rules="required" :items="allRoles" label="Performer Role" placeholder="Select"
-                  v-model="performerRole">
-                </cornie-select>
-              </div>
-            </div>
-
-            <div class="border-b-2 border-gray-200 border-dashed mt-5 pb-3 w-full">
-              <span class="w-full font-semibold text-gray-600">History</span>
-              <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-                <cornie-select class="required" :rules="required" :items="['reason code']" label="Prior Prescription"
-                  placeholder="Select" v-model="priorPrescription">
-                </cornie-select>
-                <div class="mb-5">
-                  <span class="text-sm font-semibold mb-1">Detected Issues</span>
-                  <Multiselect v-model="detectedIssues" mode="tags" :hide-selected="false" id="field-id"
-                    :options="allIssues" value-prop="code" trackBy="display" label="display" placeholder="--Select--"
-                    class="w-full">
-                    <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                      <div class="multiselect-tag is-user">
-                        {{ option.display }}
-                        <span v-if="!disabled" class="multiselect-tag-remove"
-                          @mousedown.prevent="handleTagRemove(option, $event)">
-                          <span class="multiselect-tag-remove-icon"></span>
-                        </span>
-                      </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <span class="w-full text-sm">{{ option.display }}</span>
-                    </template>
-                  </Multiselect>
-                </div>
-                <!-- <cornie-select
+                <div class="border-b-2 border-gray-200 border-dashed mt-5 pb-3 w-full">   
+                    <span class="w-full font-semibold text-gray-600">History</span>
+                    <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
+                        <cornie-select
+                            class="w-full"
+                            :items="allMeidcaitons"
+                            label="Prior Prescription"
+                            placeholder="Select"
+                             v-model="priorPrescription"
+                        >
+                        </cornie-select>
+                        <div class="mb-5">
+                            <span class="text-sm font-semibold mb-1">Detected Issues</span>
+                              <Multiselect
+                                    v-model="detectedIssues"
+                                    mode="tags"
+                                    :hide-selected="false"
+                                    id="field-id"
+                                    :options="allIssues"
+                                    value-prop="code"
+                                    trackBy="display"
+                                    label="display"
+                                    placeholder="--Select--"
+                                    class="w-full"
+                                  >
+                                    <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                                      <div class="multiselect-tag is-user">
+                                        {{ option.display }}
+                                        <span
+                                          v-if="!disabled"
+                                          class="multiselect-tag-remove"
+                                          @mousedown.prevent="handleTagRemove(option, $event)"
+                                        >
+                                          <span class="multiselect-tag-remove-icon"></span>
+                                        </span>
+                                      </div>
+                                    </template>
+                                    <template v-slot:option="{ option }">
+                                      <span class="w-full text-sm">{{ option.display }}</span>
+                                    </template>
+                              </Multiselect>
+                        </div>
+                        <!-- <cornie-select
                         :rules="required"
                         :items="['reason reference']"
                         label="Detected Issues"
@@ -372,6 +490,8 @@
                          v-model="detectedIssues"
                         >
                         </cornie-select> -->
+                    </div>
+                 </div>
               </div>
             </div>
 
@@ -397,6 +517,7 @@
 
 
   </cornie-dialog>
+  <reference-modal v-model="showRefModal" @ref-value="refvalue"/>
 </template>
 
 <script lang="ts">
@@ -438,7 +559,8 @@ import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
 import Multiselect from "@vueform/multiselect";
 import FhirInput from "@/components/fhir-input.vue";
 import AutoComplete from "@/components/autocomplete.vue";
-
+import ReferenceModal from "./referenceModal.vue";
+import plusIcon from "@/components/icons/plus.vue";
 
 const practitioner = namespace("practitioner");
 const request = namespace("request");
@@ -480,7 +602,9 @@ function defaultFilter(item: any, query: string) {
     CornieBtn,
     CornieSelect,
     CloseIcon,
-    DeleteorangeIcon
+    DeleteorangeIcon,
+    ReferenceModal,
+    plusIcon
   },
 })
 export default class MedicationModal extends Vue {
@@ -513,7 +637,7 @@ export default class MedicationModal extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   @request.Action
-  getOneRequestById!: (id: string) => IRequest;
+  getRequestById!: (id: string) => IRequest;
 
   @allergy.State
   allergys!: any[];
@@ -529,6 +653,12 @@ export default class MedicationModal extends Vue {
 
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  @request.State
+  patientrequests!: IRequest[];
+
+  @request.Action
+  fetchrequestsById!: (patientId: string) => Promise<void>;
 
   @condition.State
   conditions!: { [state: string]: ICondition[] };
@@ -551,6 +681,7 @@ export default class MedicationModal extends Vue {
   substitution = "Yes";
   searchresult = [] as any;
   fullInfo = [] as any;
+  showRefModal = false;
 
   days = "";
   days2 = "";
@@ -561,22 +692,22 @@ export default class MedicationModal extends Vue {
   requesterId = "";
   patientId = "";
   dispenserId = "";
-  supportingInformation = "";
+  supportingInformation = "" ;
   medications = [] as any;
-  status = "draft";
+  status = "active";
   reasonCode = null;
-  reasonReference = null;
+  reasonReference = "reasonReference";
   note = null;
   allergies = [] as any;
   aconditions = [] as any;
   identifier = "";
   safetyCapRequest = true;
-  deliveryLocation = "";
+  deliveryLocation = "pick-up";
   priorPrescription = null;
   detectedIssues = [] as any;
   priorityShipping = true;
-  performer = "";
-  performerRole = "";
+  performer = null;
+  performerRole =  null;
   emptyRefill = {
     medicationId: "",
     interval: 0,
@@ -608,16 +739,29 @@ export default class MedicationModal extends Vue {
     this.setRequest();
   }
 
-  addMedicationDetails() {
-    // this.resultData(this.emptyMedicationDetails.code);
 
-    this.emptyMedicationDetails.code = this.emptyMedicationDetails.code.toString();
+   refvalue(value:any, type:string){
+    //this.references.push(value);
+    this.reasonReference = type;
+  }
+  
+
+  addMedicationDetails() {
+    //this.resultData(this.emptyMedicationDetails.code);
+
+    this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
+    this.emptyMedicationDetails.code = this.emptyMedicationDetails?.genericCode?.toString();
     this.medications.push(this.emptyMedicationDetails);
     this.emptyMedicationDetails.refills.push(this.emptyRefill);
   }
   removemedication(index: number) {
     this.medications.splice(index, 1);
   }
+
+   get onepatientId() {
+    return this.$route.params.id as string;
+  }
+
 
   get allRequester() {
     if (!this.patients || this.patients.length === 0) return [];
@@ -627,77 +771,99 @@ export default class MedicationModal extends Vue {
         display: i.firstname + " " + i.lastname,
       };
     });
+
   }
 
-  get allPerformer() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.firstName + " " + i.lastName,
-      };
-    });
-  }
-  get allPerformerDispenser() {
-    if (!this.practitioners || this.practitioners.length === 0) return [];
-    return this.practitioners.map((i: any) => {
-      return {
-        code: i.organizationId,
-        display: i.firstName + " " + i.lastName,
-      };
-    });
-  }
-  get allAllegies() {
-    if (!this.allergys || this.allergys.length === 0) return [];
-    return this.allergys.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.category,
-      };
-    });
-  }
-  get allDrug() {
-    if (!this.searchresult || this.searchresult.length === 0) return [];
-    return this.searchresult.map((i: any) => {
-      return {
-        code: i.name,
-        display: i.name,
-      };
-    });
-  }
-  // get allConditions() {
-  //     if (!this.conditions || this.conditions.length === 0) return [];
-  //     return this.conditions.map((i: any) => {
-  //     return {
-  //         code: i.id,
-  //         display: i.name,
-  //     };
-  //     });
-  // }
-  get allIssues() {
-    if (!this.issues || this.issues.length === 0) return [];
-    return this.issues.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.code,
-      };
-    });
-  }
-  get allRoles() {
-    if (!this.roles || this.roles.length === 0) return [];
-    return this.roles.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
+    get allPerformer() {
+        if (!this.practitioners || this.practitioners.length === 0) return [];
+        return this.practitioners.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.firstName + " " + i.lastName,
+        };
+        });
+    }
+    get allPerformerDispenser() {
+        if (!this.practitioners || this.practitioners.length === 0) return [];
+        return this.practitioners.map((i: any) => {
+        return {
+            code: i.organizationId,
+            display: i.firstName + " " + i.lastName,
+        };
+        });
+    }
+     get allAllegies() {
+        if (!this.allergys || this.allergys.length === 0) return [];
+        return this.allergys.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.category,
+        };
+        });
+    }
+     get allMeidcaitons() {
+        if (!this.patientrequests || this.patientrequests.length === 0) return [];
+        return this.patientrequests.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.category,
+        };
+        });
+    }
+    get allDrug() {
+        if (!this.searchresult || this.searchresult.length === 0) return [];
+        return this.searchresult.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.name,
+        };
+        });
+    }
+    get allBrand(){
+       if (!this.fullInfo || this.fullInfo.length === 0) return [];
+        return this.fullInfo.map((i: any) => {
+        return {
+            code: i.name,
+            display: i.name,
+        };
+        });
+    }
+    // get allConditions() {
+    //     if (!this.conditions || this.conditions.length === 0) return [];
+    //     return this.conditions.map((i: any) => {
+    //     return {
+    //         code: i.id,
+    //         display: i.name,
+    //     };
+    //     });
+    // }
+     get allIssues() {
+        if (!this.issues || this.issues.length === 0) return [];
+        return this.issues.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.code,
+        };
+        });
+    }
+     get allRoles() {
+        if (!this.roles || this.roles.length === 0) return [];
+        return this.roles.map((i: any) => {
+        return {
+            code: i.id,
+            display: i.name,
+        };
+        });
+    }
+      get newaction() {
+    return this.id ? "Update" : "Create";
   }
 
   async setRequest() {
-    const request = await this.getOneRequestById(this.id);
+    const request = await this.getRequestById(this.id);
     if (!request) return;
     this.basedOn = request.basedOn;
-    // this.intent = request.intent;
+    this.intent = request.intent;
     this.priority = request.priority;
     this.category = request.category;
     this.requesterId = request.requesterId;
@@ -717,9 +883,6 @@ export default class MedicationModal extends Vue {
     this.priorPrescription = request.priorPrescription;
     this.detectedIssues = request.detectedIssues;
   }
-  get onepatientId() {
-    return this.$route.params.id as string;
-  }
 
   get payload() {
     return {
@@ -730,31 +893,8 @@ export default class MedicationModal extends Vue {
       requesterId: this.requesterId,
       patientId: this.onepatientId,
       dispenserId: this.dispenserId,
-      supportingInformation: this.supportingInformation,
+      supportingInformation: this.supportingInformation || undefined,
       medications: this.medications,
-      status: this.status,
-      reasonCode: this.reasonCode,
-      reasonReference: this.reasonReference,
-      note: this.note,
-      allergies: this.allergies,
-      conditions: this.aconditions,
-      identifier: this.identifier,
-      safetyCapRequest: this.safetyCapRequest,
-      deliveryLocation: this.deliveryLocation,
-      priorPrescription: this.priorPrescription,
-      detectedIssues: this.detectedIssues,
-    };
-  }
-  get editpayload() {
-    return {
-      basedOn: this.basedOn,
-      intent: this.intent,
-      priority: this.priority,
-      category: this.category,
-      requesterId: this.requesterId,
-      patientId: this.onepatientId,
-      dispenserId: this.dispenserId,
-      supportingInformation: this.supportingInformation,
       status: this.status,
       reasonCode: this.reasonCode,
       reasonReference: this.reasonReference,
@@ -778,14 +918,15 @@ export default class MedicationModal extends Vue {
   }
 
   async createRequest() {
-
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
     try {
       const response = await cornieClient().post(
         "/api/v1/medication-requests",
         this.payload
       );
       if (response.success) {
-        this.setPatientRequests([response.data]);
+        // this.setPatientRequests([response.data]);
         window.notify({ msg: "Request Created", status: "success" });
         this.done();
       }
@@ -798,7 +939,7 @@ export default class MedicationModal extends Vue {
     const url = `/api/v1/medication-requests/${id}`;
     const payload = this.payload;
     try {
-      const response = await cornieClient().put(url, this.editpayload);
+      const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         //  this.setPatientRequests([response.data]);
         window.notify({ msg: "Request Updated", status: "success" });
@@ -810,24 +951,17 @@ export default class MedicationModal extends Vue {
   }
 
   async fetchResults() {
-    await this.fetchIssues(this.onepatientId as string);
-    await this.fetchPatientConditions(this.onepatientId as string);
-    await this.fetchAllergys(this.onepatientId as string);
+    await this.fetchrequestsById(this.patientId);
+    await this.fetchIssues(this.patientId as string);
+    await this.fetchPatientConditions(this.patientId as string);
+    await this.fetchAllergys(this.patientId as string);
   }
   async createMapper() {
     this.medicationMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/medication-codes"
     );
   }
-  get allBrand() {
-    if (!this.fullInfo || this.fullInfo.length === 0) return [];
-    return this.fullInfo.map((i: any) => {
-      return {
-        code: i.name,
-        display: i.name,
-      };
-    });
-  }
+
   async search(event: any) {
     const AllNotes = cornieClient().get(
       `/api/v1/emdex/generic-by-keyword/`,
@@ -839,13 +973,14 @@ export default class MedicationModal extends Vue {
     if (response[0].data === 0) {
       this.searchresult = 'No medication code found'
     } else {
-
       this.searchresult = response[0].data;
     }
+
   }
-  async resultData(id: any) {
+  async resultData(code: string) {
+    console.log("ALL BRNAD NAMW")
     const AllNotes = cornieClient().get(
-      `/api/v1/emdex/generic-brands/${id}`,
+      `/api/v1/emdex/generic-brands/${code}`,
     );
     const response = await Promise.all([AllNotes]);
     if (response[0].data === 0) {
@@ -854,6 +989,7 @@ export default class MedicationModal extends Vue {
 
       this.fullInfo = response[0].data;
     }
+
   }
   done() {
     this.$emit("medication-added");
@@ -865,7 +1001,7 @@ export default class MedicationModal extends Vue {
     await this.createMapper();
     await this.fetchPatients();
     await this.fetchPractitioners();
-
+    // await this.resultData(this.emptyMedicationDetails.genericCode);
   }
 }
 </script>
@@ -943,19 +1079,7 @@ export default class MedicationModal extends Vue {
   color: #667499;
 }
 
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
+
 
 .multiselect-tag.is-user img {
   width: 18px;

@@ -1,23 +1,26 @@
 <template>
-  <big-dialog
-    v-model="show"
-    :title="newaction"
-    class=""
-  >
+  <big-dialog v-model="show" :title="newaction" class="">
     <v-form ref="form">
-      <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-          title="Basic Info"
-          :opened="true"
-        >
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Basic Info" :opened="true">
           <div class="grid grid-cols-2 gap-3 mt-3">
             <cornie-input
               :rules="required"
               label="Name"
               class="w-full"
               v-model="name"
+              required
             />
-            <cornie-select
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+              class="w-full"
+              v-model="relationship"
+              label="Relationship"
+              placeholder="Select"
+              :rules="required"
+              required
+            />
+            <!-- <cornie-select
               class="w-full"
               label="Relationship"
               :rules="required"
@@ -27,67 +30,97 @@
               ]"
               :placeholder="'Select'"
               v-model="relationship"
-            />
-              <cornie-select
+            /> -->
+            <cornie-select
               class="w-full"
               label="Sex"
               :rules="required"
-              :items="[
-                'Male',
-                'Female',
-                'Other',
-              ]"
+              :items="['Male', 'Female', 'Other']"
               :placeholder="'Select'"
               v-model="sex"
+              required
             />
           </div>
         </accordion-component>
       </div>
-       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-          title="Born"
-          :opened="false"
-        >
-          <born-picker label="Year" v-model="bornTimeable" class="w-full mb-5"/>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Born" :opened="false">
+          <born-picker
+            label="Year"
+            v-model="bornTimeable"
+            class="w-full mb-5"
+            required
+          />
         </accordion-component>
       </div>
-       <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-        <accordion-component
-           title="Age"
-          :opened="false"
-        >
-        <measurable label="Age" v-model="agemesurable" />
-         <div class="mt-5">
-           <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
-          <div class="flex space-x-4 mt-5">
-            <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedAge"/>
-            <cornie-radio name="estimate"  :label="'No'" :value="false" v-model="estimatedAge"/>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Age" :opened="false">
+          <age-measurable label="Age" v-model="agemesurable" />
+          <div class="mt-5">
+            <span class="text-sm font-semibold mb-3 text-black"
+              >Estimated Age?
+            </span>
+            <div class="flex space-x-4 mt-5">
+              <cornie-radio
+                name="estimate"
+                :value="true"
+                label="Yes"
+                v-model="estimatedAge"
+              />
+              <cornie-radio
+                name="estimate"
+                :label="'No'"
+                :value="false"
+                v-model="estimatedAge"
+              />
+            </div>
           </div>
-        </div>
-        
         </accordion-component>
-       </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-            <accordion-component
-               :opened="false"
-              title="Deceased"
-            >
-              <div class="mt-5">
-                <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
-                <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="Deceased" :value="true" label="Yes" v-model="deceased"/>
-                  <cornie-radio name="Deceased"  label="No" :value="false" v-model="deceased"/>
-                </div>
-              <measurable label="Deceased Age" v-model="deceasedmeasurable" />
-              <div class="mt-5">
-                <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
-                <div class="flex space-x-4 mt-5">
-                  <cornie-radio name="estimate" :value="true" label="Yes" v-model="estimatedDeceased"/>
-                  <cornie-radio name="estimate"  label="No" :value="false" v-model="estimatedDeceased"/>
-                </div>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Deceased">
+          <div class="mt-5">
+            <span class="text-sm font-semibold mb-3 text-black">Deceased</span>
+            <div class="flex space-x-4 mt-5">
+              <cornie-radio
+                name="Deceased"
+                :value="true"
+                label="Yes"
+                v-model="deceased"
+              />
+              <cornie-radio
+                name="Deceased"
+                label="No"
+                :value="false"
+                v-model="deceased"
+              />
+            </div>
+            <deaceased-measurable
+              label="Deceased Age"
+              v-model="deceasedmeasurable"
+              v-if="deceased == true"
+            />
+            <div class="mt-5" v-if="deceased == true">
+              <span class="text-sm font-semibold mb-3 text-black"
+                >Estimated Age?</span
+              >
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                  name="estimate"
+                  :value="true"
+                  label="Yes"
+                  v-model="estimatedDeceased"
+                />
+                <cornie-radio
+                  name="estimate"
+                  label="No"
+                  :value="false"
+                  v-model="estimatedDeceased"
+                />
               </div>
             </div>
-            <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
+          </div>
+          <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
               <div class="bg-white shadow-md rounded-lg p-3" v-for="(item, i) in references"
                                   :key="i">
                 <span class="text-danger font-bold">Reason Reference</span>
@@ -105,15 +138,24 @@
 
               </div>
             </div> -->
-            </accordion-component>
-        </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-              <accordion-component
-                :opened="false"
-                title="Reason for History (Patient)"
-              >
-                <div class="grid grid-cols-2 gap-2 mt-5">
-                  <cornie-select
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component
+          :opened="false"
+          title="Reason for History (Patient)"
+        >
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/clinical-findings"
+              class="w-full"
+              label="Reason Code"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="reasonCode"
+              required
+            />
+            <!-- <cornie-select
                     class="w-full"
                     label="Reason Code"
                     :items="[
@@ -126,8 +168,22 @@
                     :rules="required"
                     :placeholder="'--Select--'"
                     v-model="reasonCode"
-                  />
-                  <cornie-select
+                  /> -->
+            <div>
+              <p class="text-sm text-black font-semibold mb-1">
+                Reason Reference
+              </p>
+              <div
+                class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                @click="showRefModal = true"
+              >
+                <span class="w-full">{{ reasonReference }}</span>
+                <span class="flex justify-end w-full">
+                  <plusIcon class="fill-current text-danger mt-1" />
+                </span>
+              </div>
+            </div>
+            <!-- <cornie-select
                     v-model="reasonReference"
                     label="Reason Reference"
                     class="w-full"
@@ -142,24 +198,29 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
-                  />
-                  <cornie-input
-                    v-model="note"
-                    class="w-full"
-                    label="Note"
-                    :rules="required"
-                    :placeholder="'Enter'"
-                  />
-                </div>
-              </accordion-component>
-        </div>
-         <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-              <accordion-component
-                :opened="false"
-                title="Condition (Related Person)"
-              >
-                <div class="grid grid-cols-2 gap-2 mt-5">
-                  <cornie-select
+                  /> -->
+            <cornie-input
+              v-model="note"
+              class="w-full"
+              label="Note"
+              :placeholder="'Enter'"
+            />
+          </div>
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Condition (Related Person)">
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/condition-code"
+              class="w-full"
+              label="Condition Code"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="conditionCode"
+              required
+            />
+            <!-- <cornie-select
                     class="w-full"
                     v-model="conditionCode"
                     label="Condition Code"
@@ -172,8 +233,17 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
-                  />
-                  <cornie-select
+                  /> -->
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/condition-outcome"
+              class="w-full"
+              label="Outcome"
+              :rules="required"
+              :placeholder="'--Select--'"
+              v-model="conditionOutcome"
+              required
+            />
+            <!-- <cornie-select
                     v-model="conditionOutcome"
                     label="Outcome"
                     class="w-full"
@@ -188,33 +258,41 @@
                     ]"
                     :rules="required"
                     :placeholder="'--Select--'"
-                  />
-                 <div class="mt-5">
-                    <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
-                    <div class="flex space-x-4 mt-5">
-                      <cornie-radio name="to" :value="true" label="Yes"  v-model="conditionContributedToDeath"/>
-                      <cornie-radio name="to"  label="No" :value="false" v-model="conditionContributedToDeath"/>
-                    </div>
-                  </div>
-                </div>
-              </accordion-component>
-        </div>
-        <div  class="border-b-2 pb-5 border-dashed border-gray-200">
-          <accordion-component
-             :opened="false"
-            title="Onset"
-          >
-          <onset-picker v-model="onsetmesurable" label="Onset"/>
-            <cornie-text-area
-              :rules="required"
-              v-model="onsetNote"
-              placeholder="Placeholder"
-              label="Notes"
-              class="w-full"
-              rows="4"
-            />
-          </accordion-component>
-        </div>
+                  /> -->
+            <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black"
+                >Contributed to Death?</span
+              >
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                  name="to"
+                  :value="true"
+                  label="Yes"
+                  v-model="conditionContributedToDeath"
+                />
+                <cornie-radio
+                  name="to"
+                  label="No"
+                  :value="false"
+                  v-model="conditionContributedToDeath"
+                />
+              </div>
+            </div>
+          </div>
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component :opened="false" title="Onset">
+          <onset-picker v-model="onsetmesurable" label="Onset" />
+          <cornie-text-area
+            v-model="onsetNote"
+            placeholder="Placeholder"
+            label="Notes"
+            class="w-full"
+            rows="4"
+          />
+        </accordion-component>
+      </div>
     </v-form>
     <template #actions>
       <cornie-btn
@@ -232,10 +310,7 @@
       </cornie-btn>
     </template>
   </big-dialog>
-  <reference-modal
-    @ref-value="refvalue"
-    v-model="showRefModal"
-  />
+  <reference-modal @ref-value="refvalue" v-model="showRefModal" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -254,7 +329,8 @@ import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieNumInput from "@/components/cornienuminput.vue";
 import CornieTextArea from "@/components/textarea.vue";
-import Measurable from "@/components/measurable.vue";
+import AgeMeasurable from "./components/ageMeasurable.vue";
+import DeaceasedMeasurable from "./components/deaceasedMeasurable.vue";
 import plusIcon from "@/components/icons/plus.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
@@ -264,6 +340,7 @@ import BornPicker from "@/components/bornable.vue";
 import OnsetPicker from "@/components/onset.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import FhirInput from "@/components/fhir-input.vue";
 
 import DatePicker from "./datepicker.vue";
 import ReferenceModal from "./reference.vue";
@@ -296,15 +373,13 @@ const measurable = {
   day: null,
   unit: null,
   min: null,
-  minUnit: null,
-  minValue: null,
   max: null,
-  maxUnit: null,
-  maxValue: null,
   string: null,
   startDate: null,
   startTime: null,
   endDate: null,
+   minUnit: null,
+ maxUnit: null,
 };
 @Options({
   name: "HistoryDialog",
@@ -318,7 +393,8 @@ const measurable = {
     DeceasedPicker,
     DatePicker,
     OnsetPicker,
-    Measurable,
+    AgeMeasurable,
+    DeaceasedMeasurable,
     plusIcon,
     AccordionComponent,
     ReferenceModal,
@@ -327,7 +403,9 @@ const measurable = {
     CornieRadio,
     CornieTextArea,
     BornPicker,
+    FhirInput,
   },
+
 })
 export default class HistoryDialog extends Vue {
   @Prop({ type: Boolean, default: false })
@@ -374,7 +452,7 @@ export default class HistoryDialog extends Vue {
   name = "";
   relationship =  "";
   sex = "";
-  status = "partial";
+  status = "completed";
   // born = { ...timeable };
 
   // age = { ...measurable };
@@ -386,7 +464,7 @@ export default class HistoryDialog extends Vue {
   // deceasedAge = { ...measurable };
 
   reasonCode = "";
-  reasonReference = "";
+  reasonReference = "Reason Reference";
   note = "";
   conditionCode = "";
   conditionOutcome = "";
@@ -446,95 +524,94 @@ export default class HistoryDialog extends Vue {
         this.references.splice(index, 1);
   }
 
+   isEmptyObject(object:any){
+  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+  return nonNulls.length <1
+}
+
   get onset() {
+   const range = {
+      unit: this.onsetmesurable.unit,
+      min: this.onsetmesurable.min,
+      max: this.onsetmesurable.max
+    
+    }; 
+    const age = {
+       unit: this.onsetmesurable.ageUnit,
+        value: this.onsetmesurable.ageValue,
+    
+    }; 
+    // const period = {
+    //    start: this.onsetmesurable.startDate,
+    //     end: this.onsetmesurable.endDate,
+    //     startTime: this.onsetmesurable.startTime,
+    //     endTime: this.onsetmesurable.endTime,
+    
+    // }; 
     return {
-      range: !Object.values({
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      } : null,
-      age: !Object.values({
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
-      } : null, 
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
       year: this.onsetmesurable.string || null,
-      // period: !Object.values({
-      //   start: this.onsetmesurable.startDate,
-      //   end: this.onsetmesurable.endDate,
-      // }).every(o => o === null) ? {
-      //   start: this.onsetmesurable.startDate,
-      //   end: this.onsetmesurable.endDate,
-      // } : null,
+     // period:this.isEmptyObject (period) ? undefined : period,
     };
   }
 
+
+
+
   get born() {
+     const period = {
+      start: this.bornTimeable.startDate,
+          end: this.bornTimeable.endDate
+    
+    }; 
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
-      period: !Object.values({
-          start: this.bornTimeable.startDate, 
-          end: this.bornTimeable.endDate
-        }).every(o => o === null) ? {
-          start: this.bornTimeable.startDate, 
-          end: this.bornTimeable.endDate
-        } : null,
+     period:this.isEmptyObject (period) ? undefined : period,
       dateTime: this.bornTimeable.date || null,
       year: this.bornTimeable.age || null,
     };
   }
 
- 
+
   get age() {
+    const range = {
+       unit: this.agemesurable.minUnit,
+        min: this.agemesurable.min,
+        max: this.agemesurable.max,
+    
+    }; 
+    const age = {
+      unit: this.agemesurable.ageUnit,
+        value: this.agemesurable.ageValue,
+    
+    }; 
     return {
       estimated: this.estimatedAge || null,
       year: this.agemesurable.string || null,
-      range: !Object.values({
-          unit: this.agemesurable.unit,
-          min: this.agemesurable.min,
-          max: this.agemesurable.max
-      }).every(o => o === null) ?  {
-          unit: this.agemesurable.unit,
-          min: this.agemesurable.min,
-          max: this.agemesurable.max
-      } : null,
-      age: !Object.values({
-        unit: this.agemesurable.ageUnit,
-        value: this.agemesurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.agemesurable.ageUnit,
-        value: this.agemesurable.ageValue,
-      } : null,
-     
+      range: this.isEmptyObject (range) ? undefined : range,
+     age: this.isEmptyObject (age) ? undefined : age,
+
     };
   }
 
   get deceasedAge() {
+      const range = {
+       unit: this.deceasedmeasurable.minUnit,
+          min:  this.deceasedmeasurable.min,
+          max: this.deceasedmeasurable.max
+    
+    }; 
+    const age = {
+       unit: this.deceasedmeasurable.ageUnit,
+          value: this.deceasedmeasurable.ageValue,
+    
+    };
     return {
        estimated: this.estimatedDeceased,
         year: this.deceasedmeasurable.string || null,
-        range: !Object.values({
-          unit: this.deceasedmeasurable.unit,
-          min:  this.deceasedmeasurable.min,
-          max: this.deceasedmeasurable.max
-        }).every(o => o === null) ? {
-          unit: this.deceasedmeasurable.unit,
-          min:  this.deceasedmeasurable.min,
-          max: this.deceasedmeasurable.max
-        } : null,
-        age: !Object.values({
-          unit: this.deceasedmeasurable.ageUnit,
-          value: this.deceasedmeasurable.ageValue,
-        }).every(o => o === null) ? {
-          unit: this.deceasedmeasurable.ageUnit,
-          value: this.deceasedmeasurable.ageValue,
-        } :  null,
+        range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
     };
   }
   async setNewHistoryModel() {
@@ -596,16 +673,28 @@ export default class HistoryDialog extends Vue {
       onset: this.onset,
       reasonCode: this.reasonCode,
       reasonReference: this.reasonReference,
-      note: this.note,
+      note: this.note || undefined,
       conditionCode: this.conditionCode,
       conditionOutcome: this.conditionOutcome,
       conditionContributedToDeath: this.conditionContributedToDeath,
       name: this.name,
       relationship: this.relationship,
       sex: this.sex,
-      deceasedAge: this.deceasedAge,
-   
+      deceasedAge: this.deceasedAge || null,
+
     };
+  }
+  reset(){
+    this.status ="";
+    this.reasonCode = "";
+    this.reasonReference ="";
+    this.note = "";
+    this.conditionCode = "";
+    this.conditionOutcome = "";
+    this.conditionContributedToDeath = false;
+    this.name = "";
+    this.relationship = "";
+    this.sex = "";
   }
   get newaction() {
     return this.id ? "Update History" : "Create New";
@@ -614,8 +703,10 @@ export default class HistoryDialog extends Vue {
     this.showRefModal = true;
     this.reasonReference = value;
   }
-  refvalue(value:any){
+  refvalue(value:any, type:string){
     this.references.push(value);
+    this.reasonReference = type;
+    console.log(value, 'npm install numeral');
   }
   done() {
     this.$emit("history-added");
@@ -628,6 +719,9 @@ export default class HistoryDialog extends Vue {
     this.loading = false;
   }
   async createhistory() {
+     const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
     try {
       const response = await cornieClient().post(
         "/api/v1/family-history",
@@ -639,10 +733,11 @@ export default class HistoryDialog extends Vue {
           status: "success",
         });
         this.done();
+        this.reset();
       }
     } catch (error:any) {
       window.notify({
-        msg: error.response.data.message,
+        msg: "Medical family history not created",
         status: "error",
       });
     }
@@ -672,7 +767,7 @@ export default class HistoryDialog extends Vue {
 
   async created() {
     this.setHistory();
-    if (this.patientId) await this.fetchAllergy();
+    if(this.patientId) this.fetchAllergy();
     await this.fetchPractitioners();
   }
 }

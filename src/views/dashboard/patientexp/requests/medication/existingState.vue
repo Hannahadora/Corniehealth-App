@@ -8,10 +8,10 @@
       </button>
     </span> -->
      <div class="flex justify-center space-x-6 w-full -mb-10">
-        <span class="flex space-x-4">
+        <span class="flex space-x-4 text-sm ml-20">
           <medication-drug class="mr-2"/> Substitution Permitted
         </span>
-        <span class="flex space-x-4">
+        <span class="flex space-x-4 text-sm">
           <refill-drug class="mr-2"/> Refilled Required
         </span>
       </div>
@@ -398,7 +398,7 @@ export default class RequestExistingState extends Vue {
     },
     {
       title: "quantity",
-      key: "quantity",
+      key: "newquantity",
       show: true,
       noOrder: true
     },
@@ -487,7 +487,7 @@ export default class RequestExistingState extends Vue {
   medicationRequest(request: any) {
     const { medications, ...rest } = request;
     return medications.map((medication: any) => {
-      return { ...medication, ...rest, medicationId: medication.id, requestId: request.id, createdAt: new Date(request.createdAt).toLocaleDateString() }
+      return { ...medication, ...rest, medicationId: medication.id, requestId: request.id, createdAt: new Date(request.createdAt).toLocaleDateString(), newquantity: (medication.dosageInstruction.split(":").map(Number).reduce ((a:any,b:any) => a+b, 0)) * (medication.durationInDays) }
     })
   }
   getPatientName(id: string) {

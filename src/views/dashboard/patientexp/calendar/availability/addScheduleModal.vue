@@ -293,7 +293,7 @@
                   <div class="flex space-x-2" v-if="repeattype == 'After'">
                     <cornie-input
                       :rules="required"
-                      placeholder="20"
+                      placeholder="0"
                       class="grow"
                       v-model="repeat.end.value"
                       :setfull="true"
@@ -686,7 +686,12 @@ export default class scheduleModal extends Vue {
   endDate = "";
   repeat = {
     days:[],
+    end: {
+      type: 'events',
+      value: '0',
+   }
   } as any;
+
   serviceType = "serviceType";
   serviceName = [] as any;
   slotSize = 0;
@@ -743,10 +748,10 @@ export default class scheduleModal extends Vue {
       startTime: this.startTime,
       endTime: this.endTime,
       endDate: this.endDate,
-      practitoners: this.practitonerId,
+      practitioners: this.practitonerId,
       services: this.serviceName,
       breaks: this.breaks,
-      repeat: this.repeat,
+      repeat: this.repeat.interval ? this.repeat : undefined,
       serviceType: this.serviceType,
       slotSize: this.slotSize,
       organizationId: this.authPractitioner.organizationId,
@@ -789,7 +794,7 @@ cancel(){
         window.notify({ msg: "Availability created", status: "success" });
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Availability not created", status: "error" });
     }
   }
 

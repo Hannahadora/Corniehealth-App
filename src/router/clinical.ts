@@ -90,7 +90,7 @@ export const ClinicalsRoute: RouteRecordRaw = {
       path: "procedure",
       props: true,
       name: "Procedures",
-      component: () => import("@/views/dashboard/ehr/procedures/index2.vue"),
+      component: () => import("@/views/dashboard/ehr/procedures/index.vue"),
     },
     {
       path: "history",
@@ -135,6 +135,12 @@ export const ClinicalsRoute: RouteRecordRaw = {
       props: true,
       name: "Referral",
       component: () => import("@/views/dashboard/ehr/refferal/index.vue"),
+    },
+    {
+      path: "forms-questionaires",
+      props: true,
+      name: "Form | Questionaires | Survey",
+      component: () => import("@/views/dashboard/ehr/forms/index.vue"),
     },
   ],
 };

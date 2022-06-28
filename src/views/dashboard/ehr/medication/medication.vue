@@ -38,7 +38,7 @@
             >
             </cornie-select>
              <div class="w-full -mt-1">
-                <span class="text-sm font-semibold mb-3">Dosage Instruction</span>
+                <span class="text-sm font-semibold mb-3">Dosage Interval</span>
                 <div class="flex space-x-2 w-full">
                     <cornie-input
                     :rules="required"

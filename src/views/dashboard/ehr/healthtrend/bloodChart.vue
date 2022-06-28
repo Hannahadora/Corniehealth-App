@@ -1,7 +1,7 @@
 <template>
   <chart-card height="338px" title="Blood Pressure" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
-      {{ diastolicAverage || 0}}/{{ systolicAverage || 0 }}
+      {{ diastolicAverage }}/{{ systolicAverage || 0 }}
       <span class="font-light">mmHgz</span>
     </p>
     <canvas ref="chart" style="margin: auto; width: 100%"></canvas>
@@ -22,7 +22,7 @@ import {
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
 import { getChartData } from "./helper/vitals-chart-helper";
-
+import moment from "moment";
 const vitalsStore = namespace("vitals");
 
 @Options({
@@ -42,8 +42,8 @@ export default class BloodChartt extends Vue {
     startDate = new Date().toISOString();
 
   raw: IStat[] = [];
-  diastolicRaw: IStat[] = [];
-  systolicRaw: IStat[] = [];
+  diastolicRaw = [] as any;
+  systolicRaw = [] as any;
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   get sortedVitals() {
@@ -60,19 +60,15 @@ export default class BloodChartt extends Vue {
     if (this.order == 'Today'){
       return new Date().toISOString();
     }else if(this.order == 'WTD'){
-      const  today = new Date();
-      const  nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7).toISOString();
-      return nextweek;
+      var oneWeekAgo = moment().subtract(1, 'week');
+      console.log(oneWeekAgo, 'week');
+      return oneWeekAgo.format();
     }else if(this.order == 'MTD'){
-      const Xmas95 = new Date();
-      const month = Xmas95.getMonth();
-      const newmonth = new Date(month).toISOString();
-      return newmonth;
+      var oneMonthsAgo = moment().subtract(1, 'months');
+      return oneMonthsAgo.format();
     }else {
-      const today = new Date();
-      const year = today.getFullYear();
-      const newyear = new Date(year).toISOString();
-       return newyear;
+      var oneYearAgo = moment().subtract(1, 'year');
+      return oneYearAgo.format();
     }
   }
 
@@ -170,14 +166,14 @@ export default class BloodChartt extends Vue {
   }
 
   get systolicAverage() {
-    const values = this.systolicRaw?.map((a) => a.count);
+    const values = this.systolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
   get diastolicAverage() {
-    const values = this.diastolicRaw?.map((a) => a.count);
+    const values = this.diastolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values?.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
 
   chart!: Chart;
@@ -190,6 +186,7 @@ export default class BloodChartt extends Vue {
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
     // this.chartData;
+    this.fetchData(this.$route.params.id.toString())
     this.diastolicChartData;
     this.systolicChartData;
   }
@@ -202,32 +199,42 @@ export default class BloodChartt extends Vue {
     this.mountChart();
   }
 
+  get filteredItems() {
+    for (var key in this.raw) {
+        var obj = this.raw[key];
+        return obj
+    }
+  }
+
   async fetchData(patientId: string) {
+    const [splitDate] = this.startDate.split('T');
+   const date = splitDate;
+   const [splitDate2] = this.date.split('T');
+   const date2 = splitDate2;
     try {
       const response = await cornieClient().get(
         `api/v1/health-trends/bp-stats/${patientId}`,
         {
-          start: this.startDate,
-          end: this.date,
+         start: date2,
+          end: date,
         }
       );
-      this.diastolicRaw = response?.data?.diastolicData?.map((record: any) => {
-        return { count: record.value, date: record.date };
-      });
-      this.systolicRaw = response?.data?.systolicData?.map((record: any) => {
-        return { count: record.value, date: record.date };
-      });
       this.raw = response.data;
 
-      // this.raw = response.data?.map((item: any) => {
-      //   return { count: item.value, date: item.date }
-      // });
-      // this.chartData; //this line just  gets the vuejs reactivity system to refresh
+      const diastolic = response.data.diastolic
+      this.diastolicRaw = Object.entries(diastolic).map((key, value) => {
+          return {count: value, date: key}
+      })
+
+       const systolic = response.data.systolic
+      this.systolicRaw = Object.entries(systolic).map((key, value) => {
+          return {count: value, date: key}
+      })
     } catch (error:any) {
-      window.notify({
-        msg: error.response.data.message,
-        status: "error",
-      });
+      // window.notify({
+      //   msg: error.response.data.message,
+      //   status: "error",
+      // });
     }
   }
 

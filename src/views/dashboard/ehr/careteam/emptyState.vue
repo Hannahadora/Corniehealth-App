@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col justify-center items-center h-96">
+  <div class="w-full flex flex-col justify-center items-center">
     <img src="@/assets/img/empty-careteam.svg" />
     <div class="flex flex-col justify-center items-center">
       <h3 class="text-center mt-5 font-bold">No care teams on record</h3>

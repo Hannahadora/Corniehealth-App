@@ -15,7 +15,7 @@ export default interface IAllergy {
   note: string;
   patientId: string;
   practitionerId: string;
-  verificationSatusHistory: History<VerificationStatus>[];
+  verificationStatusHistory: History<VerificationStatus>[];
   clinicalStatusHistory: History<ClinicalStatus>[];
   updatedAt: string;
 }

@@ -48,12 +48,13 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "inventory",
       name: "Inventory settings",
-      component: () => import("@/views/dashboard/settings/inventory/index.vue")
+      component: () => import("@/views/dashboard/settings/inventory/index.vue"),
     },
     {
       path: "update-add-device/:id?",
       name: "Add or Update Device",
-      component: () => import("@/views/dashboard/settings/devices/updatedevice.vue"),
+      component: () =>
+        import("@/views/dashboard/settings/devices/updatedevice.vue"),
     },
     {
       path: "practice-information",
@@ -72,21 +73,21 @@ export const SettingsRoute: RouteRecordRaw = {
     {
       path: "specialties",
       name: "Specialties",
-      component: () =>
-        import("@/views/dashboard/settings/special/index.vue"),
+      component: () => import("@/views/dashboard/settings/special/index.vue"),
     },
-    // {
-    //   path: "locations",
-    //   name: "Locations",
-    //   component: () => import("@/views/dashboard/settings/location/index.vue"),
-    // },
-    // {
-    //   path: "add-location/:id?",
-    //   props: true,
-    //   name: "New Location",
-    //   component: () =>
-    //     import("@/views/dashboard/settings/location/addLocation.vue"),
-    // },
+    {
+      path: "locations",
+      name: "Locations",
+      alias: "location",
+      component: () => import("@/views/dashboard/settings/location/index.vue"),
+    },
+    {
+      path: "add-location/:id?",
+      props: true,
+      name: "New Location",
+      component: () =>
+        import("@/views/dashboard/settings/location/addLocation.vue"),
+    },
     {
       path: "domains",
       name: "Domains",
@@ -166,11 +167,11 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () =>
         import("@/views/dashboard/settings/rolesprivileges/role-form.vue"),
     },
-    // {
-    //   path: "group",
-    //   name: "Group",
-    //   component: () => import("@/views/dashboard/settings/group/index.vue"),
-    // },
+    {
+      path: "group",
+      name: "Group",
+      component: () => import("@/views/dashboard/settings/group/index.vue"),
+    },
     {
       path: "practice-templates",
       name: "Practice Forms/Templates",
@@ -180,14 +181,15 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "medication",
       props: true,
       name: "Medication Request",
-      component: () => import("@/views/dashboard/medications/medication/index.vue"),
+      component: () =>
+        import("@/views/dashboard/medications/medication/index.vue"),
     },
-    {
-      path: "diagnostics",
-      // props: true,
-      name: "Diagnostics",
-      component: () => import("@/views/dashboard/diagnostics/index.vue"),
-    },
+    // {
+    //   path: "diagnostics",
+    //   // props: true,
+    //   name: "Diagnostics",
+    //   component: () => import("@/views/dashboard/diagnostics/index.vue"),
+    // },
     {
       path: "markup",
       props: true,
@@ -238,30 +240,35 @@ export const SettingsRoute: RouteRecordRaw = {
       path: "dispense",
       props: true,
       name: "Dispense",
-      component: () => import("@/views/dashboard/medications/dispense/index.vue"),
+      component: () =>
+        import("@/views/dashboard/medications/dispense/index.vue"),
     },
     {
       path: "virtual-lab-orders",
       props: true,
       name: "Virtual Lab Orders",
-      component: () => import("@/views/dashboard/diagnostics/virtual-lab-orders/index.vue"),
+      component: () =>
+        import("@/views/dashboard/diagnostics/virtual-lab-orders/index.vue"),
     },
     {
       path: "diagnostics",
       name: "Diagnostic Report",
-      component: () =>
-        import("@/views/dashboard/diagnostics/index.vue"),
+      component: () => import("@/views/dashboard/diagnostics/index.vue"),
     },
     {
       path: "observations",
       name: "Observations",
-      component: () => import("@/views/dashboard/diagnostics/observations/index.vue"),
+      component: () =>
+        import("@/views/dashboard/diagnostics/observations/index.vue"),
     },
     {
       path: "pharmacy-orders",
       props: true,
       name: "Virtual Pharmacy Orders",
-      component: () => import("@/views/dashboard/medications/virtual-pharmacy-orders/index.vue"),
+      component: () =>
+        import(
+          "@/views/dashboard/medications/virtual-pharmacy-orders/index.vue"
+        ),
     },
   ],
 };

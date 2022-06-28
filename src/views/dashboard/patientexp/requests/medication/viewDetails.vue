@@ -21,11 +21,11 @@
             <div class="grid grid-cols-3 gap-4 w-full justify-center border-b-2 border-dashed border-gray-200 pb-5">
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Request Date</span>
-                    <span class="py-3 rounded-md"> {{ new Date(input.createdAt).toLocaleDateString()}} </span>
+                    <span class="py-3 rounded-md"> {{ new Date(selectedItem.createdAt).toLocaleDateString()}} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Requisition ID</span>
-                    <span class="py-3 rounded-md"> {{ input.identifier }} </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem.identifier }} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Recorder</span>
@@ -33,27 +33,27 @@
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Status</span>
-                    <span class="rounded-full bg-green-100 text-green-400 px-3 py-1 mt-3 text-xs"> {{ input.status }} </span>
+                    <span class="rounded-full bg-green-100 text-green-400 px-3 py-1 mt-3 text-xs"> {{ selectedItem.status }} </span>
                 </div>
                   <div>
                     <span class="block capitalize text-sm text-gray-400">Status Reason</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md">{{ selectedItem.status }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Based On</span>
-                    <span class="py-3 rounded-md"> {{ input.basedOn }} </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem.basedOn }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Intent</span>
-                    <span class="py-3 rounded-md"> {{ input.intent }} </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem.intent }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Priority</span>
-                    <span class="py-3 rounded-md"> {{ input?.priority }} </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem?.priority }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Category</span>
-                    <span class="py-3 rounded-md"> {{ input.category }} </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem.category }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Encounter</span>
@@ -61,19 +61,19 @@
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Supporting Information</span>
-                    <span class="py-3 rounded-md"> xxxxxx </span>
+                    <span class="py-3 rounded-md"> {{ selectedItem.reasonForSubstitution }} </span>
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Requester</span>
-                    <span class="py-3 rounded-md"> {{ getPractitionerName(input.requesterId) }} </span>
+                    <span class="py-3 rounded-md"> {{ getPractitionerName(selectedItem.requesterId) }} </span>
                 </div>
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Patient</span>
-                    <span class="py-3 rounded-md"> {{ getPatientName(input.patientId) }} </span>
+                    <span class="py-3 rounded-md"> {{ getPatientName(selectedItem.patientId) }} </span>
                 </div>
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Dispenser</span>
-                    <span class="py-3 rounded-md"> {{ getOrgName(input.dispenserId) }} </span>
+                    <span class="py-3 rounded-md"> {{ getOrgName(selectedItem.dispenserId) }} </span>
                 </div>
 
               
@@ -81,7 +81,7 @@
             </div>
             <accordion-component
               title="Medication"
-              :opened="false"
+              :opened="true"
             >
              <cornie-table :columns="medicationHeader" v-model="medications" :listmenu="true" :check="false">
                 <template #actions="{ item }">
@@ -124,7 +124,7 @@
             </accordion-component>
              <accordion-component
               title="Refill"
-              :opened="false"
+              :opened="true"
             >
              <cornie-table :columns="refillHeader" v-model="refills" :listmenu="true" :check="false">
                 <template #actions="{ item }">

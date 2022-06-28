@@ -21,6 +21,7 @@
             class="w-full"
             placeholder="David Alabi Smith"
             v-model="name"
+            :rules="required"
           />
           <cornie-select
             label="Gender"
@@ -28,19 +29,32 @@
             placeholder="Select One"
             :items="genderOptions"
             v-model="gender"
+            :rules="required"
           />
-          <cornie-select
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/v3-FamilyMember"
+            class="w-full"
+            v-model="relationship"
+            label="Relationship"
+            placeholder="Select"
+            :rules="required"
+            required
+          />
+          <!-- <cornie-select
             label="Relationship"
             class="w-full"
             placeholder="Select"
             :items="relationshipOptions"
             v-model="relationship"
-          />
+            :required="true"
+            :rules="required"
+          /> -->
           <cornie-input
             label="Mailing Address"
             class="w-full"
             placeholder="Enter"
             v-model="mailingAddress"
+            :rules="required"
           />
 
           <auto-complete
@@ -49,6 +63,7 @@
             placeholder="Enter"
             v-model="country"
             :items="nationState.countries"
+            :rules="required"
           />
 
           <auto-complete
@@ -57,6 +72,7 @@
             placeholder="Enter"
             v-model="state"
             :items="nationState.states"
+            :rules="required"
           />
 
           <cornie-input
@@ -64,33 +80,38 @@
             class="w-full"
             placeholder="Enter"
             v-model="city"
+            :rules="required"
           />
           <cornie-input
             label="Suite or Apt No"
             class="w-full"
             placeholder="Enter"
             v-model="aptNumber"
+            :rules="required"
           />
           <cornie-input
             label="Post Code"
             class="w-full"
             placeholder="Enter"
             v-model="postCode"
+            :rules="required"
           />
           <cornie-phone-input
             label="Mobile Number 1"
-            class="w-full"
+            class="w-full mb-6"
             placeholder="Enter"
             v-model="primaryPhone.number"
             v-model:code="primaryPhone.dialCode"
           />
 
           <cornie-phone-input
-            label="Mobile Number 2"
-            class="w-full"
+            label="Mobile Number 2 (optional)"
+            class="w-full mb-6"
             placeholder="Enter"
             v-model="secondaryPhone.number"
             v-model:code="secondaryPhone.dialCode"
+            :rules="undefined"
+            :notRequired="true"
           />
           <cornie-input
             label="Email"
@@ -110,6 +131,7 @@
               label="Period (from - to)"
               class="mr-1 w-full"
               v-model="period"
+              :rules="required"
             />
           </div>
         </v-form>
@@ -137,221 +159,239 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { string } from "yup";
-import ObjectSet from "@/lib/objectset";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
+  import { cornieClient } from "@/plugins/http";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { string } from "yup";
 
-import { IPatient, RelatedPerson } from "@/types/IPatient";
-import Period from "@/types/IPeriod";
+  import { IPatient, RelatedPerson } from "@/types/IPatient";
+  import Period from "@/types/IPeriod";
 
-import { useCountryStates } from "@/composables/useCountryStates";
-import CornieCard from "@/components/cornie-card";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CorniePhoneInput from "@/components/phone-input.vue";
-import CornieDatePicker from "@/components/datepicker.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import PeriodPicker from "@/components/daterangepicker.vue";
-import AutoComplete from "@/components/autocomplete.vue";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieDatePicker from "@/components/datepicker.vue";
+  import PeriodPicker from "@/components/daterangepicker.vue";
+  import FhirInput from "@/components/fhir-input.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CorniePhoneInput from "@/components/phone-input.vue";
+  import { useCountryStates } from "@/composables/useCountryStates";
 
-const patients = namespace("patients");
+  const patients = namespace("patients");
 
-@Options({
-  name: "emergency-contact-dialog",
-  components: {
-    ...CornieCard,
-    AutoComplete,
-    PeriodPicker,
-    CornieIconBtn,
-    ArrowLeftIcon,
-    CornieDialog,
-    CornieInput,
-    CornieSelect,
-    CorniePhoneInput,
-    CornieDatePicker,
-    CornieBtn,
-  },
-})
-export default class EmergencyDontactDialog extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  @Options({
+    name: "emergency-contact-dialog",
+    components: {
+      ...CornieCard,
+      AutoComplete,
+      FhirInput,
+      PeriodPicker,
+      CornieIconBtn,
+      ArrowLeftIcon,
+      CornieDialog,
+      CornieInput,
+      CornieSelect,
+      CorniePhoneInput,
+      CornieDatePicker,
+      CornieBtn,
+    },
+  })
+  export default class EmergencyDontactDialog extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  @Prop({ type: Object })
-  patient!: IPatient;
+    @Prop({ type: Object })
+    patient!: IPatient;
 
-  @Prop({ type: Array, default: [] })
-  emergencyContacts!: RelatedPerson[];
+    @Prop({ type: Array, default: [] })
+    emergencyContacts!: RelatedPerson[];
 
-  @PropSync("emergencyContacts")
-  emergencyContactsSync!: RelatedPerson[];
+    @PropSync("emergencyContacts")
+    emergencyContactsSync!: RelatedPerson[];
 
-  name = "";
-  gender = "";
-  relationship = "";
-  country = "";
-  state = "";
-  city = "";
-  aptNumber = "";
-  email = "";
-  organization = "";
-  postCode = "";
-  period: Period = { start: "", end: "" };
-  mailingAddress = "";
-  primaryPhone = { number: "", dialCode: "+234" };
-  secondaryPhone = { number: "", dialCode: "+234" };
-  emailRule = string().email().required();
-  genderOptions = [
-    { code: "male", display: "Male" },
-    { code: "female", display: "Female" },
-    { code: "other", display: "Other" },
-  ];
+    name = "";
+    gender = "";
+    relationship = "";
+    country = "";
+    state = "";
+    city = "";
+    aptNumber = "";
+    email = "";
+    organization = "";
+    postCode = "";
+    period: Period = { start: "", end: "" };
+    mailingAddress = "";
+    primaryPhone = { number: "", dialCode: "+234" };
+    secondaryPhone = { number: "", dialCode: "+234" };
+    emailRule = string().email().required();
+    required = string().required();
+    genderOptions = [
+      { code: "male", display: "Male" },
+      { code: "female", display: "Female" },
+      { code: "other", display: "Other" },
+    ];
 
-  relationshipOptions = [
-    "Father",
-    "Mother",
-    "Sibling",
-    "Grand Father",
-    "Grand Mother",
-    "Uncle",
-    "Aunt",
-  ];
+    relationshipOptions = [
+      "Father",
+      "Mother",
+      "Sibling",
+      "Grand Father",
+      "Grand Mother",
+      "Uncle",
+      "Aunt",
+    ];
 
-  loading = false;
-  currentId = "";
+    loading = false;
+    currentId = "";
 
-  nationState = setup(() => useCountryStates());
+    nationState = setup(() => useCountryStates());
 
-  @patients.Action
-  updatePatientField!: (data: {
-    id: string;
-    field: string;
-    data: any[];
-  }) => void;
+    @patients.Action
+    updatePatientField!: (data: {
+      id: string;
+      field: string;
+      data: any[];
+    }) => void;
 
-  get payload() {
-    let [firstname, middlename, lastname] = this.name.split(" ");
-    if (!lastname) lastname = middlename;
-    const payload = {
-      firstname,
-      lastname,
-      middlename,
-      gender: this.gender,
-      relationship: this.relationship,
-      country: this.country,
-      state: this.state,
-      city: this.city,
-      aptNumber: this.aptNumber,
-      email: this.email,
-      organization: this.organization,
-      postalCode: this.postCode,
-      period: this.period,
-      primaryPhone: this.primaryPhone,
-      mailingAddress: this.mailingAddress,
-      type: "emergency-contact",
-    } as RelatedPerson;
-    if (this.patient?.id) payload.patientId = this.patient.id;
-    if (this.currentId) payload.id = this.currentId;
-    if (this.secondaryPhone.number)
-      payload.secondaryPhone = this.secondaryPhone;
-    return payload;
-  }
-  async save() {
-    const report = await (this.$refs.form as any).validate();
-    if (!report.valid) return;
-    this.loading = true;
-    if (this.patient) await this.submit();
-    else this.batch();
-    this.loading = false;
-  }
-
-  batch() {
-    this.loading = true;
-    // const emergency = this.emergencyContactsSync ?? [];
-    // const contactSet = new ObjectSet(
-    //   [this.emergencyContactsSync, this.payload],
-    //   "email"
-    // );
-    // this.emergencyContactsSync = [...contactSet];
-    this.$emit('allContacts', this.payload);
-    this.loading = false;
-    this.show = false;
-  }
-
-  async submit() {
-    const action = this.currentId ? "Updated" : "Created";
-    let result: any;
-    try {
-      if (this.currentId) result = await this.update();
-      else result = await this.createNew();
-      window.notify({
-        msg: `Contact ${action} successfully`,
-        status: "success",
-      });
-    } catch (error) {
-      window.notify({ msg: `Contact not ${action}`, status: "error" });
+    get payload() {
+      let [firstname, middlename, lastname] = this.name.split(" ");
+      if (!lastname) lastname = middlename;
+      const payload = {
+        firstname,
+        lastname,
+        middlename,
+        gender: this.gender,
+        relationship: this.relationship,
+        country: this.country,
+        state: this.state,
+        city: this.city,
+        aptNumber: this.aptNumber,
+        email: this.email,
+        organization: this.organization,
+        postalCode: this.postCode,
+        period: this.period,
+        primaryPhone: this.primaryPhone,
+        mailingAddress: this.mailingAddress,
+        type: "emergency-contact",
+      } as RelatedPerson;
+      if (this.patient?.id) payload.patientId = this.patient.id;
+      if (this.currentId) payload.id = this.currentId;
+      if (this.secondaryPhone.number)
+        payload.secondaryPhone = this.secondaryPhone;
+      return payload;
     }
-    if (result) this.updatePatient(result);
-  }
+    async save() {
+      const report = await (this.$refs.form as any).validate();
+      if (!report.valid) return;
+      this.loading = true;
+      if (this.patient) await this.submit();
+      else this.batch();
+      this.loading = false;
+    }
+    reset() {
+      this.name = "";
+      this.gender = "";
+      this.relationship = "";
+      this.country = "";
+      this.state = "";
+      this.city = "";
+      this.aptNumber = "";
+      this.email = "";
+      this.organization = "";
+      this.postCode = "";
+      this.period = { start: "", end: "" };
+      this.primaryPhone = { number: "", dialCode: "+234" };
+      this.mailingAddress = "";
+    }
 
-  updatePatient(data: any) {
-    this.updatePatientField({
-      id: this.patient.id!!,
-      field: "emergencyContacts",
-      data: [data],
-    });
-  }
+    batch() {
+      this.loading = true;
+      // const emergency = this.emergencyContactsSync ?? [];
+      // const contactSet = new ObjectSet(
+      //   [this.emergencyContactsSync, this.payload],
+      //   "email"
+      // );
+      // this.emergencyContactsSync = [...contactSet];
+      this.$emit("allContacts", this.payload);
+      this.loading = false;
+      this.show = false;
+    }
 
-  async createNew() {
-    const response = await cornieClient().post(
-      "/api/v1/patient/emergency-contact",
-      this.payload
-    );
-    return response.data;
-  }
-  async update() {
-    const response = await cornieClient().put(
-      `/api/v1/patient/emergency-contact/${this.currentId}`,
-      this.payload
-    );
-    return response.data;
-  }
-  hydrate() {
-    const emergencyContacts = this.patient.emergencyContacts;
-    if (!emergencyContacts) return;
-    const [contact, ..._] = emergencyContacts;
-    if (!contact) return;
-    this.currentId = contact.id || "";
-    this.name = `${contact.firstname} ${contact.middlename || ""} ${
-      contact.lastname
-    }`;
-    this.city = contact.city || "";
-    this.aptNumber = contact.aptNumber || "";
-    this.postCode = contact.postalCode || "";
-    this.primaryPhone = { ...contact.primaryPhone };
-    this.secondaryPhone = {
-      ...(contact.secondaryPhone || this.secondaryPhone),
-    };
-    this.email = contact.email || "";
-    this.organization = contact.organization || "";
-    this.relationship = contact.relationship || "";
-    this.period = contact.period || this.period;
-  }
+    async submit() {
+      const action = this.currentId ? "Updated" : "Created";
+      let result: any;
+      try {
+        if (this.currentId) result = await this.update();
+        else result = await this.createNew();
+        window.notify({
+          msg: `Contact ${action} successfully`,
+          status: "success",
+        });
+      } catch (error) {
+        window.notify({ msg: `Contact not ${action}`, status: "error" });
+      }
+      if (result) this.updatePatient(result);
+    }
 
-  @Watch("patient")
-  patientChanged() {
-    if (this.patient?.id) this.hydrate();
-  }
+    updatePatient(data: any) {
+      this.updatePatientField({
+        id: this.patient.id!!,
+        field: "emergencyContacts",
+        data: [data],
+      });
+      this.reset();
+    }
 
-  created() {
-    if (this.patient?.id) this.hydrate();
+    async createNew() {
+      const response = await cornieClient().post(
+        "/api/v1/patient/emergency-contact",
+        this.payload
+      );
+      return response.data;
+    }
+    async update() {
+      const response = await cornieClient().put(
+        `/api/v1/patient/emergency-contact/${this.currentId}`,
+        this.payload
+      );
+      return response.data;
+    }
+    hydrate() {
+      const emergencyContacts = this.patient.emergencyContacts;
+      if (!emergencyContacts) return;
+      const [contact, ..._] = emergencyContacts;
+      if (!contact) return;
+      this.currentId = contact.id || "";
+      this.name = `${contact.firstname} ${contact.middlename || ""} ${
+        contact.lastname
+      }`;
+      this.city = contact.city || "";
+      this.aptNumber = contact.aptNumber || "";
+      this.postCode = contact.postalCode || "";
+      this.primaryPhone = { ...contact.primaryPhone };
+      this.secondaryPhone = {
+        ...(contact.secondaryPhone || this.secondaryPhone),
+      };
+      this.email = contact.email || "";
+      this.organization = contact.organization || "";
+      this.relationship = contact.relationship || "";
+      this.period = contact.period || this.period;
+    }
+
+    @Watch("patient")
+    patientChanged() {
+      if (this.patient?.id) this.hydrate();
+    }
+
+    created() {
+      if (this.patient?.id) this.hydrate();
+    }
   }
-}
 </script>
 
 <style></style>

@@ -28,7 +28,7 @@
       </span>
     </div>
 
-    <cornie-card class="mt-3 block table-card pb-2" flat>
+    <cornie-card class="mt-3 block table-card pb-2" flat :height="[fixeHeight ? '120px' : '0']">
       <table class="w-full h-full my-5" style="border-radius: 5px">
         <thead class="border-b-2 border-gray-100  text-black font-semibold" style="height: 3.5rem;">
 
@@ -162,6 +162,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   refreshing!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  fixeHeight!: boolean;
 
   @Prop({ type: Boolean, default: true })
   search!: boolean;

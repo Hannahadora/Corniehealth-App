@@ -46,7 +46,12 @@
               :modelValue="`https://${DomainName}.corniehealth.com`"
               disabled
             />
-            <domain-input v-else label="Domain Name" v-model="DomainName" />
+            <domain-input
+              required
+              v-else
+              label="Domain Name"
+              v-model="DomainName"
+            />
           </div>
           <div class="col-span-4">
             <cornie-select
@@ -59,6 +64,13 @@
             />
           </div>
           <div class="col-span-4">
+            <cornie-input
+              v-if="hasProfile"
+              :modelValue="ProviderProfile"
+              :disabled="true"
+              class="w-full"
+              label="Provider Profile"
+            />
             <cornie-select
               required
               :items="provProfiles"
@@ -66,6 +78,7 @@
               class="w-full"
               v-model="ProviderProfile"
               :rules="requiredRule"
+              v-else
             />
           </div>
           <div class="col-span-4 -mt-3.5">
@@ -96,13 +109,11 @@
               v-model="IncorporationType"
             />
           </div>
-          <div
-            class="col-span-4"
-            v-show="IncorporationType !== 'Not Registered'"
-          >
+          <div class="col-span-4" v-if="IncorporationType !== 'Not Registered'">
             <cornie-input
               v-model="RegistrationNumber"
               class="w-full"
+              required
               label="Incorporation Number"
               :rules="requiredRule"
               placeholder="--Enter--"
@@ -139,7 +150,7 @@
               :rules="urlRule"
               label="Website"
               v-model="Website"
-              placeholder="--Enter--"
+              placeholder="http://example.com"
             />
           </div>
           <div class="col-span-4">
@@ -186,6 +197,9 @@ import QuestionIcon from "@/components/icons/question.vue";
 import DomainInput from "@/components/newdomaininput.vue";
 import { isUUID } from "@/plugins/utils";
 
+const URLRegex =
+  /^((https?|ftp):\/\/)?(www.)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+
 const organization = namespace("organization");
 @Options({
   name: "PracticeInformation",
@@ -208,7 +222,7 @@ export default class PracticeInfo extends Vue {
   OrganizationType = "";
   ReferenceOrganization = "";
   RegistrationNumber = "";
-  DialCode = "+234";
+  DialCode = "";
   PhoneNumber = "";
   DomainName = "";
   OrganizationIdentifier = "";
@@ -217,14 +231,12 @@ export default class PracticeInfo extends Vue {
   EmailAddress = "";
   Website = "";
   address = "";
-  // IncorporationStatus = "";
-
   orgTypes = [];
   provProfiles = [];
   incTypes = [];
   loading = false;
-  defaultOrgInfo?: IOrganization;
-  urlRule = string().url();
+  defaultOrgInfo = {} as IOrganization;
+  urlRule = string().optional().matches(URLRegex, "Invalid URL");
   emailRule = string().email().required();
   requiredRule = string().required();
   image = "";
@@ -239,27 +251,39 @@ export default class PracticeInfo extends Vue {
   fetchOrgInfo!: () => Promise<IOrganization>;
 
   get hasDomain() {
-    return Boolean(this.organizationInfo?.domainName);
+    const defaultDomain = this.defaultOrgInfo?.domainName || "";
+    return !isUUID(defaultDomain) && Boolean(defaultDomain);
   }
 
+  get hasProfile() {
+    return Boolean(this.defaultOrgInfo?.providerProfile);
+  }
+
+  get isRegisteredCompany() {
+    return this.IncorporationType != "Not Registered";
+  }
   get payload() {
     return {
       name: this.OrganizationName,
-      image: this.image,
-      alias: this.alias,
+      image: this.image || undefined,
+      alias: this.alias || undefined,
       organisationType: this.OrganizationType,
-      registrationNumber: this.RegistrationNumber,
+      registrationNumber: this.isRegisteredCompany
+        ? this.RegistrationNumber || undefined
+        : undefined,
       domainName: this.DomainName,
       providerProfile: this.ProviderProfile,
       incorporationType: this.IncorporationType,
-      website: this.Website,
-      phone: {
-        number: this.PhoneNumber,
-        DialCode: this.DialCode,
-      },
+      website: this.Website || undefined,
+      phone: this.PhoneNumber
+        ? {
+            number: this.PhoneNumber,
+            dialCode: this.DialCode,
+          }
+        : undefined,
       email: this.EmailAddress,
-      reference: this.ReferenceOrganization,
-      address: this.address,
+      reference: this.ReferenceOrganization || undefined,
+      address: this.address || undefined,
     };
   }
 
@@ -269,7 +293,6 @@ export default class PracticeInfo extends Vue {
       const orgInfo = this.fetchOrgInfo();
       await Promise.all([dropdown, orgInfo]);
       this.defaultOrgInfo = this.organizationInfo;
-      console.log(this.organizationInfo);
       this.setOrgInfo(this.organizationInfo);
     } catch (error) {}
   }
@@ -317,6 +340,7 @@ export default class PracticeInfo extends Vue {
     if (name && isUUID(name)) return;
     this.DomainName = name || "";
   }
+
   setOrgInfo(data: IOrganization) {
     this.OrganizationName = data.name || "";
     this.image = data.image || "";

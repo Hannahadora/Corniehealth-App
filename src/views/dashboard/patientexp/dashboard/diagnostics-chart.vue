@@ -65,11 +65,11 @@ export default class MedicationChart extends Vue {
     this.chart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["Internal Laboratory", "Community Laboratory",],
+        labels: ["Internal Laboratory", "Community Laboratory"],
         datasets: [
           {
-            data: [64, 22,],
-            backgroundColor: [ "#35BA83", "#114FF5",],
+            data: [64, 22],
+            backgroundColor: ["#35BA83", "#114FF5"],
           },
         ],
       },
@@ -93,7 +93,7 @@ export default class MedicationChart extends Vue {
     });
   }
   created() {
-    this.fetchData();
+    //this.fetchData();
   }
 }
 </script>

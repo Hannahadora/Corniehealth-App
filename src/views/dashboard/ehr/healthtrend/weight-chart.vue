@@ -19,6 +19,7 @@ import { formatDate, sortListByDate } from "./chart-filter";
 import { namespace } from "vuex-class";
 import IVital from "@/types/IVital";
 import { getChartData } from "./helper/vitals-chart-helper";
+import moment from "moment";
 
 const vitalsStore = namespace("vitals");
 
@@ -52,25 +53,22 @@ export default class WeightChart extends Vue {
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
+    this.fetchData(this.$route.params.id.toString())
   }
  
   get date(){
     if (this.order == 'Today'){
       return new Date().toISOString();
     }else if(this.order == 'WTD'){
-      const  today = new Date();
-      const  nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7).toISOString();
-      return nextweek;
+      var oneWeekAgo = moment().subtract(1, 'week');
+      console.log(oneWeekAgo, 'week');
+      return oneWeekAgo.format();
     }else if(this.order == 'MTD'){
-      const Xmas95 = new Date();
-      const month = Xmas95.getMonth();
-      const newmonth = new Date(month).toISOString();
-      return newmonth;
+      var oneMonthsAgo = moment().subtract(1, 'months');
+      return oneMonthsAgo.format();
     }else {
-      const today = new Date();
-      const year = today.getFullYear();
-      const newyear = new Date(year).toISOString();
-       return newyear;
+      var oneYearAgo = moment().subtract(1, 'year');
+      return oneYearAgo.format();
     }
   }
 
@@ -82,29 +80,36 @@ export default class WeightChart extends Vue {
   }
 
   get average() {
-    const values = this.raw?.map((a) => a.count);
+    const values = this.raw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return (values.reduce((a, b) => a + b) / values?.length).toFixed(1);
+    return (values.reduce((a:any, b:any) => a + b) / values?.length).toFixed(1);
   }
 
   get labels() {
     return getDatesAsChartLabel(this.vitals);
   }
 
-  raw: IStat[] = [];
+  raw = [] as any;
 
   async fetchData(patientId: string) {
+    const [splitDate] = this.startDate.split('T');
+   const date = splitDate;
+   const [splitDate2] = this.date.split('T');
+   const date2 = splitDate2;
     try {
       const response = await cornieClient().get(
         `api/v1/health-trends/weight-stats/${patientId}`,
         {
-          start: this.startDate,
-          end: this.date,
+          start: date2,
+          end: date,
         }
       );
-      this.raw = response.data?.map((item: any) => {
-        return { count: item.value, date: item.date };
-      });
+       console.log(response.data,'weight record')
+   
+      const rawdata = response.data
+      this.raw = Object.entries(rawdata).map((key, value) => {
+          return {count: value, date: key}
+      })
       this.chartData; //this line just  gets the vuejs reactivity system to refresh
     } catch (error:any) {
       window.notify({
