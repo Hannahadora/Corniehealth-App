@@ -20,7 +20,7 @@ export class ErrorResponse extends Error {
 }
 
 export class JsonResponse {
-[x: string]: any;
+  [x: string]: any;
   data?: any;
   numberOfPages?: number | undefined;
   nextPage?: number | undefined;
@@ -28,7 +28,7 @@ export class JsonResponse {
   currentPage?: number;
   errors?: Errors | undefined;
   token: string;
-message: any;
+  message: any;
   baseResponse: Response;
 
   get status(): number {
@@ -70,18 +70,28 @@ interface Errors {
 }
 export class JSONClient implements HttpClient {
   create: any;
-  constructor(private headers: IndexableObject, private baseUrl: string = "") {}
+  constructor(
+    private headers: IndexableObject,
+    private baseUrl: string = "",
+    private timeout = 8000
+  ) {}
 
   appendHeaders(headers: IndexableObject) {
     this.headers = { ...this.headers, ...headers };
   }
 
   private async exec(url: string, method: string, body?: IndexableObject) {
+    const controller = new AbortController();
+
+    setTimeout(() => controller.abort(), this.timeout);
+
     const response = await fetch(this.buildUrl(url), {
       method: method,
       headers: { ...this.headers },
       body: this.buildBody(method, body),
+      signal: controller.signal,
     });
+
     if (!response.ok) {
       throw new ErrorResponse(await JsonResponse.createJsonResponse(response));
     }
