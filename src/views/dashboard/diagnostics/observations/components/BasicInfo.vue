@@ -4,23 +4,21 @@
       <div
         class="w-full cursor-pointer"
         @click="
-          $emit(
-            'openReferenceModal', [
-              ('Care plan',
-              'Device request',
-              'Immunization recommendation',
-              'Medication request',
-              'Nutrition order',
-              'Service request')
-            ]
-          )
+          $emit('openReferenceModal', 'basedOn', [
+            'Care plan',
+            'Device request',
+            'Immunization recommendation',
+            'Medication request',
+            'Nutrition order',
+            'Service request',
+          ])
         "
       >
         <cornie-input
           v-bind="$attrs"
           label="Based On"
           placeholder="Select"
-          v-model="member.basedOn"
+          v-model="basicInfo.basedOn"
         >
           <template #append-inner>
             <plus-icon class="fill-current text-danger" />
@@ -30,21 +28,19 @@
       <div
         class="w-full cursor-pointer"
         @click="
-          $emit(
-            'openReferenceModal', [
-              ( 'Medication administration',
-          'Medication dispense',
-          'Medication statement',
-          'Procedure',
-          'Immunization',
-          'Imaging study')
-            ]
-          )
+          $emit('openReferenceModal', 'partOf', [
+            'Medication administration',
+            'Medication dispense',
+            'Medication statement',
+            'Procedure',
+            'Immunization',
+            'Imaging study',
+          ])
         "
       >
         <cornie-input
           v-bind="$attrs"
-          label="Based On"
+          label="Part Of"
           placeholder="Select"
           v-model="basicInfo.partOf"
         >

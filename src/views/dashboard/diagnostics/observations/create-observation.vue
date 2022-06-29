@@ -25,7 +25,11 @@
             title="Basic Info"
             :opened="false"
           >
-            <basic-info :basicInfo="basicInfo" @get-customers="setCustomers" @openReferenceModal="openReferenceModal" />
+            <basic-info
+              :basicInfo="basicInfo"
+              @get-customers="setCustomers"
+              @openReferenceModal="openReferenceModal"
+            />
           </accordion-component>
 
           <accordion-component
@@ -237,7 +241,7 @@
               <div
                 class="w-full cursor-pointer"
                 @click="
-                  openReferenceModal([
+                  openReferenceModal('hasMember', [
                     'Observation',
                     'QuestionnaireResponse',
                     'MolecularSequence',
@@ -258,13 +262,13 @@
               <div
                 class="w-full cursor-pointer"
                 @click="
-                  openReferenceModal([
-                  'DocumentReference',
-                  'ImagingStudy',
-                  'Media',
-                  'QuestionnaireResponse',
-                  'Observation',
-                  'MolecularSequence',
+                  openReferenceModal('derivedFrom', [
+                    'DocumentReference',
+                    'ImagingStudy',
+                    'Media',
+                    'QuestionnaireResponse',
+                    'Observation',
+                    'MolecularSequence',
                   ])
                 "
               >
@@ -376,6 +380,7 @@
   <reference-modal
     v-model="showReferenceModal"
     :referenceOptions="referenceOptions"
+    @update="setReferences"
   />
 </template>
 <script lang="ts">
@@ -468,6 +473,7 @@ export default class ObservationDialog extends Vue {
   effectiveType = "date-time";
   showReferenceModal = false;
   referenceOptions = <any>[];
+  refSubject = '';
 
   statusHistory = [
     {
@@ -559,9 +565,17 @@ export default class ObservationDialog extends Vue {
     this.value = data;
   }
 
-  openReferenceModal(options: any) {
+  openReferenceModal(subject: string, options: any) {
     this.showReferenceModal = true;
     this.referenceOptions = options;
+    this.refSubject = subject;
+  }
+
+  setReferences(value: any) {
+    if(this.refSubject === 'hasMember') {
+      this.member.hasMemer = value
+    }
+    this.refSubject = ''
   }
 
   async setObservation() {

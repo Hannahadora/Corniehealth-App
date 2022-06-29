@@ -32,7 +32,7 @@ export default {
     },
     deletePractitioner(state, id: string) {
       const index = state.practitioners.findIndex(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
       if (index < 0) return;
       const practitioners = [...state.practitioners];
@@ -41,7 +41,7 @@ export default {
     },
     deleteLocationrole(state, id: string) {
       const index = state.practionerRole.findIndex(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
       if (index < 0) return;
       const dirset = [...state.practionerRole];
@@ -56,7 +56,7 @@ export default {
     },
     getPractitionerById(ctx, id: string) {
       return ctx.state.practitioners.find(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
     },
     async deletePractitioner(ctx, id: string) {
@@ -81,7 +81,7 @@ export default {
       if (ctx.state.practionerRole.length < 1)
         await ctx.dispatch("fetchPractitioners");
       return ctx.state.practionerRole.find(
-        (practitioner) => practitioner.id == id
+        practitioner => practitioner.id == id
       );
     },
   },
