@@ -1428,6 +1428,10 @@
       this.location = response[0].data;
     }
 
+    async bills() {
+      const { data } = await cornieClient().get("/api/v1/bill");
+      console.log("bills", data);
+    }
     async fetchDesignation() {
       const AllDesignation = cornieClient().get(
         "/api/v1/orgHierarchy/designation"
@@ -1521,6 +1525,7 @@
       await this.fetchPractitioners();
       await this.fetchLocation();
       await this.fetchDesignation();
+      await this.bills();
       if (!this.roles.length) await this.getRoles();
     }
   }

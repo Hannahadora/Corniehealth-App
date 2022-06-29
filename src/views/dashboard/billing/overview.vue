@@ -136,6 +136,6 @@
   export default class BillingOverview extends Vue {
     startDate = "";
     endDate = "";
-    showFilterDialog = true;
+    showFilterDialog = false;
   }
 </script>
