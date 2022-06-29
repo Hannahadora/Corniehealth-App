@@ -1,71 +1,31 @@
 <template>
-  <div class="grid grid-cols-3 gap-8">
-    <chart-card
-      height="422px"
-      title="Appointments"
-      subtitle="80 Appointments"
-      action="View appointment"
-    >
-      <canvas ref="chart" style="margin: auto" class="mt-8 mb-11"></canvas>
-    </chart-card>
-
-    <div class="col-span-2">
-      <chart-card
-        height="422px"
-        title="Today's Appointments"
-        action="View appointment"
-      >
-        <div class="w-full flex flex-col overflow-y-scroll">
-          <div
-            class="w-full flex items-center mb-4"
-            v-for="(appointment, index) in appointments"
-            :key="index"
-          >
-            <span class="text-lg" style="color: #667499">{{
-              appointment.time
-            }}</span>
-            <div class="w-11/12 p-4 ml-8 flex items-center hover:bg-blue-100">
-              <img
-                class="w-12 h-12 mr-4 rounded-full"
-                :src="appointment.pImage"
-                alt=""
-              />
-              <span class="w-10/12 mr-4">{{ appointment.pName }}</span>
-              <img src="@/assets/icon(2).png" alt="" />
-            </div>
-          </div>
-        </div>
-
-        <div
-          v-if="appointments.length === 0"
-          class="flex flex-col items-center justify-center"
-        >
-          <div class="mt-8 w-11/12 mx-auto">
-            <img src="@/assets/patientanddoctor.png" alt="" />
-          </div>
-          <div
-            class="mt-6 flex flex-col items-center justify-center text-center"
-          >
-            <span class="text-lg font-bold">There’s no Active Appointment</span>
-            <span style="color: #667499" class="text-sm"
-              >Active and upcoming appointment will be displayed here</span
-            >
-
-            <span class="mx-2 text-sm font-semibold cursor-pointer" style="color: #FE4D3C;">Create Appointment</span>
-          </div>
-        </div>
-      </chart-card>
-    </div>
-  </div>
+  <chart-card
+    height="422px"
+    title="Appointments"
+    :subtitle="`${totalAppointment} Appointments`"
+    action="View appointment"
+    @more="$router.push('/dashboard/provider/experience/calendar')"
+  >
+    <canvas ref="chart" style="margin: auto" class="mt-8 mb-11"></canvas>
+  </chart-card>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
 import { Chart, DoughnutController } from "chart.js";
 import { CustomDoughnutController } from "@/plugins/chart";
+import { cornieClient } from "@/plugins/http";
+import { Prop, Watch } from "vue-property-decorator";
+import { ChartContext } from "./types";
 
 Chart.register(CustomDoughnutController);
 
+interface AppointmentCount {
+  new: number;
+  totalAppointment: number;
+  followUps: number;
+  referrals: number;
+}
 @Options({
   name: "AppointmentChart",
   components: {
@@ -74,38 +34,100 @@ Chart.register(CustomDoughnutController);
 })
 export default class AppointmentChart extends Vue {
   chart!: Chart;
-  appointments: Array<any> = [
-    {
-      time: "10:30",
-      pImage: require("@/assets/avatar(1).png"),
-      pName: "Oluwafunmilayo Adeola Sarah",
-    },
-    {
-      time: "13:45",
-      pImage: require("@/assets/avatar(2).png"),
-      pName: "Busayo Akindele Deborah",
-    },
-    {
-      time: "16:30",
-      pImage: require("@/assets/avatar(3).png"),
-      pName: "Group Meeting",
-    },
-  ];
+
+  @Prop({ type: Object, required: true })
+  context!: ChartContext;
+
+  count = {
+    new: 0,
+    followUps: 0,
+    referrals: 0,
+  } as AppointmentCount;
+
   mounted() {
     this.mountChart();
   }
 
-  mountChart() {
-    const data = {
-      labels: ["52 New", "18 Follow Ups", "10 Referrals"],
+  get totalAppointment() {
+    return this.count.new + this.count.followUps + this.count.referrals;
+  }
+
+  @Watch("context", { deep: true })
+  contextChanged() {
+    this.fetchChart();
+  }
+
+  get url() {
+    const location = this.context.locationId;
+    const admin = this.context.admin ? "admin/" : "";
+    return `/api/v1/experience-dashboard/${admin}count-appointments/${location}`;
+  }
+
+  async fetchChart() {
+    try {
+      const { data } = await cornieClient().get(this.url, {
+        start: this.context.start,
+        end: this.context.end,
+      });
+      this.count = data;
+    } catch (error) {
+      window.notify({ msg: "Failed to count appointments", status: "error" });
+    }
+  }
+
+  created() {
+    this.fetchChart();
+  }
+
+  get labels() {
+    return [
+      `${this.count.new} New`,
+      `${this.count.followUps} Follow Ups`,
+      `${this.count.referrals} Referrals`,
+    ];
+  }
+
+  @Watch("count", { deep: true })
+  countChanged() {
+    this.mountChart();
+  }
+
+  get chartText() {
+    return `${this.totalAppointment} Patient Appointments`;
+  }
+
+  get empty() {
+    return this.totalAppointment < 1;
+  }
+
+  get chartData() {
+    return {
+      labels: this.labels,
       datasets: [
         {
           label: "Dataset 1",
           backgroundColor: ["#114FF5", "#FE4D3C", "#35BA83"],
-          data: [52, 18, 10],
+          data: [this.count.new, this.count.followUps, this.count.referrals],
         },
       ],
     };
+  }
+
+  get emptyChartData() {
+    return {
+      labels: ["", ...this.labels],
+      datasets: [
+        {
+          label: "Dataset 1",
+          backgroundColor: ["#C2C7D6", "#114FF5", "#FE4D3C", "#35BA83"],
+          data: [1, 0, 0, 0],
+        },
+      ],
+    };
+  }
+
+  mountChart() {
+    const data = this.empty ? this.emptyChartData : this.chartData;
     const ctx: any = this.$refs.chart;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
@@ -114,7 +136,7 @@ export default class AppointmentChart extends Vue {
       options: {
         elements: {
           center: {
-            text: "80 Patients appointments",
+            text: this.chartText,
             color: "#14171F",
             fontStyle: "Inter",
             sidePadding: 12,
