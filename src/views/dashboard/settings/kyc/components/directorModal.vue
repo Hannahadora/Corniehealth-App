@@ -191,8 +191,8 @@ export default class DirectorModal extends Vue {
  
  //Date of birth validation
   dobValidator = date().max(
-    createDate(0, 0, -16),
-    "Director must be at least 16yrs."
+    createDate(0, 0, -18),
+    "Director must be at least 18yrs."
   );
 
   //Email Valitdaiton

@@ -114,36 +114,35 @@ export default class RecordAbatement extends Vue {
 
   abatementMeasurable = { ...measurable };
 
-   get setabatement() {
-    return {
-      range: !Object.values({
+  isEmptyObject(object:any){
+  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+  return nonNulls.length <1
+}
+
+  get setabatement() {
+    const range = {
         unit: this.abatementMeasurable.unit,
         min: this.abatementMeasurable.min,
         max: this.abatementMeasurable.max,
-      }).every(o => o === null) ? {
-        unit: this.abatementMeasurable.unit,
-        min: this.abatementMeasurable.min,
-        max: this.abatementMeasurable.max,
-      } : null,
-      age: !Object.values({
-        unit: this.abatementMeasurable.ageUnit,
+    
+    }; 
+    const age = {
+       unit: this.abatementMeasurable.ageUnit,
         value: this.abatementMeasurable.ageValue,
-      }).every(o => o === null) ? {
-        unit: this.abatementMeasurable.ageUnit,
-        value: this.abatementMeasurable.ageValue,
-      } : null, 
-      string: this.abatementMeasurable.string || null,
-      period: !Object.values({
-        start: this.abatementMeasurable.startDate,
+    }; 
+    const period = {
+       start: this.abatementMeasurable.startDate,
         end: this.abatementMeasurable.endDate,
         startTime:this.abatementMeasurable.startTime,
         endTime: this.abatementMeasurable.endTime,
-      }).every(o => o === null) ? {
-        start: this.abatementMeasurable.startDate,
-        end: this.abatementMeasurable.endDate,
-         startTime:this.abatementMeasurable.startTime,
-        endTime: this.abatementMeasurable.endTime,
-      } : null,
+    
+    }; 
+
+    return {
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
+      string: this.abatementMeasurable.string || null,
+      period:this.isEmptyObject (period) ? undefined : period,
       dateTime:  this.safeBuildDateTime(
        this.abatementMeasurable.date as any,
        this.abatementMeasurable.time as any
@@ -189,6 +188,7 @@ export default class RecordAbatement extends Vue {
       await cornieClient().put(`/api/v1/condition/${this.condition.id}`, this.payload);
       window.notify({ status: "success", msg: "Abatement added" });
       this.done();
+      this.abatement = [];
     } catch (error) {
       window.notify({ status: "error", msg: "Abatement not added" });
       this.done();

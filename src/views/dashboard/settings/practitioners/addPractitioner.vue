@@ -941,7 +941,7 @@
         ...this.licenses,
       ];
 
-      this.licenseIssuer = this.licenseNumber = "";
+      this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
     }
 
     dobValidator = date().max(

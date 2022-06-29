@@ -1,15 +1,23 @@
 <template>
-  <div class="w-full pb-7">
-    <span class="flex justify-end float-right w-86">
+  <div class="w-full pb-7 mt-5">
+    <!-- <span class="flex justify-end float-right w-86">
         <date-picker class="w-full mt-3 mr-4"/>
-      <!-- <button
+       <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-2.5 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="showAppointmentModal = true"
       >
         Create
-      </button> -->
-    </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
+      </button> 
+    </span> -->
+    <cornie-table :columns="rawHeaders" v-model="pageData" :check="false" :menu="true"
+    :totalPages="fullInfo.totalPages"
+        :perPage="10"
+        :currentPage="fullInfo.currentPage"
+        :maxVisibleButtons="fullInfo.totalPages"
+        :totalItems="fullInfo.totalItems"
+        :items="fullInfo.result"
+        @pagechanged="onPageChange"
+    >
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAppointment(item.id)">
@@ -46,7 +54,7 @@
           <update-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs"> Update Status </span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item.id)">
           <checkin-icon class="text-green-800 fill-current" />
           <span class="ml-3 text-xs">Check-in</span>
         </div>
@@ -129,8 +137,9 @@
   <appointment-modal
     v-model="showAppointmentModal"
     :id="appointmentId"
+    @appointment-added="appointmentAdded"
   />
-  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment" :patientId="patientId" :practitionerData="practitionerData"  :appiontmentid="appointmentId"/>
+  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment"  :appiontmentid="appointmentId"/>
   <collect-modal v-model="showCollect" :id="appointmentId"/>
   <share-modal v-model="showShare" :id="appointmentId"/>
   <post-modal v-model="showPost" :id="appointmentId"/>
@@ -229,6 +238,8 @@ export default class SchedulesExistingState extends Vue {
   showAppointmentModal = false;
   showcheckin = false;
   patientAppointment = [] as any;
+  currentPage = 1;
+
 
   showCollect = false;
   showShare = false;
@@ -241,18 +252,26 @@ export default class SchedulesExistingState extends Vue {
   update = "";
   onePatientId = "";
   onePractitionerId = "";
-  patientId = "";
-  practitionerData= {};
   today = new Date().toISOString().slice(0, 10);
 
-  @appointment.State
-  appointments!: IAppointment[];
+  fullInfo = [] as any;
+  pageData = [] as any;
 
-  @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+
+  // @appointment.State
+  // appointments!: IAppointment[];
+
+  // @appointment.Action
+  // fetchAppointments!: () => Promise<void>;
+
+  @appointment.State
+  patientappointments!: IAppointment[];
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
+
+  @appointment.Action
+  fetchByIdAppointments!: (patientId: string) => Promise<void>;
 
   @patients.State
   patients!: IPatient[];
@@ -293,7 +312,7 @@ export default class SchedulesExistingState extends Vue {
   ];
 
   get items() {
-    const appointments = this.appointments.map((appointment) => {
+    const appointments = this.patientappointments.map((appointment) => {
        (appointment as any).createdAt = new Date(
         (appointment as any).createdAt
       ).toLocaleDateString("en-US", {
@@ -349,7 +368,7 @@ export default class SchedulesExistingState extends Vue {
     else window.notify({ msg: "Appointment not canceled", status: "error" });
   }
   async updateLocation() {
-    await this.fetchAppointments();
+    this.fetchByIdAppointments(this.$route.params.id.toString());
   }
 
    showAppointment(value:string){
@@ -367,19 +386,22 @@ export default class SchedulesExistingState extends Vue {
     this.showShare = true
   }
 
-  async showCheckinmodal(value:any){ 
+  async showCheckinmodal(value:string){ 
     this.showcheckin = true;
-    this.appointmentId = value.id;
-    this.practitionerData = value.practitioner;
-    this.patientId = value.patientId;
+    this.appointmentId = value;
 
     if(this.patientAppointment.length ===0)  {
       await window.notify({ msg: "No available scheduled appoimtment", status: "error" });
     }
   }
+
   appointmentAdded() {
-    this.fetchAppointments();
+    this.fetchByIdAppointments(this.$route.params.id.toString());
   }
+  get patientId() {
+    return this.$route.params.id;
+  }
+
   async showStatus(value: string) {
     this.showStatusModal = true;
     this.appointmentId = value;
@@ -391,8 +413,39 @@ export default class SchedulesExistingState extends Vue {
     this.patientAppointment = response[0].data;
     
   }
+ 
+  async resultDataAppoitment() {
+    const AllNotes = cornieClient().get(
+      `/api/v1/appointment/getAllByPatient/${this.patientId}`,
+    );
+    const response = await Promise.all([AllNotes]);
+      this.fullInfo = response[0].data;
+
+      this.pageData = this.items;
+
+  }
+  async fetchAppoitment(page:number) {
+    const AllNotes = cornieClient().get(
+      `/api/v1/appointment/getAllByPatient/${this.patientId}/?page=${page}`,
+    );
+    const response = await Promise.all([AllNotes]);
+      this.fullInfo = response[0].data;
+
+      this.pageData = this.fullInfo.result;
+      this.currentPage =  this.fullInfo.currentPage;
+
+  }
+ 
+
+    onPageChange(page: number): void {
+             console.log(page, 'data.page');
+             this.fetchAppoitment(page)
+            this.currentPage = page;
+    }
 
   async created(){
+    await this.resultDataAppoitment();
+    await this.fetchByIdAppointments(this.$route.params.id.toString());
     await this.fetchPatients();
     if(this.currentLocation) await this.fetchPractitioners();
   }
