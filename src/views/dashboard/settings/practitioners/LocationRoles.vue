@@ -67,7 +67,6 @@
                         name="option-selected"
                         :value="access.default"
                         @click="onChangeOption(access.roleId, $event)"
-                        @update:modelValue="setDefault(access.locationId)"
                       ></cornie-radio>
                       <div class="flex flex-col">
                         <div class="mb-0 font-bold text-sm">
@@ -359,7 +358,7 @@
         id: this.locationRoleId,
         roleId: this.role,
         locationId: this.location,
-        default: true,
+        default: false,
       });
 
       this.role = "";
@@ -483,19 +482,14 @@
 
     onChangeOption(id: string, event: Event) {
       // console.log("event", event.target);
-      this.accessRoles.forEach((option: any) => {
-        if (option.roleId === id) {
-          // option["default"] = (event.target as HTMLInputElement).checked;
-          option["default"] = true;
+      for (let i = 0; i < this.accessRoles.length; i++) {
+        const ele = this.accessRoles[i];
+        ele.default = false;
 
-          window.notify({
-            msg: "Default location has been set",
-            status: "success",
-          });
-        } else {
-          option["default"] = false;
+        if (ele.roleId == id) {
+          ele.default = true;
         }
-      });
+      }
     }
 
     async save() {

@@ -281,324 +281,335 @@
 </template>
 
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import { useHandleImage } from "@/composables/useHandleImage";
-import AccordionComponent from "@/components/form-accordion.vue";
-import Button from "@/components/globals/corniebtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import DatePicker from "@/components/datepicker.vue";
-import Period from "@/components/daterangepicker.vue";
-import Avatar from "@/components/avatar.vue";
-import EmptyState from "./empty-state.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import PhoneSelect from "@/components/phone-input.vue";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import User from "@/types/user";
-import setupHelper from "../helper/setup-helper";
-import OperationHours from "@/components/new-operation-hours.vue";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import { Watch } from "vue-property-decorator";
-import CornieBtn from "@/components/CornieBtn.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import { string, date } from "yup";
-import { createDate } from "@/plugins/utils";
+  import Avatar from "@/components/avatar.vue";
+  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import Period from "@/components/daterangepicker.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import Button from "@/components/globals/corniebtn.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import OperationHours from "@/components/new-operation-hours.vue";
+  import PhoneSelect from "@/components/phone-input.vue";
+  import { useHandleImage } from "@/composables/useHandleImage";
+  import { cornieClient } from "@/plugins/http";
+  import { createDate } from "@/plugins/utils";
+  import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+  import User from "@/types/user";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { date, string } from "yup";
+  import setupHelper from "../helper/setup-helper";
+  import EmptyState from "./empty-state.vue";
 
-const roles = namespace("roles");
-const dropdown = namespace("dropdown");
-const userStore = namespace("user");
-const userSettingsStore = namespace("usersettings");
-const practitioner = namespace("practitioner");
+  const roles = namespace("roles");
+  const dropdown = namespace("dropdown");
+  const userStore = namespace("user");
+  const userSettingsStore = namespace("usersettings");
+  const practitioner = namespace("practitioner");
 
-@Options({
-  components: {
-    AccordionComponent,
-    Button,
-    DatePicker,
-    Avatar,
-    CornieInput,
-    EmptyState,
-    CornieSelect,
-    PhoneSelect,
-    Period,
-    OperationHours,
-    CornieBtn,
-    InfoIcon,
-    CornieAvatarField,
-    CornieRadio,
-  },
-})
-export default class USerSetup extends Vue {
-  @roles.State
-  roles!: any;
+  @Options({
+    components: {
+      AccordionComponent,
+      Button,
+      DatePicker,
+      Avatar,
+      CornieInput,
+      EmptyState,
+      CornieSelect,
+      PhoneSelect,
+      Period,
+      OperationHours,
+      CornieBtn,
+      InfoIcon,
+      CornieAvatarField,
+      CornieRadio,
+    },
+  })
+  export default class USerSetup extends Vue {
+    @roles.State
+    roles!: any;
 
-  @roles.Action
-  getRoles!: () => Promise<any>;
+    @roles.Action
+    getRoles!: () => Promise<any>;
 
-  @userSettingsStore.State
-  userprofiles!: any;
+    @userSettingsStore.State
+    userprofiles!: any;
 
-  @userSettingsStore.Action
-  getUserProfile!: () => Promise<any>;
+    @userSettingsStore.Action
+    getUserProfile!: () => Promise<any>;
 
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+    @dropdown.Action
+    getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  @userStore.State
-  user!: User;
+    @userStore.State
+    user!: User;
 
-  @userStore.Getter
-  authPractitioner!: IPractitioner;
+    @userStore.Getter
+    authPractitioner!: IPractitioner;
 
-  @userStore.Mutation
-  updatePractitioner!: (payload: IPractitioner) => void;
+    @userStore.Mutation
+    updatePractitioner!: (payload: IPractitioner) => void;
 
-  @userSettingsStore.Action
-  setUserUp!: (body: IPractitioner) => Promise<boolean>;
+    @userSettingsStore.Action
+    setUserUp!: (body: IPractitioner) => Promise<boolean>;
 
-  dropdown = {} as IIndexableObject;
-  hoursOfOperation: HoursOfOperation[] = [];
+    dropdown = {} as IIndexableObject;
+    hoursOfOperation: HoursOfOperation[] = [];
 
-  show = true;
-  data: any = {};
-  loading = false;
+    show = true;
+    data: any = {};
+    loading = false;
 
-  types: string[] = ["Full Time (FT)", "Part Time (PT)", "AdHoc (AH)"];
+    types: string[] = ["Full Time (FT)", "Part Time (PT)", "AdHoc (AH)"];
 
-  states: any[] = [
-    { code: "active", display: "Active" },
-    { code: "inactive", display: "Inctive" },
-  ];
+    states: any[] = [
+      { code: "active", display: "Active" },
+      { code: "inactive", display: "Inctive" },
+    ];
 
-  genders: any[] = [
-    { code: "male", display: "Male" },
-    { code: "female", display: "Female" },
-    { code: "other", display: "Other" },
-  ];
+    genders: any[] = [
+      { code: "male", display: "Male" },
+      { code: "female", display: "Female" },
+      { code: "other", display: "Other" },
+    ];
 
-  designations: any[] = [];
-  levels: any[] = [];
-  functions: any[] = [];
+    designations: any[] = [];
+    levels: any[] = [];
+    functions: any[] = [];
 
-  times: any[] = [
-    { day: "Monday", openTime: "", closeTime: "", selected: false },
-    { day: "Tuesday", openTime: "", closeTime: "", selected: false },
-    { day: "Wednesday", openTime: "", closeTime: "", selected: false },
-    { day: "Thursday", openTime: "", closeTime: "", selected: false },
-    { day: "Friday", openTime: "", closeTime: "", selected: false },
-    { day: "Saturday", openTime: "", closeTime: "", selected: false },
-    { day: "Sunday", openTime: "", closeTime: "", selected: false },
-  ];
+    times: any[] = [
+      { day: "Monday", openTime: "", closeTime: "", selected: false },
+      { day: "Tuesday", openTime: "", closeTime: "", selected: false },
+      { day: "Wednesday", openTime: "", closeTime: "", selected: false },
+      { day: "Thursday", openTime: "", closeTime: "", selected: false },
+      { day: "Friday", openTime: "", closeTime: "", selected: false },
+      { day: "Saturday", openTime: "", closeTime: "", selected: false },
+      { day: "Sunday", openTime: "", closeTime: "", selected: false },
+    ];
 
-  img = setup(() => useHandleImage());
-  //Email Valitdaiton
-  emailRule = string().email("A valid email is required").required();
+    img = setup(() => useHandleImage());
+    //Email Valitdaiton
+    emailRule = string().email("A valid email is required").required();
 
-  //Date of birth validation
-  dobValidator = date().max(
-    createDate(0, 0, -16),
-    "Director must be at least 16yrs."
-  );
-  userprofile = [];
-  period = {} as Period;
-  name = "";
-  image = "";
-  phone = "";
-  dialCode = "+234";
-  gender = "";
-  address = "";
-  firstName = "";
-  lastName = "";
-  dateOfBirth = "";
-  qualificationIdentifier = "";
-  qualificationIssuer = "";
-  communicationLanguage = "";
-  email = "";
-  availabilityExceptions = "";
-  consultationChannel = "";
-  licenseNumber = "";
-  qualificationCode = "" as any;
-
-  @Watch("authPractitioner")
-  updateData() {
-    this.setData();
-  }
-  async setData() {
-    if (!this.authPractitioner) return;
-    const practitioner = setupHelper.constructPractitionerData(
-      this.authPractitioner
+    //Date of birth validation
+    dobValidator = date().max(
+      createDate(0, 0, -16),
+      "Director must be at least 16yrs."
     );
-    if (!practitioner) return;
-    this.name =
-      this.authPractitioner?.firstName + " " + this.authPractitioner?.lastName;
-    this.firstName = this.authPractitioner.firstName;
-    this.lastName = this.authPractitioner.lastName;
-    this.image = this.authPractitioner.image;
-    this.img.url = this.authPractitioner.image;
-    this.img.placeholder = this.authPractitioner.image;
-    this.gender = this.authPractitioner.gender;
-    this.address = this.authPractitioner.address;
-    this.dateOfBirth = this.authPractitioner.dateOfBirth;
-    this.qualificationIdentifier =
-      this.authPractitioner.qualificationIdentifier;
-    this.phone = this.authPractitioner.phone?.number;
-    this.communicationLanguage = this.authPractitioner.communicationLanguage;
-    this.email = this.authPractitioner.email;
-    this.qualificationIssuer = this.authPractitioner.qualificationIssuer;
-    this.availabilityExceptions = this.authPractitioner.availabilityExceptions;
-    this.consultationChannel = this.authPractitioner.consultationChannel;
-    this.licenseNumber = this.authPractitioner.licenseNumber;
-    this.hoursOfOperation = this.authPractitioner.hoursOfOperation;
-    this.qualificationCode = this.authPractitioner.qualificationCode;
-    this.period = this.authPractitioner.period as any;
-  }
-  get payload() {
-    return {
-      image: this.image,
-      gender: this.gender,
-      address: this.address,
-      firstName: this.firstName,
-      lastName: this.firstName,
-      dateOfBirth: this.dateOfBirth,
-      qualificationIdentifier: this.qualificationIdentifier,
-      phone: {
-        number: this.phone,
-        dialCode: this.dialCode,
-      },
-      communicationLanguage: this.communicationLanguage,
-      email: this.email,
-      qualificationIssuer: this.qualificationIssuer,
-      availabilityExceptions: this.availabilityExceptions,
-      consultationChannel: this.consultationChannel,
-      licenseNumber: this.licenseNumber,
-      hoursOfOperation: this.hoursOfOperation,
-      period: this.period,
-      qualificationCode: this.qualificationCode,
-    };
-  }
-  async setDropdown() {
-    const data = await this.getDropdowns("practitioner");
-    this.dropdown = data;
-  }
-  getRoleName(id: string) {
-    const pt = this.roles.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
-  }
+    userprofile = [];
+    period = {} as Period;
+    name = "";
+    image = "";
+    phone = "";
+    dialCode = "+234";
+    gender = "";
+    address = "";
+    firstName = "";
+    lastName = "";
+    dateOfBirth = "";
+    qualificationIdentifier = "";
+    qualificationIssuer = "";
+    communicationLanguage = "";
+    email = "";
+    availabilityExceptions = "";
+    consultationChannel = "";
+    licenseNumber = "";
+    qualificationCode = "" as any;
 
-  onAll(e: any) {
-    if (e.target.checked) {
-      this.times = this.times.map((i) => {
-        i.selected = true;
-        return i;
-      });
-    } else {
-      this.times = this.times.map((i) => {
-        i.selected = false;
-        return i;
-      });
+    @Watch("authPractitioner")
+    updateData() {
+      this.setData();
     }
-  }
+    async setData() {
+      if (!this.authPractitioner) return;
+      const practitioner = setupHelper.constructPractitionerData(
+        this.authPractitioner
+      );
+      if (!practitioner) return;
+      this.name =
+        this.authPractitioner?.firstName +
+        " " +
+        this.authPractitioner?.lastName;
+      this.firstName = this.authPractitioner.firstName;
+      this.lastName = this.authPractitioner.lastName;
+      this.image = this.authPractitioner.image;
+      this.img.url = this.authPractitioner.image;
+      this.img.placeholder = this.authPractitioner.image;
+      this.gender = this.authPractitioner.gender;
+      this.address = this.authPractitioner.address;
+      this.dateOfBirth = this.authPractitioner.dateOfBirth;
+      this.qualificationIdentifier =
+        this.authPractitioner.qualificationIdentifier;
+      this.phone = this.authPractitioner.phone?.number;
+      this.communicationLanguage = this.authPractitioner.communicationLanguage;
+      this.email = this.authPractitioner.email;
+      this.qualificationIssuer = this.authPractitioner.qualificationIssuer;
+      this.availabilityExceptions =
+        this.authPractitioner.availabilityExceptions;
+      this.consultationChannel = this.authPractitioner.consultationChannel;
+      this.licenseNumber = this.authPractitioner.licenseNumber;
+      this.hoursOfOperation = this.authPractitioner.hoursOfOperation;
+      this.qualificationCode = this.authPractitioner.qualificationCode;
+      this.period = this.authPractitioner.period as any;
+    }
+    get payload() {
+      return {
+        image: this.image,
+        gender: this.gender,
+        address: this.address,
+        firstName: this.firstName,
+        lastName: this.firstName,
+        dateOfBirth: this.dateOfBirth,
+        qualificationIdentifier: this.qualificationIdentifier,
+        phone: {
+          number: this.phone,
+          dialCode: this.dialCode,
+        },
+        communicationLanguage: this.communicationLanguage,
+        email: this.email,
+        qualificationIssuer: this.qualificationIssuer,
+        availabilityExceptions: this.availabilityExceptions,
+        consultationChannel: this.consultationChannel,
+        licenseNumber: this.licenseNumber,
+        hoursOfOperation: this.hoursOfOperation,
+        period: this.period,
+        qualificationCode: this.qualificationCode,
+      };
+    }
+    async getP() {
+      const { data } = await cornieClient().get(`/api/v1/user/practitioner`);
+      console.log("dataPrac", data);
+    }
+    async setDropdown() {
+      const data = await this.getDropdowns("practitioner");
+      this.dropdown = data;
+    }
+    getRoleName(id: string) {
+      const pt = this.roles.find((i: any) => i.id === id);
+      return pt ? `${pt.name}` : "";
+    }
 
-  get allChecked() {
-    const index = this.times.findIndex((i) => !i.selected);
-    return index >= 0 ? false : true;
-  }
-
-  async getLevels() {
-    try {
-      const {
-        data: { levels },
-      } = await cornieClient().get(`/api/v1/orgHierarchy/levels`);
-      this.levels = levels.map((i: any) => {
-        return { code: i.id, display: i.name };
-      });
-    } catch (error) {}
-  }
-  async getDesignations() {
-    try {
-      const {
-        data: { designations },
-      } = await cornieClient().get(`/api/v1/orgHierarchy/designation`);
-      this.designations = designations.map((i: any) => {
-        return { code: i.id, display: i.name };
-      });
-    } catch (error) {}
-  }
-  async getDepartments() {
-    try {
-      const {
-        data: { functions },
-      } = await cornieClient().get(`/api/v1/orgHierarchy/function`);
-      this.functions = functions.map((i: any) => {
-        return { code: i.id, display: i.name };
-      });
-    } catch (error) {}
-  }
-
-  get accessRoles() {
-    return this.roles.map((i: any) => {
-      return { code: i.id, display: i.name };
-    });
-  }
-
-  async submit() {
-    this.loading = true;
-    const body = {
-      ...this.payload,
-      firstName: this.name ? this.name.split(" ")[0] : "",
-      lastName: this.name ? this.name.split(" ")[1] : "",
-      dateOfBirth: this.payload.dateOfBirth
-        ? new Date(this.payload.dateOfBirth).toISOString()
-        : "",
-      image: this.img.url || this.img.placeholder,
-      activeState: this.authPractitioner.activeState,
-      type: this.authPractitioner.type || "type",
-      qualificationIdentifier: this.authPractitioner?.identifier,
-      organizationId: this.authPractitioner.organizationId,
-    };
-    const url = `/api/v1/user/practitioner`;
-    const payload = { ...body, id: this.authPractitioner.id };
-
-    try {
-      const response = await cornieClient().patch(url, payload);
-      if (response.success) {
-        console.log(response.data, "DATA");
-        this.updatePractitioner(response.data);
-        this.loading = false;
-        window.notify({ msg: "Practioner profile updated", status: "success" });
-        this.$router.back();
+    onAll(e: any) {
+      if (e.target.checked) {
+        this.times = this.times.map((i) => {
+          i.selected = true;
+          return i;
+        });
+      } else {
+        this.times = this.times.map((i) => {
+          i.selected = false;
+          return i;
+        });
       }
-    } catch (error) {
-      this.loading = false;
-      window.notify({
-        msg: "Practitioner profile not updated",
-        status: "error",
+    }
+
+    get allChecked() {
+      const index = this.times.findIndex((i) => !i.selected);
+      return index >= 0 ? false : true;
+    }
+
+    async getLevels() {
+      try {
+        const {
+          data: { levels },
+        } = await cornieClient().get(`/api/v1/orgHierarchy/levels`);
+        this.levels = levels.map((i: any) => {
+          return { code: i.id, display: i.name };
+        });
+      } catch (error) {}
+    }
+    async getDesignations() {
+      try {
+        const {
+          data: { designations },
+        } = await cornieClient().get(`/api/v1/orgHierarchy/designation`);
+        this.designations = designations.map((i: any) => {
+          return { code: i.id, display: i.name };
+        });
+      } catch (error) {}
+    }
+    async getDepartments() {
+      try {
+        const {
+          data: { functions },
+        } = await cornieClient().get(`/api/v1/orgHierarchy/function`);
+        this.functions = functions.map((i: any) => {
+          return { code: i.id, display: i.name };
+        });
+      } catch (error) {}
+    }
+
+    get accessRoles() {
+      return this.roles.map((i: any) => {
+        return { code: i.id, display: i.name };
       });
     }
-  }
 
-  async created() {
-    this.setDropdown();
-    await this.setData();
-    if (this.roles) await this.getRoles();
-    this.getDesignations();
-    this.getLevels();
-    this.getDepartments();
+    async submit() {
+      this.loading = true;
+      const body = {
+        ...this.payload,
+        firstName: this.name ? this.name.split(" ")[0] : "",
+        lastName: this.name ? this.name.split(" ")[1] : "",
+        dateOfBirth: this.payload.dateOfBirth
+          ? new Date(this.payload.dateOfBirth).toISOString()
+          : "",
+        image: this.img.url || this.img.placeholder,
+        activeState: this.authPractitioner.activeState,
+        type: this.authPractitioner.type || "type",
+        qualificationIdentifier: this.authPractitioner?.identifier,
+        organizationId: this.authPractitioner.organizationId,
+      };
+      const url = `/api/v1/user/practitioner`;
+      const payload = { ...body, id: this.authPractitioner.id };
+
+      try {
+        const response = await cornieClient().patch(url, payload);
+        if (response.success) {
+          console.log(response.data, "DATA");
+          this.updatePractitioner(response.data);
+          this.loading = false;
+          window.notify({
+            msg: "Practioner profile updated",
+            status: "success",
+          });
+          this.$router.back();
+        }
+      } catch (error) {
+        this.loading = false;
+        window.notify({
+          msg: "Practitioner profile not updated",
+          status: "error",
+        });
+      }
+    }
+
+    async created() {
+      this.setDropdown();
+      await this.setData();
+      if (this.roles) await this.getRoles();
+      this.getDesignations();
+      this.getLevels();
+      this.getDepartments();
+      await this.getP();
+    }
   }
-}
 </script>
 
 <style scoped>
-/* Hide scrollbar for Chrome, Safari and Opera */
-.topest::-webkit-scrollbar {
-  display: none;
-}
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .topest::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.topest {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .topest {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 </style>
