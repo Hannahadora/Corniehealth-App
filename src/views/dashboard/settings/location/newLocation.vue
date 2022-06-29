@@ -128,7 +128,7 @@ export default {
         locationStatus: this.locationStatus,
         operationalStatus: this.operationalStatus,
         description: this.desription,
-        alias: this.alias,
+        alias: this.alias || undefined,
         mode: this.mode,
         type: this.type,
         phone: this.phone,
