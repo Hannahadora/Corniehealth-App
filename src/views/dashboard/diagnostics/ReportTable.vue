@@ -7,10 +7,10 @@
           <h3 class="text-center mt-8 text-2xl font-bold">
             No Report on Record
           </h3>
-          <p class="text-base text-center" style="color: #667499">
+          <!-- <p class="text-base text-center" style="color: #667499">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum
             aenean mattis mi diam eget.
-          </p>
+          </p> -->
         </div>
       </div>
     </div>

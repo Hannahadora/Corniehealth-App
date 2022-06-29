@@ -99,7 +99,7 @@
                 width="w-11/12"
               />
             </div>
-            <div class="" v-if="assessorItem">
+            <!-- <div class="" v-if="assessorItem">
               <label
                 for="assessor"
                 @click="showAssessor"
@@ -108,13 +108,16 @@
               </label>
               <cornie-input class="w-full" v-model="assessorItem">
               </cornie-input>
-            </div>
+            </div> -->
 
-            <div v-else>
-              <div class="w-full">
-                <!-- <div class="absolute right-0">
-                  <cornie-checkbox v-model="assertRecord" :label="'Assert this record'" />
-                </div> -->
+            <div>
+              <div class="w-full relative">
+                <div class="absolute right-4 -top-3">
+                  <cornie-checkbox
+                    v-model="assertRecord"
+                    :label="'Assert this record'"
+                  />
+                </div>
                 <div class="flex w-full items-center">
                   <div class="w-11/12">
                     <cornie-input
@@ -130,7 +133,6 @@
                     src="@/assets/img/asseor-update.svg"
                     class="ml-2 mt-5"
                     alt=""
-                    @click="showAssessorModal = true"
                   />
                 </div>
               </div>
@@ -168,17 +170,20 @@
                 <p class="capitalize text-red-500 text-sm font-medium">
                   {{ record?.referenceType }}
                 </p>
-                <div class="w-11/12 mt-4" style="border-right: 1px dashed #878e99">
+                <div
+                  class="w-11/12 mt-4"
+                  style="border-right: 1px dashed #878e99"
+                >
                   <div class="w-full flex items-center">
                     <div class="w-8/12 flex flex-col text-sm">
                       <span class="font-semibold">{{
                         record?.description
                       }}</span>
                       <div class="" style="font-size: 10px">
-                        <span class="">
-                          {{ record?.practitioner }} - 
-                        </span>
-                        <span class="text-gray-500">{{ record?.practitionerSpecialty }}</span>
+                        <span class=""> {{ record?.practitioner }} - </span>
+                        <span class="text-gray-500">{{
+                          record?.practitionerSpecialty
+                        }}</span>
                       </div>
                     </div>
                     <div class="w-4/12 flex items-center justify-center">
@@ -409,19 +414,21 @@
     </v-form>
 
     <template #optionactions>
-      <cornie-btn
-        @click="show = false"
-        class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-      >
-        Cancel
-      </cornie-btn>
-      <cornie-btn
-        :loading="loading"
-        @click="apply"
-        class="text-white bg-danger px-6 rounded-xl"
-      >
-        Save
-      </cornie-btn>
+      <div class="flex items-center justify-end">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="apply"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
+      </div>
     </template>
   </clinical-dialog>
   <assesor-modal
@@ -490,7 +497,8 @@ import ItemModal from "./itemdailog.vue";
 import ReferenceModal from "./reference.vue";
 import { namespace } from "vuex-class";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
-import CornieCheckbox from "@/components/corniecheckbox.vue";
+// import CornieCheckbox from "@/components/corniecheckbox.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
 
 import IPractitioner from "@/types/IPractitioner";
 
@@ -592,6 +600,8 @@ export default class Impression extends Vue {
 
   impressionModel = {} as IImpression;
 
+  effectiveType = "date-time";
+
   @Watch("id")
   idChanged() {
     if (this.id) {
@@ -599,7 +609,18 @@ export default class Impression extends Vue {
     }
   }
 
-  effectiveType = "date-time";
+  @Watch("effectiveType")
+  onChange() {
+    if (this.effectiveType === "date-time") {
+      (this.data.startDate as any) = undefined;
+      (this.data.startTime as any) = undefined;
+      (this.data.endDate as any) = undefined;
+      (this.data.endTime as any) = undefined;
+    } else if ((this.effectiveType === "period")) {
+      this.data.date = undefined;
+      this.data.dateTime = undefined;
+    }
+  }
 
   data: any = {
     date: undefined,
@@ -707,8 +728,10 @@ export default class Impression extends Vue {
       return (
         this.authPractitioner.firstName + " " + this.authPractitioner.lastName
       );
-    } else 
-      return this.assessorItems[0].firstName + " " + this.assessorItems[0].lastName;
+    } else
+      return (
+        this.assessorItems[0].firstName + " " + this.assessorItems[0].lastName
+      );
   }
 
   get asseterId() {
@@ -729,7 +752,7 @@ export default class Impression extends Vue {
   }
 
   showAssessor(valueforrole: any) {
-    this.assessorItems.push(valueforrole)
+    this.assessorItems.push(valueforrole);
   }
   showProblem(value: any) {
     this.conditionItems.push(value);
@@ -758,7 +781,7 @@ export default class Impression extends Vue {
     this.payload.recorded.asserterId = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
-    } else (this.payload.effective.effectivePeriod as any) = undefined
+    } else (this.payload.effective.effectivePeriod as any) = undefined;
 
     this.payload.recorded.recordDate = this.buildDateTime(
       this.recordedDate,
@@ -858,7 +881,7 @@ export default class Impression extends Vue {
 
   async fetchAllergy() {
     const url = `/api/v1/allergy/findAllByPatient/${this.activePatientId}`;
-     const response = await cornieClient().get(url);
+    const response = await cornieClient().get(url);
     if (response.success) {
       this.allergy = response.data;
     }

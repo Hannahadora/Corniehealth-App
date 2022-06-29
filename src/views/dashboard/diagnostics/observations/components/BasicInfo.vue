@@ -29,19 +29,19 @@
           'Imaging study',
         ]"
       />
-      <cornie-select
+      <fhir-input
+        reference="http://hl7.org/fhir/ValueSet/observation-category"
         class="w-full"
         label="Category"
         placeholder="Select"
         v-model="basicInfo.category"
-        :items="['a', 'b']"
       />
-      <cornie-select
+      <fhir-input
+        reference="http://hl7.org/fhir/ValueSet/observation-codes"
         class="w-full"
         label="Code"
         placeholder="Select"
         v-model="basicInfo.code"
-        :items="['a', 'b']"
       />
       <auto-complete
         v-bind="$attrs"
@@ -79,12 +79,11 @@
         >
         </Tooltip>
       </div>
-      <cornie-select
+      <encounter-select
         class="w-full"
         label="Encounter"
         placeholder="Select"
         v-model="basicInfo.encounter"
-        :items="['a', 'b']"
       />
     </div>
   </div>
@@ -102,6 +101,8 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import EncounterSelect from "@/views/dashboard/ehr/allergy/encounter-select.vue";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
@@ -124,6 +125,8 @@ import search from "@/plugins/search";
     DateTimePicker,
     DatePicker,
     Tooltip,
+    FhirInput,
+    EncounterSelect,
   },
 })
 export default class BasicInfo extends Vue {
