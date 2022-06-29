@@ -92,7 +92,6 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
                       v-model="condition.onSet.age.unit"
                       :disabled="true"
                     />
@@ -130,7 +129,6 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
                       v-model="condition.onSet.range.unit"
                       :disabled="true"
                     />
@@ -150,7 +148,6 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
                       v-model="condition.onSet.range.min"
                      :disabled="true"
                     />
@@ -192,7 +189,7 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
+                     
                       v-model="abatement.age.unit"
                       :disabled="true"
                     />
@@ -230,7 +227,6 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
                       v-model="abatement.range.unit"
                       :disabled="true"
                     />
@@ -250,7 +246,6 @@
                       :items="['Days', 'Months', 'Years']"
                       placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
-                      :setPrimary="true"
                       v-model="abatement.range.min"
                      :disabled="true"
                     />

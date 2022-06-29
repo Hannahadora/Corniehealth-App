@@ -30,7 +30,7 @@ export default interface IRequest {
   requesterId: string;
   patientId: string;
   dispenserId: string;
-  supportingInformation: string;
+  supportingInformation: null;
   medications: Medications[];
   status: string;
   reasonCode: null;

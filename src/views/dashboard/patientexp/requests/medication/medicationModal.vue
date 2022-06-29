@@ -693,7 +693,7 @@ export default class MedicationModal extends Vue {
   requesterId = "";
   patientId = "";
   dispenserId = "";
-  supportingInformation = "";
+  supportingInformation = null;
   medications = [] as any;
   status = "draft";
   reasonCode = null;

@@ -135,14 +135,29 @@
               <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                     <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
                     <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
-                    <cornie-select
+                      <div>
+                            <p class="text-sm text-black font-semibold mb-1">
+                              Medication Reference
+                            </p>
+                            <div
+                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                              @click="showMedRefModal = true"
+                            >
+                              <span class="w-full">{{ emptyMedicationDetails.reference }}</span>
+                              <span class="flex justify-end w-full">
+                                <plusIcon class="fill-current text-danger mt-1" />
+                              </span>
+                            </div>
+                          </div>
+                    
+                    <!-- <cornie-select
                         class="w-full"
                         :items="['Condition', 'Observation']"
                         label="medication reference"
                         placeholder="--Select--"
                         v-model="emptyMedicationDetails.reference"
                     >
-                    </cornie-select>
+                    </cornie-select> -->
                     <cornie-select
                         class="required w-full"
                         :rules="required"
@@ -518,6 +533,7 @@
 
   </cornie-dialog>
   <reference-modal v-model="showRefModal" @ref-value="refvalue"/>
+  <medication-ref v-model="showMedRefModal" @ref-value="medvalue"/>
 </template>
 
 <script lang="ts">
@@ -561,6 +577,7 @@ import FhirInput from "@/components/fhir-input.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import ReferenceModal from "./referenceModal.vue";
 import plusIcon from "@/components/icons/plus.vue";
+import MedicationRef from "./medicationRefModal.vue";
 
 const practitioner = namespace("practitioner");
 const request = namespace("request");
@@ -604,7 +621,8 @@ function defaultFilter(item: any, query: string) {
     CloseIcon,
     DeleteorangeIcon,
     ReferenceModal,
-    plusIcon
+    plusIcon,
+    MedicationRef
   },
 })
 export default class MedicationModal extends Vue {
@@ -682,6 +700,7 @@ export default class MedicationModal extends Vue {
   searchresult = [] as any;
   fullInfo = [] as any;
   showRefModal = false;
+  showMedRefModal = false;
 
   days = "";
   days2 = "";
@@ -692,7 +711,7 @@ export default class MedicationModal extends Vue {
   requesterId = "";
   patientId = "";
   dispenserId = "";
-  supportingInformation = "" ;
+  supportingInformation =  null;
   medications = [] as any;
   status = "active";
   reasonCode = null;
@@ -721,7 +740,7 @@ export default class MedicationModal extends Vue {
     genericCode: null as any,
     code: "",
     genericName: "",
-    reference: "",
+    reference: "Medication Reference",
     courseOfTherapy: "",
     dosageInstruction: "",
     durationInDays: "",
@@ -743,6 +762,9 @@ export default class MedicationModal extends Vue {
    refvalue(value:any, type:string){
     //this.references.push(value);
     this.reasonReference = type;
+  }
+  medvalue(value:any, type:string){
+    this.emptyMedicationDetails.reference = type;
   }
   
 
