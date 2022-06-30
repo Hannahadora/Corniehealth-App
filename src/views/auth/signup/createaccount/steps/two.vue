@@ -55,6 +55,7 @@
       :rules="requiredString"
       class="w-full"
       placeholder="--Enter--"
+      required
       label="Last Name"
     />
     <phone-input
@@ -62,6 +63,7 @@
       v-model="phone"
       :rules="phoneRule"
       class="w-full"
+      required
       label="Phone number"
     />
     <cornie-input
@@ -69,6 +71,7 @@
       :rules="emailRule"
       class="w-full"
       placeholder="--Enter--"
+      required
       label="Email Address"
     />
     <!-- 
@@ -112,6 +115,7 @@
       class="w-full col-span-2"
       placeholder="--Select--"
       label="Patient Profile"
+      required
     />
     <cornie-select
       v-if="account === 'Provider'"

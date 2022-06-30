@@ -11,6 +11,7 @@
       :ref="`input${i - 1}`"
       required
       v-model="model[i - 1].val"
+      @paste="pasteValues"
     />
   </div>
 </template>
@@ -64,6 +65,11 @@ export default class MultiInput extends Vue {
       [next] = (this.$refs[`input${index - 1}`] as any[]) || [];
     }
     return next?.focus();
+  }
+
+  pasteValues(e: any) {
+    const data = e.clipboardData.getData('text');
+    console.log("data", data);
   }
 }
 </script>

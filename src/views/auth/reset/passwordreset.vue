@@ -1,52 +1,57 @@
 <template>
-  <div class="block rounded-lg bg-white -mt-4 px-6 py-12">
-    <div
-      class="lg:w-full xl:w-full md:w-full block"
-    >
-      <form class="" @submit.prevent="submit">
-        <h2 class="font-bold text-center text-primary text-3xl">Create new password</h2>
-        <p class="mt-2 text-center" style="font-size: 15px">Your new password must be different from previously used password.</p>
-        <label for="password" class="mt-9 flex flex-col">
-          <span class="block capitalize w-full text-sm font-bold"
-            >Password</span
-          >
-          <password-input
-            v-model="previousPassword"
-            required
-            id="password"
-            class="border rounded py-2 w-full"
-          />
-          <span class="flex w-2/3 justify-between items-center">
-            <span class="text-xs text-gray-500">Password Strength</span>
-            <span class="flex">
-              <ellipse-icon
-                v-for="i in 5"
-                :key="i"
-                :class="{ 'fill-current text-green-400': i <= passedReqs }"
-                class="mx-1"
-              />
+  <div>
+    <div class="block rounded-lg bg-white -mt-4 px-6 py-12" v-if="!successful">
+      <div class="lg:w-full xl:w-full md:w-full block">
+        <form class="" @submit.prevent="submit">
+          <h2 class="font-bold text-center text-primary text-3xl">
+            Create new password
+          </h2>
+          <p class="mt-2 text-center" style="font-size: 15px">
+            Your new password must be different from previously used password.
+          </p>
+          <label for="password" class="mt-9 flex flex-col">
+            <span class="block capitalize w-full text-sm font-bold"
+              >Password</span
+            >
+            <password-input
+              v-model="previousPassword"
+              required
+              id="password"
+              class="border rounded py-2 w-full"
+            />
+            <span class="flex w-2/3 justify-between items-center">
+              <span class="text-xs text-gray-500">Password Strength</span>
+              <span class="flex">
+                <ellipse-icon
+                  v-for="i in 5"
+                  :key="i"
+                  :class="{ 'fill-current text-green-400': i <= passedReqs }"
+                  class="mx-1"
+                />
+              </span>
             </span>
-          </span>
-        </label>
-        <label for="confirm" class="mt-6 flex flex-col">
-          <span class="block capitalize text-sm font-bold"
-            >Confirm Password</span
-          >
-          <password-input
-            id="confirm"
-            required
-            v-model="newPassword"
-            class="border rounded py-2"
-            :class="{ 'border-red-500': newPassword != previousPassword }"
-          />
-          <span v-if="newPassword != previousPassword" class="text-xs text-red-500"
-            >Passwords do not match</span
-          >
-          <span v-else class="text-xs text-green-500"
-            >All Good here. You can submit now.</span
-          >
-        </label>
-        <!--<div class="mb-8 mt-5">
+          </label>
+          <label for="confirm" class="mt-6 flex flex-col">
+            <span class="block capitalize text-sm font-bold"
+              >Confirm Password</span
+            >
+            <password-input
+              id="confirm"
+              required
+              v-model="newPassword"
+              class="border rounded py-2"
+              :class="{ 'border-red-500': newPassword != previousPassword }"
+            />
+            <span
+              v-if="newPassword != previousPassword"
+              class="text-xs text-red-500"
+              >Passwords do not match</span
+            >
+            <span v-else class="text-xs text-green-500"
+              >All Good here. You can submit now.</span
+            >
+          </label>
+          <!--<div class="mb-8 mt-5">
                 <cornie-select
                 class="w-full"
                 placeholder="--select--"
@@ -67,64 +72,69 @@
                 label="Email"
                 />
             </div>-->
-        <div class="block mt-4 mb-11">
-          <h4 class="font-bold text-sm">Password Requirements:</h4>
-          <ul class="text-xs text-gray-500">
-            <li class="mb-1 flex items-center">
-              <tick-icon v-if="oneUpperCase" class="mr-1" /> least 1 Upper Case
-            </li>
-            <li class="mb-1 flex items-center">
-              <tick-icon v-if="oneLowerCase" class="mr-1" /> At least 1 Lower
-              Case
-            </li>
-            <li class="mb-1 flex items-center">
-              <tick-icon v-if="oneNumber" class="mr-1" /> At least 1 Number
-            </li>
-            <li class="mb-1 flex items-center">
-              <tick-icon v-if="oneSymbol" class="mr-1" /> At least 1 Special
-              Character/Symbol
-            </li>
-            <li class="mb-1 flex items-center">
-              <tick-icon v-if="eightChars" class="mr-1" />At least 8 Characters
-            </li>
-          </ul>
+          <div class="block mt-4 mb-11">
+            <h4 class="font-bold text-sm">Password Requirements:</h4>
+            <ul class="text-xs text-gray-500">
+              <li class="mb-1 flex items-center">
+                <tick-icon v-if="oneUpperCase" class="mr-1" /> least 1 Upper
+                Case
+              </li>
+              <li class="mb-1 flex items-center">
+                <tick-icon v-if="oneLowerCase" class="mr-1" /> At least 1 Lower
+                Case
+              </li>
+              <li class="mb-1 flex items-center">
+                <tick-icon v-if="oneNumber" class="mr-1" /> At least 1 Number
+              </li>
+              <li class="mb-1 flex items-center">
+                <tick-icon v-if="oneSymbol" class="mr-1" /> At least 1 Special
+                Character/Symbol
+              </li>
+              <li class="mb-1 flex items-center">
+                <tick-icon v-if="eightChars" class="mr-1" />At least 8
+                Characters
+              </li>
+            </ul>
+          </div>
+          <div class="flex items-center justify-between">
+            <cornie-btn
+              :loading="loading"
+              class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
+              type="submit"
+            >
+              Submit
+            </cornie-btn>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div v-if="successful">
+      <cornie-dialog v-model="show" center class="lg:w-1/2 w-11/12 h-full">
+        <div class="block rounded bg-white px-6 py-12 mt-24">
+          <div class="flex items-center justify-center pb-9">
+            <img src="../../../assets/img/password-reset-success.svg" alt="" />
+          </div>
+          <div class="text-center font-bold text-2xl text-primary mb-2">
+            Successful password reset
+          </div>
+          <div class="text-base text-center">
+            Your have successfully changed your password!
+          </div>
+          <div class="mt-9 flex items-center justify-center">
+            <cornie-btn
+              @click="$router.push('/signin')"
+              :loading="loading"
+              class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
+              type="submit"
+            >
+              Login
+            </cornie-btn>
+          </div>
         </div>
-        <div class="flex items-center justify-between">
-          <cornie-btn
-            :loading="loading"
-            class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
-            type="submit"
-          >
-            Submit
-          </cornie-btn>
-        </div>
-      </form>
+      </cornie-dialog>
     </div>
   </div>
-
-  <cornie-dialog v-model="show" center class="lg:w-1/2 w-11/12 h-full">
-    <div class="block rounded bg-white px-6 py-12 mt-80">
-      <div class="flex items-center justify-center pb-9">
-        <img src="../../../assets/img/password-reset-success.svg" alt="" />
-      </div>
-      <div class="text-center font-bold text-2xl text-primary mb-2">
-        Successful password reset
-      </div>
-      <div class="text-base text-center">
-        Your have successfully changed your password!
-      </div>
-      <div class="mt-9 flex items-center justify-center">
-        <cornie-btn
-          @click="$router.push('/signin')"
-          :loading="loading"
-          class="font-semibold rounded py-1 px-3 bg-danger mt-3 w-full text-white p-2"
-          type="submit"
-        >
-          Login
-        </cornie-btn>
-      </div>
-    </div>
-  </cornie-dialog>
 </template>
 <script lang="ts">
 import { quantumClient } from "@/plugins/http";
@@ -154,8 +164,6 @@ const user = namespace("user");
   },
 })
 export default class SignUp extends Vue {
-
-  
   @Prop({ required: true, type: String })
   signature!: string;
 
@@ -176,13 +184,14 @@ export default class SignUp extends Vue {
   newPassword = "";
   email = "";
   show = false;
+  successful = false;
 
   get payload() {
     return {
       // userId:"",
       password: this.previousPassword,
       code: this.code,
-      signature: this.signature
+      signature: this.signature,
     };
   }
 
@@ -257,7 +266,7 @@ export default class SignUp extends Vue {
       this.loading = false;
       if (data.success) {
         window.notify({ msg: "Password updated", status: "success" });
-        // this.show = true;
+        this.successful = true;
       } else {
         window.notify({ msg: errMsg, status: "error" });
       }
