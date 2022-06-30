@@ -514,8 +514,8 @@ export default class ObservationDialog extends Vue {
   reasonInfo = <any>{};
   referenceRange = <any>{};
   member = {
-    hasMemer: "",
-    derivedFrom: "",
+    hasMemer: undefined,
+    derivedFrom: undefined,
   };
   component = {
     code: "",
@@ -574,8 +574,10 @@ export default class ObservationDialog extends Vue {
   setReferences(value: any) {
     if(this.refSubject === 'hasMember') {
       this.member.hasMemer = value
+    }else if(this.refSubject === 'derivedFrom') {
+      this.member.derivedFrom = value
     }
-    this.refSubject = ''
+    // this.refSubject = ''
   }
 
   async setObservation() {
@@ -587,7 +589,7 @@ export default class ObservationDialog extends Vue {
       (this.value = xObservation?.value),
       (this.reasonInfo = xObservation?.reasonInfo),
       (this.referenceRange = xObservation?.referenceRange),
-      (this.member = xObservation?.member);
+      ((this.member as any) = xObservation?.member);
   }
 
   async save(s?: any) {
@@ -626,7 +628,7 @@ export default class ObservationDialog extends Vue {
       value: this.value,
       reasonInfo: this.reasonInfo,
       referenceRange: this.referenceRange,
-      member: this.member,
+      member: (this.member as any),
       status: undefined,
     };
   }

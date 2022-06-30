@@ -97,22 +97,23 @@
                 </div>
               </div>
               <div v-if="type === 'Observation'">
-                <div v-for="(input, index) in observations" :key="index">
-                  <div
-                    class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                    @click="getValue(input)"
-                  >
-                    <div class="w-full">
-                      <div class="w-full">
-                        <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input }}
-                        </p>
-                        <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
+                      <div v-for="(input, index) in observations" :key="index">
+                      <div
+                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                          
+                          @click="getValue(input)"
+                      >
+                          <div class="w-full">
+                          <div class="w-full">
+                              <p class="text-sm text-dark mb-1 font-medium">
+                              {{ input?.basicInfo?.subject }}
+                              </p>
+                              <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                          </div>
+                          </div>
+                      </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -162,8 +163,14 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
+import { namespace } from "vuex-class";
+
+import IAllergy from "@/types/IAllergy";
 import { ICondition } from "@/types/ICondition";
-import { IObservation } from "@/types/IObservation";
+import IPractitioner from "@/types/IPractitioner";
+const allergy = namespace("allergy");
+const condition = namespace("condition");
+const practitioner = namespace("practitioner");
 
 import { mapDisplay } from "@/plugins/definitions";
 
@@ -196,21 +203,44 @@ export default class ReferenceDialog extends Vue {
   @Prop({ type: Array, default: [] })
   referenceOptions!: any[];
 
+  
+    @practitioner.State
+    practitioners!: IPractitioner[];
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    
+    @allergy.State
+    allergys!: any[];
+
+    @allergy.Action
+    fetchAllergys!: (patientId: string) => Promise<void>;
+
+    @condition.Action
+    fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  
+  @condition.State
+  conditions!: ICondition[];
+
   severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
 
   loading = false;
 
   selectedRef = '';
-  type = "Observation";
+  type = "";
   refBasis = "";
   query = "";
-  DocumentReference = <any>[];
-  ImagingStudy = <any>[];
-  Media = <any>[];
-  QuestionnaireResponse = <any>[];
-  Observation = <any>[];
-  MolecularSequence = <any>[];
+  documentReference = <any>[];
+  imagingStudy = <any>[];
+  media = <any>[];
+  questionnaireResponse = <any>[];
+  observations = <any>[];
+  molecularSequence = <any>[];
+  carePlan = <any>[];
+  medReq = <any>[];
 
   get patientId() {
     return this.$route.params.id;
@@ -231,6 +261,45 @@ export default class ReferenceDialog extends Vue {
     } else if (this.type === "observation") {
     }
   }
+    async fetchObservations() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/observations/`
+          );
+          this.observations = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching observations",
+            status: "error",
+          });
+        }
+      }
+    async fetchCarePlan() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/care-plan/practitioner/`
+          );
+          this.carePlan = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching observations",
+            status: "error",
+          });
+        }
+      }
+    async fetchMedReq() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/medication-requests/`
+          );
+          this.medReq = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching observations",
+            status: "error",
+          });
+        }
+      }
 
   apply() {
     this.$emit("update", this.selectedRef);
@@ -239,6 +308,12 @@ export default class ReferenceDialog extends Vue {
 
   async created() {
     this.loadMappers();
+    // await this.fetchAllergys(this.$route?.params?.id as string);
+    // await this.fetchPatientConditions(this.activepatientId);
+    await this.fetchPractitioners();
+    await this.fetchObservations();
+    await this.fetchCarePlan()
+    await this.fetchMedReq()
   }
 }
 </script>

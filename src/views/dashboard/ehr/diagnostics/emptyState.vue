@@ -7,7 +7,7 @@
     </h3>
     <button
        @click="showModalDiagnostic = true"
-      class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90"
+      class="bg-danger rounded-xl text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90"
     >
       New Requests
     </button>
