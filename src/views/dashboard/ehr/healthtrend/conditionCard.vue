@@ -82,7 +82,7 @@ export default class conditionCard extends Vue {
       //  onset: this.displayTimeable(condition.onSet, "onsetString"),
       description: condition.description,
       // abatement: this.printAbatement(condition),
-      date: new Date(condition.createdAt).toLocaleDateString()
+      date: new Date(condition.recordDate).toLocaleDateString('en-GB') || 'N/A'
     }));
 
     return items;
