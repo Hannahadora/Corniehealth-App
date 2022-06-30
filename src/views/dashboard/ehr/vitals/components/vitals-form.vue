@@ -2,7 +2,7 @@
   <cornie-dialog v-model="show" right class="w-2/3 h-full">
     <cornie-card
       height="100%"
-      class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
+      class="flex flex-col bg-white"
     >
       <cornie-card-title class="">
         <icon-btn @click="show = false">
@@ -18,7 +18,7 @@
           />
         </div>
       </cornie-card-title>
-      <cornie-card-text class="flex-grow scrollable">
+      <cornie-card-text class="overflow-y-auto h-full">
         <v-form class="flex-grow flex flex-col" @submit="save">
           <accordion-component
             class="text-primary"

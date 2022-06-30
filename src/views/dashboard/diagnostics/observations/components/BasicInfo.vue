@@ -2,7 +2,6 @@
   <div>
     <div class="grid grid-cols-2 gap-6 py-6">
       <cornie-select
-        class="w-full"
         label="Based On"
         placeholder="Select"
         v-model="basicInfo.basedOn"
@@ -14,10 +13,11 @@
           'Nutrition order',
           'Service request',
         ]"
-      />
+      >
+      </cornie-select>
       <cornie-select
-        class="w-full"
-        label="Part of"
+        v-bind="$attrs"
+        label="Part Of"
         placeholder="Select"
         v-model="basicInfo.partOf"
         :items="[
@@ -28,7 +28,8 @@
           'Immunization',
           'Imaging study',
         ]"
-      />
+      >
+      </cornie-select>
       <fhir-input
         reference="http://hl7.org/fhir/ValueSet/observation-category"
         class="w-full"

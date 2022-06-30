@@ -65,6 +65,7 @@
       v-model="showImpressionModal"
       :id="impressionId"
       :impression="selectedImpression"
+      :allImpressions="impressions"
     />
 
     <status-modal

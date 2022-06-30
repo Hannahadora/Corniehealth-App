@@ -15,13 +15,13 @@
           :opened="true"
         >
           <div class="grid grid-cols-2 gap-4 w-full my-3">
-            <main-cornie-select
+            <fhir-input
+              reference="http://hl7.org/fhir/ValueSet/observation-codes"
               class="w-full"
-              :items="['Active', 'Inactive', 'Resolved']"
-              v-model="impressionModel.basicInfo.code"
               label="Code"
-            >
-            </main-cornie-select>
+              placeholder="Select"
+              v-model="impressionModel.basicInfo.code"
+            />
             <cornie-input
               label="Description"
               class="w-full"
@@ -140,7 +140,7 @@
 
             <main-cornie-select
               class="w-full"
-              :items="['Clinical Impression']"
+              :items="previousImpressions"
               v-model="impressionModel.recorded.previous"
               label="previous"
             >
@@ -499,6 +499,7 @@ import { namespace } from "vuex-class";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 // import CornieCheckbox from "@/components/corniecheckbox.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
+import FhirInput from "@/components/fhir-input.vue";
 
 import IPractitioner from "@/types/IPractitioner";
 
@@ -526,7 +527,7 @@ const emptyImpression: any = {
     } as any,
   },
   investigation: [] as { item: any }[],
-  findings: [] as { itemReference: any; basis: "" }[],
+  findings: [] as { itemReference: any[]; basis: "" }[],
   prognosis: {
     itemCode: undefined,
     itemReference: undefined,
@@ -580,6 +581,7 @@ const emptyImpression: any = {
     DeleteIcon,
     ClinicalDialog,
     CornieCheckbox,
+    FhirInput,
   },
 })
 export default class Impression extends Vue {
@@ -594,6 +596,9 @@ export default class Impression extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   available!: object;
+
+  @Prop({ type: Array, default: [] })
+  allImpressions!: any[];
 
   @user.Getter
   authPractitioner!: IPractitioner;
@@ -616,7 +621,7 @@ export default class Impression extends Vue {
       (this.data.startTime as any) = undefined;
       (this.data.endDate as any) = undefined;
       (this.data.endTime as any) = undefined;
-    } else if ((this.effectiveType === "period")) {
+    } else if (this.effectiveType === "period") {
       this.data.date = undefined;
       this.data.dateTime = undefined;
     }
@@ -704,6 +709,7 @@ export default class Impression extends Vue {
     date.setHours(Number(hour));
     return date.toISOString();
   }
+
   get payload() {
     return {
       patientId: this.activePatientId,
@@ -717,6 +723,12 @@ export default class Impression extends Vue {
       recorded: this.impressionModel.recorded,
       protocol: this.impressionModel.protocol,
     };
+  }
+
+  get previousImpressions() {
+    return this.allImpressions?.map((el: any) => {
+      return el.basicInfo.code;
+    });
   }
 
   get newaction() {
@@ -759,7 +771,7 @@ export default class Impression extends Vue {
   }
 
   passRef(e: any) {
-    this.impressionModel.findings = e;
+    (this.impressionModel.findings as any) = e;
   }
   async showItem(value: any) {
     this.investigationItems.push(value);
@@ -777,11 +789,11 @@ export default class Impression extends Vue {
       (this.payload.effective.effectivePeriod.start as any) =
         this.data.startDate;
       (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
-    }
+    } else (this.payload.effective.effectivePeriod as any) = undefined;
     this.payload.recorded.asserterId = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
-    } else (this.payload.effective.effectivePeriod as any) = undefined;
+    }
 
     this.payload.recorded.recordDate = this.buildDateTime(
       this.recordedDate,

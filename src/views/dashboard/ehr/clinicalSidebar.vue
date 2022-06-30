@@ -17,9 +17,9 @@
           </p>
           <p>
             Blood Type:
-            <span class="text-sm text-black font-light">A+ | </span>
+            <span class="text-sm text-black font-light">{{ items.bloodGroup || 'N/A' }} | </span>
             <span
-              >Genotype: <span class="text-sm text-black font-light">AA</span>
+              >Genotype: <span class="text-sm text-black font-light">{{ items.genotype || 'N/A' }}</span>
             </span>
           </p>
         </div>

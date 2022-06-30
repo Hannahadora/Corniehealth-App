@@ -323,9 +323,9 @@ export default class ExistingState extends Vue {
         identifier: vital?.practitioner?.identifier,
         dateRecorded: new Date(vital?.createdAt).toLocaleDateString(),
         recordType: vital?.encounter?.serviceType,
-        encounter: vital?.encounter?.class,
+        encounter: vital?.encounter || "N/A",
         performer: `${vital.practitioner?.lastName} ${vital.practitioner?.firstName}`,
-        dataCount: vital.datacount,
+        dataCount: this.getDataCount(vital),
         status: vital.status,
         updatedAt: new Date(vital.updatedAt).toLocaleDateString(),
       };
@@ -350,6 +350,43 @@ export default class ExistingState extends Vue {
   viewVital(id: string) {
     this.selectedVitalId = id;
     this.showNewModal = true;
+  }
+
+  getDataCount(obj: any) {
+    const total = Object.keys(obj).length - 7;
+    let filled = 0;
+    if (obj.bloodPressure.length > 0) {
+      filled++;
+    }
+    if (obj.bodyTemperature.value) {
+      filled++;
+    }
+    if (obj.bodyWeight.bodyMassIndex.value) {
+      filled++;
+    }
+    if (obj.bodyWeight.bodyWeight.value) {
+      filled++;
+    }
+    if (obj.circumferences.bodyHeight.value) {
+      filled++;
+    }
+    if (obj.circumferences.headCircumferences.value) {
+      filled++;
+    }
+    if (obj.respiration.heartRate.value) {
+      filled++;
+    }
+    if (obj.respiration.oxygenSaturation.value) {
+      filled++;
+    }
+    if (obj.respiration.bloodGlucoseLevel.value) {
+      filled++;
+    }
+    if (obj.respiration.respiratoryRate.value) {
+      filled++;
+    }
+
+    return `${filled}/${total}`;
   }
 
   get selectedVital() {
