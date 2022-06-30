@@ -207,7 +207,7 @@ export default class CreateAccount extends Vue {
       fname: this.firstName,
       dialCode: this.dialCode,
       phoneNo: this.phone,
-      email: this.email,
+      email: this.email.toLowerCase(),
     };
   }
   next() {
