@@ -311,24 +311,24 @@ const timeable = {
 };
 
 const measurable = {
-  age: null,
-  ageUnit: null,
-  ageValue: null,
-  day: null,
-  unit: null,
-  min: null,
-  minUnit: null,
-  minValue: null,
-  max: null,
-  maxUnit: null,
-  maxValue: null,
-  string: null,
-  startDate: null,
-  startTime: null,
-  endDate: null,
-  date: null,
-  time: null,
-  endTime: null
+  age: "",
+  ageUnit: "",
+  ageValue: "",
+  day: "",
+  unit: "",
+  min: "",
+  minUnit: "",
+  minValue: "",
+  max: "",
+  maxUnit: "",
+  maxValue: "",
+  string: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  date: "",
+  time: "",
+  endTime:""
 };
 
 
@@ -449,9 +449,8 @@ export default class AddCondition extends Vue {
     this.assessment = condition.assessment;
     this.severity = condition.severity;
     this.evidenceNote = condition.evidenceNote;
-   // this.onsetmesurable.unit = condition?.onSet?.range?.unit || null;
-
-     this.abatement = condition.abatement;
+    //this.onset.range = condition.onSet.range;
+     this.abatement = condition.abatement[0];
     this.evidence = condition.evidence;
     this.code = condition.code;
     this.recordDate = condition.recordDate;

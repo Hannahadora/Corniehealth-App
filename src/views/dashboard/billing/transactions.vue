@@ -36,6 +36,7 @@
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import transactionFilterDialog from "./components/transaction-filter-dialog.vue";
   @Options({
@@ -97,22 +98,45 @@
         noOrder: true,
       },
     ];
+    bills = [];
 
     get items() {
-      return new Array(6).fill({
-        date: new Date().toLocaleDateString(),
-        id: "XXXXXX",
-        biller: "XXXXXX",
-        patient: "XXXXXX",
-        account: "MTN\n 3209320932",
-        payor: "MTN",
-        total: "N40,000",
-        status: "Ongoing",
-      });
+      // return new Array(6).fill({
+      //   date: new Date().toLocaleDateString(),
+      //   id: "XXXXXX",
+      //   biller: "XXXXXX",
+      //   patient: "XXXXXX",
+      //   account: "MTN\n 3209320932",
+      //   payor: "MTN",
+      //   total: "N40,000",
+      //   status: "Ongoing",
+      // });
+      return this.bills.length == 0
+        ? this.bills
+        : this.bills.map((x: any) => {
+            return {
+              date: this.printRecorded(x.createdAt),
+              id: x.idn,
+            };
+          });
     }
 
     showFDialog() {
       this.showDialog = true;
+    }
+
+    printRecorded(date: string) {
+      return new Date(date).toLocaleDateString();
+    }
+
+    async getBills() {
+      const { data } = await cornieClient().get("/api/v1/bill");
+      console.log("bills", data);
+      this.bills = data;
+    }
+
+    async mounted() {
+      await this.getBills();
     }
   }
 </script>

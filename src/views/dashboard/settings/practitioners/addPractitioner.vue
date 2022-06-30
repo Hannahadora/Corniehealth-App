@@ -1000,7 +1000,7 @@
         ...this.licenses,
       ];
 
-      this.licenseIssuer = this.licenseNumber = "";
+      this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
     }
 
     removeLicense(i: number) {

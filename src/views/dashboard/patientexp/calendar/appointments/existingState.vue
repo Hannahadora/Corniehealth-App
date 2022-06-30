@@ -46,7 +46,7 @@
           <update-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs"> Update Status </span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item.id)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item)">
           <checkin-icon class="text-green-800 fill-current" />
           <span class="ml-3 text-xs">Check-in</span>
         </div>
@@ -130,7 +130,7 @@
     v-model="showAppointmentModal"
     :id="appointmentId"
   />
-  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment"  :appiontmentid="appointmentId"/>
+  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment" :patientId="patientId" :practitionerData="practitionerData"  :appiontmentid="appointmentId"/>
   <collect-modal v-model="showCollect" :id="appointmentId"/>
   <share-modal v-model="showShare" :id="appointmentId"/>
   <post-modal v-model="showPost" :id="appointmentId"/>
@@ -241,6 +241,8 @@ export default class SchedulesExistingState extends Vue {
   update = "";
   onePatientId = "";
   onePractitionerId = "";
+  patientId = "";
+  practitionerData= {};
   today = new Date().toISOString().slice(0, 10);
 
   @appointment.State
@@ -365,9 +367,11 @@ export default class SchedulesExistingState extends Vue {
     this.showShare = true
   }
 
-  async showCheckinmodal(value:string){ 
+  async showCheckinmodal(value:any){ 
     this.showcheckin = true;
-    this.appointmentId = value;
+    this.appointmentId = value.id;
+    this.practitionerData = value.practitioner;
+    this.patientId = value.patientId;
 
     if(this.patientAppointment.length ===0)  {
       await window.notify({ msg: "No available scheduled appoimtment", status: "error" });

@@ -27,7 +27,7 @@ export const UserRoute: RouteRecordRaw = {
       name: "Edit profile",
       component: () =>
         import(
-          "@/views/dashboard/usersettings/profile/components/user-setup.vue"
+          "@/views/dashboard/usersettings/profile/components/user-profile-edit.vue"
         ),
     },
     {

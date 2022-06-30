@@ -1,9 +1,11 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div class="sect1 my-8">
-      <div class="greet">{{ `Good ${greeting}` || 'Hello' }}, Dr. {{ cornieUser?.firstName }}!</div>
+      <div class="greet">
+        {{ `Good ${greeting}` || "Hello" }}, Dr. {{ cornieUser?.firstName }}!
+      </div>
       <div class="flex items-center mt-4">
-        <span class="">Have a lovely {{ greeting || 'rest' }}</span>
+        <span class="">Have a lovely {{ greeting || "rest" }}</span>
         <!-- <img class="ml-3" src="../../../../assets/emoji.png" alt="" /> -->
       </div>
 
@@ -70,17 +72,20 @@
 
     <div class="w-full grid grid-cols-3 gap-8 mb-8">
       <div class="col-span-3">
-        <appointment-chart />
+        <div class="grid grid-cols-3 gap-8">
+          <appointment-chart :context="chartContext" />
+          <appointment-summary :locationId="authCurrentLocation" />
+        </div>
       </div>
 
-      <referral-chart />
-      <visits-chart />
+      <referral-chart :context="chartContext" />
+      <visits-chart :context="chartContext" />
       <InpatientChart />
     </div>
 
     <div class="w-full grid grid-cols-2 gap-8 mb-8">
-      <medication-chart />
-      <diagnostics-chart />
+      <medication-chart :context="chartContext" />
+      <diagnostics-chart :context="chartContext" />
     </div>
 
     <div class="mb-8">
@@ -113,15 +118,25 @@ import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
 import { string } from "yup";
 import DatePicker from "@/components/datepicker.vue";
+import AppointmentSummary from "./appointment-summary.vue";
+import { ChartContext } from "./types";
 
 import { namespace } from "vuex-class";
+import { splitDate } from "@/plugins/utils";
 
 const user = namespace("user");
+
+const today = new Date();
+const todayStr = splitDate(today);
+const yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
+const yesterdayStr = splitDate(yesterday);
 
 @Options({
   name: "DashboardHome",
   components: {
     RegistrationChart,
+    AppointmentSummary,
     VisitsChart,
     MessagesChart,
     ReferralChart,
@@ -142,9 +157,21 @@ export default class DashboardHome extends Vue {
   @user.Getter
   cornieUser!: "";
 
+  @user.Getter
+  authCurrentLocation!: string;
+
   dashboardType = "mine";
-  startDate = "";
-  endDate = "";
+  startDate = yesterdayStr;
+  endDate = todayStr;
+
+  get chartContext(): ChartContext {
+    return {
+      locationId: this.authCurrentLocation,
+      start: this.startDate,
+      end: this.endDate,
+      admin: this.dashboardType == "admin",
+    };
+  }
 
   get greeting() {
     const myDate = new Date();
@@ -154,7 +181,6 @@ export default class DashboardHome extends Vue {
     else if (hrs >= 12 && hrs <= 17) return "Afternoon";
     else if (hrs >= 17 && hrs <= 24) return "Evening";
   }
-
 }
 </script>
 

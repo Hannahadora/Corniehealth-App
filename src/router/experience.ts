@@ -49,7 +49,7 @@ export const ExperienceRoutes: RouteRecordRaw = {
             ),
         },
         {
-          path: "transactions/visits",
+          path: "visits",
           name: "Patient Visits",
           component: () =>
             import(

@@ -108,6 +108,15 @@
           </td>
         </tr>
       </table>
+      <cornie-pagination
+        :items="items"
+        :totalPages="totalPages"
+        :perPage="perPage"
+        :currentPage="currentPage"
+        :total="totalItems"
+        :maxVisibleButtons="maxVisibleButtons"
+        @pagechanged="pushPageChanges"
+      />
     </cornie-card>
 
     <column-filter
@@ -139,7 +148,7 @@ import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import search from "@/plugins/search";
 import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
-
+import CorniePagination from "@/components/corniePagination.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 interface IPage {
@@ -183,6 +192,7 @@ function defaultFilter(item: any, query: string) {
     CornieMenu,
     RefreshIcon,
     ...CornieCard,
+    CorniePagination,
   },
 })
 export default class CornieTable extends Vue {
@@ -218,6 +228,21 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: true })
   menu!: boolean;
+
+  @Prop({ type: Number})
+  totalPages!: number;
+
+  @Prop({ type: Number })
+  perPage!: number;
+
+  @Prop({ type: Number })
+  totalItems!: number;
+
+  @Prop({ type: Number })
+  currentPage!: number;
+
+  @Prop({ type: Number })
+  maxVisibleButtons!: number;
 
   @PropSync("refreshing")
   refreshSync!: boolean;
@@ -298,6 +323,10 @@ export default class CornieTable extends Vue {
     }
      
   }
+  pushPageChanges(data:number) {
+          this.$emit('pagechanged', data);
+          console.log(data, 'data')
+    }
 
   mounted() {
     this.preferredColumns = this.columns;

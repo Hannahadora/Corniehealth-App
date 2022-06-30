@@ -75,7 +75,16 @@
             <date-picker :label="'Date'" v-model="date" />
           </div>
           <div class="border-b-2 -mt-9 border-dashed border-gray-200">
+             <cornie-input
+             v-if="Object.keys(practitionerData).length > 0"
+              :label="'Physician'"
+              placeholder="--Select--"
+              :modelValue="practitionerData.firstName +' '+ practitionerData.lastName"
+              class="w-full mt-4"
+              :disabled="true"
+            />
             <cornie-select
+            v-else
               :label="'Physician'"
               placeholder="--Select--"
               v-model="practitioner"
@@ -86,7 +95,7 @@
               :label="'Room'"
               placeholder="--Select--"
               v-model="roomId"
-              :items="allRooms"
+              :items="rooms"
               class="w-full mt-4"
             />
           </div>
@@ -209,9 +218,14 @@ import Avatar from "@/components/avatar.vue";
 import SplitButton from "@/components/split-button.vue";
 import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
-import PatientSection from "./visitor.vue";
 import ChevronDown from "@/components/icons/chevrondown.vue";
 import PaymentModal from "@/views/dashboard/patientexp/calendar/appointments/collectpayment.vue";
+import { useAppointmentRooms } from "../composables/useAppointmentRoom";
+import IAppointment from "@/types/IAppointment";
+
+
+import PatientSection from "./visitor.vue";
+
 
 const appointment = namespace("appointment");
 const location = namespace("location");
@@ -264,20 +278,35 @@ export default class checkinModal extends Vue {
   @Prop({ type: Array, default: [] })
   appoitmentData!: any;
 
+  @Prop({ type: Object, default: {} })
+  practitionerData!: any;
+
   @practitioner.State
   practitioners!: IPractitioner[];
 
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
 
+  
+  @appointment.State
+  appointments!: IAppointment[];
+
+  @appointment.Action
+  fetchAppointments!: () => Promise<void>;
+
   @location.State
   locations!: ILocation[];
+
+  @user.Getter
+  authCurrentLocation!: string;
 
   @location.Action
   fetchLocations!: () => Promise<void>;
 
   @user.State
   currentLocation!: string;
+
+  room = setup(() => useAppointmentRooms());
 
   loading = false;
   localSrc = require("../../../../assets/img/placeholder.png");
@@ -293,11 +322,22 @@ export default class checkinModal extends Vue {
   today = new Date().toISOString().slice(0, 10);
   patientAppointment = [];
 
+
+    get rooms() {
+    return this.room.locationRooms.map((room) => ({
+      code: room.id,
+      display: room.roomName,
+    }));
+  }
+
+
   get payload() {
+    this.practitioner = this.practitionerData.id
     return {
       roomId: this.roomId,
       notes: this.notes,
       // startTime: this.startTime,
+      locationId: this.authCurrentLocation,
       patientId: this.patientId || this.patientIdAppoitment.toString(),
     };
   }

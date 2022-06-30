@@ -57,7 +57,7 @@ export const BillingRoutes: RouteRecordRaw = {
         },
         {
           path: "transactions/visits",
-          name: "Patient Visits",
+          name: "Billing Visits",
           component: () =>
             import(
               "@/views/dashboard/patientexp/patients/viewscreens/visits.vue"
@@ -166,7 +166,7 @@ export const BillingRoutes: RouteRecordRaw = {
     },
     {
       path: "visits",
-      name: "Visits",
+      name: "Billing Visits",
       component: () => import("@/views/dashboard/visits/index.vue"),
     },
     {
