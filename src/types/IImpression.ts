@@ -26,7 +26,7 @@ interface Problem {
 }
 
 export interface Investigation {
-  code: string;
+  code?: "";
   item: {
     type: string;
     details: string;
@@ -34,7 +34,7 @@ export interface Investigation {
   };
 }
 interface Findings {
-  itemReference: Problem;
+  itemReference: Problem[];
   basis: string;
 }
 interface Prognosis {

@@ -112,7 +112,7 @@ export default class Signin extends Vue {
 
   get payload() {
     const payload: any = {
-      email: this.email,
+      email: this.email.toLowerCase(),
       authPassword: this.password,
     };
     if (this.domainName) payload.accountId = this.domainName;

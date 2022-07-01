@@ -241,7 +241,7 @@
     query = "";
     type = "Family member History";
     selectedItem: Investigation = {
-      code: "",
+      // code: "",
       item: {
         type: "",
         details: "",
