@@ -635,6 +635,9 @@ export default class MedicationModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   @Prop({ type: String, default: "" })
   specilatyId!: string;
 
@@ -753,9 +756,34 @@ export default class MedicationModal extends Vue {
   };
 
 
-  @Watch("id")
+  @Watch("selectedItem")
   idChanged() {
     this.setRequest();
+  }
+   async setRequest() {
+    console.log('hey')
+    const request = this.getRequestById(this.selectedItem.id);
+    if (!request) return;
+    this.basedOn = request.basedOn;
+    this.intent = request.intent;
+    this.priority = request.priority;
+    this.category = request.category;
+    this.requesterId = request.requesterId;
+    this.patientId = request.patientId;
+    this.dispenserId = request.dispenserId;
+    this.supportingInformation = request.supportingInformation;
+    this.medications = request.medications;
+    this.status = request.status;
+    this.reasonCode = request.reasonCode;
+    this.reasonReference = request.reasonReference;
+    this.note = request.note;
+    this.allergies = request.allergies;
+    this.aconditions = request.conditions;
+    this.identifier = request.identifier;
+    this.safetyCapRequest = request.safetyCapRequest;
+    this.deliveryLocation = request.deliveryLocation;
+    this.priorPrescription = request.priorPrescription;
+    this.detectedIssues = request.detectedIssues;
   }
 
 
@@ -877,34 +905,11 @@ export default class MedicationModal extends Vue {
         };
         });
     }
-      get newaction() {
-    return this.id ? "Update" : "Create";
+  get newaction() {
+    return this.selectedItem.id ? "Update" : "Create";
   }
 
-  async setRequest() {
-    const request = await this.getRequestById(this.id);
-    if (!request) return;
-    this.basedOn = request.basedOn;
-    this.intent = request.intent;
-    this.priority = request.priority;
-    this.category = request.category;
-    this.requesterId = request.requesterId;
-    this.patientId = request.patientId;
-    this.dispenserId = request.dispenserId;
-    this.supportingInformation = request.supportingInformation;
-    this.medications = request.medications;
-    this.status = request.status;
-    this.reasonCode = request.reasonCode;
-    this.reasonReference = request.reasonReference;
-    this.note = request.note;
-    this.allergies = request.allergies;
-    this.aconditions = request.conditions;
-    this.identifier = request.identifier;
-    this.safetyCapRequest = request.safetyCapRequest;
-    this.deliveryLocation = request.deliveryLocation;
-    this.priorPrescription = request.priorPrescription;
-    this.detectedIssues = request.detectedIssues;
-  }
+ 
 
   get payload() {
     return {
@@ -934,7 +939,7 @@ export default class MedicationModal extends Vue {
 
   async submit() {
     this.loading = true;
-    if (this.id) await this.updateRequest();
+    if (this.selectedItem.id) await this.updateRequest();
     else await this.createRequest();
     this.loading = false;
   }
@@ -957,7 +962,7 @@ export default class MedicationModal extends Vue {
     }
   }
   async updateRequest() {
-    const id = this.id;
+    const id = this.selectedItem.id;
     const url = `/api/v1/medication-requests/${id}`;
     const payload = this.payload;
     try {
@@ -972,12 +977,7 @@ export default class MedicationModal extends Vue {
     }
   }
 
-  async fetchResults() {
-    await this.fetchrequestsById(this.patientId);
-    await this.fetchIssues(this.patientId as string);
-    await this.fetchPatientConditions(this.patientId as string);
-    await this.fetchAllergys(this.patientId as string);
-  }
+
   async createMapper() {
     this.medicationMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/medication-codes"

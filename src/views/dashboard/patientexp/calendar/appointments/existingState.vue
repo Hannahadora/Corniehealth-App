@@ -1,15 +1,17 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end float-right w-86">
+    <!-- <span class="flex justify-end float-right w-86">
         <date-picker class="w-full mt-3 mr-4"/>
-      <!-- <button
+       <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-2.5 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="showAppointmentModal = true"
       >
         Create
-      </button> -->
-    </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
+      </button> 
+    </span> -->
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false" :showPagination="true"
+        @pagechanged="fetchAppointments"
+        :pageInfo="pageInfo">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAppointment(item.id)">
@@ -155,6 +157,7 @@ import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import IAppointment from "@/types/IAppointment";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import IPageInfo from "@/types/IPageInfo";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
@@ -249,7 +252,10 @@ export default class SchedulesExistingState extends Vue {
   appointments!: IAppointment[];
 
   @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+  fetchAppointments!: (page?:number, limit?:number) => Promise<void>;
+
+  @appointment.State
+  pageInfo!: IPageInfo;
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
@@ -391,6 +397,8 @@ export default class SchedulesExistingState extends Vue {
     this.patientAppointment = response[0].data;
     
   }
+
+
 
   async created(){
     await this.fetchPatients();

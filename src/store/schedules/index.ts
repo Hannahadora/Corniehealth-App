@@ -1,5 +1,7 @@
 import { StoreOptions } from "vuex";
 import {Slot} from "@/types/ISchedule";
+import IPageInfo from "@/types/IPageInfo";
+import ISchedule from "@/types/ISchedule";
 import {
   deleteSchedule,
   removePractitioner,
@@ -17,8 +19,9 @@ import {
 } from "./helper";
 
 interface SchedulesStore {
-  schedules: any[];
+  schedules: ISchedule[];
   slots: any[];
+  pageInfo : IPageInfo;
 }
 
 export default {
@@ -26,8 +29,12 @@ export default {
   state: {
     schedules: [],
     slots:[],
+    pageInfo: {},
   },
   mutations: {
+    setPageInfo(state, pageInfo){
+      state.pageInfo = pageInfo;
+    },
     setSchedules(state, schs) {
       if (schs) state.schedules = [...schs];
     },
@@ -118,9 +125,11 @@ export default {
   },
 
   actions: {
-    async getSchedules(ctx) {
-      const schs = await getSchedules();
-      ctx.commit("setSchedules", schs);
+    async getSchedules(ctx,  payload? : {page:number, limit:number}) {
+      const { page, limit } = payload ?? {}
+      const { data, pageInfo } = await getSchedules(page ?? 1, limit ?? 10);
+      ctx.commit("setSchedules", data);
+      ctx.commit("setPageInfo", pageInfo);
     },
     getScheduleById(ctx, id: string) {
       return ctx.state.schedules.find(
@@ -220,5 +229,10 @@ export default {
       ctx.commit("deactivateSchedule", id);
       return true;
     },
+    async pageSwitch(ctx, page:number){
+      const schedules = await getSchedules();
+      ctx.commit("setSchedules", schedules);
+      ctx.commit("setPageInfo", schedules);
+    }
   },
 } as StoreOptions<SchedulesStore>;

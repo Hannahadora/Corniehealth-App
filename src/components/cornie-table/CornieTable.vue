@@ -109,12 +109,8 @@
         </tr>
       </table>
       <cornie-pagination
-        :items="items"
-        :totalPages="totalPages"
-        :perPage="perPage"
-        :currentPage="currentPage"
-        :total="totalItems"
-        :maxVisibleButtons="maxVisibleButtons"
+      v-if="showPagination"
+        :pageInfo="pageInfo"
         @pagechanged="pushPageChanges"
       />
     </cornie-card>
@@ -205,6 +201,9 @@ export default class CornieTable extends Vue {
   @PropSync("modelValue", { type: Array, default: [] })
   items!: any[];
 
+  @Prop({ type: Object, default: {} })
+  pageInfo!: any;
+
   @Prop({ type: Boolean, default: true })
   check!: boolean;
 
@@ -213,6 +212,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   listmenu!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  showPagination!: boolean;
 
   @Prop({ type: Boolean, default: false })
   deleteRow!: boolean;
@@ -323,9 +325,9 @@ export default class CornieTable extends Vue {
     }
      
   }
-  pushPageChanges(data:number) {
-          this.$emit('pagechanged', data);
-          console.log(data, 'data')
+  pushPageChanges(payload:any) {
+          this.$emit('pagechanged', payload);
+          console.log(payload, 'data limit')
     }
 
   mounted() {

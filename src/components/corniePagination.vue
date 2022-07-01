@@ -1,8 +1,21 @@
 <template>
+<div>
+  <div class="flex flex-row float-left justify-start w-100 space-x-5">
+     <span> Rows per pages </span>
+      <select name="limit" id="limit" class="space-x-5" v-model="limit" @click="changeLimit">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>
+      </select>
+    </div>
   <div class="flex flex-row justify-end mt-8 text-sm">
+  
     <ul class="pagination space-x-4">
       <li class="pagination-item">
-          {{ currentPage }}-{{totalPages}} of {{ totalPages }} Items
+          {{ pageInfo.currentPage }}-{{pageInfo.numberOfPages}} of {{ pageInfo.numberOfPages }} Items
       </li>
 
       <li class="pagination-item">
@@ -44,12 +57,14 @@
       </li> -->
     </ul>
   </div>
+</div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
 import PreviousIcon from "./icons/previous.vue";
-import NextIcon from "./icons/next.vue"
+import NextIcon from "./icons/next.vue";
+
 
 @Options({
    components:{
@@ -77,19 +92,24 @@ export default class Paginator extends Vue {
   @Prop({ type: Number , default: 1})
   total!: number;
 
+  @Prop({ type: Object, default: {} })
+  pageInfo!: any;
+
+  limit = 10;
+
   get startPage() {
     // When on the first page
-    if (this.currentPage === 1) {
+    if (this.pageInfo.currentPage === 1) {
       return 1;
     }
 
     // When on the last page
-    if (this.currentPage === this.totalPages) {
-      return this.totalPages - this.maxVisibleButtons;
+    if (this.pageInfo.currentPage === this.pageInfo.numberOfPages) {
+      return this.pageInfo.numberOfPages - this.maxVisibleButtons;
     }
 
     // When inbetween
-    return this.currentPage - 1;
+    return this.pageInfo.currentPage - 1;
   }
   get pages() {
     const range = [];
@@ -97,78 +117,47 @@ export default class Paginator extends Vue {
     for (
       let i = this.startPage;
       i <=
-      Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
+      Math.min(this.startPage + this.maxVisibleButtons - 1, this.pageInfo.numberOfPages);
       i++
     ) {
       range.push({
         number: i,
-        isDisabled: i === this.currentPage,
+        isDisabled: i === this.pageInfo.currentPage,
       });
     }
 
     return range;
   }
   get isInFirstPage() {
-    return this.currentPage === 1;
+    return this.pageInfo.currentPage === 1;
   }
 
   get isInLastPage() {
-    return this.currentPage === this.totalPages;
+    return this.pageInfo.currentPage === this.pageInfo.numberOfPages;
   }
 
   onClickPreviousPage(): void {
-     this.$emit('pagechanged', this.currentPage - 1);
-    //this.handlePageChange(this.currentPage - 1);
+     this.$emit('pagechanged', this.pageInfo.currentPage - 1);
   }
   onClickPage(page: number): void {
-    this.$emit('pagechanged', page);
-    //this.handlePageChange(page);
+    this.$emit('pagechanged', {page});
   }
   onClickNextPage(): void {
-    this.$emit('pagechanged', this.currentPage + 1);
-    //this.handlePageChange(this.currentPage + 1);
-  }
-
-  onClickFirstPage() {
-    this.$emit("pagechanged", 1);
-  }
-
-  onClickLastPage() {
-    this.$emit("pagechanged", this.totalPages);
+    this.$emit('pagechanged', {page: this.pageInfo.currentPage + 1});
   }
 
   isPageActive(page: number) {
-    return this.currentPage === page;
+    return this.pageInfo.currentPage === page;
+  }
+  changeLimit(){
+    console.log(this.limit, 'limit');
+    this.$emit('pagechanged', {page:this.pageInfo.currentPage, limit:this.limit});
   }
 
-  paginate(totalItems: number, currentPage: number, itemsPerPage: number) {
-    // calculate start and end index
-    const startIndex =
-      currentPage == 1 ? currentPage - 1 : (currentPage - 1) * itemsPerPage;
-
-    const stopIndex = Math.min(startIndex + itemsPerPage - 1, totalItems - 1);
-
-    return { startIndex, stopIndex };
-  }
-
-  handlePageChange(page: number) {
-    const pager = this.paginate(this.total, page, this.perPage);
-
-    const pageData = this.items.slice(pager.startIndex, pager.stopIndex + 1);
-
-    this.$emit("pagechanged", {page, pageData });
-    console.log(pageData, 'pageData')
-  }
-
-  Mounted() {
-    if (this.items && this.items.length) {
-      this.handlePageChange(this.currentPage);
-    }
-  }
 }
 </script>
 
-<style>
+<style scoped>
 .pagination {
   list-style-type: none;
 }
@@ -178,7 +167,9 @@ export default class Paginator extends Vue {
 }
 
 .active {
-  color: #FE4D3C;
+  color: #FE4D3C !important;
+  background: none !important;
+  border: none !important;
   font-weight:bold;
 }
 .arrowactive{
