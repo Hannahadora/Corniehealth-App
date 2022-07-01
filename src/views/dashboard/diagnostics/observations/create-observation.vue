@@ -64,25 +64,29 @@
               <date-picker
                 class="w-full"
                 label="Start Date/Time"
-                v-model:date="effective.period.start"
+                v-model:date="effective.period.startDate"
+                v-model:time="effective.period.startTime"
                 v-if="effectiveType == 'period'"
               />
               <date-picker
                 class="w-full"
                 label="End Date/Time"
-                v-model:date="effective.period.end"
+                v-model:date="effective.period.endDate"
+                v-model:time="effective.period.endTime"
                 v-if="effectiveType == 'period'"
               />
               <date-picker
                 class="w-full"
                 label="Date/Time"
-                v-model:date="effective.instant.dateTime"
+                v-model:date="effective.instant.date"
+                v-model:time="effective.instant.time"
                 v-if="effectiveType == 'instant'"
               />
               <date-picker
                 class="w-full"
                 label="Date/Time"
-                v-model:date="effective.dateTime"
+                v-model:date="effective.date"
+                v-model:time="effective.time"
                 v-if="effectiveType == 'date-time'"
               />
               <cornie-select
@@ -105,8 +109,8 @@
               <date-picker
                 class="w-full"
                 label="Date/Time"
-                v-model:date="issueInfo.dateTime"
-                v-model:time="issueInfo.time"
+                v-model:date="issued.date"
+                v-model:time="issued.time"
               />
               <practitioner-select
                 :rules="required"
@@ -134,11 +138,10 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <fhir-input
-                reference="http://terminology.hl7.org/CodeSystem/data-absent-reason"
+              <cornie-input
                 class="w-full"
                 label="Date Absent Reason"
-                placeholder="Select"
+                placeholder="Enter"
                 v-model="reasonInfo.dateAbsentReason"
               />
               <fhir-input
@@ -163,25 +166,41 @@
                 v-model="reasonInfo.bodysite"
               />
               <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/-observation-methods"
+                reference="http://hl7.org/fhir/ValueSet/observation-methods"
                 class="w-full"
-                label="Body Site"
+                label="Method"
                 placeholder="Select"
-                v-model="reasonInfo.bodysite"
+                v-model="reasonInfo.method"
               />
               <cornie-input
                 class="w-full"
                 label="Specimen"
                 placeholder="Autoloaded"
                 v-model="reasonInfo.specimen"
+                disabled
               />
-              <cornie-select
+              <!-- <cornie-select
                 class="w-full"
                 label="Device"
                 placeholder="Device"
                 v-model="reasonInfo.device"
                 :items="['a', 'b']"
-              />
+              /> -->
+              <div
+                class="w-full cursor-pointer"
+                @click="openReferenceModal('device', ['Device'])"
+              >
+                <cornie-input
+                  v-bind="$attrs"
+                  label="Device"
+                  placeholder="Device"
+                  v-model="reasonInfo.device"
+                >
+                  <template #append-inner>
+                    <plus-icon class="fill-current text-danger" />
+                  </template>
+                </cornie-input>
+              </div>
             </div>
           </accordion-component>
 
@@ -473,7 +492,7 @@ export default class ObservationDialog extends Vue {
   effectiveType = "date-time";
   showReferenceModal = false;
   referenceOptions = <any>[];
-  refSubject = '';
+  refSubject = "";
 
   statusHistory = [
     {
@@ -499,14 +518,18 @@ export default class ObservationDialog extends Vue {
     focus: "",
   };
   effective = {
-    dateTime: "",
+    date: "",
+    time: "",
     period: {
-      start: "",
-      end: "",
+      startDate: "",
+      startTime: "",
+      endDate: "",
+      endTime: "",
     },
     instant: {
       timeZone: "",
-      dateTime: "",
+      date: "",
+      time: "",
     },
   };
   issueInfo = <any>{};
@@ -522,6 +545,10 @@ export default class ObservationDialog extends Vue {
   };
   rangeMin = "";
   rangeMax = "";
+  issued = {
+    date: "",
+    time: "",
+  };
 
   @Watch("id")
   idChanged() {
@@ -572,10 +599,12 @@ export default class ObservationDialog extends Vue {
   }
 
   setReferences(value: any) {
-    if(this.refSubject === 'hasMember') {
-      this.member.hasMemer = value
-    }else if(this.refSubject === 'derivedFrom') {
-      this.member.derivedFrom = value
+    if (this.refSubject === "hasMember") {
+      this.member.hasMemer = value.id;
+    } else if (this.refSubject === "derivedFrom") {
+      this.member.derivedFrom = value.id;
+    } else if(this.refSubject === 'device') {
+      this.reasonInfo.device = value.deviceName.name;
     }
     // this.refSubject = ''
   }
@@ -584,10 +613,10 @@ export default class ObservationDialog extends Vue {
     const xObservation = this.observation;
     if (!xObservation) return;
     (this.basicInfo = xObservation?.basicInfo),
-      (this.effective = xObservation?.effective),
+      ((this.effective as any) = xObservation?.effective),
       (this.issueInfo = xObservation?.issueInfo),
       (this.value = xObservation?.value),
-      (this.reasonInfo = xObservation?.reasonInfo),
+      ((this.reasonInfo as any) = xObservation?.reasonInfo),
       (this.referenceRange = xObservation?.referenceRange),
       ((this.member as any) = xObservation?.member);
   }
@@ -601,19 +630,50 @@ export default class ObservationDialog extends Vue {
 
   validateEffective() {
     if (this.effectiveType === "date-time") {
-      (this.effective.period.start as any) = undefined;
-      (this.effective.period.end as any) = undefined;
+      (this.effective.period.startDate as any) = undefined;
+      (this.effective.period.startTime as any) = undefined;
+      (this.effective.period.endTime as any) = undefined;
+      (this.effective.period.endDate as any) = undefined;
       (this.effective.instant.timeZone as any) = undefined;
-      (this.effective.instant.dateTime as any) = undefined;
+      (this.effective.instant.date as any) = undefined;
+      (this.effective.instant.time as any) = undefined;
     } else if (this.effectiveType === "period") {
       (this.effective.instant.timeZone as any) = undefined;
-      (this.effective.instant.dateTime as any) = undefined;
-      (this.effective.dateTime as any) = undefined;
+      (this.effective.instant.date as any) = undefined;
+      (this.effective.instant.time as any) = undefined;
+      (this.effective.date as any) = undefined;
+      (this.effective.time as any) = undefined;
     } else if (this.effectiveType === "instant") {
-      (this.effective.period.start as any) = undefined;
-      (this.effective.period.end as any) = undefined;
-      (this.effective.dateTime as any) = undefined;
+      (this.effective.period.startDate as any) = undefined;
+      (this.effective.period.startTime as any) = undefined;
+      (this.effective.period.endTime as any) = undefined;
+      (this.effective.period.endDate as any) = undefined;
+      (this.effective.date as any) = undefined;
+      (this.effective.time as any) = undefined;
     }
+  }
+
+  buildPeriod(
+    startDate: string,
+    startTime: string,
+    endDate: string,
+    endTime: string
+  ) {
+    try {
+      const start = this.buildDateTime(startDate, startTime);
+      const end = this.buildDateTime(endDate, endTime);
+      return { start, end };
+    } catch (error) {
+      return;
+    }
+  }
+
+  buildDateTime(dateString: string, time: string) {
+    const date = new Date(dateString);
+    const [hour, minute] = time.split(":");
+    date.setMinutes(Number(minute));
+    date.setHours(Number(hour));
+    return date.toISOString();
   }
 
   get payload() {
@@ -622,13 +682,17 @@ export default class ObservationDialog extends Vue {
       basicInfo: {
         ...this.basicInfo,
         subject: this.getPatientName(this.basicInfo.subject),
+        encounter: undefined,
       },
-      effective: this.effective,
-      issueInfo: this.issueInfo,
+      effective: <any>{},
+      issueInfo: {
+        dateTime: this.buildDateTime(this.issued.date, this.issued.time),
+        performer: this.issueInfo.performer,
+      },
       value: this.value,
       reasonInfo: this.reasonInfo,
       referenceRange: this.referenceRange,
-      member: (this.member as any),
+      member: this.member as any,
       status: undefined,
     };
   }
@@ -650,9 +714,30 @@ export default class ObservationDialog extends Vue {
   }
 
   async createObservation(s?: any) {
+    this.validateEffective();
     try {
       if (s === "draft") {
         (this.payload.status as any) = "draft";
+      }
+      if (this.effectiveType === "date-time") {
+        (this.payload.effective.dateTime as any) = this.buildDateTime(
+          this.effective.date,
+          this.effective.time
+        );
+      }
+      if (this.effectiveType === "period") {
+        (this.payload.effective.period as any) = this.buildPeriod(
+          this.effective.period.startDate,
+          this.effective.period.startTime,
+          this.effective.period.endDate,
+          this.effective.period.endTime
+        );
+      }
+      if (this.effectiveType === "instant") {
+        (this.payload.effective.instant.dateTime as any) = this.buildDateTime(
+          this.effective.instant.date,
+          this.effective.instant.time
+        );
       }
       const { data } = await cornieClient().post(`/api/v1/observations`, {
         ...this.payload,

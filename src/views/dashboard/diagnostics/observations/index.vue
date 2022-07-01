@@ -129,29 +129,6 @@
           </div>
         </template>
       </cornie-table>
-      <div class="flex justify-between m-3">
-        <div class="flex justify-around">
-          <p class="text-sm">show</p>
-          <input
-            type="number"
-            class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
-          />
-          <p class="text-sm">per page</p>
-        </div>
-        <div class="flex justify-around">
-          <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-          <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
-            <arrow-left-icon />
-          </div>
-
-          <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-          <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
-          <div class="text-xs mt-1" style="fontsize: 5px">
-            <arrow-right-icon />
-          </div>
-          <!-- <delete-icon class="text-danger fill-current" /> -->
-        </div>
-      </div>
     </div>
 
     <update-status
@@ -323,7 +300,7 @@ export default class DiagnosticReport extends Vue {
         ...report,
         // action: sale.id,
         keydisplay: report.id,
-        observationId: report.id,
+        observationId: report.identifier ?? 'XXXX',
         basedOn: report.basicInfo?.basedOn,
         category: report.basicInfo?.category,
         observationCode: report.basicInfo.code,

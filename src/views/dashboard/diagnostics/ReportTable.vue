@@ -105,8 +105,8 @@
         </template>
       </cornie-table>
     </div>
-    <!-- <div class="flex justify-between m-3">
-      <div class="flex justify-around">
+    <div class="flex justify-between m-3">
+      <!-- <div class="flex justify-around">
         <p class="text-sm">show</p>
         <input
           type="number"
