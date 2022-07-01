@@ -1203,6 +1203,7 @@
       this.showSpecial = true;
     }
     async setPractitioner() {
+      if (!this.id) return;
       const practitioner = await this.getPractitionerById(this.id);
       if (!practitioner) return;
       this.practitionerId = practitioner.id;
@@ -1323,6 +1324,8 @@
         lastName,
         email: this.email,
         activeState: this.activeState,
+        boardLicenses: this.licenses,
+        education: this.educations,
         gender: this.gender,
         locations: this.accessRoles,
         phone: {
