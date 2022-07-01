@@ -261,17 +261,15 @@ const measurable = {
   ageUnit: null,
   ageValue: null,
   day: null,
-  unit: null,
+  unit: "years",
   min: null,
-  minUnit: null,
-  minValue: null,
   max: null,
-  maxUnit: null,
-  maxValue: null,
   string: null,
   startDate: null,
   startTime: null,
   endDate: null,
+   minUnit: null,
+ maxUnit: null,
 };
 @Options({
   name: "ViewMedicalHistory",
@@ -488,7 +486,7 @@ export default class AddCondition extends Vue {
     if (!history) return;
     this.historymodel = history;
 
-     this.onsetmesurable.ageUnit = history.onset.age.unit;
+
      this.onsetmesurable.ageValue = history.onset.age.value;
      this.onsetmesurable.unit = history.onset.range.unit;
      this.onsetmesurable.max = history.onset.range.max;
@@ -497,7 +495,7 @@ export default class AddCondition extends Vue {
      this.onsetmesurable.endDate = history.onset.period.end;
      this.onsetNote = history.onsetNote;
      this.deceased = history.deceased;
-     this.deceasedmeasurable.ageUnit = history.deceasedAge.age.unit;
+    // this.deceasedmeasurable.ageUnit = history.deceasedAge.age.unit;
      this.deceasedmeasurable.ageValue = history.deceasedAge.age.value;
      this.deceasedmeasurable.unit = history.deceasedAge.range.unit;
      this.deceasedmeasurable.max = history.deceasedAge.range.max;
@@ -506,7 +504,7 @@ export default class AddCondition extends Vue {
      this.reasonCode = history.reasonCode;
      this.reasonReference = history.reasonReference;
      this.note = history.note;
-     this.agemesurable.ageUnit = history.age.age.unit;
+    // this.agemesurable.ageUnit = history.age.age.unit;
      this.agemesurable.ageValue = history.age.age.value;
      this.agemesurable.unit = history.age.range.unit;
      this.agemesurable.max = history.age.range.max;

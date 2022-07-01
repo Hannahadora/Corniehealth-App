@@ -126,7 +126,7 @@
                         <div v-for="(input, index) in conditions" :key="index">
                         <div
                             class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                          
+                            :class="{ 'bg-gray-100': isSelected(input) }"
                             @click="pushValue(input)"
                         >
                             <div class="w-full">
@@ -145,7 +145,7 @@
                       <div v-for="(input, index) in allergys" :key="index">
                       <div
                           class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                         
+                         :class="{ 'bg-gray-100': isSelected(input) }"
                           @click="pushValue(input)"
                       >
                           <div class="w-full flex space-x-4">
@@ -175,7 +175,7 @@
                       <div v-for="(input, index) in observations" :key="index">
                       <div
                           class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                          
+                          :class="{ 'bg-gray-100': isSelected(input) }"
                           @click="pushValue(input)"
                       >
                           <div class="w-full">
@@ -319,6 +319,7 @@ export default class ReasonReference extends Vue {
     query = "";
     localSrc = require("../../../../assets/img/placeholder.png");
     observations = [] as any;
+    clickedId = "";
 
 
     medicationMapper = (code: string) => "";
@@ -327,6 +328,11 @@ export default class ReasonReference extends Vue {
       this.medicationMapper = await mapDisplay(
         "http://hl7.org/fhir/ValueSet/condition-stage-type"
       );
+    }
+
+    
+     isSelected(impression: any) {
+        return impression.id === this.clickedId;
     }
 
 
@@ -359,7 +365,7 @@ export default class ReasonReference extends Vue {
 
     pushValue(item:any){
         this.$emit("ref-value", item, this.refType);
-
+        this.clickedId = item.id
         this.clickedBg = !this.clickedBg;
     }
 

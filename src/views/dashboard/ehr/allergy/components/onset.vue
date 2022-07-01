@@ -170,7 +170,7 @@ export default class TimeablePicker extends Vue {
   // }
 
   setType(type:string) {
-   if(type) return null;
+   if(type) return this.timeable = {};
   }
   // mounted() {
   //   this.setType();
