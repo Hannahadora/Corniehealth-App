@@ -58,7 +58,9 @@
               <div>
                 <h1 class="font-semibold text-sm">{{ association.name }}</h1>
                 <h1 class="text-xs text-gray-400">
-                  {{ association.accountType }}\{{ association.relationship }}
+                  {{ association.associationType }}\{{
+                    association.relationship
+                  }}
                 </h1>
               </div>
               <button @click="delAssoc(association.id)" type="button">
@@ -90,111 +92,109 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { PropSync, Prop, Watch } from "vue-property-decorator";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync } from "vue-property-decorator";
 
+  import { IPatient } from "@/types/IPatient";
 
-import { IPatient, RelatedPerson } from "@/types/IPatient";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDatePicker from "@/components/CornieDatePicker.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import PeriodPicker from "@/components/daterangepicker.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import DeleteIcon from "@/components/icons/delete-red.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import CorniePhoneInput from "@/components/phone-input.vue";
+  import CornieSearch from "@/components/search-input.vue";
 
-import CornieCard from "@/components/cornie-card";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CorniePhoneInput from "@/components/phone-input.vue";
-import CornieDatePicker from "@/components/CornieDatePicker.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import { namespace } from "vuex-class";
-import PeriodPicker from "@/components/daterangepicker.vue";
-import AutoComplete from "@/components/autocomplete.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import CornieSearch from "@/components/search-input.vue";
-import DeleteIcon from "@/components/icons/delete-red.vue";
+  @Options({
+    name: "association-dialog",
+    components: {
+      ...CornieCard,
+      CornieIconBtn,
+      AutoComplete,
+      ArrowLeftIcon,
+      CornieDialog,
+      CornieInput,
+      CornieSelect,
+      PeriodPicker,
+      CorniePhoneInput,
+      CornieDatePicker,
+      CornieBtn,
+      SearchIcon,
+      CornieSearch,
+      DeleteIcon,
+    },
+    emits: ["add-associations"],
+  })
+  export default class EmergencyDontactDialog extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-@Options({
-  name: "association-dialog",
-  components: {
-    ...CornieCard,
-    CornieIconBtn,
-    AutoComplete,
-    ArrowLeftIcon,
-    CornieDialog,
-    CornieInput,
-    CornieSelect,
-    PeriodPicker,
-    CorniePhoneInput,
-    CornieDatePicker,
-    CornieBtn,
-    SearchIcon,
-    CornieSearch,
-    DeleteIcon,
-  },
-  emits: ["add-associations"],
-})
-export default class EmergencyDontactDialog extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+    @Prop({ type: Array, default: [] })
+    associations!: [];
 
-  @Prop({ type: Array, default: [] })
-  associations!: [];
+    @Prop({ type: Object })
+    patient!: IPatient;
 
-  @Prop({ type: Object })
-  patient!: IPatient;
+    relationshipOptions = ["Parent", "Employee"];
+    accountType = "";
+    name = "";
+    relationship = "";
+    loading = false;
 
-  relationshipOptions = ["Parent", "Employee"];
-  accountType = "";
-  name = "";
-  relationship = "";
-  loading= false;
+    addedAssociations = [] as any;
 
-  addedAssociations = [] as any;
+    reset() {
+      this.accountType = "";
+      this.name = "";
+      this.relationship = "";
+    }
+    async add() {
+      this.addedAssociations = [
+        {
+          id: `${Math.random() * 1999}${Math.random() * 2999}`,
+          associatedPersonId: this?.patient?.id || "",
+          associationType: this.accountType,
+          name: this.name,
+          relationship: this.relationship,
+        },
+        ...this.addedAssociations,
+      ];
 
-  reset() {
-    this.accountType = "";
-    this.name = "";
-    this.relationship = "";
+      this.reset();
+    }
+
+    async delAssoc(id: string) {
+      this.addedAssociations = this.addedAssociations.filter(
+        (item: any) => item.id !== id
+      );
+    }
+
+    async save() {
+      this.$emit("add-associations", this.addedAssociations);
+
+      this.show = false;
+      this.addedAssociations = [];
+    }
+
+    setAssociations() {
+      this.addedAssociations = this.associations;
+    }
+
+    get allAssociation() {
+      return this.addedAssociations;
+    }
+
+    created() {
+      this.setAssociations();
+    }
   }
-  async add() {
-    this.addedAssociations = [
-      {
-        id: `${Math.random() * 1999}${Math.random() * 2999}`,
-        associatedPersonId: this?.patient?.id || '',
-        associationType: this.accountType,
-        name: this.name,
-        relationship: this.relationship,
-      },
-      ...this.addedAssociations,
-    ];
-
-    this.reset();
-  }
-
-  async delAssoc(id: string) {
-    this.addedAssociations = this.addedAssociations.filter(
-      (item: any) => item.id !== id
-    );
-  }
-
-  async save() {
-    this.$emit("add-associations", this.addedAssociations);
-
-    this.show = false;
-    this.addedAssociations = [];
-  }
-
-  setAssociations() {
-    this.addedAssociations = this.associations;
-  }
-
-  get allAssociation() {
-    return this.addedAssociations;
-  }
-
-  created() {
-    this.setAssociations();
-  }
-}
 </script>
 
 <style></style>

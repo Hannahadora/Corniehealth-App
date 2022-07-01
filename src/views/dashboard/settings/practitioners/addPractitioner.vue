@@ -1193,128 +1193,177 @@ export default class AddPractitioner extends Vue {
     this.newservices = value;
   }
 
-  sendspeicality(value: any) {
-    this.specialties = value;
-    this.newspecialties = value;
-  }
-
-  showSpecialModal() {
-    this.showSpecial = true;
-  }
-  async setPractitioner() {
-    const practitioner = await this.getPractitionerById(this.id);
-    if (!practitioner) return;
-    this.practitionerId = practitioner.id;
-    this.name = `${practitioner.firstName} ${practitioner.lastName}`;
-    this.email = practitioner.email;
-    this.generatedIdentifier = practitioner.identifier;
-    this.activeState = practitioner.activeState;
-    this.gender = practitioner.gender;
-    this.phone = practitioner.phone?.number;
-    this.dialCode = (practitioner.phone as any).dialCode;
-    this.type = practitioner.type;
-    this.address = practitioner.address;
-    this.dateOfBirth = practitioner.dateOfBirth;
-    this.img.url = practitioner.image;
-    this.jobDesignation = practitioner.jobDesignation;
-    this.department = practitioner.department;
-    this.accessRole = practitioner.accessRole || "";
-    this.qualificationIdentifier = practitioner.qualificationIdentifier;
-    this.qualificationIssuer = practitioner.qualificationIssuer;
-    this.licenseNumber = practitioner.licenseNumber;
-    this.communicationLanguage = practitioner.communicationLanguage;
-    this.availabilityExceptions = practitioner.availabilityExceptions;
-    this.consultationChannel = practitioner.consultationChannel;
-    this.organizationId = practitioner.organizationId;
-    this.state = practitioner.state;
-    this.hoursOfOperation = practitioner.hoursOfOperation;
-    this.qualificationCode = practitioner.qualificationCode || "";
-    this.period = practitioner.period || {};
-    //@ts-ignore
-    this.locationRoles = practitioner.locationRoles;
-    this.services = practitioner.services;
-    this.nationality = practitioner.nationality;
-    this.country = practitioner.country;
-    this.city = practitioner.city;
-    this.postCode = practitioner.postCode;
-    this.aptNumber = practitioner.aptNumber;
-    this.specialties = practitioner.specialties;
-    this.practiceDuration.value = practitioner?.practiceDuration?.value;
-    this.practiceDuration.unit = practitioner?.practiceDuration?.unit;
-    this.consultationRate.value = practitioner?.consultationRate?.value;
-    this.consultationRate.unit = practitioner?.consultationRate?.unit;
-    this.consultationRatevalue = practitioner?.consultationRate?.value;
-    this.consultationRateunit = practitioner?.consultationRate?.unit;
-    this.practiceDurationvalue = practitioner?.practiceDuration?.value;
-    this.practiceDurationunit = practitioner?.practiceDuration?.unit;
-    this.graduationYear = practitioner?.graduationYear;
-    this.licenseIssuer = practitioner?.licenseIssuer;
-    this.licensePeriod = practitioner?.licensePeriod;
-  }
-  serializeDate(date: string) {
-    if (!date) return "";
-    return new Date(date).toISOString();
-  }
-  get payload() {
-    const [firstName, lastName] = this.name.split(" ");
-    return {
-      firstName,
-      lastName,
-      email: this.email,
-      activeState: this.activeState,
-      gender: this.gender,
-      phone: {
-        number: this.phone,
-        dialCode: this.dialCode,
-      },
-      type: this.type,
-      address: this.address,
-      dateOfBirth: this.serializeDate(this.dateOfBirth),
-      image: this.img.url ? this.img.url : undefined,
-      jobDesignation: this.jobDesignation,
-      department: this.department,
-      accessRole: this.accessRole,
-      qualificationIdentifier: this.qualificationIdentifier,
-      qualificationIssuer: this.qualificationIssuer,
-      licenseNumber: this.licenseNumber,
-      communicationLanguage: this.communicationLanguage,
-      qualificationCode: this.qualificationCode,
-      availabilityExceptions: this.availabilityExceptions,
-      // consultationChannel: this.consultationChannel,
-      visitType: this.consultationChannel,
-      organizationId: this.organizationId,
-      hoursOfOperation: this.hoursOfOperation,
-      period: this.period,
-      // locations: this.locations,
-      // defaultLocation: this.defaultLocation,
-      locationRoles: this.accessRoles,
-      services: this.services,
-      nationality: this.nationality,
-      country: this.country,
-      state: this.state,
-      city: this.city,
-      postCode: this.postCode,
-      aptNumber: this.aptNumber,
-      specialties: this.specialties,
-      practiceDuartion: {},
-      practiceDuration: this.practiceDuration,
-      consultationRate: this.consultationRate,
-      hourlyRate: this.consultationRate.value,
-      graduationYear: this.graduationYear,
-      licenseIssuer: this.licenseIssuer,
-      licensePeriod: this.licensePeriod,
-      education: this.educations,
-      boardLicenses: this.licenses,
-      location: this.locations,
-      employmentType: this.employmentType,
-    };
-  }
-  get payloadEdit() {
-    const [firstName, lastName] = this.name.split(" ");
-    const special = this.specialties.map((data: any) => {
-      this.newspecialties = [data.id];
+    showSpecialModal() {
+      this.showSpecial = true;
+    }
+    async setPractitioner() {
+      if (!this.id) return;
+      const practitioner = await this.getPractitionerById(this.id);
+      if (!practitioner) return;
+      this.practitionerId = practitioner.id;
+      this.name = `${practitioner.firstName} ${practitioner.lastName}`;
+      this.email = practitioner.email;
+      this.generatedIdentifier = practitioner.identifier;
+      this.activeState = practitioner.activeState;
+      this.gender = practitioner.gender;
+      this.phone = practitioner.phone?.number;
+      this.dialCode = (practitioner.phone as any).dialCode;
+      this.type = practitioner.type;
+      this.address = practitioner.address;
+      this.dateOfBirth = practitioner.dateOfBirth;
+      this.img.url = practitioner.image;
+      this.jobDesignation = practitioner.jobDesignation;
+      this.department = practitioner.department;
+      this.accessRole = practitioner.accessRole || "";
+      this.qualificationIdentifier = practitioner.qualificationIdentifier;
+      this.qualificationIssuer = practitioner.qualificationIssuer;
+      this.licenseNumber = practitioner.licenseNumber;
+      this.communicationLanguage = practitioner.communicationLanguage;
+      this.availabilityExceptions = practitioner.availabilityExceptions;
+      this.consultationChannel = practitioner.consultationChannel;
+      this.organizationId = practitioner.organizationId;
+      this.state = practitioner.state;
+      this.hoursOfOperation = practitioner.hoursOfOperation;
+      this.qualificationCode = practitioner.qualificationCode || "";
+      this.period = practitioner.period || {};
+      //@ts-ignore
+      this.locationRoles = practitioner.locationRoles;
+      this.services = practitioner.services;
+      this.nationality = practitioner.nationality;
+      this.country = practitioner.country;
+      this.city = practitioner.city;
+      this.postCode = practitioner.postCode;
+      this.aptNumber = practitioner.aptNumber;
+      this.specialties = practitioner.specialties;
+      this.practiceDuration.value = practitioner?.practiceDuration?.value;
+      this.practiceDuration.unit = practitioner?.practiceDuration?.unit;
+      this.consultationRate.value = practitioner?.consultationRate?.value;
+      this.consultationRate.unit = practitioner?.consultationRate?.unit;
+      this.consultationRatevalue = practitioner?.consultationRate?.value;
+      this.consultationRateunit = practitioner?.consultationRate?.unit;
+      this.practiceDurationvalue = practitioner?.practiceDuration?.value;
+      this.practiceDurationunit = practitioner?.practiceDuration?.unit;
+      this.graduationYear = practitioner?.graduationYear;
+      this.licenseIssuer = practitioner?.licenseIssuer;
+      this.licensePeriod = practitioner?.licensePeriod;
+    }
+    serializeDate(date: string) {
+      if (!date) return "";
+      return new Date(date).toISOString();
+    }
+    get payload() {
+      const [firstName, lastName] = this.name.split(" ");
       return {
-        ...data,
+        firstName,
+        lastName,
+        email: this.email,
+        activeState: this.activeState,
+        gender: this.gender,
+        phone: {
+          number: this.phone,
+          dialCode: this.dialCode,
+        },
+        type: this.type,
+        address: this.address,
+        dateOfBirth: this.serializeDate(this.dateOfBirth),
+        image: this.img.url ? this.img.url : undefined,
+        jobDesignation: this.jobDesignation,
+        department: this.department,
+        accessRole: this.accessRole,
+        qualificationIdentifier: this.qualificationIdentifier,
+        qualificationIssuer: this.qualificationIssuer,
+        licenseNumber: this.licenseNumber,
+        communicationLanguage: this.communicationLanguage,
+        qualificationCode: this.qualificationCode,
+        availabilityExceptions: this.availabilityExceptions,
+        // consultationChannel: this.consultationChannel,
+        visitType: this.consultationChannel,
+        organizationId: this.organizationId,
+        hoursOfOperation: this.hoursOfOperation,
+        period: this.period,
+        // locations: this.locations,
+        // defaultLocation: this.defaultLocation,
+        locationRoles: this.accessRoles,
+        services: this.services,
+        nationality: this.nationality,
+        country: this.country,
+        state: this.state,
+        city: this.city,
+        postCode: this.postCode,
+        aptNumber: this.aptNumber,
+        specialties: this.specialties,
+        practiceDuartion: {},
+        practiceDuration: this.practiceDuration,
+        consultationRate: this.consultationRate,
+        hourlyRate: this.consultationRate.value,
+        graduationYear: this.graduationYear,
+        licenseIssuer: this.licenseIssuer,
+        licensePeriod: this.licensePeriod,
+        education: this.educations,
+        boardLicenses: this.licenses,
+        location: this.locations,
+        employmentType: this.employmentType,
+      };
+    }
+    get payloadEdit() {
+      const [firstName, lastName] = this.name.split(" ");
+      const special = this.specialties.map((data: any) => {
+        this.newspecialties = [data.id];
+        return {
+          ...data,
+        };
+      });
+      return {
+        firstName,
+        lastName,
+        email: this.email,
+        activeState: this.activeState,
+        boardLicenses: this.licenses,
+        education: this.educations,
+        gender: this.gender,
+        locations: this.accessRoles,
+        phone: {
+          number: this.phone,
+          dialCode: this.dialCode,
+        },
+        type: this.type,
+        address: this.address,
+        dateOfBirth: this.serializeDate(this.dateOfBirth),
+        image: this.img.url,
+        jobDesignation: this.jobDesignation,
+        department: this.department,
+        accessRole: this.accessRole,
+        qualificationIdentifier: this.qualificationIdentifier,
+        qualificationIssuer: this.qualificationIssuer,
+        licenseNumber: this.licenseNumber,
+        communicationLanguage: this.communicationLanguage,
+        qualificationCode: this.qualificationCode,
+        availabilityExceptions: this.availabilityExceptions,
+        consultationChannel: this.consultationChannel,
+        organizationId: this.organizationId,
+        hoursOfOperation: this.hoursOfOperation,
+        period: this.period,
+        services: this.newservices,
+        nationality: this.nationality,
+        country: this.country,
+        state: this.state,
+        city: this.city,
+        postCode: this.postCode,
+        aptNumber: this.aptNumber,
+        specialties: this.newspecialties,
+        practiceDuration: {
+          value: this.practiceDurationvalue,
+          unit: this.practiceDurationunit,
+        },
+        consultationRate: {
+          value: this.consultationRatevalue,
+          unit: this.consultationRateunit,
+        },
+        graduationYear: this.graduationYear,
+        licenseIssuer: this.licenseIssuer,
+        licensePeriod: this.licensePeriod,
+        availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
+        hourlyRate: this.consultationRate.value,
       };
     });
     return {

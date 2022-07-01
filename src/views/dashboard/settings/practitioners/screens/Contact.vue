@@ -1,7 +1,7 @@
 <template>
   <screen-header :properties="properties"> Contact </screen-header>
   <div v-if="properties">
-    <div class="grid grid-cols-4 gap-3">
+    <div class="grid grid-cols-4 gap-8">
       <div class="flex flex-col">
         <h1 class="text-gray-400 mb-1 text-sm">Phone Number</h1>
         <div class="flex">
@@ -87,48 +87,48 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
-import ScreenHeader from "./Header.vue";
-import { countryCodes } from "@/plugins/countrycodes";
-import MobileIcon from "@/components/icons/mobile.vue";
-import EmailIcon from "@/components/icons/mail.vue";
-import LocationIcon from "@/components/icons/location.vue";
+  import LocationIcon from "@/components/icons/location.vue";
+  import EmailIcon from "@/components/icons/mail.vue";
+  import MobileIcon from "@/components/icons/mobile.vue";
+  import { countryCodes } from "@/plugins/countrycodes";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import ScreenHeader from "./Header.vue";
 
-@Options({
-  name: "Contact",
-  components: {
-    ScreenHeader,
-    MobileIcon,
-    EmailIcon,
-    LocationIcon,
-  },
-})
-export default class Contact extends Vue {
-  @Prop({ default: {} })
-  properties!: any;
+  @Options({
+    name: "Contact",
+    components: {
+      ScreenHeader,
+      MobileIcon,
+      EmailIcon,
+      LocationIcon,
+    },
+  })
+  export default class Contact extends Vue {
+    @Prop({ default: {} })
+    properties!: any;
 
-  get codes() {
-    return countryCodes
-      .sort((a, b) => {
-        if (a.name > b.name) return 1;
-        if (a.name < b.name) return -1;
-        return 0;
-      })
-      .map((country) => ({
-        ...country,
-        display: country.dialCode,
-        code: country.dialCode,
-        flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
-      }));
+    get codes() {
+      return countryCodes
+        .sort((a, b) => {
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        })
+        .map((country) => ({
+          ...country,
+          display: country.dialCode,
+          code: country.dialCode,
+          flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
+        }));
+    }
+
+    get flag() {
+      if (!this.codes.length && this.properties.country === "") return "";
+      return this.codes.find(
+        (country: any) =>
+          country.name?.toLowerCase() === this.properties.country?.toLowerCase()
+      )?.flag;
+    }
   }
-
-  get flag() {
-    if (!this.codes.length && this.properties.country === "") return "";
-    return this.codes.find(
-      (country: any) =>
-        country.name?.toLowerCase() === this.properties.country?.toLowerCase()
-    )?.flag;
-  }
-}
 </script>
