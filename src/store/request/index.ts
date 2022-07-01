@@ -1,6 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IRequest from "@/types/IRequest";
 import { StoreOptions } from "vuex";
+import IPageInfo from "@/types/IPageInfo";
 import {
   deleteRequest,
   fetchRequests,
@@ -14,6 +15,7 @@ interface RequestState {
   patients: any[];
   practitioners: any[];
   patientrequests: IRequest[];
+  pageInfo : IPageInfo;
 }
 
 export default {
@@ -23,12 +25,19 @@ export default {
     patients: [],
     practitioners: [],
     patientrequests: [],
+    pageInfo: {},
   },
   mutations: {
-    updatedRequests(state, requests: IRequest[]) {
-      const requestSet = new ObjectSet([...state.requests, ...requests], "id");
-      state.requests = [...requestSet];
+    setPageInfo(state, pageInfo){
+      state.pageInfo = pageInfo;
     },
+    updatedRequests(state, requests) {
+      state.requests = [...requests];
+    },
+    // updatedRequests(state, requests: IRequest[]) {
+    //   const requestSet = new ObjectSet([...state.requests, ...requests], "id");
+    //   state.requests = [...requestSet];
+    // },
     setPatientRequests(state, requests: IRequest[]) {
       const requestSet = new ObjectSet([...state.requests, ...requests], "id");
       state.patientrequests = [...requestSet];
@@ -56,10 +65,11 @@ export default {
       const requests = await fetchrequestsById(patientId);
       ctx.commit("setPatientRequests", requests);
     },
-    async fetchRequests(ctx) {
-      const requests = await fetchRequests();
-
-      ctx.commit("updatedRequests", requests);
+    async fetchRequests(ctx,payload? : {page:number, limit:number}) {
+      const { page, limit } = payload ?? {}
+      const { data, pageInfo } = await fetchRequests(page ?? 1, limit ?? 10);
+      ctx.commit("updatedRequests", data);
+      ctx.commit("setPageInfo", pageInfo);
     },
     async getPatients(ctx) {
       const pts = await getPatients();
@@ -83,5 +93,10 @@ export default {
       ctx.commit("deleteRequest", id);
       return true;
     },
+    async pageSwitch(ctx, page:number){
+      const requests = await fetchRequests();
+      ctx.commit("updatedRequests", requests);
+      ctx.commit("setPageInfo", requests);
+    }
   },
 } as StoreOptions<RequestState>;

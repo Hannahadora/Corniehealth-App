@@ -1,11 +1,11 @@
 export interface OnSet {
   range: {
-    unit: null,
+    unit: "",
     min: null,
     max: null
   },
   age: {
-    unit: null,
+    unit: "",
     value: null
   },
   period: {
@@ -26,12 +26,12 @@ export interface Age {
   estimated: boolean;
   year: null;
   range:  {
-    unit: null,
+    unit: "",
     min: null,
     max: null
   };
   age: {
-    unit: null,
+    unit: "",
     value: null
   };
 }
@@ -39,12 +39,12 @@ export interface Deceased {
   estimated: boolean;
   year: null;
   range:  {
-    unit: null,
+    unit: "",
     min: null,
     max: null
   };
   age: {
-    unit: null,
+    unit: "",
     value: null
   };
 }

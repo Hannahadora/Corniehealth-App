@@ -15,7 +15,9 @@
           <refill-drug class="mr-2"/> Refilled Required
         </span>
       </div>
-    <cornie-table :columns="rawHeaders" v-model="items">
+    <cornie-table :columns="rawHeaders" v-model="items" :showPagination="true"
+        @pagechanged="fetchRequests"
+        :pageInfo="pageInfo">
       <template #actions="{ item }">
         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
           <edit-icon class="text-purple-700 fill-current" />
@@ -161,6 +163,7 @@ import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
 import IRequest, {Medications} from "@/types/IRequest";
+import IPageInfo from "@/types/IPageInfo";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -353,14 +356,12 @@ export default class RequestExistingState extends Vue {
   @request.State
   requests!: any[];
 
-  @otherrequest.State
-  otherrequests!: any[];
 
   @request.Action
-  fetchRequests!: () => Promise<void>;
+  fetchRequests!: (page?:number, limit?:number) => Promise<void>;
 
-  @otherrequest.Action
-  fetchOtherrequests!: () => Promise<void>;
+   @request.State
+  pageInfo!: IPageInfo;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];

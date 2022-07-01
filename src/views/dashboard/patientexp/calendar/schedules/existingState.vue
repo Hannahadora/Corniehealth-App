@@ -14,6 +14,9 @@
       v-model="sortSchedules"
       :check="false"
       :menu="false"
+      :showPagination="true"
+        @pagechanged="getSchedules"
+        :pageInfo="pageInfo"
     >
       <template #actions="{ item }">
         <div
@@ -115,7 +118,6 @@
         >
       </template>
     </cornie-table>
-    <pagination :items="items" :itemsPerPage="20" :pagedItems="items" />
   </div>
 
   <schedule-modal
@@ -147,6 +149,7 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import IPageInfo from "@/types/IPageInfo";
 
 import TableOptions from "@/components/table-options.vue";
 import SettingsIcon from "@/components/icons/settings.vue";
@@ -209,7 +212,7 @@ export default class SchedulesExistingState extends Vue {
   schedules!: ISchedule[];
 
   @schedulesStore.Action
-  getSchedules!: () => Promise<void>;
+  getSchedules!: (page?:number, limit?:number) => Promise<void>;
 
   @schedulesStore.Action
   deleteSchedule!: (id: string) => Promise<boolean>;
@@ -219,6 +222,9 @@ export default class SchedulesExistingState extends Vue {
 
   @schedulesStore.Action
   activateSchedule!: (id: string) => Promise<boolean>;
+
+  @schedulesStore.State
+  pageInfo!: IPageInfo;
 
   // @practitioner.State
   // practitioners!: IPractitioner[];
