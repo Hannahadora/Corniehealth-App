@@ -215,6 +215,7 @@ export default class NominateRefree extends Vue {
   done() {
     this.$emit("refree-added");
     this.show = false;
+    this.reset();
   }
 }
 </script>

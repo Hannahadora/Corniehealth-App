@@ -333,7 +333,6 @@ export default class ExistingState extends Vue {
     const items = this.patientConditions.map((condition) => ({
       ...condition,
       original: condition,
-      identifier: "XXXXX",
       recorded: this.printRecorded(condition),
       category: this.printCategory(condition.category),
       code: this.printCode(condition.code),

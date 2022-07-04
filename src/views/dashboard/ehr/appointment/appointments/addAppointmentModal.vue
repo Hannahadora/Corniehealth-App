@@ -110,26 +110,26 @@
                     </div>
                     <add-icon class="flex justify-end float-right cursor-pointer" @click="showParticipant = true"/>
                 </div>
-                <div v-if="id">
+                <!-- <div v-if="id">
                   <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Practitioners" :key="index">
                       
                       <div class="w-full dflex space-x-4 mb-3">
                           <div class="w-10 h-10">
                               <avatar
                                   class="mr-2"
-                                  v-if="item.practitioner.image"
-                                  :src="item.practitioner.image"
+                                  v-if="item?.practitioner?.image"
+                                  :src="item?.practitioner?.image"
                               />
                               <avatar class="mr-2" v-else :src="localSrc" />
                           </div>
                           <div class="w-full">
                               <p class="text-xs text-dark font-medium">
-                                  {{ item.practitioner.firstName }}
-                                  {{ item.practitioner.lastName }}
+                                  {{ item?.practitioner?.firstName }}
+                                  {{ item?.practitioner?.lastName }}
                               </p>
                               <p class="text-xs text-gray-500 font-meduim">
-                              {{ item.practitioner.jobDesignation }}
-                              {{ item.practitioner.department }}
+                              {{ item?.practitioner?.jobDesignation }}
+                              {{ item?.practitioner?.department }}
                           </p>
                           </div>
                       </div>
@@ -152,39 +152,15 @@
                       </div>
                       <delete-icon class="fill-current text-danger cursor-pointer" @click="deleteDeviceItem(index)"/>
                   </div>
-                </div>
-                <div v-else>
-                  <!-- <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in newPractitioners" :key="index">
+                </div> -->
+                <div >
+                 <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Practitioners" :key="index">
                       
                       <div class="w-full dflex space-x-4 mb-3">
                           <div class="w-10 h-10">
                               <avatar
                                   class="mr-2"
-                                  v-if="item.image"
-                                  :src="item.image"
-                              />
-                              <avatar class="mr-2" v-else :src="localSrc" />
-                          </div>
-                          <div class="w-full">
-                              <p class="text-xs text-dark font-medium">
-                                  {{ item.firstName }}
-                                  {{ item.lastName }}
-                              </p>
-                              <p class="text-xs text-gray-500 font-meduim">
-                              {{ item.jobDesignation }}
-                              {{ item.department }}
-                          </p>
-                          </div>
-                      </div>
-                      <delete-icon class="fill-current text-danger cursor-pointer" @click="deletePractItem(item.id,index)"/>
-                  </div> -->
-                  <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in Practitioners" :key="index">
-                      
-                      <div class="w-full dflex space-x-4 mb-3">
-                          <div class="w-10 h-10">
-                              <avatar
-                                  class="mr-2"
-                                  v-if="item.image"
+                                  v-if="item?.image"
                                   :src="item.image"
                               />
                               <avatar class="mr-2" v-else :src="localSrc" />

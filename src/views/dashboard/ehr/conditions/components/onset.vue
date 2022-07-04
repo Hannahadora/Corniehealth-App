@@ -94,6 +94,7 @@
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
+      
             v-model="timeable.maxUnit"
           />
         </div>

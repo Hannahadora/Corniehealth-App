@@ -220,7 +220,7 @@ export default class DirectorState extends Vue {
   }
 
   async pushRefree(value:any){
-    this.newRefrees = value;
+    this.newRefrees.push(value);
     this.$emit('refreedata',value);
   }
 

@@ -115,9 +115,7 @@
                             >
                         </cornie-select>
                         <cornie-input
-                        required
-                            class="required"
-                            :rules="required"
+                            class="w-ful"
                             label="supporting information"
                             placeholder="Enter"
                             v-model="supportingInformation"
@@ -1019,6 +1017,7 @@ export default class MedicationModal extends Vue {
   }
 
   async created() {
+    this.setRequest();
     await this.getRoles();
     await this.createMapper();
     await this.fetchPatients();
