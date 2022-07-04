@@ -4,7 +4,7 @@
       :title="'Directors'"
       :opened="[directors.length < 0 ? true : false]"
       @add="showDirector = true"
-      :add="true"
+      :add="!id && particularOfDirectors.length > 0 ? false :true"
       :height="200"
     >
       <cornie-table
@@ -22,6 +22,7 @@
             <span class="ml-3 text-xs">Edit</span>
           </div>
           <div
+          v-if="id"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="deleteItem(item.id)"
           >

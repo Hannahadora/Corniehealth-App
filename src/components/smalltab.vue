@@ -37,13 +37,13 @@
             Filter
           </span>
           <cornie-menu top="30px" class="cursor-pointer">
-                  <template #activator="{ on }">
+                  <!-- <template #activator="{ on }">
                     <icon-btn v-on="on">
                       <span class="bg-danger flex text-white rounded-lg py-1.5 px-4 text-sm">
                           <span class="text-lg -mt-1.5 mr-1">+</span> Create
                         </span>
                     </icon-btn>
-                  </template>
+                  </template> -->
                   <cornie-card-text>
                       <slot name="actions"  />
                   </cornie-card-text>

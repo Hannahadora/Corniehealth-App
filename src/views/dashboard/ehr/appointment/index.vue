@@ -12,8 +12,8 @@
 
             <!-- <day-availabiblty-section v-if="practitionerId"/> -->
           <tabs :items="tabLinks" v-model="currentTab">
-            <availability-section/>
             <appointment-section />
+            <availability-section/>
           </tabs>
         
       </span>
@@ -42,8 +42,8 @@ export default class CalendarIndex extends Vue {
   practitionerId!: string;
 
   tabLinks = [
-    "Availability",
     "Appointments",
+    "Availability",
   ];
   currentTab = 0;
 }
