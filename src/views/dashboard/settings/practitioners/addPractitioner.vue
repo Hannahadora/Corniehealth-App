@@ -1365,57 +1365,7 @@ export default class AddPractitioner extends Vue {
         availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
         hourlyRate: this.consultationRate.value,
       };
-    });
-    return {
-      firstName,
-      lastName,
-      email: this.email,
-      activeState: this.activeState,
-      gender: this.gender,
-      locations: this.accessRoles,
-      phone: {
-        number: this.phone,
-        dialCode: this.dialCode,
-      },
-      type: this.type,
-      address: this.address,
-      dateOfBirth: this.serializeDate(this.dateOfBirth),
-      image: this.img.url,
-      jobDesignation: this.jobDesignation,
-      department: this.department,
-      accessRole: this.accessRole,
-      qualificationIdentifier: this.qualificationIdentifier,
-      qualificationIssuer: this.qualificationIssuer,
-      licenseNumber: this.licenseNumber,
-      communicationLanguage: this.communicationLanguage,
-      qualificationCode: this.qualificationCode,
-      availabilityExceptions: this.availabilityExceptions,
-      consultationChannel: this.consultationChannel,
-      organizationId: this.organizationId,
-      hoursOfOperation: this.hoursOfOperation,
-      period: this.period,
-      services: this.newservices,
-      nationality: this.nationality,
-      country: this.country,
-      state: this.state,
-      city: this.city,
-      postCode: this.postCode,
-      aptNumber: this.aptNumber,
-      specialties: this.newspecialties,
-      practiceDuration: {
-        value: this.practiceDurationvalue,
-        unit: this.practiceDurationunit,
-      },
-      consultationRate: {
-        value: this.consultationRatevalue,
-        unit: this.consultationRateunit,
-      },
-      graduationYear: this.graduationYear,
-      licenseIssuer: this.licenseIssuer,
-      licensePeriod: this.licensePeriod,
-      availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
-      hourlyRate: this.consultationRate.value,
-    };
+  
   }
 
   async saveSepcailty() {
