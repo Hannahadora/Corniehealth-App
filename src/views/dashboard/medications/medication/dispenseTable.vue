@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="pb-4 mt-6 border-b border-gray-300">
+      <p class="text-xl font-bold">{{ $route.name }}</p>
+    </div>
     <div
       class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
       v-if="empty"

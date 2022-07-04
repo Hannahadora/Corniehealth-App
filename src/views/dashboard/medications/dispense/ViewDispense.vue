@@ -391,8 +391,8 @@
           <div class="mt-4">
             Document Type: Medication Prescription|Rx ID:
             {{ request?.identifier }} | Requester:
-            {{ request?.requester.firstName }}
-            {{ request?.requester.lastName }} | DateTime Created:
+            {{ request?.requester?.firstName }}
+            {{ request?.requester?.lastName }} | DateTime Created:
             {{ convertDate(request?.createdAt) }}
           </div>
         </div>

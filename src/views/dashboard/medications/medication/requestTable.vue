@@ -21,7 +21,7 @@
           <eye-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">View Details</span>
         </div>
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="dispenseItem(item)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <dispense-icon />
           <span class="ml-3 text-xs">Dispense</span>
         </div>
@@ -162,13 +162,6 @@
       @status-added="statusadded"
     />
 
-    <view-dispense
-      :id="requestId"
-      :request="selectedItem"
-      :organization="organizationInfo"
-      v-model="viewDispenseDetails"
-    />
-
 </div>
 </template>
 <script lang="ts">
@@ -219,10 +212,8 @@ import DispenseIcon from "./icons/dispense.vue";
 
 import ViewModal from "./viewDetails.vue";
 import MedicationRequestModal from "./medicationModal.vue";
-import ViewDispense from "../dispense/ViewDispense.vue";
 import StatusModal from "./status.vue";
 import RefillModal from "./refill.vue";
-import { IOrganization } from "@/types/IOrganization";
 
 // import MedicationModal from "./medication.vue";
 // import EditMedicationModal from "./updateMedication.vue";
@@ -234,7 +225,6 @@ import EmptyState from "./emptyState.vue";
 
 const request = namespace("request");
 const otherrequest = namespace("otherrequest");
-const organization = namespace("organization");
 
 
 @Options({
@@ -284,7 +274,6 @@ const organization = namespace("organization");
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
-    ViewDispense,
   },
 })
 export default class RequestExistingState extends Vue {
@@ -352,7 +341,6 @@ export default class RequestExistingState extends Vue {
   othercurrentStatus = "";
   otherupdate = "";
   request: IRequest = {} as any;
-  viewDispenseDetails = false;
 
   @request.Action
   deleteRequest!: (id: string) => Promise<boolean>;
@@ -375,12 +363,6 @@ export default class RequestExistingState extends Vue {
   select(i: number) {
     this.selected = i;
   }
-
-  @organization.State
-  organizationInfo!: IOrganization;
-
-  @organization.Action
-  fetchOrgInfo!: () => Promise<void>;
 
   @request.State
   requests!: any[];
@@ -554,17 +536,6 @@ export default class RequestExistingState extends Vue {
     //   this.requesterId = request.requesterId;
 
   }
-   dispenseItem(value: any) {
-    this.viewDispenseDetails = true;
-    this.requestId = value.id;
-    this.requests.filter((el: any) => {
-      if (el.id == value.id) {
-        this.request = el;
-      }
-    });
-    // this.setRequest();
-    this.fetchOrgInfo();
-  }
   showDetailsModal(item:any){
     this.selectedItem = item;
      this.showDetails = true;
@@ -679,7 +650,6 @@ export default class RequestExistingState extends Vue {
   async created() {
      await this.createMapper();
       await this.fetchRequests();
-    if (!this.organizationInfo) await this.fetchOrgInfo();
   }
 }
 </script>

@@ -228,39 +228,20 @@ export default class ValueForm extends Vue {
   @Watch("valueType")
   valueChanged() {
     this.$emit("get-value", this.value);
-    // if (this.valueType === "date") {
-    //   this.value.dateTime = this.buildDateTime(this.date.date, this.date.time);
-    // } else if (this.valueType === "time") {
-    //   this.value.time = this.buildDateTime(
-    //     this.date.timeDate,
-    //     this.date.timeTime
-    //   );
-    // } else if (this.valueType === "period") {
-    //   this.value.period = this.buildPeriod(
-    //     this.date.startDate,
-    //     this.date.startTime,
-    //     this.date.endDate,
-    //     this.date.endTime
-    //   );
-    // } else if (this.valueType === "range") {
-    //   this.value.range.min = this.range.min;
-    //   this.value.range.max = this.range.max;
-    //   this.value.range.unit = this.range.unit;
-    // }
   }
 
-  @Watch("range")
+  @Watch("range", { deep: true })
   onInput() {
-    console.log('range', this.range)
-    this.value.range.min = this.range.min;
-    this.value.range.max = this.range.max;
-    this.value.range.unit = this.range.unit;
+    console.log("range", this.range);
+    this.value.range.min = this.range?.min;
+    this.value.range.max = this.range?.max;
+    this.value.range.unit = this.range?.unit;
   }
 
-  @Watch("date")
+  @Watch("date", { deep: true })
   onUpdate() {
-    console.log('date', this.date)
-    this.value.dateTime = this.buildDateTime(this.date.date, this.date.time);
+    console.log("date", this.date);
+    this.value.dateTime = this.buildDateTime(this.date?.date, this.date.time);
     this.value.time = this.buildDateTime(this.date.timeDate, this.date.timeTime);
     this.value.period = this.buildPeriod(
       this.date.startDate,
@@ -284,21 +265,25 @@ export default class ValueForm extends Vue {
     endDate: string,
     endTime: string
   ) {
-    try {
-      const start = this.buildDateTime(startDate, startTime);
-      const end = this.buildDateTime(endDate, endTime);
-      return { start, end };
-    } catch (error) {
-      return;
-    }
+    if (startDate && startTime || endDate && endTime) {
+      try {
+        const start = this.buildDateTime(startDate, startTime);
+        const end = this.buildDateTime(endDate, endTime);
+        return { start, end };
+      } catch (error) {
+        return;
+      }
+    } else return "";
   }
 
   buildDateTime(dateString: string, time: string) {
-    const date = new Date(dateString);
-    const [hour, minute] = time.split(":");
-    date.setMinutes(Number(minute));
-    date.setHours(Number(hour));
-    return date?.toISOString();
+    if (dateString && time) {
+      const date = new Date(dateString);
+      const [hour, minute] = time.split(":");
+      date.setMinutes(Number(minute));
+      date.setHours(Number(hour));
+      return date.toISOString();
+    } else return "";
   }
 
   created() {
