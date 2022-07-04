@@ -7,6 +7,7 @@
             type="time"
             class="outline-none focus:outline-none"
             v-model="timeSync"
+            :readonly="disabled"
           />
         </span>
       </template>
@@ -37,6 +38,9 @@ export default class DateTimePicker extends Vue {
 
   @PropSync("time")
   timeSync!: string;
+
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
 }
 </script>
 <style scoped>

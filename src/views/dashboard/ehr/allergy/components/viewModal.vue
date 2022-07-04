@@ -114,8 +114,8 @@
                     <date-time-picker
                       :disabled="true"
                       :label="'Last Occurence'"
-                      v-model:date="occur.time"
-                       :time="separateTime(occur?.time)"
+                      v-model:date="allergy.occurences[0].time"
+                       :time="separateTime(allergy?.occurences[0]?.time)"
                     />
                   </div>
                   <cornie-input
