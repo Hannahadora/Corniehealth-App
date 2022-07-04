@@ -137,11 +137,7 @@
       :requestId="requestId"
       v-model="showNotes"
     />
-    <other-notes-add
-      :otherrequestnotes="otherrequestnotes"
-      :requestId="requestId"
-      v-model="showOthersNotes"
-    />
+
     <status-modal
       :id="requestId"
       :selectedItem="selectedItem"
@@ -218,7 +214,7 @@ import RefillModal from "./refill.vue";
 import EmptyState from "./emptyState.vue";
 
 const request = namespace("request");
-const otherrequest = namespace("otherrequest");
+
 
 
 @Options({
@@ -308,7 +304,6 @@ export default class RequestExistingState extends Vue {
   showOtherStatusModal = false;
   viewDetails = false;
   requestnotes = [];
-  otherrequestnotes = [];
   selectedSchedule: any = {};
   singleParticipant = [];
   selectedVisit: any = {};
@@ -338,9 +333,6 @@ export default class RequestExistingState extends Vue {
   @request.Action
   deleteRequest!: (id: string) => Promise<boolean>;
 
-  @otherrequest.Action
-  deleteOtherrequest!: (id: string) => Promise<boolean>;
-
   @request.State
   patients!: any[];
 
@@ -360,7 +352,7 @@ export default class RequestExistingState extends Vue {
     this.selected = i;
   }
 
-   @request.State
+  @request.State
   patientrequests!: IRequest[];
 
   @request.Action

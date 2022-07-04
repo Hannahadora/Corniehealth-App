@@ -63,7 +63,7 @@
           >
           <template v-slot:default>
             <div>
-                <onset-picker v-model="onsetmesurable" label="Onset" :name="'onset'" />
+                <onset-picker v-model="onsetMeasurable" label="Onset" :name="'onset'" />
             </div>
           </template>
           </accordion-component>
@@ -315,12 +315,12 @@ const measurable = {
   ageUnit: "",
   ageValue: "",
   day: "",
-  unit: "",
+  unit: "Days",
   min: "",
-  minUnit: "",
+  minUnit: "Days",
   minValue: "",
   max: "",
-  maxUnit: "",
+  maxUnit: "Days",
   maxValue: "",
   string: "",
   startDate: "",
@@ -391,13 +391,11 @@ export default class AddCondition extends Vue {
   asserter = "";
   assessmentName = "";
 
-  onsetTimeable = { ...timeable };
-  onsetMeasurable = { ...measurable };
 
-  abatementTimeable = { ...timeable };
+
+
   abatementMeasurable = { ...measurable };
-
-  onsetmesurable = { ...measurable };
+  onsetMeasurable = { ...measurable };
 
   stageSummary = "";
   stageType = "";
@@ -500,27 +498,27 @@ isEmptyObject(object:any){
 }
 get onset() {
    const range = {
-      unit: this.onsetmesurable.unit,
-      min: this.onsetmesurable.min,
-      max: this.onsetmesurable.max
+      unit: this.onsetMeasurable.unit,
+      min: this.onsetMeasurable.min,
+      max: this.onsetMeasurable.max
     
     }; 
     const age = {
-       unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
+       unit: this.onsetMeasurable.ageUnit,
+        value: this.onsetMeasurable.ageValue,
     
     }; 
     const period = {
-       start: this.onsetmesurable.startDate,
-        end: this.onsetmesurable.endDate,
-        startTime: this.onsetmesurable.startTime,
-        endTime: this.onsetmesurable.endTime,
+       start: this.onsetMeasurable.startDate,
+        end: this.onsetMeasurable.endDate,
+        startTime: this.onsetMeasurable.startTime,
+        endTime: this.onsetMeasurable.endTime,
     
     }; 
     return {
       range: this.isEmptyObject (range) ? undefined : range,
       age: this.isEmptyObject (age) ? undefined : age,
-      string: this.onsetmesurable.string || null,
+      string: this.onsetMeasurable.string || null,
       period:this.isEmptyObject (period) ? undefined : period,
     };
   }
@@ -555,44 +553,6 @@ get onset() {
     };
   }
 
-  //get onset() {
-    // const { string, ...onsetRange } = this.onsetMeasurable;
-    // const onsetDateTime = this.safeBuildDateTime(
-    //   this.onsetTimeable.date as any,
-    //   this.onsetTimeable.time as any
-    // );
-    // const onsetAge = this.onsetMeasurable.age;
-    // const onsetPeriod = this.buildPeriod(this.onsetTimeable as any);
-
-    // const onsetRange = ;
-    // const data: any = {
-    //   age: this.onsetTimeable.age,
-    //   onsetString: this.onsetMeasurable.string,
-    // };
-    // if (onsetRange.unit && onsetRange.min && onsetRange.max)
-    //   data.range = onsetRange;
-    // if (onsetPeriod) data.period = onsetPeriod;
-    // if (onsetDateTime) data.dateTime = onsetDateTime;
-    // return data;
- // }
-
-  // get abatement() {
-  //   const { string, ...range } = this.abatementMeasurable;
-  //   const dateTime = this.safeBuildDateTime(
-  //     this.abatementTimeable.date as any,
-  //     this.abatementTimeable.time as any,
-  //   );
-  //   const period = this.buildPeriod(this.abatementTimeable as any);
-  //   const data: any = {
-  //     range,
-  //     string,
-  //     asserter: this.asserter,
-  //     age: this.abatementTimeable.age,
-  //   };
-  //   if (period) data.period = period;
-  //   if (dateTime) data.dateTime = dateTime;
-  //   return data;
-  // }
 
   buildPeriod({ startDate, startTime, endDate, endTime }: Timeable) {
     try {
@@ -625,7 +585,11 @@ get onset() {
     return this.authPractitioner.firstName +' '+ this.authPractitioner.lastName
   }
   get payload() {
-    this.abatement.push(this.setabatement);
+    if(this.abatement.length > 0){
+      this.abatement.pop()
+    }else{
+      this.abatement.push(this.setabatement);
+    }
     return {
       patientId: this.patientId,
       encounterId: this.referenceEncounter || null,

@@ -38,10 +38,13 @@ export default {
     //   const requestSet = new ObjectSet([...state.requests, ...requests], "id");
     //   state.requests = [...requestSet];
     // },
-    setPatientRequests(state, requests: IRequest[]) {
-      const requestSet = new ObjectSet([...state.requests, ...requests], "id");
-      state.patientrequests = [...requestSet];
+    setPatientRequests(state, requests: any) {
+      state.patientrequests = [...requests];
     },
+    // setPatientRequests(state, requests: IRequest[]) {
+    //   const requestSet = new ObjectSet([...state.requests, ...requests], "id");
+    //   state.patientrequests = [...requestSet];
+    // },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [...pts];
     },

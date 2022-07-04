@@ -82,7 +82,7 @@ export default class DRangePicker extends Vue {
   }
 
   get inputFieldText() {
-    if (!this.range?.start) return `15/04/2021 → 01/03/2022`;
+    if (!this.range?.start) return `------ → -------`;
     const end = this.range.end
       ? new Date(this.range.end).toLocaleDateString("en-NG")
       : "";
