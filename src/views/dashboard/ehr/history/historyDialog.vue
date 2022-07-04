@@ -62,13 +62,13 @@
             </span>
             <div class="flex space-x-4 mt-5">
               <cornie-radio
-                name="estimate"
+                name="estimateage"
                 :value="true"
                 label="Yes"
                 v-model="estimatedAge"
               />
               <cornie-radio
-                name="estimate"
+                name="estimateage"
                 :label="'No'"
                 :value="false"
                 v-model="estimatedAge"
@@ -120,24 +120,7 @@
               </div>
             </div>
           </div>
-          <!-- <div class="grid grid-cols-3 gap-4 w-full mt-5 mb-5">
-              <div class="bg-white shadow-md rounded-lg p-3" v-for="(item, i) in references"
-                                  :key="i">
-                <span class="text-danger font-bold">Reason Reference</span>
-                <div class="flex space-x-4 w-full mt-4 mb-3">
-                  <div class="w-full">
-                    <p class="text-sm text-black font-bold">{{ item?.category }}</p>
-                    <p class="text-gray-400 text-xs">xxxxxxx</p>
-                    <p class="text-xs text-black">Dr. {{ getPractitionerName(item?.practitionerId) }} <span class="text-gray-400 text-xs">{{ getPractitonerJob(item?.practitionerId) }}</span></p>
-                  </div>
-                  <div class="flex w-full justify-end">
-                    <delete-icon @click="deleteRef(i)"/>
-                  </div>
 
-                </div>
-
-              </div>
-            </div> -->
         </accordion-component>
       </div>
       <div class="border-b-2 pb-5 border-dashed border-gray-200">
@@ -155,20 +138,6 @@
               v-model="reasonCode"
               required
             />
-            <!-- <cornie-select
-                    class="w-full"
-                    label="Reason Code"
-                    :items="[
-                      'Anxiety disorder of childhood OR adolescence',
-                      'Choroidal hemorrhage',
-                      'Accident-prone',
-                      'Injury of ascending right colon without open wound into abdominal cavity',
-                      'Poisoning by sawfly larvae',
-                    ]"
-                    :rules="required"
-                    :placeholder="'--Select--'"
-                    v-model="reasonCode"
-                  /> -->
             <div>
               <p class="text-sm text-black font-semibold mb-1">
                 Reason Reference
@@ -183,22 +152,6 @@
                 </span>
               </div>
             </div>
-            <!-- <cornie-select
-                    v-model="reasonReference"
-                    label="Reason Reference"
-                    class="w-full"
-                    :items="[
-                      'Anxiety disorder of childhood OR adolescence',
-                      'Spontaneous abortion with laceration of cervix',
-                      'Spontaneous abortion with laceration of cervix',
-                      '	Homoiothermia',
-                      '	Decreased hair growth',
-                      '	Chronic pharyngitis',
-                      'Normal peripheral vision',
-                    ]"
-                    :rules="required"
-                    :placeholder="'--Select--'"
-                  /> -->
             <cornie-input
               v-model="note"
               class="w-full"

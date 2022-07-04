@@ -17,6 +17,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
+        <span class="text-red-500 font-semibold text-xs" v-if="!id">Note: Multiple referees can be added after saving a KYC form</span>
         <div class="w-full my-4">
           <cornie-input
             :label="'Name'"
@@ -177,13 +178,13 @@ export default class NominateRefree extends Vue {
 
    async apply() {
     this.loading = true;
-    if (this.selectedItem.id) await this.updateReffree();
+    if (this.refreeId) await this.updateReffree();
     else await this.onSave();
     this.loading = false;
   }
 
  async newRefree() {
-    this.$emit('refree', this.payload);
+    this.$emit('refree', [this.payload]);
       this.done();
   }
   async onSave() {

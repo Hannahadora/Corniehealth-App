@@ -138,10 +138,10 @@
                               Medication Reference
                             </p>
                             <div
-                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-3 px-4 cursor-pointer"
                               @click="showMedRefModal = true"
                             >
-                              <span class="w-full">{{ emptyMedicationDetails.reference }}</span>
+                              <span class="w-full text-xs">{{ emptyMedicationDetails.reference }}</span>
                               <span class="flex justify-end w-full">
                                 <plusIcon class="fill-current text-danger mt-1" />
                               </span>

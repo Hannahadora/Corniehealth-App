@@ -372,17 +372,17 @@ export default class AlergyModal extends Vue {
     if (!allergy) this.reset();
     this.clinicalStatus = allergy?.clinicalStatus;
     this.verificationStatus = allergy?.verificationStatus;
-    this.type = allergy.type;
-    this.category = allergy.category;
-    this.criticality = allergy.criticality;
-    this.code = allergy.code;
+    this.type = allergy?.type;
+    this.category = allergy?.category;
+    this.criticality = allergy?.criticality;
+    this.code = allergy?.code;
     //this.onset = allergy.onSet;
-    this.occurences = allergy.occurences;
-     this.note = allergy.note;
+    this.occurences = allergy?.occurences;
+     this.note = allergy?.note;
     this.reaction = allergy?.reaction;
     //this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
-    this.asserterId = allergy.asserterId;
-    this.recorderId = allergy.recorderId;
+    this.asserterId = allergy?.asserterId;
+    this.recorderId = allergy?.recorderId;
     this.setOccurence = this?.occur?.time
     this.setOccurencetime = this.separateTime(this?.occur?.time);
   }
