@@ -31,11 +31,12 @@
               value="code"
               :searchable="true"
               :options="allSpecials"
-              :clear-on-select="false"
+               name="object_true" :native="false" :object="true"
+                  :clear-on-select="false"
               label-prop="display"
               value-prop="code"
-              trackBy="code"
-              label="code"
+              trackBy="display"
+              label="display"
               placeholder="--Select--"
               class="w-full"
             >
@@ -50,10 +51,6 @@
                     <span class="multiselect-tag-remove-icon"></span>
                   </span>
                 </div>
-              </template>
-              <template v-slot:option="{ option }">
-                <select-option :value="option.code" @click="set" />
-                <span class="w-full text-sm">{{ option.display }}</span>
               </template>
             </Multiselect>
           </div>

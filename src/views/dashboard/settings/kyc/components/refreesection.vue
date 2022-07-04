@@ -15,7 +15,7 @@
           >
           <cornie-table :columns="rawHeaders" v-model="sortRefress" :listmenu="true" :check="false">
             <template #actions="{ item }">
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showEditRefree(item.id)">
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showEditRefree(item)">
                <edit-icon class="text-purple-700 fill-current"/>
                 <span class="ml-3 text-xs">Edit</span>
               </div>
@@ -40,6 +40,7 @@
         @refree-added="refreeadded"
         v-model="nominateRefree"
         :id="id"
+        :selectedItem="selectedItem"
         @refree="pushRefree"
         :refreeId="refreeId"
 
@@ -127,6 +128,7 @@ export default class DirectorState extends Vue {
   nominateRefree = false;
   newRefrees = [] as any;
   showExisitingPractioner = false;
+  selectedItem = {};
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -196,8 +198,8 @@ export default class DirectorState extends Vue {
       this.showExisitingPractioner  = true;
   }
 
-  async showEditRefree(value:string){
-    this.refreeId = value;
+  async showEditRefree(value:any){
+    this.selectedItem = value;
     this.nominateRefree = true;  
   }
 

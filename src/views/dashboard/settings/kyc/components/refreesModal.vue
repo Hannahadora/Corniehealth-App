@@ -105,6 +105,9 @@ export default class NominateRefree extends Vue {
   @kyc.Action
   getRefreeById!: (id: string) => IKycref;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   loading = false;
 
   emailRule = string().email("A valid email is required").required();
@@ -132,17 +135,16 @@ export default class NominateRefree extends Vue {
   }
 
 
- @Watch("refreeId")
+ @Watch("selectedItem")
   idChanged() {
     this.setRefree();
   }
 
   async setRefree() {
-    const refree = await this.getRefreeById(this.refreeId);
-    if (!refree) return;
-     this.name  = refree.name;
-     this.email  = refree.email;
-     this.phone  = refree.phone;
+ 
+     this.name  = this.selectedItem.name;
+     this.email  = this.selectedItem.email;
+     this.phone  = this.selectedItem.phone;
 
     }
   get payload() {
@@ -175,13 +177,13 @@ export default class NominateRefree extends Vue {
 
    async apply() {
     this.loading = true;
-    if (this.refreeId) await this.updateReffree();
+    if (this.selectedItem.id) await this.updateReffree();
     else await this.onSave();
     this.loading = false;
   }
 
  async newRefree() {
-    this.$emit('refree', [this.payload]);
+    this.$emit('refree', this.payload);
       this.done();
   }
   async onSave() {
