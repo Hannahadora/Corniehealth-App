@@ -1,7 +1,7 @@
+import ICatalogueService from "./ICatalogue";
 import ILocation from "./ILocation";
 import Period from "./IPeriod";
 import User from "./user";
-import ICatalogueService from "./ICatalogue";
 
 export interface PractitionerLocationRole {
   ids: string[];
@@ -47,6 +47,7 @@ export default interface IPractitioner {
   locationRoles?: PractitionerLocationRole[];
   identifier: string;
   services: ICatalogueService[];
+  employmentType: string;
   nationality: string;
   country: string;
   state: string;
@@ -55,19 +56,18 @@ export default interface IPractitioner {
   aptNumber: string;
   specialties: string[];
   practiceDuration: {
-    value: number,
-    unit: string
+    value: number;
+    unit: string;
   };
   consultationRate: {
-    value: number,
-    unit: string
+    value: number;
+    unit: string;
   };
   graduationYear: string;
   licenseIssuer: string;
   licensePeriod: Period;
-  location: any[]
-  education: any[]
-
+  location: any[];
+  education: any[];
 }
 
 export interface HoursOfOperation {

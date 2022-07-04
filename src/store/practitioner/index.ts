@@ -6,6 +6,7 @@ import {
   deleteLocationrole,
   deletePractitioner,
   fetchPractitioners,
+  getPractitioner,
 } from "./helper";
 
 interface PractitionerState {
@@ -32,7 +33,7 @@ export default {
     },
     deletePractitioner(state, id: string) {
       const index = state.practitioners.findIndex(
-        practitioner => practitioner.id == id
+        (practitioner) => practitioner.id == id
       );
       if (index < 0) return;
       const practitioners = [...state.practitioners];
@@ -41,7 +42,7 @@ export default {
     },
     deleteLocationrole(state, id: string) {
       const index = state.practionerRole.findIndex(
-        practitioner => practitioner.id == id
+        (practitioner) => practitioner.id == id
       );
       if (index < 0) return;
       const dirset = [...state.practionerRole];
@@ -54,10 +55,13 @@ export default {
       const practitioners = await fetchPractitioners();
       ctx.commit("setPractitioners", practitioners);
     },
-    getPractitionerById(ctx, id: string) {
-      return ctx.state.practitioners.find(
-        practitioner => practitioner.id == id
-      );
+    async getPractitionerById(ctx, id: string) {
+      // return ctx.state.practitioners.find(
+      //   practitioner => practitioner.id == id
+      // );
+      const r = await getPractitioner(id);
+      console.log("r", r.data);
+      return r.data;
     },
     async deletePractitioner(ctx, id: string) {
       const deleted = await deletePractitioner(id);
@@ -81,7 +85,7 @@ export default {
       if (ctx.state.practionerRole.length < 1)
         await ctx.dispatch("fetchPractitioners");
       return ctx.state.practionerRole.find(
-        practitioner => practitioner.id == id
+        (practitioner) => practitioner.id == id
       );
     },
   },
