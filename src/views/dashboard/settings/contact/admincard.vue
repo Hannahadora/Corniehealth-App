@@ -6,12 +6,12 @@
       <avatar class="h-20 w-20 mr-7" :src="image" />
 
       <span class="flex flex-col mr-10">
-        <span class="text-blue-yonder text-xs font-bold uppercase block"
-          >Name</span
-        >
-        <span class="text-sm capitalize text-blue-yonder-2"
-          >{{ contact.fname }} {{ contact.lname }}</span
-        >
+        <span class="text-blue-yonder text-xs font-bold uppercase block">
+          Name
+        </span>
+        <span class="text-sm capitalize text-blue-yonder-2">
+          {{ contact.fname }} {{ contact.lname }}
+        </span>
 
         <span class="text-blue-yonder text-xs font-bold uppercase block mt-2">
           Email
@@ -23,16 +23,16 @@
         <span class="text-blue-yonder text-xs font-bold uppercase block"
           >Phone</span
         >
-        <span class="text-sm text-blue-yonder-2">{{
-          contact.phone || "Nill"
-        }}</span>
+        <span class="text-sm text-blue-yonder-2">
+          {{ printPhone(contact.phone) || "Nil" }}
+        </span>
 
         <span class="text-blue-yonder text-xs font-bold uppercase block mt-2">
           Address
         </span>
-        <span class="text-sm text-blue-yonder-2"
-          >{{ contact.state || "Nill" }}, {{ contact.country || "Nill" }}</span
-        >
+        <span class="text-sm text-blue-yonder-2">
+          {{ contact.state || "Nil" }}, {{ contact.country || "Nill" }}
+        </span>
       </span>
     </div>
 
@@ -64,6 +64,7 @@ import IContact from "@/types/IContact";
 import AddContact from "./addContact.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import TransferOwnership from "./components/TransferOwnership.vue";
+import IPhone from "@/types/IPhone";
 
 const contact = namespace("contact");
 
@@ -80,6 +81,10 @@ export default class AdminCard extends Vue {
   contacts!: IContact[];
 
   editingContact = false;
+
+  printPhone(phone: IPhone) {
+    return `${phone.dialCode}${phone.number}`;
+  }
 
   get contact() {
     const contact =
