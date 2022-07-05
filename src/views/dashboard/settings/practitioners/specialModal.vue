@@ -28,13 +28,15 @@
             <Multiselect
               v-model="specialties"
               mode="multiple"
-              value="code"
+              value="id"
               :searchable="true"
               :options="allSpecials"
-               name="object_true" :native="false" :object="true"
-                  :clear-on-select="false"
+              name="object_true"
+              :native="false"
+              :object="true"
+              :clear-on-select="false"
               label-prop="display"
-              value-prop="code"
+              value-prop="id"
               trackBy="display"
               label="display"
               placeholder="--Select--"
@@ -371,7 +373,7 @@
     get allSpecials() {
       return this.specials.map((i: any) => {
         return {
-          code: i.id,
+          id: i.id,
           display: i.name,
         };
       });
