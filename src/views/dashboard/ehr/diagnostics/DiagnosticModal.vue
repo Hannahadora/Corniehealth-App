@@ -25,26 +25,14 @@
                 >
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                        <cornie-select
+                        <cornie-input
                             class="required"
-                            :rules="required"
-                                :items="[
-                                'draft',
-                                'active',
-                                'revoked',
-                                'on-hold',
-                                'completed',
-                                'do-not-perform',
-                                'stopped',
-                                'unknown',
-                                'entered-in-error',
-                                'ordered',
-                              ]"
+                            v-if="id"
                             label="Status"
                             placeholder="--Select--"
                             v-model="status"
                         >
-                        </cornie-select>
+                        </cornie-input>
 
                         <cornie-select
                             class="required"
@@ -99,10 +87,8 @@
                             class="required"
                             :rules="required"
                             :items="[
-                            'Inpatient',
-                            'Outpatient',
-                            'Community',
-                            'Discharge',
+                            'Pethology',
+                            'Imaging',
                             ]"
                             label="category"
                             v-model="category"
@@ -519,7 +505,7 @@ export default class MedicationModal extends Vue {
     required = string().required();
     substitution = "Yes";
 
-    status =  "";
+    status =  "active";
     basedOn = "";
     intent =  null;
     priority = null;
