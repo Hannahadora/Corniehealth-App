@@ -31,7 +31,9 @@
             <update-status-yellow class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="
+                  $router.push('/dashboard/provider/experience/add-appointment')
+                ">
             <plus-icon-black class="text-danger fill-current" />
             <span class="ml-3 text-xs">Add Appointment</span>
           </div>
