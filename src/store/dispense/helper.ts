@@ -3,10 +3,10 @@ import IDispenseInfo from "../../types/IDispenseInfo";
 import IMedicationReq from "@/types/ImedicationReq";
 
 
-export async function fetchMedReq() {
+export async function fetchMedReq(locationId: string) {
   try {
     const response = await cornieClient().get(
-      "/api/v1/medication-requests/dispenser"
+      `/api/v1/pharmacy/dispensed-medication/${locationId}`
     );
     if (response.success) return response.data;
   } catch (error) {}

@@ -94,4 +94,5 @@ export default interface IDispenseInfo {
     safetyCapRequest: boolean
     status: string
     updatedAt: string,
+    refills: any[],
 }
