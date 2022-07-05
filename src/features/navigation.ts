@@ -99,7 +99,7 @@ const links: ISidebarLink[] = [
     hasSubsection: true,
     children: [
       {
-        name: "Requests",
+        name: "Medications",
         to: "/dashboard/provider/settings/medication",
         hasSubsection: false,
       },
@@ -128,11 +128,11 @@ const links: ISidebarLink[] = [
         to: "/dashboard/provider/settings/pos",
         hasSubsection: false,
       },
-      {
-        name: "Dispense",
-        to: "/dashboard/provider/settings/dispense",
-        hasSubsection: false,
-      },
+      // {
+      //   name: "Dispense",
+      //   to: "/dashboard/provider/settings/dispense",
+      //   hasSubsection: false,
+      // },
       {
         name: "Virtual Pharmacy Orders",
         to: "/dashboard/provider/settings/pharmacy-orders",
