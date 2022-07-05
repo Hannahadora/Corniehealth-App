@@ -67,7 +67,8 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                    :clear-on-select="false"
+                    name="object_true" :native="false" :object="true"
+                  :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
                     trackBy="display"
@@ -88,12 +89,6 @@
                           <span class="multiselect-tag-remove-icon"></span>
                         </span>
                       </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <select-option
-                        :value="option.display"
-                        :label="option.display"
-                      />
                     </template>
                   </Multiselect>
                 </div>
@@ -106,7 +101,8 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                    :clear-on-select="false"
+                     name="object_true" :native="false" :object="true"
+                  :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
                     trackBy="display"
@@ -127,12 +123,6 @@
                           <span class="multiselect-tag-remove-icon"></span>
                         </span>
                       </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <select-option
-                        :value="option.display"
-                        :label="option.display"
-                      />
                     </template>
                   </Multiselect>
                 </div>

@@ -93,7 +93,7 @@ const measurable = {
   ageUnit: "" || null,
   ageValue: "" || null,
   day: "" || null,
-  unit: "" || null,
+  unit: "years" || null,
   min: "" || null,
   max: "" || null,
   string: "" || null,

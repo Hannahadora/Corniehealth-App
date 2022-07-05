@@ -8,7 +8,7 @@ export const ExperienceRoutes: RouteRecordRaw = {
   children: [
     {
       path: "patients",
-      name: "Patients",
+      name: "Patients Experience Management",
       component: () =>
         import("@/views/dashboard/patientexp/patients/Index.vue"),
     },

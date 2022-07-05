@@ -9,6 +9,10 @@ export async function fetchPractitioners() {
   return [] as IPractitioner[];
 }
 
+export async function getPractitioner(id: string) {
+  return await cornieClient().get(`/api/v1/practitioner/${id}`);
+}
+
 export async function deletePractitioner(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/practitioner/${id}`);

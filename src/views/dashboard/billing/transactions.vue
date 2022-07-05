@@ -30,6 +30,22 @@
       </div>
     </div>
     <cornie-table @filter="showFDialog" :columns="headers" v-model="items">
+      <template #status="{ item: { status } }">
+        <span
+          :class="{
+            'bg-success text-success': status && status.toLowerCase() == 'paid',
+            // ' bg-danger text-danger': status == 'inactive',
+            ' bg-warning text-warning':
+              status && status.toLowerCase() == 'pending',
+            // ' bg-blue-yonder text-blue-yonder': status == 'relapse',
+            // ' bg-blue-800 text-blue-800': status == 'remission',
+            // ' bg-gray-800 text-gray-800': status == 'resolved',
+          }"
+          class="px-1 text-center rounded-md p-1 bg-opacity-20"
+        >
+          {{ status }}
+        </span>
+      </template>
     </cornie-table>
     <transaction-filter-dialog v-model="showDialog" />
   </div>
@@ -117,6 +133,8 @@
             return {
               date: this.printRecorded(x.createdAt),
               id: x.idn,
+              total: `₦ ${x.total}`,
+              status: x.status,
             };
           });
     }

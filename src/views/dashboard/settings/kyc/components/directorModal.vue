@@ -20,6 +20,7 @@
         <v-form ref="form">
             <div class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300">
                 <span class="text-dark text-sm font-medium">Enter director’s details</span>
+                <p class="text-red-500 font-semibold text-xs" v-if="!id">Note: Multiple referees can be added after saving a KYC form</p>
             </div>
              <cornie-input
                 label="Full Name"
@@ -182,6 +183,10 @@ export default class DirectorModal extends Vue {
 
   @Prop({ type: String, default: "" })
   directorId!: string;
+
+  
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
  @kyc.Action
   getDirectorById!: (id: string) => IDirector;

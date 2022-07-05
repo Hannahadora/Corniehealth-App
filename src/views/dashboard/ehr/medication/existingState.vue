@@ -21,7 +21,7 @@
           <eye-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">View Details</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item)">
           <edit-icon class="text-green-400 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
@@ -126,7 +126,7 @@
         </template>
     </cornie-table>
 
-    <medication-request-modal v-model="showMedicationRequest" :id="requestId" @medication-added="medicationadded"/>
+    <medication-request-modal v-model="showMedicationRequest" :selectedItem="selectedItem" @medication-added="medicationadded"/>
 
     <view-modal v-model="showDetails" :selectedItem="selectedItem" :id="requestId" :medicationid="medicationId"/>
     <refill-modal v-model="showRefill" :id="requestId"/>
@@ -137,21 +137,7 @@
       :requestId="requestId"
       v-model="showNotes"
     />
-    <other-notes-add
-      :otherrequestnotes="otherrequestnotes"
-      :requestId="requestId"
-      v-model="showOthersNotes"
-    />
-    <medication-modal
-      :requestId="requestId"
-      @update:preferred="showMedication"
-      v-model="showMedicationModal"
-    />
-    <edit-medication-modal
-      :requestId="requestId"
-      @update:preferred="showEditMedication"
-      v-model="showEditMedicationModal"
-    />
+
     <status-modal
       :id="requestId"
       :selectedItem="selectedItem"
@@ -164,15 +150,6 @@
 
       v-model="showStatusModal"
       @status-added="statusadded"
-    />
-
-    <other-status-modal
-      :id="requestId"
-      :updatedBy="otherupdatedBy"
-      :currentStatus="othercurrentStatus"
-      :dateUpdated="otherupdate"
-      @update:preferred="showOtherStatus"
-      v-model="showOtherStatusModal"
     />
     
 </div>
@@ -187,6 +164,7 @@ import { mapDisplay } from "@/plugins/definitions";
 
 import IOtherrequest from "@/types/IOtherrequest";
 import IRequest from "@/types/IRequest";
+import IPageInfo from "@/types/IPageInfo";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -236,7 +214,7 @@ import RefillModal from "./refill.vue";
 import EmptyState from "./emptyState.vue";
 
 const request = namespace("request");
-const otherrequest = namespace("otherrequest");
+
 
 
 @Options({
@@ -326,7 +304,6 @@ export default class RequestExistingState extends Vue {
   showOtherStatusModal = false;
   viewDetails = false;
   requestnotes = [];
-  otherrequestnotes = [];
   selectedSchedule: any = {};
   singleParticipant = [];
   selectedVisit: any = {};
@@ -356,9 +333,6 @@ export default class RequestExistingState extends Vue {
   @request.Action
   deleteRequest!: (id: string) => Promise<boolean>;
 
-  @otherrequest.Action
-  deleteOtherrequest!: (id: string) => Promise<boolean>;
-
   @request.State
   patients!: any[];
 
@@ -371,11 +345,14 @@ export default class RequestExistingState extends Vue {
   @request.Action
   getPractitioners!: () => Promise<void>;
 
+  @request.State
+  pageInfo!: IPageInfo;
+
   select(i: number) {
     this.selected = i;
   }
 
-   @request.State
+  @request.State
   patientrequests!: IRequest[];
 
   @request.Action
@@ -541,26 +518,16 @@ export default class RequestExistingState extends Vue {
     this.showPrint = true;
      this.selectedItem = item;
   }
-  showModal(value:string){
+  showModal(item:any){
     this.showMedicationRequest = true;
-    this.requestId = value;
+     this.selectedItem = item;
   }
   async showOtherStatus(value: string) {
     this.showOtherStatusModal = true;
     this.requestId = value;
   }
 
-  async makeNotes(id: string) {
-    this.requestId = id;
-    this.showNotes = true;
-    this.fetchNotes();
-  }
 
-  async makeothersNotes(id: string) {
-    this.requestId = id;
-    this.showOthersNotes = true;
-    this.fetchOtherNotes();
-  }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to cancel this request",
@@ -604,33 +571,7 @@ export default class RequestExistingState extends Vue {
     this.setSelectedPatient(id);
     this.viewDetails = true;
   }
-  async fetchNotes() {
-    const id = this.requestId;
-    const AllNotes = cornieClient().get(
-      `/api/v1/requests/getNotesByRequestId/${id}`
-    );
-    const response = await Promise.all([AllNotes]);
-    this.requestnotes = response[0].data;
-  }
 
-  async fetchOtherNotes() {
-    const id = this.requestId;
-    const AllNotes = cornieClient().get(
-      `/api/v1/other-requests/getNotesByOtherRequestId/${id}`
-    );
-    const response = await Promise.all([AllNotes]);
-    this.otherrequestnotes = response[0].data;
-  }
-
-  async showMedication(value: string) {
-    this.requestId = value;
-    this.showMedicationModal = true;
-  }
-
-  async showEditMedication(value: string) {
-    this.requestId = value;
-    this.showEditMedicationModal = true;
-  }
 
   async statusadded(){
      await this.fetchrequestsById(this.onepatientId);

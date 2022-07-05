@@ -34,7 +34,7 @@ export const BillingRoutes: RouteRecordRaw = {
     },
     {
       path: "view-patient/:id",
-      name: "View Patient",
+      name: "Billing View Patient",
       props: true,
       component: () =>
         import("@/views/dashboard/patientexp/patients/ViewPatient.vue"),

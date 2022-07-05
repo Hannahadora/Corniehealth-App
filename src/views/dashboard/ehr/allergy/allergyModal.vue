@@ -221,6 +221,7 @@ import search from "@/plugins/search";
 
 import IPractitioner from "@/types/IPractitioner";
 import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
+import User, { CornieUser } from "@/types/user";
 
 import CornieCard from "@/components/cornie-card";
 import Textarea from "@/components/textarea.vue";
@@ -323,6 +324,9 @@ export default class AlergyModal extends Vue {
   @user.Getter
   authPractitioner!: IPractitioner;
 
+  @user.State
+  user!: User;
+
   @allergy.Action
   getAllergyById!: (id: string) => IAllergy;
 
@@ -368,17 +372,17 @@ export default class AlergyModal extends Vue {
     if (!allergy) this.reset();
     this.clinicalStatus = allergy?.clinicalStatus;
     this.verificationStatus = allergy?.verificationStatus;
-    this.type = allergy.type;
-    this.category = allergy.category;
-    this.criticality = allergy.criticality;
-    this.code = allergy.code;
+    this.type = allergy?.type;
+    this.category = allergy?.category;
+    this.criticality = allergy?.criticality;
+    this.code = allergy?.code;
     //this.onset = allergy.onSet;
-    this.occurences = allergy.occurences;
-     this.note = allergy.note;
+    this.occurences = allergy?.occurences;
+     this.note = allergy?.note;
     this.reaction = allergy?.reaction;
-    this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
-    this.asserterId = allergy.asserterId;
-    this.recorderId = allergy.recorderId;
+    //this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
+    this.asserterId = allergy?.asserterId;
+    this.recorderId = allergy?.recorderId;
     this.setOccurence = this?.occur?.time
     this.setOccurencetime = this.separateTime(this?.occur?.time);
   }
@@ -399,46 +403,35 @@ export default class AlergyModal extends Vue {
     return this.$route.params.id;
   }
 
-  get onset() {
-    return {
-      range: !Object.values({
-        unit: this.onsetmesurable.unit,
-        min: this.onsetmesurable.min,
-        max: this.onsetmesurable.max,
-      }).every((o) => o === null)
-        ? {
-            unit: this.onsetmesurable.unit,
-            min: this.onsetmesurable.min,
-            max: this.onsetmesurable.max,
-          }
-        : null,
-      age: !Object.values({
-        unit: this.onsetmesurable.ageUnit,
+isEmptyObject(object:any){
+  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+  return nonNulls.length <1
+}
+
+ get onset() {
+   const range = {
+      unit: this.onsetmesurable.unit,
+      min: this.onsetmesurable.min,
+      max: this.onsetmesurable.max
+    
+    }; 
+    const age = {
+       unit: this.onsetmesurable.ageUnit,
         value: this.onsetmesurable.ageValue,
-      }).every((o) => o === null)
-        ? {
-            unit: this.onsetmesurable.ageUnit,
-            value: this.onsetmesurable.ageValue,
-          }
-        : null,
-      string: this.onsetmesurable.string || null,
-      period: !Object.values({
-        start: this.onsetmesurable.startDate,
+    
+    }; 
+    const period = {
+       start: this.onsetmesurable.startDate,
         end: this.onsetmesurable.endDate,
         startTime: this.onsetmesurable.startTime,
         endTime: this.onsetmesurable.endTime,
-      }).every((o) => o === null)
-        ? {
-            start: this.onsetmesurable.startDate,
-            end: this.onsetmesurable.endDate,
-            startTime: this.onsetmesurable.startTime,
-            endTime: this.onsetmesurable.endTime,
-          }
-        : null,
-      dateTime: this.safeBuildDateTime(
-        this.onsetmesurable.date as any,
-        this.onsetmesurable.time as any
-      ),
+    
+    }; 
+    return {
+      range: this.isEmptyObject (range) ? undefined : range,
+      age: this.isEmptyObject (age) ? undefined : age,
+      string: this.onsetmesurable.string || null,
+      period:this.isEmptyObject (period) ? undefined : period,
     };
   }
 
@@ -498,10 +491,10 @@ this.code = '',
       onset: this.onset,
       reaction: this.reaction,
       occurences: newoccur,
-      recordDate: this.recordDate,
+      recordDate: new Date().toISOString(),
       note: this.note || undefined,
-      asserterId: this.authPractitioner.id,
-      recorderId: this.recorderId,
+      asserterId: this.authPractitioner.id || undefined,
+      recorderId: this.authPractitioner.id || undefined,
 
     };
   }
@@ -520,7 +513,6 @@ this.code = '',
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
 
-    this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
     this.payload.reaction.description = this.reaction.description || undefined;
      this.payload.reaction.note = this.reaction.note || undefined;
 
@@ -541,8 +533,6 @@ this.code = '',
   async updateAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
-
-     this.payload.recordDate = new Date(this.payload.recordDate).toISOString();
 
     const id = this.id;
     const url = `/api/v1/allergy/${id}`;

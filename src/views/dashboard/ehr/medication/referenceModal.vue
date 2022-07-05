@@ -103,8 +103,56 @@
                       @click="showDatalist = !showDatalist"
                       class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
                     >
+                        <div class="flex flex-col w-full p-2">
+                        <div
+                            v-for="(item, i) in filteredItems"
+                            :key="i"
+                            @click="showDatalist = !showDatalist"
+                            class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                        >
+                            <div
+                            class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+                            >
+                            {{ item.category || item }}
+                            </div>
+                        
+                        <div v-if="filteredItems.length === 0">
+                            <span
+                            class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                            >No result found!</span
+                            >
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="overflow-y-auto h-96">
+                  <div>
+                      <div v-if="refType == 'condition'">
+                        <div v-for="(input, index) in conditions" :key="index">
+                        <div
+                            class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                          :class="{ 'bg-gray-100': isSelected(input) }"
+                            @click="pushValue(input)"
+                        >
+                            <div class="w-full">
+                            <div class="w-full">
+                                <p class="text-sm text-dark mb-1 font-medium">
+                                {{ medicationMapper(input.type) }}
+                                </p>
+                                <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div v-if="refType == 'allergy'">
+                      <div v-for="(input, index) in allergys" :key="index">
                       <div
-                        class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                         :class="{ 'bg-gray-100': isSelected(input) }"
+                          @click="pushValue(input)"
                       >
                         {{ item.category || item }}
                       </div>
@@ -119,89 +167,9 @@
                   </div>
                 </div>
               </div>
-              <div class="overflow-y-auto h-96">
-                <div>
-                  <div v-if="refType == 'condition'">
-                    <div v-for="(input, index) in conditions" :key="index">
-                      <div
-                        class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                        @click="pushValue(input)"
-                      >
-                        <div class="w-full">
-                          <div class="w-full">
-                            <p class="text-sm text-dark mb-1 font-medium">
-                              {{ medicationMapper(input.type) }}
-                            </p>
-                            <p class="text-xs text-gray-300">
-                              {{
-                                new Date(input.createdAt).toLocaleDateString()
-                              }},
-                              {{
-                                new Date(input.createdAt).toLocaleTimeString()
-                              }}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="refType == 'allergy'">
-                  <div v-for="(input, index) in allergys" :key="index">
-                    <div
-                      class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                      @click="pushValue(input)"
-                    >
-                      <div class="w-full flex space-x-4">
-                        <div class="w-full">
-                          <p class="text-sm text-dark mb-1 font-meduim">
-                            {{ input.category }}
-                          </p>
-                          <p class="text-xs text-gray-300">
-                            {{ new Date(input.createdAt).toLocaleDateString() }}
-                            ,
-                            {{ new Date(input.createdAt).toLocaleTimeString() }}
-                          </p>
-                        </div>
-                        <div class="w-full flex justify-end">
-                          <p class="mt-4">
-                            {{ getPractitionerName(input.practitionerId) }}
-                          </p>
-                          <avatar
-                            class="mr-2 h-14 w-14"
-                            v-if="getPractitonerImage(input.practitionerId)"
-                            :src="getPractitonerImage(input.practitionerId)"
-                          />
-                          <avatar class="mr-2" v-else :src="localSrc" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="refType == 'observation'">
-                  <div v-for="(input, index) in observations" :key="index">
-                    <div
-                      class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                      @click="pushValue(input)"
-                    >
-                      <div class="w-full">
-                        <div class="w-full">
-                          <p class="text-sm text-dark mb-1 font-medium">
-                            {{ input?.basicInfo?.subject }}
-                          </p>
-                          <p class="text-xs text-gray-300">
-                            {{
-                              new Date(input.createdAt).toLocaleDateString()
-                            }},
-                            {{ new Date(input.createdAt).toLocaleTimeString() }}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+             
             </div>
+          </div>
           </div>
         </v-form>
       </cornie-card-text>
@@ -323,20 +291,28 @@ export default class ReasonReference extends Vue {
   query = "";
   localSrc = require("../../../../assets/img/placeholder.png");
   observations = [] as any;
+  clickedId = "";
 
   medicationMapper = (code: string) => "";
 
-  async createMapper() {
-    this.medicationMapper = await mapDisplay(
-      "http://hl7.org/fhir/ValueSet/condition-stage-type"
-    );
-  }
+    async createMapper() {
+      this.medicationMapper = await mapDisplay(
+        "http://hl7.org/fhir/ValueSet/condition-stage-type"
+      );
+    }
+       
+     isSelected(impression: any) {
+        return impression.id === this.clickedId;
+    }
 
-  get filteredItems() {
-    return this.allergys
-      .filter((item: any) => this.filter(item, this.query))
-      .sort(this.orderBy);
-  }
+
+
+    get filteredItems() {
+        return this.allergys
+        .filter((item: any) => this.filter(item, this.query))
+        .sort(this.orderBy);
+    }
+
 
   get activepatientId() {
     const id = this.$route?.params?.id as string;
@@ -355,23 +331,12 @@ export default class ReasonReference extends Vue {
 
   async submit() {}
 
-  pushValue(item: any) {
-    this.$emit("ref-value", item, this.refType);
 
-    this.clickedBg = !this.clickedBg;
-  }
-
-  async fetchObservations() {
-    try {
-      const { data } = await cornieClient().get(`/api/v1/observations/`);
-      this.observations = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching observations",
-        status: "error",
-      });
+    pushValue(item:any){
+        this.$emit("ref-value", item, this.refType);
+        this.clickedId = item.id;
+        this.clickedBg = !this.clickedBg;
     }
-  }
 
   done() {
     this.$emit("medication-added");
@@ -383,7 +348,6 @@ export default class ReasonReference extends Vue {
     await this.fetchAllergys(this.$route?.params?.id as string);
     await this.fetchPatientConditions(this.activepatientId);
     await this.fetchPractitioners();
-    await this.fetchObservations();
   }
 }
 </script>

@@ -1,14 +1,17 @@
 import { cornieClient } from "@/plugins/http";
 import IRequest from "@/types/IRequest";
 
-export async function fetchRequests() {
+export async function fetchRequests(page = 1, limit?: number) {
+  limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/medication-requests");
+    const response = await cornieClient().get("/api/v1/medication-requests", {page, limit});
+    const { currentPage, nextPage, numberOfPages, previousPage} = response;
+    const pageInfo = {currentPage, nextPage, numberOfPages, previousPage }
     if (response.success) {
-      return response.data;
+      return {data: response.data, pageInfo};
     }
   } catch (error) {}
-  return [] as IRequest[];
+  return {data:[], pageInfo:{}};
 }
 export async function fetchrequestsById(patientId: string) {
   try {

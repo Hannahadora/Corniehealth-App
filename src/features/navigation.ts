@@ -21,7 +21,9 @@ const links: ISidebarLink[] = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+      { name: "Patients", 
+        to: "/dashboard/experience/patients" ,
+        hasSubsection: false },
       {
         name: "Calendar",
         to: "/dashboard/experience/calendar",
@@ -278,7 +280,7 @@ const soloLinks = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+      { name: "Patients", to: { name: "Patients Experience Management" }, hasSubsection: false },
       {
         name: "Schedules",
         to: "/dashboard/experience/schedules",

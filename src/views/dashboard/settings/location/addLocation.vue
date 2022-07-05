@@ -44,15 +44,38 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
-                  <cornie-select
-                    :rules="required"
-                    required
-                    v-model="careOptions"
-                    label="Visit Type"
-                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
+                  <div class="flex flex-col space-y-0.5">
+                    <div class="text-sm font-semibold mb-1">Visit Type</div>
+
+                    <Multiselect
+                      label="Visit Type"
+                      v-model="careOptions"
+                      mode="tags"
+                      :hide-selected="true"
+                      :options="visitType"
+                      placeholder="--Select--"
+                      class="w-full"
+                    >
+                      <template
+                        v-slot:tag="{ option, handleTagRemove, disabled }"
+                      >
+                        <div class="multiselect-tag is-user">
+                          {{ option.label }}
+                          <span
+                            v-if="!disabled"
+                            class="multiselect-tag-remove"
+                            @mousedown.prevent="handleTagRemove(option, $event)"
+                          >
+                            <span class="multiselect-tag-remove-icon"></span>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-slot:option="{ option }">
+                        <span class="w-full text-sm">{{ option.label }}</span>
+                      </template>
+                    </Multiselect>
+                  </div>
+
                   <cornie-input
                     :rules="required"
                     required
@@ -262,6 +285,7 @@ import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import IPhone from "@/types/IPhone";
 import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
+import Multiselect from "@vueform/multiselect";
 import { namespace } from "vuex-class";
 import { string } from "yup";
 
@@ -278,6 +302,7 @@ const location = namespace("location");
     InfoIcon,
     PhoneInput,
     OperationHours,
+    Multiselect,
     Textarea,
     FhirInput,
     AccordionComponent,
@@ -313,7 +338,7 @@ export default class AddLocation extends Vue {
   managingOrg = "";
   partOf = "";
   availabilityExceptions = "";
-  careOptions = "";
+  careOptions = [];
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
 
@@ -323,6 +348,21 @@ export default class AddLocation extends Vue {
 
   required = string().required();
   requiredEmail = string().required().email();
+
+  visitType = [
+    {
+      label: "In-person",
+      value: "in-person",
+    },
+    {
+      label: "Virtual",
+      value: "virtual",
+    },
+    {
+      label: "At home",
+      value: "at home",
+    },
+  ];
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -377,9 +417,7 @@ export default class AddLocation extends Vue {
     this.state = location.state;
     this.city = location.city;
     this.physicalType = location.physicalType;
-    // this.latitude = location.latitude;
-    // this.longitude = location.longitude;
-    // this.altitude = location.altitude;
+
     this.managingOrg = location.managingOrg;
     this.partOf = location.partOf;
     this.availabilityExceptions = location.availabilityExceptions;
@@ -407,9 +445,6 @@ export default class AddLocation extends Vue {
       state: this.state,
       city: this.city,
       physicalType: this.physicalType,
-      // latitude: this.latitude,
-      // longitude: this.longitude,
-      // altitude: this.altitude,
       managingOrg: this.managingOrg,
       partOf: this.partOf,
       availabilityExceptions: this.availabilityExceptions,

@@ -2,9 +2,7 @@
   <span class="block w-11/12">
     <label class="flex capitalize mb-2 text-black text-sm font-bold">
       {{ label }}
-      <span class="ml-1 mb-1" v-if="$slots.labelicon"
-        ><slot name="labelicon"
-      /></span>
+      <span class="ml-1 mb-1" v-if="$slots.labelicon"><slot name="labelicon"/></span>
     </label>
     <Field :name="inputName" v-slot="{ meta, handleChange, errorMessage }">
       <div class="relative" :id="inputName" style="width: 100%">
@@ -82,7 +80,7 @@ export default class DRangePicker extends Vue {
   }
 
   get inputFieldText() {
-    if (!this.range?.start) return `15/04/2021 → 01/03/2022`;
+    if (!this.range?.start) return `------ → -------`;
     const end = this.range.end
       ? new Date(this.range.end).toLocaleDateString("en-NG")
       : "";
