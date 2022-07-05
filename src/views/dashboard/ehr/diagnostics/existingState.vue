@@ -3,7 +3,7 @@
      <span class="flex justify-end w-full mb-8">
         <button
           class="bg-danger rounded-xl text-white mt-5 py-3 px-12 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showModalDiagnostic = true">
+          @click="requestId = ''; showModalDiagnostic = true">
           New Request
         </button>
       </span>

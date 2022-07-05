@@ -691,6 +691,7 @@ export default class MedicationModal extends Vue {
       done() {
         this.$emit("medication-added");
         this.show = false;
+        
     }
 
   async created() {

@@ -18,7 +18,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Rx</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalRx }}
+              {{ dispenseSummary?.totalOrders || 0 }}
             </p>
           </div>
           <div>
@@ -31,7 +31,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Dispensed</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalDispensed }}
+              {{ dispenseSummary?.totalDispensed || 0 }}
             </p>
           </div>
           <div>
@@ -44,7 +44,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Volume</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              N {{ totalVolume }}
+              N {{ dispenseSummary?.totalVolume }}
             </p>
           </div>
           <div>
@@ -143,7 +143,11 @@
             </p>
             <p
               class="text-xs bg-red-100 text-red-600 p-1 rounded"
-              v-if="item.status == 'revoked' || item.status == 'cancelled' || item.status == 'stopped'"
+              v-if="
+                item.status == 'revoked' ||
+                item.status == 'cancelled' ||
+                item.status == 'stopped'
+              "
             >
               {{ item.status }}
             </p>
@@ -155,7 +159,9 @@
             </p>
             <p
               class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-              v-if="item.status == 'do-not-perform' || item.status == 'dispensed'"
+              v-if="
+                item.status == 'do-not-perform' || item.status == 'dispensed'
+              "
             >
               {{ item.status }}
             </p>
@@ -269,7 +275,6 @@ const organization = namespace("organization");
 })
 export default class DISPENSE extends Vue {
   query = "";
-  empty = "";
   request = "";
   organization = "";
   requestId = "";
@@ -280,13 +285,12 @@ export default class DISPENSE extends Vue {
   updatedBy = "";
   currentStatus = "";
   showStatusModal = false;
+  dispense = <any>[];
+  dispenseSummary = <any>{};
 
   // get patientId() {
   //   return this.$route.params.id as string
   // }
-
-  @dispense.State
-  medicationRequest!: any[];
 
   @request.State
   patients!: any[];
@@ -305,12 +309,6 @@ export default class DISPENSE extends Vue {
 
   @user.Getter
   authCurrentLocation!: any;
-
-  @dispense.State
-  dispense!: IDispenseInfo;
-
-  @dispense.Action
-  viewDispense!: (requestId: string, locationId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -413,9 +411,13 @@ export default class DISPENSE extends Vue {
     },
   ];
 
-  types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
-  statuses = ["Show All", "On-Hold", "Cancelled", "Completed", "Stopped"];
-  availableSlots: any = [];
+  get locationId() {
+    return this.authCurrentLocation;
+  }
+  
+  get empty() {
+    return this.dispense.length < 1
+  }
 
   get headers() {
     const preferred =
@@ -427,8 +429,8 @@ export default class DISPENSE extends Vue {
   }
 
   get items() {
-    const combined = this.medicationRequest.map(this.medicationRequests);
-    const medicationRequest = combined.flatMap((value) => value);
+    const combined = this.dispense.map(this.medicationRequests);
+    const medicationRequest = combined.flatMap((value: any) => value);
 
     if (!this.query) return medicationRequest;
     return search.searchObjectArray(medicationRequest, this.query);
@@ -460,29 +462,10 @@ export default class DISPENSE extends Vue {
   //     "http://hl7.org/fhir/ValueSet/medication-codes"
   //   );
 
-  get locationId() {
-    return this.authCurrentLocation;
-  }
-
-  get totalRx() {
-    const rx = this.medicationRequest?.map((el: any) => {
-      el.status === "completed";
-    });
-    return rx.length || 0;
-  }
-
-  get totalDispensed() {
-    return this.medicationRequest?.length || 0;
-  }
-
-  get totalVolume() {
-    return 0;
-  }
-
   showItem(value: string) {
     this.statusModal = true;
-    this.requestId = value; 
-    this.medicationRequest.filter((el: any) => {
+    this.requestId = value;
+    this.dispense.filter((el: any) => {
       if (el.id == value) {
         this.request = el;
       }
@@ -493,7 +476,7 @@ export default class DISPENSE extends Vue {
   viewItem(value: string) {
     this.viewDispenseDetails = true;
     this.requestId = value;
-    this.medicationRequest.filter((el: any) => {
+    this.dispense.filter((el: any) => {
       if (el.id == value) {
         this.request = el;
       }
@@ -503,7 +486,6 @@ export default class DISPENSE extends Vue {
   }
 
   async setRequest() {
-    // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
         `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.requestId}`
@@ -522,7 +504,7 @@ export default class DISPENSE extends Vue {
       const { data } = await cornieClient().get(
         `/api/v1/pharmacy/dispensed-medication/${this.locationId}`
       );
-      this.request = data;
+      this.dispense = data;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching dispensed medications",
@@ -531,15 +513,30 @@ export default class DISPENSE extends Vue {
     }
   }
 
+  async fetchDispenseSummary() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/pharmacy/dispensed-medication/${this.locationId}/summary`
+      );
+      this.dispenseSummary = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching dispensed medications summary",
+        status: "error",
+      });
+    }
+  }
+
   closeModal() {
     this.statusModal = false;
-    this.fetchMedReq()
+    this.fetchMedReq();
   }
 
   async created() {
     await this.fetchMedReq();
+    await this.fetchDispenseSummary();
 
-    if (this.medicationRequest.length < 1) this.fetchMedReq();
+    if (this.dispense.length < 1) this.fetchMedReq();
 
     if (!this.organizationInfo) this.fetchOrgInfo();
   }

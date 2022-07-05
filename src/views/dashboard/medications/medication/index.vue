@@ -8,10 +8,6 @@
           type === "requests" ? "Medication Requests" : "Dispensed Medications"
         }}
       </span>
-      <!-- <span class="w-full h-screen">
-         <medication-empty-state v-if="empty" />
-        <medication-existing-state v-else />
-      </span> -->
 
       <div class="flex items-center space-x-8 border-b-4 border-gray-300">
         <span
@@ -32,7 +28,11 @@
         >
       </div>
       <div class="w-full pb-7 mt-10">
-        <request-table v-if="type === 'requests'" />
+        <span class="w-full h-screen" v-if="type === 'requests'">
+          <medication-empty-state v-if="empty" />
+          <medication-existing-state v-else />
+        </span>
+
         <dispense-table v-if="type === 'dispense'" />
       </div>
     </div>
@@ -45,7 +45,6 @@ import { namespace } from "vuex-class";
 import MedicationEmptyState from "./emptyState.vue";
 import MedicationExistingState from "./existingState.vue";
 import IRequest from "@/types/IRequest";
-import RequestTable from "./existingState.vue";
 import DispenseTable from "../../medications/dispense/index.vue";
 
 const request = namespace("request");
@@ -56,7 +55,6 @@ const request = namespace("request");
     MedicationExistingState,
     MedicationEmptyState,
     DispenseTable,
-    RequestTable,
   },
 })
 export default class MedicationIndex extends Vue {
