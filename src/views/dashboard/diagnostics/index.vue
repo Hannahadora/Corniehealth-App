@@ -7,15 +7,15 @@
     <div class="flex items-center space-x-8 border-b-4 border-gray-300">
       <span
         class="px-3 pt-9 pb-2 -mb-1 cursor-pointer"
-        :class="{ 'border-b-4 border-red-500': type === 'reports' }"
-        @click="type = 'reports'"
-        >Reports</span
+        :class="{ 'border-b-4 border-red-500 font-bold': type === 'requests' }"
+        @click="type = 'requests'"
+        >Requests</span
       >
       <span
         class="px-3 pt-9 pb-2 -mb-1 cursor-pointer"
-        :class="{ 'border-b-4 border-red-500': type === 'requests' }"
-        @click="type = 'requests'"
-        >Requests</span
+        :class="{ 'border-b-4 border-red-500 font-bold': type === 'reports' }"
+        @click="type = 'reports'"
+        >Reports</span
       >
     </div>
     <div class="w-full pb-7">

@@ -49,6 +49,9 @@ export default class EncounterSelect extends Vue {
   get patientId() {
     return this.$route.params.id;
   }
+  get practitionerId() {
+    return "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  }
 
   get items() {
     return this.encounters.map((encounter) => ({
@@ -74,10 +77,15 @@ export default class EncounterSelect extends Vue {
   }
   async fetchEncounters() {
     try {
-      const { data } = await cornieClient().get(
-        `/api/v1/encounter/patient/${this.patientId}`
-      );
-      this.encounters = data || [];
+      if (this.patientId) {
+        const { data } = await cornieClient().get(
+          `/api/v1/encounter/patient/${this.patientId}`
+        );
+        this.encounters = data || [];
+      } else {
+        const { data } = await cornieClient().get(`/api/v1/encounter/practitioner/${this.practitionerId}`);
+        this.encounters = data || [];
+      }
     } catch (error) {
       window.notify({
         msg: "There was an error fetching encounters for patient",

@@ -110,7 +110,7 @@
                 </div>
             </div>
              <div v-if="actorType == 'Device'">
-                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in devices" :key="index">  
+                <div class="w-full flex space-x-7 mt-4" v-for="(item, index) in s" :key="index">  
                     <div class="w-full dflex space-x-4 mb-3">
                         <div class="w-10 h-10">
                             <avatar class="mr-2" :src="localSrc" />

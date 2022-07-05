@@ -97,23 +97,52 @@
                 </div>
               </div>
               <div v-if="type === 'Observation'">
-                      <div v-for="(input, index) in observations" :key="index">
-                      <div
-                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                          
-                          @click="getValue(input)"
-                      >
-                          <div class="w-full">
-                          <div class="w-full">
-                              <p class="text-sm text-dark mb-1 font-medium">
-                              {{ input?.basicInfo?.subject }}
-                              </p>
-                              <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
-                          </div>
-                          </div>
-                      </div>
+                <div v-for="(input, index) in observations" :key="index">
+                  <div
+                    class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                    @click="getValue(input)"
+                  >
+                    <div class="w-full">
+                      <div class="w-full">
+                        <p class="text-sm text-dark mb-1 font-medium">
+                          {{ input?.basicInfo?.subject }}
+                        </p>
+                        <p class="text-xs text-gray-300">
+                          {{ new Date(input.createdAt).toLocaleDateString() }},
+                          {{ new Date(input.createdAt).toLocaleTimeString() }}
+                        </p>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'Device'">
+              <div v-for="(input, index) in devices" :key="index">
+                <div
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-10 h-10">
+                        <avatar
+                          class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
+                          :src="localSrc"
+                        />
+                      </div>
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.deviceName.name }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.deviceName.nameType }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -203,24 +232,21 @@ export default class ReferenceDialog extends Vue {
   @Prop({ type: Array, default: [] })
   referenceOptions!: any[];
 
-  
-    @practitioner.State
-    practitioners!: IPractitioner[];
+  @practitioner.State
+  practitioners!: IPractitioner[];
 
-    @practitioner.Action
-    fetchPractitioners!: () => Promise<void>;
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
 
-    
-    @allergy.State
-    allergys!: any[];
+  @allergy.State
+  allergys!: any[];
 
-    @allergy.Action
-    fetchAllergys!: (patientId: string) => Promise<void>;
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
 
-    @condition.Action
-    fetchPatientConditions!: (patientId: string) => Promise<void>;
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
 
-  
   @condition.State
   conditions!: ICondition[];
 
@@ -229,7 +255,7 @@ export default class ReferenceDialog extends Vue {
 
   loading = false;
 
-  selectedRef = '';
+  selectedRef = "";
   type = "";
   refBasis = "";
   query = "";
@@ -241,6 +267,8 @@ export default class ReferenceDialog extends Vue {
   molecularSequence = <any>[];
   carePlan = <any>[];
   medReq = <any>[];
+  devices = <any>[];
+  localSrc = require("../../../../../assets/img/placeholder.png");
 
   get patientId() {
     return this.$route.params.id;
@@ -256,50 +284,54 @@ export default class ReferenceDialog extends Vue {
   }
 
   getValue(value: any) {
-    if (this.type === "condition") {
-      this.selectedRef = this.codeMapper(value.code);
-    } else if (this.type === "observation") {
+    this.selectedRef = value;
+  }
+  async fetchObservations() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/observations/`);
+      this.observations = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching observations",
+        status: "error",
+      });
     }
   }
-    async fetchObservations() {
-        try {
-          const { data } = await cornieClient().get(
-            `/api/v1/observations/`
-          );
-          this.observations = data;
-        } catch (error) {
-          window.notify({
-            msg: "There was an error when fetching observations",
-            status: "error",
-          });
-        }
-      }
-    async fetchCarePlan() {
-        try {
-          const { data } = await cornieClient().get(
-            `/api/v1/care-plan/practitioner/`
-          );
-          this.carePlan = data;
-        } catch (error) {
-          window.notify({
-            msg: "There was an error when fetching observations",
-            status: "error",
-          });
-        }
-      }
-    async fetchMedReq() {
-        try {
-          const { data } = await cornieClient().get(
-            `/api/v1/medication-requests/`
-          );
-          this.medReq = data;
-        } catch (error) {
-          window.notify({
-            msg: "There was an error when fetching observations",
-            status: "error",
-          });
-        }
-      }
+  async fetchCarePlan() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/care-plan/practitioner/`
+      );
+      this.carePlan = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching care plans",
+        status: "error",
+      });
+    }
+  }
+  async fetchDevices() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/devices`);
+      this.devices = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching devices",
+        status: "error",
+      });
+    }
+  }
+  async fetchMedReq() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/medication-requests/`);
+      this.medReq = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching medication requests",
+        status: "error",
+      });
+    }
+  }
 
   apply() {
     this.$emit("update", this.selectedRef);
@@ -312,8 +344,9 @@ export default class ReferenceDialog extends Vue {
     // await this.fetchPatientConditions(this.activepatientId);
     await this.fetchPractitioners();
     await this.fetchObservations();
-    await this.fetchCarePlan()
-    await this.fetchMedReq()
+    await this.fetchCarePlan();
+    await this.fetchMedReq();
+    await this.fetchDevices();
   }
 }
 </script>
