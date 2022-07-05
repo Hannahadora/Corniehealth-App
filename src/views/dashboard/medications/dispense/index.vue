@@ -288,9 +288,6 @@ export default class DISPENSE extends Vue {
   @dispense.State
   medicationRequest!: any[];
 
-  @dispense.Action
-  fetchMedReq!: () => Promise<void>;
-
   @request.State
   patients!: any[];
 
@@ -515,6 +512,20 @@ export default class DISPENSE extends Vue {
     } catch (error) {
       window.notify({
         msg: "There was an error fetching request details",
+        status: "error",
+      });
+    }
+  }
+
+  async fetchMedReq() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/pharmacy/dispensed-medication/${this.locationId}`
+      );
+      this.request = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching dispensed medications",
         status: "error",
       });
     }

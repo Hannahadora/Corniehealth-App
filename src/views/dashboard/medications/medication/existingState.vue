@@ -114,7 +114,7 @@
             </p>
             <p
               class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-              v-if="item.status == 'entered-in-error'"
+              v-if="item.status == 'entered-in-error' || item.status == 'dispensed'"
             >
               {{ item.status }}
             </p>
@@ -557,11 +557,8 @@ export default class RequestExistingState extends Vue {
    dispenseItem(value: any) {
     this.viewDispenseDetails = true;
     this.requestId = value.id;
-    this.requests.filter((el: any) => {
-      if (el.id == value.id) {
-        this.request = el;
-      }
-    });
+   
+    this.selectedItem = value;
     // this.setRequest();
     this.fetchOrgInfo();
   }

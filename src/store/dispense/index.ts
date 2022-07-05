@@ -25,8 +25,8 @@ export default {
     },
   },
   actions: {
-    async fetchMedReq(ctx) {
-      const medReq = await fetchMedReq();
+    async fetchMedReq(ctx, { locationId }) {
+      const medReq = await fetchMedReq(locationId);
       ctx.commit("setMedReq", medReq);
     },
     async viewDispense(ctx, { locationId, requestId }) {
