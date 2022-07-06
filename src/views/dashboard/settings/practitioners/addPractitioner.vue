@@ -162,7 +162,7 @@
                   v-model="country"
                   label="Country"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                   :items="nationState.countries"
                 />
@@ -172,7 +172,7 @@
                   label="State"
                   :items="nationState.states"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -181,7 +181,7 @@
                   label="City"
                   :required="true"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -1143,22 +1143,22 @@
       if (this.useSameAddress) {
         this.disabled = true;
         this.emergency.address = this.address;
-        this.emergency.phone = this.phone;
+        // this.emergency.phone = this.phone;
         // this.emergency.email = this.email;
         this.emergency.country = this.country;
         this.emergency.state = this.state;
         this.emergency.city = this.city;
-        // this.emergency.postCode = this.postCode;
+        this.emergency.postCode = this.postCode;
         this.emergency.aptNumber = this.aptNumber;
       } else {
         this.emergency.address = "";
-        this.emergency.phone = "";
+        // this.emergency.phone = "";
         // this.emergency.email = "";
         this.emergency.country = "";
         this.emergency.state = "";
         this.emergency.city = "";
         this.emergency.postCode = "";
-        // this.emergency.aptNumber = "";
+        this.emergency.aptNumber = "";
         this.disabled = false;
       }
     }
