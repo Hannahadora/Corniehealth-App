@@ -177,6 +177,7 @@
     }
 
     async save() {
+      if (this.addedAssociations.length == 0) return;
       this.$emit("add-associations", this.addedAssociations);
 
       this.show = false;

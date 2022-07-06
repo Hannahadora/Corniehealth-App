@@ -162,7 +162,7 @@
                   v-model="country"
                   label="Country"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                   :items="nationState.countries"
                 />
@@ -172,7 +172,7 @@
                   label="State or Origin"
                   :items="nationState.states"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -181,7 +181,7 @@
                   label="City"
                   :required="true"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -189,8 +189,6 @@
                   v-model="postCode"
                   label="Zip or Post Code"
                   placeholder="Enter"
-                  :required="true"
-                  :rules="requiredString"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -250,7 +248,6 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
-                  :disabled="disabled"
                 />
                 <phone-input
                   v-model="emergency.phone"
@@ -319,8 +316,6 @@
                   v-model="emergency.postCode"
                   label="Zip or Post Code"
                   placeholder="Enter"
-                  :required="true"
-                  :rules="required"
                   :readonly="readonly"
                   :disabled="disabled"
                 />
@@ -784,7 +779,7 @@
             </template>
           </accordion-component>
 
-          <accordion-component title="Available Time" :opened="true">
+          <!-- <accordion-component title="Available Time" :opened="true">
             <template v-slot:default>
               <div class="grid grid-cols-12 gap-4">
                 <div class="mt-3 w-full col-span-12">
@@ -806,7 +801,7 @@
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
-          </accordion-component>
+          </accordion-component> -->
 
           <span class="flex w-full mt-5 pb-3 justify-end">
             <button
@@ -1173,8 +1168,8 @@
       if (this.useSameAddress) {
         this.disabled = true;
         this.emergency.address = this.address;
-        this.emergency.phone = this.phone;
-        this.emergency.email = this.email;
+        // this.emergency.phone = this.phone;
+        // this.emergency.email = this.email;
         this.emergency.country = this.country;
         this.emergency.state = this.state;
         this.emergency.city = this.city;
@@ -1182,8 +1177,8 @@
         this.emergency.aptNumber = this.aptNumber;
       } else {
         this.emergency.address = "";
-        this.emergency.phone = "";
-        this.emergency.email = "";
+        // this.emergency.phone = "";
+        // this.emergency.email = "";
         this.emergency.country = "";
         this.emergency.state = "";
         this.emergency.city = "";
