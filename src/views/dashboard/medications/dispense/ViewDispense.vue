@@ -304,7 +304,7 @@
         >
           Cancel
         </div>
-        <div class="flex items-center mb-6">
+        <div class="flex items-center mb-6" v-if="request?.status !== 'dispensed'">
           <!-- <div class="relative">
            <cornie-btn
               @click="openPostOptions = true"
