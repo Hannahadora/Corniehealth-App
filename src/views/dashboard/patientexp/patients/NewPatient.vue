@@ -126,14 +126,14 @@
 
             <cornie-input
               label="Number of Children"
-              class="w-full mt-2"
+              class="w-full"
               placeholder="Enter"
               v-model="numberOfChildren"
               :readonly="viewOnly"
             >
             </cornie-input>
             <cornie-select
-              class="w-full mt-2"
+              class="w-full"
               label="Multiple Birth?"
               placeholder="Select One"
               :items="multipleBirthOptions"
@@ -141,10 +141,10 @@
               :readonly="viewOnly"
             />
             <cornie-input
-              v-if="multipleBirth == true"
+              v-if="multipleBirth == 'yes'"
               class="w-full"
               placeholder="Enter"
-              v-model="multipleBirthInteger"
+              v-model.number="multipleBirthInteger"
               type="number"
               :rules="multipleBirthRule"
               :readonly="viewOnly"
@@ -155,7 +155,7 @@
                   <template #tooltip>
                     <span>Number of multiple births</span>
                   </template>
-                  <info-icon class="fill-current text-primary mt-1.5" />
+                  <info-icon class="fill-current text-primary" />
                 </cornie-tooltip>
               </template>
             </cornie-input>
@@ -176,7 +176,7 @@
 
     <cornie-card class="my-5 mr-4">
       <cornie-card-title class="cursor-pointer" @click="togglePatientIdentity">
-        <h1 class="text-lg font-extrabold">Identity & Association</h1>
+        <h1 class="text-lg font-extrabold">Identity</h1>
         <cornie-spacer />
         <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
           Edit
@@ -226,7 +226,7 @@
               </cornie-input>
             </div>
           </div>
-          <button
+          <!-- <button
             class="flex flex-row items-center w-full mt-5"
             type="button"
             @click="showAssociationsDialog = true"
@@ -237,8 +237,8 @@
             <div>
               <plus-icon />
             </div>
-          </button>
-          <div class="my-4" v-if="allAssociations.length">
+          </button> -->
+          <!-- <div class="my-4" v-if="allAssociations.length">
             <div class="flex">
               <template
                 v-for="(assoc, index) in allAssociations"
@@ -271,7 +271,7 @@
                 </div>
               </template>
             </div>
-          </div>
+          </div> -->
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
               type="button"
@@ -538,8 +538,8 @@
       { code: "other", display: "Other" },
     ];
     multipleBirthOptions = [
-      { code: true, display: "Yes" },
-      { code: false, display: "No" },
+      { code: "yes", display: "Yes" },
+      { code: "no", display: "No" },
     ];
     bloodGroupOptions = [
       "A+",
@@ -566,7 +566,7 @@
     genotype = "";
 
     vip = false;
-    multipleBirth = false;
+    multipleBirth = "no";
     multipleBirthInteger = 0;
     gender = "";
     idType = "NIN";
@@ -729,8 +729,8 @@
         {
           name: "Associations",
           icon: "link-icon",
-          click: () => (this.showGuarantorDialog = true),
-          number: this.guarantorLength,
+          click: () => (this.showAssociationsDialog = true),
+          number: this.allAssociations.length,
         },
       ];
     }
@@ -790,7 +790,7 @@
         lastname: this.lastName,
         associates: this.associations,
         middlename: this.middleName || undefined,
-        multipleBirth: this.multipleBirth,
+        multipleBirth: this.multipleBirth == "yes" ? true : false,
         multipleBirthInteger: this.multipleBirthInteger,
         gender: this.gender.toLowerCase(),
         maritalStatus: this.maritalStatus,
@@ -798,7 +798,7 @@
         dateOfBirth: this.dateOfBirth,
         bloodGroup: this.bloodGroup,
         identityNos: [{ type: this.idType, number: this.idNumber }],
-        profilePhoto: this.image,
+        profilePhoto: this.image || null,
         accountType: "individual",
       };
       if (this.id) {
@@ -813,7 +813,7 @@
         preferredPharmacies: this.pharmacies,
         demographicsData: this.demographics,
         primaryDoctorDetails: this.practitioners,
-        guarantor: this.guarantor,
+        guarantor: this.guarantor ? this.guarantor : null,
       };
       if (this.id) return basicInfo;
       return { ...basicInfo, ...others };
@@ -883,7 +883,7 @@
       this.firstName = patient.firstname;
       this.lastName = patient.lastname;
       this.middleName = patient.middlename || "";
-      this.multipleBirth = patient.multipleBirths || false;
+      this.multipleBirth = patient.multipleBirths == false ? "no" : "yes";
       this.multipleBirthInteger = patient.multipleBirthInteger || 0;
       this.gender = patient.gender || "";
       this.maritalStatus = patient.maritalStatus || "";
