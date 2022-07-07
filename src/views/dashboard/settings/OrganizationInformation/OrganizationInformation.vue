@@ -236,7 +236,7 @@ export default class PracticeInfo extends Vue {
   incTypes = [];
   loading = false;
   defaultOrgInfo = {} as IOrganization;
-  urlRule = string().optional().matches(URLRegex, "Invalid URL");
+  urlRule = string().matches(URLRegex, "Invalid URL").optional();
   emailRule = string().email().required();
   requiredRule = string().required();
   image = "";
