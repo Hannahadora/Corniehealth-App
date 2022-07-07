@@ -114,8 +114,8 @@
                 class="border p-1"
                 type="number"
                 placeholder="Enter"
-                v-model="item.quantity"
-                @input="printLineTotal(item)"
+                :modelValue="item.quantity"
+                @input="(quantity) => changeQuantity(item.id, quantity)"
               />
             </template>
             <template #lineTotal="{ item }">
@@ -128,36 +128,6 @@
           </cornie-table>
 
           <div class="mt-8 flex items-start justify-end">
-            <!-- <div class="w-1/3">
-              <div
-                class="px-4 py-3 text-sm border rounded-md flex items-center justify-between w-full"
-              >
-                <span class="w-3/5 text-xs">Coupon | Promo Code</span>
-                <input
-                  class="w-2/5 self-end"
-                  type="text"
-                  v-model="coupon"
-                  placeholder="----"
-                  :disabled="salesData"
-                />
-              </div>
-              <span class="text-xs text-red-500 mt-2 text-right"
-                >A Coupon/Promo discount of 20% applies.</span
-              >
-              <div
-                class="mt-4 px-4 py-3 text-sm border rounded-md flex items-center justify-between w-full"
-              >
-                <span class="w-3/5 text-xs">Discount (%)</span>
-                <input
-                  class="w-2/5 self-end"
-                  type="number"
-                  v-model="discount"
-                  placeholder="----"
-                  :disabled="salesData"
-                />
-              </div>
-            </div> -->
-
             <div class="w-1/3">
               <table class="w-full">
                 <tbody>
@@ -329,6 +299,7 @@ import CornieSearch from "@/components/search-input.vue";
 import { debounce } from "lodash";
 
 import search from "@/plugins/search";
+import ObjectSet from "@/lib/objectset";
 
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
@@ -398,7 +369,7 @@ export default class PosDialog extends Vue {
   };
   reference = "";
   salesDate = "";
-  medications = <any>[];
+  medications = [] as any[];
 
   @user.Getter
   authCurrentLocation!: any;
@@ -435,10 +406,6 @@ export default class PosDialog extends Vue {
     return false;
   }
 
-  // get locationId() {
-  //   return this.authCurrentLocation;
-  // }
-
   get locationId() {
     return "21b84341-2051-4cad-b6b6-feae04f81215";
   }
@@ -457,19 +424,13 @@ export default class PosDialog extends Vue {
     return search.searchObjectArray(dMed, this.query);
   }
 
-printLineTotal(item: any) {
-  const lineTotal = item.quantity * item.unitPrice
-  console.log('lineTotal', lineTotal)
-  return lineTotal
-}
+  printLineTotal(item: any) {
+    const lineTotal = item.quantity * item.unitPrice;
+    console.log("lineTotal", lineTotal);
+    return lineTotal;
+  }
 
   get totalDiscount() {
-    // if (this.discount) {
-    //   const dP = this.items?.map(
-    //     (item: any) => item.lineTotal * (this.discount / 100)
-    //   ); 
-    //   return dP.reduce((a: any, b: any) => a + b, 0).toFixed(2);
-    // } else return 0;
     return 0;
   }
 
@@ -478,15 +439,15 @@ printLineTotal(item: any) {
   }
 
   get subTotal() {
-    const lT = this.items?.map((item: any) => item.lineTotal);
-    const sT = lT.reduce((a: any, b: any) => a + b, 0);
-    return Number(sT - this.totalDiscount).toFixed(2);
+    const lineTotal = this.items?.map((item: any) => item.lineTotal);
+    const subTotal = lineTotal.reduce((a: any, b: any) => a + b, 0);
+    return Number(subTotal - this.totalDiscount).toFixed(2);
   }
 
   get grandTotal() {
     return Number(this.subTotal + this.shippingCost).toFixed(2);
   }
-  
+
   get payments() {
     return [
       {
@@ -535,8 +496,18 @@ printLineTotal(item: any) {
     return pId.name;
   }
 
+  changeQuantity(itemId: string, quantity: number) {
+    const medication = this.medications.find(({ id }) => id == itemId);
+    if (!medication) return;
+    medication.quantity = quantity;
+  }
+
   addMedication(chosenMedication: any) {
-    this.medications.push({ ...chosenMedication, quantity: 1 });
+    const medications = new ObjectSet(
+      [...this.medications, { ...chosenMedication, quantity: 1 }],
+      "id"
+    );
+    this.medications = [...medications];
   }
 
   async addSales(type: any) {
@@ -595,7 +566,7 @@ printLineTotal(item: any) {
     //   this.medications.splice(el);
     // });
     // this.medications.filter((el: any) => el.id !== itemId)
-      this.medications.splice(index, 1);
+    this.medications.splice(index, 1);
   }
 
   showItem(id: any) {}
