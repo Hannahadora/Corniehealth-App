@@ -346,8 +346,8 @@
               <fhir-input
                 reference="http://hl7.org/fhir/ValueSet/observation-interpretation"
                 class="w-full"
-                label="Interpretion"
-                placeholder="Interpretion"
+                label="Interpretation"
+                placeholder="Interpretation"
                 v-model="reasonInfo.interpretation"
               />
               <cornie-input
