@@ -1,13 +1,29 @@
 <template>
   <div class="h-screen flex justify-center">
     <accordion-component
-      class="shadow-none rounded-none pb-14 py-8 mb-32 border-none mt-8 text-primary"
       title="Photos"
       expand="true"
-      v-model="opened"
       :opened="true"
     >
-      <image-section class="mt-8" />
+    <template v-slot:default>
+
+      <image-section class="mt-8 " />
+
+
+          <div class="flex justify-end relative" style="bottom: -350px;">
+            <cornie-btn
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn
+              :loading="loading"
+              class="text-white bg-danger px-6 rounded-xl"
+            >
+              Save
+            </cornie-btn>
+          </div>
+    </template>
     </accordion-component>
   </div>
 </template>
@@ -16,7 +32,7 @@ import { Options, Vue } from "vue-class-component";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import PhoneInput from "@/components/phone-input.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import OperationHours from "./new-operation-hours.vue";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { cornieClient } from "@/plugins/http";
@@ -32,6 +48,8 @@ import CalendarIcon from "@/components/icons/calendar.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
 import ImageSection from "./image.vue";
+import CornieCard from "@/components/cornie-card";
+
 const countries = getCountries();
 
 const dropdown = namespace("dropdown");
@@ -39,6 +57,7 @@ const location = namespace("location");
 
 @Options({
   components: {
+    ...CornieCard,
     CornieInput,
     AutoComplete,
     CornieSelect,

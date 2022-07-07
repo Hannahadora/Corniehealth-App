@@ -210,9 +210,9 @@ export const SettingsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/settings/kyc/index.vue"),
     },
     {
-      path: "kyc-link",
+      path: "kyc-response",
       props: true,
-      name: "KYC Link",
+      name: "KYC Response",
       component: () =>
         import("@/views/dashboard/settings/kyc/components/email-link.vue"),
     },

@@ -1,6 +1,15 @@
 <template>
   <div class="w-full">
     <div class="flex space-x-4 float-right col-span-full mr-4">
+      <span v-if="fetchSingglePatientEncounter !== undefined">
+         <CornieBtn
+         :loading="loading"
+          class="bg-danger  rounded-full  text-white cursor-pointer"
+          @click="endEncounter"
+        >
+          End Encounter
+        </CornieBtn>
+      </span>
       <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
         Patient Queue ({{ appoitments.length }})
       </p>
@@ -48,6 +57,7 @@ import { cornieClient } from "@/plugins/http";
 
 import IPractitioner from "@/types/IPractitioner";
 import { IPatient } from "@/types/IPatient";
+import IEncounter from "@/types/IEncounter";
 
 import Modal from "@/components/modal.vue";
 
@@ -56,6 +66,7 @@ import AppointmentModal from "./dialogs/appointmentDialog.vue";
 import ClinicalSidebar from "./clinicalSidebar.vue";
 import AuthModal from "./auth-modal.vue";
 import ChartModal from "./dialogs/chartDialog.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -68,6 +79,7 @@ const patients = namespace("patients");
     AuthModal,
     AppointmentModal,
     ChartModal,
+    CornieBtn
   },
 })
 export default class ClinicalsSidebar extends Vue {
@@ -80,6 +92,7 @@ export default class ClinicalsSidebar extends Vue {
   showPatient = false;
   showAppoont = false;
   showChart = false;
+  loading = false;
   appoitments = [] as any;
   date = new Date().toISOString();
 
@@ -89,6 +102,12 @@ export default class ClinicalsSidebar extends Vue {
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
+  @patients.Action
+  fetchPatientsEncounter!: (patientId:string) => Promise<void>;
+
+  @patients.State
+  encounters!: IEncounter[];
+
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
@@ -97,6 +116,7 @@ export default class ClinicalsSidebar extends Vue {
 
   patient = {} as IPatient;
   newpatientId = "";
+  encounterObject = {} as any;
 
   @patients.Action
   findPatient!: (patientId: string) => Promise<IPatient>;
@@ -105,8 +125,39 @@ export default class ClinicalsSidebar extends Vue {
     return this.newpatientId || (this.$route.params.id || this.$route.params.patientId) as string;
   }
 
+   get fetchSingglePatientEncounter() {
+    const pt = this.encounters.find((i: any) => i.patientId === this.patientId);
+    if (pt) this.encounterObject = pt; 
+    return pt;
+  }
+
   showPatientModal() {
     this.showPatient = true;
+  }
+   async endEncounter(patient: IPatient) {
+    this.loading = true;
+    const body ={
+      patientId: this.patientId,
+      practitionerId: this.encounterObject.practitionerId,
+      locationId: this.authCurrentLocation,
+      status: 'active',
+      class: 'consultation',
+      serviceType: 'consultation'
+    }
+     try {
+      const response = await cornieClient().patch(
+        `/api/v1/encounter/end/${this.encounterObject.id}`,
+       body
+      );
+      if (response.success) {
+        this.loading = false;
+        window.notify({ msg: "Patient encounter ended successfully", status: "success" });
+       this.$router.push({ name: "Patient"});
+      }
+    } catch (error: any) {
+      this.loading = false;
+      window.notify({ msg: "Encounter error", status: "error" });
+    }
   }
   async fetchAppontments() {
     const [splitDate] = this.date.split('T');
@@ -132,6 +183,7 @@ export default class ClinicalsSidebar extends Vue {
 
   async created() {
     this.patient = await this.findPatient(this.patientId);
+    await this.fetchPatientsEncounter(this.patientId)
     this.fetchPatients();
     this.fetchAppontments();
   }

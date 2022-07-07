@@ -129,59 +129,54 @@
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Domain:</div>
-          <div class="text-black text-xs">
+          <div class="text-gray-800 text-sm">Domain :</div>
+          <div class="text-black text-sm">
             {{ orgInfo.domainName }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Active Since:</div>
-          <div v-if="orgInfo.createdAt" class="text-black text-xs">
+          <div class="text-gray-600 text-sm">Active Since :</div>
+          <div v-if="orgInfo.createdAt" class="text-black text-sm">
             {{
-              new Date(orgInfo.createdAt).toLocaleDateString(
-                "en-US",
-                dateoptions
-              )
+              new Date(orgInfo.createdAt).toLocaleDateString("en-US")
             }}
           </div>
-          <div v-else class="text-black text-xs">Nil</div>
+          <div v-else class="text-black text-sm">Nil</div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Address:</div>
-          <div class="text-black text-xs">
+          <div class="text-gray-600 text-sm">Address :</div>
+          <div class="text-black text-sm">
             {{ orgInfo.address }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Email:</div>
-          <div class="text-black text-xs">
+          <div class="text-gray-600 text-sm">Email :</div>
+          <div class="text-black text-sm">
             {{ orgInfo.email }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Mobile:</div>
-          <div class="text-black text-xs">
+          <div class="text-gray-600 text-sm">Mobile :</div>
+          <div class="text-black text-sm">
             {{ orgInfo.mobile }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <span class="text-gray-300 text-xs"
-            >Total Ratings:
-            <span class="text-black text-xs">16</span>
+          <span class="text-gray-600 text-sm"
+            >Total Ratings :
+            <span class="text-black text-sm">16</span>
           </span>
         </div>
-        <div class="flex space-x-4 mt-2">
-          <span class="text-gray-300 text-xs"
-            >Patients Seen:
-            <span class="text-black text-xs">24</span>
+        <div class="flex space-x-4 mt-2 mb-2">
+          <span class="text-gray-600 text-sm"
+            >Patients Seen :
+            <span class="text-black text-6m">24</span>
           </span>
         </div>
-        <a href="orgInfo.website" target="_blank" class="text-sm mb-1">{{ orgInfo.website }}</a>
-        <div></div>
+        <a href="orgInfo.website" target="_blank" class="text-blue-500 underline text-sm mb-1">{{ orgInfo.website }}</a>
 
-        <div class="flex space-x-4 items-center justify-center mt-2">
+        <!-- <div class="flex space-x-4 items-center justify-center mt-2">
           <span
-            v-if="!verified"
             class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
             >Get Verified</span
           >
@@ -190,25 +185,25 @@
             v-if="verified"
             >Get Verified</span
           >
-        </div>
+        </div> -->
 
-        <div class="flex items-center justify-between mt-7 border-t pt-6">
-          <span class="text-gray-300 text-xs"
+        <div class="flex items-center justify-between mt-7 border-t border-dashed pt-4">
+          <span class="text-gray-600 text-sm"
             >Account Owner:
-            <span class="text-black text-xs"><a :href="orgInfo.website" target="_blank">{{ orgInfo.website }}</a></span>
+            <span class="text-black text-xs">{{ authPractitioner.firstName +' '+ authPractitioner.lastName}}</span>
           </span>
         </div>
 
-        <div class="my-10 flex items-center justify-center">
+        <!-- <div class="mt-4">
           <cornie-btn
-            class="border-primary border-2 px-0 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-0 mr-3 py-1 rounded-xl text-primary"
           >
             <copy-icon class="mr-2" /> Copy Link
           </cornie-btn>
-          <cornie-btn class="text-white bg-danger px-0 rounded-xl">
-            <share-icon class="mr-2" /> Share
+          <cornie-btn class="text-white bg-danger px-0 py-2 rounded-xl">
+            <share-icon class="mr-2" /> Share Link
           </cornie-btn>
-        </div>
+        </div> -->
       </div>
 
       <div class="col-span-5 bg-white shadow p-4 h-full relative">
@@ -511,6 +506,7 @@ export default class CarePartnersExistingState extends Vue {
   address = "";
   phonenumbers = [] as any;
   website = "";
+  required = string().required();
 
   siteMessage = "";
   contactNumber = "";
