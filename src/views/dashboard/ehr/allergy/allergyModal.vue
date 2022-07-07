@@ -396,7 +396,7 @@ export default class AlergyModal extends Vue {
   }
 
    get occur(){
-    return this.occurences[this.occurences.length - 1]
+    if(this.occurences !== undefined) return this.occurences[0]
   }
 
   get patientId() {

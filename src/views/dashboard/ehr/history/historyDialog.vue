@@ -509,9 +509,6 @@ export default class HistoryDialog extends Vue {
     };
   }
 
-
-
-
   get born() {
      const period = {
       start: this.bornTimeable.startDate,

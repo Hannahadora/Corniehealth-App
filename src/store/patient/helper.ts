@@ -1,4 +1,5 @@
 import { cornieClient } from "@/plugins/http";
+import IEncounter from "@/types/IEncounter";
 
 export async function fetchPatients() {
   try {
@@ -31,4 +32,16 @@ export async function deleteProvider(patientId: string, providerId: string): Pro
   } catch (error) {
     return false;
   }
+}
+
+export async function fetchPatientsEncounter(patientId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/encounter/patient/${patientId}`
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+  return [] as IEncounter[];
 }

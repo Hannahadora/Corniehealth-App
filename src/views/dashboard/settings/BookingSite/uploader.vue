@@ -94,6 +94,8 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CheckIcon from "@/components/icons/authcheck.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { reactive } from "@vue/reactivity";
 
 @Options({
   name: "FileUploader",
@@ -137,10 +139,19 @@ export default class Uploader extends Vue {
   fileInfo = {};
 
   uploading = false;
+  fileURL = "";
   //shownewupladmodal= false;
 
   get filename() {
     return this.file?.name;
+  }
+
+  setup() {
+    const { url, placeholder, onChange } = useHandleImage();
+    return { img: reactive({ url, placeholder, onChange }) };
+  }
+   idFileUploaded(fileUrl: string) {
+    this.fileURL = fileUrl;
   }
 
   handleDrop(e: any) {

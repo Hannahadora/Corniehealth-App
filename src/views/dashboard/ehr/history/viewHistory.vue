@@ -1,186 +1,385 @@
 <template>
   <big-dialog
     v-model="show"
-    title="View Family History"
+    title="View  History"
     class=""
     :id="newhistoryId"
     :horizontal="true"
   >
     <div class="w-full">
-      <div class="border-b-2 border-gray-100 border-dashed pb-5">
-        <div class="">
-            <div class="flex space-x-8">
-                  <avatar class="mr-2 w-16 h-16" v-if="authPractitioner.image" :src="authPractitioner?.image" />
-                <avatar class="mr-2 w-16 h-16" v-else :src="localSrc" />
-                <div class="float-right w-full flex justify-end">
-                    <div>
-                        <p class="font-bold mb-2 text-right">{{ authPractitioner?.department }}</p>
-                        <p class="text-right mb-2">{{ authPractitioner?.address }}</p>
-                        <p class="text-right mb-2">{{ authPractitioner?.phone?.dialCode +''+ authPractitioner?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
-                        <p class="text-right mb-2"> <span class="text-gray-300">Practice ID #:</span>{{ authPractitioner?.identifier }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4 w-full mt-5">
-          <div class="mt-4">
-            <span class="text-lg text-black font-bold">Patient Information</span>
-            <div>
-              <div class="w-full flex space-x-3 mt-5">
-              <avatar class="mr-2 h-14 w-14" v-if="authPractitioner.image" :src="authPractitioner?.image" />
-                <avatar class="mr-2" v-else :src="localSrc" />
-              </div>
-              <p class="font-semibold mb-5">Nkechi Claire Obi</p>
-              <p class="text-sm text-gray-400 mb-3">MRN-CH23022021-0010</p>
-              <p class="text-sm mb-3">87 Montagomery Close, Friend’s Colony Estate, Lekki</p>
-              <p class="text-sm mb-3">08032545678</p>
-              <p class="text-sm">Nkechi@gmail.com</p>
-            </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Basic Info" :opened="true">
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <cornie-input
+              label="Name"
+              class="w-full"
+              v-model="selectedItem.name"
+              :disabled="true"
+            />
+            <cornie-input
+              label="Relationship"
+              class="w-full"
+              v-model="selectedItem.relationship"
+              :disabled="true"
+            />
+            <cornie-input
+              label="Sex"
+              class="w-full"
+              v-model="selectedItem.sex"
+              :disabled="true"
+            />
           </div>
-
-        </div>
+        </accordion-component>
       </div>
-      <div class="w-full grid grid-cols-2 gap-4 mt-5">
-        <div>
-          <div class="flex space-x-3">
-            <information-icon class="fill-current text-gray-400 mt-1"/>
-            <span class="text-lg text-danger font-bold">Basic-Info</span>
-          </div>
-          <div class="grid grid-cols-3 gap-4 mt-5 w-full">
-            <div>
-              <p class="text-sm text-gray-400">Instantiates Canonical</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Instantiates Uri</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Status</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Data Absent Reason</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Date</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Relationship</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-400">Sex</p>
-              <p class="text-sm">XXXXXX</p>
-            </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Born" :opened="true">
+          <div class="mt-5">
+              <cornie-radio v-if="selectedItem.born.dateTime" name="date/time" label="Date/Time" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.born.year" name="yer" label="Year" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.born.period" name="period" label="Period" :disabled="true"/>
 
           </div>
-        </div>
-        <div>
-          <div>
-            <div class="flex space-x-3">
-              <born-icon/>
-              <span class="text-lg font-bold text-black">Born/Age</span>
+           <div class="grid grid-cols-2 gap-4 mt-3 w-full">
+              <date-time-picker
+              v-if="selectedItem.born.dateTime"
+                v-model:date="selectedItem.born.dateTime"
+                v-model:time="selectedItem.born.dateTime"
+                label="Date/Time"
+                class="w-full"
+                 :disabled="true"
+              />
+              <cornie-input
+                v-if="selectedItem.born.year"
+                v-model="selectedItem.born.year"
+                label="Year"
+                class="w-full"
+                placeholder="year"
+                :disabled="true"
+              />
+              <date-time-picker
+               v-if="selectedItem.born.period"
+                v-model:date="selectedItem.born.period.start"
+                v-model:time="selectedItem.born.period.start"
+                label="Start Date/Time"
+                class="w-full"
+                 :disabled="true"
+              />
+              <date-time-picker
+               v-if="selectedItem.born.period"
+                v-model:date="selectedItem.born.period.end"
+                v-model:time="selectedItem.born.period.end"
+                label="End Date/Time"
+                class="w-full"
+                 :disabled="true"
+              />
             </div>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-sm text-gray-400">Selected</p>
-                    <p class="text-sm">Born</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-400">Date/Time</p>
-                    <p class="text-sm">21/10-2021 <span class="text-gray-400">15:00</span></p>
-                  </div>
-
-              </div>
-          </div>
-           <div class="mt-4">
-             <div class="flex space-x-3">
-              <born-icon/>
-              <span class="text-lg font-bold text-black">Deceased</span>
-             </div>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-sm text-gray-400">Deceased?</p>
-                    <p class="text-sm">Yes</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-400">Date/Time</p>
-                    <p class="text-sm">21/10-2021 <span class="text-gray-400">15:00</span></p>
-                  </div>
-                   <div>
-                    <p class="text-sm text-gray-400">Reason Code</p>
-                    <p class="text-sm">xxxxxxx</p>
-                  </div>
-                   <div>
-                    <p class="text-sm text-gray-400">Reason Reference</p>
-                    <p class="text-sm">xxxxxxx</p>
-                  </div>
-
-              </div>
-          </div>
-        </div>
-        
+        </accordion-component>
       </div>
-
-      <div class="w-full grid grid-cols-2 gap-4 mt-5">
-        <div>
-          <div>
-            <div class="flex space-x-3">
-              <born-icon/>
-              <span class="text-lg font-bold text-black">Condition (Related Person)</span>
-            </div>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                  <div>
-                    <p class="text-sm text-gray-400">Code</p>
-                    <p class="text-sm">xxxxxxx</p>
-                  </div>
-                   <div>
-                    <p class="text-sm text-gray-400">Outcome</p>
-                    <p class="text-sm">xxxxxxx</p>
-                  </div>
-                   <div>
-                    <p class="text-sm text-gray-400">Contributed to Death?</p>
-                    <p class="text-sm">xxxxxxx</p>
-                  </div>
-                  
-
-              </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Age" :opened="true">
+          <div class="mt-5">
+              <cornie-radio v-if="selectedItem.age.year" name="year" label="Year" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.age.range" name="range" label="Range" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.age.age" name="age" label="Age" :disabled="true"/>
           </div>
-           <div class="mt-4">
-             <div class="flex space-x-3">
-              <born-icon/>
-              <span class="text-lg font-bold text-black">Onset</span>
-             </div>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                    <div>
-                    <p class="text-sm text-gray-400">Start Date & Time</p>
-                    <p class="text-sm">21/10-2021 <span class="text-gray-400">15:00</span></p>
-                  </div>
-                    <div>
-                    <p class="text-sm text-gray-400">End Date & Time</p>
-                    <p class="text-sm">21/10-2021 <span class="text-gray-400">15:00</span></p>
+           <div class="grid grid-cols-2 gap-4 mt-4"  v-if="selectedItem.age.age">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex  w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full px-0"
+                      :setfull="true"
+                      v-model="selectedItem.age.age.value"
+                      :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.age.age.unit }}</p></div>
                   </div>
               </div>
           </div>
-        </div>
-        <div>
-            <div>
-              <span class="text-black font-bold text-lg flex space-x-3">
-                <note-icon/>  <span> Deceased Note</span>
-              </span>
-              <p class="text-sm mt-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque scelerisque tortor, elit, ac.</p>
+           <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="selectedItem.age.range">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.age.range.min"
+                      :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.age.range.unit }}</p></div>
+                  </div>
+              </div>
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.age.range.max"
+                     :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.age.range.unit }}</p></div>
+                  </div>
+              </div>
             </div>
-            <div class="mt-4">
-              <span class="text-black font-bold text-lg flex space-x-3">
-                <note-icon/> <span> Onset Note</span>
-              </span>
-              <p class="text-sm mt-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque scelerisque tortor, elit, ac.</p>
+            <div class="grid grid-cols-2 gap-3 mt-4" v-if="selectedItem.age.year">
+              <cornie-input label="Year" v-model="selectedItem.age.year"  :disabled="true"/>
             </div>
-        </div>
-        
+            <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                v-if="selectedItem.age.estimatedAge == true"
+                  name="estimateage"
+                  :value="true"
+                  label="Yes"
+                  v-model="selectedItem.age.estimatedAge"
+                  :disabled="true"
+                />
+                 <cornie-radio
+                v-if="selectedItem.age.estimatedAge == false"
+                  name="estimateage"
+                  :value="true"
+                  label="No"
+                  v-model="selectedItem.age.estimatedAge"
+                  :disabled="true"
+                />
+              </div>
+            </div>
+
+
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Deceased" :opened="true">
+          <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black">Deceased?</span>
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                v-if="selectedItem.deceased == true"
+                  name="estimatede"
+                  :value="true"
+                  label="Yes"
+                  v-model="selectedItem.deceased"
+                  :disabled="true"
+                />
+                 <cornie-radio
+                v-if="selectedItem.deceased == false"
+                  name="estimatede"
+                  :value="true"
+                  label="No"
+                  v-model="selectedItem.deceased"
+                  :disabled="true"
+                />
+              </div>
+            </div>
+          <div class="mt-5">
+              <cornie-radio v-if="selectedItem.deceasedAge.year" name="year" label="Year" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.deceasedAge.range" name="range" label="Range" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.deceasedAge.age" name="age" label="Age" :disabled="true"/>
+          </div>
+           <div class="grid grid-cols-2 gap-4 mt-4"  v-if="selectedItem.deceasedAge.age">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex  w-full">
+                      <cornie-input
+                        placeholder="0"
+                        class="grow w-full px-0"
+                        :setfull="true"
+                        v-model="selectedItem.deceasedAge.age.value"
+                        :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.deceasedAge.age.unit }}</p></div>
+                  </div>
+              </div>
+          </div>
+           <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="selectedItem.age.range">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.deceasedAge.range.min"
+                      :disabled="true"
+                      />
+                      <div class="bg-primary  rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.deceasedAge.range.unit }}</p></div>
+                  </div>
+              </div>
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.deceasedAge.range.max"
+                     :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.deceasedAge.range.unit }}</p></div>
+                  </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-4" v-if="selectedItem.deceasedAge.year">
+              <cornie-input label="Year" v-model="selectedItem.deceasedAge.year"  :disabled="true"/>
+            </div>
+            <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black">Estimated Age?</span>
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                v-if="selectedItem.deceasedAge.estimated == true"
+                  name="estima"
+                  :value="true"
+                  label="Yes"
+                  v-model="selectedItem.deceasedAge.estimated"
+                  :disabled="true"
+                />
+                 <cornie-radio
+                v-if="selectedItem.deceasedAge.estimated == false"
+                  name="estima"
+                  :value="true"
+                  label="No"
+                  v-model="selectedItem.deceasedAge.estimated"
+                  :disabled="true"
+                />
+              </div>
+            </div>
+
+
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Reason for History (Patient)" :opened="true">
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <cornie-input
+              label="Reason Code"
+              class="w-full"
+              v-model="selectedItem.reasonCode"
+              :disabled="true"
+            />
+            <cornie-input
+              label="Reason Reference"
+              class="w-full"
+              v-model="selectedItem.reasonReference"
+              :disabled="true"
+            />
+            <cornie-input
+              label="Note"
+              class="w-full"
+              v-model="selectedItem.note"
+              :disabled="true"
+            />
+          </div>
+        </accordion-component>
+      </div>
+       <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Condition (Related Person)" :opened="true">
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <cornie-input
+              label="Condition Code"
+              class="w-full"
+              v-model="selectedItem.conditionCode"
+              :disabled="true"
+            />
+            <cornie-input
+              label="Outcome"
+              class="w-full"
+              v-model="selectedItem.conditionOutcome"
+              :disabled="true"
+            />
+               <div class="mt-5">
+              <span class="text-sm font-semibold mb-3 text-black">Contributed to Death?</span>
+              <div class="flex space-x-4 mt-5">
+                <cornie-radio
+                v-if="selectedItem.conditionContributedToDeath == true"
+                  name="death"
+                  :value="true"
+                  label="Yes"
+                  v-model="selectedItem.conditionContributedToDeath"
+                  :disabled="true"
+                />
+                 <cornie-radio
+                v-if="selectedItem.conditionContributedToDeath == false"
+                  name="death"
+                  :value="true"
+                  label="No"
+                  v-model="selectedItem.conditionContributedToDeath"
+                  :disabled="true"
+                />
+              </div>
+            </div>
+          </div>
+        </accordion-component>
+      </div>
+      <div class="border-b-2 pb-5 border-dashed border-gray-200">
+        <accordion-component title="Onset" :opened="true">
+          <div class="mt-5">
+              <cornie-radio v-if="selectedItem.onset.year" name="year" label="Year" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.onset.range" name="range" label="Range" :disabled="true"/>
+              <cornie-radio v-if="selectedItem.onset.age" name="age" label="Age" :disabled="true"/>
+          </div>
+           <div class="grid grid-cols-2 gap-4 mt-4"  v-if="selectedItem.onset.age">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Age</span>
+                  <div class="flex  w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full px-0"
+                      :setfull="true"
+                      v-model="selectedItem.onset.age.value"
+                      :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.onset.age.unit }}</p></div>
+                  </div>
+              </div>
+          </div>
+           <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="selectedItem.onset.range">
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (min)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.onset.range.min"
+                      :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.onset.range.unit }}</p></div>
+                  </div>
+              </div>
+              <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-3">Range (max)</span>
+                  <div class="flex space-x-2 w-full">
+                      <cornie-input
+                      placeholder="0"
+                      class="grow w-full"
+                      :setfull="true"
+                      v-model="selectedItem.onset.range.max"
+                     :disabled="true"
+                      />
+                      <div class="bg-primary rounded-lg h-11 w-32 px-0 mt-1"><p class="text-white p-5 -mt-3">{{ selectedItem.onset.range.unit }}</p></div>
+                  </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-4" v-if="selectedItem.onset.year">
+              <cornie-input label="Year" v-model="selectedItem.onset.year"  :disabled="true"/>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-4">
+                <cornie-input
+                label="Note"
+                class="w-full"
+                v-model="selectedItem.onsetNote"
+                :placeholder="'Autoloaded'"
+                :disabled="true"
+              />
+            </div>
+           
+
+        </accordion-component>
       </div>
 
     </div>
@@ -193,25 +392,51 @@
       </cornie-btn>
     </template>
     <template #menuactions>
-      <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-        <new-view-icon class="text-blue-300 fill-current" />
-        <span class="ml-3 text-xs">View</span>
-      </div>
-      <div
-        @click="showHistory()"
-        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-      >
-        <edit-icon class="text-purple-700 fill-current" />
-        <span class="ml-3 text-xs">Edit</span>
-      </div>
-      <div
-        @click="showNewStatus"
-        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-      >
-        <update-icon class="text-danger fill-current" />
-        <span class="ml-3 text-xs"> Update Status </span>
-      </div>
+       <div
+            @click="viewHistory(selectedItem)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <new-view-icon class="text-blue-300 fill-current" />
+            <span class="ml-3 text-xs">View</span>
+          </div>
+          <div
+            @click="showHistory(selectedItem.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <edit-icon class="text-purple-700 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            @click="showStatus(selectedItem)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <update-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs"> Update Status </span>
+          </div>
     </template>
+    <history-modal
+      :id="historyId"
+      @history-added="historyAdded"
+      v-model="showHistoryModal"
+    />
+
+    <status-modal
+      :id="historyId"
+      :selectedItem="selectedItem"
+      @history-added="historyAdded"
+      v-model="showStatusModal"
+    />
+
+    <view-modal
+      :id="historyId"
+      :selectedItem="selectedItem"
+      :updatedBy="updatedBy"
+      :currentStatus="currentStatus"
+      :practitionerId="practitionerId"
+      @history-added="historyAdded"
+      @show:modal="viewHistory"
+      v-model="viewHistoryModal"
+    />
   </big-dialog>
 </template>
 <script lang="ts">
@@ -223,7 +448,7 @@ import { string } from "yup";
 import { IPatient } from "@/types/IPatient";
 
 import BigDialog from "@/components/bigdialog.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import HospitalIcon from "@/components/icons/hospital.vue";
@@ -234,8 +459,15 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import Avatar from "@/components/avatar.vue";
 import NoteIcon from "@/components/icons/note.vue";
 import InformationIcon from "@/components/icons/info.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import DateTimePicker from "@/components/date-time-picker.vue";
 
 import BornIcon from "./components/born.vue";
+import HistoryModal from "./historyDialog.vue";
+import StatusModal from "./status-update.vue";
+import ViewModal from "./viewHistory.vue";
+
 import Ihistory, {
   OnSet,
   Age,
@@ -287,6 +519,12 @@ const measurable = {
     Avatar,
     CornieSelect,
     CornieInput,
+    FhirInput,
+    CornieRadio,
+    DateTimePicker,
+    HistoryModal,
+    StatusModal,
+    ViewModal,
   },
 })
 export default class AddCondition extends Vue {
@@ -312,6 +550,9 @@ export default class AddCondition extends Vue {
   @patients.State
   patients!: IPatient[];
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
@@ -321,11 +562,17 @@ export default class AddCondition extends Vue {
   @userStore.Getter
   authPractitioner!: any;
 
+  @history.Action
+  fetchHistorys!: (patientId: string) => Promise<void>;
+
+
+
   required = string().required();
   @Watch("id")
   idChanged() {
     this.setHistory();
   }
+
 
   historymodel = {} as Ihistory;
 
@@ -383,6 +630,9 @@ export default class AddCondition extends Vue {
   ageUnit = "";
   deceased = false;
   estimatedDeceased = false;
+  historyId = "";
+  showStatusModal = false;
+  viewHistoryModal = false;
 
   onsettimeable = { ...timeable };
   onsetmesurable = { ...measurable };
@@ -401,13 +651,24 @@ export default class AddCondition extends Vue {
   get patientId() {
     return this.$route.params.patientId;
   }
-  // get PatientName() {
-  //      var id = this.$route.params.patientId;
-  //     const pt = this.patients.find((i: any) => i.id === id);
-  //     return {
-  //         ...pt
-  //     }
-  // }
+  async viewHistory(item: any) {
+    this.viewHistoryModal = true;
+     this.selectedItem = item;
+    this.historyId = item.id;
+  }
+  async showStatus(item: any) {
+    this.showStatusModal = true;
+    this.selectedItem = item;
+  }
+
+  async showHistory(value: string) {
+    this.showHistoryModal = true;
+    this.historyId = value;
+  }
+   async historyAdded() {
+    await this.fetchHistorys(this.onepatientId);
+  }
+
 
   get onset() {
     return {
@@ -480,6 +741,9 @@ export default class AddCondition extends Vue {
   async setNewHistoryModel() {
     this.historymodel = JSON.parse(JSON.stringify(this.payload));
   }
+   get onepatientId() {
+       return this.$route.params.id as string;
+    }
 
   async setHistory() {
     const history = await this.gethistoryById(this.id);
@@ -525,9 +789,7 @@ export default class AddCondition extends Vue {
   async setId() {
     this.newhistoryId = this.id;
   }
-  async showHistory() {
-    this.showHistoryModal = true;
-  }
+  
   get payload() {
     return {
       patientId: this.patientId,

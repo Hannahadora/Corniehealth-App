@@ -39,6 +39,7 @@ import DateTimePicker from "./components/datetime-picker.vue";
 import CornieTextArea from "@/components/textarea.vue";
 import UplaoderModal from "./uploader.vue";
 import RatingSection from "./rating.vue";
+
 const countries = getCountries();
 
 const dropdown = namespace("dropdown");
