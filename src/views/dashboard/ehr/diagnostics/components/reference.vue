@@ -34,15 +34,27 @@
               class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
               >status
             </label>
-            <div class="w-full flex space-x-4 flex-wrap">
+            <div class="w-full flex space-x-4">
               <cornie-radio
-                v-for="(option, i) in referenceOptions"
-                :key="i"
-                :label="option"
+                label="Condition"
                 class="text-xs"
-                name="reference"
+                name="role"
                 v-model="type"
-                :value="option"
+                value="condition"
+              />
+              <cornie-radio
+                label="Observation"
+                class="text-xs"
+                name="role"
+                v-model="type"
+                value="observation"
+              />
+              <cornie-radio
+                label="Media"
+                class="text-xs"
+                name="role"
+                v-model="type"
+                value="media"
               />
             </div>
           </div>
@@ -64,7 +76,7 @@
           </div>
           <div class="overflow-y-auto h-96">
             <div>
-              <div v-if="type === 'Condition'">
+              <div v-if="type === 'condition'">
                 <div v-for="(input, index) in conditions" :key="index">
                   <div
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
@@ -96,7 +108,7 @@
                   </div>
                 </div>
               </div>
-              <div v-if="type === 'Observation'">
+              <div v-if="type === 'observation'">
                 <div v-for="(input, index) in observations" :key="index">
                   <div
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
@@ -105,39 +117,9 @@
                     <div class="w-full">
                       <div class="w-full">
                         <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input?.basicInfo?.subject }}
+                          {{ input }}
                         </p>
-                        <p class="text-xs text-gray-300">
-                          {{ new Date(input.createdAt).toLocaleDateString() }},
-                          {{ new Date(input.createdAt).toLocaleTimeString() }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div v-if="type == 'Device'">
-              <div v-for="(input, index) in devices" :key="index">
-                <div
-                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                  @click="getValue(input)"
-                >
-                  <div class="flex space-x-10 w-full justify-between p-3">
-                    <div class="dflex space-x-4">
-                      <div class="w-10 h-10">
-                        <avatar
-                          class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
-                          :src="localSrc"
-                        />
-                      </div>
-                      <div class="w-full">
-                        <p class="text-xs text-dark font-semibold">
-                          {{ input.deviceName.name }}
-                        </p>
-                        <p class="text-xs text-gray-500 font-meduim">
-                          {{ input.deviceName.nameType }}
-                        </p>
+                        <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
                       </div>
                     </div>
                   </div>
@@ -192,14 +174,8 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
-import { namespace } from "vuex-class";
-
-import IAllergy from "@/types/IAllergy";
 import { ICondition } from "@/types/ICondition";
-import IPractitioner from "@/types/IPractitioner";
-const allergy = namespace("allergy");
-const condition = namespace("condition");
-const practitioner = namespace("practitioner");
+import { IObservation } from "@/types/IObservation";
 
 import { mapDisplay } from "@/plugins/definitions";
 
@@ -229,46 +205,19 @@ export default class ReferenceDialog extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
-  @Prop({ type: Array, default: [] })
-  referenceOptions!: any[];
-
-  @practitioner.State
-  practitioners!: IPractitioner[];
-
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @allergy.State
-  allergys!: any[];
-
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
-
-  @condition.Action
-  fetchPatientConditions!: (patientId: string) => Promise<void>;
-
-  @condition.State
-  conditions!: ICondition[];
-
   severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
 
   loading = false;
-
-  selectedRef = "";
-  type = "";
+  observations = <any>[];
+  conditions = <any>[];
+  selectedRef = {
+    itemReference: <any>{},
+    basis: "",
+  };
+  type = "condition";
   refBasis = "";
   query = "";
-  documentReference = <any>[];
-  imagingStudy = <any>[];
-  media = <any>[];
-  questionnaireResponse = <any>[];
-  observations = <any>[];
-  molecularSequence = <any>[];
-  carePlan = <any>[];
-  medReq = <any>[];
-  devices = <any>[];
-  localSrc = require("../../../../../assets/img/placeholder.png");
 
   get patientId() {
     return this.$route.params.id;
@@ -283,70 +232,46 @@ export default class ReferenceDialog extends Vue {
     );
   }
 
-  getValue(value: any) {
-    this.selectedRef = value;
+   async fetchConditions() {
+    const url = `/api/v1/condition/patient/${this.patientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.conditions = response.data;
+    }
   }
+
   async fetchObservations() {
-    try {
-      const { data } = await cornieClient().get(`/api/v1/observations/`);
-      this.observations = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching observations",
-        status: "error",
-      });
+    const url = `/api/v1/observations/patient/${this.patientId}`;
+    const response = await cornieClient().get(url);
+    if (response.success) {
+      this.observations = response.data;
     }
   }
-  async fetchCarePlan() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/care-plan/practitioner/`
+
+
+  getValue(value: any) {
+    if (this.type === "condition") {
+      this.selectedRef.itemReference.referenceType = this.type;
+      this.selectedRef.itemReference.referenceId = value.id;
+      this.selectedRef.itemReference.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
+      this.selectedRef.itemReference.practitionerSpecialty =
+        value.practitioner?.jobDesignation;
+      this.selectedRef.itemReference.description = this.codeMapper(value.code);
+      this.selectedRef.itemReference.details = this.severityMapper(
+        value.severity
       );
-      this.carePlan = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching care plans",
-        status: "error",
-      });
-    }
-  }
-  async fetchDevices() {
-    try {
-      const { data } = await cornieClient().get(`/api/v1/devices`);
-      this.devices = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching devices",
-        status: "error",
-      });
-    }
-  }
-  async fetchMedReq() {
-    try {
-      const { data } = await cornieClient().get(`/api/v1/medication-requests/`);
-      this.medReq = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching medication requests",
-        status: "error",
-      });
+      this.selectedRef.basis = value.code;
+    } else if (this.type === "observation") {
     }
   }
 
   apply() {
-    this.$emit("update", this.selectedRef);
+    this.$emit("update", this.selectedRef, this.type);
     this.show = false;
   }
 
   async created() {
     this.loadMappers();
-    // await this.fetchAllergys(this.$route?.params?.id as string);
-    // await this.fetchPatientConditions(this.activepatientId);
-    await this.fetchPractitioners();
-    await this.fetchObservations();
-    await this.fetchCarePlan();
-    await this.fetchMedReq();
-    await this.fetchDevices();
   }
 }
 </script>

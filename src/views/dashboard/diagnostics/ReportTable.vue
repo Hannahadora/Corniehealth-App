@@ -31,7 +31,9 @@
             <update-status-yellow class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
-          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="
+                  $router.push('/dashboard/provider/experience/add-appointment')
+                ">
             <plus-icon-black class="text-danger fill-current" />
             <span class="ml-3 text-xs">Add Appointment</span>
           </div>
@@ -106,25 +108,25 @@
       </cornie-table>
     </div>
     <div class="flex justify-between m-3">
-      <div class="flex justify-around">
+      <!-- <div class="flex justify-around">
         <p class="text-sm">show</p>
         <input
           type="number"
           class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
         />
         <p class="text-sm">per page</p>
-      </div>
+      </div>-->
       <div class="flex justify-around">
-        <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
+        <!-- <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
         <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
           <arrow-left-icon />
-        </div>
+        </div> -->
 
         <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-        <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
+        <!-- <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
         <div class="text-xs mt-1" style="fontsize: 5px">
           <arrow-right-icon />
-        </div>
+        </div> -->
         <!-- <delete-icon class="text-danger fill-current" /> -->
       </div>
     </div>

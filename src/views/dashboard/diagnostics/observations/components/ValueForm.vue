@@ -71,27 +71,29 @@
       <date-picker
         class="w-full"
         label="Start Date/Time"
-        :modelValue:date="date.startDate"
-        :modelValue:time="date.startTime"
+        v-model:date="date.startDate"
+        v-model:time="date.startTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="End Date/Time"
-        :modelValue:date="date.endDate"
-        :modelValue:time="date.endTime"
+        v-model:date="date.endDate"
+        v-model:time="date.endTime"
         v-if="valueType === 'period'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        :modelValue:date="date.dateTime"
+        v-model:date="date.date"
+        v-model:time="date.time"
         v-if="valueType === 'date-time'"
       />
       <date-picker
         class="w-full"
         label="Date/Time"
-        :modelValue:date="date.time"
+        v-model:date="date.timeDate"
+        v-model:time="date.timeTime"
         v-if="valueType === 'time'"
       />
     </div>
@@ -118,7 +120,7 @@
         <cornie-input
           label="Range(min)"
           placeholder="0"
-          :modelValue="range.min"
+          v-model="range.min"
           class="grow w-full"
           :setfull="true"
         />
@@ -127,7 +129,7 @@
           placeholder="Days"
           class="w-32 mt-3 flex-none"
           :setPrimary="true"
-          :modelValue="range.unit"
+          v-model="range.unit"
         />
       </div>
       <div class="flex space-x-2 w-full">
@@ -213,7 +215,10 @@ export default class ValueForm extends Vue {
 
   date = {
     dateTime: "",
+    timeDate: "",
+    timeTime: "",
     time: "",
+    date: "",
     startDate: "",
     startTime: "",
     endDate: "",
@@ -225,17 +230,19 @@ export default class ValueForm extends Vue {
     this.$emit("get-value", this.value);
   }
 
-  @Watch("range")
+  @Watch("range", { deep: true })
   onInput() {
-    this.value.range.min = this.range.min;
-    this.value.range.max = this.range.max;
-    this.value.range.unit = this.range.unit;
+    console.log("range", this.range);
+    this.value.range.min = this.range?.min;
+    this.value.range.max = this.range?.max;
+    this.value.range.unit = this.range?.unit;
   }
 
-  @Watch("date")
+  @Watch("date", { deep: true })
   onUpdate() {
-    this.value.dateTime = this.buildDateTime(this.date.dateTime, this.date.time);
-    this.value.time = this.date.time;
+    console.log("date", this.date);
+    this.value.dateTime = this.buildDateTime(this.date?.date, this.date.time);
+    this.value.time = this.buildDateTime(this.date.timeDate, this.date.timeTime);
     this.value.period = this.buildPeriod(
       this.date.startDate,
       this.date.startTime,
@@ -258,21 +265,29 @@ export default class ValueForm extends Vue {
     endDate: string,
     endTime: string
   ) {
-    try {
-      const start = this.buildDateTime(startDate, startTime);
-      const end = this.buildDateTime(endDate, endTime);
-      return { start, end };
-    } catch (error) {
-      return;
-    }
+    if (startDate && startTime || endDate && endTime) {
+      try {
+        const start = this.buildDateTime(startDate, startTime);
+        const end = this.buildDateTime(endDate, endTime);
+        return { start, end };
+      } catch (error) {
+        return;
+      }
+    } else return "";
   }
 
   buildDateTime(dateString: string, time: string) {
-    const date = new Date(dateString);
-    const [hour, minute] = time.split(":");
-    date.setMinutes(Number(minute));
-    date.setHours(Number(hour));
-    return date.toISOString();
+    if (dateString && time) {
+      const date = new Date(dateString);
+      const [hour, minute] = time.split(":");
+      date.setMinutes(Number(minute));
+      date.setHours(Number(hour));
+      return date.toISOString();
+    } else return "";
+  }
+
+  created() {
+    this.$emit("get-value", this.value);
   }
 }
 </script>

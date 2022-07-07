@@ -514,7 +514,7 @@ const emptyImpression: any = {
   updatedAt: "",
   basicInfo: <any>{
     code: "",
-    description: "",
+    description: undefined,
     // subject: "subject",
     // encounter: "c5903ec6-20ac-47ee-b652-a562e5df7379",
   },

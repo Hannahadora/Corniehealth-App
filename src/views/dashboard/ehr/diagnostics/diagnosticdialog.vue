@@ -304,7 +304,7 @@
                 </input-desc-rounded>
               </div>
               <cornie-select
-                v-if="PatientName.insurances.length === 0"
+                v-if="PatientName?.insurances?.length === 0"
                 class="required w-full"
                 :rules="required"
                 :items="['No Payment option for this patient']"

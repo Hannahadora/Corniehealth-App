@@ -204,13 +204,11 @@
               placeholder="Select"
             />
             <cornie-input
-              :rules="required"
               v-model="evidence.detail"
               label="Detail"
               placeholder="Enter"
             />
               <cornie-input
-               :rules="required"
                 v-model="evidence.note"
                 label="Note"
                 class="mb-5 w-full"
@@ -416,8 +414,8 @@ export default class AddCondition extends Vue {
   summary = "";
   evidence = {
     code: "",
-    detail: "",
-    note: ""
+    detail: undefined,
+    note: undefined
   };
   asserterId = "";
 
@@ -449,7 +447,7 @@ export default class AddCondition extends Vue {
     this.evidenceNote = condition.evidenceNote;
     //this.onset.range = condition.onSet.range;
      this.abatement = condition.abatement[0];
-    this.evidence = condition.evidence;
+    (this.evidence as any) = condition.evidence;
     this.code = condition.code;
     this.recordDate = condition.recordDate;
     this.recorderId = condition.recorderId;

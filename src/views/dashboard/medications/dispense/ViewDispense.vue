@@ -113,7 +113,7 @@
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Requester ID</span>
-              <span class="text-right">{{ request?.requester.id }}</span>
+              <span class="text-right">{{ request?.requester?.id }}</span>
             </div>
             <div class="flex items-center justify-between mb-4">
               <span class="text-sm mr-2 c-66749">Practitioner ID</span>
@@ -304,7 +304,7 @@
         >
           Cancel
         </div>
-        <div class="flex items-center mb-6">
+        <div class="flex items-center mb-6" v-if="request?.status !== 'dispensed'">
           <!-- <div class="relative">
            <cornie-btn
               @click="openPostOptions = true"
@@ -391,8 +391,8 @@
           <div class="mt-4">
             Document Type: Medication Prescription|Rx ID:
             {{ request?.identifier }} | Requester:
-            {{ request?.requester.firstName }}
-            {{ request?.requester.lastName }} | DateTime Created:
+            {{ request?.requester?.firstName }}
+            {{ request?.requester?.lastName }} | DateTime Created:
             {{ convertDate(request?.createdAt) }}
           </div>
         </div>
@@ -529,7 +529,7 @@ export default class ViewRequest extends Vue {
   medicationRequest!: any[];
 
   @dispense.Action
-  fetchMedReq!: () => Promise<void>;
+  fetchMedReq!: (locationId: string) => Promise<void>;
 
   @dispense.State
   dispense!: IDispenseInfo;
@@ -585,16 +585,22 @@ export default class ViewRequest extends Vue {
   ];
 
   get items() {
-    const requests = this.request?.medications?.map((request: any) => {
-      const refillses = this.request?.medications?.map(
-        (medication: any) => medication.refills
-      );
+    // const requests = this.request?.medications?.map((request: any) => {
+    //   const refillses = this.request?.medications?.map(
+    //     (medication: any) => medication.refills
+    //   );
+    //   return {
+    //     ...request,
+    //     action: request.brandCode,
+    //     refils: refillses[0],
+    //   };
+    // });
+
+    const requests = this.request.refills.map((el: any) => {
       return {
-        ...request,
-        action: request.brandCode,
-        refils: refillses[0],
-      };
-    });
+        ...el
+      }
+  })
 
     return requests;
     // if (!this.query) return shifts;
@@ -690,9 +696,9 @@ export default class ViewRequest extends Vue {
   }
 
   async created() {
-    await this.fetchMedReq();
+    await this.fetchMedReq(this.locationId);
 
-    if (this.medicationRequest.length < 1) this.fetchMedReq();
+    if (this.medicationRequest.length < 1) this.fetchMedReq(this.locationId);
   }
 }
 </script>

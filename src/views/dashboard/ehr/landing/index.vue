@@ -162,7 +162,7 @@
 
     <modal :visible="showSearchModal">
       <template #title>
-        <div class="w-full">
+        <div class="w-full h-full">
           <div class="container p-6 content-con">
             <p class="text-primary text-2xl font-semibold pb-3">
               Welcome Back, Dr. Obi
