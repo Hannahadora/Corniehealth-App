@@ -115,7 +115,7 @@
                 type="number"
                 placeholder="Enter"
                 :modelValue="item.quantity"
-                @input="(quantity) => changeQuantity(item.id, quantity)"
+                @input="(evt) => changeQuantity(item.id, Number(evt.data || 1))"
               />
             </template>
             <template #lineTotal="{ item }">
