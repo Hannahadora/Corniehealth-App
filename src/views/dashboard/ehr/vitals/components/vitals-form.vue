@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/3 h-full">
+  <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col bg-white"
@@ -196,8 +196,8 @@
                   :setfull="true"
                 />
                 <cornie-select
-                  :items="['kg/m³']"
-                  placeholder="kg/m³"
+                  :items="['kg/m²']"
+                  placeholder="kg/m²"
                   class="w-20 mt-3 flex-none"
                   :setPrimary="true"
                   v-model="vitalData.bodyWeight.bodyMassIndex.unit"
@@ -534,7 +534,7 @@ export default class VitalsForm extends Vue {
         value: undefined,
       },
       bodyMassIndex: {
-        unit: "kg/m³",
+        unit: "kg/m²",
         value: undefined,
       },
     },
@@ -642,7 +642,7 @@ export default class VitalsForm extends Vue {
           // value: 0,
         },
         bodyMassIndex: {
-          unit: "kg/m³",
+          unit: "kg/m²",
           // value: 0,
         },
       },
