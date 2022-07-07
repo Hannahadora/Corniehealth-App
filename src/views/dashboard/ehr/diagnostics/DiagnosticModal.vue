@@ -81,7 +81,7 @@
                   <cornie-select
                     class="required"
                     :rules="required"
-                    :items="['Pethology', 'Imaging']"
+                    :items="['Pathology', 'Imaging']"
                     label="category"
                     v-model="category"
                     placeholder="--Select--"
