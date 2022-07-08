@@ -409,7 +409,7 @@ export default class VitalsForm extends Vue {
     date: "",
     time: "",
   };
-  vitalData = {
+  vitalData: any = {
     status: "preliminary",
     bodyTemperature: {
       unit: undefined,
@@ -585,9 +585,7 @@ export default class VitalsForm extends Vue {
       bodyWeight.bodyWeight = this.vitalData.bodyWeight.bodyWeight;
     }
     if (this.bmi) {
-      bodyWeight.bodyMassIndex.value = this.bmi;
-      bodyWeight.bodyMassIndex.unit =
-        this.vitalData.bodyWeight.bodyMassIndex.unit;
+      bodyWeight.bodyMassIndex = this.vitalData.bodyWeight.bodyMassIndex;
     }
 
     data.circumferences = Object.keys(circumferences).length > 0 ? circumferences : undefined 
@@ -595,7 +593,7 @@ export default class VitalsForm extends Vue {
     data.bodyWeight = Object.keys(bodyWeight).length > 0 ? bodyWeight : undefined 
     data.patientId = this.patientId;
     data.practitionerId = this.practitionerId;
-    data.bloodPressure = this.collectedPressures.length
+    data.bloodPressure = this.collectedPressures.length > 0
       ? this.collectedPressures
       : [];
 
@@ -610,6 +608,7 @@ export default class VitalsForm extends Vue {
   }
 
   async createVitals() {
+    this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi;
     console.log('payload', this.payload)
     try {
       this.loading = true;
