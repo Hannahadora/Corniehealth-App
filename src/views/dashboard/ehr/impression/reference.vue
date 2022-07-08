@@ -219,7 +219,7 @@ export default class ReferenceDialog extends Vue {
   loading = false;
 
   selectedRef = {
-    itemReference: <any>{},
+    itemType: <any>{},
     basis: ""
   };
   type = "condition";
@@ -242,13 +242,13 @@ export default class ReferenceDialog extends Vue {
 
   getValue(value: any) {
     if (this.type === "condition") {
-      this.selectedRef.itemReference.referenceType = this.type;
-      this.selectedRef.itemReference.referenceId = value.id;
-      this.selectedRef.itemReference.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
-      this.selectedRef.itemReference.practitionerSpecialty =
+      this.selectedRef.itemType.referenceType = this.type;
+      this.selectedRef.itemType.referenceId = value.id;
+      this.selectedRef.itemType.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
+      this.selectedRef.itemType.practitionerSpecialty =
         value.practitioner?.jobDesignation;
-      this.selectedRef.itemReference.description = this.codeMapper(value.code);
-      this.selectedRef.itemReference.details = this.severityMapper(value.severity);
+      this.selectedRef.itemType.description = this.codeMapper(value.code);
+      this.selectedRef.itemType.details = this.severityMapper(value.severity);
       this.selectedRef.basis = value.code
     } else if (this.type === "observation") {
     }

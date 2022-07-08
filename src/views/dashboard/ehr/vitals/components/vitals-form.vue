@@ -1,334 +1,313 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-1/2 h-full">
-    <cornie-card
-      height="100%"
-      class="flex flex-col bg-white"
-    >
-      <cornie-card-title class="">
-        <icon-btn @click="show = false">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{ newaction }} Vitals
-          </h2>
-          <cancel-red-bg
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+  <clinical-dialog v-model="show" :title="newaction + ' ' + 'Vitals'" class="">
+    <v-form class="flex-grow flex flex-col" @submit="save">
+      <accordion-component
+        class="text-primary"
+        title="Body Temperature"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Temperature"
+              placeholder="0"
+              v-model="vitalData.bodyTemperature.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="temperatureUnits"
+              placeholder="°C"
+              class="w-24 mt-3 flex-none"
+              :setPrimary="true"
+              v-model="vitalData.bodyTemperature.unit"
+            />
+          </div>
         </div>
-      </cornie-card-title>
-      <cornie-card-text class="overflow-y-auto h-full">
-        <v-form class="flex-grow flex flex-col" @submit="save">
-          <accordion-component
-            class="text-primary"
-            title="Body Temperature"
-            :opened="true"
-          >
-            <div class="w-full grid grid-cols-2 gap-6 my-5">
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Body Temperature"
-                  placeholder="0"
-                  v-model="vitalData.bodyTemperature.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="temperatureUnits"
-                  placeholder="°C"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.bodyTemperature.unit"
-                />
-              </div>
+      </accordion-component>
+
+      <accordion-component
+        class="text-primary"
+        title="RR, HR, OS, BGL"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Respiratory Rate"
+              placeholder="0"
+              v-model="vitalData.respiration.respiratoryRate.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-24">
+              <cornie-input
+                placeholder="/min"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="vitalData.respiration.respiratoryRate.unit"
+              />
             </div>
-          </accordion-component>
+          </div>
 
-          <accordion-component
-            class="text-primary"
-            title="RR, HR, OS, BGL"
-            :opened="true"
-          >
-            <div class="w-full grid grid-cols-2 gap-6 my-5">
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Respiratory Rate"
-                  placeholder="0"
-                  v-model="vitalData.respiration.respiratoryRate.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['/min']"
-                  placeholder="/min"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.respiration.respiratoryRate.unit"
-                />
-              </div>
-
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Heart Rate"
-                  placeholder="0"
-                  v-model="vitalData.respiration.heartRate.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['/min']"
-                  placeholder="/min"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.respiration.heartRate.unit"
-                />
-              </div>
-
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Oxygen Saturation"
-                  placeholder="0"
-                  v-model="vitalData.respiration.oxygenSaturation.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['%']"
-                  placeholder="%"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.respiration.oxygenSaturation.unit"
-                />
-              </div>
-
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Blood Glucose Level"
-                  placeholder="0"
-                  v-model="vitalData.respiration.bloodGlucoseLevel.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['mm/dL', 'mmol/L']"
-                  placeholder="mm/dL"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.respiration.bloodGlucoseLevel.unit"
-                />
-              </div>
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Heart Rate"
+              placeholder="0"
+              v-model="vitalData.respiration.heartRate.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-24">
+              <cornie-input
+                placeholder="/min"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="vitalData.respiration.heartRate.unit"
+              />
             </div>
-          </accordion-component>
+          </div>
 
-          <accordion-component
-            class="text-primary"
-            title="Height & Head Circumference"
-            :opened="true"
-          >
-            <div class="w-full grid grid-cols-2 gap-6 my-5">
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Body Height"
-                  placeholder="0"
-                  v-model="vitalData.circumferences.bodyHeight.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['cm', 'in', 'ft']"
-                  placeholder="cm"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.circumferences.bodyHeight.unit"
-                />
-              </div>
-
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Head Circumference"
-                  placeholder="0"
-                  v-model="vitalData.circumferences.headCircumferences.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['cm', 'in', 'ft']"
-                  placeholder="cm"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.circumferences.headCircumferences.unit"
-                />
-              </div>
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Oxygen Saturation"
+              placeholder="0"
+              v-model="vitalData.respiration.oxygenSaturation.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-24">
+              <cornie-input
+                placeholder="%"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="vitalData.respiration.oxygenSaturation.unit"
+              />
             </div>
-          </accordion-component>
+          </div>
 
-          <accordion-component
-            class="text-lg"
-            title="Body Weight"
-            :opened="true"
-          >
-            <div class="w-full grid grid-cols-2 gap-6 my-5">
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Body Weight"
-                  placeholder="0"
-                  v-model="vitalData.bodyWeight.bodyWeight.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['Kg', 'Ib']"
-                  placeholder="kg"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.bodyWeight.bodyWeight.unit"
-                />
-              </div>
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Blood Glucose Level"
+              placeholder="0"
+              v-model="vitalData.respiration.bloodGlucoseLevel.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['mm/dL', 'mmol/L']"
+              placeholder="mm/dL"
+              class="w-24 mt-3 flex-none"
+              :setPrimary="true"
+              v-model="vitalData.respiration.bloodGlucoseLevel.unit"
+            />
+          </div>
+        </div>
+      </accordion-component>
 
-              <div class="flex space-x-2 w-full">
-                <cornie-input
-                  label="Body Mass Index (BMI)"
-                  placeholder="0"
-                  :disabled="true"
-                  v-model="bmi"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['kg/m²']"
-                  placeholder="kg/m²"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="vitalData.bodyWeight.bodyMassIndex.unit"
-                />
-              </div>
+      <accordion-component
+        class="text-primary"
+        title="Height & Head Circumference"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Height"
+              placeholder="0"
+              v-model="vitalData.circumferences.bodyHeight.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['cm', 'in', 'ft']"
+              placeholder="cm"
+              class="w-24 mt-3 flex-none"
+              :setPrimary="true"
+              v-model="vitalData.circumferences.bodyHeight.unit"
+            />
+          </div>
+
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Head Circumference"
+              placeholder="0"
+              v-model="vitalData.circumferences.headCircumferences.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <cornie-select
+              :items="['cm', 'in', 'ft']"
+              placeholder="cm"
+              class="w-24 mt-3 flex-none"
+              :setPrimary="true"
+              v-model="vitalData.circumferences.headCircumferences.unit"
+            />
+          </div>
+        </div>
+      </accordion-component>
+
+      <accordion-component class="text-lg" title="Body Weight" :opened="true">
+        <div class="w-full grid grid-cols-2 gap-6 my-5">
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Weight"
+              placeholder="0"
+              v-model="vitalData.bodyWeight.bodyWeight.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-24">
+              <cornie-input
+                placeholder="kg"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="vitalData.bodyWeight.bodyWeight.unit"
+              />
             </div>
-          </accordion-component>
+          </div>
 
-          <accordion-component
-            class="text-primary"
-            title="Blood Pressure"
-            :opened="true"
-          >
-            <div class="w-full grid grid-cols-5 gap-6 my-5">
-              <div class="">
-                <cornie-select
-                  :items="['Standing Left', 'Standing Right']"
-                  class="w-full mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="newBp.position"
-                />
-              </div>
-              <div class="flex space-x-2 w-full col-span-2">
-                <cornie-input
-                  label="Systolic Blood Pressure"
-                  placeholder="0"
-                  v-model="newBp.systolicBloodPressure.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['mmHg']"
-                  placeholder="mmHg"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="newBp.systolicBloodPressure.unit"
-                />
-              </div>
-
-              <div class="flex space-x-2 w-full col-span-2">
-                <cornie-input
-                  label="Diastolic Blood Pressure"
-                  placeholder="0"
-                  v-model="newBp.diastolicBloodPressure.value"
-                  class="grow w-full"
-                  :setfull="true"
-                />
-                <cornie-select
-                  :items="['mmHg']"
-                  placeholder="mmHg"
-                  class="w-20 mt-3 flex-none"
-                  :setPrimary="true"
-                  v-model="newBp.diastolicBloodPressure.unit"
-                />
-              </div>
+          <div class="flex space-x-2 w-full">
+            <cornie-input
+              label="Body Mass Index (BMI)"
+              placeholder="0"
+              :disabled="true"
+              v-model="bmi"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-24">
+              <cornie-input
+                placeholder="kg/m²"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="vitalData.bodyWeight.bodyMassIndex.unit"
+              />
             </div>
+          </div>
+        </div>
+      </accordion-component>
 
-            <div class="w-full mb-4">
-              <div class="w-full flex justify-end">
-                <corniebtn
-                  @click="addBloodPressure"
-                  class="p-2 rounded-full px-8 mx-4 cursor-pointer"
-                  style="border: 1px solid #080056"
-                >
-                  <span
-                    class="font-semibold text-primary-500 flex items-center"
+      <accordion-component
+        class="text-primary"
+        title="Blood Pressure"
+        :opened="true"
+      >
+        <div class="w-full grid grid-cols-5 gap-4 my-5">
+          <div class="">
+            <cornie-select
+              :items="['Standing Left', 'Standing Right']"
+              class="w-full mt-3 flex-none"
+              placeholder="--Select--"
+              :setPrimary="true"
+              v-model="newBp.position"
+            />
+          </div>
+          <div class="flex space-x-2 w-full col-span-2">
+            <cornie-input
+              label="Systolic Blood Pressure"
+              placeholder="0"
+              v-model="newBp.systolicBloodPressure.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-32">
+              <cornie-input
+                placeholder="mmHg"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="newBp.systolicBloodPressure.unit"
+              />
+            </div>
+          </div>
+
+          <div class="flex space-x-2 w-full col-span-2">
+            <cornie-input
+              label="Diastolic Blood Pressure"
+              placeholder="0"
+              v-model="newBp.diastolicBloodPressure.value"
+              class="grow w-full"
+              :setfull="true"
+            />
+            <div class="w-32">
+              <cornie-input
+                placeholder="mmHg"
+                class="w-full mt-5 flex-none"
+                disabled
+                v-model="newBp.diastolicBloodPressure.unit"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full mb-4">
+          <div class="w-full flex justify-end">
+            <corniebtn
+              @click="addBloodPressure"
+              class="p-2 rounded-full px-8 mx-4 cursor-pointer"
+              style="border: 1px solid #080056"
+            >
+              <span class="font-semibold text-primary-500 flex items-center">
+                <span class="mx-2"><check-icon /></span>
+                <span class="mr-2">Add</span>
+              </span>
+            </corniebtn>
+          </div>
+        </div>
+
+        <div class="w-full flex items-center py-5">
+          <div
+            class="w-4/12"
+            v-for="(record, index) in collectedPressures"
+            :key="index"
+          >
+            <div class="w-11/12" style="border-right: 1px dashed #878e99">
+              <div class="w-full flex items-center">
+                <div class="w-8/12 flex flex-col">
+                  <span class="font-semibold">{{ record.position }}</span>
+                  <span class="text-gray-400"
+                    >{{ record?.systolicBloodPressure?.value }}
+                    {{ record?.systolicBloodPressure?.unit }}/{{
+                      record?.diastolicBloodPressure?.value
+                    }}
+                    {{ record?.diastolicBloodPressure?.unit }}</span
                   >
-                    <span class="mx-2"><check-icon /></span>
-                    <span class="mr-2">Add</span>
+                  <span class="text-gray-400">
+                    <span class="mr-4">{{ record.date }}</span>
+                    <span>{{ record.time }}</span>
                   </span>
-                </corniebtn>
-              </div>
-            </div>
-
-            <div class="w-full flex items-center py-5">
-              <div
-                class="w-4/12"
-                v-for="(record, index) in collectedPressures"
-                :key="index"
-              >
-                <div class="w-11/12" style="border-right: 1px dashed #878e99">
-                  <div class="w-full flex items-center">
-                    <div class="w-8/12 flex flex-col">
-                      <span class="font-semibold">{{ record.position }}</span>
-                      <span class="text-gray-400"
-                        >{{ record?.systolicBloodPressure?.value }}
-                        {{ record?.systolicBloodPressure?.unit }}/{{
-                          record?.diastolicBloodPressure?.value
-                        }}
-                        {{ record?.diastolicBloodPressure?.unit }}</span
-                      >
-                      <span class="text-gray-400">
-                        <span class="mr-4">{{ record.date }}</span>
-                        <span>{{ record.time }}</span>
-                      </span>
-                    </div>
-                    <div class="w-4/12 flex items-center justify-center">
-                      <span class="mx-2 cursor-pointer"><edit-icon /></span>
-                      <span class="mx-2 cursor-pointer"
-                        ><delete-icon @click="removePresure(index)"
-                      /></span>
-                    </div>
-                  </div>
+                </div>
+                <div class="w-4/12 flex items-center justify-center">
+                  <span class="mx-2 cursor-pointer"><edit-icon /></span>
+                  <span class="mx-2 cursor-pointer"
+                    ><delete-icon @click="removePresure(index)"
+                  /></span>
                 </div>
               </div>
             </div>
-          </accordion-component>
-        </v-form>
-      </cornie-card-text>
-
-      <div class="flex items-center justify-between mt-24">
-        <div class="text-red-500 py-1 px-2 text-sm">Save as draft</div>
-        <div class="flex items-center mb-6">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
-          >
-            Cancel
-          </cornie-btn>
-          <cornie-btn
-            @click="save"
-            :loading="loading"
-            type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
-          >
-            Save
-          </cornie-btn>
+          </div>
         </div>
+      </accordion-component>
+    </v-form>
+
+    <template #optionactions>
+      <div class="flex items-center justify-end">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          :loading="loading"
+          @click="save"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
+          Save
+        </cornie-btn>
       </div>
-    </cornie-card>
-  </cornie-dialog>
+    </template>
+  </clinical-dialog>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -344,11 +323,6 @@ import EditIcon from "@/components/icons/edit.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import DatePicker from "@/components/datepicker.vue";
-import ShareIcon from "./share.vue";
-import SaveIcon from "@/components/icons/save.vue";
-import PrintIcon from "./print.vue";
-import Share from "@/components/icons/share.vue";
-import Print from "@/components/icons/print.vue";
 import BasicInfo from "./basic-info.vue";
 import CheckIcon from "@/components/icons/add.vue";
 import { namespace } from "vuex-class";
@@ -358,11 +332,8 @@ import IEncounter from "@/types/IEncounter";
 import { Item } from "@/types/IUpdateModel";
 import UnitsSelect from "./units-select.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieCard from "@/components/cornie-card";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import { cornieClient } from "@/plugins/http";
+import ClinicalDialog from "../../conditions/clinical-dialog.vue";
 
 const vitalsStore = namespace("vitals");
 const userStore = namespace("user");
@@ -385,21 +356,13 @@ interface Pressures {
     CornieBtn,
     CornieInput,
     DatePicker,
-    SaveIcon,
-    ShareIcon,
-    PrintIcon,
     UnitsSelect,
-    Share,
-    Print,
     BasicInfo,
     InputDescRounded,
     SelectWithDesc,
     CheckIcon,
     AccordionComponent,
-    CornieDialog,
-    ...CornieCard,
-    ArrowLeft,
-    CancelRedBg,
+    ClinicalDialog,
   },
 })
 export default class VitalsForm extends Vue {
@@ -429,19 +392,9 @@ export default class VitalsForm extends Vue {
     this.setVitals();
   }
 
-  collectedPressures: IBloodPressure[] = [];
+  loading = false;
 
-  bloodPressure: IBloodPressure = {
-    position: "",
-    systolicBloodPressure: {
-      unit: "",
-      value: 0,
-    },
-    diastolicBloodPressure: {
-      unit: "",
-      value: 0,
-    },
-  };
+  collectedPressures: IBloodPressure[] = [];
 
   newBp: any = {
     position: "",
@@ -456,74 +409,38 @@ export default class VitalsForm extends Vue {
     date: "",
     time: "",
   };
-
-  systolic = "";
-  diastolic = "";
-  loading = false;
-  examComment = "";
-
-  data: any = {
-    identifier: "string",
-    status: "string",
-    type: "string",
-    class: "string",
-    priority: "string",
-    serviceType: "string",
-    appointmentId: "554c4e03-6bd3-4757-920b-a5e8eb756411",
-    organizationId: "0eb0c710-665a-449c-ab27-42014d25c676",
-    patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
-    startTime: "10:00",
-    endTime: "12:00",
-    preAdmissionIdentifier: "string",
-    origin: "string",
-    admitSource: "string",
-    readmission: "string",
-    dietPreference: "string",
-    locationId: "9b45779c-91f3-4f73-8de8-83265412789d",
-    specialCourtesy: "string",
-    practitionerId: "d4249dec-f3ab-444f-867d-5710e3c6891a",
-    episode: {
-      name: "Test Episode",
-      start: new Date().toISOString(),
-      end: new Date().toISOString(),
-      patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
-    },
-  };
-
-  vitalData = {
+  vitalData: any = {
     status: "preliminary",
     bodyTemperature: {
-      unit: "°C",
+      unit: undefined,
       value: undefined,
     },
     respiration: {
       respiratoryRate: {
-        unit: "/min",
         value: undefined,
+        unit: "/min",
       },
       heartRate: {
-        unit: "/min",
         value: undefined,
+        unit: "/min",
       },
       oxygenSaturation: {
-        unit: "%",
         value: undefined,
+        unit: "%",
       },
       bloodGlucoseLevel: {
-        unit: "mm/dL",
+        unit: undefined,
         value: undefined,
       },
     },
     bloodPressure: [] as IBloodPressure[],
     circumferences: {
       bodyHeight: {
-        unit: "cm",
+        unit: undefined,
         value: undefined,
       },
       headCircumferences: {
-        unit: "cm",
+        unit: undefined,
         value: undefined,
       },
     },
@@ -538,12 +455,6 @@ export default class VitalsForm extends Vue {
         value: undefined,
       },
     },
-    date: new Date().toISOString(),
-    type: "Type",
-    encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
-    patientId: this.$route?.params?.id,
-    // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
-    practitionerId: this.practitionerId,
   };
 
   temperatureUnits = [
@@ -555,106 +466,37 @@ export default class VitalsForm extends Vue {
     return this.authPractitioner?.id;
   }
 
-  get bmi () {
-    const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value
-    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
-    if(heightValue && weightValue) {
-       return (weightValue / Number(this.squaredHeight)).toFixed(2) || 0
-    } else return 0.00
+  get bmi() {
+    const weightValue = this.vitalData?.bodyWeight?.bodyWeight?.value;
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value;
+    if (heightValue && weightValue) {
+      return (weightValue / Number(this.squaredHeight)).toFixed(2) || 0;
+    } else return 0.0;
   }
 
   get squaredHeight() {
-    return  Number(this.convertHeightValue()) * Number(this.convertHeightValue())
+    return (
+      Number(this.convertHeightValue()) * Number(this.convertHeightValue())
+    );
   }
 
   convertHeightValue() {
-    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value
-    const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit
-   if(heightValue) {
-      if(heightUnit === 'cm') {
-      return Number(heightValue / 100);
-    } else if(heightUnit === 'in') {
-      return Number(heightValue / 39.37)
-    } else if(heightUnit === 'ft') {
-      return Number(heightValue / 3.281)
-    } else return Number(heightValue)
-   }
+    const heightValue = this.vitalData?.circumferences?.bodyHeight?.value;
+    const heightUnit = this.vitalData?.circumferences?.bodyHeight?.unit;
+    if (heightValue) {
+      if (heightUnit === "cm") {
+        return Number(heightValue / 100);
+      } else if (heightUnit === "in") {
+        return Number(heightValue / 39.37);
+      } else if (heightUnit === "ft") {
+        return Number(heightValue / 3.281);
+      } else return Number(heightValue);
+    }
   }
 
   removePresure(index: number) {
     this.collectedPressures.splice(index, 1);
     this.vitalData.bloodPressure.splice(index + 1, 2);
-  }
-
-  resetBloodPressure() {
-    this.bloodPressure = {
-      position: "",
-      systolicBloodPressure: {
-        unit: "",
-        value: 0,
-      },
-      diastolicBloodPressure: {
-        unit: "",
-        value: 0,
-      },
-    };
-  }
-
-  resetVitalData() {
-    this.vitalData = {
-      bodyTemperature: {
-        unit: "°C",
-        // value: 0,
-      },
-      respiration: {
-        respiratoryRate: {
-          unit: "/min",
-          // value: 0,
-        },
-        heartRate: {
-          unit: "/min",
-          // value: 0,
-        },
-        oxygenSaturation: {
-          unit: "%",
-          // value: 0,
-        },
-        bloodGlucoseLevel: {
-          unit: "mm/dL",
-          // value: 0,
-        },
-      },
-      bloodPressure: [] as IBloodPressure[],
-      circumferences: {
-        bodyHeight: {
-          unit: "cm",
-          // value: 0,
-        },
-        headCircumferences: {
-          unit: "cm",
-          // value: 0,
-        },
-      },
-
-      bodyWeight: {
-        bodyWeight: {
-          unit: "kg",
-          // value: 0,
-        },
-        bodyMassIndex: {
-          unit: "kg/m²",
-          // value: 0,
-        },
-      },
-
-      date: new Date().toISOString(),
-      type: "Type",
-      status: "preliminary",
-      encounterId: "c5903ec6-20ac-47ee-b652-a562e5df7379",
-      patientId: this.$route?.params?.id,
-      // patientId: "a2ba4fa9-7829-4eb8-b8ef-e6d9226d6757",
-      practitionerId: this.practitionerId,
-    } as any;
   }
 
   get newaction() {
@@ -687,6 +529,77 @@ export default class VitalsForm extends Vue {
     return id;
   }
 
+  get payload() {
+    const data: any = {};
+    const respiration: any = {};
+    const circumferences: any = {};
+    const bodyWeight: any = {};
+    if (
+      this.vitalData.bodyTemperature.unit &&
+      this.vitalData.bodyTemperature.value
+    )
+      data.bodyTemperature = this.vitalData.bodyTemperature;
+    if (
+      this.vitalData.respiration.respiratoryRate.value &&
+      this.vitalData.respiration.respiratoryRate.unit
+    ) {
+      respiration.respiratoryRate = this.vitalData.respiration.respiratoryRate;
+    }
+    if (
+      this.vitalData.respiration.heartRate.value &&
+      this.vitalData.respiration.heartRate.unit
+    ) {
+      respiration.heartRate = this.vitalData.respiration.heartRate;
+    }
+    if (
+      this.vitalData.respiration.oxygenSaturation.value &&
+      this.vitalData.respiration.oxygenSaturation.unit
+    ) {
+      respiration.oxygenSaturation =
+        this.vitalData.respiration.oxygenSaturation;
+    }
+    if (
+      this.vitalData.respiration.bloodGlucoseLevel.value &&
+      this.vitalData.respiration.bloodGlucoseLevel.unit
+    ) {
+      respiration.bloodGlucoseLevel =
+        this.vitalData.respiration.bloodGlucoseLevel;
+    }
+    if (
+      this.vitalData.circumferences.bodyHeight.value &&
+      this.vitalData.circumferences.bodyHeight.unit
+    ) {
+      circumferences.bodyHeight = this.vitalData.circumferences.bodyHeight;
+    }
+    if (
+      this.vitalData.circumferences.headCircumferences.value &&
+      this.vitalData.circumferences.headCircumferences.unit
+    ) {
+      circumferences.headCircumferences =
+        this.vitalData.circumferences.headCircumferences;
+    }
+    if (
+      this.vitalData.bodyWeight.bodyWeight.value &&
+      this.vitalData.bodyWeight.bodyWeight.unit
+    ) {
+      bodyWeight.bodyWeight = this.vitalData.bodyWeight.bodyWeight;
+    }
+    if (this.bmi) {
+      bodyWeight.bodyMassIndex = this.vitalData.bodyWeight.bodyMassIndex;
+    }
+
+    data.circumferences = Object.keys(circumferences).length > 0 ? circumferences : undefined 
+    data.respiration = Object.keys(respiration).length > 0 ? respiration : undefined 
+    data.bodyWeight = Object.keys(bodyWeight).length > 0 ? bodyWeight : undefined 
+    data.patientId = this.patientId;
+    data.practitionerId = this.practitionerId;
+    data.bloodPressure = this.collectedPressures.length > 0
+      ? this.collectedPressures
+      : [];
+
+    return data;
+  }
+
   async save() {
     this.loading = true;
     if (this.id) await this.updateVitals();
@@ -695,20 +608,15 @@ export default class VitalsForm extends Vue {
   }
 
   async createVitals() {
-    //   await this.createEncounter(this.data);
+    this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi;
+    console.log('payload', this.payload)
     try {
       this.loading = true;
-      this.vitalData.practitionerId = this.practitionerId;
-      this.vitalData.patientId = this.patientId;
-      this.vitalData.bloodPressure = this.collectedPressures;
-     ( this.vitalData.bodyWeight.bodyMassIndex.value as any) = this.bmi as number;
-
-      const res: any = await this.createVital(this.vitalData as any);
+      const res: any = await this.createVital(this.payload as any);
       if (res.success) {
         this.getVitals(this.patientId);
         this.loading = false;
-         this.done();
-        this.resetVitalData();
+        this.done();
       }
     } catch (error) {
       this.loading = false;
@@ -719,34 +627,28 @@ export default class VitalsForm extends Vue {
     if (this.id !== "") {
       const xVital = this.vital;
       if (xVital) {
-        (this.vitalData.bodyTemperature as any) = xVital?.bodyTemperature,
-          (this.vitalData.respiration as any) = xVital?.respiration,
-          (this.vitalData.circumferences as any) = xVital?.circumferences,
-          (this.vitalData.bodyWeight as any) = xVital?.bodyWeight,
+        ((this.vitalData.bodyTemperature as any) = xVital?.bodyTemperature),
+          ((this.vitalData.respiration as any) = xVital?.respiration),
+          ((this.vitalData.circumferences as any) = xVital?.circumferences),
+          ((this.vitalData.bodyWeight as any) = xVital?.bodyWeight),
           (this.vitalData.bloodPressure = xVital?.bloodPressure),
           (this.collectedPressures = xVital?.bloodPressure);
       }
     } else {
-      this.resetVitalData();
+      this.collectedPressures = [];
     }
   }
 
   done() {
     this.show = false;
     this.$emit("vitals-added");
-    this.resetVitalData();
+    this.collectedPressures = [];
   }
 
   async updateVitals() {
     const url = `/api/v1/vitals/signs/${this.id}`;
-    const payload = {
-      ...this.vitalData,
-      patientId: this.patientId,
-      bloodPressure: this.collectedPressures,
-      practitionerId: this.practitionerId,
-    };
     try {
-      const response = await cornieClient().put(url, payload);
+      const response = await cornieClient().put(url, this.payload);
       if (response.success) {
         window.notify({
           msg: "Vitals updated",

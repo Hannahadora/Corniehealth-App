@@ -34,7 +34,7 @@ export interface Investigation {
   };
 }
 interface Findings {
-  itemReference: Problem[];
+  itemType: Problem[];
   basis: string;
 }
 interface Prognosis {
