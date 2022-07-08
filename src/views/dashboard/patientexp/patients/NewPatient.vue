@@ -814,6 +814,7 @@
         demographicsData: this.demographics,
         primaryDoctorDetails: this.practitioners,
         guarantor: this.guarantor ? this.guarantor : null,
+        // insurances: this.insurances,
       };
       if (this.id) return basicInfo;
       return { ...basicInfo, ...others };
@@ -836,7 +837,7 @@
 
         this.$router.go(-1);
       } catch (error: any) {
-        window.notify({ msg: error.response.data.message, status: "error" });
+        window.notify({ msg: "Error creating Patient", status: "error" });
       }
     }
 

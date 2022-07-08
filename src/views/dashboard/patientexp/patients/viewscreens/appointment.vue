@@ -60,12 +60,15 @@
           />
         </div>
       </template> -->
-        <template #Participants="{ item }">
+        <template #Practitioners="{ item }">
           <actors-section
-            :items="item.Participants"
+            :items="item.Practitioners"
             class="cursor-pointer"
             @click="displayParticipants(item.id)"
           />
+        </template>
+        <template #date="{ item }">
+          {{ item.date }}/{{ item.startTime }}
         </template>
         <template #status="{ item }">
           <div class="flex items-center">
@@ -136,150 +139,150 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
 
-import IAppointment from "@/types/IAppointment";
-import { IPatient } from "@/types/IPatient";
+  import IAppointment from "@/types/IAppointment";
+  import { IPatient } from "@/types/IPatient";
 
-import CalendareIcon from "@/components/icons/calendar.vue";
-import AccordionComponent from "@/components/accordion-component-care-team.vue";
-import Avatar from "@/components/avatar.vue";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import AccordionComponent from "@/components/accordion-component-care-team.vue";
+  import Avatar from "@/components/avatar.vue";
+  import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import CalendareIcon from "@/components/icons/calendar.vue";
 
-import ActorsSection from "@/views/dashboard/ehr/appointment/actors.vue";
+  import ActorsSection from "@/views/dashboard/ehr/appointment/actors.vue";
 
-import ScreenHeader from "./Header.vue";
+  import ScreenHeader from "./Header.vue";
 
-const appointment = namespace("appointment");
-const patients = namespace("patients");
+  const appointment = namespace("appointment");
+  const patients = namespace("patients");
 
-@Options({
-  name: "PateintAppoitment",
-  components: {
-    CalendareIcon,
-    AccordionComponent,
-    Avatar,
-    CornieTable,
-    ScreenHeader,
-    ActorsSection,
-  },
-})
-export default class PateintAppoitment extends Vue {
-  @appointment.State
-  patientappointments!: IAppointment[];
-
-  @appointment.Action
-  fetchByIdAppointments!: (patientId: string) => Promise<void>;
-
-  @patients.State
-  patients!: IPatient[];
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  onePatientId = "";
-
-  rawHeaders = [
-    { title: "Recorded", key: "createdAt", show: true },
-    { title: "Identifier", key: "idn", show: true },
-    {
-      title: "Appointment Type",
-      key: "appointmentType",
-      show: true,
+  @Options({
+    name: "PateintAppoitment",
+    components: {
+      CalendareIcon,
+      AccordionComponent,
+      Avatar,
+      CornieTable,
+      ScreenHeader,
+      ActorsSection,
     },
-    {
-      title: "Patient",
-      key: "patient",
-      show: false,
-    },
-    {
-      title: "Participants",
-      key: "Participants",
-      show: true,
-    },
-    {
-      title: "Status",
-      key: "status",
-      show: true,
-    },
-    {
-      title: "Code",
-      key: "reasonCode",
-      show: false,
-    },
-    {
-      title: "Reason Reference",
-      key: "reasonRef",
-      show: false,
-    },
-    {
-      title: "Period",
-      key: "newperiod",
-      show: false,
-    },
-    {
-      title: "Priority",
-      key: "priority",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Consultation Medium",
-      kwy: "consultationMedium",
-      show: false,
-    },
-  ];
+  })
+  export default class PateintAppoitment extends Vue {
+    @appointment.State
+    patientappointments!: IAppointment[];
 
-  get items() {
-    const filteritems = this.patientappointments.filter((c) => c !== null);
-    const patientappointments = filteritems.map((patientappointment: any) => {
-      (patientappointment as any).createdAt = new Date(
-        (patientappointment as any).createdAt
-      ).toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
+    @appointment.Action
+    fetchByIdAppointments!: (patientId: string) => Promise<void>;
+
+    @patients.State
+    patients!: IPatient[];
+
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
+
+    onePatientId = "";
+
+    rawHeaders = [
+      { title: "REquest date", key: "createdAt", show: true },
+      { title: "Appointment Id", key: "idn", show: true },
+      {
+        title: "Appointment Type",
+        key: "appointmentType",
+        show: true,
+      },
+      {
+        title: "Patient",
+        key: "patient",
+        show: false,
+      },
+      {
+        title: "Practitioners",
+        key: "Practitioners",
+        show: true,
+      },
+      {
+        title: "Appointment date/time",
+        key: "date",
+        show: true,
+      },
+      {
+        title: "Status",
+        key: "status",
+        show: true,
+      },
+      {
+        title: "Code",
+        key: "reasonCode",
+        show: false,
+      },
+      {
+        title: "Reason Reference",
+        key: "reasonRef",
+        show: false,
+      },
+      {
+        title: "Period",
+        key: "newperiod",
+        show: false,
+      },
+      {
+        title: "Priority",
+        key: "priority",
+        show: false,
+      },
+      {
+        title: "Description",
+        key: "description",
+        show: false,
+      },
+      {
+        title: "Consultation Medium",
+        kwy: "consultationMedium",
+        show: false,
+      },
+    ];
+
+    get items() {
+      const filteritems = this.patientappointments.filter((c) => c !== null);
+      const patientappointments = filteritems.map((patientappointment: any) => {
+        (patientappointment as any).createdAt = new Date(
+          (patientappointment as any).createdAt
+        ).toLocaleDateString();
+
+        (patientappointment as any).updatedAt = new Date(
+          (patientappointment as any).updatedAt
+        ).toLocaleDateString("en-US");
+
+        const pateintId = patientappointment.Patients.map((patient: any) => {
+          this.onePatientId = patient.patientId;
+        });
+
+        return {
+          ...patientappointment,
+          action: patientappointment.id,
+          patient: this.getPatientName(this.onePatientId),
+        };
       });
+      return patientappointments;
+    }
 
-      (patientappointment as any).updatedAt = new Date(
-        (patientappointment as any).updatedAt
-      ).toLocaleDateString("en-US");
+    getPatientName(id: string) {
+      const pt = this.patients.find((i: any) => i.id === id);
+      return pt ? `${pt.firstname} ${pt.lastname}` : "";
+    }
 
-      const pateintId = patientappointment.Patients.map((patient: any) => {
-        this.onePatientId = patient.patientId;
+    get patientId() {
+      return this.$route.params.id as string;
+    }
+    get sortAppointments() {
+      return this.items.slice().sort(function (a: any, b: any) {
+        return a.createdAt < b.createdAt ? 1 : -1;
       });
-
-      return {
-        ...patientappointment,
-        action: patientappointment.id,
-        patient: this.getPatientName(this.onePatientId),
-      };
-    });
-    return patientappointments;
+    }
+    async created() {
+      await this.fetchByIdAppointments(this.patientId);
+      await this.fetchPatients();
+    }
   }
-
-  getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
-  }
-
-  get patientId() {
-    return this.$route.params.id as string;
-  }
-  get sortAppointments() {
-    return this.items.slice().sort(function (a: any, b: any) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
-  async created() {
-    await this.fetchByIdAppointments(this.patientId);
-    await this.fetchPatients();
-  }
-}
 </script>

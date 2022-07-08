@@ -8,7 +8,7 @@
         <template v-slot:default>
           <div
             class="w-full"
-            v-for="(item, index) in properties?.emergencyContacts"
+            v-for="(item, index) in patient?.emergencyContacts"
             :key="index"
           >
             <p class="font-bold">
@@ -26,7 +26,7 @@
           </div>
           <div
             class="grid grid-cols-4 gap-4 mt-5"
-            v-for="(item, index) in properties?.emergencyContacts"
+            v-for="(item, index) in patient?.emergencyContacts"
             :key="index"
           >
             <div class="flex space-x-4">
@@ -86,7 +86,7 @@
             <div class="grid grid-cols-4 gap-4 mt-5">
               <div
                 class="broder-r-2 border-gray-200 pr-5"
-                v-for="(assoc, index) in properties?.generalPractitioners"
+                v-for="(assoc, index) in patient?.generalPractitioners"
                 :key="index"
               >
                 <div class="flex items-center px-3">
@@ -114,7 +114,7 @@
             <div class="grid grid-cols-4 gap-4 mt-5">
               <div
                 class="broder-r-2 border-gray-200 pr-5"
-                v-for="(assoc, index) in properties?.guarantor"
+                v-for="(assoc, index) in patient?.guarantor"
                 :key="index"
               >
                 <div class="flex items-center px-3">
@@ -143,26 +143,26 @@
         <accordion-component :title="'Demographic Info'" :modelValue="true">
           <template v-slot:default>
             <div
-              v-if="typeof properties?.demographicsData == 'object'"
+              v-if="patient?.demographicsData?.primaryLanguage"
               class="grid grid-cols-4 gap-4 mt-5"
             >
-              {{ properties?.demographicsData }}
+              {{ patient?.demographicsData }}
               <div>
                 <p class="text-gray-400 text-sm">Language</p>
                 <span class="text-sm">{{
-                  properties?.demographicsData?.primaryLanguage || "xxxxxx"
+                  patient?.demographicsData?.primaryLanguage || "xxxxxx"
                 }}</span>
               </div>
               <div>
                 <p class="text-gray-400 text-sm">Secondary Language</p>
                 <span class="text-sm">{{
-                  properties?.demographicsData?.secondaryLanguage || "xxxxxx"
+                  patient?.demographicsData?.secondaryLanguage || "xxxxxx"
                 }}</span>
               </div>
               <div>
                 <p class="text-gray-400 text-sm">Race</p>
                 <span class="text-sm">{{
-                  properties?.demographicsData?.race || "xxxxxx"
+                  patient?.demographicsData?.race || "xxxxxx"
                 }}</span>
               </div>
               <div>
@@ -170,7 +170,7 @@
                 <div class="flex mt-1">
                   <img class="mr-3 w-6 rounded-md" :src="flag" />
                   <span class="text-sm">{{
-                    properties?.demographicsData?.primaryEthnicity || "xxxxxx"
+                    patient?.demographicsData?.primaryEthnicity || "xxxxxx"
                   }}</span>
                 </div>
               </div>
@@ -179,14 +179,13 @@
                   Select Preferred Contact Channel
                 </p>
                 <span class="text-sm">{{
-                  properties?.demographicsData?.preferredContactChannel ||
-                  "xxxxxx"
+                  patient?.demographicsData?.preferredContactChannel || "xxxxxx"
                 }}</span>
               </div>
               <div>
                 <p class="text-gray-400 text-sm">Secondary Ethnicity</p>
                 <span class="text-sm">{{
-                  properties?.demographicsData?.secondaryEthnicity || "xxxxxx"
+                  patient?.demographicsData?.secondaryEthnicity || "xxxxxx"
                 }}</span>
               </div>
             </div>
@@ -205,11 +204,15 @@
   import Avatar from "@/components/avatar.vue";
   import CalendareIcon from "@/components/icons/calendar.vue";
 
+  import { IPatient } from "@/types/IPatient";
+  import { namespace } from "vuex-class";
   import ScreenHeader from "./Header.vue";
   import LocationIcon from "./icons/location.vue";
   import MailIcon from "./icons/mail.vue";
   import OrgIcon from "./icons/org.vue";
   import RelationshipIcon from "./icons/relationship.vue";
+
+  const patients = namespace("patients");
 
   @Options({
     name: "OtherInfo",
@@ -228,6 +231,16 @@
     @Prop({ default: {} })
     properties!: any;
 
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
+
+    @patients.State
+    patients!: IPatient[];
+
+    get patient() {
+      return this.patients.find((p) => p.id === this.$route.params.id);
+    }
+
     get codes() {
       return countryCodes
         .sort((a, b) => {
@@ -243,13 +256,17 @@
         }));
     }
 
-    get flag() {
-      if (!this.codes.length && this.properties.nationality === "") return "";
+    flag(countryName: string) {
+      if (!this.codes.length && countryName === "") return "";
       return this.codes.find(
         (country: any) =>
-          country.name?.toLowerCase() ===
-          this.properties.nationality?.toLowerCase()
+          country.name?.toLowerCase() === countryName?.toLowerCase()
       )?.flag;
+    }
+
+    async mounted() {
+      console.log("properties others", this.patient);
+      await this.fetchPatients();
     }
   }
 </script>
