@@ -366,7 +366,7 @@
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialties.map((x:any) => getSpecialityName(x) || x?.name).join(', ')}}
+                        {{specialties.map((x:any) => getSpecialityName(x) || x?.display).join(', ')}}
                         <!-- <div class="flex">
                           <span
                             class="text-xs"
@@ -514,11 +514,11 @@
           <accordion-component title="Locations & privileges" :opened="false">
             <template v-slot:default>
               <div class="w-full mt-5">
-                <div class="font-bold text-sm mb-5 flex space-x-4">
-                  <span
-                    class="-mt-1 text-danger font-bold cursor-pointer"
-                    @click="addAccessRole = true"
-                  >
+                <div
+                  @click="addAccessRole = true"
+                  class="font-bold text-sm mb-5 flex space-x-4"
+                >
+                  <span class="-mt-1 text-danger font-bold cursor-pointer">
                     Add Location(s) & privileges</span
                   >
                   <plus-icon class="fill-current text-danger font-bold w-3" />
@@ -630,22 +630,25 @@
                 :class="educations.length ? 'border-b-2' : ''"
               >
                 <div class="w-full grid grid-cols-3 gap-4 mt-3">
+                  <auto-complete
+                    class="w-full"
+                    v-model="qualificationCode"
+                    label="Qualification"
+                    placeholder="--Select--"
+                    :items="dropdown.Qualification"
+                    :required="true"
+                    :rules="required"
+                    :readonly="readonly"
+                  />
                   <cornie-input
                     label="Issuer"
                     v-model="qualificationIssuer"
                     :required="true"
-                  />
-                  <cornie-select
-                    :items="dropdown.Qualification"
-                    v-model="qualificationCode"
-                    label="Qualification"
-                    placeholder="--Select--"
-                    class="w-full"
-                    :required="true"
+                    :rules="required"
                   />
                   <date-picker
                     class="w-full mb-5"
-                    label="Year of Graduation"
+                    label="Year of Award"
                     v-model="graduationYear"
                     :rules="dobRule"
                     :required="true"
@@ -1328,7 +1331,7 @@
         city: this.city,
         postCode: this.postCode,
         aptNumber: this.aptNumber,
-        specialties: this.specialties,
+        specialties: this.specialties.map((x: any) => x.id),
         practiceDuartion: {},
         practiceDuration: this.practiceDuration,
         consultationRate: this.consultationRate,
@@ -1386,7 +1389,8 @@
         city: this.city,
         postCode: this.postCode,
         aptNumber: this.aptNumber,
-        specialties: this.newspecialties,
+        specialties: this.specialties.map((x: any) => x.id),
+
         practiceDuration: {
           value: this.practiceDurationvalue,
           unit: this.practiceDurationunit,
@@ -1503,8 +1507,8 @@
     }
 
     getSpecialityName(id: string) {
-      const pt = this.specials.find((i: any) => i.id === id);
-      return pt ? `${pt.name}` : "";
+      const pt = this.specialties.find((i: any) => i.id === id);
+      return pt && pt.display ? `${pt.display}` : "";
     }
 
     async setDropdown() {

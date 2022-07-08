@@ -3,65 +3,61 @@
     <div class="mt-5 mb-5 w-ful">
       <screen-header :properties="properties"> Bio </screen-header>
     </div>
-    <div class="mt-16" v-if="properties">
+    <div class="mt-16" v-if="patient">
       <accordion-component :title="'Bio'" :modelValue="true">
         <template v-slot:default>
           <div class="grid grid-cols-4 gap-4 mt-5">
             <div>
               <p class="text-gray-400 text-sm">First Name</p>
-              <span class="text-sm">{{ properties.firstName }}</span>
+              <span class="text-sm">{{ patient.firstname }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Middle Name</p>
-              <span class="text-sm">{{ properties.middleName }}</span>
+              <span class="text-sm">{{ patient.middlename || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Last Name</p>
-              <span class="text-sm">{{ properties.lastName }}</span>
+              <span class="text-sm">{{ patient.lastname }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Nationality</p>
               <div class="flex mt-1">
                 <img class="mr-3 w-6 rounded-md" :src="flag" />
-                <span class="text-sm">{{
-                  properties?.nationality || "-"
-                }}</span>
+                <span class="text-sm">{{ patient?.nationality || "-" }}</span>
               </div>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Date of Birth</p>
               <div class="flex mt-1">
                 <calendare-icon class="mr-1" />
-                <span class="text-sm">{{ properties?.dob || "-" }}</span>
+                <span class="text-sm">{{ patient?.dateOfBirth || "-" }}</span>
               </div>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Sex</p>
-              <span class="text-sm">{{ properties?.gender || "-" }}</span>
+              <span class="text-sm">{{ patient?.gender || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Blood Group</p>
-              <span class="text-sm">{{ properties?.bloodGroup || "-" }}</span>
+              <span class="text-sm">{{ patient?.bloodGroup || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Genotype</p>
-              <span class="text-sm">{{ properties?.genotype || "-" }}</span>
+              <span class="text-sm">{{ patient?.genotype || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Marital Status</p>
-              <span class="text-sm">{{
-                properties?.maritalStatus || "-"
-              }}</span>
+              <span class="text-sm">{{ patient?.maritalStatus || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Number of Children</p>
               <span class="text-sm">{{
-                properties?.numberOfChildren || "-"
+                patient?.numberOfChildren || "-"
               }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Multiple Birth?</p>
-              <span class="text-sm">{{ properties?.multiple || "-" }}</span>
+              <span class="text-sm">{{ patient?.multipleBirths || "-" }}</span>
             </div>
             <div>
               <p class="text-gray-400 text-sm">Number of Multiple Births</p>
@@ -82,7 +78,9 @@
               <div>
                 <p class="text-gray-400 text-sm">Identity NO</p>
                 <span class="text-sm">{{
-                  properties.idType + " : " + properties.idNumber
+                  patient?.identityNos[0]?.type +
+                  " : " +
+                  patient?.identityNos[0]?.number
                 }}</span>
               </div>
             </div>
@@ -123,7 +121,7 @@
           <template v-slot:default>
             <div
               class="grid grid-cols-4 gap-4 mt-5"
-              v-for="(item, index) in properties.contactInfo"
+              v-for="(item, index) in patient?.contactInfo"
               :key="index"
             >
               <div>
@@ -177,9 +175,14 @@
   import AccordionComponent from "@/components/accordion-component-care-team.vue";
   import CalendareIcon from "@/components/icons/calendar.vue";
   import { countryCodes } from "@/plugins/countrycodes";
+  import { IPatient } from "@/types/IPatient";
+  import IPractitioner from "@/types/IPractitioner";
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
   import ScreenHeader from "./Header.vue";
+
+  const patients = namespace("patients");
 
   @Options({
     name: "PractitionerBio",
@@ -192,6 +195,19 @@
   export default class Bio extends Vue {
     @Prop({ default: {} })
     properties!: any;
+
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
+
+    @patients.State
+    patients!: IPatient[];
+
+    @patients.Action
+    getPatientById!: (id: string) => Promise<IPractitioner>;
+
+    get patient() {
+      return this.patients.find((p) => p.id === this.$route.params.id);
+    }
 
     get codes() {
       return countryCodes
@@ -214,6 +230,10 @@
         (country: any) =>
           country.name?.toLowerCase() === countryName?.toLowerCase()
       )?.flag;
+    }
+    async mounted() {
+      console.log("properties personal", this.properties);
+      await this.fetchPatients();
     }
   }
 </script>
