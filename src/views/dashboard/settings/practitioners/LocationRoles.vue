@@ -5,7 +5,7 @@
         <div class="w-full flex items-center justify-between">
           <div class="w-full flex items-center">
             <span class="pr-2 flex items-center cursor-pointer border-r-2">
-              <cornie-icon-btn @click="$emit('close-access-diag')">
+              <cornie-icon-btn @click="show = false">
                 <arrow-left-icon />
               </cornie-icon-btn>
             </span>

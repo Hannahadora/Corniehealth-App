@@ -19,20 +19,72 @@
       </div>
       <div class="w-full border-b border-gray-400 border-dashed my-4"></div>
       <div>
-        <vertical-tabs :items="tabLinks" v-model="currentTab"></vertical-tabs>
+        <!-- <vertical-tabs :items="tabLinks" v-model="currentTab"></vertical-tabs> -->
+        <div>
+          <ul>
+            <li v-for="(t, i) in tabLinks" :key="i">
+              <router-link
+                active-class="border-danger border-l-2 font-bold h-6"
+                class="px-1 py-0.5 my-2 text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
+                :to="t.to"
+              >
+                {{ t.name }}
+              </router-link>
+            </li>
+            <li>
+              <div class="my-2 text-sm cursor-pointer block">
+                <div
+                  class="flex px-1 py-0.5 mb-3 items-center justify-between cursor-pointer"
+                  @click="expand = !expand"
+                >
+                  <div>Transactions</div>
+                  <div v-if="expand" class>
+                    <chevron-down-icon
+                      class="cursor-pointer stroke-current"
+                      :class="{ 'text-primary': expand }"
+                      @click="expand = false"
+                    />
+                  </div>
+                  <div v-else>
+                    <chevron-right-icon
+                      class="cursor-pointer stroke-current"
+                      :class="{ 'text-primary': expand }"
+                      @click="expand = true"
+                    />
+                  </div>
+                </div>
+                <div
+                  v-if="expand"
+                  class="pl-10 my-1"
+                  v-for="(l, i) in transactionLinks"
+                  :key="i"
+                >
+                  <router-link
+                    active-class="border-danger p-2 font-bold bg-gray-300 bg-opacity-20"
+                    class="text-sm p-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
+                    :to="{ name: l.to }"
+                    >{{ l.name }}
+                  </router-link>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="col-span-9 bg-white h-full rounded-md p-3">
-      <component :is="showComponent" :properties="properties" />
-      <router-view />
+      <!-- <component :is="showComponent" :properties="properties" /> -->
+
+      <router-view :properties="properties" />
     </div>
   </div>
 </template>
 <script lang="ts">
+  import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import { IPatient } from "@/types/IPatient";
   import { Options, setup, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
-
-  import { IPatient } from "@/types/IPatient";
 
   import AutoComplete from "@/components/autocomplete.vue";
   import {
@@ -61,6 +113,7 @@
   import IPractitioner from "@/types/IPractitioner";
   import { Prop } from "vue-property-decorator";
 
+  import patientAppointments from "./viewscreens/appointment.vue";
   import FamilyInfo from "./viewscreens/family.vue";
   import OtherInfo from "./viewscreens/other.vue";
   import PersonalInfo from "./viewscreens/personal.vue";
@@ -77,6 +130,8 @@
       CornieInput,
       CornieSelect,
       AccordionComponent,
+      ChevronDownIcon,
+      ChevronRightIcon,
       InfoIcon,
       PhoneInput,
       AddIcon,
@@ -94,6 +149,7 @@
       OtherInfo,
       FamilyInfo,
       Transaction,
+      patientAppointments,
     },
   })
   export default class viewPatient extends Vue {
@@ -121,7 +177,7 @@
     ];
 
     loading = false;
-
+    expand = false;
     nationality = "";
     numberOfChildren = "";
     genotype = "";
@@ -206,56 +262,7 @@
     }
 
     get properties() {
-      switch (this.currentTab) {
-        case 0:
-          return {
-            id: this.id,
-            mrn: this.mrn,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            nationality: this.nationality,
-            middleName: this.middleName,
-            gender: this.gender,
-            dob: this.dateOfBirth,
-            maritalStatus: this.maritalStatus,
-            vip: this.vip,
-            idType: this.idType,
-            idNumber: this.idNumber,
-            image: this.image,
-            bloodGroup: this.bloodGroup,
-            genotype: this.genotype,
-            numberOfChildren: this.numberOfChildren,
-            multiple: this.multipleBirth,
-            multipleBirthInteger: this.multipleBirthInteger,
-            associates: this.associations,
-            contactInfo: this.contacts,
-          };
-        case 1:
-          return {
-            id: this.id,
-            emergencyContacts: this.emergencyContacts,
-            generalPractitioners: this.practitioners,
-            guarantor: this.relatedPersons,
-            demographicsData: this.demographics,
-          };
-        case 2:
-          return {
-            id: this.id,
-            patients: this.patients,
-          };
-        case 3:
-          return {
-            id: this.id,
-          };
-        case 4:
-          return {
-            id: this.id,
-          };
-        default:
-          return {
-            id: this.id,
-          };
-      }
+      return this.patient;
     }
 
     get showComponent() {
@@ -267,51 +274,51 @@
         case 2:
           return "family-info";
         case 3:
-          return "transactions";
+          return "transaction";
         default:
           return "personal-info";
       }
     }
 
-    currentTab = 0;
+    currentTab = 3;
     tabLinks = [
       {
         name: "Personal Info",
+        to: "personal",
       },
       {
         name: "Other Info Optional",
+        to: "other-info",
       },
       {
         name: "Family",
+        to: "family",
+      },
+    ];
+    transactionLinks = [
+      {
+        name: "Appointments",
+        to: "Patients Appointments",
       },
       {
-        name: "Transactions",
-        children: [
-          {
-            name: "Appointments",
-            to: "transactions/appointments",
-          },
-          {
-            name: "Specialist Referrals",
-            to: "transactions/specialist",
-          },
-          {
-            name: "Visits",
-            to: "transactions/visits",
-          },
-          {
-            name: "Medications",
-            to: "transactions/medications",
-          },
-          {
-            name: "Diagnostics",
-            to: "transactions/diagonostics",
-          },
-          {
-            name: "Bills",
-            to: "transactions/bills",
-          },
-        ],
+        name: "Specialist Referrals",
+        to: "Patients Specialist Refferals",
+      },
+      {
+        name: "Visits",
+        to: "Patients Visits",
+      },
+      {
+        name: "Medications",
+        to: "Patients Medication",
+      },
+      {
+        name: "Diagnostics",
+        to: "Patients Diagnostics",
+      },
+      {
+        name: "Bills",
+        to: "Patients Bills",
       },
     ];
 

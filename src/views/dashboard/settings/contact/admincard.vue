@@ -57,47 +57,48 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import Avatar from "@/components/avatar.vue";
-import { namespace } from "vuex-class";
-import IContact from "@/types/IContact";
-import AddContact from "./addContact.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import TransferOwnership from "./components/TransferOwnership.vue";
-import IPhone from "@/types/IPhone";
+  import Avatar from "@/components/avatar.vue";
+  import { useHandleImage } from "@/composables/useHandleImage";
+  import IContact from "@/types/IContact";
+  import IPhone from "@/types/IPhone";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import AddContact from "./addContact.vue";
+  import TransferOwnership from "./components/TransferOwnership.vue";
 
-const contact = namespace("contact");
+  const contact = namespace("contact");
 
-@Options({
-  name: "AdminCard",
-  components: {
-    Avatar,
-    AddContact,
-    TransferOwnership,
-  },
-})
-export default class AdminCard extends Vue {
-  @contact.State
-  contacts!: IContact[];
+  @Options({
+    name: "AdminCard",
+    components: {
+      Avatar,
+      AddContact,
+      TransferOwnership,
+    },
+  })
+  export default class AdminCard extends Vue {
+    @contact.State
+    contacts!: IContact[];
 
-  editingContact = false;
+    editingContact = false;
 
-  printPhone(phone: IPhone) {
-    return `${phone.dialCode}${phone.number}`;
+    printPhone(phone: IPhone) {
+      return "";
+      // return `${phone?.dialCode}${phone?.number}`;
+    }
+
+    get contact() {
+      const contact =
+        this.contacts.find(
+          (contact) => contact.purpose.toLowerCase() == "root"
+        ) || ({} as IContact);
+      return contact;
+    }
+
+    img = setup(() => useHandleImage());
+
+    get image() {
+      return this.contact.image || this.img.placeholder;
+    }
   }
-
-  get contact() {
-    const contact =
-      this.contacts.find(
-        (contact) => contact.purpose.toLowerCase() == "root"
-      ) || ({} as IContact);
-    return contact;
-  }
-
-  img = setup(() => useHandleImage());
-
-  get image() {
-    return this.contact.image || this.img.placeholder;
-  }
-}
 </script>
