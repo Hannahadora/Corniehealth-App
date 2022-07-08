@@ -121,67 +121,62 @@
         class="col-span-2 bg-white shadow p-4 mr-6 flex flex-col justify-center"
       >
         <div class="flex flex-col items-center justify-center">
-          <img class="w-24 h-24" v-if="orgInfo.image" :src="orgInfo.image" />
+          <img class="w-24 h-24" v-if="organizationInfo?.image" :src="organizationInfo?.image" />
           <avatar class="mr-2 w-24 h-24" v-else :src="localSrc" />
           <star-icon class="mt-2" />
           <div class="text-gray-300 text-xs mt-2">
-            {{ orgInfo.registrationNumber }}
+            {{ organizationInfo?.registrationNumber }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Domain:</div>
-          <div class="text-black text-xs">
-            {{ orgInfo.domainName }}
+          <div class="text-gray-800 text-sm">Domain :</div>
+          <div class="text-black text-sm">
+            {{ organizationInfo?.domainName }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Active Since:</div>
-          <div v-if="orgInfo.createdAt" class="text-black text-xs">
+          <div class="text-gray-600 text-sm">Active Since :</div>
+          <div v-if="organizationInfo?.createdAt" class="text-black text-sm">
             {{
-              new Date(orgInfo.createdAt).toLocaleDateString(
-                "en-US",
-                dateoptions
-              )
+              new Date(organizationInfo?.createdAt).toLocaleDateString("en-US")
             }}
           </div>
-          <div v-else class="text-black text-xs">Nil</div>
+          <div v-else class="text-black text-sm">Nil</div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Address:</div>
-          <div class="text-black text-xs">
-            {{ orgInfo.address }}
+          <div class="text-gray-600 text-sm">Address :</div>
+          <div class="text-black text-sm">
+            {{ organizationInfo?.address }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Email:</div>
-          <div class="text-black text-xs">
-            {{ orgInfo.email }}
+          <div class="text-gray-600 text-sm">Email :</div>
+          <div class="text-black text-sm">
+            {{ organizationInfo?.email }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <div class="text-gray-300 text-xs">Mobile:</div>
-          <div class="text-black text-xs">
-            {{ orgInfo.mobile }}
+          <div class="text-gray-600 text-sm">Mobile :</div>
+          <div class="text-black text-sm">
+            {{ organizationInfo?.phone?.dialCode +' '+   organizationInfo?.phone?.number}}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
-          <span class="text-gray-300 text-xs"
-            >Total Ratings:
-            <span class="text-black text-xs">16</span>
+          <span class="text-gray-600 text-sm"
+            >Total Ratings :
+            <span class="text-black text-sm">16</span>
           </span>
         </div>
-        <div class="flex space-x-4 mt-2">
-          <span class="text-gray-300 text-xs"
-            >Patients Seen:
-            <span class="text-black text-xs">24</span>
+        <div class="flex space-x-4 mt-2 mb-2">
+          <span class="text-gray-600 text-sm"
+            >Patients Seen :
+            <span class="text-black text-6m">24</span>
           </span>
         </div>
-        <a href="orgInfo.website" target="_blank" class="text-sm mb-1">{{ orgInfo.website }}</a>
-        <div></div>
+        <a href="organizationInfo.website" target="_blank" class="text-blue-500 underline text-sm mb-1">{{ organizationInfo?.website }}</a>
 
-        <div class="flex space-x-4 items-center justify-center mt-2">
+        <!-- <div class="flex space-x-4 items-center justify-center mt-2">
           <span
-            v-if="!verified"
             class="text-xs text-red-600 bg-red-100 rounded-full p-1 px-2"
             >Get Verified</span
           >
@@ -190,25 +185,25 @@
             v-if="verified"
             >Get Verified</span
           >
-        </div>
+        </div> -->
 
-        <div class="flex items-center justify-between mt-7 border-t pt-6">
-          <span class="text-gray-300 text-xs"
+        <div class="flex items-center justify-between mt-7 border-t border-dashed pt-4">
+          <span class="text-gray-600 text-sm"
             >Account Owner:
-            <span class="text-black text-xs"><a :href="orgInfo.website" target="_blank">{{ orgInfo.website }}</a></span>
+            <span class="text-black text-xs">{{ authPractitioner?.firstName +' '+ authPractitioner?.lastName}}</span>
           </span>
         </div>
 
-        <div class="my-10 flex items-center justify-center">
+        <!-- <div class="mt-4">
           <cornie-btn
-            class="border-primary border-2 px-0 mr-3 rounded-xl text-primary"
+            class="border-primary border-2 px-0 mr-3 py-1 rounded-xl text-primary"
           >
             <copy-icon class="mr-2" /> Copy Link
           </cornie-btn>
-          <cornie-btn class="text-white bg-danger px-0 rounded-xl">
-            <share-icon class="mr-2" /> Share
+          <cornie-btn class="text-white bg-danger px-0 py-2 rounded-xl">
+            <share-icon class="mr-2" /> Share Link
           </cornie-btn>
-        </div>
+        </div> -->
       </div>
 
       <div class="col-span-5 bg-white shadow p-4 h-full relative">
@@ -368,8 +363,10 @@ import IPractitioner from "@/types/IPractitioner";
 import IPracticeInformation from "@/types/IPracticeInformation";
 import IPracticeHour from "@/types/IPracticeHours";
 import CopyIcon from "@/components/icons/copy.vue";
+import { IOrganization } from "@/types/IOrganization";
 
 const userStore = namespace("user");
+const organization = namespace("organization");
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -474,6 +471,12 @@ export default class CarePartnersExistingState extends Vue {
   @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>
+
   @practiceinformation.State
   practiceInformations!: IPracticeInformation[];
 
@@ -511,11 +514,11 @@ export default class CarePartnersExistingState extends Vue {
   address = "";
   phonenumbers = [] as any;
   website = "";
+  required = string().required();
 
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
-  orgInfo = [] as any;
   dialCode = "+234";
   dateoptions = {
     weekday: "long",
@@ -620,16 +623,7 @@ export default class CarePartnersExistingState extends Vue {
   changed() {
     this.operationHours = this.operationHours;
   }
-  async fetchOrgInfo() {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/organization/myOrg/get"
-      );
-      this.orgInfo = response.data || {};
-    } catch (error) {
-      window.notify({ msg: "Could not fetch organization", status: "error" });
-    }
-  }
+
   allWeek(all: boolean) {
     if (!all) return;
     const opHours = [...this.operationHours].map((opHour) => ({

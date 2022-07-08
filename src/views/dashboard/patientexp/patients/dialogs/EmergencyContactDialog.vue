@@ -320,6 +320,7 @@
       this.$emit("allContacts", this.payload);
       this.loading = false;
       this.show = false;
+      this.reset();
     }
 
     async submit() {

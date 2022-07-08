@@ -162,7 +162,7 @@
                   v-model="country"
                   label="Country"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                   :items="nationState.countries"
                 />
@@ -172,7 +172,7 @@
                   label="State or Origin"
                   :items="nationState.states"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -181,7 +181,7 @@
                   label="City"
                   :required="true"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -189,8 +189,6 @@
                   v-model="postCode"
                   label="Zip or Post Code"
                   placeholder="Enter"
-                  :required="true"
-                  :rules="requiredString"
                   :readonly="readonly"
                 />
                 <cornie-input
@@ -250,7 +248,6 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
-                  :disabled="disabled"
                 />
                 <phone-input
                   v-model="emergency.phone"
@@ -319,8 +316,6 @@
                   v-model="emergency.postCode"
                   label="Zip or Post Code"
                   placeholder="Enter"
-                  :required="true"
-                  :rules="required"
                   :readonly="readonly"
                   :disabled="disabled"
                 />
@@ -371,7 +366,7 @@
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialties.map((x:any) => getSpecialityName(x) || x?.name).join(', ')}}
+                        {{specialties.map((x:any) => getSpecialityName(x) || x?.display).join(', ')}}
                         <!-- <div class="flex">
                           <span
                             class="text-xs"
@@ -519,11 +514,11 @@
           <accordion-component title="Locations & privileges" :opened="false">
             <template v-slot:default>
               <div class="w-full mt-5">
-                <div class="font-bold text-sm mb-5 flex space-x-4">
-                  <span
-                    class="-mt-1 text-danger font-bold cursor-pointer"
-                    @click="addAccessRole = true"
-                  >
+                <div
+                  @click="addAccessRole = true"
+                  class="font-bold text-sm mb-5 flex space-x-4"
+                >
+                  <span class="-mt-1 text-danger font-bold cursor-pointer">
                     Add Location(s) & privileges</span
                   >
                   <plus-icon class="fill-current text-danger font-bold w-3" />
@@ -635,22 +630,25 @@
                 :class="educations.length ? 'border-b-2' : ''"
               >
                 <div class="w-full grid grid-cols-3 gap-4 mt-3">
+                  <auto-complete
+                    class="w-full"
+                    v-model="qualificationCode"
+                    label="Qualification"
+                    placeholder="--Select--"
+                    :items="dropdown.Qualification"
+                    :required="true"
+                    :rules="required"
+                    :readonly="readonly"
+                  />
                   <cornie-input
                     label="Issuer"
                     v-model="qualificationIssuer"
                     :required="true"
-                  />
-                  <cornie-select
-                    :items="dropdown.Qualification"
-                    v-model="qualificationCode"
-                    label="Qualification"
-                    placeholder="--Select--"
-                    class="w-full"
-                    :required="true"
+                    :rules="required"
                   />
                   <date-picker
                     class="w-full mb-5"
-                    label="Year of Graduation"
+                    label="Year of Award"
                     v-model="graduationYear"
                     :rules="dobRule"
                     :required="true"
@@ -784,7 +782,7 @@
             </template>
           </accordion-component>
 
-          <accordion-component title="Available Time" :opened="true">
+          <!-- <accordion-component title="Available Time" :opened="true">
             <template v-slot:default>
               <div class="grid grid-cols-12 gap-4">
                 <div class="mt-3 w-full col-span-12">
@@ -806,7 +804,7 @@
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
-          </accordion-component>
+          </accordion-component> -->
 
           <span class="flex w-full mt-5 pb-3 justify-end">
             <button
@@ -1173,8 +1171,8 @@
       if (this.useSameAddress) {
         this.disabled = true;
         this.emergency.address = this.address;
-        this.emergency.phone = this.phone;
-        this.emergency.email = this.email;
+        // this.emergency.phone = this.phone;
+        // this.emergency.email = this.email;
         this.emergency.country = this.country;
         this.emergency.state = this.state;
         this.emergency.city = this.city;
@@ -1182,8 +1180,8 @@
         this.emergency.aptNumber = this.aptNumber;
       } else {
         this.emergency.address = "";
-        this.emergency.phone = "";
-        this.emergency.email = "";
+        // this.emergency.phone = "";
+        // this.emergency.email = "";
         this.emergency.country = "";
         this.emergency.state = "";
         this.emergency.city = "";
@@ -1333,7 +1331,7 @@
         city: this.city,
         postCode: this.postCode,
         aptNumber: this.aptNumber,
-        specialties: this.specialties,
+        specialties: this.specialties.map((x: any) => x.id),
         practiceDuartion: {},
         practiceDuration: this.practiceDuration,
         consultationRate: this.consultationRate,
@@ -1391,7 +1389,8 @@
         city: this.city,
         postCode: this.postCode,
         aptNumber: this.aptNumber,
-        specialties: this.newspecialties,
+        specialties: this.specialties.map((x: any) => x.id),
+
         practiceDuration: {
           value: this.practiceDurationvalue,
           unit: this.practiceDurationunit,
@@ -1508,8 +1507,8 @@
     }
 
     getSpecialityName(id: string) {
-      const pt = this.specials.find((i: any) => i.id === id);
-      return pt ? `${pt.name}` : "";
+      const pt = this.specialties.find((i: any) => i.id === id);
+      return pt && pt.display ? `${pt.display}` : "";
     }
 
     async setDropdown() {

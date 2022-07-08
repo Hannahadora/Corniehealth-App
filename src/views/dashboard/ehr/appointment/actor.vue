@@ -106,15 +106,6 @@
                       View Profile
                     </p>
                   </div>
-                  <!-- <div class="w-full mt-5 cursor-pointer w-full text-xs text-danger">
-                            <input
-                              v-model="newIndexvaluepractitioner"
-                        :value="input"
-                        @input="changed(input.id)"
-                        name="practioner"
-                        class="bg-danger mb-5  focus-within:bg-danger px-6 shadow float-right"
-                            />
-                    </div> -->
                   <div class="relative bottom-1">
                     <cornie-radio
                       v-model="newIndexvaluepractitioner"
@@ -126,25 +117,6 @@
                   </div>
                 </div>
                 <div class="w-full p-1 mt-5" v-if="singleId == input.id">
-                  <!-- <cornie-select
-                        :onChange="setValue"
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Type']"
-                        v-model="apractitioner.type"
-                        label="TYPE"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
-                  <!-- <cornie-select
-                        class="required w-full"
-                        :rules="required"
-                        :items="['Required', 'Information Only', 'Optional']"
-                        v-model="apractitioner.required"
-                        label="required"
-                        placeholder="--Select--"
-                      >
-                      </cornie-select> -->
                   <cornie-select
                     class="required w-full"
                     :rules="required"

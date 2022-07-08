@@ -26,10 +26,10 @@
               </card-text>
             </cornie-menu>
           </div>
-          <delete-icon
+          <!-- <delete-icon
             class="text-danger fill-current cursor-pointer"
             @click="show = false"
-          />
+          /> -->
         </div>
       </cornie-card-title>
       <span class="text-xs ml-3 text-gray-500 mt-2">

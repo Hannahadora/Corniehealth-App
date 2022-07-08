@@ -4,7 +4,7 @@ import ICancel from "@/types/ICancel";
 export async function fetchCancels() {
   try {
     const response = await cornieClient().get(
-      "/api/v1/cancellations/findForUser/me"
+      "/api/v1/cancellations-policy"
     );
 
     if (response.success) {

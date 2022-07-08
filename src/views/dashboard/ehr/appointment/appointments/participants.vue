@@ -26,38 +26,6 @@
                     class="w-full"
                     v-model="actorType"
                 />
-                <!-- <div class="w-60">
-                 <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
-                    <icon-input
-                    autocomplete="off"
-                    class="border border-gray-600 py-2 -mt-2 rounded focus:outline-none"
-                    type="search"
-                    placeholder="Search"
-                    v-model="query"
-                    >
-                    <template v-slot:prepend>
-                        <search-icon />
-                    </template>
-                    </icon-input>
-                 </span>
-                  <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
-                    class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
-                        <div class="flex flex-col w-full p-2">
-                            <div v-for="(item, i) in filteredItems"
-                                :key="i"
-                                @click="selected(item)"
-                                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
-                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
-                                    {{ item?.firstName +' '+ item?.lastName   || item }}
-                                    <p class="text-xs text-gray-500">[{{ item?.department }}]</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-if="filteredItems.length === 0">
-                             <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
-                        </div>
-                  </div>
-                </div> -->
             </div>
             <div v-if="actorType == 'Practitioner'">
                 <div v-if="id">

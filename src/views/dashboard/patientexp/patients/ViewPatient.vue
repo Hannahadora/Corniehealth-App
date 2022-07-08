@@ -19,309 +19,313 @@
       </div>
       <div class="w-full border-b border-gray-400 border-dashed my-4"></div>
       <div>
-        <vertical-tabs :items="tabLinks" v-model="currentTab"></vertical-tabs>
+        <!-- <vertical-tabs :items="tabLinks" v-model="currentTab"></vertical-tabs> -->
+        <div>
+          <ul>
+            <li v-for="(t, i) in tabLinks" :key="i">
+              <router-link
+                active-class="border-danger border-l-2 font-bold h-6"
+                class="px-1 py-0.5 my-2 text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
+                :to="t.to"
+              >
+                {{ t.name }}
+              </router-link>
+            </li>
+            <li>
+              <div class="my-2 text-sm cursor-pointer block">
+                <div
+                  class="flex px-1 py-0.5 mb-3 items-center justify-between cursor-pointer"
+                  @click="expand = !expand"
+                >
+                  <div>Transactions</div>
+                  <div v-if="expand" class>
+                    <chevron-down-icon
+                      class="cursor-pointer stroke-current"
+                      :class="{ 'text-primary': expand }"
+                      @click="expand = false"
+                    />
+                  </div>
+                  <div v-else>
+                    <chevron-right-icon
+                      class="cursor-pointer stroke-current"
+                      :class="{ 'text-primary': expand }"
+                      @click="expand = true"
+                    />
+                  </div>
+                </div>
+                <div
+                  v-if="expand"
+                  class="pl-10 my-1"
+                  v-for="(l, i) in transactionLinks"
+                  :key="i"
+                >
+                  <router-link
+                    active-class="border-danger p-2 font-bold bg-gray-300 bg-opacity-20"
+                    class="text-sm p-2 cursor-pointer hover:bg-gray-300 hover:bg-opacity-20 block"
+                    :to="{ name: l.to }"
+                    >{{ l.name }}
+                  </router-link>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="col-span-9 bg-white h-full rounded-md p-3">
-      <component :is="showComponent" :properties="properties" />
-      <router-view/>
+      <!-- <component :is="showComponent" :properties="properties" /> -->
+
+      <router-view :properties="properties" />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string, date } from "yup";
+  import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import { IPatient } from "@/types/IPatient";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
 
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import {
+    default as Avatar,
+    default as CornieAvatarField,
+  } from "@/components/avatar.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import PeriodPicker from "@/components/daterangepicker.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import {
+    default as AddBlueIcon,
+    default as AddIcon,
+  } from "@/components/icons/addblue.vue";
+  import DeleteRed from "@/components/icons/delete-red.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import PlusIcon from "@/components/icons/plus.vue";
+  import OperationHours from "@/components/new-operation-hours.vue";
+  import PhoneInput from "@/components/phone-input.vue";
+  import VerticalTabs from "@/components/tabs-vert-patient.vue";
+  import { useCountryStates } from "@/composables/useCountryStates";
+  import IPractitioner from "@/types/IPractitioner";
+  import { Prop } from "vue-property-decorator";
 
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import DatePicker from "@/components/datepicker.vue";
-import { Prop, Watch } from "vue-property-decorator";
-import { useHandleImage } from "@/composables/useHandleImage";
-import PeriodPicker from "@/components/daterangepicker.vue";
-import CornieAvatarField from "@/components/avatar.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import AddBlueIcon from "@/components/icons/addblue.vue";
-import Multiselect from "@vueform/multiselect";
-import Avatar from "@/components/avatar.vue";
-import Period from "@/types/IPeriod";
-import { createDate } from "@/plugins/utils";
-import PlusIcon from "@/components/icons/plus.vue";
-import DeleteRed from "@/components/icons/delete-red.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import { useCountryStates } from "@/composables/useCountryStates";
-import AutoComplete from "@/components/autocomplete.vue";
-import AddIcon from "@/components/icons/addblue.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import VerticalTabs from "@/components/tabs-vert-patient.vue";
+  import patientAppointments from "./viewscreens/appointment.vue";
+  import FamilyInfo from "./viewscreens/family.vue";
+  import OtherInfo from "./viewscreens/other.vue";
+  import PersonalInfo from "./viewscreens/personal.vue";
+  import Transaction from "./viewscreens/transaction.vue";
 
-import PersonalInfo from "./viewscreens/personal.vue";
-import OtherInfo from "./viewscreens/other.vue";
-import FamilyInfo from "./viewscreens/family.vue";
-import Transaction from "./viewscreens/transaction.vue";
+  const patients = namespace("patients");
 
-const patients = namespace("patients");
+  @Options({
+    name: "viewPatient",
+    components: {
+      VerticalTabs,
+      CornieCheckbox,
+      PlusIcon,
+      CornieInput,
+      CornieSelect,
+      AccordionComponent,
+      ChevronDownIcon,
+      ChevronRightIcon,
+      InfoIcon,
+      PhoneInput,
+      AddIcon,
+      PeriodPicker,
+      OperationHours,
+      DatePicker,
+      Avatar,
+      AutoComplete,
+      CornieAvatarField,
+      AddBlueIcon,
+      DeleteRed,
+      EditIcon,
+      CornieRadio,
+      PersonalInfo,
+      OtherInfo,
+      FamilyInfo,
+      Transaction,
+      patientAppointments,
+    },
+  })
+  export default class viewPatient extends Vue {
+    @Prop({ type: String, default: "" })
+    id!: string;
 
-@Options({
-  name: "viewPatient",
-  components: {
-    VerticalTabs,
-    CornieCheckbox,
-    PlusIcon,
-    CornieInput,
-    CornieSelect,
-    AccordionComponent,
-    InfoIcon,
-    PhoneInput,
-    AddIcon,
-    PeriodPicker,
-    OperationHours,
-    DatePicker,
-    Avatar,
-    AutoComplete,
-    CornieAvatarField,
-    AddBlueIcon,
-    DeleteRed,
-    EditIcon,
-    CornieRadio,
-    PersonalInfo,
-    OtherInfo,
-    FamilyInfo,
-    Transaction,
-  },
-})
-export default class viewPatient extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
 
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
+    @patients.State
+    patients!: IPatient[];
 
-  @patients.State
-  patients!: IPatient[];
+    @patients.Action
+    getPatientById!: (id: string) => Promise<IPractitioner>;
 
-  @patients.Action
-  getPatientById!: (id: string) => Promise<IPractitioner>;
+    idOptions = ["NIN", "BVN"];
+    genderOptions = [
+      { code: "male", display: "Male" },
+      { code: "female", display: "Female" },
+      { code: "other", display: "Other" },
+    ];
+    multipleBirthOptions = [
+      { code: true, display: "Yes" },
+      { code: false, display: "No" },
+    ];
 
-  idOptions = ["NIN", "BVN"];
-  genderOptions = [
-    { code: "male", display: "Male" },
-    { code: "female", display: "Female" },
-    { code: "other", display: "Other" },
-  ];
-  multipleBirthOptions = [
-    { code: true, display: "Yes" },
-    { code: false, display: "No" },
-  ];
+    loading = false;
+    expand = false;
+    nationality = "";
+    numberOfChildren = "";
+    genotype = "";
 
-  loading = false;
+    vip = false;
+    multipleBirth = false;
+    multipleBirthInteger = 0;
+    gender = "";
+    idType = "NIN";
+    mrn = "" as any;
+    firstName = "";
+    middleName = "";
+    lastName = "";
+    dateOfBirth = "";
+    image = "";
+    idNumber = "";
+    bloodGroup = "";
+    nationState = setup(() => useCountryStates());
 
-  nationality = "";
-  numberOfChildren = "";
-  genotype = "";
+    contacts = [] as any;
+    emergencyContacts = [] as any;
+    providers = [] as any;
+    guarantor = "";
+    insurances = [] as any;
+    labs = [] as any;
+    pharmacies = [] as any;
+    associations = [] as any;
+    demographics = {} as any;
+    practitioners = [] as any;
+    relatedPersons = [] as any;
 
-  vip = false;
-  multipleBirth = false;
-  multipleBirthInteger = 0;
-  gender = "";
-  idType = "NIN";
-  mrn = "" as any;
-  firstName = "";
-  middleName = "";
-  lastName = "";
-  dateOfBirth = "";
-  image = "";
-  idNumber = "";
-  bloodGroup = "";
-  nationState = setup(() => useCountryStates());
+    maritalStatus = "";
+    guarantorLength = 0;
+    demographicsLength = 0;
 
-  contacts = [] as any;
-  emergencyContacts = [] as any;
-  providers = [] as any;
-  guarantor = "";
-  insurances = [] as any;
-  labs = [] as any;
-  pharmacies = [] as any;
-  associations = [] as any;
-  demographics = {};
-  practitioners = [] as any;
-  relatedPersons = [] as any;
+    showEmergencyContactDialog = false;
+    showGuarantorDialog = false;
+    showAssociationsDialog = false;
+    showInsuranceDialog = false;
+    showProvidersDialog = false;
+    showPractitionersDialog = false;
+    showDemographicsDialog = false;
+    addPaymentsDialog = false;
 
-  maritalStatus = "";
-  guarantorLength = 0;
-  demographicsLength = 0;
+    contactsCompleted = false;
 
-  showEmergencyContactDialog = false;
-  showGuarantorDialog = false;
-  showAssociationsDialog = false;
-  showInsuranceDialog = false;
-  showProvidersDialog = false;
-  showPractitionersDialog = false;
-  showDemographicsDialog = false;
-  addPaymentsDialog = false;
-
-  contactsCompleted = false;
-
-  get patient() {
-    return this.patients.find((p) => p.id === this.id);
-  }
-  async setPateint() {
-    const patient = this.patient;
-    console.log(patient, "PATIENTR");
-    if (!patient) return;
-    this.firstName = patient.firstname;
-    this.mrn = patient?.mrn;
-    this.lastName = patient.lastname;
-    this.middleName = patient.middlename || "";
-    this.multipleBirth = patient.multipleBirths || false;
-    this.multipleBirthInteger = patient.multipleBirthInteger || 0;
-    this.gender = patient.gender || "";
-    this.maritalStatus = patient.maritalStatus || "";
-    this.vip = patient.vip || false;
-    this.dateOfBirth = patient.dateOfBirth || "";
-    this.bloodGroup = patient.bloodGroup || "";
-    this.genotype = patient.genotype || "";
-    this.associations = patient.associates || [];
-    this.contacts = patient.contactInfo || [];
-    this.numberOfChildren = patient.numberOfChildren || "";
-    this.multipleBirth = patient.multipleBirth || false;
-    this.multipleBirthInteger = patient.multipleBirthInteger || 0;
-    const identityNos = patient.identityNos || [];
-    const [identity, ...rest] = identityNos;
-    if (identity) {
-      this.idType = identity.type;
-      this.idNumber = identity.number;
+    get patient() {
+      return this.patients.find((p) => p.id === this.id);
     }
-    this.image = patient.profilePhoto || "";
-    this.emergencyContacts = patient.emergencyContacts || [];
-    this.practitioners = patient.generalPractitioners || [];
-    this.relatedPersons = patient.guarantor || [];
-    this.demographics = patient.demographicsData || {};
-  }
+    async setPateint() {
+      const patient = this.patient;
+      console.log(patient, "PATIENTR");
+      if (!patient) return;
+      this.firstName = patient.firstname;
+      this.mrn = patient?.mrn;
+      this.lastName = patient.lastname;
+      this.middleName = patient.middlename || "";
+      this.multipleBirth = patient.multipleBirths || false;
+      this.multipleBirthInteger = patient.multipleBirthInteger || 0;
+      this.gender = patient.gender || "";
+      this.maritalStatus = patient.maritalStatus || "";
+      this.vip = patient.vip || false;
+      this.dateOfBirth = patient.dateOfBirth || "";
+      this.bloodGroup = patient.bloodGroup || "";
+      this.genotype = patient.genotype || "";
+      this.associations = patient.associates || [];
+      this.contacts = patient.contactInfo || [];
+      this.numberOfChildren = patient.numberOfChildren || "";
+      this.multipleBirth = patient.multipleBirth || false;
+      this.multipleBirthInteger = patient.multipleBirthInteger || 0;
+      const identityNos = patient.identityNos || [];
+      const [identity, ...rest] = identityNos;
+      if (identity) {
+        this.idType = identity.type;
+        this.idNumber = identity.number;
+      }
+      this.image = patient.profilePhoto || "";
+      this.emergencyContacts = patient.emergencyContacts || [];
+      this.practitioners = patient.generalPractitioners || [];
+      this.relatedPersons = patient.guarantor || [];
+      this.demographics = patient.demographicsData || null;
+    }
 
-  get properties() {
-    switch (this.currentTab) {
-      case 0:
-        return {
-          id: this.id,
-          mrn: this.mrn,
-          firstName: this.firstName,
-          lastName: this.lastName,
-          nationality: this.nationality,
-          middleName: this.middleName,
-          gender: this.gender,
-          dob: this.dateOfBirth,
-          maritalStatus: this.maritalStatus,
-          vip: this.vip,
-          idType: this.idType,
-          idNumber: this.idNumber,
-          image: this.image,
-          bloodGroup: this.bloodGroup,
-          genotype: this.genotype,
-          numberOfChildren: this.numberOfChildren,
-          multiple: this.multipleBirth,
-          multipleBirthInteger: this.multipleBirthInteger,
-          associates: this.associations,
-          contactInfo: this.contacts,
-        };
-      case 1:
-        return {
-          id: this.id,
-          emergencyContacts: this.emergencyContacts,
-          generalPractitioners: this.practitioners,
-          guarantor: this.relatedPersons,
-          demographicsData: this.demographics,
-        };
-      case 2:
-        return {
-          id: this.id,
-          patients: this.patients,
-        };
-      case 3:
-        return {
-          id: this.id,
-        };
-      case 4:
-        return {
-          id: this.id,
-        };
-      default:
-        return {
-          id: this.id,
-        };
+    get properties() {
+      return this.patient;
+    }
+
+    get showComponent() {
+      switch (this.currentTab) {
+        case 0:
+          return "personal-info";
+        case 1:
+          return "other-info";
+        case 2:
+          return "family-info";
+        case 3:
+          return "transaction";
+        default:
+          return "personal-info";
+      }
+    }
+
+    currentTab = 3;
+    tabLinks = [
+      {
+        name: "Personal Info",
+        to: "personal",
+      },
+      {
+        name: "Other Info Optional",
+        to: "other-info",
+      },
+      {
+        name: "Family",
+        to: "family",
+      },
+    ];
+    transactionLinks = [
+      {
+        name: "Appointments",
+        to: "Patients Appointments",
+      },
+      {
+        name: "Specialist Referrals",
+        to: "Patients Specialist Refferals",
+      },
+      {
+        name: "Visits",
+        to: "Patients Visits",
+      },
+      {
+        name: "Medications",
+        to: "Patients Medication",
+      },
+      {
+        name: "Diagnostics",
+        to: "Patients Diagnostics",
+      },
+      {
+        name: "Bills",
+        to: "Patients Bills",
+      },
+    ];
+
+    async created() {
+      await this.fetchPatients();
+      if (this.id) this.setPateint();
     }
   }
-
-  get showComponent() {
-    switch (this.currentTab) {
-      case 0:
-        return "personal-info";
-      case 1:
-        return "other-info";
-      case 2:
-        return "family-info";
-      case 3:
-        return "transactions";
-      default:
-        return "personal-info";
-    }
-  }
-
-  currentTab = 0;
-  tabLinks = [
-    {
-      name: "Personal Info",
-    },
-    {
-      name: "Other Info Optional",
-    },
-    {
-      name: "Family",
-    },
-    {
-      name: "Transactions",
-      children: [
-        {
-          name: "Appointments",
-           to: "transactions/appointments",
-        },
-        {
-          name: "Specialist Referrals",
-        to: "transactions/specialist",
-        },
-        {
-          name: "Visits",
-          to: "transactions/visits",
-        },
-        {
-          name: "Medications",
-        to: "transactions/medications",
-        },
-        {
-          name: "Diagnostics",
-           to: "transactions/diagonostics",
-        },
-        {
-          name: "Bills",
-           to: "transactions/bills",
-        },
-      ],
-    },
-  ];
-
-  async created() {
-    await this.fetchPatients();
-    if (this.id) this.setPateint();
-  }
-}
 </script>
-<style scoped>
-</style>
+<style scoped></style>

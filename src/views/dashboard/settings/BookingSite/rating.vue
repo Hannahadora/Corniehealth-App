@@ -1,7 +1,17 @@
 <template>
+<div class="h-screen">
+  <!-- <div
+      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+      v-if="empty"
+    >
+      <img src="@/assets/rafiki.svg" class="mb-2" />
+      <h4 class="text-black text-center">There are no ratings on record.</h4>
+  </div> -->
   <div class="w-full pb-80">
     <div class="w-full mt-5">
-      <cornie-table :columns="rawHeaders" v-model="sortCurrency" :check="false">
+      <cornie-table :columns="rawHeaders" v-model="sortRating" :check="false" :showPagination="true"
+        @pagechanged="fetchRatings"
+        :pageInfo="pageInfo">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -34,19 +44,22 @@
         </template>
       </cornie-table>
 
-      <default-currency v-model="showDefaultCurrencyModal" />
-      <new-exchange-rate
-        v-model="showNewExchangeRateModal"
-        @currency-added="currencyadded"
-        :id="currencyId"
-      />
     </div>
   </div>
+</div>
   <reply-modal v-model="showReply" />
   <view-modal v-model="showView" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import search from "@/plugins/search";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+
+import IPageInfo from "@/types/IPageInfo";
+import IRating from "@/types/IRating";
+
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
@@ -58,8 +71,6 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
 import CloseIcon from "@/components/icons/danger.vue";
 import Select from "@/components/formselect.vue";
 import SelectSurvey from "@/components/surveyselect.vue";
@@ -75,16 +86,12 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import IPractitioner from "@/types/IPractitioner";
-import ICurrency from "@/types/ICurrency";
+
 import ReplyModal from "./allrating/reply.vue";
 import ViewModal from "./allrating/view.vue";
 
-const currency = namespace("currency");
-const practitioner = namespace("practitioner");
+const rating = namespace("rating");
 const userStore = namespace("user");
 
 @Options({
@@ -121,7 +128,7 @@ const userStore = namespace("user");
     CornieDialog,
   },
 })
-export default class PracticeformExistingState extends Vue {
+export default class ratingExistingState extends Vue {
   showColumnFilter = false;
   showModal = false;
   loading = false;
@@ -133,23 +140,19 @@ export default class PracticeformExistingState extends Vue {
   orgInfo = [] as any;
   showReply = false;
   showView = false;
-  @currency.State
-  currencys!: ICurrency[];
 
-  @currency.Action
-  deleteCurrency!: (id: string) => Promise<boolean>;
 
-  @currency.Action
-  fetchCurrencys!: () => Promise<void>;
+  @rating.State
+  ratings!: IRating[];
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @rating.Action
+  deleteRating!: (id: string) => Promise<boolean>;
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+  @rating.Action
+  fetchRatings!: () => Promise<void>;
 
-  @userStore.Getter
-  authPractitioner!: IPractitioner;
+  @rating.State
+  pageInfo!: IPageInfo;
 
   getKeyValue = getTableKeyValue;
 
@@ -170,6 +173,7 @@ export default class PracticeformExistingState extends Vue {
     { title: "Comments", key: "comment", show: true },
     // Displaying Icon in the header - <table-setting-icon/>
   ];
+
   showReplyModal() {
     this.showReply = true;
   }
@@ -181,16 +185,10 @@ export default class PracticeformExistingState extends Vue {
   }
 
   get items() {
-    const currencys = this.currencys.map((currency) => {
-      (currency as any).createdAt = new Date(
-        (currency as any).createdAt
-      ).toLocaleDateString("en-US");
-      (currency as any).updatedAt = new Date(
-        (currency as any).updatedAt
-      ).toLocaleDateString("en-US");
+    const ratings = this.ratings.map((rating) => {
       return {
-        ...currency,
-        action: currency.id,
+        ...rating,
+        action: rating.id,
         serial: "Ikhide Bright",
         rating: "3.1",
         comment: "Great Job!",
@@ -199,16 +197,17 @@ export default class PracticeformExistingState extends Vue {
       };
     });
     if (!this.query) {
-      return currencys;
+      return ratings;
     } else {
-      return search.searchObjectArray(currencys, this.query);
+      return search.searchObjectArray(ratings, this.query);
     }
   }
-  get sortCurrency() {
+  get sortRating() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "Are you sure you want to delete this rating?",
@@ -216,10 +215,11 @@ export default class PracticeformExistingState extends Vue {
     });
     if (!confirmed) return;
 
-    if (await this.deleteCurrency(id))
+    if (await this.deleteRating(id))
       window.notify({ msg: "Rating deleted", status: "success" });
     else window.notify({ msg: "Rating not deleted", status: "error" });
   }
+
   async showRateModal(value: string) {
     this.showNewExchangeRateModal = true;
     this.currencyId = value;
@@ -227,31 +227,13 @@ export default class PracticeformExistingState extends Vue {
   select(i: number) {
     this.selected = i;
   }
-  getUser(id: string) {
-    return (
-      this.authPractitioner.user.firstName +
-      " " +
-      this.authPractitioner.user.lastName
-    );
-  }
-  get empty3() {
-    return this.currencys.length < 1;
-  }
-  async fetchOrgInfo() {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/organization/myOrg/get"
-      );
-      this.orgInfo = response.data || {};
-    } catch (error) {
-      window.notify({ msg: "Could not fetch organization", status: "error" });
-    }
+ 
+  get empty() {
+    return this.ratings.length < 1;
   }
 
   async created() {
-    this.fetchPractitioners();
-    this.fetchCurrencys();
-    if (this.currencys.length < 1) this.fetchCurrencys();
+    this.fetchRatings();
   }
 }
 </script>

@@ -1,48 +1,43 @@
 <template>
   <div>
-    <button
-      class="mt-5 font-bold text-sm text-red-500 flex items-center"
-      type="button"
-      @click="show = true"
-    >
-      <div class="mr-2">ADD ACTOR(S)</div>
-      <plus-icon class="fill-current text-primary" />
-    </button>
-    <cornie-dialog
-      v-model="show"
-      right
-      class="w-96 h-full animated fadeIn z-50 absolute overflow-y-hidden"
-    >
-      <cornie-card height="100%" class="flex flex-col animated fadeInUp">
+    <cornie-dialog v-model="show" right class="w-4/12 h-full">
+      <cornie-card height="100%" class="flex flex-col">
         <cornie-card-title class="w-full">
+          <span class="pr-2 flex items-center cursor, Templates-pointer border-r-2">
+            <cornie-icon-btn @click="show = false">
+              <arrow-left-icon />
+            </cornie-icon-btn>
+          </span>
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-              {{ isUpdate ? "Edit Actors" : `Add Actors` }}
+                {{ isUpdate ? "Edit Actors" : `Add Members` }}
             </h2>
+            <cancel-icon
+              class="float-right cursor-pointer"
+              @click="show = false"
+            />
           </div>
         </cornie-card-title>
-        <cornie-card-text
-          class="flex-grow scrollable flex flex-col overflow-y-hidden"
-        >
+        <cornie-card-text class="flex-grow scrollable">
           <div class="text-xs text-black mb-3">
-            Add actor(s) to this appointment
+            Add members to this group
           </div>
           <div class="p-2 flex flex-col overflow-y-auto flex-1">
             <cornie-select
               :items="['Practitioner', 'Device']"
               v-model="entity"
-              label="Select"
+              label="Entity"
               placeholder="--Select--"
               class="mb-0"
             ></cornie-select>
             <div
-              class="w-full border-b border-dashed border-gray-400 mb-3"
+              class="w-full border-b border-dashed border-gray-400 mb-5"
             ></div>
             <div class="text-xs text-gray-400">
               {{ selectedActors.length }} Selected
             </div>
             <icon-input
-              class="border border-gray-600 rounded-full focus:outline-none"
+              class="border border-gray-600 rounded-full  py-2  focus:outline-none"
               :placeholder="`Search ${entity.toLowerCase()}`"
               v-model="search"
             >
@@ -50,127 +45,174 @@
                 <search-icon />
               </template>
             </icon-input>
-            <div class="mt-4 overflow-y-auto overflow-x-hidden px-2 max-h-full">
+            <div class="mt-4 overflow-y-auto overflow-x-hidden px-2 h-96">
               <template v-if="actors.length && entity === 'Practitioner'">
                 <div
-                  class="w-full flex flex-row items-center justify-between mb-5"
+                  class="w-full  mb-5"
                   v-for="actor in filteredActors"
                   :key="actor.id"
                 >
-                  <div class="flex flex-row items-center">
-                    <div class="h-8 w-8 rounded-full overflow-hidden mr-1">
-                      <img
-                        :src="actor.image || '@/assets/img/avatar.svg'"
-                        class="h-full w-full"
-                      />
+                  <div class="flex space-x-10 w-full justify-between">
+                    <div class="flex flex-row items-center">
+                      <div class="h-8 w-8 rounded-full overflow-hidden mr-1">
+                        <img
+                          :src="actor.image || '@/assets/img/avatar.svg'"
+                          class="h-full w-full"
+                        />
+                      </div>
+                      <div class="flex flex-col">
+                        <p class="font-bold text-xs">
+                          {{ `${actor.lastName} ${actor.firstName}` }}
+                        </p>
+                        <p class="text-xs text-gray-400">
+                          {{ actor.jobDesignation }}
+                        </p>
+                      </div>
                     </div>
-                    <div class="flex flex-col">
-                      <p class="font-bold text-xs">
-                        {{ `${actor.lastName} ${actor.firstName}` }}
-                      </p>
-                      <p class="text-xs text-gray-400">
-                        {{ actor.jobDesignation }}
-                      </p>
-                    </div>
+                    <cornie-radio
+                      v-model="selectedEntity"
+                      name="entity"
+                      :value="actor.id"
+                      @click="changed(actor.id)"
+                    ></cornie-radio>
                   </div>
-                  <cornie-radio
-                    v-model="selectedEntity"
-                    name="entity"
-                    :value="actor.id"
-                  ></cornie-radio>
+                  <div>
+                     <div class="w-full mt-5" v-if="singleId == actor.id">
+                       <div class="mb-5">
+                          <div class="font-semibold mb-1.5 leading-none text-sm">
+                            Role <span class="text-red-500">*</span>
+                          </div>
+                          <cornie-select
+                            :items="practitionerRoles"
+                            v-model="role"
+                            placeholder="--Select--"
+                            class="mb-0"
+                            required
+                          ></cornie-select>
+                        </div>
+                        <div class="mb-5">
+                          <div class="font-semibold -mb-1 leading-none text-sm">
+                            Period <span class="text-red-500">*</span>
+                          </div>
+                          <d-range-picker
+                            placeholder="--Select--"
+                            v-model="period"
+                            class="w-full"
+                          ></d-range-picker>
+                        </div>
+                        
+                     
+                     </div>
+                  </div>
                 </div>
               </template>
               <template v-else>
                 <div
-                  class="w-full flex flex-row items-center justify-between mb-3"
+                  class="w-full  mb-5"
                   v-for="actor in filteredActors"
                   :key="actor.id"
                 >
-                  <div class="flex flex-row items-center">
-                    <div
-                      class="h-8 w-8 rounded-full overflow-hidden mr-1 flex items-center justify-center bg-blue-500 text-white-cotton-ball font-bold"
-                    >
-                      {{ actor.deviceName.name.substr(0, 2).toUpperCase() }}
+                    <div class="flex space-x-10 w-full justify-between">
+                        <div class="flex flex-row items-center">
+                          <div
+                            class="h-8 w-8 rounded-full overflow-hidden mr-1 flex items-center justify-center bg-blue-500 text-white-cotton-ball font-bold"
+                          >
+                            {{ actor.deviceName.name.substr(0, 2).toUpperCase() }}
+                          </div>
+                          <div class="flex flex-col">
+                            <p class="font-bold text-xs">
+                              {{
+                                `${actor.deviceName.name} (${actor.deviceName.modelNumber})`
+                              }}
+                            </p>
+                            <p class="text-xs text-gray-400">
+                              {{ actor.version.component }}
+                            </p>
+                          </div>
+                        </div>
+                        <cornie-radio
+                          v-model="selectedEntity"
+                          name="entity"
+                          :value="actor.id"
+                          @update:modelValue="selectEntity"
+                           @click="changed(actor.id)"
+                        ></cornie-radio>
                     </div>
-                    <div class="flex flex-col">
-                      <p class="font-bold text-xs">
-                        {{
-                          `${actor.deviceName.name} (${actor.deviceName.modelNumber})`
-                        }}
-                      </p>
-                      <p class="text-xs text-gray-400">
-                        {{ actor.version.component }}
-                      </p>
-                    </div>
+                      <div>
+                     <div class="w-full mt-5" v-if="singleId == actor.id">
+                       <div class="mb-5">
+                          <div class="font-semibold mb-1.5 leading-none text-sm">
+                            Role <span class="text-red-500">*</span>
+                          </div>
+                          <cornie-select
+                            :items="practitionerRoles"
+                            v-model="role"
+                            placeholder="--Select--"
+                            class="mb-0"
+                            required
+                          ></cornie-select>
+                        </div>
+                        <div class="mb-5">
+                          <div class="font-semibold -mb-1 leading-none text-sm">
+                            Period <span class="text-red-500">*</span>
+                          </div>
+                          <d-range-picker
+                            placeholder="--Select--"
+                            v-model="period"
+                            class="w-full"
+                          ></d-range-picker>
+                        </div>
+                        
+                     
+                     </div>
                   </div>
-                  <cornie-radio
-                    v-model="selectedEntity"
-                    name="entity"
-                    :value="actor.id"
-                    @update:modelValue="selectEntity"
-                  ></cornie-radio>
                 </div>
               </template>
             </div>
           </div>
-          <div class="mb-1">
-            <div class="font-semibold -mb-1 leading-none text-sm">
-              Period <span class="text-red-500">*</span>
-            </div>
-            <d-range-picker
-              placeholder="--Select--"
-              v-model="period"
-              class="w-full"
-            ></d-range-picker>
-          </div>
-          <div>
-            <div class="font-semibold mb-1.5 leading-none text-sm">
-              Status <span class="text-red-500">*</span>
-            </div>
-            <cornie-select
-              :items="['Active', 'Inactive']"
-              v-model="status"
-              placeholder="--Select--"
-              class="mb-0"
-              required
-            ></cornie-select>
-          </div>
-          <div class="flex justify-end w-full mt-1 mb-1">
-            <button
-              class="rounded-md mt-1 py-1 px-4 border border-primary focus:outline-none font-bold hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-              @click="show = false"
-              type="button"
-            >
-              Cancel
-            </button>
-            <cornie-btn
-              type="button"
-              class="bg-danger rounded-md text-white mt-1 py-1 px-4 font-bold focus:outline-none hover:opacity-90 w-1/3"
-              @click="updateSelectedActors"
-            >
-              Apply
-            </cornie-btn>
-          </div>
+
+        
         </cornie-card-text>
+
+          <cornie-card>
+        <cornie-card-text class="flex justify-end">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            :loading="loading"
+           @click="save"
+            class="text-white bg-danger px-6 rounded-xl"
+           >
+            Save
+          </cornie-btn>
+
+        </cornie-card-text>
+      </cornie-card>
       </cornie-card>
     </cornie-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { cornieClient } from "@/plugins/http";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import IPractitioner from "@/types/IPractitioner";
+import IPractitioner, {
+    PractitionerLocationRole,
+  } from "@/types/IPractitioner";
 import IDevice from "@/types/IDevice";
 import CheckBox from "@/components/corniecheckbox.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
-import PlusIcon from "@/components/icons/plus.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
@@ -179,6 +221,7 @@ import { namespace } from "vuex-class";
 
 const practitioner = namespace("practitioner");
 const device = namespace("device");
+const roles = namespace("roles");
 
 @Options({
   components: {
@@ -191,7 +234,6 @@ const device = namespace("device");
     IconInput,
     SearchIcon,
     CloseIcon,
-    PlusIcon,
     CornieSelect,
     CornieRadio,
     CornieDatePicker,
@@ -199,8 +241,14 @@ const device = namespace("device");
   },
 })
 export default class AddActor extends Vue {
-  @Prop({ type: Boolean, default: false })
-  visible!: Boolean;
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+
+  @Prop({ type: String, default: "" })
+  groupId!: string;
+
+  @Prop({ type: String, default: "" })
+  memberid!: string;
 
   @Prop({ type: String, default: "" })
   memberToDelete!: string;
@@ -222,10 +270,15 @@ export default class AddActor extends Vue {
   @device.Action
   fetchDevices!: () => Promise<boolean>;
 
+    @roles.State
+    roles!: { id: string; name: string }[];
+
+    @roles.Action
+    getRoles!: () => Promise<void>;
+
   search = "" as string;
   required = true as boolean;
   actors = [] as any;
-  show = false as boolean;
   loading = false as boolean;
   title = "" as string;
   selectedActors = [] as any;
@@ -233,6 +286,8 @@ export default class AddActor extends Vue {
   selectedEntity = "";
   period = "";
   status = "Active";
+  singleId = "";
+  role = "";
 
   @Watch("memberToDelete")
   updateSelectedMember() {
@@ -263,7 +318,7 @@ export default class AddActor extends Vue {
         type: this.entity,
         image: practitioner?.image,
         period: this.period,
-        status: this.status,
+        role: this.getPractionerRoleName(this.role),
       };
 
       this.selectedActors = [item];
@@ -281,7 +336,7 @@ export default class AddActor extends Vue {
         type: this.entity,
         image: "",
         period: this.period,
-        status: this.status,
+        role: this.getPractionerRoleName(this.role),
       };
 
       this.selectedActors = [item];
@@ -298,6 +353,19 @@ export default class AddActor extends Vue {
       this.actors = <IDevice[]>[...this.devices];
     }
   }
+
+    changed(id:string) {
+      this.singleId = id;
+    }
+    
+  getPractionerRoleName(id: string) {
+    const pt = this.roles.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+
+    get practitionerRoles() {
+      return this.roles.map((role) => ({ code: role.id, display: role.name }));
+    }
 
   get filteredActors() {
     if (this.entity === "Practitioner") {
@@ -321,7 +389,58 @@ export default class AddActor extends Vue {
     this.period = "";
   }
 
+    get payload() {
+    return {
+      members: this.selectedActors.map((item: any) => {
+        return {
+          userId: item.id,
+          period: item.period,
+          status: item.status,
+        };
+      }),
+    };
+  }
+
+  async save(){
+    this.loading = true;
+    if (this.groupId) await this.submit();
+    else await this.updateSelectedActors();
+    this.loading = false;
+  }
+   async submit() {
+    this.loading = true;
+    if (this.memberid) await this.updateGroup();
+    else await this.createGroup();
+    this.loading = false;
+  }
+  async createGroup() {
+    try {
+      const response = await cornieClient().post("/api/v1/groupMembers", this.payload);
+      if (response.success) {
+        window.notify({ msg: "Group members created", status: "success" });
+        this.show = false;
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Group not created", status: "error" });
+    }
+  }
+
+  async updateGroup() {
+    const url = `/api/v1/groupMembers/${this.memberid}`;
+    const payload = { ...this.payload };
+    try {
+      const response = await cornieClient().put(url, payload);
+      if (response.success) {
+        window.notify({ msg: "Group updated", status: "success" });
+        this.show = false;
+      }
+    } catch (error) {
+      window.notify({ msg: "Group not updated", status: "error" });
+    }
+  }
+
   async created() {
+    await this.getRoles();
     if (!this.practitioners.length) await this.fetchPractitioners();
     if (!this.devices.length) await this.fetchDevices();
     this.actors = <IPractitioner[]>[...this.practitioners];

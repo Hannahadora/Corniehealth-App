@@ -2,10 +2,12 @@ import ObjectSet from "@/lib/objectset";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import { StoreOptions } from "vuex";
 import { deleteAppointmentroom, fetchAppointmentrooms } from "./helper";
+import IPageInfo from "@/types/IPageInfo";
 
 interface AppointmentRoomState {
   appointmentrooms: IAppointmentRoom[];
   practitioners: any[];
+  pageInfo : IPageInfo;
 }
 
 export default {
@@ -13,8 +15,12 @@ export default {
   state: {
     appointmentrooms: [],
     practitioners: [],
+    pageInfo: {},
   },
   mutations: {
+    setPageInfo(state, pageInfo){
+      state.pageInfo = pageInfo;
+    },
     setAppointmentrooms(state, appointmentrooms: IAppointmentRoom[]) {
       state.appointmentrooms = [...appointmentrooms];
     },
@@ -47,9 +53,11 @@ export default {
     },
   },
   actions: {
-    async fetchAppointmentrooms(ctx) {
-      const appointmentrooms = await fetchAppointmentrooms();
-      ctx.commit("setAppointmentrooms", appointmentrooms);
+    async fetchAppointmentrooms(ctx,  payload? : {page:number, limit:number}) {
+      const { page, limit } = payload ?? {}
+      const { data, pageInfo } = await fetchAppointmentrooms(page ?? 1, limit ?? 10);
+      ctx.commit("setAppointmentrooms", data);
+      ctx.commit("setPageInfo", pageInfo);
     },
     async addAppointmentRoom(ctx, appointmentroom: IAppointmentRoom) {
       ctx.commit("addAppointmentRoom", appointmentroom);
@@ -65,5 +73,10 @@ export default {
       const removed = await deleteAppointmentroom(id);
       if (removed) ctx.commit("deleteAppointmentroom", id);
     },
+    async pageSwitch(ctx, page:number){
+      const appointmentrooms = await fetchAppointmentrooms();
+      ctx.commit("setAppointmentrooms", appointmentrooms);
+      ctx.commit("setPageInfo", appointmentrooms);
+    }
   },
 } as StoreOptions<AppointmentRoomState>;

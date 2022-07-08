@@ -12,7 +12,7 @@
       <cornie-table :columns="headers" v-model="sortHistory" @refresh="fetchHistorys">
         <template #actions="{ item }">
           <div
-            @click="viewHistory(item.id)"
+            @click="viewHistory(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-blue-300 fill-current" />
@@ -122,6 +122,7 @@
 
     <view-modal
       :id="historyId"
+      :selectedItem="selectedItem"
       :updatedBy="updatedBy"
       :currentStatus="currentStatus"
       :dateUpdated="update"
@@ -209,7 +210,7 @@ export default class ExistingState extends Vue {
   currentStatus = "";
   update = "";
   practitionerId = "";
-  selectedItem = [] as any;
+  selectedItem = {} as any;
 
   headers = [
     {
@@ -295,9 +296,10 @@ export default class ExistingState extends Vue {
     else window.notify({ msg: "Family history not deleted", status: "error" });
   }
 
-  async viewHistory(value: string) {
+  async viewHistory(item: any) {
     this.viewHistoryModal = true;
-    this.historyId = value;
+     this.selectedItem = item;
+    this.historyId = item.id;
   }
   async showStatus(item: any) {
     this.showStatusModal = true;

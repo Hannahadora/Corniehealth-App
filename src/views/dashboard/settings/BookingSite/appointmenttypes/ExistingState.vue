@@ -1,50 +1,71 @@
 <template>
-  <div>
-    <!-- <div
-      class="w-full py-40 mt-12 flex flex-col justify-center items-center"
-      v-if="empty"
-    >
-      <img src="@/assets/type.svg" class="mb-2" />
-      <h4 class="text-black text-center">
-        There are no appointment types on record.
-      </h4>
-      <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
-        @click="registerNew = true"
-      >
-        Add New
-      </cornie-btn>
-    </div> -->
-    <div class="w-full h-full pb-7">
-      <div class="flex justify-end items-center mb-6">
+  <div class="h-screen">
+    <div class="w-full h-full pb-7 mt-5">
+      <!-- <div class="flex justify-end items-center mb-6">
         <cornie-btn
-          class="bg-danger px-3 rounded-full text-white m-5"
+          class="bg-danger px-3 rounded-lg text-white m-5"
           @click="registerNew = true"
         >
           Add New
         </cornie-btn>
-      </div>
+      </div> -->
 
       <cornie-table :columns="rawHeaders" v-model="items" :check="false">
-        <template #actions="{ item }">
+        <template #actions>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showTypeModal(item.id)"
           >
-            <edit-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
+            <eye-icon class="text-blue-400 fill-current" />
+            <span class="ml-3 text-xs">View Availability</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
+           
           >
-            <delete-icon class="text-danger fill-current" />
-            <span class="ml-3 text-xs">Delete</span>
+            <edit-icon class="text-purple-500 fill-current" />
+            <span class="ml-3 text-xs">Edit Service</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showConfirmModal = true"
+          >
+            <calendar-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Confirm Appointment</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          
+          >
+            <link-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Link Form</span>
+          </div>
+
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          
+          >
+            <copy-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Copy Site Link </span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            
+          >
+            <share-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Share Site Link</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+           
+          >
+            <deactivate-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Deactivate</span>
           </div>
         </template>
       </cornie-table>
     </div>
   </div>
+  <appointmentconfirm-modal v-model="showConfirmModal"/>
   <appointment-modal
     :id="typeId"
     v-model="registerNew"
@@ -54,6 +75,19 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { cornieClient } from "@/plugins/http";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { Prop } from "vue-property-decorator";
+import search from "@/plugins/search";
+import { namespace } from "vuex-class";
+
+
+import { IDesignation } from "@/types/IDesignation";
+import IAppointmentTypes from "@/types/IAppointmentTypes";
+import ICatalogueService from "@/types/ICatalogue";
+import IPractitioner from "@/types/IPractitioner";
+
+
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -63,20 +97,22 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import AppointmentModal from "./Appointmentdialog.vue";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-import search from "@/plugins/search";
-import { namespace } from "vuex-class";
+
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import { IDesignation } from "@/types/IDesignation";
-import { Prop } from "vue-property-decorator";
-import IAppointmentTypes from "@/types/IAppointmentTypes";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import ICatalogueService from "@/types/ICatalogue";
-import { cornieClient } from "@/plugins/http";
-import IPractitioner from "@/types/IPractitioner";
+import EyeIcon from "@/components/icons/eye.vue";
+import CalendarIcon from "@/components/icons/newcalendar.vue";
+import LinkIcon from "@/components/icons/link.vue";
+import CopyIcon from "@/components/icons/copy.vue";
+import ShareIcon from "@/components/icons/shareIcon.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+
+import AppointmentModal from "./Appointmentdialog.vue";
+import AppointmentconfirmModal from "./confrimModal.vue";
+
+
 const userStore = namespace("user");
 
 const designation = namespace("designation");
@@ -100,6 +136,13 @@ const catalogues = namespace("catalogues");
     TableOptions,
     AppointmentModal,
     SideModal,
+    EyeIcon,
+    CalendarIcon,
+    LinkIcon,
+    CopyIcon,
+    ShareIcon,
+    DeactivateIcon,
+    AppointmentconfirmModal,
   },
 })
 export default class AppointmentTypes extends Vue {
@@ -110,6 +153,7 @@ export default class AppointmentTypes extends Vue {
   query = "";
   practitioner = [] as any;
   typeId = "";
+  showConfirmModal = false;
 
   @appointmentType.State
   appointmentTypes!: IAppointmentTypes[];
@@ -163,8 +207,6 @@ export default class AppointmentTypes extends Vue {
     },
   ];
 
-  @designation.Action
-  deleteDesignation!: (id: string) => Promise<void>;
 
   closeModal() {
     this.registerNew = false;
@@ -176,29 +218,38 @@ export default class AppointmentTypes extends Vue {
   async typeadded() {
     await this.fetchappointmentTypes();
   }
-  get items() {
-    const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
-      (appointmentType as any).createdAt = new Date(
-        (appointmentType as any).createdAt
-      ).toLocaleDateString("en-US");
-      return {
-        ...appointmentType,
-        action: appointmentType.id,
+  // get items() {
+  //   const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
+  //     (appointmentType as any).createdAt = new Date(
+  //       (appointmentType as any).createdAt
+  //     ).toLocaleDateString("en-US");
+  //     return {
+  //       ...appointmentType,
+  //       action: appointmentType.id,
+  //       keydisplay: "XXXXXXX",
+  //       service: this.getServiceName(appointmentType.serviceId),
+  //       duration: this.getDuration(appointmentType.serviceId),
+  //       forms: "-----",
+  //       practitioners:
+  //         this.authPractitioner.firstName +
+  //         " " +
+  //         this.authPractitioner.lastName,
+  //       booking: "-----",
+  //       status: "Active",
+  //     };
+  //   });
+  //   if (!this.query) return appointmentTypes;
+  //   return search.searchObjectArray(appointmentTypes, this.query);
+  // }
+   get items() {
+      return [{
         keydisplay: "XXXXXXX",
-        service: this.getServiceName(appointmentType.serviceId),
-        duration: this.getDuration(appointmentType.serviceId),
         forms: "-----",
-        practitioners:
-          this.authPractitioner.firstName +
-          " " +
-          this.authPractitioner.lastName,
         booking: "-----",
         status: "Active",
-      };
-    });
-    if (!this.query) return appointmentTypes;
-    return search.searchObjectArray(appointmentTypes, this.query);
+      }];
   }
+
   showTypeModal(value: string) {
     this.registerNew = true;
     this.typeId = value;
@@ -234,9 +285,7 @@ export default class AppointmentTypes extends Vue {
     this.practitioner = response[0].data;
   }
   async created() {
-    await this.fetchappointmentTypes();
-    await this.getServices();
-    await this.fetchPractitioner();
+  
   }
 }
 </script>
