@@ -304,7 +304,10 @@
         >
           Cancel
         </div>
-        <div class="flex items-center mb-6" v-if="request?.status !== 'dispensed'">
+        <div
+          class="flex items-center mb-6"
+          v-if="request?.status !== 'dispensed'"
+        >
           <!-- <div class="relative">
            <cornie-btn
               @click="openPostOptions = true"
@@ -456,6 +459,7 @@ import { IOrganization } from "@/types/IOrganization";
 
 const dispense = namespace("dispense");
 const user = namespace("user");
+const request = namespace("request");
 
 @Options({
   name: "ViewRequestModal",
@@ -531,6 +535,12 @@ export default class ViewRequest extends Vue {
   @dispense.Action
   fetchMedReq!: (locationId: string) => Promise<void>;
 
+  @request.State
+  requests!: any[];
+
+  @request.Action
+  fetchRequests!: () => Promise<void>;
+
   @dispense.State
   dispense!: IDispenseInfo;
 
@@ -585,26 +595,18 @@ export default class ViewRequest extends Vue {
   ];
 
   get items() {
-    // const requests = this.request?.medications?.map((request: any) => {
-    //   const refillses = this.request?.medications?.map(
-    //     (medication: any) => medication.refills
-    //   );
-    //   return {
-    //     ...request,
-    //     action: request.brandCode,
-    //     refils: refillses[0],
-    //   };
-    // });
-
-    const requests = this.request?.refills?.map((el: any) => {
+    const requests = this.requests.map((request) => {
+      const refillses = request.medications.map(
+        (medication: any) => medication.refills
+      );
       return {
-        ...el
-      }
-  })
+        ...request,
+        action: request.id,
+        refils: refillses[0],
+      };
+    });
 
     return requests;
-    // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
   }
 
   modifyItem(value: any) {
@@ -639,7 +641,6 @@ export default class ViewRequest extends Vue {
   }
 
   async setRequest() {
-    // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
         `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.id}`
