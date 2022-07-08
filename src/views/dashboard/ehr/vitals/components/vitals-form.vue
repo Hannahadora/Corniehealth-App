@@ -530,59 +530,69 @@ export default class VitalsForm extends Vue {
   }
 
   get payload() {
-    const data: any = {
-      respiration: undefined,
-      circumferences: undefined,
-      bodyWeight: undefined
-    };
+    const data: any = {};
+    const respiration: any = {};
+    const circumferences: any = {};
+    const bodyWeight: any = {};
     if (
       this.vitalData.bodyTemperature.unit &&
       this.vitalData.bodyTemperature.value
     )
       data.bodyTemperature = this.vitalData.bodyTemperature;
-    if (this.vitalData.respiration.respiratoryRate.value && this.vitalData.respiration.respiratoryRate.unit) {
-      data.respiration.respiratoryRate =
-        this.vitalData.respiration.respiratoryRate;
+    if (
+      this.vitalData.respiration.respiratoryRate.value &&
+      this.vitalData.respiration.respiratoryRate.unit
+    ) {
+      respiration.respiratoryRate = this.vitalData.respiration.respiratoryRate;
     }
-    if (this.vitalData.respiration.heartRate.value && this.vitalData.respiration.heartRate.unit) {
-      data.respiration.heartRate = this.vitalData.respiration.heartRate;
+    if (
+      this.vitalData.respiration.heartRate.value &&
+      this.vitalData.respiration.heartRate.unit
+    ) {
+      respiration.heartRate = this.vitalData.respiration.heartRate;
     }
-    if (this.vitalData.respiration.oxygenSaturation.value && this.vitalData.respiration.oxygenSaturation.unit) {
-      data.respiration.oxygenSaturation =
+    if (
+      this.vitalData.respiration.oxygenSaturation.value &&
+      this.vitalData.respiration.oxygenSaturation.unit
+    ) {
+      respiration.oxygenSaturation =
         this.vitalData.respiration.oxygenSaturation;
     }
     if (
       this.vitalData.respiration.bloodGlucoseLevel.value &&
       this.vitalData.respiration.bloodGlucoseLevel.unit
     ) {
-      data.respiration.bloodGlucoseLevel =
+      respiration.bloodGlucoseLevel =
         this.vitalData.respiration.bloodGlucoseLevel;
     }
     if (
       this.vitalData.circumferences.bodyHeight.value &&
       this.vitalData.circumferences.bodyHeight.unit
     ) {
-      data.circumferences.bodyHeight = this.vitalData.circumferences.bodyHeight;
+      circumferences.bodyHeight = this.vitalData.circumferences.bodyHeight;
     }
     if (
       this.vitalData.circumferences.headCircumferences.value &&
       this.vitalData.circumferences.headCircumferences.unit
     ) {
-      data.circumferences.headCircumferences =
+      circumferences.headCircumferences =
         this.vitalData.circumferences.headCircumferences;
     }
     if (
       this.vitalData.bodyWeight.bodyWeight.value &&
       this.vitalData.bodyWeight.bodyWeight.unit
     ) {
-      data.bodyWeight.bodyWeight = this.vitalData.bodyWeight.bodyWeight;
+      bodyWeight.bodyWeight = this.vitalData.bodyWeight.bodyWeight;
     }
     if (this.bmi) {
-      (data.bodyWeight.bodyMassIndex.value as any) = this.bmi;
-      data.bodyWeight.bodyMassIndex.unit =
+      bodyWeight.bodyMassIndex.value = this.bmi;
+      bodyWeight.bodyMassIndex.unit =
         this.vitalData.bodyWeight.bodyMassIndex.unit;
     }
 
+    data.circumferences = Object.keys(circumferences).length > 0 ? circumferences : undefined 
+    data.respiration = Object.keys(respiration).length > 0 ? respiration : undefined 
+    data.bodyWeight = Object.keys(bodyWeight).length > 0 ? bodyWeight : undefined 
     data.patientId = this.patientId;
     data.practitionerId = this.practitionerId;
     data.bloodPressure = this.collectedPressures.length
@@ -600,6 +610,7 @@ export default class VitalsForm extends Vue {
   }
 
   async createVitals() {
+    console.log('payload', this.payload)
     try {
       this.loading = true;
       const res: any = await this.createVital(this.payload as any);
