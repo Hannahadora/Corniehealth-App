@@ -134,7 +134,7 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "add-appointment/:id?",
-      props: (route) => ({
+      props: route => ({
         slotId: route.query.slot,
         id: route.params.id,
         practitionersId: route.query.practitioner,
@@ -151,14 +151,14 @@ export const ExperienceRoutes: RouteRecordRaw = {
     },
     {
       path: "calendar/:practitionerId?",
-      props: (route) => ({ practitionerId: route.query.practitioner }),
+      props: route => ({ practitionerId: route.query.practitioner }),
       name: "Calendar",
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },
     {
       path: "actor-calendar/:practitionerId?",
-      props: (route) => ({ practitionerId: route.query.practitioner }),
+      props: route => ({ practitionerId: route.query.practitioner }),
       component: () =>
         import("@/views/dashboard/patientexp/calendar/index.vue"),
     },
