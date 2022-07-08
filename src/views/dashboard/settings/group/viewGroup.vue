@@ -197,10 +197,10 @@ export default class AddGroup extends Vue {
   loading = false;
 
   state = "";
-  status = false;
+  status = "Active";
   type = "";
   name = "";
-  code = "";
+  code = null;
   quantity = "";
   managingEntity = "";
   characteristicsCode = "";
@@ -277,13 +277,7 @@ export default class AddGroup extends Vue {
     };
   }
 
-  async setValue(value: string) {
-    if (value == "Active") {
-      this.status = true;
-    } else {
-      this.status = false;
-    }
-  }
+
 
   async created() {
     this.setGroup();

@@ -19,5 +19,7 @@ export interface IOrganization {
   practiceSubType?: string;
   address?: string;
   email: string,
+  createdAt: string;
+  
   
 }

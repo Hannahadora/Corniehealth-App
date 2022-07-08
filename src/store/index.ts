@@ -62,6 +62,10 @@ import UserSettingsStore from "./usersettings";
 import VisitsStore from "./visits";
 import VitalsStore from "./vitals";
 import WaybillStore from "./waybill";
+import PracticeImageStore from "./practiceimage";
+import BookingsiteStore from "./bookingsite";
+import PreferenceStore from "./preference";
+import RatingStore from "./ratings";
 
 export default createStore({
   modules: {
@@ -133,7 +137,11 @@ export default createStore({
     materialrequest: MaterialrequestStore,
     materialreturn: MaterialreturnStore,
     waybill: WaybillStore,
+    practiceimage: PracticeImageStore,
 
     encounter: encounter,
+    bookingsite: BookingsiteStore,
+    preference: PreferenceStore,
+    rating: RatingStore,
   },
 } as StoreOptions<any>);
