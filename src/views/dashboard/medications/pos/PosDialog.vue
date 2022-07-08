@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/3 h-full">
+  <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll"
@@ -179,12 +179,12 @@
             <div>
               <full-payment
                 v-if="activeTab === 'Full Payment'"
-                :payments="payments"
+                :payments="fullPayments"
                 :salesData="salesData"
               />
               <split-payment
                 v-if="activeTab === 'Split Payment'"
-                :payments="payments"
+                :payments="splitPayments"
                 :salesData="salesData"
               />
             </div>
@@ -291,7 +291,6 @@ import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import FullPayment from "./components/FullPayment.vue";
 import SplitPayment from "./components/SplitPayment.vue";
-import QuantityInput from "./components/QuantityInput.vue";
 import AddCustomer from "./AddCustomer.vue";
 import AddMedications from "./AddMedications.vue";
 import CornieSearch from "@/components/search-input.vue";
@@ -330,7 +329,6 @@ const user = namespace("user");
     AddMedications,
     DeleteIcon,
     EditIcon,
-    QuantityInput,
     corninuminput,
   },
 })
@@ -370,9 +368,15 @@ export default class PosDialog extends Vue {
   reference = "";
   salesDate = "";
   medications = [] as any[];
-
+  fullPayments: any = [{
+    amount: this.grandTotal,
+    total: this.grandTotal,
+    paymentType: ""
+  }];
+  splitPayments: any = [{}];
   @user.Getter
   authCurrentLocation!: any;
+
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -426,7 +430,6 @@ export default class PosDialog extends Vue {
 
   printLineTotal(item: any) {
     const lineTotal = item.quantity * item.unitPrice;
-    console.log("lineTotal", lineTotal);
     return lineTotal;
   }
 
@@ -439,23 +442,13 @@ export default class PosDialog extends Vue {
   }
 
   get subTotal() {
-    const lineTotal = this.items?.map((item: any) => item.lineTotal);
+    const lineTotal = this.items?.map((item: any) => this.printLineTotal(item));
     const subTotal = lineTotal.reduce((a: any, b: any) => a + b, 0);
     return Number(subTotal - this.totalDiscount).toFixed(2);
   }
 
   get grandTotal() {
     return Number(this.subTotal + this.shippingCost).toFixed(2);
-  }
-
-  get payments() {
-    return [
-      {
-        amount: this.grandTotal,
-        paymentType: "",
-        total: this.grandTotal,
-      },
-    ];
   }
 
   fetchCustomers(query: string) {
@@ -516,6 +509,7 @@ export default class PosDialog extends Vue {
     } else if (type === 1) {
       this.status = "completed";
     }
+
     const newSales = {
       patientId: this.customerId,
       type: this.type,
@@ -529,11 +523,15 @@ export default class PosDialog extends Vue {
           quantity: el.quantity,
         };
       }),
-      payments: this.payments,
       customer: {
         name: this.customerId,
       },
+      payments: this.activeTab === 'Full Payment' ? this.fullPayments : this.splitPayments,
     };
+    newSales.payments.map((payment: any) => {
+      payment.total = this.grandTotal
+      payment.amount = this.grandTotal
+    })
     try {
       const { data } = await cornieClient().post(
         `/api/v1/pharmacy/pos-dispense/${this.locationId}`,
@@ -561,11 +559,6 @@ export default class PosDialog extends Vue {
   }
 
   deleteItem(index: any) {
-    // this.medications.find((el: any) => {
-    //   el.id === itemId;
-    //   this.medications.splice(el);
-    // });
-    // this.medications.filter((el: any) => el.id !== itemId)
     this.medications.splice(index, 1);
   }
 
