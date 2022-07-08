@@ -5,10 +5,7 @@
       v-if="empty"
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
-      <h4 class="text-black text-center">There is no record.</h4>
-      <cornie-btn class="bg-danger px-3 rounded-full text-white m-5">
-        Add New
-      </cornie-btn>
+      <h4 class="text-black text-center">There is no dispensed medication.</h4>
     </div>
     <div class="w-full pb-7" v-else>
       <div class="grid grid-cols-3 gap-8 mt-8 pb-20">

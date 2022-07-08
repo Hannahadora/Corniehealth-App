@@ -99,16 +99,6 @@
                 width="w-11/12"
               />
             </div>
-            <!-- <div class="" v-if="assessorItem">
-              <label
-                for="assessor"
-                @click="showAssessor"
-                class="cursor-pointer flex capitalize text-black text-sm font-bold"
-                >assessor
-              </label>
-              <cornie-input class="w-full" v-model="assessorItem">
-              </cornie-input>
-            </div> -->
 
             <div>
               <div class="w-full relative">
@@ -346,17 +336,17 @@
                 :key="index"
               >
                 <p class="text-red-500 text-sm font-medium mb-2">
-                  {{ record?.itemReference.referenceType }}
+                  {{ record?.itemType.referenceType }}
                 </p>
                 <div class="w-11/12" style="border-right: 1px dashed #878e99">
                   <div class="w-full flex items-center">
                     <div class="w-8/12 flex flex-col">
                       <div>
                         <p>
-                          {{ record?.itemReference.description }}
+                          {{ record?.itemType.description }}
                         </p>
                         <p>
-                          {{ record?.itemReference.details }}
+                          {{ record?.itemType.details }}
                         </p>
                       </div>
                     </div>
@@ -390,7 +380,7 @@
             <cornie-select
               class="w-full"
               label="Item Reference"
-              :items="observations.map((el) => el.code)"
+              :items="mappedObservations"
               v-model="impressionModel.prognosis.itemReference"
             >
             </cornie-select>
@@ -462,34 +452,16 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieCard from "@/components/cornie-card";
-import Textarea from "@/components/textarea.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import CornieRadio from "@/components/cornieradio.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from "@/components/icons/info.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/autocomplete.vue";
 import MainCornieSelect from "@/components/cornieselect.vue";
 import CorniePhoneInput from "@/components/phone-input.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
-import NoteIcon from "@/components/icons/graynote.vue";
 import { cornieClient } from "@/plugins/http";
-import DEdit from "@/components/icons/aedit.vue";
-import RangeSlider from "@/components/range.vue";
-import CDelete from "@/components/icons/adelete.vue";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "@/components/icons/search.vue";
-// import AccordionComponent from "@/components/dialog-accordion.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
-import DatePicker from "./components/datepicker.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import Period from "@/types/IPeriod";
 import IImpression from "@/types/IImpression";
-import EncounterSelect from "./encounter-select.vue";
 import DateTimePicker from "./components/datetime-picker.vue";
 import AssesorModal from "./assesor.vue";
 import ProblemModal from "./problemdialog.vue";
@@ -497,7 +469,6 @@ import ItemModal from "./itemdailog.vue";
 import ReferenceModal from "./reference.vue";
 import { namespace } from "vuex-class";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
-// import CornieCheckbox from "@/components/corniecheckbox.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import FhirInput from "@/components/fhir-input.vue";
 
@@ -515,19 +486,16 @@ const emptyImpression: any = {
   basicInfo: <any>{
     code: "",
     description: undefined,
-    // subject: "subject",
-    // encounter: "c5903ec6-20ac-47ee-b652-a562e5df7379",
   },
   effective: {
     effectiveDate: undefined,
-    // effectivePeriod: {} as Period,
     effectivePeriod: {
       start: undefined,
       end: undefined,
     } as any,
   },
   investigation: [] as { item: any }[],
-  findings: [] as { itemReference: any[]; basis: "" }[],
+  findings: [] as { itemType: any[]; basis: "" }[],
   prognosis: {
     itemCode: undefined,
     itemReference: undefined,
@@ -549,25 +517,10 @@ const emptyImpression: any = {
 @Options({
   name: "impressionDialog",
   components: {
-    ...CornieCard,
-    CornieIconBtn,
-    NoteIcon,
-    ArrowLeftIcon,
-    DatePicker,
-    RangeSlider,
-    DEdit,
     AssesorModal,
     ProblemModal,
-    CDelete,
-    CancelIcon,
-    InfoIcon,
-    EncounterSelect,
-    CornieDialog,
     DateTimePicker,
-    SearchIcon,
     AccordionComponent,
-    IconInput,
-    Textarea,
     CornieInput,
     CornieSelect,
     CorniePhoneInput,
@@ -577,7 +530,6 @@ const emptyImpression: any = {
     CornieBtn,
     MainCornieSelect,
     PlusIcon,
-    IconBtn,
     DeleteIcon,
     ClinicalDialog,
     CornieCheckbox,
@@ -664,6 +616,9 @@ export default class Impression extends Vue {
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
+  }
+  get mappedObservations() {
+    return this.observations.map((el: any) => el.code);
   }
   async apply() {
     this.loading = true;
