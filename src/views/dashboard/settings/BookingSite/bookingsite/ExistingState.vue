@@ -17,9 +17,10 @@
             v-model="enabled"
             label="Yes"
             :value="true"
-            checked
+            :checked="true"
           />
           <cornie-radio
+          @click="apply"
             name="bookingsite"
             v-model="enabled"
             :value="false"
@@ -31,8 +32,6 @@
         <domain-input
           label="URL:"
           placeholder="--Enter--"
-          :rules="requiredRule"
-          :modelValue="orgValue"
           v-model="url"
         />
         <div class="flex space-x-4 w-full">
@@ -54,7 +53,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DomainInput from "@/components/newdomaininput.vue";
-import { Prop } from "vue-property-decorator";
+import { Prop, Watch } from "vue-property-decorator";
 import { LevelCollection, Tag } from "@/types/ILevel";
 import { cornieClient } from "@/plugins/http";
 import DeleteIcon from "@/components/icons/delete.vue";
@@ -63,7 +62,11 @@ import EditIcon from "@/components/icons/edit.vue";
 import ShareIcon from "@/components/icons/newshare.vue";
 import AddLevel from "./add-level.vue";
 import { namespace } from "vuex-class";
+import { IOrganization } from "@/types/IOrganization";
+import IBookingsite from "@/types/IBookingsite";
 
+const organization = namespace("organization");
+const bookingsite = namespace("bookingsite");
 const level = namespace("OrgLevels");
 
 @Options({
@@ -83,12 +86,28 @@ const level = namespace("OrgLevels");
 export default class ExistingState extends Vue {
   @Prop({ type: Array, default: [], required: true })
   levels!: LevelCollection[];
-  id = "";
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @bookingsite.State
+  bookingsites!: IBookingsite;
+
+  @bookingsite.Action
+  getBookingsiteById!: (id: string) => IBookingsite;
+
+  @bookingsite.Action
+  fetchBookingsite!: () => Promise<void>;
 
   levelForEdit = {} as LevelCollection;
   editingLevel = false;
   type = "";
-  orgInfo = [] as any;
   enabled = false;
   loading = false;
   orgValue = "TheGCBGLobal";
@@ -99,16 +118,18 @@ export default class ExistingState extends Vue {
       enabled: this.enabled,
     };
   }
-  async fetchOrgInfo() {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/organization/myOrg/get"
-      );
-      this.orgInfo = response.data || {};
-    } catch (error) {
-      window.notify({ msg: "Could not fetch organization", status: "error" });
-    }
+
+  @Watch("id")
+  idChanged() {
+    this.setSite();
   }
+
+  async setSite() {
+    const site = await this.getBookingsiteById(this.payload.id);
+    if (!site) return;
+    this.enabled = site.enabled;
+  }
+
   async apply() {
     this.loading = true;
     await this.createBookingSite();
@@ -128,7 +149,6 @@ export default class ExistingState extends Vue {
         });
       }
     } catch (error) {
-      console.log(error);
       window.notify({
         msg: "Booking Site not Enabled",
         status: "error",
@@ -137,8 +157,10 @@ export default class ExistingState extends Vue {
   }
 
   async created() {
-    this.orgValue = this.orgInfo.domainName;
+    this.url = this.organizationInfo.domainName;
+    this.setSite()
     await this.fetchOrgInfo();
+    await this.fetchBookingsite();
   }
 }
 </script>

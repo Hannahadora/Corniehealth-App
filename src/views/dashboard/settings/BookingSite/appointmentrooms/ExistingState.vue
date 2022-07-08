@@ -7,7 +7,7 @@
       <img src="@/assets/rafiki.svg" class="mb-2" />
       <h4 class="text-black text-center">There are no rooms on record.</h4>
       <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
+        class="bg-danger px- rounded-lg text-white m-5"
         @click="showRoom = true"
       >
         Add New
@@ -16,19 +16,21 @@
     <div class="w-full pb-7" v-else>
       <span class="flex justify-end">
         <cornie-btn
-          class="bg-danger px-3 rounded-full text-white m-5"
+          class="bg-danger px-4 rounded-lf text-white m-5"
           @click="showRoom = true"
         >
           Add New
         </cornie-btn>
       </span>
-      <cornie-table :columns="rawHeaders" v-model="items">
+      <cornie-table :columns="rawHeaders" v-model="items"  :showPagination="true"
+        @pagechanged="fetchAppointmentrooms"
+        :pageInfo="pageInfo">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showAppointmentRoom(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update</span>
           </div>
           <div
@@ -38,37 +40,31 @@
             <delete-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Delete</span>
           </div>
+           <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+       
+          >
+            <deactivate-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Deactivate</span>
+          </div>
         </template>
       </cornie-table>
-      <div class="flex justify-between m-3">
-        <div class="flex justify-around">
-          <p class="text-sm">show</p>
-          <input
-            type="number"
-            class="w-12 mr-2 ml-2 outline-none border border-blue-lighter rounded-r"
-          />
-          <p class="text-sm">per page</p>
-        </div>
-        <div class="flex justify-around">
-          <p class="text-xs mr-3 mt-1">1-3 of 10 items</p>
-          <div class="text-xs mr-3 mt-1" style="fontsize: 6px">
-            <arrow-left-icon />
-          </div>
-
-          <!-- <delete-icon class="text-danger fill-current text-xs mr-2" /> -->
-          <p class="text-sm mr-3 text-xs">1 2 3 ... 10</p>
-          <div class="text-xs mt-1" style="fontsize: 5px">
-            <arrow-right-icon />
-          </div>
-          <!-- <delete-icon class="text-danger fill-current" /> -->
-        </div>
-      </div>
+      
     </div>
   </div>
   <room-dialog v-model="showRoom" :id="roomId" @room-added="roomAdded" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { first, getTableKeyValue } from "@/plugins/utils";
+
+
+import IPageInfo from "@/types/IPageInfo";
+import IAppointmentRoom from "@/types/IAppointmentRoom";
+
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -77,21 +73,21 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
-import { cornieClient } from "@/plugins/http";
-import RoomDialog from "./appoitmentRoomDialog.vue";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+
 import ArrowLeftIcon from "../components/arrowleft.vue";
+import RoomDialog from "./appoitmentRoomDialog.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
-import IAppointmentRoom from "@/types/IAppointmentRoom";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { first, getTableKeyValue } from "@/plugins/utils";
+
+
 
 const location = namespace("location");
 const appointmentRoom = namespace("appointmentRoom");
@@ -113,9 +109,10 @@ const appointmentRoom = namespace("appointmentRoom");
     EditIcon,
     ColumnFilter,
     TableOptions,
-
+    DeactivateIcon,
     ArrowLeftIcon,
     ArrowRightIcon,
+    UpdateIcon,
   },
 })
 export default class apponitmentRooms extends Vue {
@@ -136,6 +133,9 @@ export default class apponitmentRooms extends Vue {
 
   @appointmentRoom.Action
   fetchAppointmentrooms!: () => Promise<void>;
+
+  @appointmentRoom.State
+  pageInfo!: IPageInfo;
 
   @location.State
   locations!: ILocation[];

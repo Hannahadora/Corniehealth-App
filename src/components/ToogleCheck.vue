@@ -59,7 +59,7 @@ export default {
   position: relative;
   display: inline-flex;
   width: 75px;
-  height: 35px;
+  height: 40px;
 }
 .switch input {
   opacity: 0;
@@ -82,14 +82,15 @@ export default {
   content: "";
   height: 29px;
   width: 29px;
-  bottom: 4px;
+  bottom: 6px;
 
   background-color: white;
   transition: 0.4s;
 }
 
 input:checked + .slider:before {
-  left: 15px;
+  left: 13px;
+  top: 5px;
 }
 
 input:checked + .slider {

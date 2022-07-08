@@ -596,7 +596,7 @@ export default class ViewRequest extends Vue {
     //   };
     // });
 
-    const requests = this.request.refills.map((el: any) => {
+    const requests = this.request?.refills?.map((el: any) => {
       return {
         ...el
       }

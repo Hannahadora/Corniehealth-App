@@ -917,6 +917,8 @@ export default class AddPracticeform extends Vue {
   questionoptionsothers = [""] as any;
   questionoptionmainothers = [""] as any;
   showcancel = false;
+  showmainanswer = false;
+  showanswer = false;
   data: any = {
     days: [],
   };
@@ -977,7 +979,7 @@ export default class AddPracticeform extends Vue {
     };
   }
 
-  mainquestions: Questionmain[] = [];
+  mainquestions: Questionmain[] = [] as any;
   getEmptyMainQuestion(): Questionmain {
     return {
       question: "Type question here",

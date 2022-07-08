@@ -121,24 +121,24 @@
         class="col-span-2 bg-white shadow p-4 mr-6 flex flex-col justify-center"
       >
         <div class="flex flex-col items-center justify-center">
-          <img class="w-24 h-24" v-if="orgInfo.image" :src="orgInfo.image" />
+          <img class="w-24 h-24" v-if="organizationInfo?.image" :src="organizationInfo?.image" />
           <avatar class="mr-2 w-24 h-24" v-else :src="localSrc" />
           <star-icon class="mt-2" />
           <div class="text-gray-300 text-xs mt-2">
-            {{ orgInfo.registrationNumber }}
+            {{ organizationInfo?.registrationNumber }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-800 text-sm">Domain :</div>
           <div class="text-black text-sm">
-            {{ orgInfo.domainName }}
+            {{ organizationInfo?.domainName }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-600 text-sm">Active Since :</div>
-          <div v-if="orgInfo.createdAt" class="text-black text-sm">
+          <div v-if="organizationInfo?.createdAt" class="text-black text-sm">
             {{
-              new Date(orgInfo.createdAt).toLocaleDateString("en-US")
+              new Date(organizationInfo?.createdAt).toLocaleDateString("en-US")
             }}
           </div>
           <div v-else class="text-black text-sm">Nil</div>
@@ -146,19 +146,19 @@
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-600 text-sm">Address :</div>
           <div class="text-black text-sm">
-            {{ orgInfo.address }}
+            {{ organizationInfo?.address }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-600 text-sm">Email :</div>
           <div class="text-black text-sm">
-            {{ orgInfo.email }}
+            {{ organizationInfo?.email }}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
           <div class="text-gray-600 text-sm">Mobile :</div>
           <div class="text-black text-sm">
-            {{ orgInfo.mobile }}
+            {{ organizationInfo?.phone?.dialCode +' '+   organizationInfo?.phone?.number}}
           </div>
         </div>
         <div class="flex space-x-4 mt-2">
@@ -173,7 +173,7 @@
             <span class="text-black text-6m">24</span>
           </span>
         </div>
-        <a href="orgInfo.website" target="_blank" class="text-blue-500 underline text-sm mb-1">{{ orgInfo.website }}</a>
+        <a href="organizationInfo.website" target="_blank" class="text-blue-500 underline text-sm mb-1">{{ organizationInfo?.website }}</a>
 
         <!-- <div class="flex space-x-4 items-center justify-center mt-2">
           <span
@@ -190,7 +190,7 @@
         <div class="flex items-center justify-between mt-7 border-t border-dashed pt-4">
           <span class="text-gray-600 text-sm"
             >Account Owner:
-            <span class="text-black text-xs">{{ authPractitioner.firstName +' '+ authPractitioner.lastName}}</span>
+            <span class="text-black text-xs">{{ authPractitioner?.firstName +' '+ authPractitioner?.lastName}}</span>
           </span>
         </div>
 
@@ -363,8 +363,10 @@ import IPractitioner from "@/types/IPractitioner";
 import IPracticeInformation from "@/types/IPracticeInformation";
 import IPracticeHour from "@/types/IPracticeHours";
 import CopyIcon from "@/components/icons/copy.vue";
+import { IOrganization } from "@/types/IOrganization";
 
 const userStore = namespace("user");
+const organization = namespace("organization");
 
 const phoneRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -469,6 +471,12 @@ export default class CarePartnersExistingState extends Vue {
   @Prop({ type: Array, default: opHours })
   modelValue!: HoursOfOperation[];
 
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>
+
   @practiceinformation.State
   practiceInformations!: IPracticeInformation[];
 
@@ -511,7 +519,6 @@ export default class CarePartnersExistingState extends Vue {
   siteMessage = "";
   contactNumber = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
-  orgInfo = [] as any;
   dialCode = "+234";
   dateoptions = {
     weekday: "long",
@@ -616,16 +623,7 @@ export default class CarePartnersExistingState extends Vue {
   changed() {
     this.operationHours = this.operationHours;
   }
-  async fetchOrgInfo() {
-    try {
-      const response = await cornieClient().get(
-        "/api/v1/organization/myOrg/get"
-      );
-      this.orgInfo = response.data || {};
-    } catch (error) {
-      window.notify({ msg: "Could not fetch organization", status: "error" });
-    }
-  }
+
   allWeek(all: boolean) {
     if (!all) return;
     const opHours = [...this.operationHours].map((opHour) => ({
