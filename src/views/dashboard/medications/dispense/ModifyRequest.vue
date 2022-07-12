@@ -24,12 +24,11 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form class="flex-grow flex flex-col">
-          <cornie-select
+          <cornie-input
             class="w-full mt-6"
             label="Form"
             placeholder="--Select--"
             v-model="medication.form"
-            :items="medication.form"
             :disabled="true"
           />
           <cornie-input
@@ -69,12 +68,13 @@
             @click="show = false; substitute = false;"
             class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
           >
-            Save
+            Cancel
           </cornie-btn>
           <cornie-btn
             :loading="loading"
             type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
+            class="text-white bg-danger px-3 py-1 rounded-lg" 
+            @click="modifyMed(medication)"
           >
             Save & Continue
           </cornie-btn>
@@ -97,7 +97,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="substituteMed">
+        <v-form class="flex-grow flex flex-col">
           <cornie-select
             class="w-full"
             label="Prescribed medication"
@@ -165,6 +165,7 @@
             :loading="loading"
             type="submit"
             class="text-white bg-danger px-3 py-1 rounded-lg"
+             @click="substituteMed"
           >
             Substitute
           </cornie-btn>
@@ -289,7 +290,6 @@ export default class ModifyRequestModal extends Vue {
   }
 
   selected(item: any) {
-    console.log("item", item);
     this.selectedMed = item;
     this.medicationName = item.genericName
   }
@@ -300,9 +300,15 @@ export default class ModifyRequestModal extends Vue {
   }
 
   substituteMed() { 
-    this.$emit("medicationModified", this.selectedMed);
     this.show = false;
+    this.$emit("medicationSubstitued", this.selectedMed);
+    this.substitute = false;
   }
+  modifyMed(med: any) { 
+    this.show = false;
+    this.$emit("medicationModified", med);
+    this.substitute = false;
+  } 
 }
 </script>
 

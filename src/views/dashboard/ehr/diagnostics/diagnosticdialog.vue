@@ -127,8 +127,7 @@
                 label="Request code"
                 placeholder="--Select--"
               />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/servicerequest-orderdetail"
+              <cornie-input
                 v-model="otherrequestModel.request.orderDetail"
                 label="order detail"
                 class="w-full"
