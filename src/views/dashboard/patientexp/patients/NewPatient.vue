@@ -798,7 +798,7 @@
         dateOfBirth: this.dateOfBirth,
         bloodGroup: this.bloodGroup,
         identityNos: [{ type: this.idType, number: this.idNumber }],
-        profilePhoto: this.image || null,
+        profilePhoto: this.image || undefined,
         accountType: "individual",
       };
       if (this.id) {
