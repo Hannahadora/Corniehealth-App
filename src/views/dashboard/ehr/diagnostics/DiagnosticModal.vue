@@ -31,20 +31,28 @@
                   >
                   </cornie-input>
 
-                  <cornie-select
-                    class="required"
-                    :rules="required"
-                    :items="[
-                      'CarePlan',
-                      'MedicationRequest',
-                      'ServiceRequest',
-                      'ImmunizationRecommendation',
-                    ]"
-                    label="based on"
-                    placeholder="--Select--"
-                    v-model="basedOn"
+                  <div
+                    class="w-full cursor-pointer"
+                    @click="
+                      openReferenceModal('basedOn', [
+                        'CarePlan',
+                        'MedicationRequest',
+                        'ServiceRequest',
+                        'ImmunizationRecommendation',
+                      ])
+                    "
                   >
-                  </cornie-select>
+                    <cornie-input
+                      v-bind="$attrs"
+                      label="based on"
+                      placeholder="--Select--"
+                      v-model="basedOnInfo"
+                    >
+                      <template #append-inner>
+                        <plus-icon class="fill-current text-danger" />
+                      </template>
+                    </cornie-input>
+                  </div>
                   <cornie-select
                     class="required"
                     :rules="required"
@@ -102,8 +110,7 @@
                     :label="'Request code'"
                     v-model="reasonCode"
                   />
-                  <fhir-input
-                    reference="https://hl7.org/fhir/ValueSet/servicerequest-orderdetail"
+                  <cornie-input
                     :rules="required"
                     label="Order Detail (Optional)"
                     v-model="orderDetail"
@@ -214,15 +221,21 @@
           >
             <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3">
               <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-                <cornie-select
-                  class="required w-full"
-                  :rules="required"
-                  :items="['ServiceRequest']"
-                  label="Replaces"
-                  placeholder="--Select--"
-                  v-model="replaces"
+                <div
+                  class="w-full cursor-pointer"
+                  @click="openReferenceModal('replaces', ['ServiceRequest'])"
                 >
-                </cornie-select>
+                  <cornie-input
+                    v-bind="$attrs"
+                    label="Replaces"
+                    placeholder="--Select--"
+                    v-model="replaces"
+                  >
+                    <template #append-inner>
+                      <plus-icon class="fill-current text-danger" />
+                    </template>
+                  </cornie-input>
+                </div>
                 <div>
                   <label for="asNeeded">As Needed</label>
                   <div class="flex items-center space-x-6">
@@ -248,14 +261,21 @@
                   v-model="reasonCode"
                 >
                 </fhir-input>
-
-                <div class="w-full cursor-pointer" @click="showRef">
+                <div
+                  class="w-full cursor-pointer"
+                  @click="
+                    openReferenceModal('reasonReference', [
+                      'Observation',
+                      'Condition',
+                      'Media',
+                    ])
+                  "
+                >
                   <cornie-input
                     v-bind="$attrs"
                     label="Reason Reference"
-                    readonly
                     @click="showRef"
-                    v-model="reasonReference"
+                    v-model="reasonReferenceInfo"
                   >
                     <template #append-inner>
                       <plus-icon class="fill-current text-danger" />
@@ -336,12 +356,11 @@
     </cornie-card>
   </cornie-dialog>
 
-  <!-- <reference-modal
-    :conditions="patientConditions"
-    :allergy="allergy"
-    @show:modal="showRef"
-    v-model="showRefModal"
-  /> -->
+  <reference-modal
+    v-model="showReferenceModal"
+    :referenceOptions="referenceOptions"
+    @update="setReferences"
+  />
   <reference
     @update="showRef"
     v-model="showRefModal"
@@ -386,7 +405,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import EncounterSelect from "@/components/encounterselect.vue";
 import Multiselect from "@vueform/multiselect";
 import PlusIcon from "@/components/icons/plus.vue";
-import ReferenceModal from "@/views/dashboard/ehr/refferal/reasonref.vue";
+import ReferenceModal from "./components/reference-modal.vue";
 import { ICondition } from "@/types/ICondition";
 import FhirInput from "@/components/fhir-input.vue";
 
@@ -505,6 +524,8 @@ export default class MedicationModal extends Vue {
   showReferenceModal = false;
   refReasons: any;
   showRefModal = false;
+  basedOnInfo = "";
+  reasonReferenceInfo = "";
 
   orderDetail = "";
   requestDescription = "";
@@ -522,6 +543,8 @@ export default class MedicationModal extends Vue {
   forms = [] as any;
   patientInstructions = null;
   allergy = <any>[];
+  referenceOptions = <any>[];
+  refSubject = "";
 
   @Watch("id")
   idChanged() {
@@ -648,6 +671,28 @@ export default class MedicationModal extends Vue {
         display: i.name,
       };
     });
+  }
+
+  openReferenceModal(subject: string, options: any) {
+    this.showReferenceModal = true;
+    this.referenceOptions = options;
+    this.refSubject = subject;
+  }
+
+  setReferences(value: any, type: any) {
+    if (this.refSubject === "basedOn" && type === "CarePlan") {
+      this.basedOn = value.id;
+      this.basedOnInfo = value.category;
+    }
+    if (this.refSubject === "basedOn" && type === "MedicationRequest") {
+      this.basedOn = value.id;
+      this.basedOnInfo = value.genericName;
+    }
+    if (this.refSubject === "reasonReference") {
+      this.reasonReference = value.id;
+      this.reasonReferenceInfo = value.code;
+    }
+    // this.refSubject = ''
   }
 
   async submit() {

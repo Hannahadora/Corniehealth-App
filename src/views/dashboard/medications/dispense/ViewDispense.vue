@@ -191,14 +191,14 @@
 
         <cornie-table
           :columns="rawHeaders"
-          v-model="items"
+          v-model="medications"
           :listmenu="true"
           :check="false"
         >
           <template #actions="{ item }">
             <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-              @click="modifyItem(item.id)"
+              @click="modifyItem(item)"
             >
               <edit-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Modify</span>
@@ -211,8 +211,11 @@
 
                 <p class="text-gray-400">{{ item.form }} days</p>
               </div>
-              <substituted class="mr-2" v-if="item.substitutionAllowed" />
-              <substitution-allowed v-else class="mr-2" />
+              <substitution-allowed
+                class="mr-2"
+                v-if="item.substitutionAllowed"
+              />
+              <substituted v-else class="mr-2" />
             </div>
           </template>
           <template #unit="{ item }">
@@ -304,7 +307,10 @@
         >
           Cancel
         </div>
-        <div class="flex items-center mb-6" v-if="request?.status !== 'dispensed'">
+        <div
+          class="flex items-center mb-6"
+          v-if="request?.status !== 'dispensed'"
+        >
           <!-- <div class="relative">
            <cornie-btn
               @click="openPostOptions = true"
@@ -409,7 +415,8 @@
   />
 
   <modify-request
-    @medicationModified="medicationModifed"
+    @medicationSubstituted="medicationSubstituted"
+    @medicationModified="medicationModified"
     :id="medicationId"
     :medication="selectedMedication"
     v-model="viewModificationModal"
@@ -436,8 +443,8 @@ import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
-import Substituted from "@/components/icons/substituted.vue";
-import SubstitutionAllowed from "@/components/icons/substitution-allowed.vue";
+import SubstitutionAllowed from "@/components/icons/substituted.vue";
+import Substituted from "@/components/icons/substitution-allowed.vue";
 
 import TextArea from "@/components/textarea.vue";
 
@@ -456,9 +463,10 @@ import { IOrganization } from "@/types/IOrganization";
 
 const dispense = namespace("dispense");
 const user = namespace("user");
+const request = namespace("request");
 
 @Options({
-  name: "ViewRequestModal",
+  name: "DispenseModal",
   components: {
     CornieDialog,
     ...CornieCard,
@@ -482,7 +490,7 @@ const user = namespace("user");
     CollectPayment,
   },
 })
-export default class ViewRequest extends Vue {
+export default class DispenseModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -537,6 +545,12 @@ export default class ViewRequest extends Vue {
   @dispense.Action
   viewDispense!: (locationId: string, id: string) => Promise<void>;
 
+  @request.State
+  requests!: any[];
+
+  @request.Action
+  fetchRequests!: () => Promise<void>;
+
   get statuses() {
     return ["Active", "Substituted", "On-Hold", "Dispensed"];
   }
@@ -584,36 +598,33 @@ export default class ViewRequest extends Vue {
     },
   ];
 
+  get refills() {
+    return this.request?.refills ?? [];
+  }
+  get medications() {
+    return [this.request];
+  }
   get items() {
-    // const requests = this.request?.medications?.map((request: any) => {
-    //   const refillses = this.request?.medications?.map(
-    //     (medication: any) => medication.refills
-    //   );
-    //   return {
-    //     ...request,
-    //     action: request.brandCode,
-    //     refils: refillses[0],
-    //   };
-    // });
-
-    const requests = this.request?.refills?.map((el: any) => {
+    const requests = this.requests.map((request: any) => {
+      const refillses = request.medications.map(
+        (medication: any) => medication.refills
+      );
       return {
-        ...el
-      }
-  })
+        ...request,
+        action: request.id,
+        refils: refillses[0],
+      };
+    });
 
     return requests;
     // if (!this.query) return shifts;
-    // return search.searchObjectArray(shifts, this.query);
+    // return search.searchOb  jectArray(shifts, this.query);
   }
 
-  modifyItem(value: any) {
+  modifyItem(item: any) {
     this.requestDetails = false;
     this.viewModificationModal = true;
-    this.medicationId = value;
-    const item: any = this.request?.medications?.find(
-      (el: any) => (el.id = value)
-    );
+    this.medicationId = item.id;
     this.selectedMedication = item;
   }
 
@@ -621,8 +632,15 @@ export default class ViewRequest extends Vue {
     return new Date(x).toLocaleDateString("en-US");
   }
 
-  medicationModifed(med: any) {
+  medicationSubstituted(med: any) {
+    this.viewModificationModal = false;
     this.selectedMedication = med;
+  }
+
+  medicationModified(med: any) {
+    this.viewModificationModal = false;
+    this.selectedMedication = med;
+    this.selectedMedication.quantity = med.quantity;
   }
 
   async collectPayment() {
@@ -632,14 +650,11 @@ export default class ViewRequest extends Vue {
         this.viewedRequest = el;
       }
     });
-
-    // await this.setRequest();
     await this.dispenseRequest();
     await this.generateBill();
   }
 
   async setRequest() {
-    // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
         `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.id}`
@@ -655,16 +670,16 @@ export default class ViewRequest extends Vue {
 
   async dispenseRequest() {
     try {
+      const payload = this.request.medications.map((product) => {
+        return {
+          dispensedProductId: product.id,
+          reasonforSubstitution: product.reasonForSubstitution,
+          quantity: product.quantity || 1,
+        };
+      });
       const { data } = await cornieClient().post(
         `/api/v1/pharmacy/dispense-request/${this.locationId}/${this.id}`,
-        this.request.medications.map((product) => {
-          return {
-            // ...product,
-            dispensedProductId: product.id,
-            reasonforSubstitution: product.reasonForSubstitution,
-            quantity: product.quantity || 1,
-          };
-        })
+        { ...payload }
       );
     } catch (error) {
       window.notify({
