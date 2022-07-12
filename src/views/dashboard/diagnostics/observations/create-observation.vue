@@ -605,7 +605,11 @@ export default class ObservationDialog extends Vue {
       this.member.derivedFrom = value.id;
     } else if(this.refSubject === 'device') {
       this.reasonInfo.device = value.deviceName.name;
-    }
+    } if (this.refSubject === "basedOn") {
+      this.basicInfo.basedOn = value.id;
+    }  if (this.refSubject === "partOf") {
+      this.basicInfo.partOf = value.id;
+    } 
     // this.refSubject = ''
   }
 

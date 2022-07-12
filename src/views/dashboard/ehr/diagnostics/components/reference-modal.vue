@@ -332,6 +332,7 @@ export default class ReferenceDialog extends Vue {
   molecularSequence = <any>[];
   carePlan = <any>[];
   medReq = <any>[];
+  medDispense = <any>[];
   devices = <any>[];
   localSrc = require("../../../../../assets/img/placeholder.png");
 

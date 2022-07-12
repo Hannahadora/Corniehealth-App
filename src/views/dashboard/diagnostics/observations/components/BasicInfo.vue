@@ -1,35 +1,54 @@
 <template>
   <div>
     <div class="grid grid-cols-2 gap-6 py-6">
-      <cornie-select
-        label="Based On"
-        placeholder="Select"
-        v-model="basicInfo.basedOn"
-        :items="[
-          'Care plan',
-          'Device request',
-          'Immunization recommendation',
-          'Medication request',
-          'Nutrition order',
-          'Service request',
-        ]"
+      <div
+        class="w-full cursor-pointer"
+        @click="
+          $emit('openReferenceModal', 'basedOn', [
+            'CarePlan',
+            'Device',
+            'Immunization recommendation',
+            'MedicationRequest',
+            'Nutrition order',
+            'Service request',
+          ])
+        "
       >
-      </cornie-select>
-      <cornie-select
-        v-bind="$attrs"
-        label="Part Of"
-        placeholder="Select"
-        v-model="basicInfo.partOf"
-        :items="[
-          'Medication administration',
-          'Medication dispense',
-          'Medication statement',
+        <cornie-input
+          v-bind="$attrs"
+          label="based on"
+          placeholder="--Select--"
+          v-model="basicInfo.basedOn"
+        >
+          <template #append-inner>
+            <plus-icon class="fill-current text-danger" />
+          </template>
+        </cornie-input>
+      </div>
+      <div
+        class="w-full cursor-pointer"
+        @click="
+          $emit('openReferenceModal', 'partOf', [
+            'MedicationAdministration',
+          'MedicationDispense',
+          'MedicationStatement',
           'Procedure',
           'Immunization',
-          'Imaging study',
-        ]"
+          'ImagingStudy',
+          ])
+        "
       >
-      </cornie-select>
+        <cornie-input
+          v-bind="$attrs"
+          label="Part Of"
+          placeholder="--Select--"
+          v-model="basicInfo.partOf"
+        >
+          <template #append-inner>
+            <plus-icon class="fill-current text-danger" />
+          </template>
+        </cornie-input>
+      </div>
       <fhir-input
         reference="http://hl7.org/fhir/ValueSet/observation-category"
         class="w-full"

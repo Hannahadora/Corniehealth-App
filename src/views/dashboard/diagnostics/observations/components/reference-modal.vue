@@ -62,11 +62,12 @@
               </icon-input>
             </div>
           </div>
-          <div class="overflow-y-auto h-96">
+          <div class="">
             <div>
               <div v-if="type === 'Condition'">
                 <div v-for="(input, index) in conditions" :key="index">
                   <div
+                   :class="{ 'bg-gray-100' : selectedRef === input }"
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     @click="getValue(input)"
                   >
@@ -99,6 +100,7 @@
               <div v-if="type === 'Observation'">
                 <div v-for="(input, index) in observations" :key="index">
                   <div
+                   :class="{ 'bg-gray-100' : selectedRef === input }"
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     @click="getValue(input)"
                   >
@@ -120,6 +122,7 @@
             <div v-if="type == 'Device'">
               <div v-for="(input, index) in devices" :key="index">
                 <div
+                 :class="{ 'bg-gray-100' : selectedRef === input }"
                   class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                   @click="getValue(input)"
                 >
@@ -139,6 +142,68 @@
                           {{ input.deviceName.nameType }}
                         </p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'MedicationRequest' || type == 'MedicationDispense'">
+              <div v-for="(input, index) in medItems" :key="index">
+                <div 
+                :class="{ 'bg-gray-100' : selectedRef === input }"
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.genericName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.dosageInstruction }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <p>
+                        {{
+                          input.patient.firstname + "" + input.patient.lastname
+                        }}
+                      </p>
+                      <p class="text-gray-400">{{ input.patient.mrn }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'CarePlan'">
+              <div v-for="(input, index) in medItems" :key="index">
+                <div
+                :class="{ 'bg-gray-100' : selectedRef === input }"
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.category }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.intent }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <p>
+                        {{
+                          input.patient.firstname + "" + input.patient.lastname
+                        }}
+                      </p>
+                      <p class="text-gray-400">{{ input.patient.mrn }}</p>
                     </div>
                   </div>
                 </div>
@@ -255,7 +320,7 @@ export default class ReferenceDialog extends Vue {
 
   loading = false;
 
-  selectedRef = "";
+  selectedRef = <any>{};
   type = "";
   refBasis = "";
   query = "";
@@ -281,6 +346,26 @@ export default class ReferenceDialog extends Vue {
     this.codeMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/condition-code"
     );
+  }
+
+  get medItems() {
+    const combined = this.medReq.map(this.medicationRequest);
+    const requests = combined.flatMap((value: any) => value);
+
+    return requests;
+  }
+
+  medicationRequest(request: any) {
+    const { medications, ...rest } = request;
+    return medications.map((medication: any) => {
+      return {
+        ...medication,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        createdAt: new Date(request.createdAt).toLocaleDateString(),
+      };
+    });
   }
 
   getValue(value: any) {
@@ -334,7 +419,7 @@ export default class ReferenceDialog extends Vue {
   }
 
   apply() {
-    this.$emit("update", this.selectedRef);
+    this.$emit("update", this.selectedRef, this.type);
     this.show = false;
   }
 
