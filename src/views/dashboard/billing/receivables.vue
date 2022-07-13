@@ -12,6 +12,7 @@
 </template>
 <script lang="ts">
   import Tabs from "@/components/tabs.vue";
+  import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import insuranceClaim from "./receivablesTabs/insuranceClaims.vue";
   import privateTab from "./receivablesTabs/private.vue";
@@ -32,5 +33,12 @@
       "Insurance claims",
     ];
     currentTab = 0;
+    async fetchP() {
+      const response = await cornieClient().get("/api/v1/bill/collections");
+      console.log("billings", response.data);
+    }
+    mounted() {
+      this.fetchP();
+    }
   }
 </script>
