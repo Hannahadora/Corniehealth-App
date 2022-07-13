@@ -114,7 +114,11 @@
                 class="border p-1"
                 type="number"
                 placeholder="Enter"
+                :min="1"
                 :modelValue="item.quantity"
+                @change="
+                  (evt) => changeQuantity(item.id, Number(evt.data || 1))
+                "
                 @input="(evt) => changeQuantity(item.id, Number(evt.data || 1))"
               />
             </template>
@@ -368,15 +372,16 @@ export default class PosDialog extends Vue {
   reference = "";
   salesDate = "";
   medications = [] as any[];
-  fullPayments: any = [{
-    amount: this.grandTotal,
-    total: this.grandTotal,
-    paymentType: ""
-  }];
+  fullPayments: any = [
+    {
+      amount: this.grandTotal,
+      total: this.grandTotal,
+      paymentType: "",
+    },
+  ];
   splitPayments: any = [{}];
   @user.Getter
   authCurrentLocation!: any;
-
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -526,12 +531,15 @@ export default class PosDialog extends Vue {
       customer: {
         name: this.customerId,
       },
-      payments: this.activeTab === 'Full Payment' ? this.fullPayments : this.splitPayments,
+      payments:
+        this.activeTab === "Full Payment"
+          ? this.fullPayments
+          : this.splitPayments,
     };
     newSales.payments.map((payment: any) => {
-      payment.total = this.grandTotal
-      payment.amount = this.grandTotal
-    })
+      payment.total = this.grandTotal;
+      payment.amount = this.grandTotal;
+    });
     try {
       const { data } = await cornieClient().post(
         `/api/v1/pharmacy/pos-dispense/${this.locationId}`,

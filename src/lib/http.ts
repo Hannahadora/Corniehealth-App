@@ -73,7 +73,7 @@ export class JSONClient implements HttpClient {
   constructor(
     private headers: IndexableObject,
     private baseUrl: string = "",
-    private timeout = 8000
+    private timeout = 12000
   ) {}
 
   appendHeaders(headers: IndexableObject) {
