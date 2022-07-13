@@ -33,7 +33,7 @@ type CreatedUser = { id: string; email: string };
 export default class SignUp extends Vue {
   user = {} as CreatedUser;
   code = "";
-  step = 1;
+  step = 2;
   signature = "";
   email = "";
 
