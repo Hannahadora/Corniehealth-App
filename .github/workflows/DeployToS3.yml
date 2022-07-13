@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install
-        run: npm install --production
+        run: npm install --production --force
 
       - name: Build
         run: npm run build
