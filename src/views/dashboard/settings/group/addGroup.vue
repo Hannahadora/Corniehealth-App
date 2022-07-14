@@ -348,10 +348,10 @@ export default class AddGroup extends Vue {
     if (!group) return;
 
     this.state = group.state;
-    this.status = group.status;
+    (this.status as any) = group.status;
     this.type = group.type;
     this.name = group.name;
-    this.code = group.code;
+    (this.code as any) = group.code;
     this.quantity = group.quantity;
     this.managingEntity = group.managingEntity;
     this.actorsList = group.members;

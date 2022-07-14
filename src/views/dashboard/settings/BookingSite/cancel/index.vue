@@ -183,11 +183,11 @@ export default class Cancellation extends Vue {
     const cancel = await this.getCancelById(this.cancellationId);
     if (!cancel) return;
     this.message = cancel.message;
-    this.cancellationTimeFrame = cancel.cancellationTimeFrame;
-    this.lateCancellationPenaltyUnit = cancel.lateCancellationPenaltyUnit;
-    this.lateCancellationPenalty = cancel.lateCancellationPenalty;
-    this.noShowPenalty = cancel.noShowPenalty;
-    this.noShowPenaltyUnit = cancel.noShowPenaltyUnit;
+    (this.cancellationTimeFrame as any) = cancel.cancellationTimeFrame;
+    (this.lateCancellationPenaltyUnit as any) = cancel.lateCancellationPenaltyUnit;
+    (this.lateCancellationPenalty as any) = cancel.lateCancellationPenalty;
+    (this.noShowPenalty as any) = cancel.noShowPenalty;
+    (this.noShowPenaltyUnit as any) = cancel.noShowPenaltyUnit;
   }
   get items() {
     return this.cancels.find((cancel) => cancel.id);

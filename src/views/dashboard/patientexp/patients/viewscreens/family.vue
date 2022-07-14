@@ -134,8 +134,8 @@
     }
 
     get items() {
-      return this.patient?.relatedPerson
-        ? this.patient?.relatedPerson.map((patient: any) => ({
+      return (this.patient?.relatedPerson as any)
+        ? (this.patient?.relatedPerson as any).map((patient: any) => ({
             date: new Date(patient.createdAt).toLocaleDateString(),
             gender: patient?.gender,
             mrn: patient.mrn,

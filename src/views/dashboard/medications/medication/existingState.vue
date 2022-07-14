@@ -1,12 +1,5 @@
 <template>
   <div class="w-full pb-80">
-    <!-- <span class="flex justify-end w-full mb-8">
-          <button
-            class="bg-danger rounded-lg text-white mt-5 py-2 pr-5 pl-5 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
-            @click="showMedicationRequest = true">
-            New Request
-          </button>
-    </span> -->
     <div class="flex justify-center space-x-6 w-full -mb-10">
       <span class="flex space-x-4">
         <medication-drug class="mr-2" /> Substitution Permitted
@@ -38,19 +31,6 @@
           <update-icon />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-        <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
-          <edit-icon class="text-purple-700 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div> -->
-        <!--
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRefillModal(item.medicationId)">
-              <refill-icon />
-              <span class="ml-3 text-xs">Refill Request</span>
-            </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
-          <print-icon />
-          <span class="ml-3 text-xs">Print</span>
-        </div> -->
       </template>
       <template #prescription="{ item }">
         <p>{{ item.identifier }}</p>

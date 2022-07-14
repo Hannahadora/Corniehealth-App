@@ -34,27 +34,15 @@
               class="flex capitalize mb-5 mt-5 text-black text-xs font-bold"
               >status
             </label>
-            <div class="w-full flex space-x-4">
+            <div class="w-full flex space-x-4 flex-wrap">
               <cornie-radio
-                label="Condition"
+                v-for="(option, i) in referenceOptions"
+                :key="i"
+                :label="option"
                 class="text-xs"
-                name="role"
+                name="reference"
                 v-model="type"
-                value="condition"
-              />
-              <cornie-radio
-                label="Observation"
-                class="text-xs"
-                name="role"
-                v-model="type"
-                value="observation"
-              />
-              <cornie-radio
-                label="Media"
-                class="text-xs"
-                name="role"
-                v-model="type"
-                value="media"
+                :value="option"
               />
             </div>
           </div>
@@ -74,11 +62,12 @@
               </icon-input>
             </div>
           </div>
-          <div class="overflow-y-auto h-96">
+          <div class="">
             <div>
-              <div v-if="type === 'condition'">
+              <div v-if="type === 'Condition'">
                 <div v-for="(input, index) in conditions" :key="index">
                   <div
+                   :class="{ 'bg-gray-100' : selectedRef === input }"
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     @click="getValue(input)"
                   >
@@ -91,9 +80,7 @@
                           {{ severityMapper(input.severity) }}
                         </p>
                         <p class="text-xs text-gray-300">
-                          {{
-                            new Date(input?.recordDate).toLocaleDateString()
-                          }}
+                          {{ new Date(input?.recordDate).toLocaleDateString() }}
                         </p>
                       </div>
 
@@ -110,19 +97,113 @@
                   </div>
                 </div>
               </div>
-              <div v-if="type === 'observation'">
+              <div v-if="type === 'Observation'">
                 <div v-for="(input, index) in observations" :key="index">
                   <div
+                   :class="{ 'bg-gray-100' : selectedRef === input }"
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     @click="getValue(input)"
                   >
                     <div class="w-full">
                       <div class="w-full">
                         <p class="text-sm text-dark mb-1 font-medium">
-                          {{ input }}
+                          {{ input?.basicInfo?.subject }}
                         </p>
-                        <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
+                        <p class="text-xs text-gray-300">
+                          {{ new Date(input.createdAt).toLocaleDateString() }},
+                          {{ new Date(input.createdAt).toLocaleTimeString() }}
+                        </p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'Device'">
+              <div v-for="(input, index) in devices" :key="index">
+                <div
+                 :class="{ 'bg-gray-100' : selectedRef === input }"
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-10 h-10">
+                        <avatar
+                          class="mr-2 object-cover object-center w-full h-full visible group-hover:hidden"
+                          :src="localSrc"
+                        />
+                      </div>
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.deviceName.name }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.deviceName.nameType }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'MedicationRequest'">
+              <div v-for="(input, index) in medItems" :key="index">
+                <div
+                :class="{ 'bg-gray-100' : selectedRef === input }"
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.genericName }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.dosageInstruction }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <p>
+                        {{
+                          input.patient.firstname + "" + input.patient.lastname
+                        }}
+                      </p>
+                      <p class="text-gray-400">{{ input.patient.mrn }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type == 'CarePlan'">
+              <div v-for="(input, index) in medItems" :key="index">
+                <div
+                :class="{ 'bg-gray-100' : selectedRef === input }"
+                  class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  @click="getValue(input)"
+                >
+                  <div class="flex space-x-10 w-full justify-between p-3">
+                    <div class="dflex space-x-4">
+                      <div class="w-full">
+                        <p class="text-xs text-dark font-semibold">
+                          {{ input.category }}
+                        </p>
+                        <p class="text-xs text-gray-500 font-meduim">
+                          {{ input.intent }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <p>
+                        {{
+                          input.patient.firstname + "" + input.patient.lastname
+                        }}
+                      </p>
+                      <p class="text-gray-400">{{ input.patient.mrn }}</p>
                     </div>
                   </div>
                 </div>
@@ -176,8 +257,14 @@ import DatePicker from "@/components/daterangepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Period from "@/types/IPeriod";
 import { initial } from "lodash";
+import { namespace } from "vuex-class";
+
+import IAllergy from "@/types/IAllergy";
 import { ICondition } from "@/types/ICondition";
-import { IObservation } from "@/types/IObservation";
+import IPractitioner from "@/types/IPractitioner";
+const allergy = namespace("allergy");
+const condition = namespace("condition");
+const practitioner = namespace("practitioner");
 
 import { mapDisplay } from "@/plugins/definitions";
 
@@ -208,29 +295,51 @@ export default class ReferenceDialog extends Vue {
   show!: boolean;
 
   @Prop({ type: Array, default: [] })
+  referenceOptions!: any[];
+
+  @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<void>;
+
+  @allergy.State
+  allergys!: any[];
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  @condition.State
   conditions!: ICondition[];
 
-  @Prop({ type: Array, default: [] })
-  observations!: IObservation[];
-
-    severityMapper = (code: string) => "";
+  severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
 
   loading = false;
 
-  selectedRef = {
-    itemType: <any>{},
-    basis: ""
-  };
-  type = "condition";
+  selectedRef = <any>{};
+  type = "";
   refBasis = "";
   query = "";
+  documentReference = <any>[];
+  imagingStudy = <any>[];
+  media = <any>[];
+  questionnaireResponse = <any>[];
+  observations = <any>[];
+  molecularSequence = <any>[];
+  carePlan = <any>[];
+  medReq = <any>[];
+  devices = <any>[];
+  localSrc = require("../../../../../assets/img/placeholder.png");
 
   get patientId() {
     return this.$route.params.id;
   }
 
-   async loadMappers() {
+  async loadMappers() {
     this.severityMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/condition-severity"
     );
@@ -239,18 +348,73 @@ export default class ReferenceDialog extends Vue {
     );
   }
 
+  get medItems() {
+    const combined = this.medReq.map(this.medicationRequest);
+    const requests = combined.flatMap((value: any) => value);
+
+    return requests;
+  }
+
+  medicationRequest(request: any) {
+    const { medications, ...rest } = request;
+    return medications.map((medication: any) => {
+      return {
+        ...medication,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        createdAt: new Date(request.createdAt).toLocaleDateString(),
+      };
+    });
+  }
 
   getValue(value: any) {
-    if (this.type === "condition") {
-      this.selectedRef.itemType.referenceType = this.type;
-      this.selectedRef.itemType.referenceId = value.id;
-      this.selectedRef.itemType.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
-      this.selectedRef.itemType.practitionerSpecialty =
-        value.practitioner?.jobDesignation;
-      this.selectedRef.itemType.description = this.codeMapper(value.code);
-      this.selectedRef.itemType.details = this.severityMapper(value.severity);
-      this.selectedRef.basis = value.code
-    } else if (this.type === "observation") {
+    this.selectedRef = value;
+  }
+  async fetchObservations() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/observations/`);
+      this.observations = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching observations",
+        status: "error",
+      });
+    }
+  }
+  async fetchCarePlan() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/care-plan/practitioner/`
+      );
+      this.carePlan = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching care plans",
+        status: "error",
+      });
+    }
+  }
+  async fetchDevices() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/devices`);
+      this.devices = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching devices",
+        status: "error",
+      });
+    }
+  }
+  async fetchMedReq() {
+    try {
+      const { data } = await cornieClient().get(`/api/v1/medication-requests/`);
+      this.medReq = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error when fetching medication requests",
+        status: "error",
+      });
     }
   }
 
@@ -261,7 +425,14 @@ export default class ReferenceDialog extends Vue {
 
   async created() {
     this.loadMappers();
-    }
+    // await this.fetchAllergys(this.$route?.params?.id as string);
+    // await this.fetchPatientConditions(this.activepatientId);
+    await this.fetchPractitioners();
+    await this.fetchObservations();
+    await this.fetchCarePlan();
+    await this.fetchMedReq();
+    await this.fetchDevices();
+  }
 }
 </script>
 <style scoped>
@@ -312,7 +483,7 @@ input[type="checkbox"]:after {
 }
 
 input[type="checkbox"]:checked:after {
-  background-image: url("../../../../assets/tick.svg");
+  background-image: url("../../../../../assets/tick.svg");
   background-color: #fe4d3c;
 }
 input[type="checkbox"]:after {
