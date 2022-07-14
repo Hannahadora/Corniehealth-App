@@ -21,7 +21,7 @@ export default interface IDiagnostic {
     performerRole: string;
     patientInstructions: null;
 
-    orderDetail: string;
+    orderDetail: null;
     requestDescription: string;
     bodySite: string;
     quantityUnit: string;

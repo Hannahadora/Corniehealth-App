@@ -324,7 +324,7 @@ const measurable = {
   ageUnit: null,
   ageValue: null,
   day: null,
-  unit: "years",
+  unit: null,
   min: null,
   max: null,
   string: null,
@@ -575,7 +575,7 @@ export default class HistoryDialog extends Vue {
 
      this.onsetmesurable.ageUnit = history?.onset?.age?.unit || null;
      this.onsetmesurable.ageValue = history?.onset?.age?.value || null;
-     this.onsetmesurable.unit = history?.onset?.range?.unit
+     this.onsetmesurable.unit = history?.onset?.range?.unit || null;
      this.onsetmesurable.max = history?.onset?.range?.max || null;
      this.onsetmesurable.min = history?.onset?.range?.min || null;
      this.onsetmesurable.startDate = history?.onset?.period?.start || null;
@@ -584,7 +584,7 @@ export default class HistoryDialog extends Vue {
      this.deceased = history?.deceased;
      this.deceasedmeasurable.ageUnit = history?.deceasedAge?.age?.unit || null;
      this.deceasedmeasurable.ageValue = history?.deceasedAge?.age?.value || null;
-     this.deceasedmeasurable.unit = history?.deceasedAge?.range?.unit;
+     this.deceasedmeasurable.unit = history?.deceasedAge?.range?.unit || null;
      this.deceasedmeasurable.max = history?.deceasedAge?.range?.max;
      this.deceasedmeasurable.min = history?.deceasedAge?.range?.min|| null;
      this.deceasedmeasurable.string = history?.deceasedAge?.year || null;
@@ -593,7 +593,7 @@ export default class HistoryDialog extends Vue {
      this.note = history?.note;
      this.agemesurable.ageUnit = history?.age?.age?.unit || null;
      this.agemesurable.ageValue = history?.age?.age?.value || null;
-     this.agemesurable.unit = history?.age?.range?.unit;
+     this.agemesurable.unit = history?.age?.range?.unit || null;
      this.agemesurable.max = history?.age?.range?.max || null;
      this.agemesurable.min = history?.age?.range?.min || null;
      this.agemesurable.string = history?.age?.year || null;

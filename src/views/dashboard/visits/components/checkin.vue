@@ -208,7 +208,6 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import Period from "@/types/IPeriod";
 import SelectOption from "@/components/custom-checkbox.vue";
-import TimePicker from "@/components/pickerTime.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -243,7 +242,6 @@ const practitioner = namespace("practitioner");
     CancelIcon,
     DeleteIcon,
     TextArea,
-    TimePicker,
     Avatar,
     CornieDialog,
     SearchIcon,

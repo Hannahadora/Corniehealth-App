@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -26,6 +26,7 @@
                 <template v-slot:default>
                     <div class="w-full  mt-5 grid grid-cols-2 gap-4">
                         <cornie-select
+                        v-if="id"
                             class="required"
                             :rules="required"
                          :items="[
@@ -43,6 +44,7 @@
                         label="Status"
                         placeholder="--Select--"
                         v-model="status"
+                        :disabled="true"
                         >
                         </cornie-select>
                     </div>
@@ -85,8 +87,7 @@
                             </template>
                         </cornie-select>
                         <cornie-select
-                            class="required"
-                            :rules="required"
+                            class="w-full"
                             :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
                             label="priority"
                             v-model="priority"
@@ -101,10 +102,11 @@
                             class="required"
                             :rules="required"
                             :items="[
-                            'Inpatient',
-                            'Outpatient',
-                            'Community',
-                            'Discharge',
+                            'Specialist Consultation',
+                            'Surgical Procedure',
+                            'Therapy',
+                            'Counseling',
+                            ' Pharmacist Medication Review',
                             ]"
                             label="category"
                             v-model="category"
@@ -123,16 +125,15 @@
                         <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Occurrence</span>
                             <div class="flex space-x-2 w-full">
-                                <cornie-input
+                                <date-picker
                                 :rules="required"
                                 placeholder="--Enter--"
                                 class="grow w-full"
-                                :setfull="true"
                                 v-model="occurenceValue"
                                 />
                                 <cornie-select
-                                :items="['Day']"
-                                placeholder="Ratio"
+                                :items="['Date']"
+                                placeholder="Date"
                                 class="w-32 mt-0.5 flex-none"
                                 :setPrimary="true"
                                 v-model="occurenceUnit"
@@ -164,6 +165,7 @@
                             label="Location"
                             v-model="performerLocationId"
                             placeholder="Select performer’s address"
+                            :disabled="true"
                         >
                         </cornie-select>
                     </div>
@@ -177,16 +179,21 @@
                 >
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                         <cornie-select
+                         <cornie-input
                             class="required"
                             :rules="required"
-                            :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
                             label="Request Code"
                             v-model="reasonCode"
                             placeholder="--Select--"
-                        >
-                        </cornie-select>
-                         <cornie-select
+                        />
+                        <cornie-input
+                            class="required"
+                            :rules="required"
+                            label="Order Detail"
+                            v-model="orderDetail"
+                            placeholder="--Select--"
+                        />
+                         <!-- <cornie-select
                             class="required"
                             :rules="required"
                             :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
@@ -194,12 +201,11 @@
                             v-model="orderDetail"
                             placeholder="--Select--"
                         >
-                        </cornie-select>
+                        </cornie-select> -->
                         <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Quantity <span class="text-xs text-gray-300">(optional)</span></span>
                             <div class="flex space-x-2 w-full">
                                 <cornie-input
-                                :rules="required"
                                 placeholder="--Enter--"
                                 class="grow w-full"
                                 :setfull="true"
@@ -221,7 +227,15 @@
                                 :placeholder="'Enter'"
                                 v-model="requestDescriptions"
                           />
-                        <cornie-select
+                          <fhir-input
+                            reference="http://hl7.org/fhir/ValueSet/body-site"
+                            class="w-full"
+                            label="Body Site (Optional)"
+                            v-model="bodySite"
+                            placeholder="--Select--"
+                          />
+               
+                        <!-- <cornie-select
                             class="required"
                             :rules="required"
                             :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
@@ -233,7 +247,7 @@
                             <span class="text-xs text-gray-500">(Optional)</span>
                             
                             </template>
-                        </cornie-select>
+                        </cornie-select> -->
                      
                     </div>
                 </template>
@@ -242,7 +256,7 @@
 
             <accordion-component
               title="Optional Section"
-              :spanText="'(This fields aren’t mandatory for creating a medication request)'"
+              :spanText="'(This Fields Aren’t Mandatory For Creating A Referral Request)'"
               :spanCaption="true"
               :opened="false"
             >
@@ -250,9 +264,8 @@
                 <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3"> 
                     <div class="mt-5 w-full grid grid-cols-2 gap-4">
                          <cornie-select
-                            class="required w-full"
-                            :rules="required"
-                            :items="['reason code']"
+                            class="w-full"
+                            :items="allRefferRequest"
                             label="Replaces"
                             placeholder="--Select--"
                             v-model="replaces"
@@ -268,7 +281,6 @@
                        </div>
                       </div>
                         <cornie-input
-                            :rules="required"
                             label="As Needed Code"
                             placeholder="--Enter--"
                             class="w-full"
@@ -276,13 +288,26 @@
                         >
                         </cornie-input>
                           <cornie-input
-                            :rules="required"
                             label="Reason Code"
                             placeholder="--Enter--"
                            v-model="reasonCode"
                         >
                         </cornie-input>
-                          <cornie-select
+                          <div>
+                            <p class="text-sm text-black font-semibold mb-1">
+                              Reason Reference
+                            </p>
+                            <div
+                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-3 px-4 cursor-pointer"
+                              @click="showRefModal = true"
+                            >
+                              <span class="w-full text-xs">{{ reasonReference }}</span>
+                              <span class="flex justify-end w-full">
+                                <plusIcon class="fill-current text-danger mt-1" />
+                              </span>
+                            </div>
+                          </div>
+                          <!-- <cornie-select
                             :rules="required"
                             :items="['reason reference']"
                             label="Reason Reference"
@@ -290,7 +315,7 @@
                             class="w-full"
                              v-model="reasonReference"
                         >
-                        </cornie-select>
+                        </cornie-select> -->
                          <!-- <cornie-input
                             :rules="required"
                             label="Note"
@@ -299,7 +324,6 @@
                         >
                         </cornie-input> -->
                          <cornie-input
-                            :rules="required"
                             label="Patient Instruction"
                             placeholder="--Enter--"
                             class="w-full"
@@ -372,6 +396,7 @@
 
 
   </cornie-dialog>
+  <reasonref-modal v-model="showRefModal" @ref-value="refvalue"/>
 </template>
 
 <script lang="ts">
@@ -407,9 +432,12 @@ import SelectOption from "@/components/custom-checkbox.vue";
 import TextArea from "@/components/textarea.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import DRangePicker from "@/components/daterangecalendar.vue";
-import DatePicker from "@/components/datepicker.vue";
+import DatePicker from "./components/datepicker.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import Multiselect from "@vueform/multiselect";
+import ReasonrefModal from "./reasonref.vue";
+import plusIcon from "@/components/icons/plus.vue";
+import FhirInput from "@/components/fhir-input.vue";
 
 
 const practitioner = namespace("practitioner");
@@ -418,6 +446,7 @@ const patients = namespace("patients");
 const location = namespace("location");
 const practiceform = namespace("practiceform");
 const special = namespace("special");
+const user = namespace("user");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -448,7 +477,10 @@ function defaultFilter(item: any, query: string) {
      CornieInput,
     CornieBtn,
     CornieSelect,
-    CloseIcon
+    CloseIcon,
+    ReasonrefModal,
+    plusIcon,
+    FhirInput
   },
 })
 export default class RefferalModal extends Vue {
@@ -467,8 +499,6 @@ export default class RefferalModal extends Vue {
     @patients.State
     patients!: IPatient[];
 
-  
-
     @patients.Action
     fetchPatients!: () => Promise<void>;
 
@@ -480,6 +510,12 @@ export default class RefferalModal extends Vue {
 
     @refferal.Action
     getOneRefferalById!: (id: string) => IRefferal;
+
+    @refferal.State
+    patientrefferals!: IRefferal[];
+
+    @refferal.Action
+    fetchRefferalById!: (patientId: string) => Promise<void>;
   
   
     @location.State
@@ -500,18 +536,23 @@ export default class RefferalModal extends Vue {
     @special.Action
     fetchSpecials!: () => Promise<void>;
 
+    @user.Getter
+    authCurrentLocation!: string;
+
     loading = false;
     localSrc = require("../../../../assets/img/placeholder.png");
     query = "";
     orderBy: Sorter = () => 1;
     required = string().required();
     substitution = "Yes";
+    showRefModal = false;
+
 
    
 
 
     
-    status =  "";
+    status =  "active";
     basedOn = "";
     intent =  "";
     priority = "";
@@ -519,7 +560,7 @@ export default class RefferalModal extends Vue {
     patientId = "";
     reasonCode = null;
     reasonReference = null;
-    note = "";
+    note = null;
     performer = "";
 
     orderDetail = "";
@@ -542,6 +583,11 @@ export default class RefferalModal extends Vue {
     requestDescriptions = "";
 
   
+  
+   refvalue(value:any, type:any){
+    //this.references.push(value);
+    this.reasonReference = type;
+  }
     @Watch("id")
     idChanged() {
       this.setRequest();
@@ -671,6 +717,15 @@ export default class RefferalModal extends Vue {
     });
   }
 
+  get allRefferRequest() {
+    return this.patientrefferals.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.category,
+      };
+    });
+  }
+
     
 
    async submit() {
@@ -692,7 +747,7 @@ export default class RefferalModal extends Vue {
         this.done();
       }
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request  Not Created", status: "error" });
     }
   }
   async updateRequest() {
@@ -707,7 +762,7 @@ export default class RefferalModal extends Vue {
         this.done();
       }
     } catch (error:any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request Not Updated", status: "error" });
     }
   }
 
@@ -717,7 +772,9 @@ export default class RefferalModal extends Vue {
     }
 
   async created() {
+    this.performerLocationId = this.authCurrentLocation;
       await this.fetchPatients();
+      await this.fetchRefferalById(this.aPatientId);
       await this.fetchPractitioners();
       await this.fetchPracticeforms();
       await this.fetchLocations();

@@ -70,38 +70,31 @@
                 </div>
               </div>
             </div>
-            <div class="w-full mt-4">
+               <div class="w-full mt-4">
               <div class="">
-                <span
-                  class="mb-2 w-full rounded-full"
-                  @click="showDatalist = !showDatalist"
-                >
-                  <icon-input
-                    autocomplete="off"
-                    class="border border-gray-600 rounded-full focus:outline-none"
-                    type="search"
-                    placeholder="Search"
-                    v-model="query"
-                  >
-                    <template v-slot:prepend>
-                      <search-icon />
-                    </template>
-                  </icon-input>
-                </span>
-                <div
-                  :class="[
-                    !showDatalist ? 'hidden' : 'o',
-                    filteredItems.length === 0 ? 'h-20' : 'h-auto',
-                  ]"
-                  class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-                  style="width: 96%"
-                >
-                  <div class="flex flex-col w-full p-2">
+                    <span
+                        class="mb-2 w-full rounded-full"
+                        @click="showDatalist = !showDatalist"
+                    >
+                        <icon-input
+                        autocomplete="off"
+                        class="border border-gray-600 rounded-full focus:outline-none"
+                        type="search"
+                        placeholder="Search"
+                        v-model="query"
+                        >
+                        <template v-slot:prepend>
+                            <search-icon />
+                        </template>
+                        </icon-input>
+                    </span>
                     <div
-                      v-for="(item, i) in filteredItems"
-                      :key="i"
-                      @click="showDatalist = !showDatalist"
-                      class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                        :class="[
+                        !showDatalist ? 'hidden' : 'o',
+                        filteredItems.length === 0 ? 'h-20' : 'h-auto',
+                        ]"
+                        class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+                        style="width: 96%"
                     >
                         <div class="flex flex-col w-full p-2">
                         <div
@@ -126,6 +119,7 @@
                     </div>
                     </div>
                 </div>
+                
                 <div class="overflow-y-auto h-96">
                   <div>
                       <div v-if="refType == 'condition'">
@@ -154,7 +148,7 @@
                          :class="{ 'bg-gray-100': isSelected(input) }"
                           @click="pushValue(input)"
                       >
-                        {{ item.category || item }}
+                        {{ input.category }}
                       </div>
 
                       <div v-if="filteredItems.length === 0">
@@ -165,10 +159,28 @@
                       </div>
                     </div>
                   </div>
+                    <div v-if="refType == 'observation'">
+                      <div v-for="(input, index) in observations" :key="index">
+                      <div
+                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                          
+                          @click="pushValue(input)"
+                      >
+                          <div class="w-full">
+                          <div class="w-full">
+                              <p class="text-sm text-dark mb-1 font-medium">
+                              {{ input?.basicInfo?.subject }}
+                              </p>
+                              <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                          </div>
+                          </div>
+                      </div>
+                      </div>
+                    </div>
                 </div>
-              </div>
+            
              
-            </div>
+           
           </div>
           </div>
         </v-form>

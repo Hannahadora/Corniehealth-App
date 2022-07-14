@@ -19,14 +19,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.ageValue"
+              v-model="newmeasurable.ageValue"
               />
               <cornie-select
                  :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.ageUnit"
+                v-model="newmeasurable.ageUnit"
               />
           </div>
        </div>
@@ -39,14 +39,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.min"
+              v-model="newmeasurable.min"
               />
               <cornie-select
                  :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.minUnit"
+                v-model="newmeasurable.minUnit"
               />
           </div>
        </div>
@@ -57,14 +57,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.max"
+              v-model="newmeasurable.max"
               />
               <cornie-select
                 :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.maxUnit"
+                v-model="newmeasurable.maxUnit"
               />
           </div>
        </div>
@@ -74,7 +74,7 @@
       <cornie-input label="Range (max)" v-model="measurable.max" /> -->
     </div>
     <div class="grid grid-cols-2 gap-3 mt-4" v-if="type == 'string'">
-      <cornie-input label="Year" v-model="measurable.string" :placeholder="'Enter'" />
+      <cornie-input label="Year" v-model="newmeasurable.string" :placeholder="'Enter'" />
     </div>
   </div>
 </template>
@@ -124,6 +124,19 @@ export default class TimeablePicker extends Vue {
 
   @Prop({ type: String })
   label!: string;
+
+   newmeasurable = {
+      age: "",
+      ageUnit: "",
+      ageValue: "",
+      day: "",
+      unit: "years",
+      min: "",
+      max: "",
+      string: "",
+      minUnit: "",
+      maxUnit: "",
+    };
 
 
 

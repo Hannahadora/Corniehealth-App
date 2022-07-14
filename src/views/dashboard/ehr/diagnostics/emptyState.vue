@@ -12,12 +12,14 @@
       New Requests
     </button>
   </div>
-  <diagnostic-modal v-model="showModalDiagnostic"/>
+  <diagnostic-modal v-model="showModalDiagnostic" @medication-added="medicationadded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import DiagnosticModal from "./DiagnosticModal.vue";
+import { namespace } from "vuex-class";
 
+const diagnostic = namespace("diagnostic");
 @Options({
   components: {
     DiagnosticModal
@@ -25,5 +27,16 @@ import DiagnosticModal from "./DiagnosticModal.vue";
 })
 export default class diagnosticEmptyState extends Vue {
   showModalDiagnostic = false;
+
+     get patientId() {
+    return this.$route.params.id as string;
+  }
+
+  @diagnostic.Action
+  fetchDiagnosticById!: (patientId: string) => Promise<void>;
+
+    async medicationadded(){
+    await this.fetchDiagnosticById(this.patientId);
+  }
 }
 </script>

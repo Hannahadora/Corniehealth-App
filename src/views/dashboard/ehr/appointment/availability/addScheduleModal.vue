@@ -563,7 +563,6 @@ import DatePicker from "@/components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import SelectOption from "@/components/custom-checkbox.vue";
-import TimePicker from "@/components/pickerTime.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
 import ILocation from "@/types/ILocation";
@@ -599,7 +598,6 @@ const user = namespace("user");
     PhoneInput,
     CancelIcon,
     DeleteIcon,
-    TimePicker,
     CornieDialog,
     ActorModal,
     SearchIcon,
