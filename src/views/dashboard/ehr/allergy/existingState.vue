@@ -9,7 +9,7 @@
           New Allergy
         </button>
       </span>
-      <cornie-table :columns="rawHeaders" v-model="items">
+      <cornie-table :columns="rawHeaders" v-model="sortAllergys">
         <template #actions="{ item }">
           <div
             @click="showAllergy(item.id)"
@@ -163,6 +163,7 @@ const allergy = namespace("allergy");
 interface MutantAllergy extends IAllergy {
   original: IAllergy;
 }
+
 
 @Options({
   components: {
@@ -331,22 +332,12 @@ export default class AllergyExistingState extends Vue {
     const allergys = this.allergys.map((allergy: any) => {
       (allergy as any).recordDate = new Date(
         (allergy as any).recordDate
-      ).toLocaleDateString("en-US");
-      // (allergy as any).onSet.onsetPeriod.end = new Date(
-      //   (allergy as any).onSet.onsetPeriod.end
-      // ).toLocaleDateString("en-US");
-      // (allergy as any).createdAt = new Date(
-      //   (allergy as any).createdAt
-      // ).toLocaleDateString("en-US");
+      ).toLocaleDateString("en-US");;
 
       return {
         ...allergy,
         action: allergy.id,
-        keydisplay: "XXXXXXX",
         code: this.medicationMapper(allergy.code),
-        // onsetPeriod:
-        //   allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
-        // asserter: this.getPractitionerName(allergy.onSet.asserter),
         substance: this.medicationMapper(allergy.reaction.substance),
         manifestation: this.manifestationMapper(allergy.reaction.manifestation),
         exposureRoute: this.exposureRouteMapper(allergy.reaction.exposureRoute),
