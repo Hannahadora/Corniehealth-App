@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-1/2 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -106,7 +106,7 @@
                   <cornie-input
                     :rules="required"
                     class="grow w-full"
-                    :placeholder="'Autoloaded'"
+                    :placeholder="'Enter'"
                     :label="'Request code'"
                     v-model="reasonCode"
                   />
@@ -114,7 +114,7 @@
                     :rules="required"
                     label="Order Detail (Optional)"
                     v-model="orderDetail"
-                    placeholder="--Select--"
+                    placeholder="Enter"
                   />
                   <div class="w-full -mt-1">
                     <span class="text-sm font-semibold mb-3">Quantity</span>
@@ -156,7 +156,7 @@
             <accordion-component title="Patient Info" :opened="true">
               <template v-slot:default>
                 <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                  <cornie-select
+                  <!-- <cornie-select
                     class=""
                     :label="'Patient'"
                     v-model="patientId"
@@ -164,7 +164,7 @@
                     :innerlabel="'Self pay'"
                     :labelText="true"
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                   <encounter-select
                     :rules="required"
                     placeholder="select"
@@ -292,7 +292,7 @@
                 <cornie-input
                   :rules="required"
                   label="Patient Instruction"
-                  placeholder="Autoloaded"
+                  placeholder="Enter"
                   class="w-full"
                   v-model="patientInstructions"
                 >
@@ -516,7 +516,7 @@ export default class MedicationModal extends Vue {
   intent = null;
   priority = null;
   category = "";
-  patientId = "";
+  patientId = null;
   reasonCode = null;
   reasonReference = null;
   note = null;
@@ -527,7 +527,7 @@ export default class MedicationModal extends Vue {
   basedOnInfo = "";
   reasonReferenceInfo = "";
 
-  orderDetail = "";
+  orderDetail = null;
   requestDescription = "";
   bodySite = "";
   quantityUnit = "";
@@ -562,7 +562,7 @@ export default class MedicationModal extends Vue {
   }
 
   get patientConditions() {
-    return this.conditions[this.patientId] || [];
+    return this.conditions[this.apatientId] || [];
   }
 
   async setRequest() {
@@ -573,12 +573,12 @@ export default class MedicationModal extends Vue {
     this.intent = diagnostic.intent;
     this.priority = diagnostic.priority;
     this.category = diagnostic.category;
-    this.patientId = diagnostic.patientId;
+    (this.patientId as any) = diagnostic.patientId;
     this.reasonCode = diagnostic.reasonCode;
     this.reasonReference = diagnostic.reasonReference;
     this.note = diagnostic.note;
     this.performer = diagnostic.performer;
-    this.orderDetail = diagnostic.orderDetail;
+    (this.orderDetail as any) = diagnostic.orderDetail;
     this.bodySite = diagnostic.bodySite;
     this.requestDescription = diagnostic.requestDescription;
     this.quantityUnit = diagnostic.quantityUnit;
@@ -746,7 +746,7 @@ export default class MedicationModal extends Vue {
   }
 
   async created() {
-    await this.fetchPatientConditions(this.patientId);
+    await this.fetchPatientConditions(this.apatientId);
     await this.fetchAllergy();
     await this.fetchPatients();
     await this.fetchPractitioners();

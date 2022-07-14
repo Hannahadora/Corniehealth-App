@@ -369,19 +369,12 @@
         </v-form>
       </cornie-card-text>
 
-      <div class="flex items-center justify-between mt-24">
-        <div
-          class="text-red-500 py-1 px-2 text-sm cursor-pointer"
-          @click="show = false"
-        >
-          Cancel
-        </div>
-        <div class="flex items-center mb-6">
+      <div class="flex items-center justify-end mt-24 mb-6">
           <cornie-btn
-            @click="save('draft')"
+           @click="show = false"
             class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
           >
-            Save As Draft
+           Cancel
           </cornie-btn>
           <cornie-btn
             @click="save('')"
@@ -392,7 +385,6 @@
             Save
           </cornie-btn>
         </div>
-      </div>
     </cornie-card>
   </cornie-dialog>
 
