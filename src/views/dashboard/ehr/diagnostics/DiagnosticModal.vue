@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
   <cornie-dialog v-model="show" right class="w-1/2 h-full">
-=======
-  <cornie-dialog v-model="show" right class="w-6/12 h-full">
->>>>>>> 5eac2af02972987439bee2da9403f310fd09f3a0
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -317,11 +313,7 @@
                 <cornie-input
                   :rules="required"
                   label="Patient Instruction"
-<<<<<<< HEAD
-                  placeholder="Enter"
-=======
                   :placeholder="'Enter'"
->>>>>>> 5eac2af02972987439bee2da9403f310fd09f3a0
                   class="w-full"
                   v-model="patientInstructions"
                 >
@@ -782,13 +774,7 @@ export default class MedicationModal extends Vue {
   }
 
   async created() {
-<<<<<<< HEAD
     await this.fetchPatientConditions(this.apatientId);
-=======
-    this.patientId = this.apatientId;
-    this.locationId  = this.authCurrentLocation;
-    await this.fetchPatientConditions(this.patientId);
->>>>>>> 5eac2af02972987439bee2da9403f310fd09f3a0
     await this.fetchAllergy();
     await this.fetchPatients();
     await this.fetchPractitioners();
