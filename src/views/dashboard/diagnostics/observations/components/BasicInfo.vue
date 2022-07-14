@@ -30,11 +30,11 @@
         @click="
           $emit('openReferenceModal', 'partOf', [
             'MedicationAdministration',
-          'MedicationDispense',
-          'MedicationStatement',
-          'Procedure',
-          'Immunization',
-          'ImagingStudy',
+            'MedicationDispense',
+            'MedicationStatement',
+            'Procedure',
+            'Immunization',
+            'ImagingStudy',
           ])
         "
       >
@@ -157,6 +157,7 @@ export default class BasicInfo extends Vue {
 
   customerDetails = [];
   query = "";
+  
 
   @Watch("customers")
   queryUpdate() {

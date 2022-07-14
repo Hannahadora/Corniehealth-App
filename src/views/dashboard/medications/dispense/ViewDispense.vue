@@ -409,7 +409,7 @@
   <collect-payment
     :id="id"
     :type="postMethod"
-    :request="viewedRequest"
+    :request="request"
     :bill="bill"
     v-model="completePaymentModal"
   />
@@ -644,14 +644,16 @@ export default class DispenseModal extends Vue {
   }
 
   async collectPayment() {
-    this.completePaymentModal = true;
     this.medicationRequest.filter((el: any) => {
       if (el.id == this.id) {
         this.viewedRequest = el;
       }
     });
-    await this.dispenseRequest();
-    await this.generateBill();
+    const res: any = await this.dispenseRequest();
+    if (res.success) {
+      this.completePaymentModal = true;
+      await this.generateBill();
+    }
   }
 
   async setRequest() {
@@ -669,18 +671,19 @@ export default class DispenseModal extends Vue {
   }
 
   async dispenseRequest() {
+    const payload = this.medications?.map((product) => {
+      return {
+        dispensedProductId: product.id,
+        reasonforSubstitution: product.reasonForSubstitution,
+        quantity: 1,
+      };
+    });
     try {
-      const payload = this.request.medications.map((product) => {
-        return {
-          dispensedProductId: product.id,
-          reasonforSubstitution: product.reasonForSubstitution,
-          quantity: product.quantity || 1,
-        };
-      });
-      const { data } = await cornieClient().post(
+      const res = await cornieClient().post(
         `/api/v1/pharmacy/dispense-request/${this.locationId}/${this.id}`,
-        { ...payload }
+        payload
       );
+      return res;
     } catch (error) {
       window.notify({
         msg: "There was an error dispensing request",
