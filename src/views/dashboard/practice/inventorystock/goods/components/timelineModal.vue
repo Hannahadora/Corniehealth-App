@@ -87,7 +87,6 @@ import CornieSelect from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import DatePicker from "@/components/datepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
-import TimePicker from "@/components/pickerTime.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
 import PhoneInput from "@/components/phone-input.vue";
@@ -115,7 +114,6 @@ const practitioner = namespace("practitioner");
     CancelIcon,
     DeleteIcon,
     TextArea,
-    TimePicker,
     Avatar,
     CornieDialog,
     CornieRadio,

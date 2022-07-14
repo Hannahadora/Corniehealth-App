@@ -26,7 +26,7 @@
                   />
                   <cornie-select
                     :rules="required"
-                    :items="['Descriptive', 'Actual']"
+                    :items="['descriptive', 'actual']"
                     v-model="state"
                     label="State"
                     placeholder="--Select--"
@@ -66,7 +66,7 @@
               </template>
             </accordion-component>
           </div>
-          <div class="border-b-2 border-dashed border-gray-100" v-if="state == 'Actual'">
+          <div class="border-b-2 border-dashed border-gray-100" v-if="state == 'actual'">
               <accordion-component title="Members" :opened="true">
                 <template v-slot:misc>
                   <info></info>
@@ -225,6 +225,7 @@ const device = namespace("device");
 const roles = namespace("roles")
 const patients = namespace("patients");
 const request = namespace("request");
+const account = namespace("user");
 
 @Options({
   components: {
@@ -272,6 +273,9 @@ export default class AddGroup extends Vue {
   @device.Action
   fetchDevices!: () => Promise<boolean>;
 
+  @account.Getter
+  authPractitioner!: IPractitioner;
+
   @roles.State
   roles!: { id: string; name: string }[];
 
@@ -296,7 +300,7 @@ export default class AddGroup extends Vue {
   opened = true;
   openedR = false;
   openedT = false;
-  state = "Actual";
+  state = "actual";
   status = 'active';
   type = "";
   name = "";
@@ -354,20 +358,21 @@ export default class AddGroup extends Vue {
   }
   get payload() {
     return {
-      group: {
         state: this.state,
         status: this.status,
         type: this.type,
         name: this.name,
-        code: this.code,
-        quantity: this.quantity,
-        managingEntity: this.managingEntity,
-      },
-      members: this.actorsList.map((item: any) => {
+        // code: this.code,
+        // quantity: this.quantity,
+        // managingEntity: this.managingEntity,
+        managingOrganizationId: this.authPractitioner.organizationId,
+        managingPractitionerId: this.authPractitioner.id,
+        members: this.actorsList.map((item: any) => {
         return {
-          userId: item.id,
+          practitionerId: item.id,
           period: item.period,
-          status: item.status,
+          role: item.role,
+          status: this.status,
         };
       }),
     };

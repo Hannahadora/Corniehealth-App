@@ -11,7 +11,7 @@ export default interface IRefferal {
     supportingInformation: string;
     reasonCode: null;
     reasonReference: null;
-    note: string;
+    note: null;
     identifier: string;
     safetyCapRequest: boolean;
     deliveryLocation: string;

@@ -34,14 +34,24 @@ export async function deleteProvider(patientId: string, providerId: string): Pro
   }
 }
 
-export async function fetchPatientsEncounter(patientId: string) {
+export async function fetchPatientsEncounter(locationId: string) {
   try {
     const response = await cornieClient().get(
-      `/api/v1/encounter/patient/${patientId}`
+      `/api/v1/encounter/active-encounters/location/${locationId}`
     );
     if (response.success) {
       return response.data;
     }
   } catch (error) {}
   return [] as IEncounter[];
+}
+
+export async function deletePatientEncounter(id: string, data:any) {
+  try {
+    const response = await cornieClient().patch(`/api/v1/encounter/end/${id}`, data);
+    if (response.success) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
 }
