@@ -45,7 +45,7 @@ export default class MultiInput extends Vue {
 
   @Watch("model", { deep: true })
   inputChanged() {
-    const modelValue = this.model.reduce((prev, curr) => prev + curr.val, "");
+    const modelValue = this.model.join("");
     this.$emit("update:modelValue", modelValue);
   }
 
@@ -68,8 +68,15 @@ export default class MultiInput extends Vue {
   }
 
   pasteValues(e: any) {
-    const data = e.clipboardData.getData('text');
-    console.log("data", data);
+    const pasted = e.clipboardData.getData("text/plain") as string;
+    if (pasted.length != this.model.length) {
+      return;
+    }
+    for (const i in pasted as any) {
+      const index = Number(i);
+      const value = pasted.charAt(Number(index));
+      this.model[index].val = value;
+    }
   }
 }
 </script>

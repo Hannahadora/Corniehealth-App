@@ -129,7 +129,13 @@
                                 :label="'Request code'"
                                 v-model="reasonCode"
                           />
-                        <cornie-select
+                          <cornie-input
+                                class="grow w-full"
+                                :placeholder="'Enter'"
+                                 label="Order Detail"
+                            v-model="orderDetail"
+                          />
+                        <!-- <cornie-select
                             class="required"
                             :rules="required"
                             :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
@@ -141,7 +147,7 @@
                             <span class="text-xs text-gray-500">(Optional)</span>
                             
                             </template>
-                        </cornie-select>
+                        </cornie-select> -->
                          <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Quantity</span>
                             <div class="flex space-x-2 w-full">
@@ -263,6 +269,7 @@
                             v-model="replaces"
                         >
                         </cornie-select>
+                        
                         <cornie-select
                             :rules="required"
                             :items="['reason reference']"
@@ -287,7 +294,21 @@
                            v-model="reasonCode"
                         >
                         </cornie-input>
-                          <cornie-select
+                         <div>
+                            <p class="text-sm text-black font-semibold mb-1">
+                              Reason Reference
+                            </p>
+                            <div
+                              class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-3 px-4 cursor-pointer"
+                              @click="showRefModal = true"
+                            >
+                              <span class="w-full text-xs">{{ reasonReference }}</span>
+                              <span class="flex justify-end w-full">
+                                <plusIcon class="fill-current text-danger mt-1" />
+                              </span>
+                            </div>
+                        </div>
+                          <!-- <cornie-select
                             :rules="required"
                             :items="['reason reference']"
                             label="Reason Reference"
@@ -295,7 +316,7 @@
                             class="w-full"
                              v-model="reasonReference"
                         >
-                        </cornie-select>
+                        </cornie-select> -->
                          <!-- <cornie-input
                             :rules="required"
                             label="Note"
@@ -306,7 +327,7 @@
                          <cornie-input
                             :rules="required"
                             label="Patient Instruction"
-                            placeholder="Autoloaded"
+                            placeholder="Enter"
                             class="w-full"
                             v-model="patientInstructions"
                         >
@@ -523,8 +544,9 @@ export default class MedicationModal extends Vue {
     reasonReference = null;
     note = null;
     performer = "";
+    showRefModal = false;
 
-    orderDetail = "";
+    orderDetail = null;
     requestDescription = "";
     bodySite = "";
     quantityUnit = "";

@@ -127,24 +127,24 @@
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <fhir-input
+                    v-model="reaction.substance"
                     reference="http://hl7.org/fhir/ValueSet/substance-code"
                     class="required w-full"
                     label="substance"
                     placeholder="select"
-                    v-model="reaction.substance"
-                  />
+                  ></fhir-input>
                   <fhir-input
+                    v-model="reaction.manifestation"
                     reference="http://hl7.org/fhir/ValueSet/clinical-findings"
                     class="w-full mb-2"
                     label="manifestation"
                     placeholder="select"
-                    v-model="reaction.manifestation"
-                  />
+                  ></fhir-input>
                   <cornie-input
+                    v-model="reaction.description"
                     label="Description"
                     class="-mt-5 w-full"
                     placeholder="Enter"
-                    v-model="reaction.description"
                   >
                   </cornie-input>
                   <div class="-mt-5">
@@ -157,19 +157,19 @@
                     placeholder="Select"
                     label="Severity"
                     v-model="reaction.severity"
-                  />
+                  ></cornie-select>
                   <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/route-codes"
                     class="w-full mb-2"
                     label="Exposure Route"
                     placeholder="select"
                     v-model="reaction.exposureRoute"
-                  />
+                  ></fhir-input>
                   <cornie-input
+                    v-model="reaction.note"
                     label="Note"
                     class="mb-5 w-full"
                     placeholder="Enter"
-                    v-model="reaction.note"
                   >
                   </cornie-input>
                 </div>
@@ -345,15 +345,7 @@ export default class AlergyModal extends Vue {
   category = "";
   criticality = "";
   code = "";
-  reaction = {
-    substance: "",
-    manifestation: "",
-    description: "" as any,
-    onset: "",
-    severity: "",
-    exposureRoute: "",
-    note: "" as any,
-  };
+
   recorderId = "";
   asserterId = "";
   occurences = [] as any;
@@ -361,6 +353,20 @@ export default class AlergyModal extends Vue {
   setOccurencetime = "";
   recordDate = new Date().toString();
   note = "";
+
+  reaction = {} as  Reaction
+
+  // get reaction (){
+  //   return {
+  //     substance: "",
+  //     manifestation: "",
+  //     description: "",
+  //     onset: "",
+  //     severity: "",
+  //     exposureRoute: "",
+  //     note: ""
+  //  }
+  // }
 
   @Watch("id")
   idChanged() {
@@ -379,7 +385,13 @@ export default class AlergyModal extends Vue {
     //this.onset = allergy.onSet;
     this.occurences = allergy?.occurences;
      this.note = allergy?.note;
-    this.reaction = allergy?.reaction;
+    this.reaction.substance = allergy?.reaction.substance;
+    this.reaction.manifestation = allergy?.reaction.manifestation;
+    this.reaction.description = allergy?.reaction.description;
+    this.reaction.onset = allergy?.reaction.onset;
+    this.reaction.severity = allergy?.reaction.severity;
+    this.reaction.exposureRoute = allergy?.reaction.exposureRoute;
+    this.reaction.note = allergy?.reaction.note;
     //this.recordDate = new Date(allergy.recordDate).toLocaleDateString();
     this.asserterId = allergy?.asserterId;
     this.recorderId = allergy?.recorderId;
@@ -400,7 +412,7 @@ export default class AlergyModal extends Vue {
   }
 
   get patientId() {
-    return this.$route.params.id;
+    return this.$route.params.id as string;
   }
 
 isEmptyObject(object:any){
@@ -455,7 +467,7 @@ isEmptyObject(object:any){
   }
 
    setOccurenceTIme(date:string, time:string){
-        this.occurences.push({time: this.safeBuildDateTime(date, time)})
+        this.occurences?.push({time: this?.safeBuildDateTime(date, time)})
   }
     get recorder(){
      if(this.setOccurence) this.setOccurenceTIme(this.setOccurence, this.setOccurencetime)
@@ -465,17 +477,19 @@ isEmptyObject(object:any){
     newoccurpp = this.occurences.filter((c:any) => c.time !== undefined)
 
   reset(){
-     this.clinicalStatus = '',
-       this.verificationStatus = '',
-    this.type = '',
+      this.clinicalStatus = '',
+      this.verificationStatus = '',
+      this.type = '',
       this.category = '',
-this.criticality = '',
-this.code = '',
+      this.criticality = '',
+      this.code = '',
       this.newoccurpp = [],
       this.recordDate = '',
       this.note = '',
-       this.authPractitioner.id = '',
-      this.recorderId = ''
+      this.authPractitioner.id = '',
+      this.recorderId = '', 
+      this.reaction
+   
   }
 
   get payload() {
@@ -513,8 +527,8 @@ this.code = '',
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
 
-    this.payload.reaction.description = this.reaction.description || undefined;
-     this.payload.reaction.note = this.reaction.note || undefined;
+    // this.payload.reaction.description = this.reaction.description || "description";
+    // this.payload?.reaction?.note = this.reaction.note || "note";
 
     try {
       const response = await cornieClient().post(

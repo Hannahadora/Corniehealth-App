@@ -70,6 +70,12 @@ import CornieBtn from "@/components/CornieBtn.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
+type ActiveEncounter = Record<string, IEncounter | undefined>
+
+const currentEncounter = {} as IEncounter;
+const activeEncounter = { 1: currentEncounter} as ActiveEncounter;
+const patientEncounter = activeEncounter[1];
+delete activeEncounter[1] 
 
 @Options({
   components: {
@@ -103,10 +109,13 @@ export default class ClinicalsSidebar extends Vue {
   fetchPatients!: () => Promise<void>;
 
   @patients.Action
-  fetchPatientsEncounter!: (patientId:string) => Promise<void>;
+  fetchPatientsEncounter!: (locationId:string) => Promise<void>;
 
   @patients.State
-  encounters!: IEncounter[];
+  encounters!: ActiveEncounter;
+
+  @patients.Action
+  deletePatientEncounter!: (data: any) => Promise<boolean>;
 
   @userStore.Getter
   authPractitioner!: IPractitioner;
@@ -125,40 +134,44 @@ export default class ClinicalsSidebar extends Vue {
     return this.newpatientId || (this.$route.params.id || this.$route.params.patientId) as string;
   }
 
-   get fetchSingglePatientEncounter() {
-    const pt = this.encounters.find((i: any) => i.patientId === this.patientId);
-    if (pt) this.encounterObject = pt; 
-    return pt;
+
+
+  get fetchSingglePatientEncounter() {
+    const pt = this.encounters[this.patientId]; 
+    return pt as any;
   }
+
+
 
   showPatientModal() {
     this.showPatient = true;
   }
-   async endEncounter(patient: IPatient) {
-    this.loading = true;
-    const body ={
+
+  async endEncounter(id: string) {
+      const body ={
       patientId: this.patientId,
-      practitionerId: this.encounterObject.practitionerId,
+      practitionerId: this.fetchSingglePatientEncounter.practitionerId,
       locationId: this.authCurrentLocation,
       status: 'active',
       class: 'consultation',
       serviceType: 'consultation'
     }
-     try {
-      const response = await cornieClient().patch(
-        `/api/v1/encounter/end/${this.encounterObject.id}`,
-       body
-      );
-      if (response.success) {
-        this.loading = false;
-        window.notify({ msg: "Patient encounter ended successfully", status: "success" });
-       this.$router.push({ name: "Patient"});
-      }
-    } catch (error: any) {
-      this.loading = false;
-      window.notify({ msg: "Encounter error", status: "error" });
+    const confirmed = await window.confirmAction({
+      message: `Are you sure you want to end this patient encounter?`,
+      title: "End Patient Encounter",
+    });
+    if (!confirmed) return;
+    const deleted = await this.deletePatientEncounter({ id: this.fetchSingglePatientEncounter.id, data: body });
+    if (deleted) {
+      window.notify({ msg: "Patient Encounter Ended", status: "success" });
+      this.$router.push({
+        path: "/dashboard/provider/clinical/",
+      });
+    } else{
+      window.notify({ msg: "Patient Encounter not Ended", status: "error" });
     }
   }
+
   async fetchAppontments() {
     const [splitDate] = this.date.split('T');
    const date = splitDate;
@@ -182,8 +195,8 @@ export default class ClinicalsSidebar extends Vue {
   }
 
   async created() {
+    await this.fetchPatientsEncounter(this.authCurrentLocation)
     this.patient = await this.findPatient(this.patientId);
-    await this.fetchPatientsEncounter(this.patientId)
     this.fetchPatients();
     this.fetchAppontments();
   }

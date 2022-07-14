@@ -56,48 +56,7 @@
                 />
               </div>
               <div class="w-full grid grid-cols-3 gap-4">
-                <!-- <cornie-input
-                  :modelValue="identifier"
-                  label="Identifier"
-                  :placeholder="'--Automatically Generated--'"
-                  disabled
-                />
-                <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Status</span>
-                  <div class="w-full flex flex-wrap items-center py-5">
-                    <div class="-mb-2">
-                      <cornie-radio
-                        v-model="activeState"
-                        :label="'Active'"
-                        :value="'active'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                    <div class="ml-4 -mb-2">
-                      <cornie-radio
-                        :label="'Inactive'"
-                        v-model="activeState"
-                        :value="'inactive'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                    <div class="ml-4 -mb-2">
-                      <cornie-radio
-                        :label="'Invited'"
-                        v-model="activeState"
-                        :value="'Invited'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                  </div>
-                </div> -->
-                <!-- <cornie-input
-                  v-model="type"
-                  label="Type"
-                  placeholder="Not editable"
-                  :disabled="true"
-                  :required="true"
-                /> -->
+                
                 <cornie-input
                   :rules="required"
                   v-model="name"
@@ -359,23 +318,15 @@
                   :required="true"
                 />
 
-                <div v-if="specialties.length > 0">
+                <div v-if="specialtyNames">
                   <span class="text-sm mb-4 font-semibold">Specialty</span>
                   <div
                     class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1"
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialties.map((x:any) => getSpecialityName(x) || x?.display).join(', ')}}
-                        <!-- <div class="flex">
-                          <span
-                            class="text-xs"
-                            v-for="(item, index) in specialties"
-                            :key="index"
-                          >
-                            {{ getSpecialityName(item) || item?.name }} ,
-                          </span>
-                        </div> -->
+                        {{specialtyNames}}
+                      
                       </div>
                       <div class="flex-none justify-end">
                         <add-icon @click="showSpecialModal" />
@@ -423,14 +374,7 @@
                   :required="true"
                 />
 
-                <!-- <cornie-select
-                  :rules="required"
-                  v-model="consultationChannel"
-                  label="Visit Type"
-                  :items="dropdown.ConsultationChannel"
-                  placeholder="--Select--"
-                  :required="true"
-                /> -->
+               
                 <div class="flex flex-col space-y-0.5">
                   <div class="text-sm font-semibold mb-1">Visit Type</div>
 
@@ -822,18 +766,7 @@
     @add-access-roles="addAccessRoles"
   />
 
-  <!-- <access-role
-    v-model="addAccessRole"
-    :deletedRole="deletedRole"
-    @close-access-diag="addAccessRole = false"
-    @add-access-roles="addAccessRoles"
-    @role-deleted="deletedRole = {}"
-    :locationId="locationId"
-    :roleId="roleId"
-    :id="id"
-    :locationRoleId="locationRoleId"
-    :setRoles="locationRoles"
-  /> -->
+ 
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -1138,6 +1071,9 @@
       this.setPractitioner();
     }
 
+    get specialtyNames(){
+      return this.specialties.map((x:any) => this.getSpecialityName(x) || x?.display).join(', ')
+    }
     @Watch("useSameAddress")
     populateEmergencyAddress() {
       if (this.useSameAddress) {
@@ -1287,8 +1223,6 @@
         organizationId: this.organizationId,
         hoursOfOperation: this.hoursOfOperation,
         period: this.period,
-        // locations: this.locations,
-        // defaultLocation: this.defaultLocation,
         locationRoles: this.accessRoles,
         services: this.services,
         nationality: this.nationality,
@@ -1307,7 +1241,6 @@
         licensePeriod: this.licensePeriod,
         education: this.educations,
         boardLicenses: this.licenses,
-        location: this.locations,
         employmentType: this.employmentType,
       };
     }
@@ -1327,7 +1260,7 @@
         boardLicenses: this.licenses,
         education: this.educations,
         gender: this.gender,
-        locations: this.accessRoles,
+        
         phone: {
           number: this.phone,
           dialCode: this.dialCode,

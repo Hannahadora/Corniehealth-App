@@ -196,18 +196,21 @@
                          v-model="startDate"
                        />
                        <div class="grid grid-cols-2 mt-5 gap-4">
-                           <time-picker
-                             label="Start Time"
-                            placeholder="00:00"
-                            class="w-full"
-                            v-model="startTime"
-                           />
-                           <time-picker
-                             label="End Time"
-                            placeholder="00:00"
-                            class="w-full"
-                            v-model="endTime"
-                           />
+                           <input
+                              type="time"
+                              label="Start Time"
+                              placeholder="00:00"
+                              class="w-full mt-5 border-1 border-gray-300 rounded-lg px-2 py-2"
+                              v-model="startTime"
+                            />
+                             <input
+                                type="time"
+                                label="End Time"
+                                placeholder="00:00"
+                                class="w-full mt-5 border-1 border-gray-300 rounded-lg px-2 py-2"
+                                v-model="endTime"
+                              />
+                         
                        </div>
                     <div class="-mt-10">
                         <span class="font-bold text-blue-700 text-xs cursor-pointer" @click="showRepeat = !showRepeat" >Repeat</span>
@@ -425,7 +428,6 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import { namespace } from "vuex-class";
 import ISchedule,{Break, Repeat, Slot} from "@/types/ISchedule";
 import SelectOption from "@/components/custom-checkbox.vue";
-import TimePicker from "@/components/pickerTime.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
 import DateTime from "@/components/date-time-picker.vue";
@@ -459,7 +461,6 @@ const user = namespace("user");
     CancelIcon,
     TextArea,
     DeleteIcon,
-    TimePicker,
     ActorsModal,
     CornieDialog,
     SearchIcon,

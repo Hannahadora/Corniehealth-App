@@ -2,23 +2,25 @@ import ObjectSet from "@/lib/objectset";
 import { updateModelField } from "@/plugins/utils";
 import { IPatient, Provider } from "@/types/IPatient";
 import { StoreOptions } from "vuex";
-import { deletePatient, deleteProvider, fetchPatients, fetchPatientsEncounter } from "./helper";
-import IEncounter from "@/types/IEncounter";
+import { deletePatient, deleteProvider, fetchPatients, fetchPatientsEncounter, deletePatientEncounter } from "./helper";
+import  IEncounter  from "@/types/IEncounter";
+
+type ActiveEncounter = Record<string, IEncounter | undefined> 
 
 interface PatientState {
   patients: IPatient[];
-  encounters: IEncounter[];
+  encounters:  ActiveEncounter;
+  
 }
-
 export default {
   namespaced: true,
   state: {
     patients: [],
-    encounters:[],
+    encounters: {} as ActiveEncounter,
   },
   mutations: {
-    setPatientEncounter(state, encounters: any) {
-      state.encounters = [...encounters];
+    setPatientEncounter(state, encounters: ActiveEncounter) {
+      state.encounters = encounters
     },
     addPatients(state, patients: IPatient[]) {
       const patientSet = new ObjectSet([...state.patients, ...patients], "id");
@@ -28,6 +30,12 @@ export default {
       const patientSet = new ObjectSet([...state.patients, patient], "id");
       state.patients = [...patientSet];
     },
+    deletePatientEncounter(state, patientId : string) {
+      const encounters = {...state.encounters}
+      delete encounters[patientId]
+      state.encounters = {... encounters}
+    },
+
     deletePatient(state, id: string) {
       const index = state.patients.findIndex(patient => patient.id == id);
       if (index < 0) return;
@@ -50,8 +58,8 @@ export default {
     },
   },
   actions: {
-    async fetchPatientsEncounter(ctx, patientId: string) {
-      const encounters = await fetchPatientsEncounter(patientId);
+    async fetchPatientsEncounter(ctx, locaitonId: string) {
+      const encounters = await fetchPatientsEncounter(locaitonId);
       ctx.commit("setPatientEncounter", encounters);
     },
     updatePatientField(ctx, { id, field, data }: any) {
@@ -64,6 +72,13 @@ export default {
       return ctx.state.patients.find(
         patient => patient.id == id
       );
+    },
+    async deletePatientEncounter(ctx: any, payload: any) {
+      const { id, data } = payload;
+      const deleted = await deletePatientEncounter(id, data);
+      if (!deleted) return false;
+      ctx.commit("deletePatientEncounter", data.patientId);
+      return true;
     },
     async fetchPatients(ctx) {
       const patients = await fetchPatients();

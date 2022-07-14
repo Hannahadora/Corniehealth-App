@@ -252,8 +252,7 @@
                 <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3"> 
                     <div class="mt-5 w-full grid grid-cols-2 gap-4">
                          <cornie-select
-                            class="required w-full"
-                            :rules="required"
+                            class="w-full"
                             :items="['reason code']"
                             label="Replaces"
                             placeholder="--Select--"
@@ -270,7 +269,6 @@
                        </div>
                       </div>
                         <cornie-input
-                            :rules="required"
                             label="As Needed Code"
                             placeholder="--Enter--"
                             class="w-full"
@@ -278,14 +276,12 @@
                         >
                         </cornie-input>
                           <cornie-input
-                            :rules="required"
                             label="Reason Code"
                             placeholder="--Enter--"
                            v-model="reasonCode"
                         >
                         </cornie-input>
                           <cornie-select
-                            :rules="required"
                             :items="['reason reference']"
                             label="Reason Reference"
                             placeholder="--Select--"
@@ -521,7 +517,7 @@ export default class RefferalModal extends Vue {
     patientId = "";
     reasonCode = null;
     reasonReference = null;
-    note = "";
+    note = null;
     performer = "";
 
     orderDetail = "";

@@ -6,11 +6,11 @@
         You’ve made no requests!<br />
         <!-- Make a new service request by clicking on “New Request” above -->
     </h3>
-      <!-- <span class="flex justify-center w-full">
+      <span class="flex justify-center w-full">
           <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
       New Requests
     </button>
-      </span> -->
+      </span>
     </div>
   
   </div>
