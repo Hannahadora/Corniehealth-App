@@ -104,6 +104,7 @@
                   :required="true"
                   label="Name (First and Last)"
                   placeholder="--Enter--"
+                  :disabled="true"
                 />
 
                 <auto-complete
@@ -112,7 +113,7 @@
                   :label="'Nationality'"
                   :items="nationState.countries"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-select
@@ -156,6 +157,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
+                  :disabled="true"
                 />
                 <auto-complete
                   class="w-full"
@@ -169,7 +171,7 @@
                 <auto-complete
                   class="w-full"
                   v-model="state"
-                  label="State or Origin"
+                  label="State"
                   :items="nationState.states"
                   placeholder="Enter"
                   :rules="required"
@@ -1236,6 +1238,7 @@
       this.showSpecial = true;
     }
     async setPractitioner() {
+      console.log("meta", this.$route.meta);
       const { data } = await cornieClient().get(`/api/v1/user/practitioner`);
       console.log("prac d", data);
       const practitioner = data;
@@ -1367,7 +1370,7 @@
         type: this.type,
         address: this.address,
         dateOfBirth: this.serializeDate(this.dateOfBirth),
-        image: this.img.url,
+        image: this.img.url ? this.img.url : undefined,
         jobDesignation: this.jobDesignation,
         department: this.department,
         accessRole: this.accessRole,
@@ -1387,7 +1390,7 @@
         country: this.country,
         state: this.state,
         city: this.city,
-        postCode: this.postCode,
+        postCode: this.postCode ? this.postCode : undefined,
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
 

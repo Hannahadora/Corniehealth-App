@@ -75,6 +75,7 @@
                   :key="i"
                   @click="showDatalist = !showDatalist"
                   class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                 :class="{ 'bg-gray-100' : selected === item }"
                 >
                   <div
                     class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
@@ -97,6 +98,7 @@
               <div v-if="type === 'condition'">
                 <div v-for="(input, index) in conditions" :key="index">
                   <div
+                  :class="{ 'bg-gray-100' : selected === input }"
                     class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                     @click="getValue(input)"
                   >
@@ -138,6 +140,7 @@
             <div v-if="type === 'allergy'">
               <div v-for="(input, index) in allergys" :key="index">
                 <div
+                :class="{ 'bg-gray-100' : selected === input }"
                   class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                   @click="getValue(input)"
                 >
@@ -267,6 +270,7 @@ export default class ProblemDialog extends Vue {
   isVisible = "";
   showDatalist = false;
   clickedBg = false;
+  selected = <any>{};
 
   query = "";
   checkProblem = <any>{};
@@ -291,6 +295,7 @@ export default class ProblemDialog extends Vue {
   }
 
   getValue(value: any) {
+    this.selected = value
     if (this.type === "condition") {
       this.checkProblem.referenceType = this.type;
       this.checkProblem.referenceId = value.id;

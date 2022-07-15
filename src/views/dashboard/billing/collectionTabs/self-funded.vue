@@ -19,7 +19,7 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Total Receivables Value</div>
-              <div class="font-bold text-xl">N2,094,045</div>
+              <div class="font-bold text-xl">N5,094,045</div>
             </div>
           </div>
           <div class="flex-none">

@@ -3,9 +3,9 @@
     <div class="border-b pb-4 font-bold text-2xl">Account Receivables</div>
     <div class="w-full h-full">
       <tabs :items="tablinks" v-model="currentTab">
-        <privateTab />
-        <self-funded />
-        <insurance-claim />
+        <privateTab :bills="receivables" />
+        <self-funded :bills="receivables" />
+        <insurance-claim :bills="receivables" />
       </tabs>
     </div>
   </div>
@@ -33,9 +33,11 @@
       "Insurance claims",
     ];
     currentTab = 0;
+    receivables = [];
     async fetchP() {
-      const response = await cornieClient().get("/api/v1/bill/collections");
-      console.log("billings", response.data);
+      const response = await cornieClient().get("/api/v1/bill/receivable");
+      console.log("billings receivables", response.data);
+      this.receivables = response.data;
     }
     mounted() {
       this.fetchP();

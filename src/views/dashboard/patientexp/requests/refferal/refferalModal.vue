@@ -556,7 +556,7 @@ export default class RefferalModal extends Vue {
           this.patientId =  diagnostic.patientId;
           this.reasonCode =  diagnostic.reasonCode;
           this.reasonReference =  diagnostic.reasonReference;
-          this.note =  diagnostic.note;
+          (this.note as any) =  diagnostic.note;
           this.performer =  diagnostic.performer;
           this.orderDetail =  diagnostic.orderDetail;
           this.bodySite =  diagnostic.bodySite;

@@ -31,7 +31,7 @@
             <drug-icon />
             <div class="text-xs flex flex-col">
               <span class="font-semibold text-sm mb-2 text-primary">
-                {{ input.medication }}
+                {{ input.medication || 'N/A' }}
               </span>
               <span class="">
                 <span class="text-gray-500">
