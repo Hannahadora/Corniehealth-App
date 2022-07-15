@@ -115,10 +115,8 @@
                 type="number"
                 placeholder="Enter"
                 :min="1"
+                :max="item.available"
                 :modelValue="item.quantity"
-                @change="
-                  (evt) => changeQuantity(item.id, Number(evt.data || 1))
-                "
                 @input="(evt) => changeQuantity(item.id, Number(evt.data || 1))"
               />
             </template>
@@ -498,6 +496,11 @@ export default class PosDialog extends Vue {
     const medication = this.medications.find(({ id }) => id == itemId);
     if (!medication) return;
     medication.quantity = quantity;
+
+    this.fullPayments.map((payment: any) => {
+      payment.total = this.grandTotal;
+      payment.amount = this.grandTotal;
+    });
   }
 
   addMedication(chosenMedication: any) {
@@ -540,13 +543,22 @@ export default class PosDialog extends Vue {
       payment.total = this.grandTotal;
       payment.amount = this.grandTotal;
     });
+    this.loading = true;
     try {
       const { data } = await cornieClient().post(
         `/api/v1/pharmacy/pos-dispense/${this.locationId}`,
         { ...newSales }
       );
-      this.$emit("salesAdded");
+      if (data.success) {
+        this.loading = false;
+        window.notify({
+          msg: "Pos sales completed",
+          status: "success",
+        });
+        this.$emit("salesAdded");
+      }
     } catch (error) {
+      this.loading = false;
       window.notify({
         msg: "An error occured",
         status: "error",

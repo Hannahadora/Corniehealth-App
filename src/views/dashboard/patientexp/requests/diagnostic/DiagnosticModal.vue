@@ -581,7 +581,7 @@ export default class MedicationModal extends Vue {
           this.reasonReference =  diagnostic.reasonReference;
           this.note =  diagnostic.note;
           this.performer =  diagnostic.performer;
-          this.orderDetail =  diagnostic.orderDetail;
+          (this.orderDetail as any) =  diagnostic.orderDetail;
           this.bodySite =  diagnostic.bodySite;
           this.requestDescription =  diagnostic.requestDescription;
           this.quantityUnit =  diagnostic.quantityUnit;
