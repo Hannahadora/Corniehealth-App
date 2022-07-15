@@ -34,7 +34,7 @@
     ];
     currentTab = 0;
     async fetchP() {
-      const response = await cornieClient().get("/api/v1/bill/collections");
+      const response = await cornieClient().get("/api/v1/bill/receivable");
       console.log("billings", response.data);
     }
     mounted() {

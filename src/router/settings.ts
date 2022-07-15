@@ -1,12 +1,12 @@
-import { RouteRecordRaw } from "vue-router";
 import Settings from "@/views/dashboard/settings/index.vue";
+import { RouteRecordRaw } from "vue-router";
 
 export const SettingsRoute: RouteRecordRaw = {
   path: "settings/",
   name: "Settings",
   meta: { settings: true },
   component: Settings,
-  redirect: to => `${to.path}/org-info`.replace("//", "/"),
+  redirect: (to) => `${to.path}/org-info`.replace("//", "/"),
   children: [
     {
       path: "org-hierarchy",
@@ -132,7 +132,8 @@ export const SettingsRoute: RouteRecordRaw = {
       props: true,
       name: "Practitioner",
       component: () =>
-        import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
+        // import("@/views/dashboard/settings/practitioners/addPractitioner.vue"),
+        import("@/components/practitioner-view-edit.vue"),
     },
     {
       path: "view-practitioner/:id",

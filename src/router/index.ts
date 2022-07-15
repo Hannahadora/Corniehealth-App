@@ -53,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
-    redirect: to => `${to.path}/home`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
@@ -215,9 +215,10 @@ const routes: Array<RouteRecordRaw> = [
             props: true,
             name: "Add a Practitioner",
             component: () =>
-              import(
-                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
-              ),
+              // import(
+              //   "@/views/dashboard/settings/practitioners/addPractitioner.vue"
+              // ),
+              import("@/components/practitioner-view-edit.vue"),
           },
           // {
           //   path: "care-teams",

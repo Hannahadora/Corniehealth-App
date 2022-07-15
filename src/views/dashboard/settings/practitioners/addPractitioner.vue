@@ -112,7 +112,7 @@
                   :label="'Nationality'"
                   :items="nationState.countries"
                   placeholder="Enter"
-                  :rules="requiredString"
+                  :rules="required"
                   :readonly="readonly"
                 />
                 <cornie-select
@@ -1295,7 +1295,7 @@
         country: this.country,
         state: this.state,
         city: this.city,
-        postCode: this.postCode,
+        postCode: this.postCode ? this.postCode : undefined,
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
         practiceDuartion: {},
@@ -1488,6 +1488,8 @@
     }
   }
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
+
 <style>
   .multiselect-option.is-selected.is-pointed {
     background: var(--ms-option-bg-selected-pointed, #fe4d3c);

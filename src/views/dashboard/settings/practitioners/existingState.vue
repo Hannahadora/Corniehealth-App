@@ -142,7 +142,6 @@
         key: "name",
         show: true,
       },
-      { title: "Department", key: "department", show: true },
       { title: "Job Designation", key: "jobDesignation", show: true },
       {
         title: "Status",

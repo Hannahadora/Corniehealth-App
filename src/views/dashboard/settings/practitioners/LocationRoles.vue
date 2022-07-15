@@ -1,11 +1,11 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-4/12 h-screen">
+  <cornie-dialog v-model="showSync" right class="w-4/12 h-screen">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">
           <div class="w-full flex items-center">
             <span class="pr-2 flex items-center cursor-pointer border-r-2">
-              <cornie-icon-btn @click="show = false">
+              <cornie-icon-btn @click="showSync = false">
                 <arrow-left-icon />
               </cornie-icon-btn>
             </span>
@@ -53,11 +53,11 @@
               <div class="text-sm font-bold mb-5 uppercase">
                 Change default location
               </div>
-              <template v-if="accessRoles.length">
+              <template v-if="locationSync.length">
                 <div>
                   <div
                     class="flex justify-between mb-4"
-                    v-for="(access, index) in accessRoles"
+                    v-for="(access, index) in locationSync"
                     :key="index"
                   >
                     <div class="flex justify-center items-center">
@@ -65,8 +65,8 @@
                       <cornie-radio
                         :id="index"
                         name="option-selected"
-                        :value="access.default"
-                        @click="onChangeOption(access.roleId, $event)"
+                        :modelValue="access.default"
+                        @change="onChangeOption(access.roleId)"
                       ></cornie-radio>
                       <div class="flex flex-col">
                         <div class="mb-0 font-bold text-sm">
@@ -131,7 +131,7 @@
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
-          @click="show = false"
+          @click="showSync = false"
           class="border-primary border-2 px-5 mr-4 rounded-md text-primary"
         >
           Cancel
@@ -214,8 +214,11 @@
     },
   })
   export default class Accessrole extends Vue {
-    @PropSync("modelValue", { type: Boolean, default: false })
-    show!: boolean;
+    @PropSync("show", { type: Boolean, default: false })
+    showSync!: boolean;
+
+    @PropSync("locationRoles")
+    locationSync!: PractitionerLocationRole[];
 
     @Prop({ type: String, default: "" })
     id!: string;
@@ -372,8 +375,9 @@
 
     async submit() {
       this.loading = true;
-      if (this.id) await this.apply();
-      else await this.save();
+      // if (this.id) await this.apply();
+      // else await this.save();
+      this.save();
       this.loading = false;
     }
 
@@ -399,7 +403,7 @@
           this.$emit("add-access-roles", this.accessRoles);
           this.$emit("close-access-diag");
           this.loading = false;
-          this.show = false;
+          this.showSync = false;
         }
       } catch (error: any) {
         this.loading = false;
@@ -417,7 +421,7 @@
             msg: "Practitioner role updated",
             status: "success",
           });
-          this.show = false;
+          this.showSync = false;
         }
       } catch (error: any) {
         window.notify({ msg: error.response.data.message, status: "error" });
@@ -480,22 +484,21 @@
       }
     }
 
-    onChangeOption(id: string, event: Event) {
-      // console.log("event", event.target);
-      for (let i = 0; i < this.accessRoles.length; i++) {
-        const ele = this.accessRoles[i];
-        ele.default = false;
+    onChangeOption(id: string) {
+      this.locationSync = [
+        ...this.accessRoles.map((x: PractitionerLocationRole) => ({
+          ...x,
+          default: x.roleId == id ? true : false,
+        })),
+      ];
 
-        if (ele.roleId == id) {
-          ele.default = true;
-        }
-      }
+      console.log("AccessRole", this.accessRoles);
     }
 
     async save() {
-      if (!this.accessRoles.length) return;
-      this.$emit("add-access-roles", this.accessRoles);
-      this.show = false;
+      // if (!this.accessRoles.length) return;
+      // this.$emit("update:locationRoles", this.accessRoles);
+      this.showSync = false;
     }
 
     async fetchLocation() {
