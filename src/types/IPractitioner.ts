@@ -4,12 +4,12 @@ import Period from "./IPeriod";
 import User from "./user";
 
 export interface PractitionerLocationRole {
-  ids: string[];
-  id?: string;
+  ids?: string[];
+  id: string;
   locationId: string;
   roleId: string;
   default: boolean;
-  location: ILocation;
+  location?: ILocation;
 }
 export default interface IPractitioner {
   defaultLocation: string;
