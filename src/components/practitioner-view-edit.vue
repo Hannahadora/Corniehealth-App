@@ -56,13 +56,13 @@
                 />
               </div>
               <div class="w-full grid grid-cols-3 gap-4">
-                
                 <cornie-input
                   :rules="required"
                   v-model="name"
                   :required="true"
                   label="Name (First and Last)"
                   placeholder="--Enter--"
+                  :disabled="isDisabled('name')"
                 />
 
                 <auto-complete
@@ -115,6 +115,7 @@
                   :required="true"
                   placeholder="--Enter--"
                   label="Email"
+                  :disabled="isDisabled('email')"
                 />
                 <auto-complete
                   class="w-full"
@@ -318,15 +319,23 @@
                   :required="true"
                 />
 
-                <div v-if="specialtyNames">
+                <div v-if="specialties.length > 0">
                   <span class="text-sm mb-4 font-semibold">Specialty</span>
                   <div
                     class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1"
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialtyNames}}
-                      
+                        {{specialties.map((x:any) => getSpecialityName(x) || x?.display).join(', ')}}
+                        <!-- <div class="flex">
+                          <span
+                            class="text-xs"
+                            v-for="(item, index) in specialties"
+                            :key="index"
+                          >
+                            {{ getSpecialityName(item) || item?.name }} ,
+                          </span>
+                        </div> -->
                       </div>
                       <div class="flex-none justify-end">
                         <add-icon @click="showSpecialModal" />
@@ -365,16 +374,24 @@
                   
                 /> -->
 
-                <cornie-select
-                  :items="dropdown.CommunicationLanguage"
-                  v-model="communicationLanguage"
+                <auto-complete
                   label="Communication"
                   placeholder="--Select--"
                   class="w-full"
+                  :rules="required"
+                  :items="dropdown.CommunicationLanguage"
+                  v-model="communicationLanguage"
                   :required="true"
                 />
 
-               
+                <!-- <cornie-select
+                  :rules="required"
+                  v-model="consultationChannel"
+                  label="Visit Type"
+                  :items="dropdown.ConsultationChannel"
+                  placeholder="--Select--"
+                  :required="true"
+                /> -->
                 <div class="flex flex-col space-y-0.5">
                   <div class="text-sm font-semibold mb-1">Visit Type</div>
 
@@ -756,17 +773,23 @@
     @add-another-services="saveservices"
   />
   <location-role
-    v-model="addAccessRole"
+    v-model:show="addAccessRole"
+    v-model:locationRoles="locationRoles"
     :id="id"
-    :locationId="locationId"
-    :roleId="roleId"
-    :locationRoleId="locationRoleId"
-    :setRoles="locationRoles"
-    :deletedRole="deletedRole"
-    @add-access-roles="addAccessRoles"
   />
 
- 
+  <!-- <access-role
+    v-model="addAccessRole"
+    :deletedRole="deletedRole"
+    @close-access-diag="addAccessRole = false"
+    @add-access-roles="addAccessRoles"
+    @role-deleted="deletedRole = {}"
+    :locationId="locationId"
+    :roleId="roleId"
+    :id="id"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+  /> -->
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -798,14 +821,14 @@
   import Period from "@/types/IPeriod";
   import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
   import ISpecial from "@/types/ISpecial";
+  import AccessRole from "@/views/dashboard/settings/practitioners/AccessRoles.vue";
+  import locationRole from "@/views/dashboard/settings/practitioners/LocationRoles.vue";
+  import SpecialityModal from "@/views/dashboard/settings/practitioners/specialModal.vue";
   import Multiselect from "@vueform/multiselect";
   import { Options, setup, Vue } from "vue-class-component";
-  import { Prop, Watch } from "vue-property-decorator";
+  import { Watch } from "vue-property-decorator";
   import { namespace } from "vuex-class";
   import { date, string } from "yup";
-  import AccessRole from "./AccessRoles.vue";
-  import locationRole from "./LocationRoles.vue";
-  import SpecialityModal from "./specialModal.vue";
 
   const dropdown = namespace("dropdown");
   const practitioner = namespace("practitioner");
@@ -843,8 +866,25 @@
     },
   })
   export default class AddPractitioner extends Vue {
-    @Prop({ type: String, default: "" })
-    id!: string;
+    // @Prop({ type: String, default: "" })
+    // id!: string;
+
+    get id() {
+      return this.$route.params.id
+        ? this.$route.params?.id.toLocaleString()
+        : "";
+    }
+
+    get disabledFields() {
+      return this.$route.meta.disabled &&
+        Array.isArray(this.$route.meta.disabled)
+        ? this.$route.meta.disabled
+        : [];
+    }
+
+    isDisabled(x: string) {
+      return this.disabledFields.includes(x);
+    }
 
     img = setup(() => useHandleImage());
 
@@ -1071,9 +1111,6 @@
       this.setPractitioner();
     }
 
-    get specialtyNames(){
-      return this.specialties.map((x:any) => this.getSpecialityName(x) || x?.display).join(', ')
-    }
     @Watch("useSameAddress")
     populateEmergencyAddress() {
       if (this.useSameAddress) {
@@ -1139,8 +1176,16 @@
       this.showSpecial = true;
     }
     async setPractitioner() {
-      if (!this.id) return;
-      const practitioner = await this.getPractitionerById(this.id);
+      let practitioner;
+      let url =
+        this.$route.meta.editPractitioner == true
+          ? `/api/v1/user/practitioner`
+          : this.id
+          ? `/api/v1/practitioner/${this.id}`
+          : undefined;
+      if (!url) return;
+      const { data } = await cornieClient().get(url);
+      practitioner = data;
       if (!practitioner) return;
       this.practitionerId = practitioner.id;
       this.name = `${practitioner.firstName} ${practitioner.lastName}`;
@@ -1162,7 +1207,7 @@
       this.licenseNumber = practitioner.licenseNumber;
       this.communicationLanguage = practitioner.communicationLanguage;
       this.availabilityExceptions = practitioner.availabilityExceptions;
-      this.consultationChannel = practitioner.consultationChannel;
+      this.consultationChannel = practitioner.visitTypes;
       this.organizationId = practitioner.organizationId;
       this.state = practitioner.state;
       this.hoursOfOperation = practitioner.hoursOfOperation;
@@ -1212,17 +1257,9 @@
         jobDesignation: this.jobDesignation,
         department: this.department,
         accessRole: this.accessRole,
-        qualificationIdentifier: this.qualificationIdentifier,
-        qualificationIssuer: this.qualificationIssuer,
-        licenseNumber: this.licenseNumber,
         communicationLanguage: this.communicationLanguage,
-        qualificationCode: this.qualificationCode,
-        availabilityExceptions: this.availabilityExceptions,
-        // consultationChannel: this.consultationChannel,
-        visitType: this.consultationChannel,
+        visitTypes: this.consultationChannel,
         organizationId: this.organizationId,
-        hoursOfOperation: this.hoursOfOperation,
-        period: this.period,
         locationRoles: this.accessRoles,
         services: this.services,
         nationality: this.nationality,
@@ -1232,15 +1269,11 @@
         postCode: this.postCode ? this.postCode : undefined,
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
-        practiceDuartion: {},
-        practiceDuration: this.practiceDuration,
-        consultationRate: this.consultationRate,
-        hourlyRate: this.consultationRate.value,
-        graduationYear: this.graduationYear,
-        licenseIssuer: this.licenseIssuer,
-        licensePeriod: this.licensePeriod,
+        monthsOfPractice: this.practiceDurationvalue,
+        hourlyRate: this.consultationRateunit,
         education: this.educations,
         boardLicenses: this.licenses,
+        location: this.locations,
         employmentType: this.employmentType,
       };
     }
@@ -1260,7 +1293,7 @@
         boardLicenses: this.licenses,
         education: this.educations,
         gender: this.gender,
-        
+        locations: this.accessRoles,
         phone: {
           number: this.phone,
           dialCode: this.dialCode,
@@ -1268,41 +1301,27 @@
         type: this.type,
         address: this.address,
         dateOfBirth: this.serializeDate(this.dateOfBirth),
-        image: this.img.url,
+        image: this.img.url ? this.img.url : undefined,
         jobDesignation: this.jobDesignation,
         department: this.department,
         accessRole: this.accessRole,
-        qualificationIdentifier: this.qualificationIdentifier,
-        qualificationIssuer: this.qualificationIssuer,
-        licenseNumber: this.licenseNumber,
         communicationLanguage: this.communicationLanguage,
-        qualificationCode: this.qualificationCode,
-        availabilityExceptions: this.availabilityExceptions,
-        consultationChannel: this.consultationChannel,
+        visitTypes: this.consultationChannel,
         organizationId: this.organizationId,
-        hoursOfOperation: this.hoursOfOperation,
-        period: this.period,
         services: this.newservices,
         nationality: this.nationality,
         country: this.country,
         state: this.state,
         city: this.city,
-        postCode: this.postCode,
+        postCode: this.postCode ? this.postCode : undefined,
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
-        practiceDuration: {
-          value: this.practiceDurationvalue,
-          unit: this.practiceDurationunit,
-        },
-        consultationRate: {
-          value: this.consultationRatevalue,
-          unit: this.consultationRateunit,
-        },
+        monthsOfPractice: this.practiceDurationvalue,
+        hourlyRate: this.consultationRateunit,
         graduationYear: this.graduationYear,
         licenseIssuer: this.licenseIssuer,
         licensePeriod: this.licensePeriod,
         availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
-        hourlyRate: this.consultationRate.value,
       };
     }
 
@@ -1337,6 +1356,10 @@
 
     async submit() {
       this.loading = true;
+      if (this.$route.meta.editPractitioner == true) {
+        await this.updateUserPractitionerProfile();
+        return;
+      }
       if (this.id) await this.updatePractitioner();
       else await this.createPractitioner();
       this.loading = false;
@@ -1358,12 +1381,22 @@
       }
     }
 
-    async updatePractitioner() {
-      this.payload.consultationRate.value = this.consultationRatevalue;
-      this.payload.consultationRate.unit = this.consultationRateunit;
-      this.payload.practiceDuration.value = this.practiceDurationvalue;
-      this.payload.practiceDuration.unit = this.practiceDurationunit;
+    async updateUserPractitionerProfile() {
+      const url = "/api/v1/user/practitioner";
+      const payload = { ...this.payloadEdit };
+      try {
+        const response = await cornieClient().patch(url, payload);
+        if (response.success) {
+          window.notify({ msg: "Practitioner updated", status: "success" });
+          this.updatePractitioners([response.data]);
+          this.$router.back();
+        }
+      } catch (error) {
+        window.notify({ msg: "Practitioner not updated", status: "error" });
+      }
+    }
 
+    async updatePractitioner() {
       const url = `/api/v1/practitioner/${this.id}`;
       const payload = { ...this.payloadEdit, id: this.id };
       try {
@@ -1491,8 +1524,8 @@
   .multiselect-caret {
     transform: rotate(0deg);
     transition: transform 0.3s;
-    -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-    mask-image: url("../../../../assets/img/Chevron.png");
+    -webkit-mask-image: url("../assets/img/Chevron.png");
+    mask-image: url("../assets/img/Chevron.png");
     background-color: #080056;
     margin: 0 var(--ms-px, 0.875rem) 0 0;
     position: relative;

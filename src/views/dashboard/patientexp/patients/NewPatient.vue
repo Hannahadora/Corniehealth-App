@@ -769,7 +769,7 @@
           );
           if (response.success) {
             window.notify({
-              msg: "Association added successfully updated",
+              msg: "Identity added successfully updated",
               status: "success",
             });
           }
@@ -778,7 +778,7 @@
         }
       } else {
         window.notify({
-          msg: "Association added successfully updated",
+          msg: "Identity added successfully updated",
           status: "success",
         });
       }
@@ -793,7 +793,9 @@
         multipleBirth: this.multipleBirth == "yes" ? true : false,
         multipleBirthInteger: this.multipleBirthInteger,
         gender: this.gender.toLowerCase(),
-        maritalStatus: this.maritalStatus,
+        genotype: this.genotype,
+        nationality: this.nationality,
+        maritalStatus: this.maritalStatus ? this.maritalStatus : undefined,
         vip: this.vip,
         dateOfBirth: this.dateOfBirth,
         bloodGroup: this.bloodGroup,
@@ -835,7 +837,7 @@
         this.updatePatient(patient);
         window.notify({ msg: "Patient added successfully", status: "success" });
 
-        this.$router.go(-1);
+        this.$router.push("/dashboard/provider/experience/patients");
       } catch (error: any) {
         window.notify({ msg: "Error creating Patient", status: "error" });
       }
