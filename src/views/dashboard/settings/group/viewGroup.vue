@@ -6,7 +6,7 @@
       View a Group
     </span>
     <div class="w-full h-screen">
-      <form class="mt-5 w-full" @submit.prevent="submit">
+      <form class="mt-5 w-full">
         <div class="border mb-37">
           <div class="w-full grid grid-cols-3 gap-5 p-5">
             <span>
@@ -35,85 +35,23 @@
             </span>
             <span>
               <label class="block uppercase mb-1 text-xs font-bold"
-                >Managing Entity</label
+                >Managing Entity Type</label
               >
               <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ managingEntity }}
+                {{ managingEntityType }}
               </div>
             </span>
             <span>
               <label class="block uppercase mb-1 text-xs font-bold"
-                >Characteristics Code</label
+                > Code</label
               >
               <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ characteristicsCode }}
+                {{ code }}
               </div>
             </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Value Codeable Concept</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ valueCodeableConcept }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Value Boolean</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ valueBoolean }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Value Quantity</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ valueQuantity }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Value Range</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ valueRange }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Value Reference</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ valueRef }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Exclude</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ exclude }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Period</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ period }}
-              </div>
-            </span>
-            <span>
-              <label class="block uppercase mb-1 text-xs font-bold"
-                >Member Period</label
-              >
-              <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
-                {{ memberPeriod }}
-              </div>
-            </span>
-            <span>
+          
+          
+            <!-- <span>
               <label class="block uppercase mb-1 text-xs font-bold"
                 >Member Status</label
               >
@@ -128,17 +66,18 @@
               <div class="bg-gray-100 py-3 px-2 mt-5 rounded-md font-bold">
                 {{ memberEntity }}
               </div>
-            </span>
+            </span> -->
           </div>
         </div>
         <span class="flex justify-end w-full">
-          <cornie-btn
+            <button
             @click="$router.push('/dashboard/provider/settings/group')"
             type="button"
-            class="bg-danger rounded-full text-white mt-5 px-4 py-2 pr-10 pl-10 focus:outline-none hover:opacity-90"
+            class="border border-primary rounded-md text-black mt-5 mr-3 py-2 px-8 focus:outline-none hover:bg-primary hover:text-white"
           >
             Close
-          </cornie-btn>
+          </button>
+        
         </span>
       </form>
     </div>
@@ -194,6 +133,9 @@ export default class AddGroup extends Vue {
   @group.Action
   getGroupById!: (id: string) => IGroup;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   loading = false;
 
   state = "";
@@ -214,6 +156,10 @@ export default class AddGroup extends Vue {
   memberPeriod = "";
   memberStatus = "";
   memberEntity = "";
+  managingEntityType = "";
+  managingOrganizationId = undefined;
+  managingPractitionerId = undefined;
+  actorsList = [] as any;
 
   aoption = "Active";
   options = [
@@ -241,40 +187,11 @@ export default class AddGroup extends Vue {
     this.name = group.name;
     (this.code as any) = group.code;
     this.quantity = group.quantity;
-    this.managingEntity = group.managingEntity;
-    this.characteristicsCode = group.characteristicsCode;
-    this.valueCodeableConcept = group.valueCodeableConcept;
-    this.valueBoolean = group.valueBoolean;
-    this.valueQuantity = group.valueQuantity;
-    this.valueRange = group.valueRange;
-    this.valueRef = group.valueRef;
-    this.exclude = group.exclude;
-    this.period = group.period;
-    this.memberPeriod = group.memberPeriod;
-    this.memberStatus = group.memberStatus;
-    this.memberEntity = group.memberEntity;
-  }
-  get payload() {
-    return {
-      state: this.state,
-      status: this.status,
-      type: this.type,
-      name: this.name,
-      code: this.code,
-      quantity: this.quantity,
-      managingEntity: this.managingEntity,
-      characteristicsCode: this.characteristicsCode,
-      valueCodeableConcept: this.valueCodeableConcept,
-      valueBoolean: this.valueBoolean,
-      valueQuantity: this.valueQuantity,
-      valueRange: this.valueRange,
-      valueRef: this.valueRef,
-      exclude: this.exclude,
-      period: this.period,
-      memberPeriod: this.memberPeriod,
-      memberStatus: this.memberStatus,
-      memberEntity: this.memberEntity,
-    };
+    this.managingEntity = group.managingEntityName;
+    this.actorsList = group.members;
+    this.managingEntityType = group.managingEntityType;
+    this.managingPractitionerId = group.managingPractitionerId;
+    this.managingOrganizationId = group.managingOrganizationId;
   }
 
 
