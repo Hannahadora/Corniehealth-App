@@ -354,10 +354,10 @@
     }
 
     addaRole() {
-      this.accessRoles.forEach(
+      this.locationSync.forEach(
         (e: { default: boolean }) => (e.default = false)
       );
-      this.accessRoles.push({
+      this.locationSync.push({
         id: this.locationRoleId,
         roleId: this.role,
         locationId: this.location,
@@ -486,7 +486,7 @@
 
     onChangeOption(id: string) {
       this.locationSync = [
-        ...this.accessRoles.map((x: PractitionerLocationRole) => ({
+        ...this.locationSync.map((x: PractitionerLocationRole) => ({
           ...x,
           default: x.roleId == id ? true : false,
         })),

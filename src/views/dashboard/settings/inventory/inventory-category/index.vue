@@ -47,9 +47,9 @@
           ...c,
           idc: c.id,
           managerId:
-            this.getPdatails(c.manager).firstName +
+            this.getPdatails(c.manager)?.firstName +
             " " +
-            this.getPdatails(c.manager).lastName,
+            this.getPdatails(c.manager)?.lastName,
           phone: c.phone,
           location:
             c.city == "not available" || c.state == "not available"
@@ -60,14 +60,13 @@
     }
 
     getPdatails(id: string) {
-      return this.practitioners.find((p) => p.id == id);
+      let a = this.practitioners.find((p) => p.id == id);
+      return a;
     }
 
     async mounted() {
-      await this.getCategory();
       await this.fetchPractitioners();
-
-      console.log("inventory cat", this.categories);
+      await this.getCategory();
     }
   }
 </script>
