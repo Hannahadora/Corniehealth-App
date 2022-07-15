@@ -168,6 +168,9 @@ export default class GroupExistingState extends Vue {
   groups!: IGroup[];
 
   @group.Action
+  fetchGroups!: () => Promise<void>;
+
+  @group.Action
   deleteGroup!: (id: string) => Promise<boolean>;
 
   getKeyValue = getTableKeyValue;
@@ -340,7 +343,9 @@ export default class GroupExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  async created() {}
+  async created() {
+    await this.fetchGroups();
+  }
 }
 </script>
 <style>

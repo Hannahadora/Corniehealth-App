@@ -108,7 +108,11 @@
                     :disabled="true"
                     v-model="department"
                   />
-                  <cornie-select
+                  <list-select  :items="allLocations"
+                    label="Delivery Location"
+                    v-model="requesterLocationId" :receiver="true" :placeholder="'--Select--'" @setValue="setRecevier"/>
+                  
+                  <!-- <cornie-select
                     class="w-full"
                     placeholder="--Select---"
                     :items="[
@@ -130,7 +134,7 @@
                     v-model="requesterLocationId"
                     :rules="requiredRule"
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                 </div>
               </template>
             </accordion-component>
@@ -138,9 +142,10 @@
           <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Supplier" :opened="false">
               <template v-slot:default>
-                <div class="mt-5 grid grid-cols-2 gap-4 w-full"></div>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
+                   <list-select label="Supplier Name"  :placeholder="'--Select--'" @setValue="setValue"/>
                   <cornie-select
+                   v-if="valueType == 'supplier'"
                     class="w-full"
                     placeholder="--Select--"
                     :items="[
@@ -149,27 +154,153 @@
                       'diagnostics',
                       'in-patient',
                     ]"
-                    label="Supply Category"
+                    label="Department/Inventory Category"
                     v-model="supplyCategory"
                     :rules="requiredRule"
                   >
                   </cornie-select>
                   <cornie-select
+                   v-if="valueType == 'supplier'"
                     class="w-full"
                     placeholder="--Select--"
                     :items="allLocations"
-                    label="Supplier Location"
+                    label="Delivery Location"
                     v-model="supplyLocationId"
                   >
-                  </cornie-select>
+                  </cornie-select> 
+                  <cornie-select
+                  v-if="valueType == 'category'"
+                    label="Country"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.countries"
+                    v-model="nationState.country"
+                    :rules="requiredRule"
+                     :readonly="true"
+                  />
+                  <cornie-select
+                  v-else
+                    label="Country"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.countries"
+                    v-model="nationState.country"
+                    :rules="requiredRule"
+                  />
+                  <cornie-select
+                   v-if="valueType == 'category'"
+                    label="State or Region"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.states"
+                    v-model="state"
+                    :rules="requiredRule"
+                    :readonly="true"
+                  />
+                  <cornie-select
+                  v-else
+                    label="State or Region"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.states"
+                    v-model="state"
+                    :rules="requiredRule"
+                  />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    label="City"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyCity"
+                    :rules="requiredRule"
+                    :readonly="true"
+                  />
+                   <cornie-input
+                   v-else
+                    label="City"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyCity"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                   v-if="valueType == 'category'"
+                    label="Zip or Post Code"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyZipCode"
+                    :rules="requiredRule"
+                     :readonly="true"
+                  />
+                   <cornie-input
+                   v-else
+                    label="Zip or Post Code"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyZipCode"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                    v-if="valueType == 'category'"
+                    label="Apartment or House Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyHouseNumber"
+                    :rules="requiredRule"
+                     :readonly="true"
+                  />
+                    <cornie-input
+                    v-else
+                    label="Apartment or House Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyHouseNumber"
+                    :rules="requiredRule"
+                  />
+                   <cornie-input
+                   v-if="valueType == 'category'"
+                    label="Street Name"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyStreetName"
+                    :rules="requiredRule"
+                     :readonly="true"
+                  />
+                   <cornie-input
+                   v-else
+                    label="Street Name"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyStreetName"
+                    :rules="requiredRule"
+                  />
+                  <cornie-input
+                   v-if="valueType == 'category'"
+                    label="Supplier Contact"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyContactName"
+                    :rules="requiredRule"
+                    :readonly="true"
+                  />
+                  <cornie-input
+                  v-else
                     label="Supplier Contact"
                     class="w-full mb-4"
                     placeholder="--Enter--"
                     v-model="supplyContactName"
                     :rules="requiredRule"
                   />
+                   <cornie-input
+                   v-if="valueType == 'category'"
+                     label="Phone Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    :modelValue="supplyContactPhone.dialCode +' '+ supplyContactPhone.number"
+                    :disabled="true"
+                  />
                   <cornie-phone-input
+                  v-else
                     label="Phone Number"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -178,6 +309,16 @@
                     :rules="requiredRule"
                   />
                   <cornie-input
+                  v-if="valueType == 'category'"
+                    label="Email"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyContactEmail"
+                    :rules="emailRule"
+                     :readonly="true"
+                  />
+                  <cornie-input
+                  v-else
                     label="Email"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -185,6 +326,8 @@
                     :rules="emailRule"
                   />
                 </div>
+
+              
               </template>
             </accordion-component>
           </div>
@@ -289,12 +432,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue, Options, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import { string, date } from "yup";
 import search from "@/plugins/search";
+import { useCountryStates } from "@/composables/useCountryStates";
 
 import IMaterialRequest, { Items } from "@/types/IMaterialRequest";
 import ILocation from "@/types/ILocation";
@@ -323,6 +467,7 @@ import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
 import ItemModal from "./itemModal.vue";
+import ListSelect from "./listSelect.vue";
 
 const materialrequest = namespace("materialrequest");
 const user = namespace("user");
@@ -353,6 +498,7 @@ const location = namespace("location");
     MainCornieSelect,
     CornieTable,
     ItemModal,
+    ListSelect
   },
 })
 export default class requestModal extends Vue {
@@ -394,6 +540,7 @@ export default class requestModal extends Vue {
   showItem = false;
   valid = "";
   identifier = "";
+  valueType = "category";
 
   validity = "";
   status = false;
@@ -404,6 +551,17 @@ export default class requestModal extends Vue {
   supplyLocationId = "";
   supplyContactName = "";
   supplyContactEmail = "";
+  supplyCountry = "";
+
+  supplyHouseNumber = "";
+  supplyStreetName = "";
+  supplyZipCode = "";
+  supplyCity = "";
+
+  nationState = setup(() => useCountryStates());
+  state = "";
+
+
   supplyContactPhone = {
     number: "",
     dialCode: "+234",
@@ -483,6 +641,50 @@ export default class requestModal extends Vue {
     this.item = request.items;
 
   
+  }
+
+   setRecevier(value:string, item:any, locationId:string){
+    this.requesterLocationId = locationId;
+    this.requesterCategory = item.category;
+
+  }
+  setValue(value:string, item:any, locationId:string){
+    this.valueType = value;
+    console.log({item})
+    if(value == 'category'){
+      this.supplyCountry = 'Nigeria';
+      this.nationState.country = 'Nigeria';
+      this.state = item.state;
+      this.supplyCity = item.city;
+      this.supplyZipCode = 'Not available';
+      this.supplyHouseNumber = 'Not available';
+      this.supplyStreetName = item.address;
+      this.supplyContactName = item.manager;
+      this.supplyContactPhone.dialCode = item.phone.dialCode;
+      this.supplyContactPhone.number = item.phone.number;
+    this.supplyContactEmail = item.email;
+    this.supplyContactName = item.manager;
+    this.supplyLocationId = locationId;
+    this.supplyCategory = item.category;
+    //this.receiverCategory = item.category;
+    } else{
+      this.supplyCountry = '';
+      this.nationState.country = '';
+      this.state = '';
+      this.supplyCity = '';
+      this.supplyZipCode = '';
+      this.supplyHouseNumber = '';
+      this.supplyStreetName = '';
+      this.supplyContactName = '';
+      this.supplyContactPhone.dialCode = '';
+      this.supplyContactPhone.number = '';
+      this.supplyContactEmail = '';
+      this.supplyContactName = '';
+      this.supplyLocationId = '';
+      this.supplyCategory = '';
+      //this.receiverCategory = 'pharmacy';
+    }
+
   }
 
    get items() {
@@ -652,6 +854,7 @@ export default class requestModal extends Vue {
     this.requestedBy.name = this.authPractitioner.firstName +''+ this.authPractitioner.lastName;
      this.requestedBy.phone  = this.authPractitioner?.phone;
      this.requestedBy.email = this.authPractitioner.email;
+     this.department = this.authPractitioner.department;
   }
 
   async created() {

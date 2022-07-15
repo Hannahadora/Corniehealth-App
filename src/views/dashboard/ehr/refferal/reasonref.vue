@@ -366,7 +366,7 @@ export default class ReasonReference extends Vue {
             status: "error",
           });
         }
-      }
+  }
 
   async created() {
     await this.fetchAllergys(this.activepatientId);
