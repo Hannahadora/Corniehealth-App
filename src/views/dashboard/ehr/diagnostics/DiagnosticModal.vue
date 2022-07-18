@@ -205,15 +205,15 @@
                       /> -->
                     </div>
                   </div>
-                  <cornie-select
+                  <cornie-input
                     class="required"
                     :rules="required"
-                    :items="allPerformerDispenser"
                     label="Performer"
-                    v-model="performerId"
+                    v-model="performer"
                     placeholder="Select"
+                    disabled
                   >
-                  </cornie-select>
+                  </cornie-input>
                   <cornie-select
                     class="required"
                     :rules="required"
@@ -519,6 +519,9 @@ export default class MedicationModal extends Vue {
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<void>;
 
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
   @condition.State
   conditions!: { [state: string]: ICondition[] };
 
@@ -553,7 +556,7 @@ export default class MedicationModal extends Vue {
   reasonCode = null;
   reasonReference = null;
   note = null;
-  performer = "";
+  // performer = "";
   showReferenceModal = false;
   refReasons: any;
   showRefModal = false;
@@ -566,7 +569,7 @@ export default class MedicationModal extends Vue {
   quantityUnit = "";
   quantityValue = "";
   encounterId = null;
-  performerId = "";
+  // performerId = "";
   locationId = "";
   occurenceUnit = "";
   occurenceValue = "";
@@ -601,6 +604,14 @@ export default class MedicationModal extends Vue {
     return this.conditions[this.apatientId] || [];
   }
 
+  get performer() {
+     return this.authPractitioner.firstName + " " + this.authPractitioner.lastName;
+  }
+
+  get performerId() {
+     return this.authPractitioner.id
+  }
+
   async setRequest() {
     const diagnostic = await this.getOneDiagnostictById(this.id);
     if (!diagnostic) return;
@@ -613,14 +624,14 @@ export default class MedicationModal extends Vue {
     this.reasonCode = diagnostic.reasonCode;
     this.reasonReference = diagnostic.reasonReference;
     this.note = diagnostic.note;
-    this.performer = diagnostic.performer;
+    // this.performer = diagnostic.performer;
     (this.orderDetail as any) = diagnostic.orderDetail;
     this.bodySite = diagnostic.bodySite;
     this.requestDescription = diagnostic.requestDescription;
     this.quantityUnit = diagnostic.quantityUnit;
     this.quantityValue = diagnostic.quantityValue;
     this.encounterId = diagnostic.encounterId;
-    this.performerId = diagnostic.performerId;
+    // this.performerId = diagnostic.performerId;
     this.locationId = diagnostic.locationId;
     this.occurenceUnit = diagnostic.occurenceUnit;
     this.occurenceValue = diagnostic.occurenceValue;
