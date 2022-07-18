@@ -114,9 +114,17 @@
             <accordion-component title="Supplier" :opened="false">
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
-                  <list-select label="Recorder"  :placeholder="'--Select--'" @setValue="setValue"/>
-                   <cornie-select
-                  v-if="valueType == 'category'"
+                  <list-select label="Recorder" v-model="supplierType" :items="['Internal Supplier','External Supplier']"  :placeholder="'--Select--'" @setValue="setValue"/>
+                    <cornie-input
+                   v-if="valueType != 'category'"
+                    label="Supplier Name"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplierName"
+                    :rules="requiredRule"
+                  />
+                  <cornie-select
+                    v-if="valueType == 'category'"
                     label="Country"
                     class="w-full mb-4"
                     placeholder="--Select--"
@@ -134,8 +142,6 @@
                     v-model="nationState.country"
                     :rules="requiredRule"
                   />
-                </div>
-                <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <cornie-select
                    v-if="valueType == 'category'"
                     label="State or Region"
@@ -564,6 +570,7 @@ receiverCategory = "";
   supplierName = "";
   query = "";
   valueType = 'category'
+  supplierType = "";
 
   required = string().required();
   emailRule = string().email().required();
@@ -633,7 +640,7 @@ receiverCategory = "";
       return {
         ...supply,
         // totalCost: this.getTotal(+this.unitCosts[supply.productId], +this.quantities[supply.productId]),
-        supplier: this.supplierName,
+        supplier: this.supplierName || undefined,
       };
     });
 
@@ -702,7 +709,7 @@ receiverCategory = "";
       type: "purchase",
       unitCost: this.unitCosts[item.productId],
       quantity: this.quantities[item.productId],
-      supplier: this.supplierName,
+      supplier: this.supplierName || undefined,
       expiryDate: item.expiryDate,
       default: false,
       productId: item.productId,
@@ -714,8 +721,8 @@ receiverCategory = "";
       description: this.description,
       receiverCategory: this.receiverCategory,
       receiverLocationId: this.receiverLocationId,
-      supplierCategory: this.supplierCategory,
-      supplierLocationId: this.supplierLocationId,
+      supplierCategory: this.supplierCategory || undefined,
+      supplierLocationId: this.supplierLocationId || undefined,
       supplierContactPerson: this.supplierContactPerson,
       supplierPhone: this.supplierPhone,
       supplierEmail: this.supplierEmail,
@@ -753,8 +760,10 @@ receiverCategory = "";
   }
   setValue(value:string, item:any, locationId:string){
     this.valueType = value;
+
     console.log({item})
     if(value == 'category'){
+      this.supplierType = 'Internal Supplier';
       this.supplierCountry = 'Nigeria';
       this.supplierState = item.state;
       this.nationState.country = 'Nigeria';
@@ -772,15 +781,16 @@ receiverCategory = "";
     this.supplierCategory = item.category;
     //this.receiverCategory = item.category;
     } else{
-      this.supplierCountry = '';
+      this.supplierType = 'External Supplier'
+      this.supplierCountry = 'Nigeria';
       this.supplierState = '';
-      this.nationState.country = '';
+      this.nationState.country = 'Nigeria';
       this.state = '';
       this.supplierCity = '';
       this.supplierZipCode = '';
       this.supplierHouseNumber = '';
       this.supplierContactPerson = '';
-      this.supplierPhone.dialCode = '';
+      this.supplierPhone.dialCode = '+234';
       this.supplierPhone.number = '';
       this.supplierEmail = '';
       this.supplierName = '';

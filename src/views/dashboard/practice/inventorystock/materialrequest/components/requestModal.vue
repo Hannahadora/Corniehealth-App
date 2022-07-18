@@ -143,8 +143,8 @@
             <accordion-component title="Supplier" :opened="false">
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
-                   <list-select label="Supplier Name"  :placeholder="'--Select--'" @setValue="setValue"/>
-                  <cornie-select
+                   <list-select label="Supplier Name" :receiver="true" v-model="supplierType" :items="['Internal Supplier','External Supplier']"  :placeholder="'--Select--'" @setValue="setValue"/>
+                  <!-- <cornie-select
                    v-if="valueType == 'supplier'"
                     class="w-full"
                     placeholder="--Select--"
@@ -167,7 +167,7 @@
                     label="Delivery Location"
                     v-model="supplyLocationId"
                   >
-                  </cornie-select> 
+                  </cornie-select>  -->
                   <cornie-select
                   v-if="valueType == 'category'"
                     label="Country"
@@ -580,6 +580,7 @@ export default class requestModal extends Vue {
   };
   item = [] as Items[];
   query = "";
+  supplierType = "";
 
   headers = [
     {
@@ -652,6 +653,7 @@ export default class requestModal extends Vue {
     this.valueType = value;
     console.log({item})
     if(value == 'category'){
+      this.supplierType = 'Internal Supplier';
       this.supplyCountry = 'Nigeria';
       this.nationState.country = 'Nigeria';
       this.state = item.state;
@@ -668,15 +670,16 @@ export default class requestModal extends Vue {
     this.supplyCategory = item.category;
     //this.receiverCategory = item.category;
     } else{
-      this.supplyCountry = '';
-      this.nationState.country = '';
+      this.supplierType = 'External Supplier';
+      this.supplyCountry = 'Nigeria';
+      this.nationState.country = 'Nigeria';
       this.state = '';
       this.supplyCity = '';
       this.supplyZipCode = '';
       this.supplyHouseNumber = '';
       this.supplyStreetName = '';
       this.supplyContactName = '';
-      this.supplyContactPhone.dialCode = '';
+      this.supplyContactPhone.dialCode = '+234';
       this.supplyContactPhone.number = '';
       this.supplyContactEmail = '';
       this.supplyContactName = '';
@@ -748,8 +751,8 @@ export default class requestModal extends Vue {
       description: this.description,
       requesterLocationId: this.requesterLocationId,
       requesterCategory: this.requesterCategory,
-      supplyCategory: this.supplyCategory,
-      supplyLocationId: this.supplyLocationId,
+      supplyCategory: this.supplyCategory || undefined,
+      supplyLocationId: this.supplyLocationId || undefined,
       supplyContactName: this.supplyContactName,
       supplyContactEmail: this.supplyContactEmail,
       supplyContactPhone: this.supplyContactPhone,

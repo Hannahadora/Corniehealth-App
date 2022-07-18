@@ -141,6 +141,8 @@ import search from "@/plugins/search";
 import { IPatient } from "@/types/IPatient";
 import IAllergy from "@/types/IAllergy";
 import Ihistory from "@/types/Ihistory";
+import IPageInfo from "@/types/IPageInfo";
+import { cornieClient } from "@/plugins/http";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -176,9 +178,6 @@ const allergy = namespace("allergy");
   },
 })
 export default class ExistingState extends Vue {
-  @Prop({ type: String, default: "" })
-  patientId!: string;
-
 
   @patients.State
   patients!: IPatient[];
@@ -190,7 +189,10 @@ export default class ExistingState extends Vue {
   deleteHistory!: (id: string) => Promise<boolean>;
 
   @history.Action
-  fetchHistorys!: (patientId: string) => Promise<void>;
+  fetchHistorys!: (patientId: string, page?:number, limit?:number) => Promise<void>;
+
+  @history.State
+  pageInfo!: IPageInfo;
 
 
 
@@ -284,6 +286,10 @@ export default class ExistingState extends Vue {
     await this.fetchHistorys(this.patientId);
   }
 
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "You are about to delete this Family history",
@@ -310,6 +316,8 @@ export default class ExistingState extends Vue {
     this.showHistoryModal = true;
     this.historyId = value;
   }
+
+
   async created() {
     await this.fetchHistorys(this.patientId);
   }
