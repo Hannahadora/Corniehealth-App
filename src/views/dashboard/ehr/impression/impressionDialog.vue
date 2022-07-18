@@ -428,7 +428,7 @@
   />
   <problem-modal
     :conditions="conditions"
-    :allergys="allergy"
+    :allergys="allergys"
     :practitioners="practitioner"
     @getProblem="showProblem"
     v-model="showProblemModal"
@@ -471,13 +471,14 @@ import { namespace } from "vuex-class";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import FhirInput from "@/components/fhir-input.vue";
-
+import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
 import IPractitioner from "@/types/IPractitioner";
 
 import ClinicalDialog from "../conditions/clinical-dialog.vue";
 
 const impression = namespace("impression");
 const user = namespace("user");
+const allergy = namespace("allergy");
 
 const emptyImpression: any = {
   patientId: "",
@@ -552,6 +553,12 @@ export default class Impression extends Vue {
   @Prop({ type: Array, default: [] })
   allImpressions!: any[];
 
+  @allergy.State
+  allergys!: IAllergy[];
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
   @user.Getter
   authPractitioner!: IPractitioner;
 
@@ -600,7 +607,6 @@ export default class Impression extends Vue {
   practitioner = [];
   role = [];
   conditions = [];
-  allergy = [];
   setType = "";
   observations = <any>[];
   familyHistories = <any>[];
@@ -846,24 +852,17 @@ export default class Impression extends Vue {
     }
   }
 
-  async fetchAllergy() {
-    const url = `/api/v1/allergy/findAllByPatient/${this.activePatientId}`;
-    const response = await cornieClient().get(url);
-    if (response.success) {
-      this.allergy = response.data;
-    }
-  }
+
   async created() {
+    await this.fetchAllergys(this.activePatientId)
     if (this.id) {
       await this.setImpression();
     }
     this.fetchRoles();
     this.fetchPractitioners();
-    if (this.activePatientId) this.fetchAllergy();
     this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();
-    this.fetchAllergy();
     this.fetchFamilyHistories();
   }
 }

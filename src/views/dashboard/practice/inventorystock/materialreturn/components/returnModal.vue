@@ -125,15 +125,30 @@
             <accordion-component title="Return Delivery" :opened="false">
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
-                  <list-select label="Supplier Name"  :placeholder="'--Select--'" @setValue="setValue"/>
-                  <!-- <cornie-input
+                  <list-select label="Supplier"  v-model="supplierType" :items="['Internal Supplier','External Supplier']" :placeholder="'--Select--'" @setValue="setValue"/>
+                  <cornie-input
+                   v-if="valueType != 'category'"
                     label="Supplier Name"
                     class="w-full mb-4"
                     placeholder="--Enter--"
                     v-model="supplyName"
                     :rules="requiredRule"
                     required
-                  /> -->
+                  />
+                  <cornie-select
+                    class="w-full"
+                    placeholder="--Select--"
+                    :items="[
+                      'holding',
+                      'pharmacy',
+                      'diagnostics',
+                      'in-patient',
+                    ]"
+                    label="Category"
+                    v-model="category"
+                    :rules="requiredRule"
+                  >
+                  </cornie-select>
                   <cornie-select
                    v-if="valueType == 'category'"
                     :readonly="true"
@@ -551,11 +566,12 @@ export default class requestModal extends Vue {
   supplyZipCode = "";
   supplyStreetName = "";
   supplyAppartment = "";
-  preferredProcess = "";
+  preferredProcess = "refund";
   item = [] as Items[];
 
   valueType = "category";
   supplyHouseNumber = "";
+ supplierType = "";
 
   @Watch("id")
   idChanged() {
@@ -678,6 +694,7 @@ export default class requestModal extends Vue {
     this.valueType = value;
     console.log({item})
     if(value == 'category'){
+      this.supplierType = 'Internal Supplier';
       this.supplyCountry = 'Nigeria';
       this.supplyName = locationId;
       this.supplyAppartment = item.address;
@@ -697,8 +714,9 @@ export default class requestModal extends Vue {
     this.category = item.category;
     //this.receiverCategory = item.category;
     } else{
-      this.supplyCountry = '';
-      this.nationState.country = '';
+      this.supplierType = 'External Supplier';
+      this.supplyCountry = 'Nigeria';
+      this.nationState.country = 'Nigeria';
       this.supplyName = '';
       this.supplyAppartment = '';
       this.state = '';
@@ -707,7 +725,7 @@ export default class requestModal extends Vue {
       this.supplyHouseNumber = '';
       this.supplyStreetName = '';
       this.supplyContactName = '';
-      this.supplyContactPhone.dialCode = '';
+      this.supplyContactPhone.dialCode = '+234';
       this.supplyContactPhone.number = '';
       this.supplyContactEmail = '';
       this.supplyContactName = '';
@@ -737,8 +755,8 @@ export default class requestModal extends Vue {
       startDateTime: this.startDateTime,
       endDateTime: this.endDateTime,
       supplyName: this.supplyName,
-      supplyLocationId: this.supplyLocationId,
-      supplyCategory: this.supplyCategory,
+      supplyLocationId: this.supplyLocationId || undefined,
+      supplyCategory: this.supplyCategory || undefined,
       supplyContactName: this.supplyContactName,
       supplyContactEmail: this.supplyContactEmail,
       supplyContactPhone: this.supplyContactPhone,
@@ -750,7 +768,7 @@ export default class requestModal extends Vue {
       supplyAppartment: this.supplyAppartment,
       preferredProcess: this.preferredProcess,
       locationId: this.authCurrentLocation,
-      category: this.category,
+      category: this.category || undefined,
       items: this.item.map(this.buildPayload),
     };
   }

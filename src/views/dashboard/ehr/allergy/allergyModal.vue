@@ -195,14 +195,14 @@
           >
             Save
           </cornie-btn>
-          <cornie-btn
+          <!-- <cornie-btn
             v-else
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Update
-          </cornie-btn>
+          </cornie-btn> -->
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
@@ -493,7 +493,7 @@ isEmptyObject(object:any){
   }
 
   get payload() {
-    const newoccur = this.occurences.filter((c:any) => c.time !== undefined)
+    const newoccur = this.occurences?.filter((c:any) => c?.time != undefined)
     return {
       clinicalStatus: this.clinicalStatus,
       verificationStatus: this.verificationStatus,
@@ -523,27 +523,20 @@ isEmptyObject(object:any){
   }
 
 
-  async createAllergy() {
+ async createAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;
-
-    // this.payload.reaction.description = this.reaction.description || "description";
-    // this.payload?.reaction?.note = this.reaction.note || "note";
-
+    console.log(this.payload)
     try {
-      const response = await cornieClient().post(
-        "/api/v1/allergy",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({ msg: "Allergy Saved", status: "success" });
-        this.done();
-        this.reset();
-      }
-    } catch (error: any) {
+      const { data } = await cornieClient().post("/api/v1/allergy",this.payload);
+      window.notify({ msg: "Allergy Saved", status: "success" });
+      this.done();
+      //this.reset();
+    } catch (error:any) {
       window.notify({ msg: "Allergy Not Saved", status: "error" });
     }
   }
+
   async updateAllergy() {
     const { valid } = await (this.$refs.form as any).validate();
     if (!valid) return;

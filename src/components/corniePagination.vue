@@ -150,7 +150,6 @@ export default class Paginator extends Vue {
     return this.pageInfo.currentPage === page;
   }
   changeLimit(){
-    console.log(this.limit, 'limit');
     this.$emit('pagechanged', {page:this.pageInfo.currentPage, limit:this.limit});
   }
 

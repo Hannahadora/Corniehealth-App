@@ -290,7 +290,7 @@ import CornieBtn from "@/components/CornieBtn.vue";
 import TimeablePicker from "@/components/timeable.vue";
 import DeceasedPicker from "@/components/deaceased.vue";
 import BornPicker from "@/components/bornable.vue";
-import OnsetPicker from "@/components/onset.vue";
+import OnsetPicker from "./components/onset.vue";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import FhirInput from "@/components/fhir-input.vue";
@@ -310,29 +310,28 @@ const history = namespace("history");
 const patients = namespace("patients");
 
 const timeable = {
-  age: null,
-  startDate: null,
-  startTime: null,
-  endDate: null,
-  endTime: null,
-  date: null,
-  time: null,
+  age: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  endTime: "",
+  date: "",
+  time: "",
 };
 
 const measurable = {
-  age: null,
-  ageUnit: null,
-  ageValue: null,
-  day: null,
-  unit: null,
-  min: null,
-  max: null,
-  string: null,
-  startDate: null,
-  startTime: null,
-  endDate: null,
-   minUnit: null,
- maxUnit: null,
+  age: "",
+  ageUnit: "years",
+  day: "",
+  unit: "years",
+  min: "",
+  max: "",
+  string: "",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+   minUnit: "",
+ maxUnit: "",
 };
 @Options({
   name: "HistoryDialog",
@@ -396,7 +395,6 @@ export default class HistoryDialog extends Vue {
 
   showRefModal = false;
   condtions = [];
-  allergy = [];
   refItems = [];
   references = [] as any;
   loading = false;
@@ -478,34 +476,26 @@ export default class HistoryDialog extends Vue {
   }
 
    isEmptyObject(object:any){
-  const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
-  return nonNulls.length <1
-}
+    const nonNulls = Object.entries(object).filter(([k,v]) => Boolean (v))
+    return nonNulls.length <1
+  }
 
   get onset() {
    const range = {
-      unit: this.onsetmesurable.unit,
+      unit: this.onsetmesurable.minUnit,
       min: this.onsetmesurable.min,
       max: this.onsetmesurable.max
     
     }; 
     const age = {
        unit: this.onsetmesurable.ageUnit,
-        value: this.onsetmesurable.ageValue,
+        value: this.onsetmesurable.age,
     
-    }; 
-    // const period = {
-    //    start: this.onsetmesurable.startDate,
-    //     end: this.onsetmesurable.endDate,
-    //     startTime: this.onsetmesurable.startTime,
-    //     endTime: this.onsetmesurable.endTime,
-    
-    // }; 
+    };  
     return {
       range: this.isEmptyObject (range) ? undefined : range,
       age: this.isEmptyObject (age) ? undefined : age,
-      year: this.onsetmesurable.string || null,
-     // period:this.isEmptyObject (period) ? undefined : period,
+      year: this.onsetmesurable.string || undefined,
     };
   }
 
@@ -518,8 +508,8 @@ export default class HistoryDialog extends Vue {
     return {
       //bornDateTimePeriod: { start: this.bornTimeable.startDate, end: this.bornTimeable.endDate },
      period:this.isEmptyObject (period) ? undefined : period,
-      dateTime: this.bornTimeable.date || null,
-      year: this.bornTimeable.age || null,
+      dateTime: this.bornTimeable.date || undefined,
+      year: this.bornTimeable.age || undefined,
     };
   }
 
@@ -533,12 +523,12 @@ export default class HistoryDialog extends Vue {
     }; 
     const age = {
       unit: this.agemesurable.ageUnit,
-        value: this.agemesurable.ageValue,
+        value: this.agemesurable.age,
     
     }; 
     return {
-      estimated: this.estimatedAge || null,
-      year: this.agemesurable.string || null,
+      estimated: this.estimatedAge || undefined,
+      year: this.agemesurable.string || undefined,
       range: this.isEmptyObject (range) ? undefined : range,
      age: this.isEmptyObject (age) ? undefined : age,
 
@@ -554,12 +544,12 @@ export default class HistoryDialog extends Vue {
     }; 
     const age = {
        unit: this.deceasedmeasurable.ageUnit,
-          value: this.deceasedmeasurable.ageValue,
+      value: this.deceasedmeasurable.age,
     
     };
     return {
        estimated: this.estimatedDeceased,
-        year: this.deceasedmeasurable.string || null,
+        year: this.deceasedmeasurable.string || undefined,
         range: this.isEmptyObject (range) ? undefined : range,
       age: this.isEmptyObject (age) ? undefined : age,
     };
@@ -573,30 +563,30 @@ export default class HistoryDialog extends Vue {
     if (!history) return;
     this.historymodel = history;
 
-     this.onsetmesurable.ageUnit = history?.onset?.age?.unit || null;
-     this.onsetmesurable.ageValue = history?.onset?.age?.value || null;
-     this.onsetmesurable.unit = history?.onset?.range?.unit || null;
-     this.onsetmesurable.max = history?.onset?.range?.max || null;
-     this.onsetmesurable.min = history?.onset?.range?.min || null;
-     this.onsetmesurable.startDate = history?.onset?.period?.start || null;
-     this.onsetmesurable.endDate = history?.onset?.period?.end || null;
+     this.onsetmesurable.ageUnit = history?.onset?.age?.unit;
+     this.onsetmesurable.age = history?.onset?.age?.value as any;
+     this.onsetmesurable.unit = history?.onset?.range?.unit;
+     this.onsetmesurable.max = history?.onset?.range?.max as any;
+     this.onsetmesurable.min = history?.onset?.range?.min as any;
+     this.onsetmesurable.startDate = history?.onset?.period?.start as any;
+     this.onsetmesurable.endDate = history?.onset?.period?.end as any;
      this.onsetNote = history?.onsetNote;
      this.deceased = history?.deceased;
-     this.deceasedmeasurable.ageUnit = history?.deceasedAge?.age?.unit || null;
-     this.deceasedmeasurable.ageValue = history?.deceasedAge?.age?.value || null;
-     this.deceasedmeasurable.unit = history?.deceasedAge?.range?.unit || null;
-     this.deceasedmeasurable.max = history?.deceasedAge?.range?.max;
-     this.deceasedmeasurable.min = history?.deceasedAge?.range?.min|| null;
-     this.deceasedmeasurable.string = history?.deceasedAge?.year || null;
+     this.deceasedmeasurable.ageUnit = history?.deceasedAge?.age?.unit;
+     this.deceasedmeasurable.age = history?.deceasedAge?.age?.value as any;
+     this.deceasedmeasurable.unit = history?.deceasedAge?.range?.unit as any;
+     this.deceasedmeasurable.max = history?.deceasedAge?.range?.max as any;
+     this.deceasedmeasurable.min = history?.deceasedAge?.range?.min as any;
+     this.deceasedmeasurable.string = history?.deceasedAge?.year as any;
      this.reasonCode = history?.reasonCode;
      this.reasonReference = history?.reasonReference;
      this.note = history?.note;
-     this.agemesurable.ageUnit = history?.age?.age?.unit || null;
-     this.agemesurable.ageValue = history?.age?.age?.value || null;
-     this.agemesurable.unit = history?.age?.range?.unit || null;
-     this.agemesurable.max = history?.age?.range?.max || null;
-     this.agemesurable.min = history?.age?.range?.min || null;
-     this.agemesurable.string = history?.age?.year || null;
+     this.agemesurable.ageUnit = history?.age?.age?.unit;
+     this.agemesurable.age = history?.age?.age?.value as any;
+     this.agemesurable.unit = history?.age?.range?.unit as any;
+     this.agemesurable.max = history?.age?.range?.max as any;
+     this.agemesurable.min = history?.age?.range?.min as any;
+     this.agemesurable.string = history?.age?.year as any;
      this.estimatedAge = history?.age?.estimated;
      this.relationship = history?.relationship;
      this.sex = history?.sex;
@@ -605,10 +595,10 @@ export default class HistoryDialog extends Vue {
      this.conditionContributedToDeath = history?.conditionContributedToDeath;
      this.onsetNote = history?.onsetNote;
      this.name = history?.name;
-     this.bornTimeable.age = history?.born?.year || null;
-     this.bornTimeable.date = history?.born?.dateTime || null;
-     this.bornTimeable.startDate = history?.born?.period?.start || null;
-     this.bornTimeable.endDate = history?.born?.period?.end || null;
+     this.bornTimeable.age = history?.born?.year as any;
+     this.bornTimeable.date = history?.born?.dateTime as any;
+     this.bornTimeable.startDate = history?.born?.period?.start as any;
+     this.bornTimeable.endDate = history?.born?.period?.end as any;
      this.status = history.status;
 
   }
@@ -707,17 +697,10 @@ export default class HistoryDialog extends Vue {
       window.notify({ msg: "Medical history not updated", status: "error" });
     }
   }
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.patientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data;
-  }
+
 
   async created() {
     this.setHistory();
-    if(this.patientId) this.fetchAllergy();
     await this.fetchPractitioners();
   }
 }

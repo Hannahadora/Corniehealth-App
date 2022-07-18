@@ -327,7 +327,6 @@ export default class CornieTable extends Vue {
   }
   pushPageChanges(payload:any) {
           this.$emit('pagechanged', payload);
-          console.log(payload, 'data limit')
     }
 
   mounted() {

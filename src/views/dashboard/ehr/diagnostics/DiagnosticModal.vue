@@ -401,6 +401,7 @@ import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
 import { IPatient } from "@/types/IPatient";
 import IDiagnostic from "@/types/IDiagnostic";
 import IPracticeform from "@/types/IPracticeform";
+import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
 
 import AccordionComponent from "@/components/form-accordion.vue";
 import CornieCard from "@/components/cornie-card";
@@ -437,6 +438,7 @@ const patients = namespace("patients");
 const location = namespace("location");
 const practiceform = namespace("practiceform");
 const user = namespace("user");
+const allergy = namespace("allergy");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -520,7 +522,14 @@ export default class MedicationModal extends Vue {
   @condition.State
   conditions!: { [state: string]: ICondition[] };
 
-   @user.Getter
+  @allergy.State
+  allergys!: IAllergy[];
+
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
+  @user.Getter
   authCurrentLocation!: string;
 
 
@@ -566,7 +575,6 @@ export default class MedicationModal extends Vue {
   asNeededCode = null;
   forms = [] as any;
   patientInstructions = null;
-  allergy = <any>[];
   referenceOptions = <any>[];
   refSubject = "";
 
@@ -760,14 +768,6 @@ export default class MedicationModal extends Vue {
     }
   }
 
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.patientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data.result;
-  }
-
   done() {
     this.$emit("medication-added");
     this.show = false;
@@ -775,7 +775,6 @@ export default class MedicationModal extends Vue {
 
   async created() {
     await this.fetchPatientConditions(this.apatientId);
-    await this.fetchAllergy();
     await this.fetchPatients();
     await this.fetchPractitioners();
     await this.fetchLocations();
