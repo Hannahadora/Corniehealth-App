@@ -35,7 +35,7 @@
             />
 
             <cornie-phone-input
-              label="Mobile Number 2"
+              label="Phone Number"
               class="mb-5"
               placeholder="Enter"
               v-model="phoneNumber"
