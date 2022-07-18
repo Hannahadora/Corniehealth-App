@@ -24,7 +24,7 @@
           </div>
           <div class="p-2 flex flex-col overflow-y-auto flex-1">
             <cornie-select
-              :items="['Practitioner', 'Device']"
+              :items="['Practitioner']"
               v-model="entity"
               label="Entity"
               placeholder="--Select--"
@@ -218,6 +218,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import DRangePicker from "@/components/daterangepicker.vue";
 import { namespace } from "vuex-class";
+import { watch } from "@vue/runtime-core";
 
 const practitioner = namespace("practitioner");
 const device = namespace("device");
@@ -248,13 +249,14 @@ export default class AddActor extends Vue {
   groupId!: string;
 
   @Prop({ type: String, default: "" })
-  memberid!: string;
-
-  @Prop({ type: String, default: "" })
   memberToDelete!: string;
 
   @Prop({ type: Boolean, default: false })
   isUpdate!: Boolean;
+
+
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
   entity = "Practitioner" as string;
 
@@ -288,6 +290,7 @@ export default class AddActor extends Vue {
   status = "Active";
   singleId = "";
   role = "";
+  selectedMember = [] as any;
 
   @Watch("memberToDelete")
   updateSelectedMember() {
@@ -300,6 +303,14 @@ export default class AddActor extends Vue {
     ];
 
     this.$emit("memberDeleted");
+  }
+
+ 
+  @Watch("selectedItem")
+  idChanged() {
+     this.selectedEntity = this.selectedItem.practitionerId;
+     this.role = this.selectedItem.role;
+     this.period = this.selectedItem.period;
   }
 
   @Watch("selectedEntity")
@@ -322,6 +333,14 @@ export default class AddActor extends Vue {
       };
 
       this.selectedActors = [item];
+     if(this.role){
+       this.selectedMember.push({
+        groupId: this.groupId,
+        practitionerId: item.id,
+        period: item.period,
+        role: item.role,
+      })
+     }
     }
 
     if (this.entity === "Device") {
@@ -390,15 +409,7 @@ export default class AddActor extends Vue {
   }
 
     get payload() {
-    return {
-      members: this.selectedActors.map((item: any) => {
-        return {
-          userId: item.id,
-          period: item.period,
-          status: item.status,
-        };
-      }),
-    };
+    return  this.selectedMember;
   }
 
   async save(){
@@ -409,33 +420,34 @@ export default class AddActor extends Vue {
   }
    async submit() {
     this.loading = true;
-    if (this.memberid) await this.updateGroup();
+    if (this.selectedItem.id) await this.updateGroup();
     else await this.createGroup();
     this.loading = false;
   }
   async createGroup() {
     try {
-      const response = await cornieClient().post("/api/v1/groupMembers", this.payload);
+      const response = await cornieClient().post("/api/v1/group/members", this.payload);
       if (response.success) {
         window.notify({ msg: "Group members created", status: "success" });
         this.show = false;
+        this.$emit('add-group')
       }
     } catch (error: any) {
-      window.notify({ msg: "Group not created", status: "error" });
+      window.notify({ msg: "Group members not created", status: "error" });
     }
   }
 
   async updateGroup() {
-    const url = `/api/v1/groupMembers/${this.memberid}`;
+    const url = `/api/v1/groupMembers/${this.selectedItem.id}`;
     const payload = { ...this.payload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
-        window.notify({ msg: "Group updated", status: "success" });
+        window.notify({ msg: "Group members updated", status: "success" });
         this.show = false;
       }
     } catch (error) {
-      window.notify({ msg: "Group not updated", status: "error" });
+      window.notify({ msg: "Group members not updated", status: "error" });
     }
   }
 

@@ -45,11 +45,8 @@
                   <cornie-select
                     :rules="required"
                     :items="[
-                      'Practitioner',
-                      'Patient',
-                      'Practitioner Role',
-                      'Device',
-                      'Medication',
+                      'practitioner',
+                      'organization'
                     ]"
                     v-model="managingEntityType"
                     label="Managing Entity Type"
@@ -82,7 +79,7 @@
                         <plus-icon class="fill-current text-primary" />
                       </button>
                   </div>
-                  <div v-if="actorsList.length" class="grid grid-cols-12 mt-5">
+                  <div class="grid grid-cols-12 mt-5">
                     <div
                       class="flex justify-between col-span-3 pr-5"
                       :class="[
@@ -98,22 +95,22 @@
                       <div class="flex justify-center items-center">
                         <div class="h-12 w-12 rounded-full overflow-hidden mr-1">
                           <img
-                            :src="actor.image"
+                            :src="actor.image || actor.practitioner.image"
                             class="h-full w-full"
-                            v-if="actor.type === 'Practitioner'"
+                            v-if="actor.image || actor.practitioner.image"
                           />
                           <div
                             class="h-full w-full rounded-full overflow-hidden flex items-center justify-center bg-blue-500 text-white-cotton-ball font-bold"
                             v-else
                           >
-                            {{ actor.name.substr(0, 2).toUpperCase() }}
+                            {{ actor?.name?.substr(0, 2).toUpperCase() || (actor.practitioner.firstName +''+ actor.practitioner.lastName).substr(0, 2).toUpperCase()}}
                           </div>
                         </div>
                         <div class="flex flex-col items-start">
                           <div class="mb-0 font-bold text-sm">
                             <div class="flex justify-center items-center">
                               <div class="mr-1">
-                                {{ actor.name }}
+                                {{ actor.name || actor.practitioner.firstName +' '+ actor.practitioner.lastName}}
                               </div>
                               <div
                                 class="font-bolder text-gray-400 mr-1"
@@ -122,15 +119,24 @@
                                 •
                               </div>
                               <div class="text-xs text-gray-400">
-                                {{ actor.job }}
+                                {{ actor.job  || actor.practitioner.jobDesignation}}
                               </div>
                             </div>
                           </div>
-                          <div class="text-xs text-gray-400">{{ actor.type }} | {{ actor.role}}</div>
+                          <div class="text-xs text-gray-400">{{ actor.type || 'Practitioner' }} | {{ actor.role}}</div>
                         </div>
                       </div>
                       <div class="flex justify-center items-center">
                         <button
+                          v-if="id"
+                          class="border-0"
+                          type="button"
+                          @click="deleteItemId(actor.id)"
+                        >
+                          <delete-icon />
+                        </button>
+                        <button
+                        v-else
                           class="border-0"
                           type="button"
                           @click="deleteMember(actor.id)"
@@ -141,7 +147,7 @@
                     </div>
                   </div>
                   <div class="mt-5 cursor-pointer" @click="showViewMember = true">
-                    <span class="uppercase font-bold text-sm text-danger">{{ actorsList.length}} Added</span>
+                    <span class="uppercase font-bold text-sm text-danger">{{ actorsList.length }} Added</span>
                   </div>
                   
                 </template>
@@ -175,7 +181,7 @@
       @memberDeleted="memberToDelete = ''"
       :groupId="id"
     />
-    <viewmember-modal v-model="showViewMember"/>
+    <viewmember-modal v-model="showViewMember" :groupId="id" :groupMembers="actorsList"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -217,6 +223,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import AddActor from "./components/AddActor.vue";
 import ViewmemberModal from "./components/Members.vue";
+import { IOrganization } from "@/types/IOrganization";
 
 const group = namespace("group");
 const dropdown = namespace("dropdown");
@@ -226,6 +233,7 @@ const roles = namespace("roles")
 const patients = namespace("patients");
 const request = namespace("request");
 const account = namespace("user");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -294,6 +302,15 @@ export default class AddGroup extends Vue {
   @request.Action
   fetchRequests!: (page?:number, limit?:number) => Promise<void>;
 
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @group.Action
+  deleteGroupMembers!: (id: string) => Promise<boolean>;
+
   loading = false;
   expand = false;
   isVisible = "";
@@ -321,6 +338,10 @@ export default class AddGroup extends Vue {
   launchMemberdiag = false;
   aoption = "Active";
   managingEntityType = "";
+  managingOrganizationId = undefined;
+  managingPractitionerId = undefined;
+
+  organizations = [] as any;
 
   showMember = false;
   showViewMember = false;
@@ -353,8 +374,12 @@ export default class AddGroup extends Vue {
     this.name = group.name;
     (this.code as any) = group.code;
     this.quantity = group.quantity;
-    this.managingEntity = group.managingEntity;
+    this.managingEntity = group.managingEntityName;
     this.actorsList = group.members;
+    this.managingEntityType = group.managingEntityType;
+    this.managingPractitionerId = group.managingPractitionerId;
+    this.managingOrganizationId = group.managingOrganizationId;
+
   }
   get payload() {
     return {
@@ -364,18 +389,47 @@ export default class AddGroup extends Vue {
         name: this.name,
         // code: this.code,
         // quantity: this.quantity,
-        // managingEntity: this.managingEntity,
-        managingOrganizationId: this.authPractitioner.organizationId,
-        managingPractitionerId: this.authPractitioner.id,
+        //managingEntity: this.managingEntity,
+        managingEntityType: this.managingEntityType,
+        managingOrganizationId: this.managingOrganizationId,
+        managingPractitionerId: this.managingPractitionerId,
         members: this.actorsList.map((item: any) => {
         return {
           practitionerId: item.id,
           period: item.period,
           role: item.role,
-          status: this.status,
         };
       }),
     };
+  }
+   get updatePayload() {
+    return {
+        state: this.state,
+        status: this.status,
+        type: this.type,
+        name: this.name,
+        // code: this.code,
+        // quantity: this.quantity,
+        //managingEntity: this.managingEntity,
+        managingEntityType: this.managingEntityType,
+        managingOrganizationId: this.getOrgainizationId(this.managingOrganizationId),
+        managingPractitionerId: this.getPractionerId(this.managingPractitionerId),
+        members: this.actorsList.map((item: any) => {
+        return {
+          practitionerId: item.id,
+          period: item.period,
+          role: item.role,
+        };
+      }),
+    };
+  }
+  getPractionerId(name: any) {
+    const pt = this.practitioners.find((i: any) => i.firstName && i.lastName === name);
+    return pt ? `${pt.id} ` : "";
+  }
+   getOrgainizationId(name: any) {
+    const pt = this.organizations.find((i: any) => i.name === name);
+    return pt ? `${pt.id} ` : "";
   }
   get allaction() {
     return this.id ? "Edit" : "Add a";
@@ -386,16 +440,12 @@ export default class AddGroup extends Vue {
 
   get types(){
     switch (this.managingEntityType) {
-      case "Practitioner":
+      case "practitioner":
+        this.managingPractitionerId = this.managingEntity as any;
         return this.allpractitioners;
-      case "Patient":
-        return this.allPatients;
-      case "Practitioner Role":
-        return this.practitionerRoles;
-      case "Device":
-        return this.practitionerRoles;
-      case "Medication":
-        return this.allRequest;
+      case "organization":
+        this.managingOrganizationId = this.managingEntity as any
+        return this.allOrganizations;
       default:
         break;
     }
@@ -407,10 +457,24 @@ export default class AddGroup extends Vue {
     this.memberEntity = "--Select--";
   }
 
+  async deleteItemId(id: string) {
+    const confirmed = await window.confirmAction({
+      message:
+        "Are you sure you want to delete this group? This action cannot be undone.",
+      title: "Delete Group",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteGroupMembers(id))
+      window.notify({ msg: "Group deleted", status: "error" });
+    else window.notify({ msg: "Group not deleted", status: "error" });
+  }
+
+
   async deleteMember(id: string) {
     const confirm = await window.confirmAction({
-      message: "Are you sure you want to remove practitioner?",
-      title: "Remove Practitioner",
+      message: "Are you sure you want to remove member?",
+      title: "Remove member",
     });
 
     if (!confirm) return;
@@ -422,21 +486,13 @@ export default class AddGroup extends Vue {
     this.memberToDelete = id;
   }
 
-  get practitionerRoles() {
-      return this.roles.map((role) => ({ code: role.id, display: role.name }));
-  }
   get allpractitioners() {
       return this.practitioners.map((role) => ({ code: role.id, display: role.firstName +' '+ role.lastName }));
   }
-  get allPatients() {
-      return this.patients.map((role) => ({ code: role.id, display: role.firstname +' '+ role.lastname }));
+  get allOrganizations() { 
+    return this.organizations.map((organization:any) => ({ code: organization.id, display: organization.name  }));
   }
-  get c() {
-      return this.devices.map((role) => ({ code: role.id, display: role.deviceName }));
-  }
-  get allRequest() {
-      return this.requests.map((role) => ({ code: role.id, display: role.category }));
-  }
+
 
 
 
@@ -462,7 +518,7 @@ export default class AddGroup extends Vue {
 
   async updateGroup() {
     const url = `/api/v1/group/${this.id}`;
-    const payload = { ...this.payload };
+    const payload = { ...this.updatePayload };
     try {
       const response = await cornieClient().put(url, payload);
       if (response.success) {
@@ -473,14 +529,29 @@ export default class AddGroup extends Vue {
       window.notify({ msg: "Group not updated", status: "error" });
     }
   }
+
+   async fetchAllOrganizations() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/organization/`
+          );
+          this.organizations = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching organization",
+            status: "error",
+          });
+        }
+  }
   async created() {
+    await this.fetchPractitioners();
     this.setGroup();
 
     const data = await this.getDropdowns("group");
     this.dropdowns = data;
+    await this.fetchAllOrganizations();
 
     await this.fetchDevices();
-    await this.fetchPractitioners();
     await this.getRoles();
     await this.fetchRequests();
     await this.fetchPatients();

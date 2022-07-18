@@ -25,10 +25,15 @@ export const UserRoute: RouteRecordRaw = {
       path: "edit-profile",
       props: true,
       name: "Edit profile",
+      meta: {
+        editPractitioner: true,
+        disabled: ["name", "email"],
+      },
       component: () =>
-        import(
-          "@/views/dashboard/usersettings/profile/components/user-profile-edit.vue"
-        ),
+        // import(
+        //   "@/views/dashboard/usersettings/profile/components/user-profile-edit.vue"
+        // ),
+        import("@/components/practitioner-view-edit.vue"),
     },
     {
       path: "domain/add",

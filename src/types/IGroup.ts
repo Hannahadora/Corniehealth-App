@@ -20,5 +20,9 @@ export default interface IGroup {
   memberPeriod: string;
   memberStatus: string;
   memberEntity: string;
-  members: IndexableObject
+  members: IndexableObject;
+  managingEntityType: string;
+  managingPractitionerId?: undefined;
+  managingOrganizationId?: undefined;
+  managingEntityName: string;
 }

@@ -16,7 +16,7 @@ export async function fetchGroups() {
 export async function fetchGroupMembers(groupId: string) {
   try {
     const response = await cornieClient().get(
-      `/api/v1/groupMembers/groupMembers/${groupId}`
+      `/api/v1/group/members/${groupId}`
     );
     if (response.success) {
       return response.data.result.filter((c:any) => c !== null);
@@ -40,7 +40,7 @@ export async function deleteGroup(id: string) {
 
 export async function deleteGroupMembers(id: string) {
   try {
-    const response = await cornieClient().delete(`/api/v1/groupMembers/${id}`);
+    const response = await cornieClient().delete(`/api/v1/group/members/${id}`);
     if (response.success) {
       return true;
     }

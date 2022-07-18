@@ -19,20 +19,21 @@
           </div>
         </cornie-card-title>
         <cornie-card-text class="flex-grow scrollable">
-            <span class="text-gray-500 text-sm">7 MEMBERS</span>
+            <span class="text-gray-500 text-sm">{{ groupMembers.length }} MEMBERS</span>
             <div class="border-2 border-gray-300 p-4 mt-4 overflow-y-auto overflow-x-hidden px-2 h-96">
-                <div class="flex align-center justify-between w-full border-b-2 border-gray-300 pb-5">
+                <div v-for="(item, index) in groupMembers" :key="index" class="mt-5 flex align-center justify-between w-full border-b-2 border-gray-300 pb-5">
                     <div class="w-full">
                         <p class="text-sm"> 
-                            Dr.Ajayi Charles
+                            Dr. {{ getPractionerName(item.practitionerId) }}
                         </p>
                         <span class="text-xs text-gray-500">
-                            ADMIN
+                            {{ item.role.toUpperCase() }}
                         </span>
                     </div>
                     <div class="flex space-x-4 w-full justify-end">
-                        <edit-icon/>
-                        <delete-icon/>
+                        <edit-icon class="cursor-pointer" @click="showMemeber(item)"/>
+                        <delete-icon class="cursor-pointer" v-if="groupId" @click="deleteItemId(item.id)"/>
+                        <delete-icon class="cursor-pointer" v-else @click="deleteMember(item.id)"/>
                     </div>
                 </div>
 
@@ -55,7 +56,7 @@
       </cornie-card>
     </cornie-dialog>
   </div>
-  <add-actor :memberid="memberId"/>
+  <add-actor :selectedItem="selectedItem" v-model="showMemeberModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -76,6 +77,7 @@ import IPractitioner, {
   } from "@/types/IPractitioner";
 import IDevice from "@/types/IDevice";
 import IGroupMembers from "@/types/IGroupMembers";
+import IGroup from "@/types/IGroup";
 
 import CheckBox from "@/components/corniecheckbox.vue";
 import IconInput from "@/components/IconInput.vue";
@@ -91,6 +93,7 @@ import EditIcon from "@/components/icons/edit.vue";
 const group = namespace("group");
 const device = namespace("device");
 const roles = namespace("roles");
+const practitioner = namespace("practitioner");
 
 @Options({
   components: {
@@ -128,15 +131,25 @@ export default class ViewMembers extends Vue {
   @Prop({ type: Boolean, default: false })
   isUpdate!: Boolean;
 
-  entity = "Practitioner" as string;
-
-
-
-  @group.State
-  groupMembers!: IDevice[];
+  @Prop({ type: Object, default: [] })
+  groupMembers!: IGroupMembers[];
 
   @group.Action
-  fetchGroupMembers!: () => Promise<boolean>;
+  deleteGroupMembers!: (id: string) => Promise<boolean>;
+
+  entity = "Practitioner" as string;
+
+   @practitioner.State
+  practitioners!: IPractitioner[];
+
+  @practitioner.Action
+  fetchPractitioners!: () => Promise<boolean>;
+
+  @roles.State
+  roles!: { id: string; name: string }[];
+
+  @roles.Action
+  getRoles!: () => Promise<void>;
 
 
   search = "" as string;
@@ -152,25 +165,56 @@ export default class ViewMembers extends Vue {
   singleId = "";
   role = "";
   memberId = "";
+  showMemeberModal = false;
+  selectedItem = {};
 
  
+ getPractionerRoleName(id: string) {
+    const pt = this.roles.find((i: any) => i.id === id);
+    return pt ? `${pt.name}` : "";
+  }
+  getPractionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.id === id);
+    return pt ? `${pt.firstName} ` +' '+ pt.lastName : "";
+  }
 
-    get payload() {
-    return {
-      members: this.selectedActors.map((item: any) => {
-        return {
-          userId: item.id,
-          period: item.period,
-          status: item.status,
-        };
-      }),
-    };
+  showMemeber(value:any){
+    this.selectedItem = value;
+    this.showMemeberModal = true;
+  }
+
+  async deleteItemId(id: string) {
+    const confirmed = await window.confirmAction({
+      message:
+        "Are you sure you want to delete this group? This action cannot be undone.",
+      title: "Delete Group",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteGroupMembers(id))
+      window.notify({ msg: "Group deleted", status: "error" });
+    else window.notify({ msg: "Group not deleted", status: "error" });
+  }
+
+  async deleteMember(id:string) {
+    const confirm = await window.confirmAction({
+      message: "Are you sure you want to remove member?",
+      title: "Remove member",
+    });
+
+    if (!confirm) return;
+
+    this.groupMembers = [
+      ...this.groupMembers.filter((item: any) => item.id !== id),
+    ];
+
+    this.memberToDelete = id;
   }
 
 
-
   async created() {
-    await this.fetchGroupMembers();
+    await this.getRoles();
+    await this.fetchPractitioners();
    
   }
 }

@@ -32,7 +32,7 @@
                     :disabled="true"
                     v-model="identifier"
                   />
-                  <cornie-select
+                  <!-- <cornie-select
                     class="w-full"
                     placeholder="--Select--"
                     :items="[
@@ -46,7 +46,7 @@
                     :rules="requiredRule"
                     required
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                   <date-time-picker
                     class="w-full"
                     label="Start Date/Time"
@@ -125,40 +125,27 @@
             <accordion-component title="Return Delivery" :opened="false">
               <template v-slot:default>
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
-                  <cornie-input
+                  <list-select label="Supplier Name"  :placeholder="'--Select--'" @setValue="setValue"/>
+                  <!-- <cornie-input
                     label="Supplier Name"
                     class="w-full mb-4"
                     placeholder="--Enter--"
                     v-model="supplyName"
                     :rules="requiredRule"
                     required
+                  /> -->
+                  <cornie-select
+                   v-if="valueType == 'category'"
+                    :readonly="true"
+                    label="Country"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.countries"
+                    v-model="nationState.country"
+                    :rules="requiredRule"
                   />
                   <cornie-select
-                    class="w-full"
-                    placeholder="--Select--"
-                    :items="[
-                      'holding',
-                      'pharmacy',
-                      'diagnostics',
-                      'in-patient',
-                    ]"
-                    label="Department/Inventory Category"
-                    v-model="supplyCategory"
-                    :rules="requiredRule"
-                    required
-                  >
-                  </cornie-select>
-                  <cornie-select
-                    class="w-full"
-                    placeholder="--Select--"
-                    :items="allLocations"
-                    label="Delivery Location"
-                    v-model="supplyLocationId"
-                    :rules="requiredRule"
-                    required
-                  >
-                  </cornie-select>
-                  <cornie-select
+                  v-else
                     label="Country"
                     class="w-full mb-4"
                     placeholder="--Select--"
@@ -168,6 +155,17 @@
                     required
                   />
                   <cornie-select
+                   v-if="valueType == 'category'"
+                    :readonly="true"
+                    label="State or Region"
+                    class="w-full mb-4"
+                    placeholder="--Select--"
+                    :items="nationState.states"
+                    v-model="state"
+                    :rules="requiredRule"
+                  />
+                  <cornie-select
+                  v-else
                     label="State or Region"
                     class="w-full mb-4"
                     placeholder="--Select--"
@@ -177,6 +175,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    :disabled="true"
+                    label="City"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyCity"
+                  />
+                  <cornie-input
+                   v-else
                     label="City"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -185,6 +192,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    :disabled="true"
+                    label="Zip or Post Code"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyZipCode"
+                  />
+                   <cornie-input
+                   v-else
                     label="Zip or Post Code"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -193,6 +209,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    :disabled="true"
+                    label="Street Name"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyStreetName"
+                  />
+                   <cornie-input
+                   v-else
                     label="Street Name"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -201,6 +226,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    :disabled="true"
+                    label="Apartment or House Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyAppartment"
+                  />
+                   <cornie-input
+                   v-else
                     label="Apartment or House Number"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -209,6 +243,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    :disabled="true"
+                    label="Contact Person"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyContactName"
+                  />
+                  <cornie-input
+                  v-else
                     label="Contact Person"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -216,7 +259,16 @@
                     :rules="requiredRule"
                     required
                   />
+                   <cornie-input
+                   v-if="valueType == 'category'"
+                     label="Phone Number"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    :modelValue="supplyContactPhone.dialCode +' '+ supplyContactPhone.number"
+                    :disabled="true"
+                  />
                   <cornie-phone-input
+                  v-else
                     label="Phone Number"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -226,6 +278,15 @@
                     required
                   />
                   <cornie-input
+                   v-if="valueType == 'category'"
+                    label="Email"
+                    class="w-full mb-4"
+                    placeholder="--Enter--"
+                    v-model="supplyContactEmail"
+                    :disabled="true"
+                  />
+                   <cornie-input
+                   v-else
                     label="Email"
                     class="w-full mb-4"
                     placeholder="--Enter--"
@@ -380,6 +441,7 @@ import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DateTimePicker from "@/components/date-time-picker.vue";
 
 import ItemModal from "./itemModal.vue";
+import ListSelect from "./listSelect.vue";
 
 const materialreturn = namespace("materialreturn");
 const user = namespace("user");
@@ -411,6 +473,7 @@ const location = namespace("location");
     CornieTable,
     ItemModal,
     DateTimePicker,
+    ListSelect,
   },
 })
 export default class requestModal extends Vue {
@@ -490,6 +553,9 @@ export default class requestModal extends Vue {
   supplyAppartment = "";
   preferredProcess = "";
   item = [] as Items[];
+
+  valueType = "category";
+  supplyHouseNumber = "";
 
   @Watch("id")
   idChanged() {
@@ -581,6 +647,79 @@ export default class requestModal extends Vue {
 
   quantities = {} as Record<string, number>;
 
+  reset(){
+     this.supplyCountry = '';
+      this.nationState.country = '';
+      this.supplyName = '';
+      this.supplyAppartment = '';
+      this.state = '';
+      this.supplyCity = '';
+      this.supplyZipCode = '';
+      this.supplyHouseNumber = '';
+      this.supplyStreetName = '';
+      this.supplyContactName = '';
+      this.supplyContactPhone.dialCode = '';
+      this.supplyContactPhone.number = '';
+      this.supplyContactEmail = '';
+      this.supplyContactName = '';
+      this.supplyLocationId = '';
+      this.supplyCategory = '';
+      this.category = this.supplyCategory;
+        this.startDateTime = "";
+        this.startDate = "";
+        this.endDate = "";
+        this.endDateTime = "";
+        this.status = "";
+        this.processedOn = new Date();
+        this.processedById = "";
+        this.organizationId = "";
+  }
+   setValue(value:string, item:any, locationId:string){
+    this.valueType = value;
+    console.log({item})
+    if(value == 'category'){
+      this.supplyCountry = 'Nigeria';
+      this.supplyName = locationId;
+      this.supplyAppartment = item.address;
+      this.nationState.country = 'Nigeria';
+      this.state = item.state;
+      this.supplyCity = item.city;
+      this.supplyZipCode = 'Not available';
+      this.supplyHouseNumber = 'Not available';
+      this.supplyStreetName = item.address;
+      this.supplyContactName = item.manager;
+      this.supplyContactPhone.dialCode = item.phone.dialCode;
+      this.supplyContactPhone.number = item.phone.number;
+    this.supplyContactEmail = item.email;
+    this.supplyContactName = item.manager;
+    this.supplyLocationId = locationId;
+    this.supplyCategory = item.category;
+    this.category = item.category;
+    //this.receiverCategory = item.category;
+    } else{
+      this.supplyCountry = '';
+      this.nationState.country = '';
+      this.supplyName = '';
+      this.supplyAppartment = '';
+      this.state = '';
+      this.supplyCity = '';
+      this.supplyZipCode = '';
+      this.supplyHouseNumber = '';
+      this.supplyStreetName = '';
+      this.supplyContactName = '';
+      this.supplyContactPhone.dialCode = '';
+      this.supplyContactPhone.number = '';
+      this.supplyContactEmail = '';
+      this.supplyContactName = '';
+      this.supplyLocationId = '';
+      this.supplyCategory = '';
+      this.category = this.supplyCategory;
+      //this.receiverCategory = 'pharmacy';
+    }
+
+  }
+
+
   buildPayload(item: any) {
     return {
       quantity: this.quantities[item.productId],
@@ -641,6 +780,7 @@ export default class requestModal extends Vue {
           status: "success",
         });
         this.done();
+
       }
     } catch (error: any) {
       window.notify({ msg: error.response.data.message, status: "error" });
@@ -662,6 +802,7 @@ export default class requestModal extends Vue {
       if (response.success) {
         window.notify({ msg: "Material Return Saved", status: "success" });
         this.done();
+        this.reset();
       }
     } catch (error: any) {
       window.notify({ msg: error.response.data.message, status: "error" });
