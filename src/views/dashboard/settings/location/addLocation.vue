@@ -336,18 +336,6 @@ export default class AddLocation extends Vue {
     this.setLocation();
   }
 
-  // get coordinatesCB() {
-  //   const address = `${this.address}, ${this.state} ${this.country}`;
-  //   return () => getCoordinates(address);
-  // }
-
-  // @Watch("coordinatesCB")
-  // async coordinatesFetched(cb: () => Promise<any>) {
-  //   const data = await cb();
-  //   this.longitude = String(data.longitude);
-  //   this.latitude = String(data.latitude);
-  // }
-
   states = [] as any;
   countries = countries;
 

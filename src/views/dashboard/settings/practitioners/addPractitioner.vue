@@ -67,48 +67,6 @@
                 />
               </div>
               <div class="w-full grid grid-cols-3 gap-4">
-                <!-- <cornie-input
-                  :modelValue="identifier"
-                  label="Identifier"
-                  :placeholder="'--Automatically Generated--'"
-                  disabled
-                />
-                <div class="w-full">
-                  <span class="text-sm font-semibold mb-4">Status</span>
-                  <div class="w-full flex flex-wrap items-center py-5">
-                    <div class="-mb-2">
-                      <cornie-radio
-                        v-model="activeState"
-                        :label="'Active'"
-                        :value="'active'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                    <div class="ml-4 -mb-2">
-                      <cornie-radio
-                        :label="'Inactive'"
-                        v-model="activeState"
-                        :value="'inactive'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                    <div class="ml-4 -mb-2">
-                      <cornie-radio
-                        :label="'Invited'"
-                        v-model="activeState"
-                        :value="'Invited'"
-                        name="practiceRegister"
-                      />
-                    </div>
-                  </div>
-                </div> -->
-                <!-- <cornie-input
-                  v-model="type"
-                  label="Type"
-                  placeholder="Not editable"
-                  :disabled="true"
-                  :required="true"
-                /> -->
                 <cornie-input
                   :rules="required"
                   v-model="name"
@@ -338,15 +296,12 @@
                   <div
                     class="p-2 border-1 h-11 border-gray-300 rounded-lg flex space-x-1"
                   >
-                    <div class="flex space-x-2 w-full">
-                      <div>
-                        <span
-                          class="text-xs"
-                          v-for="(item, index) in specialties"
-                          :key="index"
-                        >
-                          {{ getSpecialityName(item) || item?.name }} ,
-                        </span>
+                    <div class="flex space-x-2 w-full items-center truncate">
+                      <div class="flex-1 truncate text-xs">
+                        {{ specialtyNames }}
+                      </div>
+                      <div class="flex-none justify-end">
+                        <add-icon @click="showSpecialModal" />
                       </div>
                     </div>
                     <div class="w-full flex justify-end">
@@ -385,14 +340,37 @@
                   :required="true"
                 />
 
-                <cornie-select
-                  :rules="required"
-                  v-model="consultationChannel"
-                  label="Consultation Channel"
-                  :items="dropdown.ConsultationChannel"
-                  placeholder="--Select--"
-                  :required="true"
-                />
+                <div class="flex flex-col space-y-0.5">
+                  <div class="text-sm font-semibold mb-1">Visit Type</div>
+
+                  <Multiselect
+                    label="Visit Type"
+                    v-model="consultationChannel"
+                    mode="tags"
+                    :hide-selected="true"
+                    :options="visitType"
+                    placeholder="--Select--"
+                    class="w-full"
+                  >
+                    <template
+                      v-slot:tag="{ option, handleTagRemove, disabled }"
+                    >
+                      <div class="multiselect-tag is-user">
+                        {{ option.label }}
+                        <span
+                          v-if="!disabled"
+                          class="multiselect-tag-remove"
+                          @mousedown.prevent="handleTagRemove(option, $event)"
+                        >
+                          <span class="multiselect-tag-remove-icon"></span>
+                        </span>
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <span class="w-full text-sm">{{ option.label }}</span>
+                    </template>
+                  </Multiselect>
+                </div>
 
                 <div class="w-full -mt-1">
                   <span class="text-sm font-semibold mb-3"
@@ -682,41 +660,55 @@
     @send-speicality="sendspeicality"
     @add-another-services="saveservices"
   />
+  <location-role
+    v-model="addAccessRole"
+    :id="id"
+    :locationId="locationId"
+    :roleId="roleId"
+    :locationRoleId="locationRoleId"
+    :setRoles="locationRoles"
+    :deletedRole="deletedRole"
+    @add-access-roles="addAccessRoles"
+  />
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string, date } from "yup";
-import DatePicker from "@/components/datepicker.vue";
-import { Prop, Watch } from "vue-property-decorator";
-import { useHandleImage } from "@/composables/useHandleImage";
-import PeriodPicker from "@/components/daterangepicker.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import AddBlueIcon from "@/components/icons/addblue.vue";
-import Multiselect from "@vueform/multiselect";
+import AutoComplete from "@/components/autocomplete.vue";
 import Avatar from "@/components/avatar.vue";
-import Period from "@/types/IPeriod";
-import { createDate } from "@/plugins/utils";
-import PlusIcon from "@/components/icons/plus.vue";
-import AccessRole from "./AccessRoles.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import DatePicker from "@/components/datepicker.vue";
+import PeriodPicker from "@/components/daterangepicker.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import {
+  default as AddBlueIcon,
+  default as AddIcon,
+} from "@/components/icons/addblue.vue";
 import DeleteRed from "@/components/icons/delete-red.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import CornieRadio from "@/components/cornieradio.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import PhoneInput from "@/components/phone-input.vue";
 import { useCountryStates } from "@/composables/useCountryStates";
-import AutoComplete from "@/components/autocomplete.vue";
-import AddIcon from "@/components/icons/addblue.vue";
-import SpecialityModal from "./specialModal.vue";
-import ISpecial from "@/types/ISpecial";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { cornieClient } from "@/plugins/http";
+import { createDate } from "@/plugins/utils";
 import ILocation from "@/types/ILocation";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
+import Period from "@/types/IPeriod";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import ISpecial from "@/types/ISpecial";
+import Multiselect from "@vueform/multiselect";
+import { Options, setup, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { date, string } from "yup";
+import AccessRole from "./AccessRoles.vue";
+import locationRole from "./LocationRoles.vue";
+import SpecialityModal from "./specialModal.vue";
 
 const dropdown = namespace("dropdown");
 const practitioner = namespace("practitioner");
@@ -734,6 +726,7 @@ const location = namespace("location");
     CornieSelect,
     AccordionComponent,
     SpecialityModal,
+    locationRole,
     InfoIcon,
     PhoneInput,
     AddIcon,
@@ -747,6 +740,9 @@ const location = namespace("location");
     DeleteRed,
     EditIcon,
     CornieRadio,
+    Multiselect,
+
+    FhirInput,
   },
 })
 export default class AddPractitioner extends Vue {
@@ -783,7 +779,7 @@ export default class AddPractitioner extends Vue {
   fetchPractitioners!: () => Promise<void>;
 
   @practitioner.Action
-  deleteLocationrole!: (id: string) => Promise<boolean>;
+  deleteLocationrole!: ({ id, roleId }: any) => Promise<boolean>;
 
   @special.State
   specials!: ISpecial[];
@@ -795,6 +791,12 @@ export default class AddPractitioner extends Vue {
 
   educations = [] as any;
   licenses = [] as any;
+  disabled = false;
+
+  dobRule = date().max(
+    new Date(),
+    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+  );
 
   addEducation() {
     if (
@@ -814,6 +816,11 @@ export default class AddPractitioner extends Vue {
     ];
 
     this.qualificationIssuer = this.qualificationCode = "";
+    // this.graduationYear =
+    //   "";
+  }
+  removeEducation(i: number) {
+    this.educations.splice(i, 1);
   }
 
   addLicense() {
@@ -829,12 +836,21 @@ export default class AddPractitioner extends Vue {
       ...this.licenses,
     ];
 
-    this.licenseIssuer = this.licenseNumber = "";
+    this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
+  }
+
+  sendspeicality(e: any) {
+    console.log("speciality", e);
+    this.specialties = e;
+  }
+
+  removeLicense(i: number) {
+    this.licenses.splice(i, 1);
   }
 
   dobValidator = date().max(
-    createDate(0, 0, -16),
-    "Practitioner must be at least 16yrs."
+    createDate(0, 0, -18),
+    "Practitioner must be at least 18yrs."
   );
 
   get readonly() {
@@ -843,9 +859,9 @@ export default class AddPractitioner extends Vue {
   nationState = setup(() => useCountryStates());
 
   consultationRatevalue = 0;
-  consultationRateunit = "";
+  consultationRateunit = "Hour";
   practiceDurationvalue = 0;
-  practiceDurationunit = "";
+  practiceDurationunit = "Year";
   newspecialties = [] as any;
 
   qualificationCode = "";
@@ -857,6 +873,7 @@ export default class AddPractitioner extends Vue {
   gender = "";
   phone = "";
   address = "";
+  locationRoleId = "";
   dateOfBirth = "";
   jobDesignation = "";
   employmentType = "";
@@ -864,8 +881,8 @@ export default class AddPractitioner extends Vue {
   accessRole = "";
   singleLocation = "";
   nationality = "Nigeria";
-  country = "Nigeria";
-  state = "Abia";
+  country = "";
+  state = "";
   postCode = "";
   city = "";
   specialty = "";
@@ -873,7 +890,20 @@ export default class AddPractitioner extends Vue {
   issuer = "";
   graduation = "";
   showSpecial = false;
-
+  visitType = [
+    {
+      label: "In-person",
+      value: "in-person",
+    },
+    {
+      label: "Virtual",
+      value: "virtual",
+    },
+    {
+      label: "At home",
+      value: "at home",
+    },
+  ];
   qualificationIdentifier = "1122";
   qualificationIssuer = "";
   licenseNumber = "";
@@ -882,7 +912,7 @@ export default class AddPractitioner extends Vue {
   practitionerId = "";
   communicationLanguage = "";
   availabilityExceptions = "availabilityExceptions";
-  consultationChannel = "";
+  consultationChannel: any = [];
   defaultLocation = "";
   hoursOfOperation: HoursOfOperation[] = [];
   organizationId = "";
@@ -896,7 +926,7 @@ export default class AddPractitioner extends Vue {
   generatedIdentifier = "";
   addAccessRole = false;
   accessRoles = [] as any;
-  locationRoles = [] as any;
+  locationRoles = [] as any[];
   locationId = "";
   roleId = "";
   setRoles = [] as any[];
@@ -927,7 +957,7 @@ export default class AddPractitioner extends Vue {
     value: 0,
     unit: "Hour",
   };
-  graduationYear = "" as any;
+  graduationYear = "";
   licenseIssuer = "";
   newservices = [] as any;
   licensePeriod = "" as any;
@@ -944,12 +974,33 @@ export default class AddPractitioner extends Vue {
     this.setPractitioner();
   }
 
+  get specialtyNames() {
+    return this.specialties
+      .map((x: any) => this.getSpecialityName(x) || x?.display)
+      .join(", ");
+  }
   @Watch("useSameAddress")
   populateEmergencyAddress() {
     if (this.useSameAddress) {
+      this.disabled = true;
       this.emergency.address = this.address;
+      // this.emergency.phone = this.phone;
+      // this.emergency.email = this.email;
+      this.emergency.country = this.country;
+      this.emergency.state = this.state;
+      this.emergency.city = this.city;
+      this.emergency.postCode = this.postCode;
+      this.emergency.aptNumber = this.aptNumber;
     } else {
       this.emergency.address = "";
+      // this.emergency.phone = "";
+      // this.emergency.email = "";
+      this.emergency.country = "";
+      this.emergency.state = "";
+      this.emergency.city = "";
+      this.emergency.postCode = "";
+      this.emergency.aptNumber = "";
+      this.disabled = false;
     }
   }
 
@@ -961,6 +1012,13 @@ export default class AddPractitioner extends Vue {
   editRole(locationId: string, roleId: string) {
     this.locationId = locationId;
     this.roleId = roleId;
+    this.addAccessRole = true;
+  }
+
+  showEditAccess(value: string, valuerole: string, valuelocation: string) {
+    this.locationRoleId = value;
+    this.roleId = valuerole;
+    this.locationId = valuelocation;
     this.addAccessRole = true;
   }
 
@@ -981,15 +1039,11 @@ export default class AddPractitioner extends Vue {
     this.newservices = value;
   }
 
-  sendspeicality(value: any) {
-    this.specialties = value;
-    this.newspecialties = value;
-  }
-
   showSpecialModal() {
     this.showSpecial = true;
   }
   async setPractitioner() {
+    if (!this.id) return;
     const practitioner = await this.getPractitionerById(this.id);
     if (!practitioner) return;
     this.practitionerId = practitioner.id;
@@ -1018,6 +1072,7 @@ export default class AddPractitioner extends Vue {
     this.hoursOfOperation = practitioner.hoursOfOperation;
     this.qualificationCode = practitioner.qualificationCode || "";
     this.period = practitioner.period || {};
+    //@ts-ignore
     this.locationRoles = practitioner.locationRoles;
     this.services = practitioner.services;
     this.nationality = practitioner.nationality;
@@ -1026,17 +1081,17 @@ export default class AddPractitioner extends Vue {
     this.postCode = practitioner.postCode;
     this.aptNumber = practitioner.aptNumber;
     this.specialties = practitioner.specialties;
-    this.practiceDuration.value = practitioner.practiceDuration.value;
-    this.practiceDuration.unit = practitioner.practiceDuration.unit;
-    this.consultationRate.value = practitioner.consultationRate.value;
-    this.consultationRate.unit = practitioner.consultationRate.unit;
+    this.practiceDuration.value = practitioner?.practiceDuration?.value;
+    this.practiceDuration.unit = practitioner?.practiceDuration?.unit;
+    this.consultationRate.value = practitioner?.consultationRate?.value;
+    this.consultationRate.unit = practitioner?.consultationRate?.unit;
     this.consultationRatevalue = practitioner?.consultationRate?.value;
     this.consultationRateunit = practitioner?.consultationRate?.unit;
     this.practiceDurationvalue = practitioner?.practiceDuration?.value;
     this.practiceDurationunit = practitioner?.practiceDuration?.unit;
-    this.graduationYear = practitioner.graduationYear;
-    this.licenseIssuer = practitioner.licenseIssuer;
-    this.licensePeriod = practitioner.licensePeriod;
+    this.graduationYear = practitioner?.graduationYear;
+    this.licenseIssuer = practitioner?.licenseIssuer;
+    this.licensePeriod = practitioner?.licensePeriod;
   }
   serializeDate(date: string) {
     if (!date) return "";
@@ -1057,7 +1112,7 @@ export default class AddPractitioner extends Vue {
       type: this.type,
       address: this.address,
       dateOfBirth: this.serializeDate(this.dateOfBirth),
-      image: this.img.url,
+      image: this.img.url ? this.img.url : undefined,
       jobDesignation: this.jobDesignation,
       department: this.department,
       accessRole: this.accessRole,
@@ -1067,12 +1122,11 @@ export default class AddPractitioner extends Vue {
       communicationLanguage: this.communicationLanguage,
       qualificationCode: this.qualificationCode,
       availabilityExceptions: this.availabilityExceptions,
-      consultationChannel: this.consultationChannel,
+      // consultationChannel: this.consultationChannel,
+      visitType: this.consultationChannel,
       organizationId: this.organizationId,
       hoursOfOperation: this.hoursOfOperation,
       period: this.period,
-      // locations: this.locations,
-      // defaultLocation: this.defaultLocation,
       locationRoles: this.accessRoles,
       services: this.services,
       nationality: this.nationality,
@@ -1081,7 +1135,7 @@ export default class AddPractitioner extends Vue {
       city: this.city,
       postCode: this.postCode,
       aptNumber: this.aptNumber,
-      specialties: this.specialties,
+      specialties: this.specialties.map((x: any) => x.id),
       practiceDuartion: {},
       practiceDuration: this.practiceDuration,
       consultationRate: this.consultationRate,
@@ -1091,7 +1145,6 @@ export default class AddPractitioner extends Vue {
       licensePeriod: this.licensePeriod,
       education: this.educations,
       boardLicenses: this.licenses,
-      location: this.locations,
       employmentType: this.employmentType,
     };
   }
@@ -1108,8 +1161,10 @@ export default class AddPractitioner extends Vue {
       lastName,
       email: this.email,
       activeState: this.activeState,
+      boardLicenses: this.licenses,
+      education: this.educations,
       gender: this.gender,
-      locations: this.locations,
+
       phone: {
         number: this.phone,
         dialCode: this.dialCode,
@@ -1138,7 +1193,7 @@ export default class AddPractitioner extends Vue {
       city: this.city,
       postCode: this.postCode,
       aptNumber: this.aptNumber,
-      specialties: this.newspecialties,
+      specialties: this.specialties.map((x: any) => x.id),
       practiceDuration: {
         value: this.practiceDurationvalue,
         unit: this.practiceDurationunit,
@@ -1151,7 +1206,7 @@ export default class AddPractitioner extends Vue {
       licenseIssuer: this.licenseIssuer,
       licensePeriod: this.licensePeriod,
       availableForOnlineBooking: this.makeAvailable === "on" ? true : false,
-       hourlyRate: this.consultationRate.value,
+      hourlyRate: this.consultationRate.value,
     };
   }
 
@@ -1173,6 +1228,15 @@ export default class AddPractitioner extends Vue {
     );
     const response = await Promise.all([AllLocation]);
     this.location = response[0].data;
+  }
+
+  async fetchDesignation() {
+    const AllDesignation = cornieClient().get(
+      "/api/v1/orgHierarchy/designation"
+    );
+    const response = await Promise.all([AllDesignation]);
+    console.log("designations", response);
+    // this.location = response[0].data;
   }
 
   async submit() {
@@ -1217,38 +1281,38 @@ export default class AddPractitioner extends Vue {
       window.notify({ msg: "Practitioner not updated", status: "error" });
     }
   }
-  async deleteItem(id: string) {
+  async deleteItem(roleId: string, itemId: number) {
+    console.log(this.id, roleId, "role");
+    const id = this.id;
     const confirmed = await window.confirmAction({
       message:
         "Are you sure you want to delete this location role? This action cannot be undone.",
       title: "Delete location role",
     });
     if (!confirmed) return;
-    const url = `/api/v1/practitioner/location-roles/${this.id}`;
-    const payload = [id];
-    try {
-      const response = await cornieClient().delete(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Location role deleted", status: "success" });
-        this.updatePractitioners([response.data]);
-        await this.fetchPractitioners();
-        // this.$router.back();
-      }
-    } catch (error) {
-      window.notify({ msg: "Location role not deleted", status: "error" });
+    console.log("locaiton roles", this.locationRoles);
+    if (!id) {
+      this.locationRoles.splice(itemId, 1);
+      return;
     }
+    if (await this.deleteLocationrole({ id, roleId }))
+      window.notify({ msg: "Location role deleted", status: "success" });
+    else window.notify({ msg: "Location role not deleted", status: "error" });
+  }
+  async done() {
+    await this.fetchPractitioners();
   }
 
   getSpecialityName(id: string) {
-    const pt = this.specials.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
+    const pt = this.specialties.find((i: any) => i.id === id);
+    return pt && pt.display ? `${pt.display}` : "";
   }
 
   async setDropdown() {
     const data = await this.getDropdowns("practitioner");
     this.dropdown = data;
 
-    console.log(data);
+    console.log("dropdowns", data);
   }
   async created() {
     this.fetchSpecials();
@@ -1256,17 +1320,12 @@ export default class AddPractitioner extends Vue {
     this.setDropdown();
     await this.fetchPractitioners();
     await this.fetchLocation();
+    await this.fetchDesignation();
     if (!this.roles.length) await this.getRoles();
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
-
-<style scoped>
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
+<style>
 .multiselect-option.is-selected.is-pointed {
   background: var(--ms-option-bg-selected-pointed, #fe4d3c);
   color: var(--ms-option-color-selected-pointed, #fff);
