@@ -17,7 +17,7 @@
             settings.
           </p>
         </div>
-        <div>
+        <!-- <div>
           <div
             class="flex text-primary font-semibold text-sm mt-3 cursor-pointer"
             v-if="showEdit"
@@ -32,7 +32,7 @@
           >
             <edit-icon class="fill-current text-danger mr-4" /> Edit
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div v-if="showEdit" class="w-full">

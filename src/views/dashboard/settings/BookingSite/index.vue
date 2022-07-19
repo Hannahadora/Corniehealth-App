@@ -13,11 +13,11 @@
           <practice-info />
           <booking-site :id="bookId"/>
           <appointment-types />
-          <appointment-rooms />
+          <!-- <appointment-rooms /> -->
           <calender-preference :calenderid="calendarsId" :prefereid="preferencesId"/>
           <notification-template />
           <cancel-section  :canceId="cancellationId"/>
-          <rating-section />
+          <!-- <rating-section /> -->
         </tabs>
       </span>
     </div>
@@ -79,13 +79,13 @@ export default class Bookings extends Vue {
     "Booking Site",
     // "Appointment Types",
     "Services",
-    "Appointment Rooms",
+    // "Appointment Rooms",
     // "Reminders",
     "Calendar",
     "Notification Templates",
     "Cancellation",
     // "Photos",
-    "Rating",
+    // "Rating",
   ];
   currentTab = 0;
   bookindId = "";
