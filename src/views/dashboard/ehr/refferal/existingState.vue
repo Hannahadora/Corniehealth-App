@@ -182,6 +182,9 @@ import PrintModal from "./print.vue";
 
 import StatusModal from "./status.vue";
 import EmptyState from "./emptyState.vue";
+import { getDropdown } from "@/plugins/definitions";
+import { Codeable } from "@/types/misc";
+
 
 const refferal = namespace("refferal");
 const special = namespace("special");
@@ -285,6 +288,7 @@ export default class ReffferalExistingState extends Vue {
   othercurrentStatus = "";
   otherupdate = "";
   selectedItem = {} as any;
+  Specilaitems: Codeable[] = [];
 
 
    get aPatientId() {
@@ -390,8 +394,8 @@ export default class ReffferalExistingState extends Vue {
   }
  
  getspecialtyname(id: string) {
-    const pt = this.specials.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
+    const pt = this.Specilaitems.find((i: any) => i.code === id);
+    return pt ? `${pt.display}` : "";
   }
 
   getPatientName(id: string) {
@@ -484,8 +488,23 @@ export default class ReffferalExistingState extends Vue {
   async statusadded(){
     await this.fetchRefferalById(this.aPatientId);
   }
+    async setRefs() {
+    const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
+    const ref = reference.trim();
+    const defs = await getDropdown(ref);
+    if (defs && Array.isArray(defs)) {
+      this.Specilaitems = defs;
+    } else {
+      window.notify({
+        status: "error",
+        msg: `Cannot get definitions for ${reference}`,
+      });
+    }
+  }
+
 
   async created() {
+   await this.setRefs();
    await this.fetchRefferalById(this.aPatientId);
     await this.fetchSpecials();
     await this.getPatients();

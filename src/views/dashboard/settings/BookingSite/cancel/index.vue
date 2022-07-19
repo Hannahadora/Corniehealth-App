@@ -227,7 +227,7 @@ export default class Cancellation extends Vue {
   }
 
   async updateLocation() {
-    const url = `/api/v1/cancellations9policy/${this.id}`;
+    const url = `/api/v1/cancellations-policy/${this.id}`;
     const payload = { ...this.payload, id: this.id };
     try {
       const response = await cornieClient().put(url, payload);

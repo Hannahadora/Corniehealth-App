@@ -12,7 +12,7 @@
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`/dashboard/provider/view-group/${item.id}`)"
+         @click="$router.push(`/dashboard/provider/add-group/${item.id}`)"
         >
           <eye-yellow class="text-blue-500 fill-current" />
           <span class="ml-3 text-xs">View</span>
