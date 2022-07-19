@@ -180,12 +180,7 @@ import ViewModal from "./view.vue";
 import PrintModal from "./print.vue";
 
 
-// import MedicationModal from "./medication.vue";
-// import EditMedicationModal from "./updateMedication.vue";
-// import NotesAdd from "./notes.vue";
- import StatusModal from "./status.vue";
-// import OtherStatusModal from "./statusother.vue";
-// import OtherNotesAdd from "./othernote.vue";
+import StatusModal from "./status.vue";
 import EmptyState from "./emptyState.vue";
 
 const refferal = namespace("refferal");
@@ -376,7 +371,7 @@ export default class ReffferalExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", key: "action", image: true }];
   }
-    get items() {
+  get items() {
     const refferals = this.patientrefferals.map((refferal:any) => {
       return {
         ...refferal,

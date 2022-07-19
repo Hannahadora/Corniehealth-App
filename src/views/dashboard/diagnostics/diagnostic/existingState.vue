@@ -1,103 +1,69 @@
 <template>
   <div class="w-full pb-80">
-     <span class="flex justify-end w-full mb-8">
-        <button
-          class="bg-danger rounded-lg text-white mt-5 py-2 px-6 mb-5 font-semibold focus:outline-none hover:opacity-90"
-          @click="showModalDiagnostic = true">
-          New Request
-        </button>
-      </span>
-      <cornie-table :columns="rawHeaders" v-model="items">
-        <template #actions="{ item }">
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showView(item)">
-            <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">View</span>
-          </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showModal(item.id)">
-            <edit-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
-          </div>
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
-              <print-icon />
-              <span class="ml-3 text-xs">Print</span>
-            </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showStatus(item)"
-          >
-            <update-icon />
-            <span class="ml-3 text-xs">Update</span>
-          </div>
+    <span class="flex justify-end w-full mb-8">
+      <button
+        class="bg-danger rounded-lg text-white mt-5 py-2 px-6 mb-5 font-semibold focus:outline-none hover:opacity-90"
+        @click="showModalDiagnostic = true">
+        New Request
+      </button>
+    </span>
+    <cornie-table :columns="rawHeaders" v-model="items">
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showView(item)">
+          <newview-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showModal(item.id)">
+          <edit-icon class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPrintModal(item)">
+          <print-icon />
+          <span class="ml-3 text-xs">Print</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
+          <update-icon />
+          <span class="ml-3 text-xs">Update</span>
+        </div>
 
-        </template>
+      </template>
 
-        <template #status="{ item }">
-          <div class="flex items-center">
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'draft'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded"
-              v-if="item.status == 'on-hold'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-green-100 text-green-500 p-1 rounded"
-              v-if="item.status == 'active'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'unknown'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-green-100 text-green-400 p-1 rounded"
-              v-if="item.status == 'completed'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-red-300 text-red-600 p-1 rounded"
-              v-if="item.status == 'revoked' || item.status == 'cancelled'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
-              v-if="item.status == 'entered-in-error'"
-            >
-              {{ item.status }}
-            </p>
-            <p
-              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
-              v-if="item.status == 'do-Not-perform'"
-            >
-              {{ item.status }}
-            </p>
-          </div>
-        </template>
-      </cornie-table>
-  
-    <status-modal
-       :selectedItem="selectedItem"
-      v-model="showStatusModal"
-      @status-added="medicationadded"
-    />
+      <template #status="{ item }">
+        <div class="flex items-center">
+          <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'draft'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-yellow-200 text-yellow-400 p-1 rounded" v-if="item.status == 'on-hold'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-green-100 text-green-500 p-1 rounded" v-if="item.status == 'active'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-gray-300 p-1 rounded" v-if="item.status == 'unknown'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'completed'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-red-300 text-red-600 p-1 rounded"
+            v-if="item.status == 'revoked' || item.status == 'cancelled'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-purple-300 text-purple-600 p-1 rounded" v-if="item.status == 'entered-in-error'">
+            {{ item.status }}
+          </p>
+          <p class="text-xs bg-blue-300 text-blue-600 p-1 rounded" v-if="item.status == 'do-Not-perform'">
+            {{ item.status }}
+          </p>
+        </div>
+      </template>
+    </cornie-table>
 
-    <diagnostic-modal v-model="showModalDiagnostic" :id="requestId" @medication-added="medicationadded"/>
-    <view-modal v-model="showViewModal"  :selectedItem="selectedItem"/>
-    <print-modal v-model="showPrint"  :selectedItem="selectedItem"/>
+    <status-modal :selectedItem="selectedItem" v-model="showStatusModal" @status-added="medicationadded" />
+
+    <diagnostic-modal v-model="showModalDiagnostic" :id="requestId" @medication-added="medicationadded" />
+    <view-modal v-model="showViewModal" :selectedItem="selectedItem" />
+    <print-modal v-model="showPrint" :selectedItem="selectedItem" />
   </div>
 </template>
 <script lang="ts">
@@ -144,7 +110,7 @@ import PrintModal from "./print.vue";
 // import MedicationModal from "./medication.vue";
 // import EditMedicationModal from "./updateMedication.vue";
 // import NotesAdd from "./notes.vue";
- import StatusModal from "./status.vue";
+import StatusModal from "./status.vue";
 // import OtherStatusModal from "./statusother.vue";
 // import OtherNotesAdd from "./othernote.vue";
 import EmptyState from "./emptyState.vue";
@@ -158,9 +124,9 @@ const request = namespace("request");
     ThreeDotIcon,
     DiagnosticModal,
     SearchIcon,
-   StatusModal,
+    StatusModal,
     PrintIcon,
-     ViewModal,
+    ViewModal,
     PlusIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -243,7 +209,7 @@ export default class DiagnosticExistingState extends Vue {
   othercurrentStatus = "";
   otherupdate = "";
   request: IDiagnostic = {} as any;
-    selectedItem = {} as any;
+  selectedItem = {} as any;
 
 
   select(i: number) {
@@ -256,9 +222,9 @@ export default class DiagnosticExistingState extends Vue {
   @diagnostic.Action
   fetchDiagnostic!: () => Promise<void>;
 
-  
-    @request.State
-    practitioners!: any[];
+
+  @request.State
+  practitioners!: any[];
 
 
   @request.Action
@@ -295,7 +261,7 @@ export default class DiagnosticExistingState extends Vue {
       show: true,
     },
   ];
-  
+
   types = ["All", "Emergency", "Walk-In", "Follow-Up", "Routine"];
   statuses = ["Show All", "On-Hold", "Cancelled", "Completed", "Stopped"];
   availableSlots: any = [];
@@ -309,40 +275,40 @@ export default class DiagnosticExistingState extends Vue {
     const headers = preferred.filter((header) => header.show);
     return [...first(4, headers), { title: "", key: "action", image: true }];
   }
-    get items() {
+  get items() {
     const diagnostics = this.diagnostics.map((diagnostic) => {
       return {
         ...diagnostic,
         action: diagnostic.id,
-        subject: diagnostic?.patient?.firstname +' '+ diagnostic?.patient?.lastname,
-        requester: diagnostic?.patient?.firstname +' '+ diagnostic?.patient?.lastname,
-         performer: this.getPractitionerName(diagnostic.performerId),
+        subject: diagnostic?.patient?.firstname + ' ' + diagnostic?.patient?.lastname,
+        requester: diagnostic?.patient?.firstname + ' ' + diagnostic?.patient?.lastname,
+        performer: this.getPractitionerName(diagnostic.performerId),
       };
     });
     if (!this.query) return diagnostics;
     return search.searchObjectArray(diagnostics, this.query);
   }
- 
+
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.organizationId === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
   }
 
-  showPrintModal(item:any){
+  showPrintModal(item: any) {
     this.showPrint = true;
     this.selectedItem = item;
   }
-  showModal(id:string){
+  showModal(id: string) {
     this.requestId = id;
     this.showModalDiagnostic = true;
   }
-  showView(item:any){
+  showView(item: any) {
     this.selectedItem = item;
     this.showViewModal = true;
   }
   async showStatus(item: any) {
     this.showStatusModal = true;
-   this.selectedItem = item;
+    this.selectedItem = item;
   }
 
 
@@ -358,18 +324,17 @@ export default class DiagnosticExistingState extends Vue {
     this.fetchOtherNotes();
   }
 
- async medicationadded(){
-  await this.fetchDiagnostic();
-}
+  async medicationadded() {
+    await this.fetchDiagnostic();
+  }
 
   get selectedPatientData() {
     if (!this.selectedPatient || !this.selectedPatient.id) return {};
     const data = this.selectedPatient;
     return {
       gender: data.gender,
-      dob: `${new Date(data.dateOfBirth).getDate()} ${
-        this.months[new Date(data.dateOfBirth).getMonth()]
-      }, ${new Date(data.dateOfBirth).getFullYear()}`,
+      dob: `${new Date(data.dateOfBirth).getDate()} ${this.months[new Date(data.dateOfBirth).getMonth()]
+        }, ${new Date(data.dateOfBirth).getFullYear()}`,
       mrn: data.mrn,
     };
   }
@@ -404,7 +369,7 @@ export default class DiagnosticExistingState extends Vue {
 
   async created() {
     await this.getPractitioners();
-   await this.fetchDiagnostic();
+    await this.fetchDiagnostic();
   }
 }
 </script>

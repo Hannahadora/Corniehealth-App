@@ -6,12 +6,12 @@
       <avatar class="h-20 w-20 mr-7" :src="image" />
 
       <span class="flex flex-col mr-10">
-        <span class="text-blue-yonder text-xs font-bold uppercase block"
-          >Name</span
-        >
-        <span class="text-sm capitalize text-blue-yonder-2"
-          >{{ contact.fname }} {{ contact.lname }}</span
-        >
+        <span class="text-blue-yonder text-xs font-bold uppercase block">
+          Name
+        </span>
+        <span class="text-sm capitalize text-blue-yonder-2">
+          {{ contact.fname }} {{ contact.lname }}
+        </span>
 
         <span class="text-blue-yonder text-xs font-bold uppercase block mt-2">
           Email
@@ -23,16 +23,16 @@
         <span class="text-blue-yonder text-xs font-bold uppercase block"
           >Phone</span
         >
-        <span class="text-sm text-blue-yonder-2">{{
-          contact.phone || "Nill"
-        }}</span>
+        <span class="text-sm text-blue-yonder-2">
+          {{ printPhone(contact.phone) || "Nil" }}
+        </span>
 
         <span class="text-blue-yonder text-xs font-bold uppercase block mt-2">
           Address
         </span>
-        <span class="text-sm text-blue-yonder-2"
-          >{{ contact.state || "Nill" }}, {{ contact.country || "Nill" }}</span
-        >
+        <span class="text-sm text-blue-yonder-2">
+          {{ contact.state || "Nil" }}, {{ contact.country || "Nill" }}
+        </span>
       </span>
     </div>
 
@@ -57,42 +57,48 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import Avatar from "@/components/avatar.vue";
-import { namespace } from "vuex-class";
-import IContact from "@/types/IContact";
-import AddContact from "./addContact.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import TransferOwnership from "./components/TransferOwnership.vue";
+  import Avatar from "@/components/avatar.vue";
+  import { useHandleImage } from "@/composables/useHandleImage";
+  import IContact from "@/types/IContact";
+  import IPhone from "@/types/IPhone";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import AddContact from "./addContact.vue";
+  import TransferOwnership from "./components/TransferOwnership.vue";
 
-const contact = namespace("contact");
+  const contact = namespace("contact");
 
-@Options({
-  name: "AdminCard",
-  components: {
-    Avatar,
-    AddContact,
-    TransferOwnership,
-  },
-})
-export default class AdminCard extends Vue {
-  @contact.State
-  contacts!: IContact[];
+  @Options({
+    name: "AdminCard",
+    components: {
+      Avatar,
+      AddContact,
+      TransferOwnership,
+    },
+  })
+  export default class AdminCard extends Vue {
+    @contact.State
+    contacts!: IContact[];
 
-  editingContact = false;
+    editingContact = false;
 
-  get contact() {
-    const contact =
-      this.contacts.find(
-        (contact) => contact.purpose.toLowerCase() == "root"
-      ) || ({} as IContact);
-    return contact;
+    printPhone(phone: IPhone) {
+      return "";
+      // return `${phone?.dialCode}${phone?.number}`;
+    }
+
+    get contact() {
+      const contact =
+        this.contacts.find(
+          (contact) => contact.purpose.toLowerCase() == "root"
+        ) || ({} as IContact);
+      return contact;
+    }
+
+    img = setup(() => useHandleImage());
+
+    get image() {
+      return this.contact.image || this.img.placeholder;
+    }
   }
-
-  img = setup(() => useHandleImage());
-
-  get image() {
-    return this.contact.image || this.img.placeholder;
-  }
-}
 </script>

@@ -6,10 +6,10 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-3 text-xl text-primary py-2"
       >
-        Condition/Problem
+        Condition
       </span>
       <span class="w-full">
-        <empty-state v-if="isEmpty" />
+        <empty-state v-if="empty"/>
         <existing-state v-else />
       </span>
     </div>
@@ -17,8 +17,13 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+
 import EmptyState from "./empty-state.vue";
 import ExistingState from "./existing-state.vue";
+import { ICondition } from "@/types/ICondition";
+
+const condition = namespace("condition");
 
 @Options({
   name: "conditions",
@@ -28,8 +33,29 @@ import ExistingState from "./existing-state.vue";
   },
 })
 export default class Conditions extends Vue {
-  get isEmpty() {
-    return false;
+
+  
+  @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+  
+  @condition.State
+  conditions!: ICondition[];
+
+    get patientId() {
+       return this.$route.params.id as string;
+    }
+   get patientConditions() {
+    return this.conditions || [];
+  }
+
+
+  get empty() {
+    return this.patientConditions.length < 1;
+  }
+
+   async created() {
+      await this.fetchPatientConditions(this.patientId);
+
   }
 }
 </script>

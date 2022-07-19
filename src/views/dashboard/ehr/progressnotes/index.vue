@@ -1,127 +1,108 @@
 <template>
   <div
-    class="flex justify-center h-65-screen bg-white shadow-md p-3 mb-2 rounded w-full"
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
   >
     <div class="w-full">
-      <span
-        class="flex flex-col w-full justify-center border-b-2 font-bold mb-3 text-xl text-primary py-2"
-      >
-        Progress Notes
-      </span>
-      <span class="w-full">
-        <empty-state v-if="items?.length <= 0" />
-        <existing-state
-          v-else
-          :patient="patient"
-          :patientId="patientId"
-          :items="items"
-        />
-      </span>
+      <empty-state
+        @progress_note="() => (showNewProgressNote = true)"
+        v-if="patientProgressNotes?.length <= 0"
+      />
+      <existing-state
+        v-else
+        :patient="patient"
+        :patientId="patientId"
+        :items="items"
+        @progress_note="() => (showNewProgressNote = true)"
+      />
+      <new-progress-note v-model="showNewProgressNote" />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import EmptyState from "./empty-state.vue";
-import ExistingState from "./existing-state.vue";
+  import { getDropdown } from "@/plugins/definitions";
+  import { cornieClient } from "@/plugins/http";
+  import { ICondition } from "@/types/ICondition";
+  import { IPatient } from "@/types/IPatient";
+  import IProgressnote from "@/types/IProgressnote";
+  import { Codeable } from "@/types/misc";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import EmptyState from "./empty-state.vue";
+  import ExistingState from "./existing-state.vue";
+  import NewProgressNote from "./new-progress-note.vue";
 
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { IPatient } from "@/types/IPatient";
-import IProgressnote from "@/types/IProgressnote";
+  const patients = namespace("patients");
 
-import { cornieClient } from "@/plugins/http";
-import { Codeable } from "@/types/misc";
-import { ICondition } from "@/types/ICondition";
-import { getDropdown } from "@/plugins/definitions";
+  @Options({
+    name: "progressnotes",
+    components: {
+      EmptyState,
+      ExistingState,
+      NewProgressNote,
+    },
+  })
+  export default class ProgressNotes extends Vue {
+    // @Prop({ type: String, default: "" })
+    //   patientId!: string;
+    showNewProgressNote = false;
+    patient = {} as IPatient;
 
-const patients = namespace("patients");
+    patientProgressNotes = [] as IProgressnote[];
 
-@Options({
-  name: "progressnotes",
-  components: {
-    EmptyState,
-    ExistingState,
-  },
-})
-export default class ProgressNotes extends Vue {
-  // @Prop({ type: String, default: "" })
-  //   patientId!: string;
+    @patients.Action
+    findPatient!: (patientId: string) => Promise<IPatient>;
 
-  patient = {} as IPatient;
+    categories: Codeable[] = [];
 
-  patientProgressNotes = [] as IProgressnote[];
+    isEmpty = false;
 
-  @patients.Action
-  findPatient!: (patientId: string) => Promise<IPatient>;
+    printRecorded(progress: any) {
+      const dateString = progress.createdAt;
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    }
 
-  categories: Codeable[] = [];
+    printCondition(condition: ICondition) {
+      const cat = condition.category?.replaceAll('"', "");
+      return this.categories.find((s) => (s.code = cat))?.display;
+    }
 
-  isEmpty = false;
+    printStatus(condition: ICondition) {
+      const cat = condition.clinicalStatus?.replaceAll('"', "");
+      return cat;
+    }
+    get patientId() {
+      return this.$route.params.id;
+    }
 
-  printRecorded(progress: any) {
-    const dateString = progress.createdAt;
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  }
+    get items() {
+      return ["lol"];
+    }
 
-  printCondition(condition: ICondition) {
-    const cat = condition.category?.replaceAll('"', "");
-    return this.categories.find((s) => (s.code = cat))?.display;
-  }
+    async fetchProgressnotes() {
+      try {
+        const { data } = await cornieClient().get(
+          `/api/v1/progress-notes/${this.patientId}`
+        );
+        this.patientProgressNotes = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error when fetching patient's progress notes",
+          status: "error",
+        });
+      }
+    }
 
-  printStatus(condition: ICondition) {
-    const cat = condition.clinicalStatus?.replaceAll('"', "");
-    return cat;
-  }
-  get patientId() {
-    return this.$route.params.id;
-  }
-
-  get items() {
-    const items = this.patientProgressNotes.map((progress: any) => ({
-      ...progress,
-      original: progress,
-      identifier: "XXXXX",
-      recorded: this.printRecorded(progress),
-      condition: this.printCondition(progress.condition),
-      status: this.printStatus(progress.condition),
-      // status:history.basicInfo.status
-      // code: this.printCode(condition.code),
-      // severity: this.printSeverity(condition.severity),
-      // clinicalStatus: this.stripQuote(condition.clinicalStatus),
-      // recorder: {
-      //   name: printPractitioner(condition.practitioner!!),
-      //   department: condition.practitioner!!.department,
-      // },
-    }));
-    return items;
-  }
-
-  async fetchProgressnotes() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/progress-notes/${this.patientId}`
+    async created() {
+      await this.fetchProgressnotes();
+      this.categories = await getDropdown(
+        "http://hl7.org/fhir/ValueSet/condition-category"
       );
-      this.patientProgressNotes = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error when fetching patient's progress notes",
-        status: "error",
-      });
     }
   }
-
-  async created() {
-    await this.fetchProgressnotes();
-    this.categories = await getDropdown(
-      "http://hl7.org/fhir/ValueSet/condition-category"
-    );
-  }
-}
 </script>
 <style scoped>
-.h-65-screen {
-  min-height: 80vh;
-}
+  .h-65-screen {
+    min-height: 80vh;
+  }
 </style>

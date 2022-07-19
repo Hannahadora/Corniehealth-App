@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full overflow-auto"
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-full overflow-auto"
   >
     <div class="w-full p-2">
       <span
@@ -49,7 +49,21 @@
         <template #actions="{ item }">
           <table-action @click="goToEHR(item.id)">
             <newview-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">ViewChart</span>
+            <span class="ml-3 text-xs">View chart</span>
+          </table-action>
+          <table-action
+            @click="
+              $router.push(
+                `/dashboard/provider/experience/view-patient/${item.id}`
+              )
+            "
+          >
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">View patient details</span>
+          </table-action>
+          <table-action @click="encounterPatient(item)">
+            <newview-icon class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
           <table-action
             @click="
@@ -148,7 +162,7 @@
 
     <modal :visible="showSearchModal">
       <template #title>
-        <div class="w-full">
+        <div class="w-full h-full">
           <div class="container p-6 content-con">
             <p class="text-primary text-2xl font-semibold pb-3">
               Welcome Back, Dr. Obi
@@ -196,7 +210,7 @@
               ></div>
             </div>
 
-            <div class="w-full flex flex justify-around">
+            <div class="w-full flex justify-around">
               <corniebtn
                 class="bg-primary p-2 cancel-btn rounded-full px-8 mx-4 cursor-pointer"
               >
@@ -244,10 +258,12 @@ import SearchDropdown from "../careteam/components/search-dropdown.vue";
 import ehrHelper from "./helper/ehr-service";
 import User from "@/types/user";
 import IPractitioner from "@/types/IPractitioner";
+import { cornieClient } from "@/plugins/http";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
+
 
 @Options({
   name: "EHRPatients",
@@ -290,6 +306,11 @@ export default class ExistingState extends Vue {
   user!: User;
 
   @userStore.Getter
+  authCurrentLocation!: string;
+
+
+
+  @userStore.Getter
   authPractitioner!: IPractitioner;
 
   @userStore.State
@@ -317,6 +338,8 @@ export default class ExistingState extends Vue {
   activeVisits: IPatient[] = [];
   patientId = "";
   time: any;
+
+  
 
   headers = [
     {
@@ -381,6 +404,27 @@ export default class ExistingState extends Vue {
       this.showAuthModal = true;
     } else {
       this.$router.push({ name: "Health Trend", params: { id: patientId } });
+    }
+  }
+  async encounterPatient(patient: IPatient) {
+    const body ={
+      patientId: patient.id,
+      practitionerId: this.authPractitioner.id,
+      locationId: this.authCurrentLocation,
+      status: 'active',
+      class: 'consultation',
+      serviceType: 'consultation'
+    }
+     try {
+      const response = await cornieClient().post(
+        "/api/v1/encounter",
+       body
+      );
+      if (response.success) {
+       this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Encounter error", status: "error" });
     }
   }
 

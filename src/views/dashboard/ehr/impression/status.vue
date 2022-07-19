@@ -21,24 +21,8 @@
         </div>
       </cornie-card-title>
       <cornie-card-text class="overflow-y-auto">
-        <!-- <div class="flex rounded-md cursor-pointer">
-          <span
-            @click="active = 'clinical'"
-            :class="{ 'bg-primary text-white': active == 'clinical' }"
-            class="flex-grow rounded-l-md block p-3"
-          >
-            Clinical Status
-          </span>
-          <span
-            @click="active = 'verification'"
-            :class="{ 'bg-primary text-white': active == 'verification' }"
-            class="flex-grow py-3 pr-3 rounded-r-md block pl-8"
-          >
-            Verification Status
-          </span>
-        </div> -->
         <v-form>
-          <div class="grid grid-cols-1 gap-3 mt-2">
+          <div class="grid grid-cols-1 gap-6 mt-2">
             <cornie-input
               disabled
               label="Current Status"
@@ -58,32 +42,29 @@
             />
             <cornie-select
               label="Update Status"
-              :items="statuses"
-              class="w-full"
+              :items="['Completed', 'In-progress', 'Entered-in-error']"
+              class="w-full mt-3"
               v-model="status"
             />
           </div>
         </v-form>
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
-        <!-- <cornie-btn
-          @click="showHistory = true"
-          class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-        >
-          View History
-        </cornie-btn> -->
         <cornie-btn
           @click="show = false"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
         >
           Cancel
         </cornie-btn>
-        <cornie-btn @click="apply" class="text-white bg-danger px-9 rounded-xl">
+        <cornie-btn
+          :loading="loading"
+          @click="apply"
+          class="text-white bg-danger px-9 rounded-xl"
+        >
           Update
         </cornie-btn>
       </div>
     </cornie-card>
-    <status-history v-model="showHistory" :active="active" />
   </cornie-dialog>
 </template>
 
@@ -118,7 +99,7 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import DatePicker from "@/components/datepicker.vue";
 import { string } from "yup";
 import DateTimePicker from "./components/datetime-picker.vue";
-import { verificationStatuses, clinicalStatuses } from "./drop-downs";
+import IImpression from "@/types/IImpression";
 
 @Options({
   name: "statusDialog",
@@ -158,14 +139,11 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: String, default: "" })
-  updatedBy!: string;
+  @Prop({ type: Object, default: <any>{} })
+  impression!: IImpression;
 
-  @Prop({ type: String, default: "" })
-  currentStatus!: string;
-
-  @Prop({ type: String, default: "" })
-  updateDate!: string;
+  @Prop({ type: Array, default: [] })
+  practitioners!: any[];
 
   status = "";
   loading = false;
@@ -174,10 +152,19 @@ export default class Medication extends Vue {
 
   active = "clinical";
 
-  get statuses() {
-    return this.active == "clinical" ? clinicalStatuses : verificationStatuses;
-  }
   required = string().required();
+
+  get updateDate() {
+    return new Date(this.impression?.updatedAt).toLocaleDateString("en-NG");
+  }
+
+  get currentStatus() {
+    return this.impression?.status;
+  }
+
+  get updatedBy() {
+    return this.findPractitioner(this.impression?.recorded?.asserterId);
+  }
 
   async updateStatus() {
     const id = this.id;
@@ -200,8 +187,13 @@ export default class Medication extends Vue {
     }
   }
 
+  findPractitioner(id: any) {
+    const ptn = this.practitioners?.find((el: any) => (el.id = id));
+    return ptn?.firstName + " " + ptn?.lastName;
+  }
+
   done() {
-    this.$emit("allergy-added");
+    this.$emit("status-added");
     this.show = false;
   }
   async apply() {

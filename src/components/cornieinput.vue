@@ -13,12 +13,14 @@
         class="flex capitalize items-center mb-1 text-black text-sm font-semibold"
       >
         <slot name="label">
-         <span class="w-full"> {{ label }} </span>
+         <span class="w-full"> {{ label }} 
+            <span class="text-danger ml-1" v-if="required"> * </span>
+         </span>
+       
         </slot>
-        <span class="ml-1 mb-1" v-if="$slots.labelicon">
+        <span class="ml-1 w-full flex justify-end" v-if="$slots.labelicon">
           <slot name="labelicon" />
         </span>
-        <span class="text-danger ml-1" v-if="required"> * </span>
          <span class="float-right flex justify-end w-full" :class="[textred ? 'text-red-500' : 'text-green-500' ]" v-if="labelText"> {{ innerlabel }} </span>
       </label>
       <div

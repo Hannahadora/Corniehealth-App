@@ -1,12 +1,14 @@
+import Settings from "@/views/dashboard/settings/index.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
 import Dashboard from "../views/dashboard/dashboard.vue";
-import { SettingsRoute } from "./settings";
+import Home from "../views/Home.vue";
+import { BillingRoutes } from "./billing";
 import { ClinicalsRoute } from "./clinical";
-import { UserRoute } from "./user";
 import { ExperienceRoutes } from "./experience";
 import { NewSettingsRoutes } from "./newsettings";
-import Settings from "@/views/dashboard/settings/index.vue";
+import { PracticeRoutes } from "./practice";
+import { SettingsRoute } from "./settings";
+import { UserRoute } from "./user";
 
 import { InPatientRoutes } from "./in-patient";
 
@@ -97,18 +99,20 @@ const routes: Array<RouteRecordRaw> = [
       ExperienceRoutes,
       InPatientRoutes,
       NewSettingsRoutes,
+      PracticeRoutes,
+      BillingRoutes,
       {
         path: "/settings/",
         name: "Settings",
         component: Settings,
         // redirect: to => `${to.path}/org-info`.replace("//", "/"),
         children: [
-          {
-            path: "care-partners",
-            name: "Care Partners",
-            component: () =>
-              import("@/views/dashboard/settings/CarePartners/index.vue"),
-          },
+          // {
+          //   path: "care-partners",
+          //   name: "Care Partners",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/CarePartners/index.vue"),
+          // },
           {
             path: "account-security",
             name: "Account Security",
@@ -211,16 +215,17 @@ const routes: Array<RouteRecordRaw> = [
             props: true,
             name: "Add a Practitioner",
             component: () =>
-              import(
-                "@/views/dashboard/settings/practitioners/addPractitioner.vue"
-              ),
+              // import(
+              //   "@/views/dashboard/settings/practitioners/addPractitioner.vue"
+              // ),
+              import("@/components/practitioner-view-edit.vue"),
           },
-          {
-            path: "care-teams",
-            name: "Care Teams",
-            component: () =>
-              import("@/views/dashboard/settings/careteam/index.vue"),
-          },
+          // {
+          //   path: "care-teams",
+          //   name: "Care Teams",
+          //   component: () =>
+          //     import("@/views/dashboard/settings/careteam/index.vue"),
+          // },
           {
             path: "add-careteam/:id?",
             props: true,

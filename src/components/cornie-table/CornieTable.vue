@@ -17,7 +17,18 @@
       </slot>
       <cornie-spacer />
       <span class="flex justify-between items-center" v-if="menu">
-        <dots-horizontal-icon class="mr-7" />
+        <div class="flex">
+          <cornie-menu top="30px" right="100%">
+            <template #activator="{ on }">
+              <icon-btn v-on="on" style="height: unset;width: unset;">
+                  <dots-horizontal-icon class="mr-7" />
+              </icon-btn>
+            </template>
+            <cornie-card-text :tablecard="true">
+              <slot name="bulkactions" />
+            </cornie-card-text>
+          </cornie-menu>
+        </div>
         <print-icon class="mr-7" />
         <refresh-icon
           :loading="refreshing"
@@ -25,6 +36,9 @@
           @click="refresh"
         />
         <filter-icon class="cursor-pointer" @click="$emit('filter')" />
+      </span>
+      <span class="flex justify-between items-center" v-if="!menu">
+        <print-icon class="mr-7" />
       </span>
     </div>
 
@@ -67,22 +81,23 @@
           class="border-t-2 border-2 border-y-gray"
         >
           <td class="p-2" v-if="check">
-            <cornie-checkbox @click="select(row)" :checked="isSelected(row)" />
+            <cornie-checkbox @click="select(row, index)" @change='updateCheckall()' v-model="selectedOne[index]" :checked="isSelected(row)" />
           </td>
           <td class="p-2">{{ index + 1 }}</td>
-          <template v-for="(column, index) in preferredColumns" :key="index">
+          <template v-for="(column, i) in preferredColumns" :key="i">
             <td class="p-3 text-sm capitalize" v-if="column.show">
-              <slot :name="column.key" :item="row" :index="index">
+              <slot :name="column.key" :item="row" :index="i">
                 {{ row[column.key] }}
               </slot>
             </td>
           </template>
           <td v-if="!menushow">
             <div class="flex justify-center">
-              <cornie-menu top="30px" right="100%">
+                <delete-icon v-if="deleteRow" class="cursor-pointer" @click="$emit('delete',index)"/>
+              <cornie-menu top="30px" v-else right="100%">
                 <template #activator="{ on }">
                   <icon-btn v-on="on">
-                    <dots-horizontal-icon v-on="on" />
+                    <dots-horizontal-icon v-on="on"/>
                   </icon-btn>
                 </template>
                 <cornie-card-text :tablecard="true">
@@ -93,6 +108,11 @@
           </td>
         </tr>
       </table>
+      <cornie-pagination
+      v-if="showPagination"
+        :pageInfo="pageInfo"
+        @pagechanged="pushPageChanges"
+      />
     </cornie-card>
 
     <column-filter
@@ -123,7 +143,8 @@ import Card from "@/components/cornie-card/CornieCard.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import search from "@/plugins/search";
 import CornieCard from "@/components/cornie-card";
-
+import DeleteIcon from "@/components/icons/deleteorange.vue";
+import CorniePagination from "@/components/corniePagination.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 interface IPage {
@@ -158,6 +179,7 @@ function defaultFilter(item: any, query: string) {
     FilterIcon,
     CornieSpacer,
     DotsHorizontalIcon,
+    DeleteIcon,
     DotsVerticalIcon,
     ColumnFilter,
     FilterByIcon,
@@ -166,6 +188,7 @@ function defaultFilter(item: any, query: string) {
     CornieMenu,
     RefreshIcon,
     ...CornieCard,
+    CorniePagination,
   },
 })
 export default class CornieTable extends Vue {
@@ -178,6 +201,9 @@ export default class CornieTable extends Vue {
   @PropSync("modelValue", { type: Array, default: [] })
   items!: any[];
 
+  @Prop({ type: Object, default: {} })
+  pageInfo!: any;
+
   @Prop({ type: Boolean, default: true })
   check!: boolean;
 
@@ -186,6 +212,12 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   listmenu!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  showPagination!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  deleteRow!: boolean;
 
   @Prop({ type: Boolean, default: false })
   refreshing!: boolean;
@@ -199,6 +231,21 @@ export default class CornieTable extends Vue {
   @Prop({ type: Boolean, default: true })
   menu!: boolean;
 
+  @Prop({ type: Number})
+  totalPages!: number;
+
+  @Prop({ type: Number })
+  perPage!: number;
+
+  @Prop({ type: Number })
+  totalItems!: number;
+
+  @Prop({ type: Number })
+  currentPage!: number;
+
+  @Prop({ type: Number })
+  maxVisibleButtons!: number;
+
   @PropSync("refreshing")
   refreshSync!: boolean;
 
@@ -210,6 +257,7 @@ export default class CornieTable extends Vue {
   orderBy: Sorter = () => 1;
   selectedItems: any[] = [];
   selectedAll = false;
+  selectedOne = false;
   showColumnFilter = false;
   preferredColumns: IColumn[] = [];
 
@@ -232,15 +280,30 @@ export default class CornieTable extends Vue {
   }
 
   isSelected(item: any): boolean {
+    this.selectedOne = true;
     return !this.selectedItems.every((element: any) => element.id != item.id);
   }
 
-  select(item: any) {
-    if (this.isSelected(item))
+    updateCheckall (){
+      if(this.selectedItems.length == this.filteredItems.length){
+         this.selectedAll = true;
+      }else{
+         this.selectedAll = false;
+      }
+    }
+
+  select(item: any, index:number) {
+    if (this.isSelected(item)){
       this.selectedItems = this.selectedItems.filter(
         (element: any) => element.id != item.id
       );
-    else this.selectedItems.push(item);
+      this.$emit('selectedItem', this.selectedItems)
+      
+    }
+    else {
+      this.selectedItems.push(item)
+       this.$emit('selectedItem',this.selectedItems, index)
+    };
   }
 
   async loadItems() {
@@ -253,9 +316,18 @@ export default class CornieTable extends Vue {
   @Watch("selectedAll")
   onSelectedAllChange(newValue: boolean) {
     this.selectedItems = [];
-    if (newValue)
-      for (const item of this.filteredItems) this.selectedItems.push(item);
+    if (newValue){
+       for (const item of this.filteredItems) {
+         this.selectedItems.push(item);
+         this.selectedOne = true;
+        this.$emit('selectedItem', this.selectedItems)
+       }
+    }
+     
   }
+  pushPageChanges(payload:any) {
+          this.$emit('pagechanged', payload);
+    }
 
   mounted() {
     this.preferredColumns = this.columns;

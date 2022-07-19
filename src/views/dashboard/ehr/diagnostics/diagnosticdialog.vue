@@ -127,8 +127,7 @@
                 label="Request code"
                 placeholder="--Select--"
               />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/servicerequest-orderdetail"
+              <cornie-input
                 v-model="otherrequestModel.request.orderDetail"
                 label="order detail"
                 class="w-full"
@@ -304,7 +303,7 @@
                 </input-desc-rounded>
               </div>
               <cornie-select
-                v-if="PatientName.insurances.length === 0"
+                v-if="PatientName?.insurances?.length === 0"
                 class="required w-full"
                 :rules="required"
                 :items="['No Payment option for this patient']"
@@ -830,14 +829,6 @@ export default class Medication extends Vue {
     this.practitioner = response[0].data;
   }
 
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.patientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data.result;
-  }
-
   async created() {
     await this.fetchPatientConditions(this.patientId);
     this.setRequest();
@@ -845,7 +836,7 @@ export default class Medication extends Vue {
     this.fetchLocation();
     this.fetchPracticeForms();
     this.fetchPatients();
-    this.fetchAllergy();
+   // if (this.patientId) await this.fetchAllergy();
     this.fetchAllPatients();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");

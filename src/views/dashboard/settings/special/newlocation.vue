@@ -3,104 +3,75 @@
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
-                <arrow-left-icon />
+          <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           New Location
+            New Location
           </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-             <div class="border-b-2 w-full border-dashed pb-2 mb-7 border-gray-300">
-                <div class="">
-                 <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
-                    <icon-input
-                    autocomplete="off"
-                    class="border border-gray-600 rounded-full focus:outline-none"
-                    type="search"
-                    placeholder="Search"
-                    v-model="query"
-                    >
-                    <template v-slot:prepend>
-                        <search-icon />
-                    </template>
-                    </icon-input>
-                 </span>
-                <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
-                    class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
-                        <div class="flex flex-col w-full p-2">
-                            <div v-for="(item, i) in filteredItems"
-                                :key="i"
-                                @click="selected(item)"
-                                class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
-                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
-                                    {{ item?.name   || item }}
-                                </div>
-                            </div>
-                        </div>
-                        <div v-if="filteredItems.length === 0">
-                             <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
-                        </div>
+          <div class="border-b-2 w-full border-dashed pb-2 mb-7 border-gray-300">
+            <div class="">
+              <span class="mb-2 w-full rounded-full" @click="showDatalist = !showDatalist">
+                <icon-input autocomplete="off" class="border border-gray-600 rounded-full focus:outline-none"
+                  type="search" placeholder="Search" v-model="query">
+                  <template v-slot:prepend>
+                    <search-icon />
+                  </template>
+                </icon-input>
+              </span>
+              <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']"
+                class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj"
+                style="width:96%">
+                <div class="flex flex-col w-full p-2">
+                  <div v-for="(item, i) in filteredItems" :key="i" @click="selected(item)"
+                    class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
+                    <div class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
+                      {{ item?.name || item }}
+                    </div>
                   </div>
                 </div>
-            </div>
-            <div>
-                <span class="text-sm font-semibold mb-1">Location</span>
-                <Multiselect
-                  v-model="aLocation"
-                  mode="tags"
-                  :hide-selected="false"
-                  id="field-id"
-                  :searchable = true
-                  :options="allLocations"
-                   value-prop="code"
-                  trackBy="code"
-                  label="code"
-                  placeholder="--Select--"
-                  class="w-full"
-                >
-                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
-                    <div class="multiselect-tag is-user">
-                      {{ option.display }}
-                      <span
-                        v-if="!disabled"
-                        class="multiselect-tag-remove"
-                        @mousedown.prevent="handleTagRemove(option, $event)"
-                      >
-                        <span class="multiselect-tag-remove-icon"></span>
-                      </span>
-                    </div>
-                  </template>
-                  <template v-slot:option="{ option }">
-                    <select-option :value="option.display" :label="option.display"/>
-                  </template>
-                </Multiselect>
+                <div v-if="filteredItems.length === 0">
+                  <span class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center">No result found!</span>
+                </div>
               </div>
-          
-       
+            </div>
+          </div>
+          <div>
+            <span class="text-sm font-semibold mb-1">Location</span>
+            <Multiselect v-model="aLocation" mode="tags" :hide-selected="false" id="field-id" :searchable=true
+              :options="allLocations" value-prop="code" trackBy="code" label="code" placeholder="--Select--"
+              class="w-full">
+              <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                <div class="multiselect-tag is-user">
+                  {{ option.display }}
+                  <span v-if="!disabled" class="multiselect-tag-remove"
+                    @mousedown.prevent="handleTagRemove(option, $event)">
+                    <span class="multiselect-tag-remove-icon"></span>
+                  </span>
+                </div>
+              </template>
+              <template v-slot:option="{ option }">
+                <select-option :value="option.display" :label="option.display" />
+              </template>
+            </Multiselect>
+          </div>
+
+
         </v-form>
       </cornie-card-text>
-      
+
       <cornie-card>
         <cornie-card-text class="flex justify-end">
-          <cornie-btn
-            @click="show = false"
-            class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-          >
+          <cornie-btn @click="show = false" class="border-primary border-2 px-6 mr-3 rounded-xl text-primary">
             Cancel
           </cornie-btn>
-          <cornie-btn
-            :loading="loading"
-            @click="apply"
-            class="text-white bg-danger px-6 rounded-xl"
-           >
+          <cornie-btn :loading="loading" @click="apply" class="text-white bg-danger px-6 rounded-xl">
             Save
           </cornie-btn>
 
@@ -173,7 +144,7 @@ export default class newLocation extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-   @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "" })
   specilatyId!: string;
 
   @Prop({ type: Function, default: defaultFilter })
@@ -193,7 +164,7 @@ export default class newLocation extends Vue {
   @location.Action
   fetchLocations!: () => Promise<void>;
 
-  
+
   @special.State
   specials!: ISpecial[];
 
@@ -213,56 +184,56 @@ export default class newLocation extends Vue {
     });
   }
 
-  
+
   get filteredItems() {
     return this.locations
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
 
-//  selected(item: any) {
-//     nextTick(() => {
-//       this.showDatalist = false;
-//       this.modelValueSync = item.code || item;
-//     });
-//   }
-  
-   get payload() {
+  //  selected(item: any) {
+  //     nextTick(() => {
+  //       this.showDatalist = false;
+  //       this.modelValueSync = item.code || item;
+  //     });
+  //   }
+
+  get payload() {
     return {
-        locations: this.aLocation,
+      locations: this.aLocation,
     };
   }
 
 
-   async apply() {
+  async apply() {
     this.loading = true;
-     await this.save();
+    await this.save();
     this.loading = false;
   }
-  
-    async save() {
-      try {
+
+  async save() {
+    try {
       const response = await cornieClient().post(
         `/api/v1/specialty/location/${this.specilatyId}`,
         this.payload
       );
-      if(response.success){
-          this.done();
+      if (response.success) {
+        this.done();
         window.notify({ msg: "Location saved successfully", status: "success" });
       }
     } catch (error) {
       window.notify({ msg: "Location not saved", status: "error" });
     }
   }
-  
- 
- 
- async specialadded(){
-     await this.fetchSpecials();
+
+
+
+  async specialadded() {
+    await this.fetchSpecials();
   }
 
 
-done() {
+  done() {
     this.$emit("location-added");
     this.show = false;
   }
@@ -273,19 +244,23 @@ done() {
   }
 }
 </script>
-<style src="@vueform/multiselect/themes/default.css"></style>
+<style src="@vueform/multiselect/themes/default.css">
+</style>
 <style>
 .dflex {
   display: -webkit-box;
 }
+
 .multiselect-option.is-selected {
   background: #fe4d3c;
   color: var(--ms-option-color-selected, #fff);
 }
+
 .multiselect-option.is-selected.is-pointed {
   background: var(--ms-option-bg-selected-pointed, #fe4d3c);
   color: var(--ms-option-color-selected-pointed, #fff);
 }
+
 .multiselect-option.is-selected {
   background: var(--ms-option-bg-selected, #fe4d3c);
   color: var(--ms-option-color-selected, #fff);
@@ -306,10 +281,7 @@ done() {
   border-radius: var(--ms-radius, 4px);
   background: var(--ms-bg, #fff);
   font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
+  min-height: calc(var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) * var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2);
 }
 
 .multiselect-tags {

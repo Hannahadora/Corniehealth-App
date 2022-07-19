@@ -3,21 +3,8 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          class="
-            bg-danger
-            rounded-full
-            text-white
-            mt-5
-            py-2
-            pr-12
-            pl-12
-            px-3
-            mb-5
-            font-semibold
-            focus:outline-none
-            hover:opacity-90
-          "
-          @click="showAllergy('false')"
+          class="bg-danger rounded-lg text-white mt-5 py-2 px-6 mb-5 font-semibold focus:outline-none hover:opacity-90"
+          @click="showNewModal"
         >
           New Allergy
         </button>
@@ -25,26 +12,47 @@
       <cornie-table :columns="rawHeaders" v-model="sortAllergys">
         <template #actions="{ item }">
           <div
+            @click="showAllergy(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="$router.push(`/dashboard/experience/add-task/${item.id}`)"
+          >
+            <Edit-icon class="text-blue-800 fill-current" />
+            <span class="ml-3 text-xs">Edit</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="viewAllergy(item, item.id)"
           >
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
+            @click="updateStatus(item)"
           >
-            <plus-icon class="text-green-400 fill-current" />
+            <update-icon class="text-yellow-400 fill-current" />
+            <span class="ml-3 text-xs">Update</span>
+          </div>
+          <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="showOccurModal(item.id)"
+          >
+            <plus-icon class="text-purple-500 fill-current" />
             <span class="ml-3 text-xs">Add Occurrence</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showAllergy(item.id)"
+            @click="assetAction(item.id, item.asserterId)"
           >
-            <edit-icon class="text-purple-600 fill-current" />
-            <span class="ml-3 text-xs">Edit</span>
+            <check-icon class="text-green-400 fill-current" />
+            <span class="ml-3 text-xs">Assert</span>
           </div>
+          <!-- <div
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="deleteItem(item.id)"
+          >
+            <cancel-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Cancel</span>
+          </div> -->
         </template>
         <template #asserter="{ item }">
           <p class="cursor-pointer">{{ item.asserter }}</p>
@@ -52,28 +60,84 @@
         <template #recorder="{ item }">
           <p class="cursor-pointer">{{ item.asserter }}</p>
         </template>
+        <template #clinicalStatus="{ item }">
+          <span
+            class="bg-gray-100 text-gray-600 rounded-lg p-2 text-xs"
+            v-if="item.clinicalStatus === 'resolved'"
+          >
+            Resolved
+          </span>
+          <span
+            class="bg-green-100 text-green-600 rounded-lg p-2 text-xs"
+            v-if="item.clinicalStatus === 'active'"
+          >
+            {{ item.clinicalStatus }}
+          </span>
+          <span
+            class="bg-red-100 text-red-600 rounded-lg p-2 text-xs"
+            v-if="item.clinicalStatus === 'inactive'"
+          >
+            {{ item.clinicalStatus }}
+          </span>
+        </template>
+        <template #status="{ item: { verificationStatus: status } }">
+          <span
+            :class="{
+              'bg-blue-800 text-blue-800': status == 'confirmed',
+              ' bg-red-500 text-red-400': status == 'unconfirmed',
+              ' bg-purple-800 text-purple-800': status == 'refuted',
+              ' bg-danger text-danger': status == 'cancelled',
+              ' bg-warning text-warning': status == 'differential',
+              ' bg-blue-800 text-blue-800': status == 'provisional',
+              ' bg-gray-300 text-gray-800': status == 'entered-in-error',
+            }"
+            class="text-center rounded-md p-1 bg-opacity-20"
+          >
+            {{ status }}
+          </span>
+        </template>
       </cornie-table>
     </div>
-
-    <allergy-modal
-      v-if="allergyId == 'false'"
-      :columns="practitioner"
-      @allergy-added="allergyAdded"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
-    />
-
-    <allergy-modal
-      v-else
-      :id="allergyId"
-      :columns="practitioner"
-      @update:preferred="showAllergy"
-      v-model="showAllergyModal"
-    />
   </div>
+  <allergy-modal
+    @allergy-added="allergyAdded"
+    v-model="showAllergyModal"
+    :id="allergyId"
+  />
+  <occur-modal
+    v-model="showOccur"
+    :id="allergyId"
+    @allergy-added="allergyAdded"
+  />
+  <view-modal
+    v-model="showView"
+    :id="allergyId"
+    :allergy="selectedItem"
+    @close="resetAllegry"
+  />
+  <status-modal
+    :allergy="currentAllergy"
+    @allergy-added="allergyAdded"
+    v-model="updatingStatus"
+  />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import search from "@/plugins/search";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { mapDisplay } from "@/plugins/definitions";
+import { cornieClient } from "@/plugins/http";
+
+import IAllergy from "@/types/IAllergy";
+
+import EyeIcon from "@/components/icons/yelloweye.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import CancelIcon from "@/components/icons/cancel.vue";
+import UpdateIcon from "@/components/icons/newupdate.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import NewviewIcon from "@/components/icons/newview.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CardText from "@/components/cornie-card/CornieCardText.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
@@ -86,55 +150,46 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
-import search from "@/plugins/search";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { Prop } from "vue-property-decorator";
-import IAllergy from "@/types/IAllergy";
-import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/yelloweye.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import TimelineIcon from "@/components/icons/timeline.vue";
-import DangerIcon from "@/components/icons/danger.vue";
-import ShareIcon from "@/components/icons/share.vue";
-import CheckinIcon from "@/components/icons/checkin.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
-import MessageIcon from "@/components/icons/message.vue";
-import AllergyModal from "./allergydialog.vue";
-import { namespace } from "vuex-class";
-import { mapDisplay } from "@/plugins/definitions";
+import CheckIcon from "@/components/icons/checkdynamic.vue";
+
+import StatusModal from "./status-update.vue";
+
+import AllergyModal from "./allergyModal.vue";
+import OccurModal from "./components/occurence.vue";
+import ViewModal from "./components/viewModal.vue";
 
 const allergy = namespace("allergy");
+
+interface MutantAllergy extends IAllergy {
+  original: IAllergy;
+}
+
 
 @Options({
   components: {
     CancelIcon,
     SortIcon,
-    CheckinIcon,
     AllergyModal,
-    NewviewIcon,
     UpdateIcon,
-    TimelineIcon,
-    ShareIcon,
     ThreeDotIcon,
-    DangerIcon,
     PlusIcon,
+    NewviewIcon,
     SearchIcon,
-    MessageIcon,
     PrintIcon,
     TableRefreshIcon,
     FilterIcon,
     IconInput,
     ColumnFilter,
     TableOptions,
-    DeleteIcon,
     EyeIcon,
     EditIcon,
     CornieTable,
     CardText,
     CornieDialog,
+    CheckIcon,
+    OccurModal,
+    ViewModal,
+    StatusModal,
   },
 })
 export default class AllergyExistingState extends Vue {
@@ -148,9 +203,17 @@ export default class AllergyExistingState extends Vue {
   allergyId = "";
   tasknotes = [];
   substance = "";
+  showOccur = false;
+  showView = false;
+  selectedItem = {};
+  viewingAllergy = false;
+  updatingStatus = false;
+  currentAllergy = {};
   // @Prop({ type: Array, default: [] })
   // allergys!: IAllergy[];
   medicationMapper = (code: string) => "";
+  manifestationMapper = (code: string) => "";
+  exposureRouteMapper = (code: string) => "";
 
   @allergy.State
   allergys!: IAllergy[];
@@ -171,34 +234,29 @@ export default class AllergyExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "identifier",
-      key: "id",
+      title: "Identifier",
+      key: "identifier",
       show: true,
     },
-    { title: "Date Recorded", key: "createdAt", show: true },
+    { title: "Date Recorded", key: "recordDate", show: true },
     {
-      title: "Type",
-      key: "type",
-      show: true,
-    },
-    {
-      title: "Category",
-      key: "category",
+      title: "code",
+      key: "code",
       show: true,
     },
     {
-      title: "Criticality",
+      title: "criticality",
       key: "criticality",
-      show: false,
-    },
-    {
-      title: "product",
-      key: "product",
       show: true,
     },
     {
-      title: "clinical| verication",
+      title: "clinical status",
       key: "clinicalStatus",
+      show: true,
+    },
+    {
+      title: "verification status",
+      key: "status",
       show: true,
     },
     {
@@ -261,28 +319,28 @@ export default class AllergyExistingState extends Vue {
     this.medicationMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/substance-code"
     );
+
+    this.manifestationMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/clinical-findings"
+    );
+    this.exposureRouteMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/route-codes"
+    );
   }
 
   get items() {
     const allergys = this.allergys.map((allergy: any) => {
-      (allergy as any).onSet.onsetPeriod.start = new Date(
-        (allergy as any).onSet.onsetPeriod.start
-      ).toLocaleDateString("en-US");
-      (allergy as any).onSet.onsetPeriod.end = new Date(
-        (allergy as any).onSet.onsetPeriod.end
-      ).toLocaleDateString("en-US");
-      (allergy as any).createdAt = new Date(
-        (allergy as any).createdAt
-      ).toLocaleDateString("en-US");
+      (allergy as any).recordDate = new Date(
+        (allergy as any).recordDate
+      ).toLocaleDateString("en-US");;
 
       return {
         ...allergy,
         action: allergy.id,
-        keydisplay: "XXXXXXX",
-        onsetPeriod:
-          allergy.onSet.onsetPeriod.start + "-" + allergy.onSet.onsetPeriod.end,
-        asserter: this.getPractitionerName(allergy.onSet.asserter),
-        product: this.medicationMapper(allergy.reaction.substance),
+        code: this.medicationMapper(allergy.code),
+        substance: this.medicationMapper(allergy.reaction.substance),
+        manifestation: this.manifestationMapper(allergy.reaction.manifestation),
+        exposureRoute: this.exposureRouteMapper(allergy.reaction.exposureRoute),
         // type: mapDisplay(allergy.type),
       };
     });
@@ -290,9 +348,23 @@ export default class AllergyExistingState extends Vue {
     return search.searchObjectArray(allergys, this.query);
   }
 
+  updateStatus(allergy: MutantAllergy) {
+    this.currentAllergy = allergy;
+    this.updatingStatus = true;
+  }
+
+  showNewModal() {
+    this.showAllergyModal = true;
+    this.resetAllegry();
+  }
+
   getPractitionerName(id: string) {
     const pt = this.practitioners.find((i: any) => i.id === id);
     return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
+  resetAllegry() {
+    this.allergyId = "";
+    this.selectedItem = {};
   }
   async showAllergy(value: string) {
     this.showAllergyModal = true;
@@ -305,9 +377,8 @@ export default class AllergyExistingState extends Vue {
   stripQuote(val: string) {
     return val.replaceAll('"', "");
   }
-  allergyAdded() {
-    this.allergys;
-    this.fetchAllergys(this.patientId);
+  async allergyAdded() {
+    await this.fetchAllergys(this.patientId);
   }
   async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
@@ -321,17 +392,45 @@ export default class AllergyExistingState extends Vue {
     else window.notify({ msg: "Allergy not cancelled", status: "error" });
   }
 
+  showOccurModal(value: string) {
+    this.allergyId = value;
+    this.showOccur = true;
+  }
+
+  viewAllergy(value: any, id: string) {
+    this.showView = true;
+    this.selectedItem = value;
+    this.allergyId = id;
+  }
+
   get sortAllergys() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
 
+  async assetAction(id: string, assertId: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to assert this allergy",
+      title: "Assert allergy",
+    });
+    if (!confirmed) return;
+    try {
+      const { data } = await cornieClient().put(`/api/v1/allergy/${id}`, {
+        asserterId: assertId,
+      });
+      this.allergyAdded();
+      window.notify({ status: "success", msg: "Allergy Asserted" });
+    } catch (error) {
+      window.notify({ status: "error", msg: "Allergy not Asserted" });
+    }
+  }
+
   async created() {
+    await this.fetchAllergys(this.$route.params.id as string);
     await this.createMapper();
     this.getPractitioners();
-    this.sortAllergys;
-    await this.fetchAllergys(this.patientId);
+    // this.sortAllergys;
   }
 }
 </script>

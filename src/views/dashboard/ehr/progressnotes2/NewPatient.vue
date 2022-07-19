@@ -274,348 +274,354 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import CornieCard from "@/components/cornie-card/index";
-import CornieSpacer from "@/components/CornieSpacer.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import DatePicker from "@/components/datepicker.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieMenu from "@/components/CornieMenu.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CompletedIcon from "@/components/icons/CompletedIcon.vue";
-import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
-import AddIcon from "@/components/icons/add.vue";
-import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
-import MedicineIcon from "@/components/icons/MedicineIcon.vue";
-import ScienceIcon from "@/components/icons/ScienceIcon.vue";
-import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
-import UrlIcon from "@/components/icons/UrlIcon.vue";
-import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
-import DemographicIcon from "@/components/icons/DemographicIcon.vue";
-import { Field } from "vee-validate";
+  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+  import CornieCard from "@/components/cornie-card/index";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import IconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieMenu from "@/components/CornieMenu.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieSpacer from "@/components/CornieSpacer.vue";
+  import CustomCheckbox from "@/components/custom-checkbox.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import AddIcon from "@/components/icons/add.vue";
+  import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import CompletedIcon from "@/components/icons/CompletedIcon.vue";
+  import DemographicIcon from "@/components/icons/DemographicIcon.vue";
+  import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
+  import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
+  import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
+  import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
+  import MedicineIcon from "@/components/icons/MedicineIcon.vue";
+  import ScienceIcon from "@/components/icons/ScienceIcon.vue";
+  import UrlIcon from "@/components/icons/UrlIcon.vue";
+  import { Field } from "vee-validate";
+  import { Options, Vue } from "vue-class-component";
 
-import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
-import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
-import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
-import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
-import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+  import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
+  import GuarantorDialog from "./dialogs/GuarantorDialog.vue";
+  import InsuranceDialog from "./dialogs/InsuranceDialog.vue";
+  import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+  import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 
-import ContactInfo from "./contact-information.vue";
-import { string, number, date, array } from "yup";
-import { Prop, Ref } from "vue-property-decorator";
-import { cornieClient } from "@/plugins/http";
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
-import { namespace } from "vuex-class";
-import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
+  import { cornieClient } from "@/plugins/http";
+  import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
+  import { Prop, Ref } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { array, date, number, string } from "yup";
+  import ContactInfo from "./contact-information.vue";
+  import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
 
-const patients = namespace("patients");
+  const patients = namespace("patients");
 
-@Options({
-  name: "new-patient",
-  components: {
-    ...CornieCard,
-    CornieSpacer,
-    ContactInfo,
-    ChevronRightIcon,
-    ChevronDownIcon,
-    IconBtn,
-    PractitionersDialog,
-    CornieAvatarField,
-    CustomCheckbox,
-    CornieInput,
-    Field,
-    DatePicker,
-    CornieSelect,
-    CornieMenu,
-    DemographicsDialog,
-    CornieBtn,
-    CompletedIcon,
-    EmergencyIcon,
-    AddIcon,
-    InsuranceIcon,
-    MedicineIcon,
-    ScienceIcon,
-    MedicalTeamIcon,
-    UrlIcon,
-    GuarantorIcon,
-    DemographicIcon,
+  @Options({
+    name: "new-patient",
+    components: {
+      ...CornieCard,
+      CornieSpacer,
+      ContactInfo,
+      ChevronRightIcon,
+      ChevronDownIcon,
+      IconBtn,
+      PractitionersDialog,
+      CornieAvatarField,
+      CustomCheckbox,
+      CornieInput,
+      Field,
+      DatePicker,
+      CornieSelect,
+      CornieMenu,
+      DemographicsDialog,
+      CornieBtn,
+      CompletedIcon,
+      EmergencyIcon,
+      AddIcon,
+      InsuranceIcon,
+      MedicineIcon,
+      ScienceIcon,
+      MedicalTeamIcon,
+      UrlIcon,
+      GuarantorIcon,
+      DemographicIcon,
 
-    EmergencyContactDialog,
-    GuarantorDialog,
-    InsuranceDialog,
-    ProvidersDialog,
-  },
-})
-export default class NewPatient extends Vue {
-  showPatientInformation = true;
-  showContactInfo = true;
-  showOptionalInformation = false;
-  idOptions = ["NIN", "BVN"];
-  genderOptions = [
-    { code: "male", display: "Male" },
-    { code: "female", display: "Female" },
-    { code: "other", display: "Other" },
-  ];
-  multipleBirthOptions = [
-    { code: true, display: "Yes" },
-    { code: false, display: "No" },
-  ];
-
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  @patients.State
-  patients!: IPatient[];
-
-  loading = false;
-
-  vip = false;
-  multipleBirth = false;
-  multipleBirthInteger = 0;
-  gender = "";
-  idType = "NIN";
-  firstName = "";
-  middleName = "";
-  lastName = "";
-  dateOfBirth = "";
-  image = "";
-  idNumber = "";
-
-  contacts = [];
-  emergencyContacts = [];
-  guarantor!: Guarantor;
-  insurances = [];
-  labs = [];
-  pharmacies = [];
-  demographics!: Demographics;
-  practitioners = [];
-
-  maritalStatus = "";
-
-  showEmergencyContactDialog = false;
-  showGuarantorDialog = false;
-  showInsuranceDialog = false;
-  showProvidersDialog = false;
-  showPractitionersDialog = false;
-  showDemographicsDialog = false;
-
-  contactsCompleted = false;
-
-  requiredRule = string().required();
-  numericRule = number();
-  dobRule = date().max(
-    new Date(),
-    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
-  );
-  multipleBirthRule = number().min(0).max(10);
-
-  requiredArray = array().min(1);
-
-  @Prop({ type: String, default: "" })
-  id!: string;
-
-  patient!: IPatient;
-
-  @patients.Mutation
-  updatePatient!: (patient: IPatient) => void;
-
-  @Ref("basic")
-  basicInfo!: any;
-
-  basicCompleted = false;
-
-  get title() {
-    if (this.viewOnly) return "View Patient";
-    return this.patient ? "Edit Patient" : "New Patient";
-  }
-
-  get viewOnly() {
-    return this.$route.path.includes("view");
-  }
-
-  markEditable() {
-    this.$router.push(`/dashboard/provider/experience/edit-patient/${this.id}`);
-  }
-
-  get providerLength() {
-    const labLen = this.patient?.preferredLabs?.length || this.labs.length;
-    const pharmLen =
-      this.patient?.preferredPharmacies?.length || this.pharmacies.length;
-    return labLen + pharmLen;
-  }
-  get optionalItems() {
-    return [
-      {
-        name: "Emergency Contact",
-        icon: "emergency-icon",
-        click: () => (this.showEmergencyContactDialog = true),
-        number:
-          this.patient?.emergencyContacts?.length ||
-          this.emergencyContacts.length,
-      },
-      {
-        name: "Add Guarantor",
-        icon: "guarantor-icon",
-        click: () => (this.showGuarantorDialog = true),
-        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
-      },
-      {
-        name: "Insurance",
-        icon: "insurance-icon",
-        click: () => (this.showInsuranceDialog = true),
-        number: this.patient?.insurances?.length || this.insurances.length,
-      },
-      {
-        name: "Providers",
-        icon: "medicine-icon",
-        click: () => (this.showProvidersDialog = true),
-        number: this.providerLength,
-      },
-      {
-        name: "General Practitioners",
-        icon: "medical-team-icon",
-        click: () => (this.showPractitionersDialog = true),
-        number:
-          this.patient?.generalPractitioners?.length ||
-          this.practitioners.length,
-      },
-      {
-        name: "Demographic Data",
-        icon: "demographic-icon",
-        click: () => (this.showDemographicsDialog = true),
-        number: this.patient?.demographicsData ? 1 : this.demographics ? 1 : 0,
-      },
+      EmergencyContactDialog,
+      GuarantorDialog,
+      InsuranceDialog,
+      ProvidersDialog,
+    },
+  })
+  export default class NewPatient extends Vue {
+    showPatientInformation = true;
+    showContactInfo = true;
+    showOptionalInformation = false;
+    idOptions = ["NIN", "BVN"];
+    genderOptions = [
+      { code: "male", display: "Male" },
+      { code: "female", display: "Female" },
+      { code: "other", display: "Other" },
     ];
-  }
+    multipleBirthOptions = [
+      { code: true, display: "Yes" },
+      { code: false, display: "No" },
+    ];
 
-  togglePatientInformation() {
-    this.showPatientInformation = !this.showPatientInformation;
-  }
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
 
-  toggleContactInfo() {
-    this.showContactInfo = !this.showContactInfo;
-  }
+    @patients.State
+    patients!: IPatient[];
 
-  toggleOptionalInformation() {
-    this.showOptionalInformation = !this.showOptionalInformation;
-  }
+    loading = false;
 
-  async submit() {
-    const report = await (this.$refs.basic as any).validate();
-    if (!report.valid) return;
-    this.loading = true;
-    if (this.id) await this.updateData();
-    else await this.registerPatient();
-    this.loading = false;
-  }
+    vip = false;
+    multipleBirth = false;
+    multipleBirthInteger = 0;
+    gender = "";
+    idType = "NIN";
+    firstName = "";
+    middleName = "";
+    lastName = "";
+    dateOfBirth = "";
+    image = "";
+    idNumber = "";
 
-  get payload() {
-    const basicInfo = {
-      firstname: this.firstName,
-      lastname: this.lastName,
-      middlename: this.middleName,
-      multipleBirth: this.multipleBirth,
-      multipleBirthInteger: this.multipleBirthInteger,
-      gender: this.gender.toLowerCase(),
-      maritalStatus: this.maritalStatus,
-      vip: this.vip,
-      dateOfBirth: this.dateOfBirth,
-      identityNos: [{ type: this.idType, number: this.idNumber }],
-      profilePhoto: this.image,
-      accountType: "individual",
-    };
-    if (this.id) {
-      (basicInfo.identityNos[0] as any).patientId = this.id;
-      (basicInfo.identityNos[0] as any).id = this.patient.identityNos!![0].id;
+    contacts = [];
+    emergencyContacts = [];
+    guarantor!: Guarantor;
+    insurances = [];
+    labs = [];
+    pharmacies = [];
+    demographics!: Demographics;
+    practitioners = [];
+
+    maritalStatus = "";
+
+    showEmergencyContactDialog = false;
+    showGuarantorDialog = false;
+    showInsuranceDialog = false;
+    showProvidersDialog = false;
+    showPractitionersDialog = false;
+    showDemographicsDialog = false;
+
+    contactsCompleted = false;
+
+    requiredRule = string().required();
+    numericRule = number();
+    dobRule = date().max(
+      new Date(),
+      `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+    );
+    multipleBirthRule = number().min(0).max(10);
+
+    requiredArray = array().min(1);
+
+    @Prop({ type: String, default: "" })
+    id!: string;
+
+    patient!: IPatient;
+
+    @patients.Mutation
+    updatePatient!: (patient: IPatient) => void;
+
+    @Ref("basic")
+    basicInfo!: any;
+
+    basicCompleted = false;
+
+    get title() {
+      if (this.viewOnly) return "View Patient";
+      return this.patient ? "Edit Patient" : "New Patient";
     }
-    const others = {
-      contactInfo: this.contacts,
-      emergencyContacts: this.emergencyContacts,
-      preferredLabs: this.labs,
-      preferredPharmacies: this.pharmacies,
-    };
-    if (this.id) return basicInfo;
-    return { ...basicInfo, ...others };
-  }
 
-  async registerPatient() {
-    if (this.contacts.length < 1)
-      return window.notify({
-        msg: "At least one contact information is needed to proceed",
-        status: "error",
-      });
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/patient",
-        this.payload
+    get viewOnly() {
+      return this.$route.path.includes("view");
+    }
+
+    markEditable() {
+      this.$router.push(
+        `/dashboard/provider/experience/edit-patient/${this.id}`
       );
-      const patient = response.data;
-      this.updatePatient(patient);
-    } catch (error) {
-      window.notify({ msg: "Failed to add patient", status: "error" });
     }
-    this.$router.back();
-  }
 
-  async updateData() {
-    try {
-      const response = await cornieClient().patch(
-        `/api/v1/patient/${this.id}`,
-        this.payload
-      );
-      const patient = response.data;
-      this.updatePatient(patient);
-      window.notify({ msg: "Patient Updated", status: "success" });
-    } catch (e) {
-      window.notify({ msg: "Failed to update patient", status: "error" });
+    get providerLength() {
+      const labLen = this.patient?.preferredLabs?.length || this.labs.length;
+      const pharmLen =
+        this.patient?.preferredPharmacies?.length || this.pharmacies.length;
+      return labLen + pharmLen;
     }
-  }
+    get optionalItems() {
+      return [
+        {
+          name: "Emergency Contact",
+          icon: "emergency-icon",
+          click: () => (this.showEmergencyContactDialog = true),
+          number:
+            this.patient?.emergencyContacts?.length ||
+            this.emergencyContacts.length,
+        },
+        {
+          name: "Add Guarantor",
+          icon: "guarantor-icon",
+          click: () => (this.showGuarantorDialog = true),
+          number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
+        },
+        {
+          name: "Insurance",
+          icon: "insurance-icon",
+          click: () => (this.showInsuranceDialog = true),
+          number: this.patient?.insurances?.length || this.insurances.length,
+        },
+        {
+          name: "Providers",
+          icon: "medicine-icon",
+          click: () => (this.showProvidersDialog = true),
+          number: this.providerLength,
+        },
+        {
+          name: "General Practitioners",
+          icon: "medical-team-icon",
+          click: () => (this.showPractitionersDialog = true),
+          number:
+            this.patient?.generalPractitioners?.length ||
+            this.practitioners.length,
+        },
+        {
+          name: "Demographic Data",
+          icon: "demographic-icon",
+          click: () => (this.showDemographicsDialog = true),
+          number: this.patient?.demographicsData
+            ? 1
+            : this.demographics
+            ? 1
+            : 0,
+        },
+      ];
+    }
 
-  async saveBasic() {
-    if (this.id) {
+    togglePatientInformation() {
+      this.showPatientInformation = !this.showPatientInformation;
+    }
+
+    toggleContactInfo() {
+      this.showContactInfo = !this.showContactInfo;
+    }
+
+    toggleOptionalInformation() {
+      this.showOptionalInformation = !this.showOptionalInformation;
+    }
+
+    async submit() {
+      const report = await (this.$refs.basic as any).validate();
+      if (!report.valid) return;
       this.loading = true;
-      await this.updateData();
+      if (this.id) await this.updateData();
+      else await this.registerPatient();
       this.loading = false;
-    } else {
-      this.showPatientInformation = false;
-      this.basicCompleted = false;
+    }
+
+    get payload() {
+      const basicInfo = {
+        firstname: this.firstName,
+        lastname: this.lastName,
+        middlename: this.middleName,
+        multipleBirth: this.multipleBirth,
+        multipleBirthInteger: this.multipleBirthInteger,
+        gender: this.gender.toLowerCase(),
+        maritalStatus: this.maritalStatus,
+        vip: this.vip,
+        dateOfBirth: this.dateOfBirth,
+        identityNos: [{ type: this.idType, number: this.idNumber }],
+        profilePhoto: this.image || undefined,
+        accountType: "individual",
+      };
+      if (this.id) {
+        (basicInfo.identityNos[0] as any).patientId = this.id;
+        (basicInfo.identityNos[0] as any).id = this.patient.identityNos!![0].id;
+      }
+      const others = {
+        contactInfo: this.contacts,
+        emergencyContacts: this.emergencyContacts,
+        preferredLabs: this.labs,
+        preferredPharmacies: this.pharmacies,
+      };
+      if (this.id) return basicInfo;
+      return { ...basicInfo, ...others };
+    }
+
+    async registerPatient() {
+      if (this.contacts.length < 1)
+        return window.notify({
+          msg: "At least one contact information is needed to proceed",
+          status: "error",
+        });
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/patient",
+          this.payload
+        );
+        const patient = response.data;
+        this.updatePatient(patient);
+      } catch (error) {
+        window.notify({ msg: "Failed to add patient", status: "error" });
+      }
+      this.$router.back();
+    }
+
+    async updateData() {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient/${this.id}`,
+          this.payload
+        );
+        const patient = response.data;
+        this.updatePatient(patient);
+        window.notify({ msg: "Patient Updated", status: "success" });
+      } catch (e) {
+        window.notify({ msg: "Failed to update patient", status: "error" });
+      }
+    }
+
+    async saveBasic() {
+      if (this.id) {
+        this.loading = true;
+        await this.updateData();
+        this.loading = false;
+      } else {
+        this.showPatientInformation = false;
+        this.basicCompleted = false;
+      }
+    }
+
+    selectId(idOption: string) {
+      this.idType = idOption;
+    }
+
+    hydrate() {
+      const patient = this.patients.find((p) => p.id == this.id);
+      if (!patient) return;
+      this.patient = patient;
+      this.firstName = patient.firstname;
+      this.lastName = patient.lastname;
+      this.middleName = patient.middlename || "";
+      this.multipleBirth = patient.multipleBirths || false;
+      this.multipleBirthInteger = patient.multipleBirthInteger || 0;
+      this.gender = patient.gender || "";
+      this.maritalStatus = patient.maritalStatus || "";
+      this.vip = patient.vip || false;
+      this.dateOfBirth = patient.dateOfBirth || "";
+      const identityNos = patient.identityNos || [];
+      const [identity, ...rest] = identityNos;
+      if (identity) {
+        this.idType = identity.type;
+        this.idNumber = identity.number;
+      }
+      this.image = patient.profilePhoto || "";
+    }
+
+    async created() {
+      if (!this.patients.length) await this.fetchPatients();
+      if (this.id) this.hydrate();
     }
   }
-
-  selectId(idOption: string) {
-    this.idType = idOption;
-  }
-
-  hydrate() {
-    const patient = this.patients.find((p) => p.id == this.id);
-    if (!patient) return;
-    this.patient = patient;
-    this.firstName = patient.firstname;
-    this.lastName = patient.lastname;
-    this.middleName = patient.middlename || "";
-    this.multipleBirth = patient.multipleBirths || false;
-    this.multipleBirthInteger = patient.multipleBirthInteger || 0;
-    this.gender = patient.gender || "";
-    this.maritalStatus = patient.maritalStatus || "";
-    this.vip = patient.vip || false;
-    this.dateOfBirth = patient.dateOfBirth || "";
-    const identityNos = patient.identityNos || [];
-    const [identity, ...rest] = identityNos;
-    if (identity) {
-      this.idType = identity.type;
-      this.idNumber = identity.number;
-    }
-    this.image = patient.profilePhoto || "";
-  }
-
-  async created() {
-    if (!this.patients.length) await this.fetchPatients();
-    if (this.id) this.hydrate();
-  }
-}
 </script>

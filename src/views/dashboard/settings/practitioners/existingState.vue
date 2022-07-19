@@ -69,155 +69,175 @@
   <invitation-modal v-model="showInviteModal" />
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import ThreeDotIcon from "@/components/icons/threedot.vue";
-import SortIcon from "@/components/icons/sort.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PrintIcon from "@/components/icons/print.vue";
-import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
-import FilterIcon from "@/components/icons/filter.vue";
-import IconInput from "@/components/IconInput.vue";
-import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import { namespace } from "vuex-class";
-import TableOptions from "@/components/table-options.vue";
-import DeleteIcon from "@/components/icons/deactivate.vue";
-import EyeIcon from "@/components/icons/newview.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import LocationModal from "./AccessRoles.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
-import InvitationModal from "./inviteModal.vue";
-import RevokeIcon from "@/components/icons/revoke.vue";
+  import ColumnFilter from "@/components/columnfilter.vue";
+  import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import DeleteIcon from "@/components/icons/deactivate.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import FilterIcon from "@/components/icons/filter.vue";
+  import UpdateIcon from "@/components/icons/newupdate.vue";
+  import EyeIcon from "@/components/icons/newview.vue";
+  import PrintIcon from "@/components/icons/print.vue";
+  import RevokeIcon from "@/components/icons/revoke.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import SortIcon from "@/components/icons/sort.vue";
+  import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
+  import ThreeDotIcon from "@/components/icons/threedot.vue";
+  import TableOptions from "@/components/table-options.vue";
+  import { mapDisplay } from "@/plugins/definitions";
+  import search from "@/plugins/search";
+  import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import LocationModal from "./AccessRoles.vue";
+  import InvitationModal from "./inviteModal.vue";
 
-const practitioner = namespace("practitioner");
+  const practitioner = namespace("practitioner");
 
-@Options({
-  components: {
-    RevokeIcon,
-    CornieTable,
-    SortIcon,
-    ThreeDotIcon,
-    SearchIcon,
-    PrintIcon,
-    TableRefreshIcon,
-    FilterIcon,
-    InvitationModal,
-    IconInput,
-    DeleteIcon,
-    EyeIcon,
-    ColumnFilter,
-    TableOptions,
-    EditIcon,
-    LocationModal,
-    UpdateIcon,
-  },
-})
-export default class PractitionerExistingState extends Vue {
-  showColumnFilter = false;
-  query = "";
-  showLocationModal = false;
-  showInviteModal = false;
-  locationId = "";
+  @Options({
+    components: {
+      RevokeIcon,
+      CornieTable,
+      SortIcon,
+      ThreeDotIcon,
+      SearchIcon,
+      PrintIcon,
+      TableRefreshIcon,
+      FilterIcon,
+      InvitationModal,
+      IconInput,
+      DeleteIcon,
+      EyeIcon,
+      ColumnFilter,
+      TableOptions,
+      EditIcon,
+      LocationModal,
+      UpdateIcon,
+    },
+  })
+  export default class PractitionerExistingState extends Vue {
+    showColumnFilter = false;
+    query = "";
+    showLocationModal = false;
+    showInviteModal = false;
+    locationId = "";
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+    @practitioner.State
+    practitioners!: IPractitioner[];
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
+    @practitioner.Action
+    deletePractitioner!: (id: string) => Promise<boolean>;
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
 
-  rawHeaders = [
-    {
-      title: "IDENTIFIER",
-      key: "identifier",
-      show: true,
-    },
-    {
-      title: "Name",
-      key: "name",
-      show: true,
-    },
-    { title: "Department", key: "department", show: true },
-    { title: "Job Designation", key: "jobDesignation", show: true },
-    {
-      title: "Status",
-      key: "activeState",
-      show: true,
-    },
-    {
-      title: "Code",
-      key: "qualificationIssuer",
-      show: false,
-    },
-    {
-      title: "Address",
-      key: "address",
-      show: false,
-    },
-    {
-      title: "Access Role",
-      key: "accessRole",
-      show: false,
-    },
-    {
-      title: "Gender",
-      key: "gender",
-      show: false,
-    },
-    {
-      title: "Description",
-      key: "description",
-      show: false,
-    },
-    {
-      title: "Physical Type",
-      key: "physicalType",
-      show: false,
-    },
-  ];
+    rawHeaders = [
+      {
+        title: "IDENTIFIER",
+        key: "identifier",
+        show: true,
+      },
+      {
+        title: "Name",
+        key: "name",
+        show: true,
+      },
+      { title: "Job Designation", key: "jobDesignation", show: true },
+      {
+        title: "Status",
+        key: "activeState",
+        show: true,
+      },
+      {
+        title: "Code",
+        key: "qualificationIssuer",
+        show: false,
+      },
+      {
+        title: "Address",
+        key: "address",
+        show: false,
+      },
+      {
+        title: "Access Role",
+        key: "accessRole",
+        show: false,
+      },
+      {
+        title: "Gender",
+        key: "gender",
+        show: false,
+      },
+      {
+        title: "Description",
+        key: "description",
+        show: false,
+      },
+      {
+        title: "Physical Type",
+        key: "physicalType",
+        show: false,
+      },
+    ];
 
-  get items() {
-    const practitioners = this.practitioners.map((practitioner) => {
-      // const opHours = this.stringifyOperationHours(
-      //   practitioner?.hoursOfOperation
-      // );
-      return {
-        ...practitioner,
-        action: practitioner.id,
-        //hoursOfOperation: opHours,
-        name: `${practitioner.firstName} ${practitioner.lastName}`,
-      };
-    });
-    if (!this.query) return practitioners;
-    return search.searchObjectArray(practitioners, this.query);
+    jobMapper = (code: string) => "";
+    get items() {
+      const practitioners = this.practitioners.map((practitioner) => {
+        // const opHours = this.stringifyOperationHours(
+        //   practitioner?.hoursOfOperation
+        // );
+        // console.log(
+        //   "jobb",
+        //   practitioner.jobDesignation,
+        //   this.jobMapper(practitioner.jobDesignation)
+        // );
+        return {
+          ...practitioner,
+          action: practitioner.id,
+          //hoursOfOperation: opHours,
+          name: `${practitioner.firstName} ${practitioner.lastName}`,
+          jobDesignation:
+            practitioner.jobDesignation !== null
+              ? this.jobMapper(practitioner.jobDesignation)
+              : practitioner.jobDesignation,
+        };
+      });
+      if (!this.query) return practitioners;
+      return search.searchObjectArray(practitioners, this.query);
+    }
+
+    stringifyOperationHours(opHours: HoursOfOperation[]) {
+      const [opHour, ...rest] = opHours;
+      if (!opHour) return "All Day";
+      return `${opHour.openTime} - ${opHour.closeTime}`;
+    }
+
+    async createMapper() {
+      this.jobMapper = await mapDisplay(
+        "http://hl7.org/fhir/ValueSet/performer-role"
+      );
+    }
+
+    async remove(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "You are about to delete this practitioner",
+      });
+      if (!confirmed) return;
+      if (await this.deletePractitioner(id))
+        window.notify({ msg: "Practitioner deleted", status: "success" });
+      else window.notify({ msg: "Practitioner not deleted", status: "error" });
+    }
+    async updateLocation() {
+      await this.fetchPractitioners();
+    }
+
+    showModal(value: string) {
+      this.showLocationModal = true;
+      this.locationId = value;
+    }
+
+    async created() {
+      await this.createMapper();
+    }
   }
-
-  stringifyOperationHours(opHours: HoursOfOperation[]) {
-    const [opHour, ...rest] = opHours;
-    if (!opHour) return "All Day";
-    return `${opHour.openTime} - ${opHour.closeTime}`;
-  }
-
-  async remove(id: string) {
-    const confirmed = await window.confirmAction({
-      message: "You are about to delete this practitioner",
-    });
-    if (!confirmed) return;
-    if (await this.deletePractitioner(id))
-      window.notify({ msg: "Practitioner deleted", status: "success" });
-    else window.notify({ msg: "Practitioner not deleted", status: "error" });
-  }
-  async updateLocation() {
-    await this.fetchPractitioners();
-  }
-
-  showModal(value: string) {
-    this.showLocationModal = true;
-    this.locationId = value;
-  }
-}
 </script>

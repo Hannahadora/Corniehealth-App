@@ -140,11 +140,11 @@ export default class CarePartnersExistingState extends Vue {
       return {
         ...partner,
         action: partner.id,
-        email: (partner.email as unknown as IEmail).address,
+        email: (partner?.email as unknown as IEmail)?.address,
         phone:
-          (partner.phone as unknown as IPhone).dialCode ||
-          "+234" + (partner.phone as unknown as IPhone).number,
-        identifier: partner.identifier ? partner.identifier : "Not specified",
+          (partner?.phone as unknown as IPhone)?.dialCode ||
+          "+234" + (partner?.phone as unknown as IPhone)?.number,
+        identifier: partner?.identifier ? partner?.identifier : "Not specified",
         status: "Unknown",
       };
     });

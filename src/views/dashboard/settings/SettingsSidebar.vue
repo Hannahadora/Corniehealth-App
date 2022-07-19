@@ -157,14 +157,14 @@ export default class Settings extends Vue {
       { name: "Specialties", to: "specialties", icon: "special-icon" },
       { name: "KYC", to: "kyc", icon: "kyc-icon" },
       {
-        name: "Location",
-        to: "location",
-        icon: "location-icon",
-      },
-      {
         name: "Organization Hierarchy",
         to: "org-hierarchy",
         icon: "hierarchy-icon",
+      },
+      {
+        name: "Locations",
+        to: "locations",
+        icon: "location-icon",
       },
     ];
   }
@@ -179,7 +179,7 @@ export default class Settings extends Vue {
       { name: "Domains", to: "domains", icon: "domain-icon" },
       { name: "Practitioners", to: "practitioners", icon: "practitioner-icon" },
       { name: "Group", to: "group", icon: "group-icon" },
-      { name: "Care Team", to: "care-teams", icon: "team-icon" },
+      // { name: "Care Team", to: "care-teams", icon: "team-icon" },
       {
         name: "Roles and Privileges",
         to: "roles-privileges",
@@ -190,20 +190,21 @@ export default class Settings extends Vue {
   }
   get healthCare() {
     return [
-      {
-        name: "Healthcare Services",
-        to: "health-services",
-        icon: "health-service-icon",
-      },
+      // {
+      //   name: "Healthcare Services",
+      //   to: "health-services",
+      //   icon: "health-service-icon",
+      // },
       { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
-      {
-        name: "Charge Description Master",
-        to: "charge-description-master",
-        icon: "cdm-icon",
-      },
+      // {
+      //   name: "Charge Description Master",
+      //   to: "charge-description-master",
+      //   icon: "cdm-icon",
+      // },
       { name: "Devices", to: "devices", icon: "devices-icon" },
-      { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
+      // { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
       { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
+      { name: "Inventory", to: "inventory", icon: "bank-icon" },
     ];
   }
   get PracticeManagement() {

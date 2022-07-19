@@ -4,37 +4,60 @@ import IPractitioner from "./IPractitioner";
 export default interface IVital {
   id: string;
   patientId: string;
+  createdAt: string;
   practitionerId: string;
   practitioner: IPractitioner;
   encounterId: string;
-  identifier: string;
+  identifier?: string;
   date: string;
   type: string;
-  datacount: number;
+  datacount?: number;
   status: string;
-  temperature: {
-    unit: string;
-    value: number;
+  bodyTemperature: {
+    unit: string,
+    value: number,
   };
-  pulse: number;
-  respiratoryRate: number;
-  oxygenSaturation: number;
-  height: {
-    unit: string;
-    value: number;
-  };
-  weight: {
-    unit: string;
-    value: number;
-  };
-  bloodPressure: IBloodPressure[];
-  habits: IHabit[];
-  comments: string;
-  headCircumference: {
-    unit: string;
-    value: number;
-  };
-  physicals: Physical[];
+  respiration: {
+    respiratoryRate: {
+      unit: string,
+      value: number,
+    },
+    heartRate: {
+      unit: string,
+      value: number,
+    },
+    oxygenSaturation: {
+      unit: string,
+      value: number,
+    },
+    bloodGlucoseLevel: {
+      unit: string,
+      value: number,
+    }
+  },
+  bloodPressure: IBloodPressure[],
+  circumferences: {
+    bodyHeight: {
+      unit: string,
+      value: number,
+    },
+    headCircumferences: {
+      unit: string,
+      value: number,
+    }
+  },
+
+  bodyWeight: {
+    bodyWeight: {
+      unit: string,
+      value: number,
+    },
+    bodyMassIndex: {
+      unit: string,
+      value: number,
+    }
+  }
+  comments?: string;
   organizationId: string;
   patient: IPatient;
   encounter: any;
@@ -42,12 +65,17 @@ export default interface IVital {
 }
 
 export interface IBloodPressure {
-  type: string;
-  position: string;
-  measurement: {
-    unit: string;
-    value: number;
-  };
+  position: string,
+  systolicBloodPressure: {
+    unit: string,
+    value: number,
+  },
+  diastolicBloodPressure: {
+    unit: string,
+    value: number,
+  }
+  date?: string,
+  time?: string,
 }
 
 export interface IHabit {

@@ -13,14 +13,15 @@
           >
         </span>
         <div v-if="!restricted" class="flex items-center">
-          <span class="text-2xl font-bold mr-2">3,500</span
-          ><span class="text-base font-bold text-green-400">+4.0%</span>
+          <span class="text-2xl font-bold mr-2"></span>
+          <span class="text-base font-bold text-green-400"></span>
         </div>
       </div>
       <canvas v-if="!restricted" ref="registration_chart"></canvas>
     </div>
-    <div class="flex flex-col items-center justify-center"
-     style="height: 391px"
+    <div
+      class="flex flex-col items-center justify-center"
+      style="height: 391px"
       v-if="restricted"
     >
       <div class="text-center">
@@ -31,22 +32,22 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import Chart from "chart.js/auto";
-import ChartCard from "../dashboard/chart-card.vue";
-import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import DropDown from "@/components/drop-down.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
-import { groupData } from "./chart-filter";
+import Chart from "chart.js/auto";
+import { Options, Vue } from "vue-class-component";
 import { Prop, Watch } from "vue-property-decorator";
+import ChartCard from "../dashboard/chart-card.vue";
+import { groupData } from "./chart-filter";
 
 @Options({
   name: "RegistrationChart",
   components: {
     ChevronDownIcon,
     DropDown,
-    ChartCard
+    ChartCard,
   },
 })
 export default class RegistrationChart extends Vue {
@@ -79,7 +80,7 @@ export default class RegistrationChart extends Vue {
         "api/v1/patient/analytics/stats"
       );
       this.raw = response.data;
-      if ((response.data = "You are not allowed to access this resource")) {
+      if (response.data == "You are not allowed to access this resource") {
         this.restricted = true;
       }
       this.chartData; //this line just  gets the vuejs reactivity system to refresh

@@ -133,11 +133,9 @@ import PhoneInput from "@/components/phone-input.vue";
 import IContact from "@/types/IContact";
 import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
-import { getStates } from "@/plugins/nation-states";
 import { string } from "yup";
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import { useCountryStates } from "@/composables/useCountryStates";
-import { IndexableObject } from "@/lib/http";
 import IPhone from "@/types/IPhone";
 
 const contact = namespace("contact");
@@ -179,6 +177,7 @@ export default class AddContact extends Vue {
 
   nationState = setup(() => useCountryStates());
 
+  placeholderImage = require("@/assets/img/avatar.svg");
   fname = "";
   lname = "";
   gender = "";
@@ -228,7 +227,7 @@ export default class AddContact extends Vue {
     this.state = contact.state;
     this.city = contact.city;
     this.address = contact.address;
-    this.image = contact.image;
+    this.image = contact.image ?? "";
   }
 
   get isUpdate() {
@@ -240,7 +239,6 @@ export default class AddContact extends Vue {
   }
 
   async submit() {
-    console.log(this.payload);
     this.loading = true;
     this.isUpdate ? await this.update() : await this.create();
     this.loading = false;
@@ -284,7 +282,7 @@ export default class AddContact extends Vue {
       lname: this.lname,
       purpose: this.purpose,
       gender: this.gender,
-      image: this.image,
+      image: this.image || undefined,
       country: this.nationState.country,
       state: this.state,
       city: this.city,

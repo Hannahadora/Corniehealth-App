@@ -4,12 +4,9 @@
       <div class="container-fluid">
         <div class="w-full px-3 flex items-center justify-between">
           <h5 class="flex items-center py-3">
-            <span
-              class="font-bold flex items-center cursor-pointer"
-              @click="close"
-              ><ArrowLeft class="mr-3" />
-              <span class="text-gray-500">|</span></span
-            >
+            <span class="font-bold flex items-center cursor-pointer" @click="close"
+              ><ArrowLeft class="mr-3" /> <span class="text-gray-500"></span
+            ></span>
             <p class="mx-3 font-semibold text-lg header">
               <span>{{ header ? header : "Edit Slot" }}</span>
             </p>
@@ -27,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import Modal from "@/components/modal.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CloseIcon from "@/components/icons/close.vue";
+import Modal from "@/components/modal.vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   components: { Modal, ArrowLeft, CloseIcon },

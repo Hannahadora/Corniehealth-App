@@ -7,21 +7,22 @@
         Health Trend
       </span>
       <div class="w-full h-full">
-        <div class="w-full grid grid-cols-2 gap-4">
+        <div class="w-full grid grid-cols-2 gap-8 mb-8">
           <blood-chart />
           <weight-chart title="Weight" />
         </div>
-        <div class="w-full grid grid-cols-3 gap-4">
-          <medication-card />
-          <condition-card />
-          <allergy-card />
-          <diagnostic-card />
-          <procedure-card />
-          <note-card />
+        <div class="w-full grid grid-cols-3 gap-8">
+          <condition-card :conditions="conditions" />
+          <diagnostic-card :diagnostics="diagnostics" />
+          <medication-card :medications="medications" />
+          <allergy-card :allergys="allergies" />
+          <referral-card :referrals="referrals"/>
+          <!-- <note-card /> -->
+          <appointment-card :appointments="appointments"/>
         </div>
 
-        <div class="w-full grid">
-          <appointment-card />
+        <div class="w-full grid gap-8 mt-8">
+          <!-- <appointment-card /> -->
           <history-card />
         </div>
       </div>
@@ -36,16 +37,11 @@ import MedicationCard from "./medicationCard.vue";
 import conditionCard from "./conditionCard.vue";
 import AllergyCard from "./allergyCard.vue";
 import DiagnosticCard from "./diagnosticCard.vue";
-import ProcedureCard from "./procedureCard.vue";
+import ReferralCard from "./referralCard.vue";
 import NoteCard from "./noteCard.vue";
 import AppointmentCard from "./appointmentCard.vue";
 import HistoryCard from "./historyCard.vue";
-
-//for the empty state
-// import conditionCardd from "./conditionCardd.vue";
-// import DiagnosticCardd from "./diagnosticCardd.vue";
-// import NoteCardd from "./noteCardd.vue";
-// import HistoryCardd from "./historyCardd.vue";
+import { cornieClient } from "@/plugins/http";
 
 import RegistrationChart from "./registration-chart.vue";
 import ChartCard from "./chart-card.vue";
@@ -77,14 +73,47 @@ import WeightChart from "./weight-chart.vue";
     conditionCard,
     BloodChart,
     AllergyCard,
-
     DiagnosticCard,
-
-    ProcedureCard,
+    ReferralCard,
     NoteCard,
     AppointmentCard,
     HistoryCard,
   },
 })
-export default class HelthTrends extends Vue {}
+export default class HelthTrends extends Vue {
+  diagnostics = <any>[];
+  medications = <any>[];
+  allergies = <any>[];
+  appointments = <any>[];
+  referrals = <any>[];
+  conditions = <any>[];
+
+  get patientId() {
+    return this.$route.params.id as string;
+  }
+
+  async fetchHealthTrend() {
+    const url = `/api/v1/health-trends/all/${this.patientId}`;
+    try {
+      const response: any = await cornieClient().get(url);
+      if (response.success) {
+        this.diagnostics = response.data.diagnostics;
+        this.medications = response.data.medication;
+        this.allergies = response.data.allergies;
+        this.appointments = response.data.appointments;
+        this.referrals = response.data.referrals;
+        this.conditions = response.data.conditions;
+      }
+    } catch (e: any) {
+      window.notify({
+        msg: "There was an error when fetching health trends",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchHealthTrend();
+  }
+}
 </script>

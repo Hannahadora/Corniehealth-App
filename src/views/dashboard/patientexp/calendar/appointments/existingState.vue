@@ -1,15 +1,17 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end float-right w-86">
+    <!-- <span class="flex justify-end float-right w-86">
         <date-picker class="w-full mt-3 mr-4"/>
-      <!-- <button
+       <button
         class="bg-danger rounded-lg text-white mt-5 mb-5 py-2.5 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
         @click="showAppointmentModal = true"
       >
         Create
-      </button> -->
-    </span>
-    <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false">
+      </button> 
+    </span> -->
+    <cornie-table :columns="rawHeaders" v-model="items" :check="false" :menu="false" :showPagination="true"
+        @pagechanged="fetchAppointments"
+        :pageInfo="pageInfo">
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAppointment(item.id)">
@@ -46,7 +48,7 @@
           <update-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs"> Update Status </span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item.id)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showCheckinmodal(item)">
           <checkin-icon class="text-green-800 fill-current" />
           <span class="ml-3 text-xs">Check-in</span>
         </div>
@@ -130,7 +132,7 @@
     v-model="showAppointmentModal"
     :id="appointmentId"
   />
-  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment"  :appiontmentid="appointmentId"/>
+  <visit-checkin v-model="showcheckin" :appoitmentData="patientAppointment" :patientId="patientId" :practitionerData="practitionerData"  :appiontmentid="appointmentId"/>
   <collect-modal v-model="showCollect" :id="appointmentId"/>
   <share-modal v-model="showShare" :id="appointmentId"/>
   <post-modal v-model="showPost" :id="appointmentId"/>
@@ -155,6 +157,7 @@ import { namespace } from "vuex-class";
 import { IPatient } from "@/types/IPatient";
 import IAppointment from "@/types/IAppointment";
 import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import IPageInfo from "@/types/IPageInfo";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import ThreeDotIcon from "@/components/icons/threedot.vue";
@@ -241,13 +244,18 @@ export default class SchedulesExistingState extends Vue {
   update = "";
   onePatientId = "";
   onePractitionerId = "";
+  patientId = "";
+  practitionerData= {};
   today = new Date().toISOString().slice(0, 10);
 
   @appointment.State
   appointments!: IAppointment[];
 
   @appointment.Action
-  fetchAppointments!: () => Promise<void>;
+  fetchAppointments!: (page?:number, limit?:number) => Promise<void>;
+
+  @appointment.State
+  pageInfo!: IPageInfo;
 
   @appointment.Action
   deleteAppointment!: (id: string) => Promise<boolean>;
@@ -365,9 +373,11 @@ export default class SchedulesExistingState extends Vue {
     this.showShare = true
   }
 
-  async showCheckinmodal(value:string){ 
+  async showCheckinmodal(value:any){ 
     this.showcheckin = true;
-    this.appointmentId = value;
+    this.appointmentId = value.id;
+    this.practitionerData = value.practitioner;
+    this.patientId = value.patientId;
 
     if(this.patientAppointment.length ===0)  {
       await window.notify({ msg: "No available scheduled appoimtment", status: "error" });
@@ -387,6 +397,8 @@ export default class SchedulesExistingState extends Vue {
     this.patientAppointment = response[0].data;
     
   }
+
+
 
   async created(){
     await this.fetchPatients();

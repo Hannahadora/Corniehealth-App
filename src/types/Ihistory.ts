@@ -1,63 +1,73 @@
-import Period from "./IPeriod";
-
 export interface OnSet {
-  onsetPeriodAge: string;
-  startAndEndDateTime: Period;
-  onsetRangeString: string;
-  unitOfMesurement: string;
-  onsetRangeMin: number;
-  onsetRangeMax: number;
+  range: {
+    unit: "",
+    min: null,
+    max: null
+  },
+  age: {
+    unit: "",
+    value: null
+  },
+  period: {
+    start: null,
+    end: null
+  }
 }
 
-export interface BasicInfo {
-  instantiatesCanonical: string;
-  instantiatesUri: string;
-  status: string;
-  patientId: string;
-  dataAbsentReason: string;
-  date: string;
-  relationship: string;
-  sex: string;
-}
-
-export interface ConditionRelatedPerson {
-  code: string;
-  outcome: string;
-  contributedToDeath: string;
-}
 export interface Born {
-  bornDateTimePeriod: string;
-  bornDateTime: string;
-  bornString: string;
+  period: {
+    start: null,
+    end: null
+  }
+  dateTime: null;
+  year: null;
 }
 export interface Age {
-  age: number;
-  estimatedAge: number;
-  ageRangeString: string;
-  unitOfMesurement: string;
-  ageRangeMin: 0;
-  ageRangeMax: 0;
+  estimated: boolean;
+  year: null;
+  range:  {
+    unit: "",
+    min: null,
+    max: null
+  };
+  age: {
+    unit: "",
+    value: null
+  };
 }
 export interface Deceased {
-  deceased: boolean;
-  deceasedDateAge: string;
-  deceasedDate: string;
-  deceasedRangeString: string;
-  unitOfMesurement: string;
-  deceasedRangeMin: number;
-  deceasedRangeMax: number;
-  reasonCode: string;
-  reasonReference: string;
-  note: string;
+  estimated: boolean;
+  year: null;
+  range:  {
+    unit: "",
+    min: null,
+    max: null
+  };
+  age: {
+    unit: "",
+    value: null
+  };
 }
 export default interface Ihistory {
   id?: string;
   patientId?: string;
-  basicInfo: BasicInfo;
-  conditionRelatedPerson: ConditionRelatedPerson;
+  recordedById?: string;
+  organizationId?: string;
+  identifier?: string;
+  name: string;
+  relationship: string;
+  sex: string;
+  status: string;
   born: Born;
   age: Age;
-  deceased: Deceased;
+  deceased: boolean;
+  deceasedAge: Deceased;
+  reasonCode: string;
+  reasonReference: string;
+  note: string;
+  conditionCode: string;
+  conditionOutcome: string;
+  conditionContributedToDeath: boolean;
   onset: OnSet;
-  practitionerId: string;
+  onsetNote: string;
 }

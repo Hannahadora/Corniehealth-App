@@ -6,14 +6,14 @@
         No Medical | Family History on Record
       </h2>
       <span class="text-gray-400 text-sm">Family History added will be displayed here</span>
-      <span class="flex justify-center w-full">
+      <!-- <span class="flex justify-center w-full">
         <button
           class="bg-danger rounded-lg text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
           @click="showHistory"
         >
          Create New
         </button>
-      </span>
+      </span> -->
     </div>
     <history-modal
       v-model="showHistoryModal"

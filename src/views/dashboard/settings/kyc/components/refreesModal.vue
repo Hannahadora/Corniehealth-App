@@ -17,6 +17,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
+        <span class="text-red-500 font-semibold text-xs" v-if="!id">Note: Multiple referees can be added after saving a KYC form</span>
         <div class="w-full my-4">
           <cornie-input
             :label="'Name'"
@@ -105,6 +106,9 @@ export default class NominateRefree extends Vue {
   @kyc.Action
   getRefreeById!: (id: string) => IKycref;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
   loading = false;
 
   emailRule = string().email("A valid email is required").required();
@@ -132,17 +136,16 @@ export default class NominateRefree extends Vue {
   }
 
 
- @Watch("refreeId")
+ @Watch("selectedItem")
   idChanged() {
     this.setRefree();
   }
 
   async setRefree() {
-    const refree = await this.getRefreeById(this.refreeId);
-    if (!refree) return;
-     this.name  = refree.name;
-     this.email  = refree.email;
-     this.phone  = refree.phone;
+ 
+     this.name  = this.selectedItem.name;
+     this.email  = this.selectedItem.email;
+     this.phone  = this.selectedItem.phone;
 
     }
   get payload() {
@@ -153,7 +156,17 @@ export default class NominateRefree extends Vue {
       notified: false
     };
   }
- 
+
+
+ reset(){
+     this.name = '',
+      this.email = '',
+     this.phone = {
+    dialCode: "+234",
+    number: "",
+  },
+      this.notified = false
+ }
 
   async submit() {
 
@@ -183,6 +196,7 @@ export default class NominateRefree extends Vue {
       if(response.success){
         window.notify({ msg: "Refree added successfully,kindly check email", status: "success" });
           this.done();
+          this.reset();
       }
     } catch (error) {
       window.notify({ msg: "Referee not added", status: "error" });
@@ -204,6 +218,7 @@ export default class NominateRefree extends Vue {
   done() {
     this.$emit("refree-added");
     this.show = false;
+    this.reset();
   }
 }
 </script>

@@ -3,23 +3,16 @@
     <div>
       <span class="flex justify-end w-full mb-8">
         <button
-          @click="showHistory('false')"
+          @click="showHistoryModal = true"
           class="bg-danger rounded-lg text-white mt-5 py-2 pr-12 pl-12 px-3 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
            Create New
         </button>
       </span>
-      <cornie-table :columns="headers" v-model="sortHistory">
+      <cornie-table :columns="headers" v-model="sortHistory" @refresh="fetchHistorys">
         <template #actions="{ item }">
-          <!-- <div
-            @click="deleteItem(item.id)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <new-view-icon class="text-red-800 fill-current" />
-            <span class="ml-3 text-xs">Delete</span>
-          </div> -->
           <div
-            @click="viewHistory(item.id)"
+            @click="viewHistory(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-blue-300 fill-current" />
@@ -33,32 +26,47 @@
             <span class="ml-3 text-xs">Edit</span>
           </div>
           <div
-            @click="showStatus(item.id)"
+            @click="showStatus(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <update-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs"> Update Status </span>
           </div>
-           <div
+           <!-- <div
               class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
               <cancel-icon class="text-danger fill-current" />
               <span class="ml-3 text-xs">Cancel</span>
-            </div> 
+            </div>  -->
         </template>
-        <template #member>
-          <p>John Paschal</p>
-          <span class="text-xs text-gray-300">Child</span>
-        </template>
-        <template #status>
+        <template #status="{ item }">
           <div class="flex items-center">
             <p
               class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'partial'"
             >
-             Partial
+              {{ item.status }}
             </p>
-
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'completed'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="item.status == 'health-unknown'"
+            >
+              {{ item.status }}
+            </p>
           </div>
         </template>
+
         <!-- <template #status="{ item }">
           <div class="flex items-center">
             <p
@@ -97,33 +105,24 @@
         </template> -->
       </cornie-table>
     </div>
-    <history-modal
-      v-if="historyId == 'false'"
-      @history-added="historyAdded"
-      @show:modal="showHistory"
-      v-model="showHistoryModal"
-    />
 
+  </div>
     <history-modal
-      v-else
       :id="historyId"
       @history-added="historyAdded"
-      @show:modal="showHistory"
       v-model="showHistoryModal"
     />
 
     <status-modal
       :id="historyId"
-      :updatedBy="updatedBy"
-      :currentStatus="currentStatus"
-      :dateUpdated="update"
+      :selectedItem="selectedItem"
       @history-added="historyAdded"
-      @update:preferred="showStatus"
       v-model="showStatusModal"
     />
 
     <view-modal
       :id="historyId"
+      :selectedItem="selectedItem"
       :updatedBy="updatedBy"
       :currentStatus="currentStatus"
       :dateUpdated="update"
@@ -132,16 +131,18 @@
       @show:modal="viewHistory"
       v-model="viewHistoryModal"
     />
-  </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
 
 import { IPatient } from "@/types/IPatient";
 import IAllergy from "@/types/IAllergy";
 import Ihistory from "@/types/Ihistory";
+import IPageInfo from "@/types/IPageInfo";
+import { cornieClient } from "@/plugins/http";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -177,6 +178,7 @@ const allergy = namespace("allergy");
   },
 })
 export default class ExistingState extends Vue {
+
   @patients.State
   patients!: IPatient[];
 
@@ -187,13 +189,12 @@ export default class ExistingState extends Vue {
   deleteHistory!: (id: string) => Promise<boolean>;
 
   @history.Action
-  fetchHistorys!: (patientId: string) => Promise<void>;
+  fetchHistorys!: (patientId: string, page?:number, limit?:number) => Promise<void>;
 
-  @allergy.State
-  allergys!: IAllergy[];
+  @history.State
+  pageInfo!: IPageInfo;
 
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
+
 
   addingCondition = false;
   addingOccurence = false;
@@ -211,13 +212,13 @@ export default class ExistingState extends Vue {
   currentStatus = "";
   update = "";
   practitionerId = "";
+  selectedItem = {} as any;
 
   headers = [
     {
       title: "history id",
       key: "identifier",
       show: true,
-      noOrder: true,
     },
     {
       title: "date recorded",
@@ -231,7 +232,7 @@ export default class ExistingState extends Vue {
     },
     {
       title: "condition",
-      key: "condition",
+      key: "conditionCode",
       show: true,
     },
     {
@@ -241,7 +242,7 @@ export default class ExistingState extends Vue {
     },
     {
       title:"reference code",
-      key: "keydisplay",
+      key: "reasonCode",
       show: true,
     },
     {
@@ -255,34 +256,17 @@ export default class ExistingState extends Vue {
     //   show: true,
     // },
   ];
-  get activepatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
-  }
 
   get items() {
-    const historys = this.allergys.map((history) => {
-      // (history as any).createdAt = new Date(
-      //   (history as any).createdAt
-      // ).toLocaleDateString("en-US");
-      // this.practitionerId = (history as any).practitionerId;
-      // this.updatedBy = this.getPatientName(history.patientId as string);
-      // this.currentStatus = history.basicInfo.status;
-      // this.update = (history as any).updatedAt = new Date(
-      //   (history as any).updatedAt
-      // ).toLocaleDateString("en-US");
+    const historys = this.historys.map((history:any) => {
+      (history as any).createdAt = new Date(
+        (history as any).createdAt
+      ).toLocaleDateString("en-US");
       return {
         ...history,
         action: history.id,
-        keydisplay: "XXXXXXX",
-        identifier:"xxxxxxx",
-        createdAt:"19-07-21",
-        condition:"Accident Prone",
-        deceased: "No",
-        // relationship: history.basicInfo.relationship,
-        // condition: history.conditionRelatedPerson.outcome,
-        // deceased: history.deceased.deceased,
-        // status: history.basicInfo.status,
+        member: history.patient.firstname +''+ history.patient.lastname,
+      
       };
     });
 
@@ -298,8 +282,12 @@ export default class ExistingState extends Vue {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
-  historyAdded() {
-    this.fetchHistorys(this.activepatientId);
+  async historyAdded() {
+    await this.fetchHistorys(this.patientId);
+  }
+
+  get patientId() {
+    return this.$route.params.id as string;
   }
 
   async deleteItem(id: string) {
@@ -311,26 +299,27 @@ export default class ExistingState extends Vue {
 
     if (await this.deleteHistory(id))
       window.notify({ msg: "Family history deleted", status: "success" });
-    else window.notify({ msg: "Family history noy deleted", status: "error" });
+    else window.notify({ msg: "Family history not deleted", status: "error" });
   }
 
-  async viewHistory(value: string) {
+  async viewHistory(item: any) {
     this.viewHistoryModal = true;
-    this.historyId = value;
+     this.selectedItem = item;
+    this.historyId = item.id;
   }
-  async showStatus(value: string) {
+  async showStatus(item: any) {
     this.showStatusModal = true;
-    this.historyId = value;
+    this.selectedItem = item;
   }
 
   async showHistory(value: string) {
     this.showHistoryModal = true;
     this.historyId = value;
   }
+
+
   async created() {
-    this.sortHistory;
-     if (this.activepatientId) await this.fetchHistorys(this.activepatientId);
-     if (this.activepatientId) await this.fetchAllergys(this.activepatientId);
+    await this.fetchHistorys(this.patientId);
   }
 }
 </script>

@@ -20,6 +20,7 @@ export async function login(payload: AuthPayload) {
   const cornieData = await fetchCornieData();
 
   store.commit("user/setCornieData", cornieData);
+  return data;
 }
 
 export async function getAccountType() {
@@ -27,7 +28,7 @@ export async function getAccountType() {
 
   if (!type) {
     const { user } = await fetchCornieData();
-    type = user.accountType;
+    type = user?.accountType;
     setSessionData("accountType", type);
   }
   return type;
@@ -47,7 +48,7 @@ function getSessionData(key: string) {
 
 export async function refreshUser() {
   const user = store.state.user.user;
-  if (user?.id) return;
+  if (user?.user?.id) return;
   const data = await fetchUserData();
 
   if (!data) return;

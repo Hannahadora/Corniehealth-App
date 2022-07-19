@@ -1,65 +1,53 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-sm rounded p-3 mb-2 w-full"
+    class="flex justify-center bg-white mb-32 shadow-md p-3 mt-2 rounded w-full"
   >
     <div class="w-full">
       <span
-        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-dye py-2"
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-lg text-primary py-2"
       >
-        Appointments
+       Calendar
       </span>
       <span class="w-full h-screen">
-        <appointment-empty-state v-if="empty" />
-        <appointment-existing-state v-else />
+
+            <!-- <day-availabiblty-section v-if="practitionerId"/> -->
+          <tabs :items="tabLinks" v-model="currentTab">
+            <appointment-section />
+            <availability-section/>
+          </tabs>
+        
       </span>
     </div>
   </div>
 </template>
-<script lang="ts">
-import IAppointment from "@/types/IAppointment";
-import { Options, Vue } from "vue-class-component";
-import AppointmentEmptyState from "./emptyState.vue";
-import AppointmentExistingState from "./existingState.vue";
-import { namespace } from "vuex-class";
 
-const appointment = namespace("appointment");
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import Tabs from "@/components/tabs.vue";
+import AvailabilitySection from "./availability/index.vue";
+import AppointmentSection from "./appointments/index.vue";
+
 
 @Options({
-  name: "ApppointmentIndex",
+  name: "CalendarIndex",
   components: {
-    AppointmentEmptyState,
-    AppointmentExistingState,
+    Tabs,
+    AvailabilitySection,
+    AppointmentSection,
   },
 })
-export default class ApppointmentIndex extends Vue {
-  addHistory = false;
-  show = false;
+export default class CalendarIndex extends Vue {
+  @Prop({ type: String, default: "" })
+  practitionerId!: string;
 
-  get empty() {
-    return this.patientappointments.length < 1;
-  }
-  get activePatientId() {
-    const id = this.$route?.params?.id.toString();
-    return id;
-  }
-
-  @appointment.State
-  patientappointments!: IAppointment[];
-
-  @appointment.State
-  appointments!: IAppointment[];
-
-  @appointment.Action
-  fetchByIdAppointments!: (patientId: string) => Promise<void>;
-
-  historyAdded() {
-    this.show = false;
-    this.patientappointments;
-    this.fetchByIdAppointments(this.$route.params.id.toString());
-  }
-
-  async created() {
-    await  this.fetchByIdAppointments(this.$route.params.id.toString());
-  }
+  tabLinks = [
+    "Appointments",
+    "Availability",
+  ];
+  currentTab = 0;
 }
 </script>
+
+<style>
+</style>

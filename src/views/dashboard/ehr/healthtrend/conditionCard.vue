@@ -1,38 +1,38 @@
 <template>
   <detail-card
-    height="313px"
+    height="337px"
     title="Current Conditions"
-    :count="1"
-    more=""
+    :count="items?.length"
+    more="View all"
     @add="$router.push('condition')"
   >
+   <template #empty>
+      <div class="flex flex-col items-center justify-center my-auto" v-if="conditions.length === 0">
+      <img class="mb-3" src="@/assets/img/no-condition-trend.svg" alt="" />
+      <p class="text-sm text-center" style="color: #667499">No Conditions</p>
+    </div>
+    </template>
+    
     <div
-      class="w-full grid grid-cols-3 gap-1 text-sm pb-2 border-b border-gray-200"
-      v-for="(item, i) in items"
+      class="w-full flex items-start justify-between gap-1 text-sm py-4 border-b border-gray-200"
+      v-for="(item, i) in items.slice(0,2)"
       :key="i"
     >
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">{{ item.name }}</span>
-        <span class="text-gray-400">{{ item.severity }}</span>
+      <div class="flex flex-col w-10/12">
+        <span class="text-sm font-semibold text-primary">{{ item.name }}</span>
+        <span class="text-sm font-semibold text-primary">{{ item.description }}</span>
+        <span class="text-sm text-gray-400">{{ item.severity }}</span>
+        <span class="text-sm text-gray-400">{{ item.date }}</span>
       </div>
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">Onset</span>
-        <span class="text-gray-400">
-          {{ item.onset.key }}: {{ item.onset.text }}
-        </span>
-      </div>
-      <div class="flex flex-col">
-        <span class="font-semibold text-primary">Abatement</span>
-        <span class="text-gray-400" v-if="abatement">
-          {{ item.abatement.key }}: {{ item.abatement.text }}
-        </span>
-        <span class="text-gray-400" v-else> N/A </span>
+      <div class="">
+        <img src="@/assets/img/trend-checked.svg" alt="">
       </div>
     </div>
   </detail-card>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import DetailCard from "./detail-card.vue";
 
 import Avatar from "@/components/avatar.vue";
@@ -51,21 +51,15 @@ const condition = namespace("condition");
   },
 })
 export default class conditionCard extends Vue {
-  @condition.Action
-  fetchPatientConditions!: (patientId: string) => Promise<void>;
-
-  @condition.State
-  conditions!: { [state: string]: ICondition[] };
+  
+  @Prop({ type: Array, default: () => [] })
+  conditions!: ICondition[];
 
   severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
 
   get patientId() {
     return this.$route.params.id as string;
-  }
-
-  get patientConditions() {
-    return this.conditions[this.patientId] || [];
   }
 
   get count() {
@@ -82,30 +76,32 @@ export default class conditionCard extends Vue {
   }
 
   get items() {
-    const items = this.patientConditions.map((condition) => ({
-      name: this.codeMapper(condition.code),
+    const items = this.conditions?.map((condition: any) => ({
+      name: this.codeMapper(condition.name),
       severity: this.severityMapper(condition.severity),
-      onset: this.displayTimeable(condition.onSet, "onsetString"),
-      abatement: this.printAbatement(condition),
+      //  onset: this.displayTimeable(condition.onSet, "onsetString"),
+      description: condition.description,
+      // abatement: this.printAbatement(condition),
+      date: new Date(condition.recordDate).toLocaleDateString('en-GB') || 'N/A'
     }));
 
     return items;
   }
 
   printAbatement(condition: ICondition) {
-    const latest = this.latestAbatement(condition);
-    if (!latest) return;
-    return this.displayTimeable(latest, "string");
+    // const latest = this.latestAbatement(condition);
+    // if (!latest) return;
+    // return this.displayTimeable(latest, "string");
   }
 
-  latestAbatement({ abatements }: ICondition) {
-    const allAbatements = abatements || [];
-    const sorted = allAbatements.sort((a: any, b: any) => {
-      if ((a.createdAt = b.createdAt)) return 0;
-      return a.createdAt > b.createdAt ? 1 : -1;
-    });
-    return sorted.pop();
-  }
+  // latestAbatement({ abatements }: ICondition) {
+  //   const allAbatements = abatements || [];
+  //   const sorted = allAbatements.sort((a: any, b: any) => {
+  //     if ((a.createdAt = b.createdAt)) return 0;
+  //     return a.createdAt > b.createdAt ? 1 : -1;
+  //   });
+  //   return sorted.pop();
+  // }
 
   displayTimeable(item: Timeable, stringKey: string) {
     const value = { ...item };
@@ -154,7 +150,6 @@ export default class conditionCard extends Vue {
 
   async created() {
     this.loadMappers();
-    this.fetchPatientConditions(this.patientId);
   }
 }
 </script>

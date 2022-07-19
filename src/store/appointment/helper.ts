@@ -1,14 +1,20 @@
 import { cornieClient } from "@/plugins/http";
 import IAppointment from "@/types/IAppointment";
 
-export async function fetchAppointments() {
+export async function fetchAppointments(page = 1, limit?: number) {
+  limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/appointment");
+    const response = await cornieClient().get("/api/v1/appointment", {
+      page,
+      limit,
+    });
     if (response.success) {
-      return response.data;
+      const { currentPage, nextPage, numberOfPages, previousPage } = response;
+      const pageInfo = { currentPage, nextPage, numberOfPages, previousPage };
+      return { data: response.data, pageInfo };
     }
   } catch (error) {}
-  return [] as IAppointment[];
+  return { data: [], pageInfo: {} };
 }
 export async function fetchByIdAppointments(patientId: string) {
   try {
@@ -16,7 +22,8 @@ export async function fetchByIdAppointments(patientId: string) {
       `/api/v1/appointment/getAllByPatient/${patientId}`
     );
     if (response.success) {
-      return response.data.result.filter((c:any) => c !== null);
+      console.log("appoinments", response.data);
+      return response.data;
     }
   } catch (error) {}
   return [] as IAppointment[];

@@ -123,6 +123,7 @@ export default class RegisterExisting extends Vue {
 
   async selectPatient(patient: IPatient) {
     this.show = false;
+    this.$emit('close');
     this.foundPatients = [];
     if (patient.belongsToPractice) return;
     await this.addToPractice(patient);

@@ -19,6 +19,7 @@ export default interface ICatalogueService {
   coverageArea:string;
   providedBy: string;
   priced:boolean;
+  specialtyId: string;
   availabilityExceptions: [];
   referralMethod:string;
   channelOfService:string;
@@ -41,6 +42,7 @@ export interface ICatalogueProduct {
   category: string;
   genericName: string;
   image: string;
+  unitCost: number;
   brand: string;
   ingredient: string;
   ingredientStatus: string;
@@ -59,7 +61,15 @@ export interface ICatalogueProduct {
   storage: IIStorage;
   purchaseType: string;
   updatedAt: Date | string;
-  form: string
+  form: string;
+  genericCode: string;
+  brandCode: string;
+  classification: string;
+  subClassification : string;
+  applyDiscount: boolean;
+  strength: string;
+
+
 }
 
 export interface IProductVariant {
@@ -98,6 +108,7 @@ export interface ICostInformation {
   availableQuantity: number;
   supplier: string;
   default: boolean;
+
 }
 
 export interface IInventory {

@@ -22,7 +22,7 @@
           />
         </span>
         <ul
-          class="dropdown-menu p-4 bg-white rounded w-72 justify-center h-auto right-56 absolute -mt-2 z-10 shadow-xl hidden"
+          class="dropdown-menu p-4 bg-white rounded w-72 justify-center h-auto right-32 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li
             :class="{
@@ -58,7 +58,7 @@
                           class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
                           >Current Location</span> -->
                     <span
-                      v-if="currentLocation === item.id"
+                      v-if="authCurrentLocation === item.id"
                       class="p-2 text-xs font-semibold leading-none text-green-300 bg-green-50 rounded-full flex-shrink-0"
                       >Current Location</span
                     >
@@ -92,7 +92,7 @@
       <div class="dropdown">
         <settings-icon class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-4 bg-white rounded w-auto justify-center h-auto right-32 absolute -mt-2 z-10 shadow-xl hidden"
+          class="dropdown-menu p-4 bg-white rounded w-auto justify-center h-auto right-16 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li
             v-for="(route, index) in recentRoutes"
@@ -114,66 +114,7 @@
         </ul>
       </div>
     </span>
-    <span class="flex items-center justify-center ml-5">
-      <div class="dropdown">
-        <bell-icon class="cursor-pointer" />
-        <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-80 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
-        >
-          <li
-            class="border-b border-primary grid grid-cols-2 m-3 pb-2 gap-20 col-span-full cursor-pointer list-none"
-          >
-            <p class="text-1xl font-bold">Notifications</p>
-            <p class="text-blue-400 text-xs -right-7 relative">Mark as read</p>
-          </li>
-          <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
-            <p class="text-danger uppercase text-sm font-semibold">New (1)</p>
-          </li>
-          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
-            <div class="float-left">
-              <p class="font-bold text-sm">Pending Approvals</p>
-              <p class="text-xs">
-                You have 5 pending approvals. Click to view and take action.
-              </p>
-            </div>
-            <p class="text-gray-300 text-xs flex-shrink-0">8 Minutes Ago</p>
-          </li>
-          <li class="cursor-pointer list-none items-center -mb-5 -m-2 p-5">
-            <p class="text-gray-500 font-semibold text-sm uppercase">Earlier</p>
-          </li>
-          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
-            <div class="float-left">
-              <p class="font-bold text-sm">User Login</p>
-              <p class="text-xs">
-                Logan Paul has accepted the invitations and logged in
-                successfully.
-              </p>
-            </div>
-            <p class="text-gray-300 text-xs flex-shrink-0">12 hours Ago</p>
-          </li>
-          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
-            <div class="float-left">
-              <p class="font-bold text-sm">Subscription Notice</p>
-              <p class="text-xs">
-                Your subscription will expire 3rd July 2021 and is set auto
-                renew.
-              </p>
-            </div>
-            <p class="text-gray-300 text-xs flex-shrink-0">1 Day Ago</p>
-          </li>
-          <li class="w-full flex list-none cursor-pointer my-1 -m-2 p-5 py-2">
-            <div class="float-left">
-              <p class="font-bold text-sm">Update Your Contact Information</p>
-              <p class="text-xs">
-                You have not completed your contact information. Click to
-                continue...
-              </p>
-            </div>
-            <p class="text-gray-300 text-xs flex-shrink-0">5 Days Ago</p>
-          </li>
-        </ul>
-      </div>
-    </span>
+
     <span class="w-10 h-10 relative ml-5">
       <div
         class="group w-full h-full rounded-full overflow-hidden shadow-inner text-center bg-purple table cursor-pointer"
@@ -210,11 +151,10 @@
       </div>
     </span>
     <div class="dropdown flex">
-      <span class="font-medium ml-1">{{ name }}</span>
       <span class="ml-1 mt-2">
         <chevron-down class="cursor-pointer" />
         <ul
-          class="dropdown-menu p-2 bg-white rounded-md w-72 h-auto right-10 absolute -mt-2 z-10 shadow-xl hidden"
+          class="dropdown-menu p-2 bg-white rounded-md w-72 h-auto right-2 absolute -mt-2 z-10 shadow-xl hidden"
         >
           <li class="list-none p-2 flex justify-center">
             <span class="w-10 h-10 relative justify-center">
@@ -254,22 +194,29 @@
             </span>
           </li>
           <li class="justify-content mb-2">
-            <p class="3xl text-center text-black font-extrabold">{{ name }}</p>
+            <p class="3xl text-center text-black font-extrabold">
+              {{ name }}
+            </p>
             <p class="text-sm text-center text-dark font-light">
-              {{ user ? user?.email : "" }}
+              {{ email }}
             </p>
             <p class="2xl text-center text-yellow-400 font-bold">
-              {{ user?.designation }}
+              {{ designation }}
             </p>
           </li>
-        <li class="flex w-full justify-center border-b border-primary pb-5">
-          <span class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"    @click="$router.push({ name: 'Practitioner profile' })">
-            Manage Profile
-          </span>
-        </li>
+          <li class="flex w-full justify-center border-b border-primary pb-5">
+            <span
+              class="text-center flex text-sm justify-center font-semibold text-danger cursor-pointer"
+              @click="$router.push({ name: 'Practitioner profile' })"
+            >
+              Manage Profile
+            </span>
+          </li>
           <li class="flex w-full py-4">
             <div class="w-full flex space-x-7">
-              <p class="font-semibold text-sm cursor-pointer"  @click="logout">Sign out</p>
+              <p class="font-semibold text-sm cursor-pointer" @click="logout">
+                Sign out
+              </p>
               <span
                 class="relative left-40 flex-shrink-0 cursor-pointer"
                 @click="logout"
@@ -351,7 +298,7 @@ export default class NavBar extends Vue {
   showFullHeight = false;
 
   get routeName() {
-    return this.$route.name;
+    return this.$route.fullPath === '/dashboard/provider/clinical/' ? 'EHR' : this.$route.name;
   }
 
   @routerStore.State("recents")
@@ -370,12 +317,15 @@ export default class NavBar extends Vue {
   currentLocation!: string;
 
   @account.Getter
+  authCurrentLocation!: string;
+
+  @account.Getter
   cornieUser!: CornieUser;
 
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
 
- @account.Mutation
+  @account.Mutation
   updatePractitioner!: (practitioners: IPractitioner[]) => void;
 
   defaultLocation = "";
@@ -392,11 +342,16 @@ export default class NavBar extends Vue {
     return this.authPractitioner.jobDesignation || this.authPractitioner.type;
   }
 
+  get email() {
+    return this.cornieUser?.email || "";
+  }
+
   get name() {
-    if (!this.user?.id) return "";
-    const lastName = this.user.lname;
-    const firstInitials = this.user.fname.charAt(0).toUpperCase();
-    let middleInitials = this.user.mname?.charAt(0)?.toUpperCase() || "";
+    if (!this.cornieUser?.id) return "";
+    const lastName = this.cornieUser.lastName;
+    const firstInitials = this.cornieUser.firstName.charAt(0).toUpperCase();
+    let middleInitials =
+      this.cornieUser.lastName?.charAt(0)?.toUpperCase() || "";
     middleInitials = middleInitials ? `${middleInitials}.` : "";
     return `${lastName} ${firstInitials}. ${middleInitials}`;
   }
@@ -424,7 +379,7 @@ export default class NavBar extends Vue {
 
   get locationDefault() {
     const pt = this.authorizedLocations?.find(
-      (i: any) => i.id === this.currentLocation
+      (i: any) => i.id === this.authCurrentLocation
     );
     return pt ? `${pt.name}` : "Switch default location";
   }
@@ -441,11 +396,12 @@ export default class NavBar extends Vue {
     await logout();
     this.$router.push("/login");
   }
-   mounted(){
-      this.updatePractitioner(this.authPractitioner as any)
+  mounted() {
+    this.updatePractitioner(this.authPractitioner as any);
   }
-  async created(){
-     await this.updatePractitioner(this.authPractitioner as any)
+  async created() {
+    this.authCurrentLocation;
+    this.updatePractitioner(this.authPractitioner as any);
   }
 }
 </script>

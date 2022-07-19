@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            {{newaction}} New Director
+            Add New Director
           </h2>
           <!-- <cancel-icon
             class="float-right cursor-pointer"
@@ -20,6 +20,7 @@
         <v-form ref="form">
             <div class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300">
                 <span class="text-dark text-sm font-medium">Enter director’s details</span>
+                <p class="text-red-500 font-semibold text-xs" v-if="!id">Note: Multiple referees can be added after saving a KYC form</p>
             </div>
              <cornie-input
                 label="Full Name"
@@ -122,28 +123,6 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-    <assesor-modal
-      :practitioners="practitioner"
-      :roles="role"
-      @update:preferred="showAssessor"
-      v-model:visible="showAssessorModal"
-    />
-    <problem-modal
-      :conditions="conditions"
-      :allergy="allergy"
-      @update:preferred="showProblem"
-      v-model:visible="showProblemModal"
-    />
-    <item-modal
-      :observations="observations"
-      :questions="questions"
-      @update:preferred="showItem"
-      v-model:visible="showItemModal"
-    />
-    <reference-modal
-      @update:preferred="showFindings"
-      v-model:visible="showFindingModal"
-    />
   </cornie-dialog>
 </template>
 
@@ -205,6 +184,10 @@ export default class DirectorModal extends Vue {
   @Prop({ type: String, default: "" })
   directorId!: string;
 
+  
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
  @kyc.Action
   getDirectorById!: (id: string) => IDirector;
 
@@ -213,8 +196,8 @@ export default class DirectorModal extends Vue {
  
  //Date of birth validation
   dobValidator = date().max(
-    createDate(0, 0, -16),
-    "Director must be at least 16yrs."
+    createDate(0, 0, -18),
+    "Director must be at least 18yrs."
   );
 
   //Email Valitdaiton
@@ -239,7 +222,7 @@ idFileUploaded(fileUrl: string) {
  fileIndex = 0;
 
     fullName = "";
-    dateOfBirth  =  "2021-07-16";
+    dateOfBirth  =  "";
     nationality = "";
     emailAddress = "";
     phoneNumber =  {
@@ -312,7 +295,23 @@ idFileUploaded(fileUrl: string) {
     return this.id ? "Update" : "Add";
   }
 
- 
+ reset(){
+    this.fullName = '',
+    this.dateOfBirth = '',
+    this.nationality = '',
+    this.emailAddress = '',
+    this.phoneNumber =  {
+        number: "",
+        dialCode: "+234",
+    },
+    this.taxIdentificationNumber = '',
+    this.identificationDocumentNumber = '',
+    this.practiceLicenseDocument = '',
+    this.practiceLicenseNumber = '',
+    this.practiceLicenseDocumentType = '',
+    this.identificationDocumentType = '',
+     this.identificationDocumentType = ''
+ }
  
   async saveDirector() {
       try {
@@ -322,6 +321,7 @@ idFileUploaded(fileUrl: string) {
       );
       if(response.success){
           this.done();
+          this.reset();
         window.notify({ msg: "Director added successfully", status: "success" });
       }
     } catch (error) {

@@ -11,10 +11,11 @@ export const quantumClient = () =>
       "Content-Type": "application/json",
       Authorization: authToken(),
     },
-    "http://18.132.188.41:7000"
+    "http://18.132.188.41:7000",
+    20000
   );
 
-const cornieUrl = "https://dev.corniehealth.com/";
+const cornieUrl = "https://dev.corniehealth.com";
 
 export const cornieClient = () =>
   new JSONClient(

@@ -21,7 +21,9 @@ const links: ISidebarLink[] = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+      { name: "Patients", 
+        to: "/dashboard/experience/patients" ,
+        hasSubsection: false },
       {
         name: "Calendar",
         to: "/dashboard/experience/calendar",
@@ -68,16 +70,27 @@ const links: ISidebarLink[] = [
     hasSubsection: false,
   },
   {
-    name: "In-Patient",
-    to: "in-patient",
-    icon: "clinic-icon",
-    hasSubsection: false,
-  },
-  {
     name: "Diagnostics",
-    to: "settings/diagnostics",
+    to: "diagnostics",
     icon: "clip-board-icon",
-    hasSubsection: false,
+    hasSubsection: true,
+    children: [
+      {
+        name: "Diagnostics",
+        to: "/dashboard/provider/settings/diagnostics",
+        hasSubsection: false,
+      },
+      {
+        name: "Virtual Lab Orders",
+        to: "/dashboard/provider/settings/virtual-lab-orders",
+        hasSubsection: false,
+      },
+      {
+        name: "Observations",
+        to: "/dashboard/provider/settings/observations",
+        hasSubsection: false,
+      },
+    ],
   },
   {
     name: "Medications",
@@ -86,44 +99,79 @@ const links: ISidebarLink[] = [
     hasSubsection: true,
     children: [
       {
-        name: "Medication",
+        name: "Medications",
         to: "/dashboard/provider/settings/medication",
         hasSubsection: false,
       },
+      // {
+      //   name: "Markup",
+      //   to: "/dashboard/provider/settings/markup",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Catalogue",
+      //   to: "catologue",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Inventory",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Pricebook",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
       {
-        name: "Markup",
-        to: "/dashboard/provider/settings/markup",
+        name: "POS Sales",
+        to: "/dashboard/provider/settings/pos",
         hasSubsection: false,
       },
+      // {
+      //   name: "Dispense",
+      //   to: "/dashboard/provider/settings/dispense",
+      //   hasSubsection: false,
+      // },
       {
-        name: "Catalogue",
-        to: "catologue",
-        hasSubsection: false,
-      },
-      {
-        name: "Inventory",
-        to: "inventory",
-        hasSubsection: false,
-      },
-      {
-        name: "Pricebook",
-        to: "pricebook",
+        name: "Virtual Pharmacy Orders",
+        to: "/dashboard/provider/settings/pharmacy-orders",
         hasSubsection: false,
       },
     ],
   },
-
   {
     name: "Bills & Payments",
-    to: "bills",
+    to: "Billing & payments",
     icon: "debit-card-icon",
-    hasSubsection: false,
-  },
-  {
-    name: "Accounting",
-    to: "accounting",
-    icon: "wallet-icon",
-    hasSubsection: false,
+    hasSubsection: true,
+    children: [
+      {
+        name: "Overview",
+        to: "/dashboard/billing/overview",
+        hasSubsection: false,
+      },
+      {
+        name: "All Transactions",
+        to: "/dashboard/billing/transaction",
+        hasSubsection: false,
+      },
+      {
+        name: "Account Receivables",
+        to: "/dashboard/billing/receivables",
+        hasSubsection: false,
+      },
+      {
+        name: "Collections",
+        to: "/dashboard/billing/collections",
+        hasSubsection: false,
+      },
+      {
+        name: "Unbilled Transactions",
+        to: "/dashboard/billing/unbilled",
+        hasSubsection: false,
+      },
+    ],
   },
   {
     name: "Analytics",
@@ -131,7 +179,98 @@ const links: ISidebarLink[] = [
     icon: "chart-icon",
     hasSubsection: false,
   },
-  { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  {
+    name: "Practice",
+    to: "practice",
+    icon: "practice-icon",
+    hasSubsection: true,
+    children: [
+      {
+        name: "Locations",
+        to: "/dashboard/provider/practice/locations",
+        hasSubsection: false,
+      },
+      {
+        name: "Charge Description Master",
+        to: "/dashboard/provider/practice/practice",
+        hasSubsection: false,
+      },
+      {
+        name: "Inventory Stock",
+        to: "/dashboard/provider/practice/inventory",
+        hasSubsection: false,
+      },
+      // {
+      //   name: "Loyalty",
+      //   to: "inventory",
+      //   hasSubsection: false,
+      // },
+      // {
+      //   name: "Promotions",
+      //   to: "pricebook",
+      //   hasSubsection: false,
+      // },
+      {
+        name: "Practitoner Directory",
+        to: "practitioners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Partners",
+        to: "/dashboard/provider/practice/care-partners",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Plan",
+        to: "/dashboard/provider/practice/care-plan",
+        hasSubsection: false,
+      },
+      {
+        name: "Care Teams",
+        to: "/dashboard/provider/practice/care-team",
+        hasSubsection: false,
+      },
+      {
+        name: "Groups",
+        to: "/dashboard/provider/practice/group",
+        hasSubsection: false,
+      },
+    ],
+  },
+
+  // {
+  //   name: "In-Patient",
+  //   to: "in-patient",
+  //   icon: "clinic-icon",
+  //   hasSubsection: false,
+  // },
+
+  // {
+  //   name: "Accounting",
+  //   to: "accounting",
+  //   icon: "wallet-icon",
+  //   hasSubsection: false,
+  // },
+
+  // { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  // {
+  //   name: "Categories",
+  //   to: "categories",
+  //   icon: "categories-icon",
+  //   hasSubsection: true,
+  //   children: [
+  //     {
+  //       name: "Locations",
+  //       to: "/dashboard/provider/settings/locations",
+  //       hasSubsection: false,
+  //     },
+  //     {
+  //       name: "Group",
+  //       to: "/dashboard/provider/settings/group",
+  //       hasSubsection: false,
+  //     },
+  //   ]
+  // },
 ];
 
 const soloLinks = [
@@ -141,7 +280,7 @@ const soloLinks = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", to: { name: "Patients" }, hasSubsection: false },
+      { name: "Patients", to: { name: "Patients Experience Management" }, hasSubsection: false },
       {
         name: "Schedules",
         to: "/dashboard/experience/schedules",
@@ -182,13 +321,19 @@ const soloLinks = [
     icon: "book-icon",
     hasSubsection: false,
   },
-  {
-    name: "Billing & Payments",
-    to: "bills",
-    icon: "debit-card-icon",
-    hasSubsection: false,
-  },
+  // {
+  //   name: "Billing & Payments",
+  //   to: "bills",
+  //   icon: "debit-card-icon",
+  //   hasSubsection: false,
+  // },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
+  {
+    name: "CAtegories",
+    to: "categories",
+    icon: "categories-icon",
+    hasSubsection: true,
+  },
 ];
 export function getPracticeNav(type: EPracticeType) {
   if (type == EPracticeType.Solo) return soloLinks;

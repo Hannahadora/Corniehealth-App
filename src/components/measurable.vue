@@ -7,9 +7,9 @@
       <info-icon class="fill-current ml-2 text-primary hidden" />
     </span>
     <div class="grid grid-cols-3 gap-3 mt-4 w-1/2">
-      <cornie-radio :name="name" v-model="type" value="age" label="Age" />
-      <cornie-radio :name="name" v-model="type" label="Range" value="range" />
-      <cornie-radio :name="name" v-model="type" value="string" label="Year" />
+      <cornie-radio :name="name" v-model="type" value="age" label="Age" @click="setType(type)"/>
+      <cornie-radio :name="name" v-model="type" label="Range" value="range" @click="setType(type)"/>
+      <cornie-radio :name="name" v-model="type" value="string" label="Year" @click="setType(type)"/>
     </div>
     <div class="grid grid-cols-2 gap-4 mt-4" v-if="type == 'age'">
        <div class="w-full -mt-1">
@@ -19,14 +19,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.age"
+              v-model="measurable.ageValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.ageUnit"
               />
           </div>
        </div>
@@ -39,14 +39,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.min"
+              v-model="measurable.minValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.minUnit"
               />
           </div>
        </div>
@@ -57,14 +57,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.max"
+              v-model="measurable.maxValue"
               />
               <cornie-select
-                :items="['Days']"
+                :items="['Days', 'Months', 'Years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="measurable.day"
+                v-model="measurable.maxUnit"
               />
           </div>
        </div>
@@ -89,12 +89,18 @@ import IMeasurable from "@/types/IMeasurable";
 import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
-  age: "",
-  day: "",
-  unit: "",
-  min: "",
-  max: "",
-  string: "",
+  age: "" || null,
+  ageUnit: ""  || null,
+  ageValue: ""  || null,
+  day: ""  || null,
+  unit: ""  || null,
+  min: ""  || null,
+  minUnit: ""  || null,
+  minValue: ""  || null,
+  maxUnit : ""  || null,
+  maxValue: ""  || null,
+  max: ""  || null,
+  string: ""  || null,
 };
 
 @Options({
@@ -114,28 +120,36 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: measurable })
   measurable!: IMeasurable;
 
-  type: "age" | "range" | "string" = "range";
+  // type: "age" | "range" | "string" = "range";
+
+    type  = "range";
 
   @Prop({ type: String })
   label!: string;
 
-  setType() {
-    if (this.measurable.string) this.type = "string";
-    else if(this.measurable.string) this.type = "range";
-    else this.type = "age";
-  }
 
-  mounted() {
-    this.setType();
-  }
 
-  @Watch("measurable", { deep: true })
-  timeChanged() {
-    this.setType();
+  // setType() {
+  //   if (this.measurable.string) this.type = "string";
+  //   else if(this.measurable.string) this.type = "range";
+  //   else this.type = "age";
+  // }
+
+  // mounted() {
+  //   this.setType();
+  // }
+
+  // @Watch("measurable", { deep: true })
+  // timeChanged() {
+  //   this.setType();
+  // }
+
+  setType(type:string) {
+   if(type) return this.measurable = {};
   }
 
   created() {
-    if (!this.measurable) this.measurable = measurable;
+    if (!this.measurable) this.measurable = measurable as any;
   }
 
   get name() {

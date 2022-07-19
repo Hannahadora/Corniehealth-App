@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-5/12 h-2/3">
+  <cornie-dialog v-model="show" center class="w-4/12 h-2/3">
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
         <div class="w-full flex items-center justify-between">
@@ -68,13 +68,22 @@
       </cornie-card-text>
       <div class="flex justify-end mx-4 mt-auto mb-4">
         <cornie-btn
-          @click="showHistory = true"
+          @click="show = false"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
         >
-          View History
+         Cancel
         </cornie-btn>
         <cornie-btn
-          @click="submit"
+        v-if="active == 'clinical'"
+          @click="setStatus"
+          :loading="loading"
+          class="text-white bg-danger px-9 rounded-xl"
+        >
+          Update
+        </cornie-btn>
+         <cornie-btn
+         v-else
+          @click="setVerifyStatus"
           :loading="loading"
           class="text-white bg-danger px-9 rounded-xl"
         >
@@ -176,29 +185,48 @@ export default class StatusUpdate extends Vue {
     return date.toLocaleDateString();
   }
 
-  async submit() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
+  // async submit() {
+  //   const { valid } = await (this.$refs.form as any).validate();
+  //   if (!valid) return;
+  //   this.loading = true;
+  //   const type =
+  //     this.active == "clinical" ? "clinical-status" : "verification-status";
+  //   const payload = { status: this.newStatus };
+  //   await this.setStatus(payload, type);
+  //   this.loading = false;
+  // }
+
+  async setStatus(payload: any, type: string) {
     this.loading = true;
-    const type =
-      this.active == "clinical" ? "clinical-status" : "verification-status";
-    const payload = { status: this.newStatus };
-    await this.setStatus(payload, type);
+    try {
+      const { data } =  await cornieClient().patch(`/api/v1/condition/clinical-status/${this.condition.id}`, { status: this.newStatus })
+      window.notify({ status: "success", msg: "Status updated" });
+      this.done();
+      this.loading = false;
+    } catch (error:any) {
+      window.notify({ status: "error", msg: "Status not updated" });
+    }
     this.loading = false;
   }
 
-  async setStatus(payload: any, type: string) {
+  async setVerifyStatus(payload: any, type: string) {
+
+     this.loading = true;
     try {
-      const { data } = await cornieClient().patch(
-        `/api/v1/condition/${type}/${this.condition.id}`,
-        payload
-      );
-      this.updateCondition(data);
+      const { data } =  await cornieClient().patch(`/api/v1/condition/verification-status/${this.condition.id}`, { status: this.newStatus })
       window.notify({ status: "success", msg: "Status updated" });
-      this.show = false;
-    } catch (error) {
+      this.done();
+      this.loading = false;
+    } catch (error:any) {
       window.notify({ status: "error", msg: "Status not updated" });
     }
+    this.loading = false;
+  }
+
+  
+  done() {
+    this.show = false;
+    this.$emit("conditionAdded");
   }
 
   updateCondition(condition: ICondition) {

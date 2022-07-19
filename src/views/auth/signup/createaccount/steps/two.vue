@@ -1,47 +1,6 @@
 <template>
-  <!-- <div class="grid grid-cols-1 w-full" v-if="account == 'Patient'">
-    <cornie-select
-      v-model="PatientType"
-      :items="['Private', 'Employer']"
-      class="w-full"
-      placeholder="--Select--"
-      label="Patient Type"
-    />
-  </div> -->
-  <div class="w-full grid grid-cols-2 gap-4">
-    <!-- <cornie-select
-      v-if="account !== 'Patient'"
-      v-model="practiceType"
-      :items="[
-        'Hospital/Clinic',
-        'Solo Practice',
-        'Community Pharmacy',
-        'Diagnostics Services',
-      ]"
-      class="w-full"
-      placeholder="--Select--"
-      label="Practice Type"
-    /> -->
-    <!-- <div v-if="practiceType == 'Hospital/Clinic'">
-      <cornie-select
-        v-if="account !== 'Patient' || practiceType == 'Hospital/Clinic'"
-        v-model="subType"
-        :items="['Primary Care', 'Specialist (ophthalmology)','Specialist (ENT)','Specialist (Dentistry)','Specialist (Others)','Community','Rural','Retail']"
-        class="w-full"
-        placeholder="--Select--"
-        label="Select your practice sub-type      "
-      />
-    </div> -->
-    <!-- <div v-if="practiceType == 'Solo Practice'">
-      <cornie-select
-        v-if="account !== 'Patient'"
-        v-model="subType"
-        :items="['Family Practice', 'General Practice','Pediatrics','Sexual & Reproductive','ObGyn','Dermatology','Ophthalmology','Mental Health','Occupational Therapist','Physical Therapist','Speech-Language Pathologists','Applied Behavior Analysts']"
-        class="w-full"
-        placeholder="--Select--"
-        label="Select your practice sub-type"
-      />
-    </div> -->
+  <div class="w-full grid grid-cols-2 gap-3">
+   
     <cornie-input
       :rules="requiredString"
       v-model="firstName"
@@ -55,58 +14,50 @@
       :rules="requiredString"
       class="w-full"
       placeholder="--Enter--"
+      required
       label="Last Name"
     />
-    <phone-input
+    <cornie-phone-input
+      label="Phone Number"
+      class="w-full mb-4"
+      placeholder="--Enter--"
       v-model:code="dialCode"
       v-model="phone"
       :rules="phoneRule"
-      class="w-full"
-      label="Phone number"
+      :requiredText="true"
     />
     <cornie-input
       v-model="email"
       :rules="emailRule"
       class="w-full"
       placeholder="--Enter--"
+      required
       label="Email Address"
     />
-
-    <cornie-input
+    <cornie-select
+      v-if="account === 'Patient'"
+      v-model="subType"
+      :items="['Private', 'Employer']"
+      class="w-full col-span-2"
+      placeholder="--Select--"
+      label="Patient Profile"
+      required
+    />
+    <cornie-select
       v-if="account === 'Provider'"
-      :rules="requiredString"
-      v-model="practiceName"
-      required
-      class="w-full"
-      placeholder="--Enter--"
-      label="Practice Name"
-    />
-    <cornie-input
-      v-if="account === 'Payer'"
-      :rules="requiredString"
-      v-model="organisationName"
-      required
-      class="w-full"
-      placeholder="--Enter--"
-      label="Organisation Name"
-    />
-    <!-- <cornie-input
-       v-if="account !== 'Patient'"
-        v-model="domainName"
-        :rules="requiredString"
-        class="w-full"
-        placeholder="--Enter--"
-        label="Domain Name"
-      /> -->
-    <domain-input
-      v-if="account !== 'Patient'"
-      label="Domain Name"
-      placeholder="--Enter--"
-      v-model="domainName"
-      v-on:input="checkDomain"
+      v-model="subType"
+      :items="[
+        'Hospital/Clinic',
+        'Solo Practice',
+        'Community Pharmacy',
+        'Diagnostics Center',
+      ]"
+      class="w-full col-span-2"
+      placeholder="--Select--"
+      label="Provider Profile"
     />
   </div>
-  <label for="terms" class="mt-1 mb-2 flex items-center">
+  <label for="terms" class="mt-1 flex items-center">
     <input id="terms" type="checkbox" v-model="checkRequire" required />
     <span class="ml-3 text-xs">
       I agree to CornieHealth’s
@@ -114,28 +65,30 @@
       <a href="javascript:void(0)" class="text-danger"> Privacy policy</a>
     </span>
   </label>
-  <cornie-btn
-    class="font-semibold mt-3 w-full p-2"
-    @click="next()"
-    :loading="loading"
-    :class="[
-      checkRequire == true && firstName !== ''
-        ? 'bg-danger text-white'
-        : 'text-gray-400 bg-gray-200',
-    ]"
-    :disabled="checkRequire != true && firstName == ''"
-  >
-    Continue
-  </cornie-btn>
+  <div class="my-10">
+    <cornie-btn
+      class="font-semibold w-full p-2"
+      @click="next()"
+      :loading="loading"
+      :class="[
+        checkRequire == true && firstName !== ''
+          ? 'bg-danger text-white'
+          : 'text-gray-400 bg-gray-200',
+      ]"
+      :disabled="checkRequire != true && firstName == ''"
+    >
+      Submit
+    </cornie-btn>
+  </div>
 </template>
 
 <script>
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
-import PhoneInput from "@/components/phone-input.vue";
+import CorniePhoneInput from "@/components/phone-input.vue";
 import { string } from "yup";
-import { ref, emit } from "vue";
+import { ref, emit, reactive, toRefs } from "vue";
 import DomainInput from "@/components/domain-input.vue";
 
 export default {
@@ -144,7 +97,7 @@ export default {
     CornieInput,
     CornieSelect,
     CornieRadio,
-    PhoneInput,
+    CorniePhoneInput,
     DomainInput,
   },
   props: ["loading", "account"],
@@ -159,10 +112,9 @@ export default {
     const domainName = ref("");
     const organisationName = ref("");
     const PatientType = ref("");
-    // const practiceType = ref("");
+    const practiceType = toRefs(props).account;
     const subType = ref("");
     const checkRequire = ref(false);
-
     const next = () => {
       context.emit("next", {
         firstName,
@@ -174,7 +126,7 @@ export default {
         phone,
         dialCode,
         PatientType,
-        // practiceType,
+        practiceType,
         subType,
       });
     };

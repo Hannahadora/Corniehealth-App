@@ -1,27 +1,29 @@
 <template>
-  <div class="w-full pt-11 pb-20 px-28" style="background: #080056">
+  <div class="w-full h-screen overflow-y-scroll m-0 pt-11 pb-20 xl:px-32 lg:px-6 md:px-20 px-6" style="background: #080056">
     <div>
       <img src="../../assets/logo(1).png" alt="" />
     </div>
-    <div class="gap-x-10 grid items-center grid-cols-12">
-      <div class="col-span-5 h-full w-full flex flex-col space-y-8 justify-center items-center">
-        <div class="">
+    <div class="gap-x-10 lg:grid block items-center grid-cols-12 lg:-mt-3 mt-9">
+      <div
+        class="col-span-6 h-full w-full lg:flex hidden flex-col justify-center items-center"
+      >
+        <div class="img-frame">
           <div v-if="areaPath === 'signup'">
             <div v-if="currentStep == 2">
               <img
-                src="../../assets/smiling_lady2.svg"
+                src="../../assets/img/provider-su-lady.png"
                 v-if="!currentStep !== 3 && type === 'Provider'"
-                class="w-full"
+                class="w-full provider-img"
               />
               <img
-                src="../../assets/smiling_lady.png"
+                src="../../assets/img/payer-su-lady.png"
                 v-if="!currentStep !== 3 && type === 'Payer'"
-                class="w-full"
+                class="w-full payer-img"
               />
               <img
-                src="../../assets/healthy_family.svg"
+                src="../../assets/img/patient-su-family.png"
                 v-if="!currentStep !== 3 && type === 'Patient'"
-                class="w-full"
+                class="w-full patient-img"
               />
             </div>
             <div v-if="currentStep == 3 || currentStep == 4">
@@ -29,36 +31,36 @@
             </div>
           </div>
           <div v-else>
-            <img src="../../assets/smiling_lady.png" class="w-full" />
+            <img src="../../assets/img/login-smilinglady.png" class="w-full" />
           </div>
         </div>
 
-        <div class="w-full flex flex-col items-center justify-center">
+        <div class="w-full flex flex-col items-center justify-center mt-2">
           <div v-if="currentStep == 2 && areaPath === 'signup'">
-            <div class="flex items-center">
+            <div class="flex items-center justify-center">
               <heartpulse />
               <span class="text-white text-base font-bold text-center w-full">
                 Connected. Patient-Centric. Supportive.
               </span>
             </div>
-            <span
+            <div
               v-if="type === 'Provider'"
-              class="text-white text-3xl font-bold text-center w-full"
+              class="text-white text-3xl font-bold text-center w-full mt-5"
             >
               Connected, Simple Practice Management Software.
-            </span>
-            <span
+            </div>
+            <div
               v-if="type === 'Patient'"
-              class="text-white text-3xl font-bold text-center w-full"
+              class="text-white text-3xl font-bold text-center w-full mt-5"
             >
               Secure Connection To All Your Healthcare Needs.
-            </span>
-            <span
+            </div>
+            <div
               v-if="type === 'Payer'"
               class="text-white text-3xl font-bold text-center w-full"
             >
               Connected and Simple HMO Management Software.
-            </span>
+            </div>
           </div>
           <div
             v-if="
@@ -66,21 +68,9 @@
             "
             class="text-center"
           >
-            <span class="text-white text-3xl font-bold text-center w-full">
+            <div class="text-white text-3xl font-bold text-center w-full mt-5">
               Connected, simple practice management software.
-            </span>
-          </div>
-          <div
-            v-if="areaPath === 'signin'"
-            class="w-10/12 text-center flex flex-col items-center justify-center"
-          >
-            <span class="text-white text-3xl font-bold text-center w-full">
-              Sign In to your account
-            </span>
-            <span class="text-left text-base text-white mt-4">
-              This helps us verify your identity. You can enable or disable this
-              in your profile account settings.
-            </span>
+            </div>
           </div>
           <div
             v-if="areaPath === '2fa'"
@@ -89,7 +79,7 @@
             <span class="text-white text-3xl font-bold text-center w-full">
               You’ve successfully created an account
             </span>
-            <span class="text-left text-base text-white mt-4">
+            <span class="text-center text-base text-white mt-4">
               This helps us verify your identity. You can enable or disable this
               in your profile account settings.
             </span>
@@ -97,7 +87,7 @@
         </div>
       </div>
 
-      <div class="col-span-7">
+      <div class="md:col-span-6 w-full">
         <slot />
       </div>
     </div>
@@ -139,6 +129,14 @@ export default {
   width: 0.75rem;
 }
 
+.h-inherit {
+  height: inherit;
+}
+
+.img-frame {
+  max-height: 750px;
+}
+
 .dauth {
   min-width: auto;
   min-height: auto;
@@ -151,6 +149,20 @@ export default {
 .auth-content {
   grid-template-columns: 25% 65%;
   column-gap: 15%;
+}
+
+.patient-img {
+  /* height: 623px; */
+}
+
+.provider-img {
+  /* height: 650px; */
+  /* width: 439px; */
+}
+
+.payer-img {
+  /* width: 427px; */
+  /* height: 619px; */
 }
 /* @media (min-width: 640px) {
   .dauth {

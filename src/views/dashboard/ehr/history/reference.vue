@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-6/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -121,54 +121,74 @@
                     </div>
                 </div>
                 <div class="overflow-y-auto h-96">
-                <div>
-                    <div v-if="refType == 'condition'">
-                    <!-- <div v-for="(input, index) in conditions" :key="index"> -->
-                    <div
-                        class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                    >
-                        <div class="w-full">
-                        <div class="w-full">
-                            <p class="text-sm text-dark mb-1 font-medium">
-                            [Identifier]
-                            </p>
-                            <p class="text-xs text-gray-300">04/09/2021, 19:45</p>
-                        </div>
-                        </div>
-                    </div>
-                    <!-- </div> -->
-                    </div>
-                </div>
-                <div v-if="refType == 'allergy'">
-                    <div v-for="(input, index) in allergys" :key="index">
-                    <div
-                        class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                        :class="[clickedBg ? 'bg-gray-100' : 'bg-white']"
-                        @click="pushValue(input)"
-                    >
-                        <div class="w-full flex space-x-4">
+                  <div>
+                      <div v-if="refType == 'condition'">
+                        <div v-for="(input, index) in conditions" :key="index">
+                        <div
+                            class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                            :class="{ 'bg-gray-100': isSelected(input) }"
+                            @click="pushValue(input)"
+                        >
                             <div class="w-full">
-                                <p class="text-sm text-dark mb-1 font-meduim">
-                                {{ input.category }}
+                            <div class="w-full">
+                                <p class="text-sm text-dark mb-1 font-medium">
+                                {{ medicationMapper(input.type) }}
                                 </p>
-                                <p class="text-xs text-gray-300">
-                                {{ new Date(input.createdAt).toLocaleDateString() }}
-                                , {{ new Date(input.createdAt).toLocaleTimeString() }}
-                                </p>
+                                <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
                             </div>
-                            <div class="w-full flex justify-end">
-                                <p class="mt-4">{{ getPractitionerName(input.practitionerId)}}</p>
-                                <avatar
-                                    class="mr-2 h-14 w-14"
-                                    v-if="getPractitonerImage(input.practitionerId)"
-                                    :src="getPractitonerImage(input.practitionerId)"
-                                    />
-                                    <avatar class="mr-2" v-else :src="localSrc" />
                             </div>
                         </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div v-if="refType == 'allergy'">
+                      <div v-for="(input, index) in allergys" :key="index">
+                      <div
+                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                         :class="{ 'bg-gray-100': isSelected(input) }"
+                          @click="pushValue(input)"
+                      >
+                          <div class="w-full flex space-x-4">
+                              <div class="w-full">
+                                  <p class="text-sm text-dark mb-1 font-meduim">
+                                  {{ input.category }}
+                                  </p>
+                                  <p class="text-xs text-gray-300">
+                                  {{ new Date(input.createdAt).toLocaleDateString() }}
+                                  , {{ new Date(input.createdAt).toLocaleTimeString() }}
+                                  </p>
+                              </div>
+                              <div class="w-full flex justify-end">
+                                  <p class="mt-4">{{ getPractitionerName(input.practitionerId)}}</p>
+                                  <avatar
+                                      class="mr-2 h-14 w-14"
+                                      v-if="getPractitonerImage(input.practitionerId)"
+                                      :src="getPractitonerImage(input.practitionerId)"
+                                      />
+                                      <avatar class="mr-2" v-else :src="localSrc" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                   <div v-if="refType == 'observation'">
+                      <div v-for="(input, index) in observations" :key="index">
+                      <div
+                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                          :class="{ 'bg-gray-100': isSelected(input) }"
+                          @click="pushValue(input)"
+                      >
+                          <div class="w-full">
+                          <div class="w-full">
+                              <p class="text-sm text-dark mb-1 font-medium">
+                              {{ input?.basicInfo?.subject }}
+                              </p>
+                              <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                          </div>
+                          </div>
+                      </div>
+                      </div>
                     </div>
-                    </div>
-                </div>
                 </div>
                </div>
             </div>
@@ -206,7 +226,7 @@ import { string } from "yup";
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-
+import { mapDisplay } from "@/plugins/definitions";
 
 import IAllergy from "@/types/IAllergy";
 import { ICondition } from "@/types/ICondition";
@@ -227,6 +247,7 @@ import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
 import SelectOption from "@/components/custom-checkbox.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import Ihistory from "@/types/Ihistory";
 
 const allergy = namespace("allergy");
 const condition = namespace("condition");
@@ -285,8 +306,9 @@ export default class ReasonReference extends Vue {
     @condition.Action
     fetchPatientConditions!: (patientId: string) => Promise<void>;
 
-    @condition.State
-    conditions!: { [state: string]: ICondition[] };
+  
+  @condition.State
+  conditions!: ICondition[];
 
 
     orderBy: Sorter = () => 1;
@@ -296,6 +318,22 @@ export default class ReasonReference extends Vue {
     refType = "allergy";
     query = "";
     localSrc = require("../../../../assets/img/placeholder.png");
+    observations = [] as any;
+    clickedId = "";
+
+
+    medicationMapper = (code: string) => "";
+
+    async createMapper() {
+      this.medicationMapper = await mapDisplay(
+        "http://hl7.org/fhir/ValueSet/condition-stage-type"
+      );
+    }
+
+    
+     isSelected(impression: any) {
+        return impression.id === this.clickedId;
+    }
 
 
     get filteredItems() {
@@ -319,16 +357,31 @@ export default class ReasonReference extends Vue {
         return pt ? `${pt.image}` : "";
     }
 
+ 
 
     async submit(){
 
     }
 
     pushValue(item:any){
-        this.$emit("ref-value", item);
-
+        this.$emit("ref-value", item, this.refType);
+        this.clickedId = item.id
         this.clickedBg = !this.clickedBg;
     }
+
+      async fetchObservations() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/observations/`
+          );
+          this.observations = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching observations",
+            status: "error",
+          });
+        }
+      }
 
     
   done() {
@@ -337,9 +390,11 @@ export default class ReasonReference extends Vue {
   }
 
   async created() {
-    await this.fetchAllergys(this.activepatientId);
+    await this.createMapper();
+    await this.fetchAllergys(this.$route?.params?.id as string);
     await this.fetchPatientConditions(this.activepatientId);
     await this.fetchPractitioners();
+    await this.fetchObservations();
 
   }
 }

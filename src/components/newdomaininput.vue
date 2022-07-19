@@ -2,6 +2,7 @@
   <div>
     <label class="block capitalize mb-1 text-sm text-black font-semibold">
       {{ label }}
+      <span class="text-danger ml-1" v-if="required"> * </span>
     </label>
     <field
       :name="inputName"
@@ -30,7 +31,7 @@
           style="width: 50%"
           class="appearance-none border border-gray-300 bgcolor px-3 py-2 rounded placeholder-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           disabled
-          placeholder="corniehealth.com/booking/gp-consultation"
+          placeholder="corniehealth.com"
         />
       </div>
       <span v-if="errorMessage" class="text-xs text-red-500 block">
@@ -43,11 +44,11 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop, PropSync } from "vue-property-decorator";
 import { Field } from "vee-validate";
-import { string, StringSchema } from "yup";
+import { string } from "yup";
 import { cornieClient } from "@/plugins/http";
+import { debounce } from "lodash";
 
-async function checkDomain(domainName?: string) {
-  if (!domainName) return false;
+async function asyncDomainCheck(domainName: string) {
   try {
     const { success } = await cornieClient().post(
       "/api/v1/domain/checkDomain",
@@ -57,6 +58,11 @@ async function checkDomain(domainName?: string) {
   } catch (error) {
     return false;
   }
+}
+const debouncedCheck = debounce(asyncDomainCheck, 500);
+async function checkDomain(domainName?: string) {
+  if (!domainName) return false;
+  return (await debouncedCheck(domainName)) ?? false;
 }
 
 @Options({
@@ -90,13 +96,18 @@ export default class DomainInput extends Vue {
   @Prop({ type: Object })
   rules!: any;
 
+  @Prop({ type: Boolean, default: false })
+  required!: boolean;
+
   get customRule() {
-    const domainRule = string().test({
-      name: "uniqueDomain",
-      message: "Domain name already exists",
-      test: checkDomain,
-    });
-    if (this.rules) return domainRule.concat(domainRule);
+    const domainRule = string()
+      .matches(/^[0-9a-zA-Z]+$/, "domain can only contain numbers and letters")
+      .test({
+        name: "uniqueDomain",
+        message: "Domain name already exists",
+        test: checkDomain,
+      });
+    if (this.rules) return domainRule.concat(this.rules);
     return domainRule;
   }
 

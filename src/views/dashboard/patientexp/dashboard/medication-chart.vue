@@ -9,8 +9,8 @@ import ChartCard from "./chart-card.vue";
 import { Chart } from "chart.js";
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
-import { groupData } from "./chart/chart-filter";
 import { Prop, Watch } from "vue-property-decorator";
+import { ChartContext } from "./types";
 
 @Options({
   name: "MedicationChart",
@@ -21,62 +21,81 @@ import { Prop, Watch } from "vue-property-decorator";
 export default class MedicationChart extends Vue {
   chart!: Chart;
 
-  order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
+  @Prop({ type: Object, required: true })
+  context!: ChartContext;
 
-  get chartData() {
-    //const data = groupData(this.raw, this.order);
-    const data = this.rawDataActive;
-    const data2 = this.rawDatatotalRequest;
-    const data3 = this.rawDataCanceled;
-    return { data, data2, data3 };
+  count = {
+    internalPharmacy: 0,
+    communityPharmacy: 0,
+  };
+
+  @Watch("count", { deep: true })
+  countChanged() {
+    this.mountChart();
   }
 
-  raw: IStat[] = [];
-  rawDataActive = 0;
-  rawDatatotalRequest = 0;
-  rawDataCanceled = 0;
+  get url() {
+    const location = this.context.locationId;
+    const admin = this.context.admin ? "admin/" : "";
+    return `/api/v1/experience-dashboard/${admin}count-medications/${location}`;
+  }
 
   async fetchData() {
     try {
-      const response = await cornieClient().get(
-        "api/v1/requests/getStats/count"
-      );
-      const rawActive = response.data.Active;
-      this.rawDataActive = rawActive;
-      this.rawDatatotalRequest = response.data.totalRequest;
-      this.rawDataCanceled = response.data.Cancelled;
-      this.chartData; //this line just  gets the vuejs reactivity system to refresh
+      const { data } = await cornieClient().get(this.url, {
+        start: this.context.start,
+        end: this.context.end,
+      });
+
+      this.count = data;
     } catch (error) {
-      window.notify({ msg: "Failed to fetch chart data", status: "error" });
+      window.notify({ msg: "Failed to count medications", status: "error" });
     }
   }
 
-  @Watch("chartData")
-  chartUpdated() {
-    this.mountChart();
-  }
   mounted() {
     this.mountChart();
   }
 
+  get total() {
+    const { internalPharmacy, communityPharmacy } = this.count;
+    return internalPharmacy + communityPharmacy;
+  }
+
+  get emptyChartData() {
+    return {
+      labels: [""],
+      datasets: [
+        {
+          backgroundColor: ["#C2C7D6"],
+          data: [1, 0, 0],
+        },
+      ],
+    };
+  }
+
+  get chartData() {
+    const { communityPharmacy, internalPharmacy } = this.count;
+
+    return {
+      labels: ["Internal Pharmacy", "Community Pharmacy"],
+      datasets: [
+        {
+          backgroundColor: ["#F7B538", "#541388"],
+          data: [communityPharmacy, internalPharmacy],
+        },
+      ],
+    };
+  }
+
   mountChart() {
+    const data = this.total < 1 ? this.emptyChartData : this.chartData;
     const ctx: any = this.$refs.chart;
     this.chart?.destroy();
+
     this.chart = new Chart(ctx, {
       type: "pie",
-      data: {
-        labels: ["Internal Pharmacy", "Internal Pharmacy",],
-        datasets: [
-          {
-            data: [64, 22
-              // this.rawDataActive,
-              // this.rawDataCanceled,
-              // this.rawDatatotalRequest,
-            ],
-            backgroundColor: ["#35BA83", "#114FF5"],
-          },
-        ],
-      },
+      data,
       options: {
         responsive: true,
         plugins: {

@@ -11,7 +11,7 @@
           <accordion-component title="Location Details" :opened="true">
             <template v-slot:default>
               <div class="w-full">
-                <div class="w-full mt-5 grid grid-cols-3 gap-4">
+                <div class="w-full mt-5 grid grid-cols-2 gap-4">
                   <!-- <cornie-input
                     disabled
                     :modelValue="identifier"
@@ -44,6 +44,38 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
+                  <div class="flex flex-col space-y-0.5">
+                    <div class="text-sm font-semibold mb-1">Visit Type</div>
+
+                    <Multiselect
+                      label="Visit Type"
+                      v-model="careOptions"
+                      mode="tags"
+                      :hide-selected="true"
+                      :options="visitType"
+                      placeholder="--Select--"
+                      class="w-full"
+                    >
+                      <template
+                        v-slot:tag="{ option, handleTagRemove, disabled }"
+                      >
+                        <div class="multiselect-tag is-user">
+                          {{ option.label }}
+                          <span
+                            v-if="!disabled"
+                            class="multiselect-tag-remove"
+                            @mousedown.prevent="handleTagRemove(option, $event)"
+                          >
+                            <span class="multiselect-tag-remove-icon"></span>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-slot:option="{ option }">
+                        <span class="w-full text-sm">{{ option.label }}</span>
+                      </template>
+                    </Multiselect>
+                  </div>
+
                   <cornie-input
                     :rules="required"
                     required
@@ -56,6 +88,15 @@
                     v-model="alias"
                     label="Alias"
                     placeholder="--Enter--"
+                    class="w-full"
+                  />
+                  <cornie-select
+                    :rules="required"
+                    required
+                    v-model="openTo"
+                    :items="['Out-patient', 'In-patient', 'All']"
+                    label="Open to"
+                    placeholder="--Select--"
                     class="w-full"
                   />
                   <fhir-input
@@ -189,30 +230,13 @@
                 <div class="mt-3 w-full col-span-12">
                   <operation-hours v-model="hoursOfOperation" />
                 </div>
-                <div class="w-full mt-16 grid gap-10 grid-cols-3 col-span-12">
+                <div class="w-full mt-16 grid gap-4 grid-cols-2 col-span-12">
                   <cornie-select
                     :rules="required"
                     required
                     v-model="availabilityExceptions"
                     :items="['X-MAS', 'SALAH']"
                     label="Availability Exceptions"
-                    placeholder="--Select--"
-                    class="w-full"
-                  />
-                  <cornie-input
-                    :rules="required"
-                    required
-                    v-model="openTo"
-                    label="Open To"
-                    placeholder="--Enter--"
-                    class="w-full mb-3"
-                  />
-                  <cornie-select
-                    :rules="required"
-                    required
-                    v-model="careOptions"
-                    label="Care Channel"
-                    :items="['Hospital/Clinic', 'Virtual', 'At Home']"
                     placeholder="--Select--"
                     class="w-full"
                   />
@@ -245,25 +269,25 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import AutoComplete from "@/components/autocomplete.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
-import { string } from "yup";
-import { Prop, Watch } from "vue-property-decorator";
-import { getCoordinates } from "@/plugins/utils";
-import { getCountries, getStates } from "@/plugins/nation-states";
-import AutoComplete from "@/components/autocomplete.vue";
+import FhirInput from "@/components/fhir-input.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import InfoIcon from "@/components/icons/info.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import PhoneInput from "@/components/phone-input.vue";
 import Textarea from "@/components/textarea.vue";
-import FhirInput from "@/components/fhir-input.vue";
-import IPhone from "@/types/IPhone";
 import { IndexableObject } from "@/lib/http";
+import { cornieClient } from "@/plugins/http";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import IPhone from "@/types/IPhone";
+import { Options, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import Multiselect from "@vueform/multiselect";
+import { namespace } from "vuex-class";
+import { string } from "yup";
 
 const countries = getCountries();
 
@@ -278,6 +302,7 @@ const location = namespace("location");
     InfoIcon,
     PhoneInput,
     OperationHours,
+    Multiselect,
     Textarea,
     FhirInput,
     AccordionComponent,
@@ -313,7 +338,7 @@ export default class AddLocation extends Vue {
   managingOrg = "";
   partOf = "";
   availabilityExceptions = "";
-  careOptions = "";
+  careOptions = [];
   openTo = "";
   hoursOfOperation: HoursOfOperation[] = [];
 
@@ -323,6 +348,21 @@ export default class AddLocation extends Vue {
 
   required = string().required();
   requiredEmail = string().required().email();
+
+  visitType = [
+    {
+      label: "In-person",
+      value: "in-person",
+    },
+    {
+      label: "Virtual",
+      value: "virtual",
+    },
+    {
+      label: "At home",
+      value: "at home",
+    },
+  ];
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -365,9 +405,7 @@ export default class AddLocation extends Vue {
     this.state = location.state;
     this.city = location.city;
     this.physicalType = location.physicalType;
-    // this.latitude = location.latitude;
-    // this.longitude = location.longitude;
-    // this.altitude = location.altitude;
+
     this.managingOrg = location.managingOrg;
     this.partOf = location.partOf;
     this.availabilityExceptions = location.availabilityExceptions;
@@ -381,8 +419,8 @@ export default class AddLocation extends Vue {
       name: this.name,
       locationStatus: this.locationStatus,
       operationalStatus: this.operationalStatus,
-      description: this.description,
-      alias: this.alias,
+      description: this.description || undefined,
+      alias: this.alias || undefined,
       mode: this.mode,
       type: this.type,
       phone: {
@@ -395,12 +433,9 @@ export default class AddLocation extends Vue {
       state: this.state,
       city: this.city,
       physicalType: this.physicalType,
-      // latitude: this.latitude,
-      // longitude: this.longitude,
-      // altitude: this.altitude,
       managingOrg: this.managingOrg,
       partOf: this.partOf,
-      availabilityExceptions: this.availabilityExceptions,
+      availabilityExceptions: this.availabilityExceptions || undefined,
       careOptions: this.careOptions,
       openTo: this.openTo,
       hoursOfOperation: this.hoursOfOperation,
@@ -422,7 +457,7 @@ export default class AddLocation extends Vue {
       );
       if (response.success) {
         window.notify({ msg: "Location Created", status: "success" });
-        this.$router.push("/dashboard/provider/settings/location");
+        this.$router.push("/dashboard/provider/practice/locations");
       }
     } catch (error) {
       window.notify({ msg: "Location not Created", status: "error" });
@@ -435,7 +470,7 @@ export default class AddLocation extends Vue {
     try {
       const response = await cornieClient().put(url, payload);
       window.notify({ msg: "Location Updated", status: "success" });
-      this.$router.push("/dashboard/provider/settings/location");
+      this.$router.push("/dashboard/provider/practice/locations");
     } catch (error) {
       window.notify({ msg: "Location not Updated", status: "error" });
     }

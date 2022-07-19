@@ -33,7 +33,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
-            @click="save"
+            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -83,6 +83,7 @@ export default class EmergencyDontactDialog extends Vue {
   show!: boolean;
 
   link = "";
+  allLinks = [] as any;
 
   linkOptions = [
     "Father",
@@ -97,17 +98,14 @@ export default class EmergencyDontactDialog extends Vue {
   loading = false;
 
   async submit() {
-    try {
-      window.notify({
+    // this.allLinks.push({links: this.link})
+     window.notify({
         msg: `Link created successfully`,
         status: "success",
       });
-    } catch (error) {
-      window.notify({
-        msg: `Link not created`,
-        status: "error",
-      });
-    }
+    this.$emit('links', this.link);
+    this.show = false;
+   
   }
 
   created() {}

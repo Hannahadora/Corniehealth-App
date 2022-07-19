@@ -2,8 +2,9 @@
     <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span class="w-full">
-         <history-empty-state v-if="empty" />
-        <history-existing-state v-else />
+         <history-empty-state />
+         <!-- <history-empty-state v-if="empty" />
+        <history-existing-state v-else /> -->
       </span>
     </div>
   </div>
@@ -57,7 +58,7 @@ export default class PatientIndex extends Vue {
   }
 
   created() {
-    if (this.activePatientId) this.fetchHistorys(this.activePatientId);
+    this.fetchHistorys('1ca76818-8586-4e00-bae8-7f4619f2b581');
     this.fetchAllergys(this.activePatientId);
   }
 }

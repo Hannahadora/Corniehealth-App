@@ -19,18 +19,21 @@ export const UserRoute: RouteRecordRaw = {
       props: true,
       name: "Practitioner profile",
       component: () =>
-        import(
-          "@/views/dashboard/usersettings/profile/components/index.vue"
-        ),
+        import("@/views/dashboard/usersettings/profile/components/index.vue"),
     },
     {
       path: "edit-profile",
       props: true,
       name: "Edit profile",
+      meta: {
+        editPractitioner: true,
+        disabled: ["name", "email"],
+      },
       component: () =>
-        import(
-          "@/views/dashboard/usersettings/profile/components/user-setup.vue"
-        ),
+        // import(
+        //   "@/views/dashboard/usersettings/profile/components/user-profile-edit.vue"
+        // ),
+        import("@/components/practitioner-view-edit.vue"),
     },
     {
       path: "domain/add",

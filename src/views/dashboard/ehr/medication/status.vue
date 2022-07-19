@@ -37,7 +37,6 @@
                 class="w-full mb-4"
                 :modelValue="currentDate"
               />
-
               <cornie-select
                 :label="'New Status'"
                 v-model="status"
@@ -46,14 +45,10 @@
                   'active',
                   'on-hold',
                   'cancelled',
-                  'dispensed',
-                  'substituted',
-                  'completed',
                   'stopped',
                   'do-not-perform',
                   'unknown',
                   'entered-in-error',
-                  'ordered',
                 ]"
                 style="width: 100%"
               />
@@ -165,8 +160,6 @@ export default class Medication extends Vue {
   @Prop({ type: String, default: "" })
   dispenserId!: string;
 
-
-
   @Prop({ type: String, default: "" })
   updatedBy!: string;
 
@@ -190,13 +183,14 @@ export default class Medication extends Vue {
 
   required = string().required();
 
-
-  get currentStatus(){
-    return this.selectedItem?.statusHistory?.find((history:any) => history.current);
+  get currentStatus() {
+    return this.selectedItem?.statusHistory?.find(
+      (history: any) => history.current
+    );
   }
 
-  get currentDate(){
-    if(!this.currentStatus) return '';
+  get currentDate() {
+    if (!this.currentStatus) return "";
     return new Date(this.currentStatus?.start).toLocaleDateString();
   }
 

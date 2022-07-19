@@ -444,8 +444,8 @@ export default class PractitionerExistingState extends Vue {
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "Name | Identifier",
-      key: "name",
+      title: "Identifier",
+      key: "identifier",
       show: true,
     },
     {

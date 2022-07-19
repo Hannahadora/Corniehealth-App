@@ -1,342 +1,341 @@
 <template>
-  <div class="bg-white">
-    <modal :visible="visible" class="w-4/12 flex flex-col mr-2">
-      <div class="flex w-full rounded-t-lg p-5">
-        <span class="block pr-2 border-r-2">
-          <arrow-left-icon
-            class="stroke-current text-primary cursor-pointer"
-            @click="show = false"
-          />
-        </span>
-        <div class="w-full">
-          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-2">
-            Item
-          </h2>
-          <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
-        </div>
-      </div>
-      <div class="flex flex-col p-3 mb-7 h-96">
-        <div class="border-b-2 pb-3 border-dashed">
-          <cornie-select
-            @change="setValue(type)"
-            label="Select Reference"
-            class="w-full"
-            :items="[
-              'Observation',
-              'Questionaire Response',
-              'Family member History',
-              'Diagnostic Report',
-              'Risk Assessment',
-            ]"
-            v-model="type"
-          >
-          </cornie-select>
-        </div>
-        <div class="w-full">
-          <div class="mt-4 mb-4">
-            <p class="text-gray-400 text-xs">
-              {{ check3.practitioners.length }} selected
-            </p>
+  <cornie-dialog
+    v-model="show"
+    right
+    class="w-5/12 h-full"
+    style="z-index: 999"
+  >
+    <cornie-card height="100%" class="flex flex-col bg-white">
+      <cornie-card-title>
+        <div class="w-full flex items-center justify-between">
+          <div class="w-full flex items-center">
+            <span class="pr-2 flex items-center cursor-pointer border-r-2">
+              <cornie-icon-btn @click="show = false">
+                <arrow-left-icon />
+              </cornie-icon-btn>
+            </span>
+
+            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">Item</h2>
           </div>
-          <div class="relative bottom-2">
-            <icon-input
-              autocomplete="off"
-              class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
-              type="search"
-              placeholder="Search"
-              v-bind="$attrs"
-              v-model="displayVal"
+          <delete-icon
+            class="text-danger fill-current cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+
+      <cornie-card-text class="flex-grow scrollable">
+        <div class="flex flex-col p-3 mb-7 h-96">
+          <div class="border-b-2 pb-3 border-dashed">
+            <cornie-select
+              @change="setType(type)"
+              label="Select Reference"
+              class="w-full"
+              :items="[
+                'Observation',
+                'Questionaire Response',
+                'Family member History',
+                'Diagnostic Report',
+                'Risk Assessment',
+                'Imaging Study',
+                'Media',
+              ]"
+              v-model="type"
             >
-              <template v-slot:prepend>
-                <search-icon />
-              </template>
-            </icon-input>
+            </cornie-select>
           </div>
-        </div>
-        <div class="overflow-y-auto h-96">
-          <div>
-            <div v-if="observeFilter">
-              <div>
-                <div class="w-full mt-5 p-3">
+          <div class="w-full">
+            <div class="mt-4 mb-4">
+              <p class="text-gray-400 text-xs">{{ type }} selected</p>
+            </div>
+            <div class="relative bottom-2">
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-200 h-10 w-full rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search"
+                v-bind="$attrs"
+                v-model="query"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </div>
+          </div>
+          <div class="overflow-y-auto">
+            <div v-if="type === 'Observation'">
+              <div v-for="(input, index) in observations" :key="index">
+                <div class="w-full mt-5 p-3" @click="setValue(input)">
                   <div class="w-full">
                     <div class="w-full">
                       <p class="text-sm text-dark mb-1 font-medium">
-                        [Identifier]
+                        {{ input }}
                       </p>
                       <p class="text-xs text-gray-300">xxxxxx</p>
                     </div>
                   </div>
-                  <div
-                    class="w-full -mt-8 cursor-pointer w-full text-xs text-danger"
-                  >
-                    <input
-                      type="checkbox"
-                      v-model="check3.practitioners"
-                      :value="'Identifier'"
-                      class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                    />
+                </div>
+              </div>
+            </div>
+            <div v-if="type === 'Questionaire Response'">
+              <div v-for="(input, index) in questions" :key="index">
+                <div class="w-full mt-2 p-3" @click="setValue(input)">
+                  <div class="w-full">
+                    <div class="w-full">
+                      <p class="text-sm text-dark mb-1 font-medium">
+                        {{ input }}
+                      </p>
+                      <p class="text-xs text-gray-300">xxxxxx</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="questionFilter">
-            <div>
+          <div v-if="type === 'Family member History'">
+            <div v-for="(input, index) in familyHistories" :key="index">
               <div class="w-full mt-2 p-3">
+                <div class="w-full flex items-center justify-between">
+                  <div class="w-1/2 flex items-center space-x-4">
+                    <cornie-radio
+                      @change="setValue(input)"
+                      type="radio"
+                      name="selected"
+                      v-model="checkedValue"
+                      :value="input"
+                      class=""
+                    />
+                    <div class="w-10 h-10">
+                      <avatar
+                        class="mr-2"
+                        v-if="input.image"
+                        :src="input.image"
+                      />
+                      <avatar class="mr-2" v-else :src="localSrc" />
+                    </div>
+                    <div class="w-full">
+                      <p class="text-sm text-dark font-semibold">
+                        {{ input.name }}
+                      </p>
+                      <p class="text-xs text-gray-500 font-meduim">
+                        {{ input.relationship }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="w-1/2 text-right">
+                    <p class="text-sm text-dark mb-1 font-medium">
+                      {{ input.conditionCode }}
+                    </p>
+                    <p class="text-xs text-gray-300">
+                      {{ getAge(input.age?.year) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="type === 'Diagnostic Report'">
+            <div v-for="(input, index) in diagnosticReports" :key="index">
+              <div class="w-full mt-2 p-3" @click="setValue(input)">
                 <div class="w-full">
                   <div class="w-full">
                     <p class="text-sm text-dark mb-1 font-medium">
-                      [Identifier]
+                      {{ input }}
                     </p>
                     <p class="text-xs text-gray-300">xxxxxx</p>
                   </div>
                 </div>
-                <div
-                  class="w-full mb-5 cursor-pointer w-full text-xs text-danger"
-                >
-                  <input
-                    type="checkbox"
-                    v-model="check3.practitioners"
-                    :value="'Identifier'"
-                    class="bg-danger focus-within:bg-danger px-6 shadow float-right"
-                  />
-                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="flex justify-end pb-6 px-2">
-        <div class="flex justify-end w-full mt-auto" v-if="observeFilter">
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-        <div class="flex justify-end w-full mt-auto" v-if="questionFilter">
-          <button
-            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
-            @click="show = false"
-          >
-            Cancel
-          </button>
-          <button
-            @click="apply()"
-            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-      </div>
-    </modal>
-  </div>
-</template>
-<script>
-import { setup } from "vue-class-component";
-import Modal from "@/components/practitionermodal.vue";
-import DragIcon from "@/components/icons/draggable.vue";
-import Draggable from "vuedraggable";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieCard from "@/components/cornie-card";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import IconInput from "@/components/IconInput.vue";
-import Availability from "@/components/availability.vue";
-import Profile from "@/components/profile.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import Avatar from "@/components/avatar.vue";
-import { cornieClient } from "@/plugins/http";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieCheckbox from "@/components/corniecheckbox.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import DatePicker from "@/components/daterangepicker.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import Period from "@/types/IPeriod";
-import { initial } from "lodash";
-const copy = (original) => JSON.parse(JSON.stringify(original));
+        <!-- </div> -->
+        <!-- </div> -->
+      </cornie-card-text>
 
-export default {
-  name: "item",
-  components: {
-    ...CornieCard,
-    Modal,
-    DragIcon,
-    CornieSelect,
-    CornieCheckbox,
-    ArrowLeftIcon,
-    CornieIconBtn,
-    CancelIcon,
-    Draggable,
-    DatePicker,
-    Availability,
-    CornieDialog,
-    IconInput,
-    SearchIcon,
-    Profile,
-    Avatar,
-    CornieRadio,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: false,
+      <div class="flex justify-end pb-6 px-2">
+        <div class="flex justify-end w-full mt-auto">
+          <button
+            class="rounded-full mt-5 py-2 px-3 border border-primary focus:outline-none hover:opacity-90 w-1/3 mr-2 text-primary font-semibold"
+            @click="show = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="apply()"
+            class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </cornie-card>
+  </cornie-dialog>
+</template>
+<script lang="ts">
+  import Availability from "@/components/availability.vue";
+  import Avatar from "@/components/avatar.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieCheckbox from "@/components/corniecheckbox.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import DatePicker from "@/components/daterangepicker.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
+  import DragIcon from "@/components/icons/draggable.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import Modal from "@/components/practitionermodal.vue";
+  import Profile from "@/components/profile.vue";
+  import IDiagnostic from "@/types/IDiagnostic";
+  import { Investigation } from "@/types/IImpression";
+  import { IObservation } from "@/types/IObservation";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import Draggable from "vuedraggable";
+
+  @Options({
+    name: "ItemDialog",
+    components: {
+      ...CornieCard,
+      Modal,
+      DragIcon,
+      CornieSelect,
+      CornieCheckbox,
+      ArrowLeftIcon,
+      CornieIconBtn,
+      CancelIcon,
+      Draggable,
+      DatePicker,
+      Availability,
+      CornieDialog,
+      IconInput,
+      SearchIcon,
+      Profile,
+      Avatar,
+      CornieRadio,
     },
-    columns: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    preferred: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    observations: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-    questions: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
-  data() {
-    return {
-      selected: 0,
-      localSrc: require("../../../../assets/img/placeholder.png"),
-      check: true,
-      check2: false,
-      check3: {
-        practitioners: [],
+  })
+  export default class ItemDialog extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
+
+    @Prop({ type: Array, default: [] })
+    observations!: IObservation[];
+
+    @Prop({ type: Array, default: [] })
+    questions!: any[];
+
+    @Prop({ type: Array, default: [] })
+    familyHistories!: any[];
+
+    @Prop({ type: Array, default: [] })
+    diagnosticReports!: IDiagnostic[];
+
+    localSrc = require("../../../../assets/img/placeholder.png");
+    query = "";
+    type = "Family member History";
+    selectedItem: Investigation = {
+      // code: "",
+      item: {
+        type: "",
+        details: "",
+        id: "",
       },
-      Patients: [],
-      Practitioners: [],
-      Devices: [],
-      activeState: "",
-      practitionerType: "",
-      columnsProxy: [],
-      indexvalue: [],
-      valueid: [],
-      available: [],
-      type: "Practitioner",
-      assesorPractitionerValue: [],
-      assesorRoleValue: [],
-      availableFilter: false,
-      practitionername: "",
-      profileFilter: false,
-      observeFilter: true,
-      deviceFilter: false,
-      patientFilter: false,
-      questionFilter: false,
-      practitionerId: "",
     };
-  },
-  watch: {
-    columns(val) {
-      this.columnsProxy = copy(val);
-    },
-    visible() {
-      const active = this.preferred.length > 0 ? this.preferred : this.columns;
-      //this.columnsProxy = copy([...active]);
-    },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
-  methods: {
-    setValue(value) {
-      if (value == "Practitioner") {
-        this.observeFilter = true;
-        this.questionFilter = false;
-        this.check = true;
-        this.check2 = false;
-        this.type = value;
-      } else if (value == "Role") {
-        this.questionFilter = true;
-        this.observeFilter = false;
-        this.type = value;
-        this.check2 = true;
-        this.check = false;
+    practitionerId = "";
+    checkedValue = <any>{};
+
+    setType(type: any) {
+      this.type = type;
+    }
+
+    @Watch("checkedValue")
+    valueChanged() {
+      this.setValue(this.checkedValue);
+    }
+
+    setValue(value: any) {
+      if (this.type === "Family member History") {
+        this.selectedItem.item.type = "family-history";
+        // this.selectedItem.code = value.conditionCode;
+        this.selectedItem.item.details = value.name;
+        this.selectedItem.item.id = value.id;
       }
-    },
+      if (this.type === "Observation") {
+        this.selectedItem.item.type = "observation";
+      }
+      if (this.type === "Diagnostic report") {
+        this.selectedItem.item.type = "diagnostic-report";
+      }
+      if (this.type === "Risk Assessment") {
+        this.selectedItem.item.type = "risk-assessment";
+      }
+      if (this.type === "Media") {
+        this.selectedItem.item.type = "media";
+      }
+      if (this.type === "Imaging Study") {
+        this.selectedItem.item.type = "imaging-study";
+      }
+    }
+
+    getAge(x: any) {
+      return new Date().getFullYear() - x;
+    }
+
     apply() {
-      this.$emit("update:preferred", this.check3.practitioners);
+      this.$emit("getItem", this.selectedItem);
       this.show = false;
-    },
-    select(i) {
-      this.selected = i;
-    },
-  },
-  mounted() {
-    this.columnsProxy = copy([...this.indexvalue]);
-  },
-  created() {
-    this.setValue();
-  },
-};
+    }
+
+    created() {}
+  }
 </script>
 <style scoped>
-.dflex {
-  display: -webkit-box;
-}
-.hide {
-  display: none;
-}
-/* Large checkboxes */
+  .dflex {
+    display: -webkit-box;
+  }
+  .hide {
+    display: none;
+  }
+  /* Large checkboxes */
 
-input[type="checkbox"] {
-  height: 22px;
-  width: 22px;
-}
+  input[type="checkbox"] {
+    height: 22px;
+    width: 22px;
+  }
 
-input[type="checkbox"]:before {
-  width: 24px;
-  border: hidden;
-  height: 20px;
-}
+  input[type="checkbox"]:before {
+    width: 24px;
+    border: hidden;
+    height: 20px;
+  }
 
-input[type="checkbox"]:after {
-  top: -20px;
-  width: 22px;
-  height: 22px;
-}
+  input[type="checkbox"]:after {
+    top: -20px;
+    width: 22px;
+    height: 22px;
+  }
 
-input[type="checkbox"]:checked:after {
-  background-image: url("../../../../assets/tick.svg");
-  background-color: #fe4d3c;
-}
-input[type="checkbox"]:after {
-  position: relative;
-  display: block;
-  left: 0px;
-  content: "";
-  background: white;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-radius: 3px;
-  text-align: center;
-  border: 1px solid #fe4d3c;
-}
+  input[type="checkbox"]:checked:after {
+    background-image: url("../../../../assets/tick.svg");
+    background-color: #fe4d3c;
+  }
+  input[type="checkbox"]:after {
+    position: relative;
+    display: block;
+    left: 0px;
+    content: "";
+    background: white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 3px;
+    text-align: center;
+    border: 1px solid #fe4d3c;
+  }
 </style>

@@ -360,8 +360,9 @@ export default class appointmentModal extends Vue {
   @patients.Action
   fetchPatients!: () => Promise<void>;
 
-  @user.State
-   currentLocation!: string;
+
+  @user.Getter
+  authCurrentLocation!: string;
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -404,7 +405,7 @@ export default class appointmentModal extends Vue {
   period = {} as Period;
   participantDetail = [];
   Practitioners = [] as any;
-  Devices = [];
+  Devices = [] as any;
   Patients = [] as any;
   Locations = [];
   HealthCare = [];
@@ -418,7 +419,7 @@ export default class appointmentModal extends Vue {
   endTime = "00:00";
   billingType = "cash";
   venueAddress = "";
-  meetingLink = "";
+  meetingLink = "null";
   venue = "";
   patientId = [] as any;
   practitionerId = [] as any;
@@ -452,13 +453,27 @@ export default class appointmentModal extends Vue {
 
   }
 
+  resetForm(){
+    this.appointmentType = "";
+    this.description = "";
+    this.venue = "";
+    this.meetingLink = "";
+    this.venueAddress = "";
+    this.billingType = "";
+    this.Practitioners = [];
+    this.Patients = "";
+    this.services = [];
+    this.comment = "";
+   
+  }
+
 get payload(){
   return {
     appointmentType: this.appointmentType,
     description: this.description,
     venue: this.venue,
-    meetingLink: this.meetingLink,
-    venueAddress: this.venueAddress,
+    meetingLink: this.meetingLink || undefined,
+    venueAddress: this.venueAddress || undefined,
     billingType: this.billingType,
     services : this.serviceId,
     Practitioners: this.practitionerId,
@@ -469,8 +484,8 @@ get payload(){
     date: this.date,
     startTime: this.startTime,
     endTime : this.endTime,
-    locationId : this.locationId,
-    bookingLocationId: this.bookingLocationId,
+    locationId : this.authCurrentLocation,
+    bookingLocationId: this.bookingLocationId || undefined,
     practitionerId: this.singlePractitonerId,
     patientId: this.patientrouteId,
 
@@ -486,9 +501,6 @@ get payload(){
 
 
   async createAppointment() {
-    this.locationId = this.currentLocation;
-
-    if(this.currentLocation){
       try {
         const response = await cornieClient().post(
           "/api/v1/appointment",
@@ -497,14 +509,11 @@ get payload(){
         if (response.success) {
           window.notify({ msg: "Appointment created", status: "success" });
           this.done();
+          this.resetForm();
         }
       } catch (error) {
         window.notify({ msg: "Appointment not created", status: "error" });
       }
-    }else{
-      window.notify({ msg: "Kindly switch default location", status: "error" });
-    }
-
 
   }
 

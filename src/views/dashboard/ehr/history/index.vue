@@ -10,13 +10,12 @@
 </template>
 <script lang="ts">
 import Ihistory from "@/types/Ihistory";
-import IAllergy from "@/types/IAllergy";
 import { Options, Vue } from "vue-class-component";
 import HistoryEmptyState from "./emptyState.vue";
 import HistoryExistingState from "./existingState.vue";
 import { namespace } from "vuex-class";
+import { Prop } from "vue-property-decorator";
 
-const allergy = namespace("allergy");
 const history = namespace("history");
 
 @Options({
@@ -31,34 +30,24 @@ export default class HistoryIndex extends Vue {
   show = false;
 
   get empty() {
-    return this.allergys.length < 1;
+    return this.historys?.length < 1;
   }
-  get activePatientId() {
-    const id = this.$route?.params?.id as string;
-    return id;
+  get patientId() {
+    return this.$route.params.id as string;
   }
-
-  @allergy.State
-  allergys!: IAllergy[];
-
-  @allergy.Action
-  fetchAllergys!: (patientId: string) => Promise<void>;
-
+ 
   @history.State
   historys!: Ihistory[];
 
   @history.Action
   fetchHistorys!: (patientId: string) => Promise<void>;
 
-  historyAdded() {
-    this.show = false;
-    this.historys;
-    this.fetchHistorys(this.activePatientId);
-  }
 
-  created() {
-    if (this.activePatientId) this.fetchHistorys(this.activePatientId);
-    this.fetchAllergys(this.activePatientId);
+  mounted(){
+    this.fetchHistorys(this.patientId);
+  }
+  async created() {
+    await this.fetchHistorys(this.patientId);
   }
 }
 </script>

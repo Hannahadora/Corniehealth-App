@@ -1,15 +1,29 @@
 <template>
   <div class="w-full overflow-auto mb-5">
     <div class="sect1 my-8">
-      <div class="greet">Good Morning, Dr. {{ cornieUser.firstName }}!</div>
+      <div class="greet">
+        {{ `Good ${greeting}` || "Hello" }}, Dr. {{ cornieUser?.firstName }}!
+      </div>
       <div class="flex items-center mt-4">
-        <span class="">Have a lovely day</span>
-        <!-- <img class="ml-6" src="@/assets/emoji.png" alt="" /> -->
+        <span class="">Have a lovely {{ greeting || "rest" }}</span>
+        <!-- <img class="ml-3" src="../../../../assets/emoji.png" alt="" /> -->
       </div>
 
       <div class="s1-slider mt-8">
-        <span class="px-5 py-2 rounded-lg mr-1">My Dashbord</span>
-        <span class="px-5 py-2 rounded-lg bg-white font-semibold"
+        <span
+          @click="dashboardType = 'mine'"
+          class="px-5 py-2 rounded-lg cursor-pointer mr-1"
+          :class="{
+            'bg-white font-semibold': dashboardType === 'mine',
+          }"
+          >My Dashbord</span
+        >
+        <span
+          @click="dashboardType = 'admin'"
+          class="px-5 py-2 rounded-lg cursor-pointer"
+          :class="{
+            'bg-white font-semibold': dashboardType === 'admin',
+          }"
           >Admin Dashboard</span
         >
       </div>
@@ -29,17 +43,11 @@
         </div>
 
         <div>
-          <input
-            type="date"
-            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
-          />
+          <date-picker class="w-full" v-model="startDate" />
         </div>
         <span>to</span>
         <div>
-          <input
-            type="date"
-            class="w-full py-3 pr-4 pl-2 rounded-lg border border-gray-200"
-          />
+          <date-picker class="w-full" v-model="endDate" />
         </div>
 
         <div>
@@ -64,17 +72,20 @@
 
     <div class="w-full grid grid-cols-3 gap-8 mb-8">
       <div class="col-span-3">
-        <appointment-chart />
+        <div class="grid grid-cols-3 gap-8">
+          <appointment-chart :context="chartContext" />
+          <appointment-summary :locationId="authCurrentLocation" />
+        </div>
       </div>
 
-      <referral-chart />
-      <visits-chart />
+      <referral-chart :context="chartContext" />
+      <visits-chart :context="chartContext" />
       <InpatientChart />
     </div>
 
     <div class="w-full grid grid-cols-2 gap-8 mb-8">
-      <medication-chart />
-      <diagnostics-chart />
+      <medication-chart :context="chartContext" />
+      <diagnostics-chart :context="chartContext" />
     </div>
 
     <div class="mb-8">
@@ -105,15 +116,27 @@ import RatingChart from "./ratings-chart.vue";
 import ResourceChart from "./resource-chart.vue";
 import MessagesChart from "./messages-chart.vue";
 import InpatientChart from "./inpatient-chart.vue";
+import { string } from "yup";
+import DatePicker from "@/components/datepicker.vue";
+import AppointmentSummary from "./appointment-summary.vue";
+import { ChartContext } from "./types";
 
-import {namespace} from 'vuex-class'
+import { namespace } from "vuex-class";
+import { splitDate } from "@/plugins/utils";
 
-const user = namespace("user")
+const user = namespace("user");
+
+const today = new Date();
+const todayStr = splitDate(today);
+const yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
+const yesterdayStr = splitDate(yesterday);
 
 @Options({
   name: "DashboardHome",
   components: {
     RegistrationChart,
+    AppointmentSummary,
     VisitsChart,
     MessagesChart,
     ReferralChart,
@@ -125,14 +148,40 @@ const user = namespace("user")
     MedicationChart,
     RatingChart,
     ResourceChart,
+    DatePicker,
   },
 })
 export default class DashboardHome extends Vue {
+  required = string().required();
 
- @user.Getter
- cornieUser!: ""
+  @user.Getter
+  cornieUser!: "";
+
+  @user.Getter
+  authCurrentLocation!: string;
+
+  dashboardType = "mine";
+  startDate = yesterdayStr;
+  endDate = todayStr;
+
+  get chartContext(): ChartContext {
+    return {
+      locationId: this.authCurrentLocation,
+      start: this.startDate,
+      end: this.endDate,
+      admin: this.dashboardType == "admin",
+    };
+  }
+
+  get greeting() {
+    const myDate = new Date();
+    const hrs = myDate.getHours();
+
+    if (hrs >= 1 && hrs <= 11.59) return "Morning";
+    else if (hrs >= 12 && hrs <= 17) return "Afternoon";
+    else if (hrs >= 17 && hrs <= 24) return "Evening";
+  }
 }
-
 </script>
 
 <style scoped>

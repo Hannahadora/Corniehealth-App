@@ -22,7 +22,7 @@
 
       <!-- Patient Information -->
       <cornie-card-text :class="{ hidden: !showPatientInformation }">
-        <v-form @submit="saveBasic" ref="basic">
+        <v-form>
           <div
             class="flex justify-between items-center px-4 border-t-2 border-gray pt-5"
           >
@@ -59,14 +59,14 @@
               :rules="requiredRule"
               :readonly="viewOnly"
             />
-            <cornie-input
-              label="Nationality"
+            <auto-complete
               class="w-full"
-              placeholder="Enter"
               v-model="nationality"
+              label="Nationality"
+              :items="nationState.countries"
+              placeholder="Enter"
               :readonly="viewOnly"
-            >
-            </cornie-input>
+            />
 
             <date-picker
               class="w-full"
@@ -86,24 +86,22 @@
               v-model="gender"
               :readonly="viewOnly"
             />
-
-            <cornie-input
-              label="Blood Group"
+            <cornie-select
               class="w-full"
-              placeholder="Enter"
-              v-model="nationality"
+              label="Blood Group"
+              placeholder="Select One"
+              :items="bloodGroupOptions"
+              v-model="bloodGroup"
               :readonly="viewOnly"
-            >
-            </cornie-input>
-
-            <cornie-input
+            />
+            <cornie-select
               label="Genotype"
               class="w-full"
               placeholder="Enter"
               v-model="genotype"
+              :items="genotypeOptions"
               :readonly="viewOnly"
-            >
-            </cornie-input>
+            />
 
             <cornie-select
               class="w-full"
@@ -143,9 +141,10 @@
               :readonly="viewOnly"
             />
             <cornie-input
-              class="w-full mb-10"
+              v-if="multipleBirth == 'yes'"
+              class="w-full"
               placeholder="Enter"
-              v-model="multipleBirthInteger"
+              v-model.number="multipleBirthInteger"
               type="number"
               :rules="multipleBirthRule"
               :readonly="viewOnly"
@@ -156,7 +155,7 @@
                   <template #tooltip>
                     <span>Number of multiple births</span>
                   </template>
-                  <info-icon class="fill-current text-primary mt-1.5" />
+                  <info-icon class="fill-current text-primary" />
                 </cornie-tooltip>
               </template>
             </cornie-input>
@@ -164,9 +163,9 @@
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
               loading-color="white"
-              type="submit"
-              :loading="loading"
-              class="bg-primary text-white px-10 py-1 rounded-md"
+              type="button"
+              @click="saveBasic"
+              class="bg-primary text-white px-6 py-1 rounded-md"
             >
               Save
             </cornie-btn>
@@ -177,7 +176,7 @@
 
     <cornie-card class="my-5 mr-4">
       <cornie-card-title class="cursor-pointer" @click="togglePatientIdentity">
-        <h1 class="text-lg font-extrabold">Identity & Association</h1>
+        <h1 class="text-lg font-extrabold">Identity</h1>
         <cornie-spacer />
         <span v-if="viewOnly" class="cursor-pointer mr-2" @click="markEditable">
           Edit
@@ -191,7 +190,7 @@
 
       <!-- Patient Identity and association -->
       <cornie-card-text :class="{ hidden: !showPatientIdentity }">
-        <v-form @submit="saveIdentity" ref="basic">
+        <v-form ref="basic">
           <div class="grid grid-cols-12">
             <div class="col-span-4">
               <cornie-input
@@ -202,8 +201,8 @@
                 v-model="idNumber"
                 :rules="requiredRule"
               >
-                <template #prepend class="-0">
-                  <cornie-menu class="cursor-pointer">
+                <template #prepend class="0">
+                  <!-- <cornie-menu class="cursor-pointer">
                     <template #activator="{ on }">
                       <div v-on="on" class="flex items-center">
                         <span class="mr-3"> {{ idType }}</span>
@@ -219,12 +218,15 @@
                     >
                       {{ idOption }}
                     </div>
-                  </cornie-menu>
+                  </cornie-menu> -->
+                  <div>
+                    {{ idType }}
+                  </div>
                 </template>
               </cornie-input>
             </div>
           </div>
-          <button
+          <!-- <button
             class="flex flex-row items-center w-full mt-5"
             type="button"
             @click="showAssociationsDialog = true"
@@ -235,8 +237,8 @@
             <div>
               <plus-icon />
             </div>
-          </button>
-          <div class="my-4" v-if="allAssociations.length">
+          </button> -->
+          <!-- <div class="my-4" v-if="allAssociations.length">
             <div class="flex">
               <template
                 v-for="(assoc, index) in allAssociations"
@@ -259,7 +261,7 @@
                     <div class="flex-1">
                       <h1 class="text-sm">{{ assoc.name }}</h1>
                       <h1 class="text-xs">
-                        {{ assoc.accountType }}\{{ assoc.relationship }}
+                        {{ assoc.associationType }}\{{ assoc.relationship }}
                       </h1>
                     </div>
                   </div>
@@ -269,12 +271,11 @@
                 </div>
               </template>
             </div>
-          </div>
+          </div> -->
           <div class="flex justify-end m-5" v-if="!viewOnly">
             <cornie-btn
-              loading-color="white"
-              type="submit"
-              :loading="loading"
+              type="button"
+              @click="saveIdentity"
               class="bg-primary text-white px-10 py-1 rounded-md"
             >
               Save
@@ -355,7 +356,7 @@
         <div class="flex justify-end m-5">
           <cornie-btn
             loading-color="white"
-            type="submit"
+            type="button"
             class="bg-primary text-white px-10 py-1"
           >
             Save
@@ -372,6 +373,7 @@
       </cornie-btn>
       <cornie-btn
         class="bg-danger text-white m-5 px-10"
+        type="button"
         @click="submit"
         :loading="loading"
       >
@@ -380,6 +382,7 @@
     </div>
 
     <emergency-contact-dialog
+      @allContacts="allContacts"
       :patient="patient"
       v-model="showEmergencyContactDialog"
     />
@@ -387,25 +390,32 @@
     <!-- Now Links -->
     <links-dialog
       :patient="patient"
+      @links="links"
       v-model:guarantor="guarantor"
       v-model="showGuarantorDialog"
     />
     <association-dialog
       :associtions="associations"
+      :patient="patient"
       v-model="showAssociationsDialog"
       @add-associations="addAssociations"
     />
     <!-- Now Payment account -->
-    <payment-dialog v-model="addPaymentsDialog" />
+    <payment-dialog
+      v-model="addPaymentsDialog"
+      @setSeconinsurance="setSeconinsurance"
+    />
 
     <providers-dialog
       :patient="patient"
+      @add-providers="addproviders"
       v-model:labs="labs"
       v-model:pharmacies="pharmacies"
       v-model="showProvidersDialog"
     />
     <demographics-dialog
       :patient="patient"
+      @data-sent="datasent"
       v-model:demographics="demographics"
       v-model="showDemographicsDialog"
     />
@@ -413,6 +423,7 @@
     <!-- Now primary doctor -->
     <practitioners-dialog
       :patient="patient"
+      @added-pract="addedpract"
       v-model="showPractitionersDialog"
       v-model:practitioners="practitioners"
     />
@@ -420,385 +431,479 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import CornieCard from "@/components/cornie-card/index";
-import CornieSpacer from "@/components/CornieSpacer.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import DatePicker from "@/components/datepicker.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieMenu from "@/components/CornieMenu.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CompletedIcon from "@/components/icons/CompletedIcon.vue";
-import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
-import AddIcon from "@/components/icons/add.vue";
-import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
-import MedicineIcon from "@/components/icons/MedicineIcon.vue";
-import ScienceIcon from "@/components/icons/ScienceIcon.vue";
-import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
-import LinkIcon from "@/components/icons/LinkIcon.vue";
-import UrlIcon from "@/components/icons/UrlIcon.vue";
-import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
-import DemographicIcon from "@/components/icons/DemographicIcon.vue";
-import { Field } from "vee-validate";
+  import { useCountryStates } from "@/composables/useCountryStates";
+  import { cornieClient } from "@/plugins/http";
+  import { Field } from "vee-validate";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { Prop, Ref } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { array, date, number, string } from "yup";
 
-import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
-import LinksDialog from "./dialogs/LinksDialog.vue";
-import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
-import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
-import AssociationDialog from "./dialogs/AssociationDialog.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import DeleteIcon from "@/components/icons/delete-red.vue";
-import PaymentDialog from "./dialogs/PaymentDialog.vue";
+  import { IPatient } from "@/types/IPatient";
 
-import ContactInfo from "./contact-information.vue";
-import { string, number, date, array } from "yup";
-import { Prop, Ref } from "vue-property-decorator";
-import { cornieClient } from "@/plugins/http";
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
-import { namespace } from "vuex-class";
-import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
-import CornieTooltip from "@/components/tooltip.vue";
-import QuestionIcon from "@/components/icons/question.vue";
-import InfoIcon from "@/components/icons/info-blue-bg.vue";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+  import CornieCard from "@/components/cornie-card/index";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import IconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieMenu from "@/components/CornieMenu.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieSpacer from "@/components/CornieSpacer.vue";
+  import CustomCheckbox from "@/components/custom-checkbox.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import AddIcon from "@/components/icons/add.vue";
+  import ChevronDownIcon from "@/components/icons/chevrondownprimary.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import CompletedIcon from "@/components/icons/CompletedIcon.vue";
+  import DeleteIcon from "@/components/icons/delete-red.vue";
+  import DemographicIcon from "@/components/icons/DemographicIcon.vue";
+  import EmergencyIcon from "@/components/icons/EmergencyIcon.vue";
+  import GuarantorIcon from "@/components/icons/GuarantorIcon.vue";
+  import InfoIcon from "@/components/icons/info-blue-bg.vue";
+  import InsuranceIcon from "@/components/icons/InsuranceIcon.vue";
+  import LinkIcon from "@/components/icons/LinkIcon.vue";
+  import MedicalTeamIcon from "@/components/icons/MedicalTeamIcon.vue";
+  import MedicineIcon from "@/components/icons/MedicineIcon.vue";
+  import PlusIcon from "@/components/icons/plus.vue";
+  import QuestionIcon from "@/components/icons/question.vue";
+  import ScienceIcon from "@/components/icons/ScienceIcon.vue";
+  import UrlIcon from "@/components/icons/UrlIcon.vue";
+  import CornieTooltip from "@/components/tooltip.vue";
 
-const patients = namespace("patients");
+  import ContactInfo from "./contact-information.vue";
+  import AssociationDialog from "./dialogs/AssociationDialog.vue";
+  import DemographicsDialog from "./dialogs/DemographicsDialog.vue";
+  import EmergencyContactDialog from "./dialogs/EmergencyContactDialog.vue";
+  import LinksDialog from "./dialogs/LinksDialog.vue";
+  import PaymentDialog from "./dialogs/PaymentDialog.vue";
+  import PractitionersDialog from "./dialogs/PractitionersDialog.vue";
+  import ProvidersDialog from "./dialogs/ProvidersDialog.vue";
 
-@Options({
-  name: "new-patient",
-  components: {
-    ...CornieCard,
-    CornieTooltip,
-    QuestionIcon,
-    InfoIcon,
-    CornieSpacer,
-    ContactInfo,
-    ChevronRightIcon,
-    ChevronDownIcon,
-    IconBtn,
-    PractitionersDialog,
-    CornieAvatarField,
-    CustomCheckbox,
-    CornieInput,
-    Field,
-    DatePicker,
-    CornieSelect,
-    CornieMenu,
-    DemographicsDialog,
-    CornieBtn,
-    CompletedIcon,
-    EmergencyIcon,
-    AddIcon,
-    InsuranceIcon,
-    MedicineIcon,
-    ScienceIcon,
-    MedicalTeamIcon,
-    UrlIcon,
-    GuarantorIcon,
-    DemographicIcon,
-    LinkIcon,
-    DeleteIcon,
+  const patients = namespace("patients");
 
-    EmergencyContactDialog,
-    LinksDialog,
-    ProvidersDialog,
-    AssociationDialog,
-    PaymentDialog,
-    PlusIcon,
-  },
-})
-export default class NewPatient extends Vue {
-  showPatientInformation = true;
-  showPatientIdentity = true;
-  showContactInfo = true;
-  showOptionalInformation = false;
-  idOptions = ["NIN", "BVN"];
-  genderOptions = [
-    { code: "male", display: "Male" },
-    { code: "female", display: "Female" },
-    { code: "other", display: "Other" },
-  ];
-  multipleBirthOptions = [
-    { code: true, display: "Yes" },
-    { code: false, display: "No" },
-  ];
+  @Options({
+    name: "new-patient",
+    components: {
+      ...CornieCard,
+      CornieTooltip,
+      QuestionIcon,
+      InfoIcon,
+      CornieSpacer,
+      ContactInfo,
+      ChevronRightIcon,
+      ChevronDownIcon,
+      IconBtn,
+      PractitionersDialog,
+      AutoComplete,
+      CornieAvatarField,
+      CustomCheckbox,
+      CornieInput,
+      Field,
+      DatePicker,
+      CornieSelect,
+      CornieMenu,
+      DemographicsDialog,
+      CornieBtn,
+      CompletedIcon,
+      EmergencyIcon,
+      AddIcon,
+      InsuranceIcon,
+      MedicineIcon,
+      ScienceIcon,
+      MedicalTeamIcon,
+      UrlIcon,
+      GuarantorIcon,
+      DemographicIcon,
+      LinkIcon,
+      DeleteIcon,
 
-  @patients.Action
-  fetchPatients!: () => Promise<void>;
-
-  @patients.State
-  patients!: IPatient[];
-
-  loading = false;
-
-  nationality = "";
-  numberOfChildren = "";
-
-  vip = false;
-  multipleBirth = false;
-  multipleBirthInteger = 0;
-  gender = "";
-  idType = "NIN";
-  firstName = "";
-  middleName = "";
-  lastName = "";
-  dateOfBirth = "";
-  image = "";
-  idNumber = "";
-
-  contacts = [];
-  emergencyContacts = [];
-  guarantor!: Guarantor;
-  insurances = [];
-  labs = [];
-  pharmacies = [];
-  associations = [] as any;
-  demographics!: Demographics;
-  practitioners = [];
-
-  maritalStatus = "";
-
-  showEmergencyContactDialog = false;
-  showGuarantorDialog = false;
-  showAssociationsDialog = false;
-  showInsuranceDialog = false;
-  showProvidersDialog = false;
-  showPractitionersDialog = false;
-  showDemographicsDialog = false;
-  addPaymentsDialog = false;
-
-  contactsCompleted = false;
-
-  requiredRule = string().required();
-  numericRule = number();
-  dobRule = date().max(
-    new Date(),
-    `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
-  );
-  multipleBirthRule = number().min(0).max(10);
-
-  requiredArray = array().min(1);
-
-  @Prop({ type: String, default: "" })
-  id!: string;
-
-  @patients.Mutation
-  updatePatient!: (patient: IPatient) => void;
-
-  @Ref("basic")
-  basicInfo!: any;
-
-  basicCompleted = false;
-
-  get title() {
-    if (this.viewOnly) return "View Patient";
-    return this.patient ? "Edit Patient" : "New Patient";
-  }
-
-  get viewOnly() {
-    return this.$route.path.includes("view");
-  }
-
-  markEditable() {
-    this.$router.push(`/dashboard/provider/experience/edit-patient/${this.id}`);
-  }
-
-  addAssociations(payload: any) {
-    this.associations = [...payload, ...this.associations];
-  }
-
-  async delAssoc(id: string) {
-    this.associations = this.associations.filter((item: any) => item.id !== id);
-  }
-
-  get allAssociations() {
-    return this.associations;
-  }
-
-  get providerLength() {
-    const labLen = this.patient?.preferredLabs?.length || this.labs.length;
-    const pharmLen =
-      this.patient?.preferredPharmacies?.length || this.pharmacies.length;
-    return labLen + pharmLen;
-  }
-  get optionalItems() {
-    return [
-      {
-        name: "Payment Accounts",
-        icon: "insurance-icon",
-        click: () => (this.addPaymentsDialog = true),
-        number: this.patient?.insurances?.length || this.insurances.length,
-      },
-      {
-        name: "Emergency Contact",
-        icon: "emergency-icon",
-        click: () => (this.showEmergencyContactDialog = true),
-        number:
-          this.patient?.emergencyContacts?.length ||
-          this.emergencyContacts.length,
-      },
-      {
-        name: "Providers",
-        icon: "medicine-icon",
-        click: () => (this.showProvidersDialog = true),
-        number: this.providerLength,
-      },
-      {
-        name: "Primary Doctor",
-        icon: "medical-team-icon",
-        click: () => (this.showPractitionersDialog = true),
-        number:
-          this.patient?.generalPractitioners?.length ||
-          this.practitioners.length,
-      },
-      {
-        name: "Demographic Data",
-        icon: "demographic-icon",
-        click: () => (this.showDemographicsDialog = true),
-        number: this.patient?.demographicsData ? 1 : this.demographics ? 1 : 0,
-      },
-      {
-        name: "Links",
-        icon: "link-icon",
-        click: () => (this.showGuarantorDialog = true),
-        number: this.patient?.guarantor ? 1 : this.guarantor ? 1 : 0,
-      },
+      EmergencyContactDialog,
+      LinksDialog,
+      ProvidersDialog,
+      AssociationDialog,
+      PaymentDialog,
+      PlusIcon,
+    },
+  })
+  export default class NewPatient extends Vue {
+    showPatientInformation = true;
+    showPatientIdentity = true;
+    showContactInfo = true;
+    showOptionalInformation = false;
+    idOptions = ["NIN"];
+    genderOptions = [
+      { code: "male", display: "Male" },
+      { code: "female", display: "Female" },
+      { code: "other", display: "Other" },
     ];
-  }
+    multipleBirthOptions = [
+      { code: "yes", display: "Yes" },
+      { code: "no", display: "No" },
+    ];
+    bloodGroupOptions = [
+      "A+",
+      "A-",
+      "B+",
+      "B-",
+      "O+",
+      "O-",
+      "AB+",
+      "AB-",
+      "NOT SURE",
+    ];
+    genotypeOptions = ["AA", "AS", "AC", "SS", "SC", "NOT SURE"];
+    @patients.Action
+    fetchPatients!: () => Promise<void>;
 
-  togglePatientInformation() {
-    this.showPatientInformation = !this.showPatientInformation;
-  }
+    @patients.State
+    patients!: IPatient[];
 
-  togglePatientIdentity() {
-    this.showPatientIdentity = !this.showPatientIdentity;
-  }
+    loading = false;
 
-  toggleContactInfo() {
-    this.showContactInfo = !this.showContactInfo;
-  }
+    nationality = "";
+    numberOfChildren = "";
+    genotype = "";
 
-  toggleOptionalInformation() {
-    this.showOptionalInformation = !this.showOptionalInformation;
-  }
+    vip = false;
+    multipleBirth = "no";
+    multipleBirthInteger = 0;
+    gender = "";
+    idType = "NIN";
+    firstName = "";
+    middleName = "";
+    lastName = "";
+    dateOfBirth = "";
+    image = "";
+    idNumber = "";
+    bloodGroup = "";
+    nationState = setup(() => useCountryStates());
 
-  async submit() {
-    const report = await (this.$refs.basic as any).validate();
-    if (!report.valid) return;
-    this.loading = true;
-    if (this.id) await this.updateData();
-    else await this.registerPatient();
-    this.loading = false;
-  }
+    contacts = [];
+    emergencyContacts = [] as any;
+    providers = [] as any;
+    guarantor = "";
+    insurances = [] as any;
+    labs = [] as any;
+    pharmacies = [] as any;
+    associations = [] as any;
+    demographics = {};
+    practitioners = [];
 
-  get payload() {
-    const basicInfo = {
-      firstname: this.firstName,
-      lastname: this.lastName,
-      middlename: this.middleName,
-      multipleBirth: this.multipleBirth,
-      multipleBirthInteger: this.multipleBirthInteger,
-      gender: this.gender.toLowerCase(),
-      maritalStatus: this.maritalStatus,
-      vip: this.vip,
-      dateOfBirth: this.dateOfBirth,
-      identityNos: [{ type: this.idType, number: this.idNumber }],
-      profilePhoto: this.image,
-      accountType: "individual",
-    };
-    if (this.id) {
-      (basicInfo.identityNos[0] as any).patientId = this.id;
-      (basicInfo.identityNos[0] as any).id = this.patient!!.identityNos!![0].id;
+    maritalStatus = "";
+    guarantorLength = 0;
+    demographicsLength = 0;
+
+    showEmergencyContactDialog = false;
+    showGuarantorDialog = false;
+    showAssociationsDialog = false;
+    showInsuranceDialog = false;
+    showProvidersDialog = false;
+    showPractitionersDialog = false;
+    showDemographicsDialog = false;
+    addPaymentsDialog = false;
+
+    contactsCompleted = false;
+
+    requiredRule = string().required();
+    numericRule = number();
+    dobRule = date().max(
+      new Date(),
+      `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
+    );
+    multipleBirthRule = number().min(0).max(10);
+
+    requiredArray = array().min(1);
+
+    @Prop({ type: String, default: "" })
+    id!: string;
+
+    @patients.Mutation
+    updatePatient!: (patient: IPatient) => void;
+
+    @Ref("basic")
+    basicInfo!: any;
+
+    basicCompleted = false;
+
+    get title() {
+      if (this.viewOnly) return "View Patient";
+      return this.patient ? "Edit Patient" : "New Patient";
     }
-    const others = {
-      contactInfo: this.contacts,
-      emergencyContacts: this.emergencyContacts,
-      preferredLabs: this.labs,
-      preferredPharmacies: this.pharmacies,
-    };
-    if (this.id) return basicInfo;
-    return { ...basicInfo, ...others };
-  }
 
-  async registerPatient() {
-    if (this.contacts.length < 1)
-      return window.notify({
-        msg: "At least one contact information is needed to proceed",
-        status: "error",
-      });
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/patient",
-        this.payload
+    get viewOnly() {
+      return this.$route.path.includes("view");
+    }
+
+    markEditable() {
+      this.$router.push(
+        `/dashboard/provider/experience/edit-patient/${this.id}`
       );
-      const patient = response.data;
-      this.updatePatient(patient);
-    } catch (error) {
-      window.notify({ msg: "Failed to add patient", status: "error" });
     }
-    this.$router.back();
-  }
 
-  async updateData() {
-    try {
-      const response = await cornieClient().patch(
-        `/api/v1/patient/${this.id}`,
-        this.payload
+    addAssociations(payload: any) {
+      this.associations = [...payload, ...this.associations];
+    }
+
+    async delAssoc(id: string) {
+      this.associations = this.associations.filter(
+        (item: any) => item.id !== id
       );
-      const patient = response.data;
-      this.updatePatient(patient);
-      window.notify({ msg: "Patient Updated", status: "success" });
-    } catch (e) {
-      window.notify({ msg: "Failed to update patient", status: "error" });
     }
-  }
 
-  async saveBasic() {
-    if (this.id) {
+    get allAssociations() {
+      return this.associations;
+    }
+
+    allContacts(value: any) {
+      this.emergencyContacts.push(value);
+    }
+    addproviders(value: any, type: string) {
+      if (type == "Pharmacy") {
+        this.pharmacies.push(value);
+      } else {
+        this.labs.push(value);
+      }
+    }
+
+    setSeconinsurance(value: any) {
+      this.insurances.push(value);
+    }
+    addedpract(value: any) {
+      this.practitioners = value;
+    }
+    datasent(value: any) {
+      this.demographics = value;
+      if (value || this.patient?.demographicsData) {
+        this.demographicsLength = 1;
+      }
+    }
+    links(value: string) {
+      this.guarantor = value;
+      if (value || this.patient?.guarantor) {
+        this.guarantorLength = 1;
+      }
+    }
+    get providerLength() {
+      const labLen = this.patient?.preferredLabs?.length || this.labs.length;
+      const pharmLen =
+        this.patient?.preferredPharmacies?.length || this.pharmacies.length;
+      return labLen + pharmLen;
+    }
+    get optionalItems() {
+      return [
+        {
+          name: "Payment Accounts",
+          icon: "insurance-icon",
+          click: () => (this.addPaymentsDialog = true),
+          number: this.patient?.insurances?.length || this.insurances.length,
+        },
+        {
+          name: "Emergency Contact",
+          icon: "emergency-icon",
+          click: () => (this.showEmergencyContactDialog = true),
+          number:
+            this.patient?.emergencyContacts?.length ||
+            this.emergencyContacts.length,
+        },
+        {
+          name: "Providers",
+          icon: "medicine-icon",
+          click: () => (this.showProvidersDialog = true),
+          number: this.providerLength,
+        },
+        {
+          name: "Primary Doctor",
+          icon: "medical-team-icon",
+          click: () => (this.showPractitionersDialog = true),
+          number:
+            this.patient?.generalPractitioners?.length ||
+            this.practitioners.length,
+        },
+        {
+          name: "Demographic Data",
+          icon: "demographic-icon",
+          click: () => (this.showDemographicsDialog = true),
+          number: this.demographicsLength,
+        },
+        {
+          name: "Associations",
+          icon: "link-icon",
+          click: () => (this.showAssociationsDialog = true),
+          number: this.allAssociations.length,
+        },
+      ];
+    }
+
+    togglePatientInformation() {
+      this.showPatientInformation = !this.showPatientInformation;
+    }
+
+    togglePatientIdentity() {
+      this.showPatientIdentity = !this.showPatientIdentity;
+    }
+
+    toggleContactInfo() {
+      this.showContactInfo = !this.showContactInfo;
+    }
+
+    toggleOptionalInformation() {
+      this.showOptionalInformation = !this.showOptionalInformation;
+    }
+
+    async submit() {
+      // const report = await (this.$refs.basic as any).validate();
+      // if (!report.valid) return;
       this.loading = true;
-      await this.updateData();
+      if (this.id) await this.updateData();
+      else await this.registerPatient();
       this.loading = false;
-    } else {
-      this.showPatientInformation = false;
-      this.basicCompleted = false;
+    }
+
+    async saveIdentity() {
+      if (this.id) {
+        try {
+          const response = await cornieClient().post(
+            `/api/v1/patient/association/${this.id}`,
+            this.associations
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Identity added successfully updated",
+              status: "success",
+            });
+          }
+        } catch (error: any) {
+          window.notify({ msg: error.response.data.message, status: "error" });
+        }
+      } else {
+        window.notify({
+          msg: "Identity added successfully updated",
+          status: "success",
+        });
+      }
+    }
+
+    get payload() {
+      const basicInfo = {
+        firstname: this.firstName,
+        lastname: this.lastName,
+        associates: this.associations,
+        middlename: this.middleName || undefined,
+        multipleBirth: this.multipleBirth == "yes" ? true : false,
+        multipleBirthInteger: this.multipleBirthInteger,
+        gender: this.gender.toLowerCase(),
+        genotype: this.genotype,
+        nationality: this.nationality,
+        maritalStatus: this.maritalStatus ? this.maritalStatus : undefined,
+        vip: this.vip,
+        dateOfBirth: this.dateOfBirth,
+        bloodGroup: this.bloodGroup,
+        identityNos: [{ type: this.idType, number: this.idNumber }],
+        profilePhoto: this.image || undefined,
+        accountType: "individual",
+      };
+      if (this.id) {
+        (basicInfo.identityNos[0] as any).patientId = this.id;
+        (basicInfo.identityNos[0] as any).id =
+          this.patient!!.identityNos!![0].id;
+      }
+      const others = {
+        contactInfo: this.contacts,
+        emergencyContacts: this.emergencyContacts,
+        preferredLabs: this.labs,
+        preferredPharmacies: this.pharmacies,
+        demographicsData: this.demographics,
+        primaryDoctorDetails: this.practitioners,
+        guarantor: this.guarantor ? this.guarantor : null,
+        // insurances: this.insurances,
+      };
+      if (this.id) return basicInfo;
+      return { ...basicInfo, ...others };
+    }
+
+    async registerPatient() {
+      if (this.contacts.length < 1)
+        return window.notify({
+          msg: "At least one contact information is needed to proceed",
+          status: "error",
+        });
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/patient",
+          this.payload
+        );
+        const patient = response.data;
+        this.updatePatient(patient);
+        window.notify({ msg: "Patient added successfully", status: "success" });
+
+        this.$router.push("/dashboard/provider/experience/patients");
+      } catch (error: any) {
+        window.notify({ msg: "Error creating Patient", status: "error" });
+      }
+    }
+
+    async updateData() {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient/${this.id}`,
+          this.payload
+        );
+        const patient = response.data;
+        this.updatePatient(patient);
+        window.notify({ msg: "Patient Updated", status: "success" });
+        this.$router.go(-1);
+      } catch (e: any) {
+        window.notify({ msg: e?.response?.data?.message, status: "error" });
+      }
+    }
+
+    async saveBasic() {
+      if (this.id) {
+        this.loading = true;
+        await this.updateData();
+        this.loading = false;
+      } else {
+        this.showPatientInformation = false;
+        window.notify({
+          msg: "Patient infromation Updated",
+          status: "success",
+        });
+        this.basicCompleted = false;
+      }
+    }
+
+    selectId(idOption: string) {
+      this.idType = idOption;
+    }
+
+    get patient() {
+      return this.patients.find((p) => p.id === this.id);
+    }
+    hydrate() {
+      const patient = this.patient;
+      if (!patient) return;
+      this.firstName = patient.firstname;
+      this.lastName = patient.lastname;
+      this.middleName = patient.middlename || "";
+      this.multipleBirth = patient.multipleBirths == false ? "no" : "yes";
+      this.multipleBirthInteger = patient.multipleBirthInteger || 0;
+      this.gender = patient.gender || "";
+      this.maritalStatus = patient.maritalStatus || "";
+      this.vip = patient.vip || false;
+      this.dateOfBirth = patient.dateOfBirth || "";
+      const identityNos = patient.identityNos || [];
+      const [identity, ...rest] = identityNos;
+      if (identity) {
+        this.idType = identity.type;
+        this.idNumber = identity.number;
+      }
+      this.image = patient.profilePhoto || "";
+    }
+
+    async created() {
+      if (!this.patients.length) await this.fetchPatients();
+      if (this.id) this.hydrate();
     }
   }
-
-  selectId(idOption: string) {
-    this.idType = idOption;
-  }
-
-  get patient() {
-    return this.patients.find((p) => p.id == this.id);
-  }
-  hydrate() {
-    const patient = this.patient;
-    if (!patient) return;
-    this.firstName = patient.firstname;
-    this.lastName = patient.lastname;
-    this.middleName = patient.middlename || "";
-    this.multipleBirth = patient.multipleBirths || false;
-    this.multipleBirthInteger = patient.multipleBirthInteger || 0;
-    this.gender = patient.gender || "";
-    this.maritalStatus = patient.maritalStatus || "";
-    this.vip = patient.vip || false;
-    this.dateOfBirth = patient.dateOfBirth || "";
-    const identityNos = patient.identityNos || [];
-    const [identity, ...rest] = identityNos;
-    if (identity) {
-      this.idType = identity.type;
-      this.idNumber = identity.number;
-    }
-    this.image = patient.profilePhoto || "";
-  }
-
-  async created() {
-    if (!this.patients.length) await this.fetchPatients();
-    if (this.id) this.hydrate();
-  }
-}
 </script>

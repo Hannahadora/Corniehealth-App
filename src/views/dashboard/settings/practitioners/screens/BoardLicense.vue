@@ -17,7 +17,7 @@
         <h1 class="text-gray-400 mb-1 text-sm">License Number</h1>
         <div class="flex">
           <img class="mr-3 w-6 rounded-md" :src="flag" />
-          <h1 class="text-sm">{{ item.qualification }}</h1>
+          <h1 class="text-sm">{{ item.licenseNumber }}</h1>
         </div>
       </div>
       <div class="flex flex-col">
@@ -49,47 +49,47 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import ScreenHeader from "./Header.vue";
-import CalendareIcon from "@/components/icons/calendar.vue";
-import { Prop } from "vue-property-decorator";
-import { countryCodes } from "@/plugins/countrycodes";
-import ArrowIcon from "@/components/icons/arrow-right.vue";
+  import ArrowIcon from "@/components/icons/arrow-right.vue";
+  import CalendareIcon from "@/components/icons/calendar.vue";
+  import { countryCodes } from "@/plugins/countrycodes";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import ScreenHeader from "./Header.vue";
 
-@Options({
-  name: "PractitionerBio",
-  components: {
-    ScreenHeader,
-    CalendareIcon,
-    ArrowIcon,
-  },
-})
-export default class BoardLicense extends Vue {
-  @Prop({ default: {} })
-  properties!: any;
+  @Options({
+    name: "PractitionerBio",
+    components: {
+      ScreenHeader,
+      CalendareIcon,
+      ArrowIcon,
+    },
+  })
+  export default class BoardLicense extends Vue {
+    @Prop({ default: {} })
+    properties!: any;
 
-  get codes() {
-    return countryCodes
-      .sort((a, b) => {
-        if (a.name > b.name) return 1;
-        if (a.name < b.name) return -1;
-        return 0;
-      })
-      .map((country) => ({
-        ...country,
-        display: country.dialCode,
-        code: country.dialCode,
-        flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
-      }));
+    get codes() {
+      return countryCodes
+        .sort((a, b) => {
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        })
+        .map((country) => ({
+          ...country,
+          display: country.dialCode,
+          code: country.dialCode,
+          flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
+        }));
+    }
+
+    get flag() {
+      if (!this.codes.length && this.properties.nationality === "") return "";
+      return this.codes.find(
+        (country: any) =>
+          country.name?.toLowerCase() ===
+          this.properties.nationality?.toLowerCase()
+      )?.flag;
+    }
   }
-
-  get flag() {
-    if (!this.codes.length && this.properties.nationality === "") return "";
-    return this.codes.find(
-      (country: any) =>
-        country.name?.toLowerCase() ===
-        this.properties.nationality?.toLowerCase()
-    )?.flag;
-  }
-}
 </script>

@@ -44,8 +44,8 @@ export default {
       return {
         organizationType: organization?.organisationType,
         accountType: getters.accountType,
-        practiceType: organization?.practiceType,
-        practiceSubType: organization?.practiceSubType,
+        practiceType: organization?.providerProfile,
+        practiceSubType: organization?.providerProfile,
       };
     },
     accountType(state) {
@@ -62,13 +62,15 @@ export default {
       return JSON.parse(corniedata)?.authDomain;
     },
     authCurrentLocation(state) {
+      if (state.currentLocation) return state.currentLocation;
       const cachedLocation = sessionStorage.getItem("authCurrentLocation");
       if (cachedLocation) return cachedLocation;
       const locations = state.cornieData?.practitioner?.locationRoles;
       const defaultLocation = locations?.find(location => location.default);
 
-      const currentLocation = state.currentLocation ?? defaultLocation;
+      const currentLocation = defaultLocation?.locationId ?? "";
       sessionStorage.setItem("authCurrentLocation", currentLocation);
+
       return currentLocation;
     },
     authorizedLocations(state) {
@@ -96,6 +98,7 @@ export default {
       state.currentLocation = practitioner?.defaultLocation || "";
     },
     switchCurrentLocation(state, locationId) {
+      sessionStorage.setItem("authCurrentLocation", locationId);
       state.currentLocation = locationId;
     },
     setAuthToken(state, token) {
@@ -121,8 +124,8 @@ export default {
     updatePractitionerAuthStatus(state, payload) {
       state.practitionerAuthenticated = payload;
     },
-    updatePractitioner(state, payload:IPractitioner) {
-      state.cornieData.practitioner = payload
+    updatePractitioner(state, payload: IPractitioner) {
+      state.cornieData.practitioner = payload;
     },
   },
   actions: {

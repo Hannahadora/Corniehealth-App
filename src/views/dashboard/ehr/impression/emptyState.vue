@@ -1,16 +1,24 @@
 <template>
   <div class="w-full pb-80">
     <div class="w-full flex flex-col justify-center items-center h-96">
-      <img src="@/assets/img/allergy.svg" />
-      <h3 class="text-center mt-5">No Clinical Impression.</h3>
-      <span class="flex justify-center w-full">
-        <button
-          class="bg-danger rounded-full text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
-          @click="showImpression"
-        >
-          Clinical Impression
-        </button>
-      </span>
+      <div class="w-1/2 flex flex-col items-center justify-center mt-20">
+        <img src="@/assets/img/no-impression.svg" />
+        <h3 class="text-center mt-8 text-2xl font-bold">
+          No Impressions on Record
+        </h3>
+        <!-- <p class="text-base text-center" style="color: #667499">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum
+          aenean mattis mi diam eget.
+        </p> -->
+        <span class="flex justify-center w-full mt-8">
+          <button
+            class="bg-danger rounded-xl text-white mt-5 py-2 px-3 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
+            @click="showImpression"
+          >
+            New Impression
+          </button>
+        </span>
+      </div>
     </div>
     <impression-modal
       :columns="practitioner"

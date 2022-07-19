@@ -2,7 +2,7 @@
   <chart-card
     height="422px"
     title="Active Visits"
-    subtitle="41 Visits"
+    :subtitle="`${total} Visits`"
     action="View Visits"
   >
     <canvas ref="chart" style="margin: auto"></canvas>
@@ -13,6 +13,8 @@ import { Options, Vue } from "vue-class-component";
 import ChartCard from "./chart-card.vue";
 import Chart from "chart.js/auto";
 import { cornieClient } from "@/plugins/http";
+import { Prop, Watch } from "vue-property-decorator";
+import { ChartContext } from "./types";
 
 @Options({
   name: "VisitsChart",
@@ -23,34 +25,81 @@ import { cornieClient } from "@/plugins/http";
 export default class VisitsChart extends Vue {
   chart!: Chart;
 
-  date = new Date();
-  chartData: number[] = [];
+  @Prop({ type: Object, required: true })
+  context!: ChartContext;
 
-  async getChartData(start: Date, end: Date) {
+  count = {
+    checkedIn: 0,
+    checkedOut: 0,
+  };
+
+  @Watch("count", { deep: true })
+  countChanged() {
+    this.mountChart();
+  }
+
+  get url() {
+    const location = this.context.locationId;
+    const admin = this.context.admin ? "admin/" : "";
+    return `/api/v1/experience-dashboard/${admin}count-visits/${location}`;
+  }
+
+  async fetchChart() {
     try {
-      const { data } = await cornieClient().get(
-        `/api/v1/visit/analytics/stats`,
-        { start: start?.toISOString(), end: end?.toISOString() }
-      );
-      // this.chartData = data.
-    } catch (error) {}
+      const { data } = await cornieClient().get(this.url, {
+        start: this.context.start,
+        end: this.context.end,
+      });
+
+      this.count = data;
+    } catch (error) {
+      window.notify({ msg: "Failed to count visits", status: "error" });
+    }
   }
 
   mounted() {
     this.mountChart();
   }
 
-  mountChart() {
-    const data = {
+  created() {
+    this.fetchChart();
+  }
+
+  get total() {
+    const { checkedIn, checkedOut } = this.count;
+    return checkedIn + checkedOut;
+  }
+  get emptyChartData() {
+    return {
       labels: ["Completed", "Queued"],
       datasets: [
         {
           label: "Dataset 1",
-          backgroundColor: ["#F7B538", "#541388", "#35BA83", "#114FF5"],
-          data: [2, 5],
+          backgroundColor: ["#C2C7D6", "#F7B538", "#541388"],
+          data: [1, 0, 0],
         },
       ],
     };
+  }
+
+  get chartData() {
+    const { checkedIn, checkedOut } = this.count;
+
+    return {
+      labels: ["Completed", "Queued"],
+      datasets: [
+        {
+          label: "Dataset 1",
+          backgroundColor: ["#F7B538", "#541388"],
+          data: [checkedOut, checkedIn],
+        },
+      ],
+    };
+  }
+
+  mountChart() {
+    const data = this.total > 0 ? this.chartData : this.emptyChartData;
+
     const ctx: any = this.$refs.chart;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
@@ -59,7 +108,7 @@ export default class VisitsChart extends Vue {
       options: {
         elements: {
           center: {
-            text: "80 Active Visits",
+            text: `${this.total} Active Visits`,
             color: "#14171F",
             fontStyle: "Arial",
             sidePadding: 12,
@@ -85,11 +134,6 @@ export default class VisitsChart extends Vue {
         },
       },
     });
-  }
-
-  async created() {
-    const startDate = new Date(new Date().setDate(new Date().getDate() - 365));
-    await this.getChartData(startDate, this.date);
   }
 }
 </script>

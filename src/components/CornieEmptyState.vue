@@ -1,7 +1,7 @@
 <template>
   <div class="empty-state">
     <slot name="icon" />
-    <h3 class="mt-5" v-if="heading">{{ heading }}</h3>
+    <h3 class="mt-5 font-bold text-lg" v-if="heading">{{ heading }}</h3>
     <h5 class="text-sm mt-2" v-if="subheading">
       {{ subheading }}
     </h5>

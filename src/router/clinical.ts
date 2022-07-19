@@ -1,5 +1,5 @@
-import { RouteRecordRaw } from "vue-router";
 import EHR from "@/views/dashboard/ehr/index.vue";
+import { RouteRecordRaw } from "vue-router";
 
 export const ClinicalsRoute: RouteRecordRaw = {
   path: ":id",
@@ -14,13 +14,18 @@ export const ClinicalsRoute: RouteRecordRaw = {
     },
     {
       path: "care-team",
-      name: "EHR - Care Team",
+      name: "Care Team",
       component: () => import("@/views/dashboard/ehr/careteam/index.vue"),
     },
     {
       path: "care-plan",
-      name: "EHR - Care Plan",
+      name: "Care Plans",
       component: () => import("@/views/dashboard/ehr/careplan/index.vue"),
+    },
+    {
+      path: "care-partners",
+      name: "Care Partner",
+      component: () => import("@/views/dashboard/ehr/carepartners/index.vue"),
     },
     {
       path: "visits",
@@ -40,9 +45,9 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/allergy/index.vue"),
     },
     {
-      path: "medications",
+      path: "medications-request",
       props: true,
-      name: "Medications",
+      name: "Medication",
       component: () => import("@/views/dashboard/ehr/medication/index.vue"),
     },
     {
@@ -130,6 +135,12 @@ export const ClinicalsRoute: RouteRecordRaw = {
       props: true,
       name: "Referral",
       component: () => import("@/views/dashboard/ehr/refferal/index.vue"),
+    },
+    {
+      path: "forms-questionaires",
+      props: true,
+      name: "Form | Questionaires | Survey",
+      component: () => import("@/views/dashboard/ehr/forms/index.vue"),
     },
   ],
 };

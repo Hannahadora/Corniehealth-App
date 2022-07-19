@@ -1,7 +1,7 @@
 <template>
-  <chart-card height="343px" title="Blood Pressure" @ordered="onOrder">
+  <chart-card height="338px" title="Blood Pressure" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
-      {{ diastolicAverage }}/{{ systolicAverage }}
+      {{ diastolicAverage }}/{{ systolicAverage || 0 }}
       <span class="font-light">mmHgz</span>
     </p>
     <canvas ref="chart" style="margin: auto; width: 100%"></canvas>
@@ -22,7 +22,7 @@ import {
 import { cornieClient } from "@/plugins/http";
 import IStat from "@/types/IStat";
 import { getChartData } from "./helper/vitals-chart-helper";
-
+import moment from "moment";
 const vitalsStore = namespace("vitals");
 
 @Options({
@@ -39,20 +39,37 @@ export default class BloodChartt extends Vue {
   getVitals!: (patientId: string) => Promise<void>;
 
   loaded = false;
+    startDate = new Date().toISOString();
 
   raw: IStat[] = [];
-  diastolicRaw: IStat[] = [];
-  systolicRaw: IStat[] = [];
+  diastolicRaw = [] as any;
+  systolicRaw = [] as any;
   order: "Today" | "WTD" | "MTD" | "YTD" = "WTD";
 
   get sortedVitals() {
     return sortListByDate(this.vitals);
   }
 
-  get chartData() {
-    const data = groupData(this.upperBandStats, this.order);
-    // const data = groupData(this.raw, this.order);
-    return data;
+  // get chartData() {
+  //   const data = groupData(this.upperBandStats, this.order);
+  //   // const data = groupData(this.raw, this.order);
+  //   return data;
+  // }
+
+  get date(){
+    if (this.order == 'Today'){
+      return new Date().toISOString();
+    }else if(this.order == 'WTD'){
+      var oneWeekAgo = moment().subtract(1, 'week');
+      console.log(oneWeekAgo, 'week');
+      return oneWeekAgo.format();
+    }else if(this.order == 'MTD'){
+      var oneMonthsAgo = moment().subtract(1, 'months');
+      return oneMonthsAgo.format();
+    }else {
+      var oneYearAgo = moment().subtract(1, 'year');
+      return oneYearAgo.format();
+    }
   }
 
   get upperBand() {
@@ -65,62 +82,62 @@ export default class BloodChartt extends Vue {
     return data;
   }
 
-  get upperBandStats() {
-    const x = this.vitals.map((i) => {
-      return {
-        bloodPresures: i?.bloodPressure?.map((j) => {
-          return {
-            ...j,
-            date: i.date,
-          };
-        }),
-      };
-    });
-    const values = x
-      ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
-      .flat();
+  // get upperBandStats() {
+  //   const x = this.vitals.map((i) => {
+  //     return {
+  //       bloodPresures: i?.bloodPressure?.map((j) => {
+  //         return {
+  //           ...j,
+  //           date: i.date,
+  //         };
+  //       }),
+  //     };
+  //   });
+  //   const values = x
+  //     ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
+  //     .flat();
 
-    const data = values
-      ?.filter((bloodPressure) => bloodPressure?.type === "systolic")
-      ?.map((bloodpressure) => {
-        return {
-          count: bloodpressure.measurement?.value,
-          date: bloodpressure.date,
-        };
-      }) as IStat[];
-    return data;
-  }
+  //   const data = values
+  //     ?.filter((bloodPressure) => bloodPressure?.type === "systolic")
+  //     ?.map((bloodpressure) => {
+  //       return {
+  //         count: bloodpressure.measurement?.value,
+  //         date: bloodpressure.date,
+  //       };
+  //     }) as IStat[];
+  //   return data;
+  // }
 
-  get lowerBandStats() {
-    const x = this.vitals.map((i) => {
-      return {
-        bloodPresures: i?.bloodPressure?.map((j) => {
-          return {
-            ...j,
-            date: i.date,
-          };
-        }),
-      };
-    });
-    const values = x
-      ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
-      .flat();
+  // get lowerBandStats() {
+  //   const x = this.vitals.map((i) => {
+  //     return {
+  //       bloodPresures: i?.bloodPressure?.map((j) => {
+  //         return {
+  //           ...j,
+  //           date: i.date,
+  //         };
+  //       }),
+  //     };
+  //   });
+  //   const values = x
+  //     ?.flatMap((vital) => (vital ? vital.bloodPresures : []))
+  //     .flat();
 
-    const data = values
-      ?.filter((bloodPressure) => bloodPressure?.type === "diastolic")
-      ?.map((bloodpressure) => {
-        return {
-          count: bloodpressure.measurement?.value,
-          date: bloodpressure.date,
-        };
-      }) as IStat[];
-    return data;
-  }
+    // const data = values
+    //   ?.filter((bloodPressure) => bloodPressure?.type === "diastolic")
+    //   ?.map((bloodpressure) => {
+    //     return {
+    //       count: bloodpressure.measurement?.value,
+    //       date: bloodpressure.date,
+    //     };
+    //   }) as IStat[];
+    // return data;
+  // }
 
-  get diastolicData() {
-    const data = groupData(this.lowerBandStats, this.order);
-    return data;
-  }
+  // get diastolicData() {
+  //   const data = groupData(this.lowerBandStats, this.order);
+  //   return data;
+  // }
 
   get labels() {
     return getDatesAsChartLabel(this.sortedVitals);
@@ -149,14 +166,14 @@ export default class BloodChartt extends Vue {
   }
 
   get systolicAverage() {
-    const values = this.systolicRaw?.map((a) => a.count);
+    const values = this.systolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
   get diastolicAverage() {
-    const values = this.diastolicRaw?.map((a) => a.count);
+    const values = this.diastolicRaw?.map((a:any) => a.count);
     if (values?.length === 0) return 0;
-    return Math.ceil(values.reduce((a, b) => a + b) / values?.length);
+    return Math.ceil(values?.reduce((a:any, b:any) => a + b) / values?.length);
   }
 
   chart!: Chart;
@@ -168,41 +185,56 @@ export default class BloodChartt extends Vue {
 
   onOrder(option: "Today" | "WTD" | "MTD" | "YTD") {
     this.order = option;
-    this.chartData;
+    // this.chartData;
+    this.fetchData(this.$route.params.id.toString())
     this.diastolicChartData;
     this.systolicChartData;
   }
 
   @Watch("order")
   orderUpdated() {
-    this.chartData;
+    // this.chartData;
     this.diastolicChartData;
     this.systolicChartData;
     this.mountChart();
   }
 
+  get filteredItems() {
+    for (var key in this.raw) {
+        var obj = this.raw[key];
+        return obj
+    }
+  }
+
   async fetchData(patientId: string) {
+    const [splitDate] = this.startDate.split('T');
+   const date = splitDate;
+   const [splitDate2] = this.date.split('T');
+   const date2 = splitDate2;
     try {
       const response = await cornieClient().get(
-        `api/v1/vitals/bp/stats/${patientId}`
+        `api/v1/health-trends/bp-stats/${patientId}`,
+        {
+         start: date2,
+          end: date,
+        }
       );
-      this.diastolicRaw = response?.data?.diastolicData?.map((record: any) => {
-        return { count: record.value, date: record.date };
-      });
-      this.systolicRaw = response?.data?.systolicData?.map((record: any) => {
-        return { count: record.value, date: record.date };
-      });
       this.raw = response.data;
 
-      // this.raw = response.data?.map((item: any) => {
-      //   return { count: item.value, date: item.date }
+      const diastolic = response.data.diastolic
+      this.diastolicRaw = Object.entries(diastolic).map((key, value) => {
+          return {count: value, date: key}
+      })
+
+       const systolic = response.data.systolic
+      this.systolicRaw = Object.entries(systolic).map((key, value) => {
+          return {count: value, date: key}
+      })
+    } catch (error:any) {
+      // window.notify({
+      //   msg: error.response.data.message,
+      //   status: "error",
       // });
-      // this.chartData; //this line just  gets the vuejs reactivity system to refresh
-    } catch (error) {
-      window.notify({
-        msg: "Failed to fetch blood pressure chart data",
-        status: "error",
-      });
     }
   }
 
@@ -212,7 +244,7 @@ export default class BloodChartt extends Vue {
 
   mountChart() {
     const ctx: any = this.$refs.chart;
-    ctx.height = 200;
+    ctx.height = 130;
     this.chart?.destroy();
     this.chart = new Chart(ctx, {
       type: "line",
@@ -228,6 +260,7 @@ export default class BloodChartt extends Vue {
             // data: [90, 250, 150, 408, 200, 180],
             data: this.systolicChartData ? this.systolicChartData.dataSet : [],
             borderColor: "rgba(17, 79, 245, 1)",
+            backgroundColor:"rgba(17, 79, 245, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -241,7 +274,8 @@ export default class BloodChartt extends Vue {
             data: this.diastolicChartData
               ? this.diastolicChartData.dataSet
               : [],
-            borderColor: "rgba(254, 77, 60, 1)",
+            borderColor: "rgba(247, 181, 56, 1)",
+            backgroundColor:"rgba(247, 181, 56, 1)",
             borderWidth: 2,
             tension: 0.1,
           },
@@ -249,6 +283,7 @@ export default class BloodChartt extends Vue {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         scales: {
           x: {
             grid: {

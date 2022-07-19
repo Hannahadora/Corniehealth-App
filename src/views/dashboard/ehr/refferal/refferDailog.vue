@@ -549,7 +549,7 @@
   </cornie-dialog>
   <reference-modal
     :conditions="patientConditions"
-    :allergy="allergy"
+    :allergy="allergys"
     @show:modal="showRef"
     v-model="showRefModal"
   />
@@ -595,12 +595,14 @@ import IPractitioner from "@/types/IPractitioner";
 import FhirInput from "@/components/fhir-input.vue";
 import { ICondition } from "@/types/ICondition";
 import plusIcon from "@/components/icons/plus.vue";
+import IAllergy from "@/types/IAllergy";
 
 const condition = namespace("condition");
 const patients = namespace("patients");
 const userStore = namespace("user");
 const otherrequest = namespace("otherrequest");
 const dropdown = namespace("dropdown");
+const allergy = namespace("allergy");
 
 const measurable = {
   unit: "",
@@ -675,6 +677,13 @@ export default class Referral extends Vue {
   @condition.Action
   fetchPatientConditions!: (patientId: string) => Promise<void>;
 
+  @allergy.State
+  allergys!: IAllergy[];
+
+  @allergy.Action
+  fetchAllergys!: (patientId: string) => Promise<void>;
+
+
   @condition.State
   conditions!: { [state: string]: ICondition[] };
 
@@ -691,7 +700,7 @@ export default class Referral extends Vue {
   @otherrequest.Mutation
   setPatientRequests!: any;
 
-  allergy = [];
+
   range = "";
   reasonReference = "";
   showRefModal = false;
@@ -915,15 +924,10 @@ export default class Referral extends Vue {
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
   }
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.patientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data.result;
-  }
+
 
   async created() {
+    await this.fetchAllergys(this.patientId);
     this.setRequest();
     this.setRequestModel();
     this.fetchLocation();
@@ -931,7 +935,6 @@ export default class Referral extends Vue {
     this.fetchPatients();
     this.fetchAllPatients();
     this.fetchPatientConditions(this.patientId);
-    this.fetchAllergy();
     this.fetchPractitioner();
     const data = await this.getDropdowns("availability");
     const data2 = await this.getDropdowns("practitioner");

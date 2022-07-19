@@ -11,12 +11,17 @@
   </div>
    <special-modal
     v-model="showSpecialModal"
+    @special-added="specialadded"
   />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import SpecialModal from './newspecial.vue';
+import ISpecial from "@/types/ISpecial";
+import { namespace } from "vuex-class";
+import IPractitioner from "@/types/IPractitioner";
 
+const special = namespace("special");
 @Options({
   components: {
       SpecialModal
@@ -24,5 +29,12 @@ import SpecialModal from './newspecial.vue';
 })
 export default class SpecialEmptyState extends Vue {
     showSpecialModal = false;
+
+    @special.Action
+  fetchSpecials!: () => Promise<void>;
+
+   async specialadded(){
+     await this.fetchSpecials();
+  }
 }
 </script>

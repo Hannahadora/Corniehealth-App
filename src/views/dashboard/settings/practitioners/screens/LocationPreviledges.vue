@@ -1,6 +1,6 @@
 <template>
   <screen-header :properties="properties">
-    Location & Previledges
+    Location & Privileges
   </screen-header>
   <div v-if="properties">
     <div class="grid grid-cols-4 gap-4">
@@ -51,55 +51,55 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, setup, Vue } from "vue-class-component";
-import ScreenHeader from "./Header.vue";
-import CalendareIcon from "@/components/icons/calendar.vue";
-import { Prop } from "vue-property-decorator";
-import { countryCodes } from "@/plugins/countrycodes";
+  import CalendareIcon from "@/components/icons/calendar.vue";
+  import { countryCodes } from "@/plugins/countrycodes";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import ScreenHeader from "./Header.vue";
 
-@Options({
-  name: "PractitionerBio",
-  components: {
-    ScreenHeader,
-    CalendareIcon,
-  },
-})
-export default class LocationPreviledges extends Vue {
-  @Prop({ default: {} })
-  properties!: any;
+  @Options({
+    name: "PractitionerBio",
+    components: {
+      ScreenHeader,
+      CalendareIcon,
+    },
+  })
+  export default class LocationPreviledges extends Vue {
+    @Prop({ default: {} })
+    properties!: any;
 
-  get codes() {
-    return countryCodes
-      .sort((a, b) => {
-        if (a.name > b.name) return 1;
-        if (a.name < b.name) return -1;
-        return 0;
-      })
-      .map((country) => ({
-        ...country,
-        display: country.dialCode,
-        code: country.dialCode,
-        flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
-      }));
+    get codes() {
+      return countryCodes
+        .sort((a, b) => {
+          if (a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          return 0;
+        })
+        .map((country) => ({
+          ...country,
+          display: country.dialCode,
+          code: country.dialCode,
+          flag: `https://flagcdn.com/60x45/${country.isoCode.toLowerCase()}.png`,
+        }));
+    }
+
+    get flag() {
+      if (!this.codes.length && this.properties.nationality === "") return "";
+      return this.codes.find(
+        (country: any) =>
+          country.name?.toLowerCase() ===
+          this.properties.nationality?.toLowerCase()
+      )?.flag;
+    }
+
+    getLocationName(id: string) {
+      const pt = this.properties.locations.find((i: any) => i.id === id);
+      return pt ? `${pt.name}` : "";
+    }
+
+    getRoleName(id: string) {
+      const pt = this.properties.roles.find((i: any) => i.id === id);
+      return pt ? `${pt.name}` : "";
+    }
   }
-
-  get flag() {
-    if (!this.codes.length && this.properties.nationality === "") return "";
-    return this.codes.find(
-      (country: any) =>
-        country.name?.toLowerCase() ===
-        this.properties.nationality?.toLowerCase()
-    )?.flag;
-  }
-
-  getLocationName(id: string) {
-    const pt = this.properties.locations.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
-  }
-
-  getRoleName(id: string) {
-    const pt = this.properties.roles.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
-  }
-}
 </script>

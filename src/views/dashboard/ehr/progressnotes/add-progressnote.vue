@@ -872,7 +872,7 @@ export default class AddProgressNote extends Vue {
   // fetchOtherrequests!: () => Promise<void>;
 
   @otherrequest.Action
-  fetchOtherrequestsById!: (patientId: string) => Promise<void>;
+  fetchDiagnosticById!: (patientId: string) => Promise<void>;
 
   @request.State
   patients!: any[];

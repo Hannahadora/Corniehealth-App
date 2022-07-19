@@ -32,7 +32,7 @@
             placeholder="--Enter--"
             :rules="required"
             v-model="roomNumber"
-            :type="number"
+            type="number"
           />
 
           <div class="mb-5">
@@ -67,7 +67,6 @@
                 name="checkbox"
                 value="Yes"
                 checked
-                :readonly="viewOnly"
                 v-model="availability"
               />
             </div>
@@ -76,7 +75,6 @@
                 label="No"
                 value="No"
                 name="checkbox"
-                :readonly="viewOnly"
                 v-model="availability"
               />
             </div>

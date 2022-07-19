@@ -15,11 +15,11 @@
           >
           <cornie-table :columns="rawHeaders" v-model="sortRefress" :listmenu="true" :check="false">
             <template #actions="{ item }">
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showEditRefree(item.id)">
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showEditRefree(item)">
                <edit-icon class="text-purple-700 fill-current"/>
                 <span class="ml-3 text-xs">Edit</span>
               </div>
-              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+              <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" v-if="item.id" @click="deleteItem(item.id)">
                 <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>
               </div>
@@ -40,6 +40,7 @@
         @refree-added="refreeadded"
         v-model="nominateRefree"
         :id="id"
+        :selectedItem="selectedItem"
         @refree="pushRefree"
         :refreeId="refreeId"
 
@@ -127,6 +128,7 @@ export default class DirectorState extends Vue {
   nominateRefree = false;
   newRefrees = [] as any;
   showExisitingPractioner = false;
+  selectedItem = {};
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -170,10 +172,6 @@ export default class DirectorState extends Vue {
       const directors = this.refrees?.map((director: any) => {
       return {
         ...director,
-        // action: director?.id,
-        // name: director?.fullName,
-        // date: Date.now()
-
       };
     });
    return directors; 
@@ -182,9 +180,6 @@ export default class DirectorState extends Vue {
       const directors = this.newRefrees?.map((director: any) => {
       return {
         ...director,
-        // action: director?.id,
-        // name: director?.fullName,
-        // date: Date.now()
 
       };
     });
@@ -196,18 +191,23 @@ export default class DirectorState extends Vue {
       this.showExisitingPractioner  = true;
   }
 
-  async showEditRefree(value:string){
-    this.refreeId = value;
+  async showEditRefree(value:any){
+    this.selectedItem = value;
+    this.refreeId = value.id;
     this.nominateRefree = true;  
   }
 
   get getLength() {
-    const percentage = this.refrees.length;
-    if (percentage > 4) {
+    if(!this.id && this.newRefrees.length > 0){
       return false
-    }
-    if (percentage < 4) {
-       return true
+    }else{
+      const percentage = this.refrees.length;
+      if (percentage > 4) {
+        return false
+      }
+      if (percentage < 4) {
+         return true
+      }
     }
   }
  

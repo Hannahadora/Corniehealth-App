@@ -71,6 +71,13 @@ export interface Insurance {
   mainPolicyHolder: string;
   groupPolicyNo: string;
   patientId: string;
+  payor: string;
+  priority: string;
+  description: string;
+  coverage: string;
+  excess: string;
+  endDate: string;
+  policyStartDate: string;
 }
 
 export interface RelatedPerson {
@@ -136,9 +143,16 @@ export interface IPatient {
   accountType?: "individual" | "family" | "corporate";
   vip?: boolean;
   insurances?: Insurance[];
+  relatedPerson: RelatedPerson[];
+  nationality: string;
   deceased?: boolean;
   demographicsData?: Demographics;
   belongsToPractice?: boolean;
   profilePhoto?: string;
+  genotype: string;
+  numberOfChildren: string;
+  multipleBirth: boolean;
+  bloodGroup: string;
   authorizedPractitioners?: authorizedPractitioners[];
+  associates: [];
 }

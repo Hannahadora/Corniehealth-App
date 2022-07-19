@@ -29,7 +29,7 @@
        <div class="flex float-left justify-start">
       </div> 
 
-      <div class="w-full">
+      <div class="w-full" v-if="!showDate">
         <span class="flex space-x-2 justify-end float-right">
             <!-- <dots-horizontal-icon /> -->
           <span class="text-sm text-primary mt-1 font-bold flex space-x-2">
@@ -37,13 +37,13 @@
             Filter
           </span>
           <cornie-menu top="30px" class="cursor-pointer">
-                  <template #activator="{ on }">
+                  <!-- <template #activator="{ on }">
                     <icon-btn v-on="on">
                       <span class="bg-danger flex text-white rounded-lg py-1.5 px-4 text-sm">
                           <span class="text-lg -mt-1.5 mr-1">+</span> Create
                         </span>
                     </icon-btn>
-                  </template>
+                  </template> -->
                   <cornie-card-text>
                       <slot name="actions"  />
                   </cornie-card-text>
@@ -102,6 +102,9 @@ export default class Tabs extends Vue {
 
   @Prop({ type: String, default: "" })
   dDate!: string;
+
+  @Prop({ type: Boolean, default: false })
+  showDate!: boolean;
 
   isActive(index: number): boolean {
     return index == this.syncedValue;

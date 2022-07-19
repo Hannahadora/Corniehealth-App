@@ -1,30 +1,21 @@
 <template>
   <div>
-    <div class="pb-4 mt-6 border-b border-gray-300">
-      <p class="text-xl font-bold">{{ $route.name }}</p>
-    </div>
     <div
       class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
       v-if="empty"
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
-      <h4 class="text-black text-center">There is no record.</h4>
-      <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
-        @click="showRoom = true"
-      >
-        Add New
-      </cornie-btn>
+      <h4 class="text-black text-center">There is no dispensed medication.</h4>
     </div>
     <div class="w-full pb-7" v-else>
-      <div class="grid grid-cols-3 gap-8 my-8">
+      <div class="grid grid-cols-3 gap-8 mt-8 pb-20">
         <div
           class="bg-white px-4 py-6 c-shadow flex items-center justify-between rounded-2xl"
         >
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Rx</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalRx }}
+              {{ dispenseSummary?.totalOrders || 0 }}
             </p>
           </div>
           <div>
@@ -37,7 +28,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Dispensed</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalDispensed }}
+              {{ dispenseSummary?.totalDispensed || 0 }}
             </p>
           </div>
           <div>
@@ -50,7 +41,7 @@
           <div>
             <p class="mb-1 text-sm" style="color: #667499">Total Volume</p>
             <p class="text-2xl font-bold" style="color: #114ff5">
-              {{ totalVolume }}
+              N {{ dispenseSummary?.totalVolume }}
             </p>
           </div>
           <div>
@@ -58,25 +49,123 @@
           </div>
         </div>
       </div>
-
-      <cornie-table :columns="rawHeaders" v-model="items" class="mt-28">
+      <div class="flex justify-center space-x-6 w-full -mb-10">
+        <span class="flex space-x-4">
+          <substituted class="mr-2" /> Substitution Permitted
+        </span>
+        <span class="flex space-x-4">
+          <substitution-allowed class="mr-2" /> Substituted
+        </span>
+      </div>
+      <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="viewItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <eye-yellow class="text-blue-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             @click="showItem(item.id)"
           >
-            <edit-icon class="text-danger fill-current" />
+            <update-status class="text-danger fill-current" />
             <span class="ml-3 text-xs">Update Status</span>
           </div>
         </template>
+        <template #dispenseId="{ item }">
+          <p>{{ item.identifier }}</p>
+          <p class="text-gray-400">
+            {{ new Date(item.createdAt).toLocaleDateString() }}
+          </p>
+        </template>
+        <template #subject="{ item }">
+          <p>{{ item.patient.firstname + "" + item.patient.lastname }}</p>
+          <p class="text-gray-400">{{ item.patient.mrn }}</p>
+        </template>
+        <template #medication="{ item }">
+          <div class="flex space-x-3">
+            <div>
+              <p>{{ item.genericName }}</p>
+
+              <p class="text-gray-400">{{ item.form }} days</p>
+            </div>
+            <substituted class="mr-2" v-if="item.substitutionAllowed" />
+            <substitution-allowed v-else class="mr-2" />
+          </div>
+        </template>
+        <template #unitPrice="{ item }">
+          <p>{{ item.unitPrice }}/day</p>
+        </template>
+        <template #quantity="{ item }">
+          <span>
+            {{ item.quantity }}
+          </span>
+        </template>
+        <template #amount="{ item }">
+          <p>{{ item.amount }} Days</p>
+        </template>
+        <template #status="{ item }">
+          <div class="flex items-center">
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'draft'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
+              v-if="item.status == 'on-hold' || item.status == 'substituted'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-500 p-1 rounded"
+              v-if="item.status == 'active'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-gray-300 p-1 rounded"
+              v-if="item.status == 'unknown'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-green-100 text-green-400 p-1 rounded"
+              v-if="item.status == 'completed' || item.status == 'ordered'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-red-100 text-red-600 p-1 rounded"
+              v-if="
+                item.status == 'revoked' ||
+                item.status == 'cancelled' ||
+                item.status == 'stopped'
+              "
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-purple-300 text-purple-600 p-1 rounded"
+              v-if="item.status == 'entered-in-error'"
+            >
+              {{ item.status }}
+            </p>
+            <p
+              class="text-xs bg-blue-300 text-blue-600 p-1 rounded"
+              v-if="
+                item.status == 'do-not-perform' || item.status == 'dispensed'
+              "
+            >
+              {{ item.status }}
+            </p>
+          </div>
+        </template>
       </cornie-table>
+
       <div class="flex justify-between m-3">
         <div class="flex justify-around">
           <p class="text-sm">show</p>
@@ -102,10 +191,18 @@
       </div>
     </div>
 
-    <dispense-modal
-      :id="typeId"
-      v-model="openDispense"
-      @closesidemodal="closeModal"
+    <status-modal
+      :id="requestId"
+      v-model="statusModal"
+      :request="request"
+      @status-updated="closeModal"
+    />
+
+    <view-dispense
+      :id="requestId"
+      :request="request"
+      :organization="organizationInfo"
+      v-model="viewDispenseDetails"
     />
   </div>
 </template>
@@ -115,6 +212,8 @@ import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import PrintIcon from "@/components/icons/print.vue";
+import Substituted from "@/components/icons/substituted.vue";
+import SubstitutionAllowed from "@/components/icons/substitution-allowed.vue";
 import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
@@ -127,15 +226,23 @@ import PlusIcon from "@/components/icons/add.vue";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EditIcon from "@/components/icons/edit.vue";
+import EyeYellow from "@/components/icons/eye-yellow.vue";
+import UpdateStatus from "@/components/icons/update-status.vue";
 import ArrowLeftIcon from "../components/arrowleft.vue";
 import ArrowRightIcon from "../components/arrow-right.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { first, getTableKeyValue } from "@/plugins/utils";
 
-import DispenseModal from './DispenseModal.vue'
+import StatusModal from "./UpdateStatus.vue";
+import ViewDispense from "./ViewDispense.vue";
 
-const location = namespace("location");
+import IMedicationReq from "@/types/ImedicationReq";
+import IDispenseInfo from "@/types/IDispenseInfo";
+import { IOrganization } from "@/types/IOrganization";
+
+const dispense = namespace("dispense");
+const request = namespace("request");
+const user = namespace("user");
+const organization = namespace("organization");
 
 @Options({
   components: {
@@ -150,99 +257,285 @@ const location = namespace("location");
     PlusIcon,
     IconInput,
     DeleteIcon,
-    EditIcon,
+    EyeYellow,
+    UpdateStatus,
     ColumnFilter,
     TableOptions,
+    Substituted,
+    SubstitutionAllowed,
 
     ArrowLeftIcon,
     ArrowRightIcon,
-    DispenseModal
+    StatusModal,
+    ViewDispense,
   },
 })
 export default class DISPENSE extends Vue {
   query = "";
-  typeId = "";
-  openDispense = false;
+  request = "";
+  organization = "";
+  requestId = "";
+  statusModal = false;
+  viewDispenseDetails = false;
   practitioner = [] as any;
   location = [] as any;
   updatedBy = "";
   currentStatus = "";
   showStatusModal = false;
-  totalRx = 0;
-  totalDispensed = 0;
-  totalVolume = 0;
+  dispense = <any>[];
+  dispenseSummary = <any>{};
 
-  allDispenses = [{}];
+  // get patientId() {
+  //   return this.$route.params.id as string
+  // }
+
+  @request.State
+  patients!: any[];
+
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
+  @request.State
+  practitioners!: any[];
+
+  @request.Action
+  getPatients!: () => Promise<void>;
+
+  @user.Getter
+  authCurrentLocation!: any;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
   rawHeaders = [
     {
-      title: "DISPENSE ID",
+      title: "dispense id",
       key: "dispenseId",
       show: true,
+      noOrder: true,
     },
+    { title: "subject (PATIENT)", key: "subject", show: true, noOrder: true },
     {
-      title: "SUBJECT (PATIENT)",
-      key: "date",
-      show: true,
-    },
-    {
-      title: "MEDICATION",
+      title: "medication",
       key: "medication",
       show: true,
+      noOrder: true,
     },
     {
-      title: "UNIT PRICE",
-      key: "unitPrice",
+      title: "",
+      key: "drug",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "unit price",
+      key: "unitprice",
       show: true,
+      noOrder: true,
     },
     {
-      title: "QUANNTITY",
+      title: "quantity",
       key: "quantity",
       show: true,
+      noOrder: true,
     },
     {
-      title: "AMOUNT",
+      title: "amount",
       key: "amount",
       show: true,
+      noOrder: true,
     },
     {
-      title: "STATUS",
+      title: "status",
       key: "status",
       show: true,
     },
+    {
+      title: "course of therapy",
+      key: "course",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "substitution?",
+      key: "substitution",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "reason code",
+      key: "reasoncode",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "refill?",
+      key: "refill",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "dispense interval",
+      key: "interval",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "validity period",
+      key: "period",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "no of refill",
+      key: "refillno",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "quantity",
+      key: "qunatity",
+      show: false,
+      noOrder: true,
+    },
+    {
+      title: "supply duration",
+      key: "duration",
+      show: false,
+      noOrder: true,
+    },
   ];
 
-  get items() {
-    const allDispenses = this.allDispenses.map((dispense) => {
-      (dispense as any).createdAt = new Date(
-        (dispense as any).createdAt
-      ).toLocaleDateString("en-US");
-      return {
-        ...dispense,
-        // action: dispense.id,
-        keydisplay: "XXXXXXX",
-        dispenseId: "-----",
-        subject: "-----",
-        medication: "-----",
-        unitPrice: "-----",
-        qantity: "-----",
-        amount: "-----",
-        status: "Active",
-      };
-    });
-    if (!this.query) return allDispenses;
-    return search.searchObjectArray(allDispenses, this.query);
-  }
-
-   showItem(value: string) {
-    this.openDispense = true;
-    this.typeId = value;
+  get locationId() {
+    return this.authCurrentLocation;
   }
   
+  get empty() {
+    return this.dispense.length < 1
+  }
+
+  get headers() {
+    const preferred =
+      this.preferredHeaders.length > 0
+        ? this.preferredHeaders
+        : this.rawHeaders;
+    const headers = preferred.filter((header) => header.show);
+    return [...first(4, headers), { title: "", key: "action", image: true }];
+  }
+
+  get items() {
+    const combined = this.dispense.map(this.medicationRequests);
+    const medicationRequest = combined.flatMap((value: any) => value);
+
+    if (!this.query) return medicationRequest;
+    return search.searchObjectArray(medicationRequest, this.query);
+  }
+
+  medicationRequests(request: any) {
+    const { medications, ...rest } = request;
+    return medications.map((medication: any) => {
+      return {
+        ...medication,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        createdAt: new Date(request.createdAt).toLocaleDateString(),
+      };
+    });
+  }
+  getPatientName(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+  }
+  getPatientMrn(id: string) {
+    const pt = this.patients.find((i: any) => i.id === id);
+    return pt ? `${pt.mrn}` : "";
+  }
+
+  //  async createMapper() {
+  //   this.medicationMapper = await mapDisplay(
+  //     "http://hl7.org/fhir/ValueSet/medication-codes"
+  //   );
+
+  showItem(value: string) {
+    this.statusModal = true;
+    this.requestId = value;
+    this.dispense.filter((el: any) => {
+      if (el.id == value) {
+        this.request = el;
+      }
+    });
+    // this.setRequest();
+  }
+
+  viewItem(value: string) {
+    this.viewDispenseDetails = true;
+    this.requestId = value;
+    this.dispense.filter((el: any) => {
+      if (el.id == value) {
+        this.request = el;
+      }
+    });
+    // this.setRequest();
+    this.fetchOrgInfo();
+  }
+
+  async setRequest() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.requestId}`
+      );
+      this.request = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching request details",
+        status: "error",
+      });
+    }
+  }
+
+  async fetchMedReq() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/pharmacy/dispensed-medication/${this.locationId}`
+      );
+      this.dispense = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching dispensed medications",
+        status: "error",
+      });
+    }
+  }
+
+  async fetchDispenseSummary() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/pharmacy/dispensed-medication/${this.locationId}/summary`
+      );
+      this.dispenseSummary = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching dispensed medications summary",
+        status: "error",
+      });
+    }
+  }
+
   closeModal() {
-    this.openDispense = false;
+    this.statusModal = false;
+    this.fetchMedReq();
+  }
+
+  async created() {
+    await this.fetchMedReq();
+    await this.fetchDispenseSummary();
+
+    if (this.dispense.length < 1) this.fetchMedReq();
+
+    if (!this.organizationInfo) this.fetchOrgInfo();
   }
 }
 </script>

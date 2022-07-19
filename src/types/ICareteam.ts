@@ -11,27 +11,22 @@ export default interface ICareteam {
   };
   communication: Communication[];
   participants: Participants[];
+  reasonCode: string;
+  reasonReference: string;
+  note: string;
+  phone: string;
+  email: string;
 }
 
 export interface Participants {
-  id?: string;
-  name: string;
+  practitionerId: string;
+  deviceId: string;
   role: string;
   onBehalfOf: string;
   period: {
     start: string;
     end: string;
   };
-  reasonCode: string;
-  reasonReference: string;
-  managingOrganization: string;
-  phone: {
-    number: string;
-    dialCode: string;
-  };
-  email: string;
-  careTeamId?: string;
-  notes: string;
 }
 
 export interface Communication {

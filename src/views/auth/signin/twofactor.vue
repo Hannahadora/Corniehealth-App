@@ -1,27 +1,37 @@
 <template>
   <div class="block rounded-lg bg-white">
-    <form class="w-full h-full flex flex-col py-9 px-12">
+    <form
+      class="w-full h-full flex flex-col md:py-12 py-4 md:px-9 px-4"
+      @submit="submit"
+    >
       <div class="flex flex-col" v-if="requiresTwoFactor">
-        <h3 class="font-bold text-primary text-4xl mb-5">Sign-In Protection</h3>
-        <p class="block text-sm">
-          This helps us verify your identity. You can enable or disable this in
-          your profile account settings.
+        <h3 class="font-bold text-primary text-3xl mb-4">Sign-In Protection</h3>
+        <p class="block text-sm p-4" style="background: #f6f8f9">
+          Your admin has setup a mandatory use of 2FA for account Sign In. Enter
+          the 6 digits code sent to your account email to continue.
         </p>
       </div>
       <div class="flex flex-col mb-44" v-else>
         <h3 class="font-bold text-primary text-4xl mb-5">Sign-In Protection</h3>
-        <p class="block text-sm">2FA Verification not available</p>
+        <p class="block text-base">2FA Verification not available</p>
       </div>
-      <div class="flex flex-col w-full" v-if="requiresTwoFactor">
+      <div class="flex flex-col w-full my-12" v-if="requiresTwoFactor">
         <h3 class="font-bold text-primary text-lg">
-          1 of 2: Enter your 2FA Verification Code
+          Enter your 2FA Verification Code
         </h3>
         <span class="items-center flex">
           <multi-input :length="6" class="mt-2 w-full" v-model="token" />
-          <check-icon class="ml-2" />
+          <check-icon class="ml-2" v-if="verifiedSync" />
         </span>
+        <p class="mt-4 text-sm">
+          Didn’t receive code?
+          <span class="cursor-pointer text-danger">Resend</span>
+          <vue-countdown :time="300 * 1000" v-slot="{ minutes, seconds }">
+            {{ minutes }} : {{ seconds }}
+          </vue-countdown>
+        </p>
       </div>
-      <div class="flex flex-col mt-8 w-full" v-if="requiresSecurityQuestion">
+      <!-- <div class="flex flex-col mt-8 w-full" v-if="requiresSecurityQuestion">
         <h3 class="font-bold text-primary text-lg">
           2 of 2: Answer your security question
         </h3>
@@ -37,23 +47,14 @@
             Forgot Answer?
           </span>
         </label>
-      </div>
-      <div class="flex items-center justify-center mt-auto w-full">
+      </div> -->
+      <div class="flex items-center justify-center mt-auto w-full mt-12">
         <cornie-btn
-          v-if="requiresTwoFactor"
           type="submit"
           :loading="loading"
-          class="py-1 px-3 w-1/3 bg-danger text-white font-semibold rounded-lg"
+          class="py-1 px-3 w-full bg-danger text-white font-semibold rounded-lg"
         >
           Submit
-        </cornie-btn>
-        <cornie-btn
-          else
-          @click="$router.push('/signup')"
-          type="button"
-          class="py-1 px-3 w-1/3 bg-gray-600 text-white font-semibold rounded-lg"
-        >
-          Back
         </cornie-btn>
       </div>
     </form>
@@ -61,30 +62,40 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 import MultiInput from "@/components/multi-input.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CheckIcon from "@/components/icons/check.vue";
 import store from "@/store";
 import { quantumClient } from "@/plugins/http";
+import VueCountdown from "@chenfengyuan/vue-countdown";
+import { fetchCornieData } from "@/plugins/auth";
 
 @Options({
   components: {
     MultiInput,
     CornieInput,
     CheckIcon,
+    VueCountdown,
   },
 })
 export default class TwoFactor extends Vue {
+
   get requiresSecurityQuestion() {
     return store.state.user.requiresSecurityQuestion;
+    // return true;
   }
 
   get requiresTwoFactor() {
     return store.state.user.requiresTwoFactorAuth;
+    // return true;
   }
 
   token = "";
   loading = false;
+  countDown = 10;
+  verifiedSync = false;
+
   get twoFactorPayload() {
     return {
       userId: store.state.user.user.id,
@@ -96,6 +107,17 @@ export default class TwoFactor extends Vue {
     return {
       // this is not implemented by quantum yet so it is empty
     };
+  }
+
+  countDownTimer() {
+    if (this.countDown > 0) {
+      setTimeout(() => {
+        this.countDown -= 1;
+        this.countDownTimer();
+      }, 10000);
+    } else if ((this.countDown = 0)) {
+      this.$router.push("/login");
+    }
   }
 
   async submit() {
@@ -114,9 +136,15 @@ export default class TwoFactor extends Vue {
         "/org/security/2fa/token/verify",
         this.twoFactorPayload
       );
-      this.$router.replace("/dashboard");
+      this.verifiedSync = true;
+      await fetchCornieData()
+      this.$router.push("/dashboard");
     } catch (error) {
-      alert("An error occured, please try again");
+      console.log(error)
+      window.notify({
+        msg: "An error occured, please try again",
+        status: "error",
+      });
     }
   }
 
@@ -125,7 +153,8 @@ export default class TwoFactor extends Vue {
   }
 
   mounted() {
-    this.$emit('change-path')
+    this.$emit("change-path");
+    this.countDownTimer();
   }
 }
 </script>

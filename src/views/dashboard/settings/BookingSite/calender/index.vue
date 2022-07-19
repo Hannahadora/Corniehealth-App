@@ -1,12 +1,7 @@
 <template>
   <div class="w-full mb-8 p-6">
-    <accordion-component
-      class="shadow rounded-sm border-none text-primary mt-5"
-      title="Calendar"
-      :opened="true"
-    >
-      <div>
-        <v-form>
+    <accordion-component :opened="true" title="Calendar">
+       <template v-slot:default>
           <div class="w-full mt-8">
             <div class="flex space-x-10 w-full">
               <span class="text-sm text-black mt-3"
@@ -116,20 +111,19 @@
               </cornie-btn>
             </cornie-card-text>
           </cornie-card>
-        </v-form>
-      </div>
+       </template>
     </accordion-component>
 
-    <reminder-section class="mt-8" />
+    <accordion-component :opened="true" title="Reminders">
+       <template v-slot:default>
+            <reminder-section class="mt-8" />
+           
+         </template>
+    </accordion-component>
 
-    <accordion-component
-      class="shadow rounded-sm border-none text-primary mt-8"
-      title="Preferences"
-      :opened="true"
-    >
-      <div>
-        <v-form>
-          <div class="w-1/2">
+     <accordion-component :opened="true" title="Preferences">
+       <template v-slot:default>
+         <div class="w-1/2">
             <div class="grid grid-cols-2 gap-8 w-full mt-8">
               <date-time-picker
                 label="Appointment time hold limit"
@@ -205,9 +199,11 @@
               </cornie-btn>
             </cornie-card-text>
           </cornie-card>
-        </v-form>
-      </div>
+       </template>
     </accordion-component>
+
+    
+   
   </div>
 </template>
 <script lang="ts">
@@ -220,7 +216,7 @@ import EditIcon from "@/components/icons/edit.vue";
 import { namespace } from "vuex-class";
 import ICalendar from "@/types/ICalendar";
 import IPrefrence from "@/types/IPrefrence";
-import AccordionComponent from "@/components/dialog-accordion.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
@@ -236,6 +232,7 @@ import ReminderSection from "../reminder/index.vue";
 const level = namespace("OrgLevels");
 const calendar = namespace("calendar");
 const prefrence = namespace("prefrence");
+
 
 @Options({
   name: "CalenderPrefrence",
@@ -261,6 +258,12 @@ export default class CalenderExistingState extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
+
+  @Prop({ type: String, default: "" })
+  calenderid!: string;
+
+   @Prop({ type: String, default: "" })
+  prefereid!: string;
 
   @calendar.State
   calendars!: ICalendar[];
@@ -302,25 +305,27 @@ export default class CalenderExistingState extends Vue {
   waitlistThreshhold = "";
   showWaitlistInCalendar = "";
 
-  @Watch("CalendarId")
+  @Watch("calenderid")
   idChanged() {
     this.setCalendar();
+  }
+
+  @Watch("prefereid")
+  prefChanged() {
     this.setPreference();
   }
 
   async setPreference() {
-    const preference = await this.getPrefrenceById(this.items2 as any);
+    const preference = await this.getPrefrenceById(this.preferencesId);
     if (!preference) return;
-    this.appointmentTimeHoldLimit = preference.appointmentTimeHoldLimit;
-    this.showCancelledAppointmentInCalendar =
-      preference.showCancelledAppointmentInCalendar;
+    this.data.startDate = preference.appointmentTimeHoldLimit;
+    this.showCancelledAppointmentInCalendar = preference.showCancelledAppointmentInCalendar;
     this.waitlistThreshhold = preference.waitlistThreshhold;
     this.showWaitlistInCalendar = preference.showWaitlistInCalendar;
-    this.appointmentTimeHoldLimit = preference.appointmentTimeHoldLimit;
   }
 
   async setCalendar() {
-    const calendar = await this.getCalendarById(this.items as any);
+    const calendar = await this.getCalendarById(this.calendarsId);
     if (!calendar) return;
     this.onlineBookingRequirements.no = calendar.onlineBookingRequirements.no;
     this.onlineBookingRequirements.type =
@@ -348,15 +353,18 @@ export default class CalenderExistingState extends Vue {
   }
 
   get items() {
-    return this.calendars.map((calendar) => {
-      return (this.CalendarId = calendar.id as string);
-    });
+    return this.calendars.find((calendar) => calendar.id);
   }
+
   get items2() {
-    return this.prefrences.map((prefrence) => {
-      return (this.preferenceId = prefrence.id as string);
-    });
+    return this.prefrences.find((prefrence) => prefrence.id as string);
   }
+  get calendarsId(){
+      return this.items?.id as string
+  }
+    get preferencesId(){
+      return this.items2?.id as string
+    }
 
   done() {
     this.$emit("room-added");
@@ -422,9 +430,9 @@ export default class CalenderExistingState extends Vue {
   }
 
   async created() {
+     this.setCalendar();
+     this.setPreference();
     await this.fetchCalendars();
-    await this.setCalendar();
-    await this.setPreference();
     await this.fetchPrefrences();
   }
 }

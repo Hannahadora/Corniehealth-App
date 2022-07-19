@@ -115,19 +115,19 @@
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Payment Profile</p>
-                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.stauts  ?? 'N/A' }}</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.status  ?? 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.phone  ?? 'N/A' }}</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.contactInfo[0]?.phone ? `${selectedItem?.patient?.contactInfo[0]?.phone?.dialCode} ${selectedItem?.patient?.contactInfo[0]?.phone?.number}` : 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.email  ?? 'N/A' }}</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.contactInfo[0]?.email  ?? 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.address  ?? 'N/A' }}</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.contactInfo[0]?.primaryAddress  ?? 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                         </div>
                         <div class="mt-5"> 
                             <p class="text-gray-400 text-xs text-center">Save Earth, Go Paperless. Join so many other amazing providers and patients on CornieHealth.</p>
-                            <p class="text-center text-xs">Document Type: Medication Prescription|Rx ID: 234567 | Requester: Dr. Sarah Johnson | DateTime Created: 22 January 2022, 14:00</p>
+                            <p class="text-center text-xs">Document Type: Medication Prescription|Rx ID: {{ selectedItem?.identifier }} | Requester: {{ selectedItem?.requester }} | DateTime Created: {{ createdDate }}</p>
                         </div>
                     </div>
 
@@ -335,7 +335,11 @@ export default class printSection extends Vue {
     }
 
     get FormName(){
-        return this.selectedItem.forms.map((c:any) => c.name).toString();
+        return this.selectedItem?.forms?.map((c:any) => c.name).toString();
+    }
+
+    get createdDate() {
+      return new Date(this.selectedItem?.createdAt).toLocaleString();
     }
 
   async created() {

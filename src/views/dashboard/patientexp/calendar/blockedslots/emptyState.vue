@@ -9,12 +9,16 @@
       Create
     </button>
   </div>
-    <blocked-modal v-model="showblocked"/>
+    <blocked-modal v-model="showblocked"   @event-added="eventadded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import BlockedModal from "./addBlockSlots.vue";
+import { namespace } from "vuex-class";
+import {Slot} from '@/types/ISchedule';
 
+const schedulesStore = namespace("schedules");
+const user = namespace("user");
 @Options({
   components: {
     BlockedModal
@@ -22,5 +26,15 @@ import BlockedModal from "./addBlockSlots.vue";
 })
 export default class SlotsEmptyState extends Vue {
   showblocked = false;
+
+    @user.State
+   currentLocation!: string;
+
+    @schedulesStore.Action
+  singlePractitonerSlot!: (locationId: string) => Promise<void>;
+
+  async eventadded(){
+    if (this.currentLocation) await this.singlePractitonerSlot(this.currentLocation);
+  }
 }
 </script>

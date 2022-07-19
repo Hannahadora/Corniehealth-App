@@ -69,8 +69,9 @@
             </div>
           </div>
           <cornie-btn
+          :loading="loading"
             type="button"
-            @click="shownewupload"
+            @click="execUpload"
             class="rounded-full w-ful p-1 font-semibold mt-3 bg-danger text-white"
           >
             Upload Now
@@ -81,7 +82,7 @@
   </cornie-dialog>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { Options, Vue , setup} from "vue-class-component";
 import FileIcon from "@/components/icons/file-type.vue";
 import { uploadFile } from "@/plugins/uploader";
 import ProgressBar from "@/components/progress-bar.vue";
@@ -94,6 +95,14 @@ import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CheckIcon from "@/components/icons/authcheck.vue";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { reactive } from "@vue/reactivity";
+import { cornieClient } from "@/plugins/http";
+import { namespace } from "vuex-class";
+import { IOrganization } from "@/types/IOrganization";
+
+
+const organization = namespace("organization");
 
 @Options({
   name: "FileUploader",
@@ -120,6 +129,12 @@ export default class Uploader extends Vue {
   @Prop({ type: Boolean, default: false })
   shownewupladmodal!: boolean;
 
+  @organization.State
+  organizationInfo!: IOrganization;
+
+  @organization.Action
+  fetchOrgInfo!: () => Promise<void>;
+
   @PropSync("modelValue")
   fileUrl!: string;
 
@@ -128,7 +143,8 @@ export default class Uploader extends Vue {
   @PropSync("meta")
   metaData!: any;
 
-  file = {} as File;
+   
+   rawFile: any = {};
 
   xhr!: XMLHttpRequest;
 
@@ -137,10 +153,21 @@ export default class Uploader extends Vue {
   fileInfo = {};
 
   uploading = false;
+  loading = false;
+  fileURL = "";
   //shownewupladmodal= false;
 
-  get filename() {
-    return this.file?.name;
+  filename = "";
+
+  setup() {
+    const { url, placeholder, onChange } = useHandleImage();
+    return { img: reactive({ url, placeholder, onChange }) };
+  }
+
+  file = setup(() => useHandleImage());
+
+   idFileUploaded(fileUrl: string) {
+    this.fileURL = fileUrl;
   }
 
   handleDrop(e: any) {
@@ -150,57 +177,46 @@ export default class Uploader extends Vue {
     this.file = file;
   }
 
-  changed(e: any) {
-    const imageFile = e.target.files[0];
-    this.file = imageFile;
+  async changed(e: any) {
+     this.rawFile = e.target.files[0];
+     this.filename = e.target.files[0].name;
+
+     await this.file.onChange(e);
+     this.fileURL = this.file.url
+
   }
 
-  setmeta() {
-    const fileExt = this.file.type;
-    const fileSize = this.file.size;
-    const fileInfo = { fileSize, fileExt };
-    this.metaData = fileInfo;
-  }
-  // showupload(){
-  //   this.$emit('show-parent', this.fileInfo)
-  // }
   cancel() {
     this.uploading = false;
     this.xhr?.abort();
   }
-  shownewupload() {
-    //    this.$router.push(
-    //       "/dashboard/provider/settings/ratings"
-    //     );
-    this.$emit("show-rating");
-    this.shownewupladmodal = true;
-    this.show = false;
-  }
 
-  async upload() {
-    if (!this.file?.name) return;
-    this.uploading = true;
-    const url = await this.execUpload();
-    if (url) {
-      this.fileUrl = url as string;
-      this.setmeta();
+
+
+  get payload() {
+    return {
+      fileURL: this.fileURL,
+      organizationId: this.organizationInfo.id
     }
-    this.uploading = false;
-    this.progress = 0;
   }
 
   async execUpload() {
+    this.loading = true;
     try {
-      const file = uploadFile(
-        { file: this.file },
-        (progress) => (this.progress = progress),
-        (xhr) => (this.xhr = xhr)
-      );
-      window.notify({ msg: "File uploaded", status: "success" });
-      return file;
-    } catch (error) {
-      window.notify({ msg: "File not uploaded", status: "error" });
+      const response = await cornieClient().post("/api/v1/practice-images", this.payload);
+      if (response.success) {
+        this.loading = false;
+         window.notify({ msg: "File uploaded", status: "success" });
+        this.show = false;
+        this.$emit('get-images')
+      }
+    } catch (error: any) {
+       this.loading = false;
+     window.notify({ msg: "File not uploaded", status: "error" });
     }
+  }
+  async created(){
+    await this.fetchOrgInfo();
   }
 }
 </script>

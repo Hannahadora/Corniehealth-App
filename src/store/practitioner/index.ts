@@ -1,8 +1,13 @@
 import ObjectSet from "@/lib/objectset";
 import search from "@/plugins/search";
-import IPractitioner, {PractitionerLocationRole} from "@/types/IPractitioner";
+import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
 import { StoreOptions } from "vuex";
-import { deletePractitioner, fetchPractitioners, deleteLocationrole } from "./helper";
+import {
+  deleteLocationrole,
+  deletePractitioner,
+  fetchPractitioners,
+  getPractitioner,
+} from "./helper";
 
 interface PractitionerState {
   practitioners: IPractitioner[];
@@ -13,7 +18,7 @@ export default {
   namespaced: true,
   state: {
     practitioners: [],
-    practionerRole: []
+    practionerRole: [],
   },
   mutations: {
     setPractitioners(state, practitioners: IPractitioner[]) {
@@ -50,20 +55,25 @@ export default {
       const practitioners = await fetchPractitioners();
       ctx.commit("setPractitioners", practitioners);
     },
-    getPractitionerById(ctx, id: string) {
-      return ctx.state.practitioners.find(
-        practitioner => practitioner.id == id
-      );
+    async getPractitionerById(ctx, id: string) {
+      // return ctx.state.practitioners.find(
+      //   practitioner => practitioner.id == id
+      // );
+      const r = await getPractitioner(id);
+      console.log("r", r.data);
+      return r.data;
     },
     async deletePractitioner(ctx, id: string) {
       const deleted = await deletePractitioner(id);
       if (deleted) ctx.commit("deletePractitioner", id);
       return deleted;
     },
-    async deleteLocationrole(ctx, id: string) {
-      const deleted = await deleteLocationrole(id);
-      if (deleted) ctx.commit("deleteLocationrole", id);
-      return deleted;
+    async deleteLocationrole(ctx, { id, roleId }: any) {
+      if (!id) return;
+      const deleted = await deleteLocationrole(id, roleId);
+      if (!deleted) return false;
+      ctx.commit("deleteLocationrole", id, roleId);
+      return true;
     },
     async searchPractitioners(ctx, query: string) {
       if (!ctx.state.practitioners.length)
@@ -72,8 +82,11 @@ export default {
       return search.searchObjectArray(practitioners, query);
     },
     async getPractitionerRoleById(ctx, id: string) {
-      if (ctx.state.practionerRole.length < 1) await ctx.dispatch("fetchPractitioners");
-      return ctx.state.practionerRole.find(practitioner => practitioner.id == id);
+      if (ctx.state.practionerRole.length < 1)
+        await ctx.dispatch("fetchPractitioners");
+      return ctx.state.practionerRole.find(
+        practitioner => practitioner.id == id
+      );
     },
   },
 } as StoreOptions<PractitionerState>;

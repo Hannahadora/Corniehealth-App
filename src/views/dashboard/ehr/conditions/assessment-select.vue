@@ -1,10 +1,11 @@
 <template>
   <div>
     <cornie-input
-      v-bind="$attrs"
-      :modelValue="assessment"
+      label="Assessment"
+      v-model="assessment"
       readonly
-      @click="show = true"
+      :disabled="true"
+      @click.prevent="show = true"
     >
       <template #append-inner>
         <plus-icon class="fill-current text-danger" />
@@ -14,6 +15,7 @@
       v-model:selectedValue="selected"
       :patientId="patientId"
       v-model="show"
+      @asses-data="assesdata"
     />
   </div>
 </template>
@@ -45,8 +47,15 @@ export default class Assessment extends Vue {
 
   show = false;
 
-  get assessment() {
-    return this.selected?.id;
+  assessment = "";
+
+  // get assessment() {
+  //   return this.selected?.id;
+  // }
+
+  assesdata(value:any){
+    this.assessment = value.reference
+    this.$emit('asses-data', value)
   }
 }
 </script>

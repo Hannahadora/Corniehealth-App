@@ -3,10 +3,10 @@ import Period from "./IPeriod";
 export default interface IGroup {
   id?: string;
   state: string;
-  status: boolean;
+  status: string;
   type: string;
   name: string;
-  code: string;
+  code: null;
   quantity: string;
   managingEntity: string;
   characteristicsCode: string;
@@ -20,5 +20,9 @@ export default interface IGroup {
   memberPeriod: string;
   memberStatus: string;
   memberEntity: string;
-  members: IndexableObject
+  members: IndexableObject;
+  managingEntityType: string;
+  managingPractitionerId?: undefined;
+  managingOrganizationId?: undefined;
+  managingEntityName: string;
 }

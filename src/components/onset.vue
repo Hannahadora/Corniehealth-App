@@ -7,36 +7,47 @@
       <info-icon class="fill-current ml-2 text-primary" />
     </span>
     <div class="grid grid-cols-4 gap-4 mt-4 w-1/2">
-      <cornie-radio :name="name" v-model="type" value="age" label="Age" />
-       <cornie-radio :name="name" v-model="type" label="Range" value="range" />
-      <cornie-radio :name="name" v-model="type" value="period" label="Period" />
+      <cornie-radio :name="name" v-model="type" value="age" label="Age"  @click="setType(type)"/>
+       <cornie-radio :name="name" v-model="type" label="Range" value="range" @click="setType(type)"/>
+      <cornie-radio :name="name" v-model="type" value="string" label="Year" @click="setType(type)"/>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-5 w-full">
-      <cornie-input
-        v-model="timeable.age"
-        v-if="type == 'age'"
-        label="Age"
-        class=""
-      />
+     <div class="grid grid-cols-2 gap-4 mt-4" v-if="type == 'age'">
+       <div class="w-full -mt-1">
+          <span class="text-sm font-semibold mb-3">Age</span>
+          <div class="flex space-x-2 w-full">
+              <cornie-input
+              placeholder="0"
+              class="grow w-full"
+              :setfull="true"
+              v-model="newtimeable.ageValue"
+              />
+              <cornie-select
+                :items="['days', 'months', 'years']"
+                placeholder="Days"
+                class="w-32 mt-0.5 flex-none"
+                :setPrimary="true"
+                v-model="newtimeable.ageUnit"
+              />
+          </div>
+       </div>
+    </div>
+    <!-- <div class="grid grid-cols-2 gap-4 mt-5 w-full">
       <date-time-picker
-        v-model:date="timeable.startDate"
-        v-model:time="timeable.startTime"
+        v-model:date="newtimeable.startDate"
+        v-model:time="newtimeable.startTime"
         label="Start Date/Time"
         v-if="type == 'period'"
         width="w-11/12"
       />
       <date-time-picker
-        v-model:date="timeable.endDate"
-        v-model:time="timeable.endTime"
+        v-model:date="newtimeable.endDate"
+        v-model:time="newtimeable.endTime"
         label="End Date/Time"
         v-if="type == 'period'"
         width="w-11/12"
       />
-    </div>
+    </div> -->
      <div class="grid grid-cols-3 gap-3 mt-4 w-full" v-if="type == 'range'">
-      <!-- <cornie-input label="Unit of Measurement" v-model="timeable.unit" />
-      <cornie-input label="Range (min)" v-model="timeable.min" />
-      <cornie-input label="Range (max)" v-model="timeable.max" /> -->
        <div class="w-full -mt-1">
           <span class="text-sm font-semibold mb-3">Range (min)</span>
           <div class="flex space-x-2 w-full">
@@ -44,14 +55,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="timeable.min"
+              v-model="timeable.minValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="timeable.day"
+                v-model="newtimeable.minUnit"
               />
           </div>
        </div>
@@ -62,20 +73,20 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="timeable.max"
+              v-model="newtimeable.minValue"
               />
               <cornie-select
-                :items="['Days']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="timeable.day"
+                v-model="newtimeable.minUnit"
               />
           </div>
        </div>
     </div>
-    <div class="grid grid-cols-2 gap-3 mt-4" v-if="type == 'string'">
-      <cornie-input label="String" v-model="timeable.string" />
+    <div class="grid grid-cols-2 gap-3 mt-1" v-if="type == 'string'">
+      <cornie-input label="Year" v-model="newtimeable.string" />
     </div>
   </div>
 </template>
@@ -102,7 +113,13 @@ const timeable = {
   unit: "",
   min: "",
   max: "",
+  ageValue: "",
+  ageUnit:"",
   string: "",
+  minUnit: "",
+  minValue: "",
+  maxUnit : "",
+  maxValue: "",
 };
 
 @Options({
@@ -126,26 +143,45 @@ export default class TimeablePicker extends Vue {
   @PropSync("modelValue", { default: timeable })
   timeable!: ITimeable;
 
-  type: "age" | "period" | "date-time" | "range" | "string" = "age";
+  type = "age";
 
-  setType() {
-    const timeable = this.timeable;
-    if (timeable.date || timeable.time) this.type = "date-time";
-    else if (timeable.startDate || timeable.endDate) this.type = "period";
-    else this.type = "age";
-  }
+setType(type:string) {
+   if(type) return this.timeable = {};
 
-  mounted() {
-    this.setType();
   }
+  newtimeable = {
+  age: "",
+  day:"",
+  startDate: "",
+  startTime: "",
+  endDate: "",
+  endTime: "",
+  date: "",
+  time: "",
+  unit: "years",
+  min: "",
+  max: "",
+  ageValue: "",
+  ageUnit:"years",
+  string: "",
+  minUnit: "years",
+  minValue: "",
+  maxUnit : "years",
+  maxValue: "",
+};
 
-  @Watch("timeable", { deep: true })
-  timeChanged() {
-    this.setType();
-  }
+
+  // mounted() {
+  //   this.setType();
+  // }
+
+  // @Watch("timeable", { deep: true })
+  // timeChanged() {
+  //   this.setType();
+  // }
 
   created() {
-    if (!this.timeable) this.timeable = timeable;
+    if (!this.timeable) this.timeable = timeable as any;
   }
 
   get name() {
