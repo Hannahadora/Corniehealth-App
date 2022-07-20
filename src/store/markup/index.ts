@@ -1,6 +1,6 @@
 
 import IMarkup from "@/types/IMarkup";
-import ObjectSet from "@/lib/objectset";
+// import ObjectSet from "@/lib/objectset";
 import { StoreOptions } from "vuex";
 import {fetchMarkups, fetchMarkupId} from "./helper";
 
@@ -20,11 +20,14 @@ export default {
     setMarkups(state, markups: IMarkup[]) {
       state.markups = [...markups];
     },
-
-    setLocationMarkups(state, markups: IMarkup[]) {
-      const requestSet = new ObjectSet([...state.markups, ...markups], "id");
-      state.locationmarkups = [...requestSet];
+    setLocationMarkups(state, locationmarkups: any) {
+      state.locationmarkups = locationmarkups;
     },
+
+    // setLocationMarkups(state, markups: IMarkup[]) {
+    //   const requestSet = new ObjectSet([...state.markups, ...markups], "id");
+    //   state.locationmarkups = [...requestSet];
+    // },
   },
   actions: {
     async fetchLocationMarkups(ctx, locationId: string) {

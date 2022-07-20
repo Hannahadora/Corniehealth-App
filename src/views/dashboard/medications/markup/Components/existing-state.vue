@@ -1,17 +1,11 @@
 <template>
-  <span
-    class="flex flex-col w-full justify-center border-b border-grays font-bold mb-5 text-xl text-primary p-4 pb-2"
-  >
-    Markup & Discount
-  </span>
-
   <div class="w-full p-2 bg-gray-100 text-xs text-center rounded-md">
     Your Account Owner/Root Admin has set up the Markup and Allowable Discount
     shown below. You may wish to revise them for your own location. To revise,
     click on the edit tab to modify.
   </div>
 
-  <div class="w-full py-4 flex justify-end">
+  <!-- <div class="w-full py-4 flex justify-end">
     <button
       class="bg-danger text-base font-bold rounded text-white py-2 px-24"
       @click="
@@ -20,12 +14,15 @@
     >
       Edit
     </button>
-  </div>
+  </div> -->
   <cornie-table
     :columns="headers"
     v-model="items"
     :check="false"
-    :showActions="false"
+      :listmenu="true"
+      :menushow="false"
+      :showActions="true"
+      :editRow="true"
   >
   </cornie-table>
 </template>

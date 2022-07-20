@@ -21,8 +21,8 @@
     </div>
     <div class="grid grid-cols-2 gap-4 mt-5 w-full" v-if="type == 'date'">
       <date-time-picker
-        v-model:date="timeable.date"
-        v-model:time="timeable.time"
+        v-model:date="measurable.date"
+        v-model:time="measurable.time"
         label="Date/Time"
         width="w-11/12"
       />
@@ -35,28 +35,28 @@
             placeholder="0"
             class="grow w-full"
             :setfull="true"
-            v-model="timeable.ageValue"
+            v-model="measurable.age"
           />
           <cornie-select
             :items="['Days', 'Months', 'Years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
-            v-model="timeable.ageUnit"
+            v-model="measurable.ageUnit"
           />
         </div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4 mt-5 w-full" v-if="type == 'period'">
       <date-time-picker
-        v-model:date="timeable.startDate"
-        v-model:time="timeable.startTime"
+        v-model:date="measurable.startDate"
+        v-model:time="measurable.startTime"
         label="Start Date/Time"
         width="w-11/12"
       />
       <date-time-picker
-        v-model:date="timeable.endDate"
-        v-model:time="timeable.endTime"
+        v-model:date="measurable.endDate"
+        v-model:time="measurable.endTime"
         label="End Date/Time"
         width="w-11/12"
       />
@@ -69,14 +69,14 @@
             placeholder="0"
             class="grow w-full"
             :setfull="true"
-            v-model="timeable.minValue"
+            v-model="measurable.min"
           />
           <cornie-select
             :items="['Days', 'Months', 'Years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
-            v-model="timeable.minUnit"
+            v-model="measurable.minUnit"
           />
         </div>
       </div>
@@ -87,7 +87,7 @@
             placeholder="0"
             class="grow w-full"
             :setfull="true"
-            v-model="timeable.maxValue"
+            v-model="measurable.max"
           />
           <cornie-select
             :items="['Days', 'Months', 'Years']"
@@ -95,13 +95,13 @@
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
       
-            v-model="timeable.maxUnit"
+            v-model="measurable.maxUnit"
           />
         </div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3 mt-1" v-if="type == 'string'">
-      <cornie-input label="Year" v-model="timeable.string" />
+      <cornie-input label="Year" v-model="measurable.string" />
     </div>
   </div>
 </template>
@@ -113,28 +113,24 @@ import DateTimePicker from "@/components/date-time-picker.vue";
 import CornieTooltip from "@/components/CornieTooltip.vue";
 import InfoIcon from "@/components/icons/info.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { ITimeable } from "@/types/ITimeable";
+import IMeasurable from "@/types/IMeasurable";
 import CornieSelect from "@/components/cornieselect.vue";
 
-const timeable = {
-  age: "" || null,
-  day: "" || null,
-  startDate: "" || null,
-  startTime: "" || null,
-  endDate: "" || null,
-  endTime: "" || null,
-  date: "" || null,
-  time: "" || null,
-  unit: "" || null,
-  min: "" || null,
-  max: "" || null,
-  ageValue: "" || null,
-  ageUnit: "" || null,
-  string: "" || null,
-  minUnit: "" || null,
-  minValue: "" || null,
-  maxUnit: "" || null,
-  maxValue: "" || null,
+const measurable = {
+  age: "" ,
+  ageUnit: "",
+  day: "",
+  unit: "years",
+  min: "",
+  max: "",
+  string: "",
+  minUnit: "years",
+ maxUnit: "years",
+ date:"",
+ time:"",
+ endDate:"",
+ endTime:"",
+
 };
 
 @Options({
@@ -148,15 +144,17 @@ const timeable = {
     CornieSelect,
   },
 })
-export default class TimeablePicker extends Vue {
-  @Prop({ type: Object, default: timeable })
-  modelValue!: ITimeable;
+export default class MeasurablePicker extends Vue {
+  @Prop({ type: Object, default: measurable })
+  modelValue!: IMeasurable;
+
+  @PropSync("modelValue", { default: measurable })
+  measurable!: IMeasurable;
 
   @Prop({ type: String })
   label!: string;
 
-  @PropSync("modelValue", { default: timeable })
-  timeable!: ITimeable;
+
 
   //type: "date" | "age" | "period" | "range" | "string" = "date";
 
@@ -171,7 +169,7 @@ export default class TimeablePicker extends Vue {
   // }
 
   setType(type:string) {
-   if(type) return this.timeable = {};
+   if(type) return this.measurable = {};
   }
   // mounted() {
   //   this.setType();
@@ -183,12 +181,12 @@ export default class TimeablePicker extends Vue {
   // }
 
   created() {
-    if (!this.timeable) this.timeable = timeable as any;
+    if (!this.measurable) this.measurable = measurable as any;
   }
 
   get name() {
     const id = Math.random().toString(36).substring(2, 9);
-    return `timeable-${id}`;
+    return `measurable-${id}`;
   }
 }
 </script>

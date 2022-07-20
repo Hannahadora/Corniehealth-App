@@ -193,7 +193,7 @@
                             :rules="required"
                             label="Request Code"
                             v-model="reasonCode"
-                            placeholder="--Select--"
+                            placeholder="--Enter--"
                         />
                         <cornie-input
                             class="required"
@@ -234,7 +234,7 @@
                                 :rules="required"
                                 class="grow w-full"
                                 :label="'Request Description'"
-                                :placeholder="'Enter'"
+                                :placeholder="'--Enter--'"
                                 v-model="requestDescriptions"
                           />
                           <fhir-input

@@ -4,7 +4,7 @@
   >
     <template v-if="isRoot">
       <div class="grid grid-cols-2 gap-4 w-full">
-        <div class="w-full">
+        <div class="w-full" v-if="editing">
           <span class="font-bold text-sm text-jet_black"
             >Override all item based modifications</span
           >
@@ -24,7 +24,7 @@
             />
           </div>
         </div>
-        <div>
+        <div v-if="editing">
           <span class="text-sm font-semibold mb-1">Override location based modifications</span>
           <Multiselect
             v-model="locationOverrides"
@@ -87,7 +87,7 @@
         <cornie-input
           class="w-full mb-6"
           label="Markup (%)"
-          placeholder="--Autoloaded--"
+          placeholder="--Enter--"
           v-model="PercentageMarkup"
         ></cornie-input>
       </div>
@@ -127,7 +127,7 @@
           class="w-full mb-6"
           label="Maximum Allowable Discount (%)"
           v-model="MaxDiscount"
-          placeholder="--Autoloaded--"
+          placeholder="--Enter--"
         >
         </cornie-input>
       </div>
@@ -331,7 +331,7 @@ export default class MarkupSettings extends Vue {
   cornieUser!: any;
 
    @account.State
-  currentLocation!: string;
+  authCurrentLocation!: string;
 
   @Prop({ default: "" })
   locationId!: string;
@@ -355,7 +355,7 @@ export default class MarkupSettings extends Vue {
   }
 
   get location() {
-    return this.currentLocation;
+    return this.authCurrentLocation;
   }
 
   get CDM() {
@@ -423,9 +423,9 @@ export default class MarkupSettings extends Vue {
       this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
       this.PercentageMarkup = this.markups[0]?.markupPercentage;
     } else {
-      if (!this.currentLocation) return [];
+      if (!this.authCurrentLocation) return [];
       const markups = await cornieClient().get(
-        `/api/v1/markup-discount/location/${this.currentLocation}`
+        `/api/v1/markup-discount/location/${this.authCurrentLocation}`
       );
       const response = await Promise.all([markups]);
 
@@ -484,17 +484,46 @@ export default class MarkupSettings extends Vue {
     this.locations = response[0].data;
   }
 
-  async submitMarkup() {
-    try {
-      if (this.currentLocation) {
+  async setDefault(id:string){
+     try {
         const { data } = await cornieClient().post(
-          `/api/v1/markup-discount/location/${this.currentLocation}`,
+          `/api/v1/markup-discount/location/${id}`,
           {
             markupPercentage: this.PercentageMarkup,
             marginPercentage: this.percentageMargin,
             maxAllowedDiscount: this.MaxDiscount,
-            locationAdminsCanSetForLocations:
-              this.locationAdminsCanSetForLocations,
+            locationId:
+              this.locationId,
+            locationOverrides: this.locationOverrides,
+          }
+        );
+      
+      window.notify({
+        msg: "Markup updated successfully",
+        status: "success",
+      });
+      this.$emit("markup-saved");
+
+      this.$router.push(`/dashboard/provider/settings/markup`);
+    } catch (error: any) {
+      window.notify({
+        msg: `Error: ${error.response.data.message}`,
+        status: "error",
+      });
+    }
+  }
+
+  async submitMarkup() {
+    try {
+      if (this.authCurrentLocation) {
+        const { data } = await cornieClient().post(
+          `/api/v1/markup-discount/location/${this.authCurrentLocation}`,
+          {
+            markupPercentage: this.PercentageMarkup,
+            marginPercentage: this.percentageMargin,
+            maxAllowedDiscount: this.MaxDiscount,
+            locationId:
+              this.authCurrentLocation,
             locationOverrides: this.locationOverrides,
           }
         );
@@ -507,8 +536,8 @@ export default class MarkupSettings extends Vue {
               markupPercentage: this.PercentageMarkup,
               marginPercentage: this.percentageMargin,
               maxAllowedDiscount: this.MaxDiscount,
-              locationAdminsCanSetForLocations:
-                this.locationAdminsCanSetForLocations,
+              locationId:
+                this.authCurrentLocation,
               locationOverrides: this.locationOverrides,
             }
           );
@@ -519,8 +548,8 @@ export default class MarkupSettings extends Vue {
               markupPercentage: this.PercentageMarkup,
               marginPercentage: this.percentageMargin,
               maxAllowedDiscount: this.MaxDiscount,
-              locationAdminsCanSetForLocations:
-                this.locationAdminsCanSetForLocations,
+              locationId:
+                this.authCurrentLocation,
               locationOverrides: this.locationOverrides,
             }
           );
