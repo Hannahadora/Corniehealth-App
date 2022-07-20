@@ -587,7 +587,7 @@ export default class RefferalModal extends Vue {
     requestDescription = "";
     bodySite = "";
     quantityUnit = "Day";
-    quantityValue = "";
+    quantityValue = null;
     encounterId = null;
     performerId = "";
     occurenceUnit = "Date";
@@ -632,7 +632,7 @@ export default class RefferalModal extends Vue {
           this.bodySite =  diagnostic.bodySite;
           this.requestDescription =  diagnostic.requestDescription;
           this.quantityUnit =  diagnostic.quantityUnit;
-          this.quantityValue =  diagnostic.quantityValue;
+          this.quantityValue =  diagnostic.quantityValue as any;
           this.encounterId =  diagnostic.encounterId;
           this.performerId =  diagnostic.performerId;
           this.occurenceUnit =  diagnostic.occurenceUnit;
@@ -665,7 +665,7 @@ export default class RefferalModal extends Vue {
             requestDescription: this.requestDescription,
             bodySite: this.bodySite,
             quantityUnit: this.quantityUnit,
-            quantityValue: this.quantityValue.toString(),
+            quantityValue: this.quantityValue || null,
             encounterId: this.encounterId,
             performerId: this.authPractitioner.organizationId,
             occurenceUnit: this.occurenceUnit,
