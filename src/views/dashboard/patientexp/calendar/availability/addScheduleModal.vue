@@ -763,6 +763,8 @@ cancel(){
     this.repeat = "";
     this.serviceType = "";
     this.slotSize = 0;
+
+    this.show = false;
 }
   async submit() {
     this.loading = true;

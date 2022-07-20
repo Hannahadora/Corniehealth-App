@@ -13,4 +13,8 @@ export default interface IMeasurable {
   string?: string;
   startDate?: string;
   startTime?: string;
+  date?:string;
+  time?:string;
+  endDate?:string;
+  endTime?:string;
 }

@@ -22,7 +22,6 @@ export async function fetchByIdAppointments(patientId: string) {
       `/api/v1/appointment/getAllByPatient/${patientId}`
     );
     if (response.success) {
-      console.log("appoinments", response.data);
       return response.data;
     }
   } catch (error) {}

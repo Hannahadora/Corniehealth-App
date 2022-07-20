@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import IAppointmentRoom from "@/types/IAppointmentRoom";
 import { StoreOptions } from "vuex";
-import { deleteAppointmentroom, fetchAppointmentrooms } from "./helper";
+import { deleteAppointmentroom, fetchAppointmentrooms, fetchByIdAppointmentsRooms } from "./helper";
 import IPageInfo from "@/types/IPageInfo";
 
 interface AppointmentRoomState {
@@ -20,6 +20,9 @@ export default {
   mutations: {
     setPageInfo(state, pageInfo){
       state.pageInfo = pageInfo;
+    },
+    getPatientAppointmentRooms(state, appointmentrooms: any) {
+      state.appointmentrooms = [...appointmentrooms];
     },
     setAppointmentrooms(state, appointmentrooms: IAppointmentRoom[]) {
       state.appointmentrooms = [...appointmentrooms];
@@ -53,6 +56,10 @@ export default {
     },
   },
   actions: {
+    async fetchByIdAppointmentsRooms(ctx, locationId: string) {
+      const appointmentrooms = await fetchByIdAppointmentsRooms(locationId);
+      ctx.commit("getPatientAppointmentRooms", appointmentrooms);
+    },
     async fetchAppointmentrooms(ctx,  payload? : {page:number, limit:number}) {
       const { page, limit } = payload ?? {}
       const { data, pageInfo } = await fetchAppointmentrooms(page ?? 1, limit ?? 10);

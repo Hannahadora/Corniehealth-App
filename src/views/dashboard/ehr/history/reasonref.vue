@@ -40,7 +40,7 @@
                 @click="setValue('report')"
               />
               <cornie-radio
-                label="Allegry Intolerance"
+                label="Allergy Intolerance"
                 class="text-xs"
                 name="reference"
                 @click="setValue('allergy')"

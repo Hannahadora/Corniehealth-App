@@ -1,34 +1,35 @@
 <template>
-  <span
-    class="flex flex-col w-full justify-center border-b border-grays font-bold mb-5 text-xl text-primary p-4 pb-2"
-  >
-    Markup & Discount
-  </span>
-
-  <div class="w-full py-4 flex justify-end">
+  <!-- <div class="w-full py-4 flex justify-end">
     <button
       class="bg-danger text-base font-semibold rounded-lg text-white py-2 px-16"
       @click="handleEditing"
     >
       Edit
     </button>
+  </div> -->
+  <div class="w-full  py-3 my-4 bg-gray-100 text-xs text-center rounded-md" v-if="markups.length == 1">
+   Your Account Owner/Root Admin has set up the Markup and Allowable Discount shown below. You may wish to revise them for your own location. To revise, click on the edit tab to modify.
   </div>
-  <cornie-table
-    :columns="headers"
-    v-model="items"
-    :check="false"
-    :menushow="true"
-    :showActions="false"
-  >
-    <template #location="{ item }">
-      <div class="flex space-x-4">
-        <p>{{ item.location }}</p>
-        <p class="text-blue-600 text-xxs" v-if="item.default === true">Default</p>
-        <p class="text-red-400 text-xxs" v-if="item.modifiable === true">Modified</p>
-      </div>
-
-  </template>
-  </cornie-table>
+  <div class="w-full py-4 flex justify-end">
+    <cornie-table
+      :columns="headers"
+      v-model="items"
+      :check="false"
+      :listmenu="true"
+      :menushow="false"
+      :showActions="true"
+      :editRow="true"
+      @edit="editMarkup"
+    >
+      <template #location="{ item }">
+        <div class="flex space-x-4">
+          <p>{{ item.location }}</p>
+          <p class="text-blue-600 text-xxs" v-if="item.default === true">Default</p>
+          <p class="text-red-400 text-xxs" v-if="item.modifiable === true">Modified</p>
+        </div>
+    </template>
+    </cornie-table>
+  </div>
 
   <setup-markup
     v-model="dialog"
@@ -47,6 +48,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import SetupMarkup from "../setup-markup.vue";
 import  IMarkup  from "@/types/IMarkup";
 import { namespace } from "vuex-class";
+import EditIcon from "@/components/icons/edit.vue";
 import search from "@/plugins/search";
 
 
@@ -58,6 +60,7 @@ const markup = namespace("markup");
     CornieTable,
     CornieRadio,
     SetupMarkup,
+    EditIcon
   },
 })
 export default class ExistingRootState extends Vue {
@@ -67,8 +70,8 @@ export default class ExistingRootState extends Vue {
   @Prop({ default: {} })
   items!: any;
 
-  @Prop({ default: "" })
-  markupId!: string;
+  // @Prop({ default: "" })
+  // markupId!: string;
 
   @Prop({ default: "" })
   locationId!: string;
@@ -81,6 +84,14 @@ export default class ExistingRootState extends Vue {
   editing = false as boolean;
 
   query = "";
+
+  markupId = "";
+
+  editMarkup(id:string){
+    this.markupId = id;
+     this.editing = true;
+    this.dialog = true;
+  }
 
   handleEditing() {
     this.editing = true;
