@@ -862,8 +862,8 @@ export default class MedicationModal extends Vue {
         if (!this.searchresult || this.searchresult.length === 0) return [];
         return this.searchresult.map((i: any) => {
         return {
-            code: i.id,
-            display: i.name,
+            code: i.generic_id,
+            display: i.generic_name,
         };
         });
     }
@@ -998,7 +998,6 @@ export default class MedicationModal extends Vue {
 
   }
   async resultData(code: string) {
-    console.log("ALL BRNAD NAMW")
     const AllNotes = cornieClient().get(
       `/api/v1/emdex/generic-brands/${code}`,
     );

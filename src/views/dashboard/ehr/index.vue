@@ -2,13 +2,17 @@
   <div class="w-full">
     <div class="flex space-x-4 float-right col-span-full mr-4">
       <span v-if="fetchSingglePatientEncounter !== undefined">
-         <CornieBtn
+        <div class="text-danger cursor-pointer flex text-sm font-bold space-x-2"  @click="endEncounter">
+          <deactivate-icon class="fill-current text-danger"/> 
+         <span> End Encounter</span>
+         </div>
+         <!-- <CornieBtn
          :loading="loading"
           class="bg-danger  rounded-full  text-white cursor-pointer"
           @click="endEncounter"
         >
           End Encounter
-        </CornieBtn>
+        </CornieBtn> -->
       </span>
       <p class="text-xs cursor-pointer text-gray-500" @click="showPatientModal">
         Patient Queue ({{ appoitments.length }})
@@ -67,6 +71,7 @@ import ClinicalSidebar from "./clinicalSidebar.vue";
 import AuthModal from "./auth-modal.vue";
 import ChartModal from "./dialogs/chartDialog.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
+import DeactivateIcon from "@/components/icons/cancel.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -85,7 +90,8 @@ delete activeEncounter[1]
     AuthModal,
     AppointmentModal,
     ChartModal,
-    CornieBtn
+    CornieBtn,
+    DeactivateIcon,
   },
 })
 export default class ClinicalsSidebar extends Vue {
@@ -147,7 +153,7 @@ export default class ClinicalsSidebar extends Vue {
     this.showPatient = true;
   }
 
-  async endEncounter(id: string) {
+  async endEncounter() {
       const body ={
       patientId: this.patientId,
       practitionerId: this.fetchSingglePatientEncounter.practitionerId,

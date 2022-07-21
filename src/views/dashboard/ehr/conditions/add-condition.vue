@@ -310,15 +310,15 @@ const timeable = {
 
 const measurable = {
   age: "",
-  ageUnit: "",
+  ageUnit: "years",
   ageValue: "",
   day: "",
-  unit: "",
+  unit: "years",
   min: "",
-  minUnit: "",
+  minUnit: "years",
   minValue: "",
   max: "",
-  maxUnit: "",
+  maxUnit: "years",
   maxValue: "",
   string: "",
   startDate: "",
@@ -528,8 +528,8 @@ get onset() {
     
     }; 
     const age = {
-       unit: this.abatementMeasurable.age,
-        value: this.abatementMeasurable.ageValue,
+       unit: this.abatementMeasurable.ageUnit,
+        value: this.abatementMeasurable.age,
     }; 
     const period = {
        start: this.abatementMeasurable.startDate,

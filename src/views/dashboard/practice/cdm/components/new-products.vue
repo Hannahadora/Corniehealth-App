@@ -7,229 +7,273 @@
         :opened="true"
       >
         <template v-slot:default>
-          <div class="w-full mb-5">
-            <div class="my-4">
-              <cornie-checkbox
-                :label="'This is an inventory item'"
-                v-model="isInventoryItem"
-                :value="'Yes'"
-              />
-            </div>
-            <p class="v-xteristics mb-4">Select Product Type</p>
-            <div class="my-2 flex">
-              <span
-                ><cornieradio
-                  v-model="type"
-                  :label="'Medication Product'"
-                  :value="'medication'"
-                />
-              </span>
-              <span class="ml-8"
-                ><cornieradio
-                  v-model="type"
-                  :label="'Other Health Product'"
-                  :value="'other'"
-                />
-              </span>
-            </div>
-          </div>
+          <div>
+            <tabs :items="tabLinks" v-model="currentTab">
+              <div>
+                 <div class="w-full mb-5">
+                    <div class="my-4">
+                      <cornie-checkbox
+                        :label="'This is an inventory item'"
+                        v-model="isInventoryItem"
+                        :value="'Yes'"
+                      />
+                    </div>
+          
+                  </div>
+                  <div class="grid grid-cols-3 gap-4">
+                      <auto-complete
+                        class="w-full"
+                        :label="'Generic Name'"
+                        :items="allName"
+                        @click="resultData(dataCode)"
+                        @input="searchData"
+                        v-model="dataCode"
+                        :placeholder="'Select'"
+                      />
 
-          <div
-            class="grid grid-cols-3 gap-4"
-            v-if="type?.toLowerCase() === 'medication'"
-          >
-            <auto-complete
-              class="w-full"
-              :label="'Generic Name'"
-              :items="allName"
-              @click="resultData(dataCode)"
-              @input="searchData"
-              v-model="dataCode"
-              :placeholder="'Select'"
-            />
+                      <cornie-select
+                        class="w-full"
+                        :label="'Brand/Manufacturer'"
+                        :items="allBrand"
+                        @click="resultBrand(dataBrand)"
+                        v-model="dataBrand"
+                        :placeholder="'Select'"
+                      />
+                      <cornie-select
+                        v-model="dataForm"
+                        :label="'Form'"
+                        :items="allForms"
+                        :placeholder="'Select'"
+                        class="w-full"
+                        @click="resultPack(dataForm)"
+                      />
+                      <cornie-input
+                        :label="'Pack'"
+                        v-model="pack"
+                        placeholder="--Autoloaded--"
+                        class="w-full"
+                        :disabled="true"
+                      />
+                      <cornie-input
+                        :label="'Strength'"
+                        v-model="strength"
+                        placeholder="--Autoloaded--"
+                        class="w-full"
+                        :disabled="true"
+                      />
+                      <cornie-input
+                        :label="'NAFDAC Registration No.'"
+                        v-model="Nafdac"
+                        placeholder="--Autoloaded--"
+                        class="w-full"
+                        :disabled="true"
+                      />
+                      <cornie-select
+                        :label="'Classification.'"
+                        placeholder="--Enter--"
+                        :items="[
+                          'General Health',
+                          'Devices',
+                          'Sexual Wellness',
+                          'Personal Care',
+                          'Nutrition, Fitness & Supplements',
+                        ]"
+                        v-model="classification"
+                      />
+                      <cornie-select
+                        :label="'Sub-classification.'"
+                        placeholder="--Enter--"
+                        :items="getSubClassify"
+                        v-model="subClassification"
+                      />
+                      <cornie-select
+                        v-model="category"
+                        :label="'Category'"
+                        placeholder="--Select--"
+                        :items="[
+                          'Over-the-Counter Medicines',
+                          'Prescription Only Medicine',
+                          'Pharmacy Medicine',
+                          'Controlled Drugs',
+                        ]"
+                      />
 
-            <cornie-select
-              class="w-full"
-              :label="'Brand/Manufacturer'"
-              :items="allBrand"
-              @click="resultBrand(dataBrand)"
-              v-model="dataBrand"
-              :placeholder="'Select'"
-            />
-            <cornie-select
-              v-model="dataForm"
-              :label="'Form'"
-              :items="allForms"
-              :placeholder="'Select'"
-              class="w-full"
-              @click="resultPack(dataForm)"
-            />
-            <cornie-input
-              :label="'Pack'"
-              v-model="pack"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-input
-              :label="'Strength'"
-              v-model="strength"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-input
-              :label="'NAFDAC Registration No.'"
-              v-model="Nafdac"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-select
-              :label="'Classification.'"
-              placeholder="--Enter--"
-              :items="[
-                'General Health',
-                'Devices',
-                'Sexual Wellness',
-                'Personal Care',
-                'Nutrition, Fitness & Supplements',
-              ]"
-              v-model="classification"
-            />
-            <cornie-select
-              :label="'Sub-classification.'"
-              placeholder="--Enter--"
-              :items="getSubClassify"
-              v-model="subClassification"
-            />
-
-            <cornie-select
-              v-model="category"
-              :label="'Category'"
-              placeholder="--Select--"
-              :items="[
-                'Over-the-Counter Medicines',
-                'Prescription Only Medicine',
-                'Pharmacy Medicine',
-                'Controlled Drugs',
-              ]"
-            />
-
-            <div class="">
-              <span
-                class="flex capitalize mb-5 text-black text-sm font-semibold"
-              >
-                Discount applicable?
-              </span>
-              <div class="flex items-end -mb-2">
-                <span class="mr-14"
-                  ><cornieradio
-                    v-model="applyDiscount"
-                    :label="'Yes'"
-                    :value="true"
-                  />
-                </span>
-                <cornieradio
-                  :label="'No'"
-                  v-model="applyDiscount"
-                  :value="false"
-                />
+                      <div class="">
+                        <span
+                          class="flex capitalize mb-5 text-black text-sm font-semibold"
+                        >
+                          Discount applicable?
+                        </span>
+                        <div class="flex items-end -mb-2">
+                          <span class="mr-14"
+                            ><cornieradio
+                              v-model="applyDiscount"
+                              :label="'Yes'"
+                              :value="true"
+                            />
+                          </span>
+                          <cornieradio
+                            :label="'No'"
+                            v-model="applyDiscount"
+                            :value="false"
+                          />
+                        </div>
+                      </div>
+                        <cornie-input
+                          v-model="itemCode"
+                          :label="'Item Code'"
+                          placeholder="Autogenerated"
+                          :disabled="true"
+                        />
+                  </div>
               </div>
-            </div>
-            <cornie-input
-              v-model="itemCode"
-              :label="'Item Code'"
-              placeholder="Autogenerated"
-            />
-          </div>
 
-          <div
-            class="w-full grid gap-4 grid-cols-3"
-            v-if="type?.toLowerCase() === 'other'"
-          >
-            <cornie-select
-              :label="'Classification.'"
-              placeholder="--Enter--"
-              :items="[
-                'General Health',
-                'Devices',
-                'Sexual Wellness',
-                'Personal Care',
-                'Nutrition, Fitness & Supplements',
-              ]"
-              v-model="classification"
-            />
-            <cornie-select
-              :label="'Sub-classification.'"
-              placeholder="--Enter--"
-              :items="getSubClassify"
-              v-model="subClassification"
-            />
+              <div>
+                  <div class="w-full mb-5">
+                    <div class="my-4">
+                      <cornie-checkbox
+                        :label="'This is an inventory item'"
+                        v-model="isInventoryItem"
+                        :value="'Yes'"
+                      />
+                    </div>
+                  </div>
+                  <div class="w-full grid gap-4 grid-cols-3">
+                    <cornie-input
+                      class="w-full"
+                      :label="'Generic Name'"
+                      v-model="genericName"
+                      :placeholder="'--Enter--'"
+                    />
 
-            <auto-complete
-              class="w-full"
-              :label="'Generic Name'"
-              :items="allName"
-              @click="resultData(dataCode)"
-              @input="searchData"
-              v-model="dataCode"
-              :placeholder="'Select'"
-            />
+                    <cornie-input
+                      class="w-full"
+                      :label="'Brand/Manufacturer'"
+                      v-model="genericCode"
+                      :placeholder="'--Enter--'"
+                    />
+                     <cornie-input
+                        v-model="form"
+                        :label="'Form'"
+                        :placeholder="'--Enter--'"
+                        class="w-full"
+                      />
+                      <cornie-input
+                        :label="'Strength'"
+                        v-model="strength"
+                        placeholder="--Enter--"
+                        class="w-full"
+                      />
+                      <cornie-input
+                        :label="'Pack'"
+                        v-model="pack"
+                        placeholder="--Enter--"
+                        class="w-full"
+                      />
+              
+                      <cornie-input
+                        :label="'NAFDAC Registration No.'"
+                        v-model="Nafdac"
+                        placeholder="--Enter--"
+                        class="w-full"
+                      />
+                      <cornie-select
+                        :label="'Classification.'"
+                        placeholder="--Select--"
+                        :items="[
+                          'General Health',
+                          'Devices',
+                          'Sexual Wellness',
+                          'Personal Care',
+                          'Nutrition, Fitness & Supplements',
+                        ]"
+                        v-model="classification"
+                      />
+                      <cornie-select
+                        :label="'Sub-classification.'"
+                        placeholder="--Select--"
+                        :items="getSubClassify"
+                        v-model="subClassification"
+                      />
+                     <div class="">
+                        <span class="flex capitalize mb-5 text-black text-sm font-semibold">
+                          Discount applicable?
+                        </span>
+                        <div class="flex items-end -mb-2">
+                          <span class="mr-14"
+                            ><cornieradio
+                              v-model="applyDiscount"
+                              :label="'Yes'"
+                              :value="true"
+                            />
+                          </span>
+                          <cornieradio
+                            :label="'No'"
+                            v-model="applyDiscount"
+                            :value="false"
+                          />
+                        </div>
+                      </div>
 
-            <cornie-select
-              class="w-full"
-              :label="'Brand/Manufacturer'"
-              :items="allBrand"
-              @click="resultBrand(brandCode)"
-              v-model="brandCode"
-              :placeholder="'Select'"
-            />
-            <cornie-select
-              v-model="form"
-              :label="'Form'"
-              :items="allForms"
-              :placeholder="'Select'"
-              class="w-full"
-              @click="resultPack(dataForm)"
-            />
-            <cornie-input
-              :label="'Pack'"
-              v-model="pack"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-input
-              :label="'Strength'"
-              v-model="strength"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-input
-              :label="'NAFDAC Registration No.'"
-              v-model="Nafdac"
-              placeholder="--Autoloaded--"
-              class="w-full"
-              :disabled="true"
-            />
-            <cornie-select
-              v-model="category"
-              :label="'Category'"
-              placeholder="--Select--"
-              :items="[
-                'Over-the-Counter Medicines',
-                'Prescription Only Medicine',
-                'Pharmacy Medicine',
-                'Controlled Drugs',
-              ]"
-            />
-            <cornie-input
-              v-model="itemCode"
-              :label="'Item Code'"
-              placeholder="Autogenerated"
-            />
+                  </div>
+              </div>  
+              <div>
+                  <div class="w-full mb-5">
+                    <div class="my-4">
+                      <cornie-checkbox
+                        :label="'This is an inventory item'"
+                        v-model="isInventoryItem"
+                        :value="'Yes'"
+                      />
+                    </div>
+                  </div>
+                  <div class="w-full grid gap-4 grid-cols-3">
+                     <cornie-input
+                      class="w-full"
+                      :label="'Generic Name'"
+                      v-model="genericName"
+                      :placeholder="'--Enter--'"
+                    />
+                    <cornie-input
+                      class="w-full"
+                      :label="'Brand/Manufacturer'"
+                      v-model="genericCode"
+                      :placeholder="'--Enter--'"
+                    />
+                      <cornie-input
+                        v-model="form"
+                        :label="'Form'"
+                        :placeholder="'--Enter--'"
+                        class="w-full"
+                      />
+        
+                        <cornie-input
+                          :label="'Pack'"
+                          v-model="pack"
+                          placeholder="--Enter--"
+                          class="w-full"
+                        />
+                        <cornie-input
+                          :label="'Strength'"
+                          v-model="strength"
+                          placeholder="--Enter--"
+                          class="w-full"
+                        />
+                        <cornie-input
+                          :label="'NAFDAC Registration No.'"
+                          v-model="Nafdac"
+                          placeholder="--Enter--"
+                          class="w-full"
+                        />
+                         <cornie-input
+                            v-model="description"
+                            :label="'Description'"
+                            placeholder="--Enter--"
+                          />
+                  </div>
+              </div>
+              
+            </tabs>
           </div>
         </template>
       </accordion-component>
@@ -775,6 +819,8 @@ import IPractitioner from "@/types/IPractitioner";
 import { cornieClient } from "@/plugins/http";
 import AutoComplete from "@/components/autocomplete.vue";
 import IPracticeform from "@/types/IPracticeform";
+import Tabs from "@/components/tabs.vue";
+
 
 const location = namespace("location");
 const catalogue = namespace("catalogues");
@@ -802,6 +848,7 @@ const practiceform = namespace("practiceform");
     StockUnit,
     AutoComplete,
     EditIcon,
+    Tabs,
   },
 })
 export default class NewProuct extends Vue {
@@ -933,6 +980,13 @@ export default class NewProuct extends Vue {
     status: "active",
     form: "" as any,
   } as ICatalogueProduct;
+
+  tabLinks = [
+    "Medications",
+    "Other Healthcare Products",
+    "Substance",
+  ];
+  currentTab = 0;
 
   salesUOMs = [] as any;
 
@@ -1546,9 +1600,9 @@ export default class NewProuct extends Vue {
     if (!this.searchresult || this.searchresult.length === 0) return [];
     return this.searchresult.map((i: any) => {
       return {
-        code: i.id,
-        value: i.id,
-        display: i.name,
+        code: i.generic_id,
+        value: i.generic_id,
+        display: i.generic_name,
       };
     });
   }

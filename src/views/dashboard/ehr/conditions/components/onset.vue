@@ -38,7 +38,7 @@
             v-model="measurable.age"
           />
           <cornie-select
-            :items="['Days', 'Months', 'Years']"
+            :items="['days', 'months', 'years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
@@ -72,7 +72,7 @@
             v-model="measurable.min"
           />
           <cornie-select
-            :items="['Days', 'Months', 'Years']"
+            :items="['days', 'months', 'years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
@@ -90,7 +90,7 @@
             v-model="measurable.max"
           />
           <cornie-select
-            :items="['Days', 'Months', 'Years']"
+            :items="['days', 'months', 'years']"
             placeholder="Days"
             class="w-32 mt-0.5 flex-none"
             :setPrimary="true"
@@ -118,7 +118,7 @@ import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
   age: "" ,
-  ageUnit: "",
+  ageUnit: "years",
   day: "",
   unit: "years",
   min: "",

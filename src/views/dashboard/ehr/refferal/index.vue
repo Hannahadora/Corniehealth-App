@@ -4,7 +4,7 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        Refferals
+        Referrals 
       </span>
       <span class="w-full h-screen">
        <refferal-empty-state v-if="empty" />

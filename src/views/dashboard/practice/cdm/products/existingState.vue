@@ -39,18 +39,36 @@
         </template>
          <template #actions="{ item }">
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newproduct/${item.id}`)">
-          <edit-icon class="text-purple-700 fill-current" />
+          <eye-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newproduct/${item.id}`)">
+          <edit-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showMedInfoModal = true">
+          <drug-icon class="text-primary fill-current" />
+          <span class="ml-3 text-xs">Medication Information</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newproduct/${item.id}`)">
+          <update-icon class="text-green-700 fill-current" />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showvariantModal = true">
+            <plus-icon class="text-blue-400 fill-current" />
+          <span class="ml-3 text-xs">Add Variant</span>
         </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
             <deactivate-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
+          <span class="ml-3 text-xs">Deactivate</span>
         </div>
       </template>
       </cornie-table>
     </div>
 
   </div>
+  <info-modal v-model="showMedInfoModal"/>
+  <variant-modal v-model="showvariantModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -67,7 +85,11 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import HistoryIcon from "@/components/icons/history.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import DrugIcon from "@/components/icons/drug.vue";
 
+import InfoModal from "../components/medicationInformation.vue";
+import variantModal from "../components/variantModal.vue";
 
 const catalogue = namespace("catalogues");
 
@@ -81,6 +103,10 @@ const catalogue = namespace("catalogues");
     PlusIcon,
     HistoryIcon,
     DeactivateIcon,
+    EyeIcon,
+    DrugIcon,
+    InfoModal,
+    variantModal,
   },
 })
 export default class ProductExistingState extends Vue {
@@ -101,6 +127,9 @@ export default class ProductExistingState extends Vue {
   query = "";
   loading = false;
   cdm = 0;
+
+  showMedInfoModal = false;
+  showvariantModal = false;
 
  headers = [
     {
