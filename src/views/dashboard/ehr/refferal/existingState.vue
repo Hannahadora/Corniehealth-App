@@ -141,6 +141,7 @@ import { cornieClient } from "@/plugins/http";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
+import { mapDisplay } from "@/plugins/definitions";
 
 import search from "@/plugins/search";
 import IOtherrequest from "@/types/IOtherrequest";
@@ -289,6 +290,7 @@ export default class ReffferalExistingState extends Vue {
   otherupdate = "";
   selectedItem = {} as any;
   Specilaitems: Codeable[] = [];
+  medicationMapper = (code: string) => "";
 
 
    get aPatientId() {
@@ -382,6 +384,7 @@ export default class ReffferalExistingState extends Vue {
         action: refferal.id,
         specialty: this.getspecialtyname(refferal.specialty),
         subject: refferal?.patient?.firstname +' '+ refferal?.patient?.lastname,
+        bodySite: this.medicationMapper(refferal.bodySite),
         // category: "Pathology",
         // service: "XXXXXX",
         // subject: "James E. Flair",
@@ -392,7 +395,13 @@ export default class ReffferalExistingState extends Vue {
     if (!this.query) return refferals;
     return search.searchObjectArray(refferals, this.query);
   }
- 
+
+   async createMapper() {
+    this.medicationMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/body-site"
+    );
+  }
+
  getspecialtyname(id: string) {
     const pt = this.Specilaitems.find((i: any) => i.code === id);
     return pt ? `${pt.display}` : "";
@@ -504,6 +513,7 @@ export default class ReffferalExistingState extends Vue {
 
 
   async created() {
+    await this.createMapper();
    await this.setRefs();
    await this.fetchRefferalById(this.aPatientId);
     await this.fetchSpecials();

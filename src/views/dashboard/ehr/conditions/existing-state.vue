@@ -13,7 +13,7 @@
         <template #code="{ item }">
           <div class="flex flex-col text-sm">
             <span class="">
-              {{ item.code.display }}
+              {{ item?.code?.display }}
             </span>
             <!-- <span class="text-xs text-gray-400">
               {{ item.code.code }}

@@ -35,18 +35,35 @@
         </template>
         <template #actions="{ item }">
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newservice/${item.id}`)">
-          <edit-icon class="text-purple-700 fill-current" />
+          <eye-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newservice/${item.id}`)">
+          <edit-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showServiceModal = true">
+          <calendar-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">Service Avalability</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newservice/${item.id}`)">
+          <update-icon class="text-green-400 fill-current" />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newservice/${item.id}`)">
+          <plus-icon class="text-blue-300 fill-current" />
+          <span class="ml-3 text-xs">Add Variant</span>
+        </div>
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="onDelete(item.id)">
-          <delete-icon />
-          <span class="ml-3 text-xs">Delete</span>
+          <deactivate-icon />
+          <span class="ml-3 text-xs">Deactivate</span>
         </div>
       </template>
       </cornie-table>
     </div>
 
   </div>
+  <available-service v-model="showServiceModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -65,6 +82,12 @@ import PlusIcon from "@/components/icons/plus.vue";
 import TableAction from "@/components/table-action.vue";
 import Avatar from "@/components/avatar.vue";
 import DeleteIcon from "@/components/icons/delete-red.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import DrugIcon from "@/components/icons/drug.vue";
+import DeactivateIcon from "@/components/icons/deactivate.vue";
+import CalendarIcon from "@/components/icons/calendar.vue";
+
+import AvailableService from "../components/serviceAvailable.vue";
 
 const catalogue = namespace("catalogues");
 
@@ -80,6 +103,11 @@ const catalogue = namespace("catalogues");
     TableAction,
     Avatar,
     DeleteIcon,
+    EyeIcon,
+    DrugIcon,
+    DeactivateIcon,
+    CalendarIcon,
+    AvailableService,
   },
 })
 export default class ServiceExistingState extends Vue {
@@ -100,6 +128,7 @@ export default class ServiceExistingState extends Vue {
   productId = "";
   query = "";
   loading = false;
+  showServiceModal = true;
 
 headers = [
     {

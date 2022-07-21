@@ -53,6 +53,7 @@
                     placeholder="--Select--"
                   ></cornie-select>
                   <cornie-select
+                  v-if="managingEntityType == 'practitioner'"
                     :rules="required"
                     :items="types"
                     v-model="managingEntity"
@@ -95,22 +96,22 @@
                       <div class="flex justify-center items-center">
                         <div class="h-12 w-12 rounded-full overflow-hidden mr-1">
                           <img
-                            :src="actor.image || actor.practitioner.image"
+                            :src="actor?.image || actor?.practitioner?.image"
                             class="h-full w-full"
-                            v-if="actor.image || actor.practitioner.image"
+                            v-if="actor?.image || actor?.practitioner?.image"
                           />
                           <div
                             class="h-full w-full rounded-full overflow-hidden flex items-center justify-center bg-blue-500 text-white-cotton-ball font-bold"
                             v-else
                           >
-                            {{ actor?.name?.substr(0, 2).toUpperCase() || (actor.practitioner.firstName +''+ actor.practitioner.lastName).substr(0, 2).toUpperCase()}}
+                            {{ actor?.name?.substr(0, 2).toUpperCase() || (actor?.practitioner?.firstName +''+ actor?.practitioner?.lastName).substr(0, 2).toUpperCase()}}
                           </div>
                         </div>
                         <div class="flex flex-col items-start">
                           <div class="mb-0 font-bold text-sm">
                             <div class="flex justify-center items-center">
                               <div class="mr-1">
-                                {{ actor.name || actor.practitioner.firstName +' '+ actor.practitioner.lastName}}
+                                {{ actor?.name || actor?.practitioner?.firstName +' '+ actor?.practitioner?.lastName}}
                               </div>
                               <div
                                 class="font-bolder text-gray-400 mr-1"
@@ -119,11 +120,11 @@
                                 •
                               </div>
                               <div class="text-xs text-gray-400">
-                                {{ actor.job  || actor.practitioner.jobDesignation}}
+                                {{ actor?.job  || actor?.practitioner?.jobDesignation}}
                               </div>
                             </div>
                           </div>
-                          <div class="text-xs text-gray-400">{{ actor.type || 'Practitioner' }} | {{ actor.role}}</div>
+                          <div class="text-xs text-gray-400">{{ actor?.type || 'Practitioner' }} | {{ actor?.role}}</div>
                         </div>
                       </div>
                       <div class="flex justify-center items-center">
@@ -337,7 +338,7 @@ export default class AddGroup extends Vue {
   memberEntity = "--Select--";
   launchMemberdiag = false;
   aoption = "Active";
-  managingEntityType = "";
+  managingEntityType = "practitioner";
   managingOrganizationId = undefined;
   managingPractitionerId = undefined;
 
@@ -391,8 +392,8 @@ export default class AddGroup extends Vue {
         // quantity: this.quantity,
         //managingEntity: this.managingEntity,
         managingEntityType: this.managingEntityType,
-        managingOrganizationId: this.managingOrganizationId,
-        managingPractitionerId: this.managingPractitionerId,
+        managingOrganizationId: this.managingOrganizationId || this.authPractitioner.organizationId,
+        managingPractitionerId: this.managingPractitionerId || undefined,
         members: this.actorsList.map((item: any) => {
         return {
           practitionerId: item.id,

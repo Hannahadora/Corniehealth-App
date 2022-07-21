@@ -63,6 +63,10 @@
                         placeholder="--Select--"
                         v-model="basedOn"
                         >
+                        <template #labelicon>
+                            <span class="text-xs text-gray-500">(Optional)</span>
+                            
+                            </template>
                         </cornie-select>
                         <cornie-select
                         class="required"
@@ -140,21 +144,13 @@
                                 />
                             </div>
                         </div>
-                        <cornie-select
+                        <auto-complete :items="Specilaitems" v-model="specialty"  label="Specialty" placeholder="Select" :required="required" />
+                        <!-- <cornie-select
                             class="required"
                             :rules="required"
                             :items="Specilaitems"
                             label="Specialty"
                             v-model="specialty"
-                            placeholder="Select"
-                        >
-                        </cornie-select>
-                         <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['practitioner', 'care partner']"
-                            label="Performer Type"
-                            v-model="performerType"
                             placeholder="Select"
                         >
                         </cornie-select> -->
@@ -202,15 +198,6 @@
                             v-model="orderDetail"
                             placeholder="--Enter--"
                         />
-                         <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
-                            label="Order Detail"
-                            v-model="orderDetail"
-                            placeholder="--Select--"
-                        >
-                        </cornie-select> -->
                         <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Quantity <span class="text-xs text-gray-300">(optional)</span></span>
                             <div class="flex space-x-2 w-full">
@@ -250,21 +237,6 @@
                             </template>
                           
                           </fhir-input>
-               
-                        <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
-                            label="Body Site"
-                            v-model="bodySite"
-                            placeholder="--Select--"
-                        >
-                         <template #labelicon>
-                            <span class="text-xs text-gray-500">(Optional)</span>
-                            
-                            </template>
-                        </cornie-select> -->
-                     
                     </div>
                 </template>
             </accordion-component>
@@ -323,22 +295,7 @@
                               </span>
                             </div>
                           </div>
-                          <!-- <cornie-select
-                            :rules="required"
-                            :items="['reason reference']"
-                            label="Reason Reference"
-                            placeholder="--Select--"
-                            class="w-full"
-                             v-model="reasonReference"
-                        >
-                        </cornie-select> -->
-                         <!-- <cornie-input
-                            :rules="required"
-                            label="Note"
-                            placeholder="--Select--"
-                            class="w-full"
-                        >
-                        </cornie-input> -->
+                          
                          <cornie-input
                             label="Patient Instruction"
                             placeholder="--Enter--"
@@ -457,6 +414,8 @@ import plusIcon from "@/components/icons/plus.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import { getDropdown } from "@/plugins/definitions";
 import { Codeable } from "@/types/misc";
+import AutoComplete from "@/components/autocomplete.vue";
+
 
 const practitioner = namespace("practitioner");
 const refferal = namespace("refferal");
@@ -498,7 +457,8 @@ function defaultFilter(item: any, query: string) {
     CloseIcon,
     ReasonrefModal,
     plusIcon,
-    FhirInput
+    FhirInput,
+    AutoComplete
   },
 })
 export default class RefferalModal extends Vue {
@@ -573,9 +533,9 @@ export default class RefferalModal extends Vue {
 
     
     status =  "active";
-    basedOn = "";
-    intent =  "";
-    priority = "";
+    basedOn = null;
+    intent =  null;
+    priority = null;
     category = "";
     patientId = "";
     reasonCode = null;
@@ -619,9 +579,9 @@ export default class RefferalModal extends Vue {
         const diagnostic = await this.getOneRefferalById(this.id);
         if (!diagnostic) return;
           this.status =  diagnostic.status;
-          this.basedOn =  diagnostic.basedOn;
-          this.intent =  diagnostic.intent;
-          this.priority =  diagnostic.priority;
+          this.basedOn =  diagnostic.basedOn as any;
+          this.intent =  diagnostic.intent as any;
+          this.priority =  diagnostic.priority as any;
           this.category =  diagnostic.category;
           this.patientId =  diagnostic.patientId;
           this.reasonCode =  diagnostic.reasonCode;
