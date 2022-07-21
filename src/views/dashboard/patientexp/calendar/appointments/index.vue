@@ -2,8 +2,6 @@
   <div class="h-full flex justify-center">
     <div class="w-full mx-5">
       <span class="w-full">
-        {{ account }}
-        <BillingAccountComponent v-model="account" />
         <appointment-empty-state v-if="empty" />
         <appointment-existing-state v-else />
       </span>

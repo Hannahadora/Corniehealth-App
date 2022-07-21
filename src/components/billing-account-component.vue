@@ -19,6 +19,7 @@
       class="w-full capitalize"
       label="Change Billing Account"
       @selected="update"
+      v-model="account"
     />
   </div>
 </template>
@@ -37,6 +38,9 @@
     },
   })
   export default class BillingAccountComponent extends Vue {
+    @Prop({ type: String, default: "" })
+    modelValue!: string;
+
     @PropSync("modelValue")
     account!: string;
 
@@ -84,7 +88,8 @@
         this.selectedAccount = this.allAccounts.find(
           (x) => x.id == paymentId
         )?.type;
-        this.$emit("update:modelValue", paymentId);
+        // this.$emit("update:modelValue", paymentId);
+        this.account = paymentId;
       });
     }
 

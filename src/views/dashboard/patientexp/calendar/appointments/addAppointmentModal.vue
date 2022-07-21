@@ -414,7 +414,10 @@
                                 class="w-full mt-4"
                                 v-model="billingType"
                             /> -->
-                <billing-account-component :patientId="Patients" />
+                <billing-account-component
+                  v-model="billingAccountId"
+                  :patientId="Patients"
+                />
               </div>
 
               <!-- <div class="w-full">
@@ -661,6 +664,7 @@
     localSrc = require("../../../../../assets/img/placeholder.png");
     errmsg = "" as any;
     singlePatientId = "";
+    billingAccountId = "";
     required = string().required();
 
     @Watch("id")
@@ -706,6 +710,7 @@
         bookingLocationId: this.bookingLocationId || undefined,
         practitionerId: this.appoimtentId,
         patientId: this.singlePatientId,
+        billingAccountId: this.billingAccountId,
       };
     }
     async submit() {
