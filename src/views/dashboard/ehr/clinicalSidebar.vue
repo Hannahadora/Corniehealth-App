@@ -294,7 +294,7 @@
         { name: "Care Team", to: "care-team", icon: "care-icon" },
       //  { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
        { name: "Form | Questionaires | Survey", to: "forms-questionaires", icon: "form-icon" },
-        { name: "Billing & Payments", to: "billing-data", icon: "bill-icon" },
+        { name: "Billing Profile", to: "billing-data", icon: "bill-icon" },
        
       
       // { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },

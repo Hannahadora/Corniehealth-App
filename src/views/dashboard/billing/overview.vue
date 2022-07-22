@@ -58,13 +58,12 @@
           <ArrowRight />
         </div>
       </div>
-      <div class="rounded-xl bg-white p-10">
+      <!-- <div class="rounded-xl bg-white p-10">
         <div class="flex">
           <div class="flex-1 capitalize text-2xl font-bold">
             Unbilled Transactions
           </div>
           <div class="flex-none">
-            <!-- <div class="rounded-xl px-4 py-2 bg-blue-100">JUN 01 -JUN 07</div> -->
             <date-picker mode="range" class="w-full" v-model="startDate" />
           </div>
         </div>
@@ -84,7 +83,6 @@
             Transaction Volumes
           </div>
           <div class="flex-none">
-            <!-- <div class="rounded-xl px-4 py-2 bg-blue-100">JUN 01 -JUN 07</div> -->
             <date-picker mode="range" class="w-full" v-model="startDate" />
           </div>
         </div>
@@ -97,13 +95,12 @@
           </span>
           <ArrowRight />
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="rounded-xl bg-white p-10">
       <div class="flex">
         <div class="flex-1 capitalize text-2xl font-bold">Billing trend</div>
         <div class="flex-none">
-          <!-- <div class="rounded-xl px-4 py-2 bg-blue-100">JUN 01 -JUN 07</div> -->
           <date-picker mode="range" class="w-full" v-model="startDate" />
         </div>
       </div>
