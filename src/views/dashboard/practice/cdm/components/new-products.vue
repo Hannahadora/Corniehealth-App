@@ -1600,9 +1600,9 @@ export default class NewProuct extends Vue {
     if (!this.searchresult || this.searchresult.length === 0) return [];
     return this.searchresult.map((i: any) => {
       return {
-        code: i.generic_id,
-        value: i.generic_id,
-        display: i.generic_name,
+        code: i.id,
+        value: i.id,
+        display: i.name,
       };
     });
   }

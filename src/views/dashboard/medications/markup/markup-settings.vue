@@ -359,7 +359,7 @@ export default class MarkupSettings extends Vue {
   }
 
   get CDM() {
-    return this.SUC * (this.PercentageMarkup / 100);
+    return this.SUC + (this.SUC * (this.PercentageMarkup / 100));
   }
 
   get margin() {

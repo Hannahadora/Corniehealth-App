@@ -2,7 +2,7 @@ import { RouteRecordRaw } from "vue-router";
 
 export const BillingRoutes: RouteRecordRaw = {
   path: "billing/",
-  name: "Billing & payments",
+  name: "Billing Profile",
   component: () => import("@/views/dashboard/billing/index.vue"),
   redirect: () => "patients",
   children: [

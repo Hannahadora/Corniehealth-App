@@ -54,10 +54,10 @@
           <update-icon class="text-green-700 fill-current" />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showvariantModal = true">
+         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showvariantModal = true">
             <plus-icon class="text-blue-400 fill-current" />
           <span class="ml-3 text-xs">Add Variant</span>
-        </div>
+        </div> -->
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
             <deactivate-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">Deactivate</span>
