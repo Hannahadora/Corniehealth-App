@@ -392,7 +392,7 @@ export default class AddGroup extends Vue {
         // quantity: this.quantity,
         //managingEntity: this.managingEntity,
         managingEntityType: this.managingEntityType,
-        managingOrganizationId: this.managingOrganizationId || this.authPractitioner.organizationId,
+        managingOrganizationId: this.managingOrganizationId || this.managingPractitionerId ? undefined : this.authPractitioner.organizationId,
         managingPractitionerId: this.managingPractitionerId || undefined,
         members: this.actorsList.map((item: any) => {
         return {
