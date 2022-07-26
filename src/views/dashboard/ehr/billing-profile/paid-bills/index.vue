@@ -148,14 +148,14 @@
         : this.paidBills.map((x) => {
             return {
               date: this.printRecorded(x.createdAt),
-              id: x.id,
-              biller: "XXXXXX",
-              patient: x.patientId,
+              id: x.idn,
+              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
+              patient: x.subject,
               account: "XXXXXX",
-              payor: x.patientId,
+              payor: x.subject,
               total: `₦ ${x.total}`,
               bank: "XXXXXX",
-              paymentDate: x.paidAt,
+              paymentDate: this.printRecorded(x.paidAt),
               status: x.status,
             };
           });

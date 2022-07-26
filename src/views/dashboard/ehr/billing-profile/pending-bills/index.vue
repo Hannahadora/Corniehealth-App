@@ -76,7 +76,7 @@
       },
       {
         title: "Bill id",
-        key: "id",
+        key: "idn",
         show: true,
         noOrder: true,
       },
@@ -133,8 +133,12 @@
         : this.pendingBills.map((x) => {
             return {
               date: this.printRecorded(x.createdAt),
-              id: x.id,
+              //@ts-ignore
+              idn: x.idn,
               total: `₦ ${x.total}`,
+              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
+              account: "XXXXX",
+              payor: x.subject,
               status: x.status,
             };
           });

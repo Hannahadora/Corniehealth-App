@@ -1,6 +1,7 @@
 import IPractitioner from "@/types/IPractitioner";
 import Ihistory from "./Ihistory";
 export default interface paidBills {
+  idn: string;
   id: string;
   encounterId: string;
   subject: string;
@@ -10,7 +11,7 @@ export default interface paidBills {
   patientId: string;
   createdBy: IPractitioner;
   statusHistory: Ihistory;
-  paidAt: string;
+  paidAt: Date;
   total: number;
   createdAt: Date;
 }
