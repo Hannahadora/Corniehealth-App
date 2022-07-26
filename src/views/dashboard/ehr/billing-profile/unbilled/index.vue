@@ -115,11 +115,14 @@
         ? this.unbilled
         : this.unbilled.map((x) => ({
             date: new Date(x.createdAt).toLocaleDateString(),
-            id: x.id,
+            id: x.identifier,
             biller: x.practitionerId,
             department: "XXXXXX",
-            practitioner: "Dr John Adeniyi",
-            account: "3209320932",
+            practitioner:
+              //@ts-ignore
+
+              x.practitioner.firstName + " " + x.practitioner.lastName,
+            account: "XXXXXX",
             payor: x.providerName,
             status: x.status,
           }));
