@@ -87,6 +87,12 @@ export const ClinicalsRoute: RouteRecordRaw = {
       component: () => import("@/views/dashboard/ehr/impression/index.vue"),
     },
     {
+      path: "billings-profile",
+      props: true,
+      name: "Clinical Billing Profile",
+      component: () => import("@/views/dashboard/ehr/billing-profile/index.vue"),
+    },
+    {
       path: "procedure",
       props: true,
       name: "Procedures",

@@ -17,9 +17,14 @@
           </p>
           <p>
             Blood Type:
-            <span class="text-sm text-black font-light">{{ items.bloodGroup || 'N/A' }} | </span>
+            <span class="text-sm text-black font-light"
+              >{{ items.bloodGroup || "N/A" }} |
+            </span>
             <span
-              >Genotype: <span class="text-sm text-black font-light">{{ items.genotype || 'N/A' }}</span>
+              >Genotype:
+              <span class="text-sm text-black font-light">{{
+                items.genotype || "N/A"
+              }}</span>
             </span>
           </p>
         </div>
@@ -185,6 +190,7 @@
   import CorrespondIcon from "@/components/icons/ehrcorrespond.vue";
   import DiagIcon from "@/components/icons/ehrdiag.vue";
   import EncounterIcon from "@/components/icons/ehrencounter.vue";
+  import FormIcon from "@/components/icons/ehrforms.vue";
   import ImpressionIcon from "@/components/icons/ehrimpression.vue";
   import MedicalIcon from "@/components/icons/ehrmedical.vue";
   import MedicationIcon from "@/components/icons/ehrmedication.vue";
@@ -193,7 +199,6 @@
   import TrendIcon from "@/components/icons/ehrtrend.vue";
   import VisitIcon from "@/components/icons/ehrvisits.vue";
   import VitalIcon from "@/components/icons/ehrvital.vue";
-  import FormIcon from "@/components/icons/ehrforms.vue";
   import PartnersIcon from "@/components/icons/partners.vue";
   import PlanIcon from "@/components/icons/plan.vue";
   import SearchIcon from "@/components/icons/search.vue";
@@ -272,7 +277,7 @@
         },
         { name: "Visits", to: "visits", icon: "visit-icon" },
         { name: "Encounter", to: "encounter", icon: "encounter-icon" },
-         {
+        {
           name: "Progress Notes",
           to: "progress-notes/",
           icon: "proceed-icon",
@@ -282,7 +287,7 @@
           to: "clinical-impressions",
           icon: "impression-icon",
         },
-         { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
+        { name: "Diagnostics", to: "diagnostics", icon: "diag-icon" },
         {
           name: "Medications",
           to: "medications-request",
@@ -292,25 +297,28 @@
         { name: "Procedure", to: "procedure", icon: "proceed-icon" },
         { name: "Care Plan", to: "care-plan", icon: "plan-icon" },
         { name: "Care Team", to: "care-team", icon: "care-icon" },
-      //  { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
-       { name: "Form | Questionaires | Survey", to: "forms-questionaires", icon: "form-icon" },
-        { name: "Billing Profile", to: "billing-data", icon: "bill-icon" },
-       
-      
-      // { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
-      //   { name: "Care Partner", to: "care-partners", icon: "partners-icon" },
-      //   {
-      //     name: "Correspondence",
-      //     to: "correspondence",
-      //     icon: "correspond-icon",
-      //   },
-      //   { name: "Attachments", to: "attachments", icon: "attach-icon" },
-       
-      //   {
-      //     name: "Risk Assesment",
-      //     to: "/risk-assessment/",
-      //     icon: "diag-icon",
-      //   },
+        //  { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
+        {
+          name: "Form | Questionaires | Survey",
+          to: "forms-questionaires",
+          icon: "form-icon",
+        },
+        { name: "Billing Profile", to: "billings-profile", icon: "bill-icon" },
+
+        // { name: "DetectedIssues", to: "detectedissues", icon: "diag-icon" },
+        //   { name: "Care Partner", to: "care-partners", icon: "partners-icon" },
+        //   {
+        //     name: "Correspondence",
+        //     to: "correspondence",
+        //     icon: "correspond-icon",
+        //   },
+        //   { name: "Attachments", to: "attachments", icon: "attach-icon" },
+
+        //   {
+        //     name: "Risk Assesment",
+        //     to: "/risk-assessment/",
+        //     icon: "diag-icon",
+        //   },
       ];
     }
     get settings() {
