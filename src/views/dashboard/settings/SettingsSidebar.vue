@@ -203,7 +203,7 @@ export default class Settings extends Vue {
       // },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       // { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
-      { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
+      { name: "Billing & Collections", to: "billing-collections", icon: "bank-icon" },
       { name: "Inventory", to: "inventory", icon: "bank-icon" },
     ];
   }

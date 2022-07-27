@@ -20,17 +20,16 @@
           </div>
         </template>
         <template #status="{ item }">
-          <div class="text-no-wrap">
-            <span
-              class="status p-1"
-              :class="{
-                active: item.status === 'active',
-                inactive: item.status === 'inactive',
-                inactive: item.status === 'entered-in-error',
-              }"
-            >
-              {{ item.status }}</span
-            >
+          <div class="flex items-center">
+            <span class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'active'">
+            {{ item.status }}
+            </span>
+            <span class="text-xs bg-red-100 text-red-400 p-1 rounded" v-if="item.status == 'inactive'">
+            {{ item.status }}
+            </span>
+            <span class="text-xs bg-red-100 text-red-400 p-1 rounded" v-if="item.status == 'entered-in-error'">
+            {{ item.status }}
+            </span>
           </div>
         </template>
         <template #actions="{ item }">
@@ -42,11 +41,11 @@
           <edit-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showServiceModal = true">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showService(item)">
           <calendar-icon class="text-purple-700 fill-current" />
           <span class="ml-3 text-xs">Service Avalability</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newservice/${item.id}`)">
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStatus(item)">
           <update-icon class="text-green-400 fill-current" />
           <span class="ml-3 text-xs">Update Status</span>
         </div>
@@ -55,15 +54,16 @@
           <span class="ml-3 text-xs">Add Variant</span>
         </div> -->
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="onDelete(item.id)">
-          <deactivate-icon />
-          <span class="ml-3 text-xs">Deactivate</span>
+          <delete-icon />
+          <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
       </cornie-table>
     </div>
 
   </div>
-  <available-service v-model="showServiceModal"/>
+  <available-service v-model="showServiceModal" :selectedItem="selectedItem"/>
+  <status-modal v-model="showStatusModal" :selectedItem="selectedItem" @status-updated="productAdded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -88,6 +88,7 @@ import DeactivateIcon from "@/components/icons/deactivate.vue";
 import CalendarIcon from "@/components/icons/calendar.vue";
 
 import AvailableService from "../components/serviceAvailable.vue";
+import StatusModal from "./updateStatus.vue";
 
 const catalogue = namespace("catalogues");
 
@@ -108,6 +109,7 @@ const catalogue = namespace("catalogues");
     DeactivateIcon,
     CalendarIcon,
     AvailableService,
+    StatusModal,
   },
 })
 export default class ServiceExistingState extends Vue {
@@ -125,10 +127,13 @@ export default class ServiceExistingState extends Vue {
 
 
 
+
   productId = "";
   query = "";
   loading = false;
-  showServiceModal = true;
+  showServiceModal = false;
+  selectedItem = {};
+  showStatusModal = false;
 
 headers = [
     {
@@ -212,6 +217,14 @@ headers = [
     this.getServices();
   }
 
+  showService(value:any){
+    this.showServiceModal = true
+    this.selectedItem = value;
+  }
+  showStatus(value:any){
+    this.showStatusModal = true
+    this.selectedItem = value;
+  }
  async createMapper() {
     this.categoryMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/service-category"

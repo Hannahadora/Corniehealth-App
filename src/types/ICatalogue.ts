@@ -37,6 +37,7 @@ export interface AvailableTimes {
 }
 export interface ICatalogueProduct {
   id: string;
+  identifier:string;
   organizationId: string;
   type: string;
   category: string;

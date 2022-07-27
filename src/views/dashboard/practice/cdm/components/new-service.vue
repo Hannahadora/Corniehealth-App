@@ -383,7 +383,7 @@
                 </span>
                 <div class="w-full">
                   <p class="font-bold text-sm">
-                    {{ getLocationName(item.location) }}
+                    {{ getLocationName(item.locationId) }}
                   </p>
                   <span class="text-gray-400 text-xs font-light">
                     {{ item?.days?.mon }} {{ item?.days?.tue }}
@@ -779,6 +779,7 @@ export default class NwService extends Vue {
   referralMethod = "";
   requiresAppointment = false;
   locations = [] as any;
+  newlocations = [] as any;
   availableTimes: AvailableTimes[] = [];
   hoursOfOperation: HoursOfOperation[] = [];
 
@@ -809,8 +810,9 @@ export default class NwService extends Vue {
     this.setServices();
   }
 
-  addLocations(value: any, locationValue: any) {
+  addLocations(value: any, newvalue:any, locationValue: any) {
     this.locations = value;
+    this.newlocations = newvalue;
     this.locationsId = locationValue;
   }
 
@@ -868,7 +870,7 @@ export default class NwService extends Vue {
       channelOfService: this.channelOfService,
       telecom: this.telecom,
       requiresAppointment: this.requiresAppointment,
-      locations: this.locationsId,
+      locationAvailabilities: this.newlocations,
       availableTimes: this.availableTimes,
       specialtyId: this.specialtyId,
     };
