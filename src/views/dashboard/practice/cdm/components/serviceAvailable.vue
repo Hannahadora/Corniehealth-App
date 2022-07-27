@@ -20,15 +20,15 @@
             <div class="mt-5">
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Item Code</p>
-                            <p class="flex justify-end text-sm float-right w-full">GJ67894</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem.itemCode }}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
-                            <p class="flex text-sm text-gray-400 float-left w-full">Knee Replacement</p>
-                            <p class="flex justify-end text-sm float-right w-full">Item Name</p>
+                            <p class="flex text-sm text-gray-400 float-left w-full">category</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem.category }}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">No of Specialists:</p>
-                            <p class="flex justify-end text-sm float-right w-full">3</p>
+                            <p class="flex justify-end text-sm float-right w-full">1</p>
                         </div>
             </div>
             <div class="bg-white py-3 px-4 shadow rounded-lg mb-4 flex w-full space-x-2" style="align-items: center;">
@@ -132,6 +132,9 @@ export default class serviceInfoModal extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
+
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
   async created() {
  

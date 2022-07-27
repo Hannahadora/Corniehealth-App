@@ -73,7 +73,7 @@
                     <avatar :src="localSrc" class="mr-1" />
                   </span>
                 <div class="w-full">
-                  <p class="font-bold text-sm">{{ getLocationName(item.location) }}</p>
+                  <p class="font-bold text-sm">{{ getLocationName(item.locationId) }}</p>
                    <span class="text-gray-400 text-xs font-light">
                         {{ isActiveMon ? item?.days?.mon : '' }} {{isActiveTue ? item?.days?.tue : ''}}  {{isActiveWed ? item?.days?.wed : ''}}
                         {{isActiveThu ? item?.days?.thu : ''}}  {{isActiveFir ? item?.days?.fri : ''}}  {{isActiveSat ? item?.days?.sat : ''}}
@@ -200,8 +200,9 @@ export default class LocationDays extends Vue {
   localSrc = require("../../../../../assets/img/placeholder.png");
 
   locationDays = [] as any;
+  newlocationDays = [] as any;
 
-  data = {} as any;
+  data = [] as any;
 
 
 
@@ -259,8 +260,12 @@ export default class LocationDays extends Vue {
 
   async add(){
     this.locationDays.push({
-        location: this.location,
+        locationId: this.location,
         days: this.data
+    })
+    this.newlocationDays.push({
+        locationId: this.location,
+        days: [this.data]
     })
     this.locationsId.push(this.location);
     this.data = {};
@@ -274,7 +279,7 @@ export default class LocationDays extends Vue {
   async submit(){
     this.loading = true;
 
-     this.$emit("location-days", this.locationDays, this.locationsId);
+     this.$emit("location-days", this.locationDays, this.newlocationDays, this.locationsId);
 
      this.loading = false;
      this.done();

@@ -22,23 +22,23 @@
                     <div class="mt-5">
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Form:</p>
-                            <p class="flex justify-end text-sm float-right w-full">Tablet</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem?.form }}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Strength:</p>
-                            <p class="flex justify-end text-sm float-right w-full">10mg</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem?.strength}}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Pack Size:</p>
-                            <p class="flex justify-end text-sm float-right w-full">30 per card</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem?.pack}}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Manufacturer:</p>
-                            <p class="flex justify-end text-sm float-right w-full">Glaskosmithkline Ltd</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem?.brand}}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">NAFDAC Registration Number:</p>
-                            <p class="flex justify-end text-sm float-right w-full">56789</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem?.regNo}}</p>
                         </div>
                     </div>
                </template>
@@ -71,8 +71,8 @@
                 <template v-slot:default>
                     <div class="mt-5">
                         <div class="rounded-lg w-full bg-blue-50 border-2 px-4 border-gray-200 py-4">
-                            <p class="text-sm text-gray-700">
-                                Lorem ipsum dolor sit amet,
+                            <p class="text-sm text-gray-700" v-for="(item,index) in selectedItem.storages" :key="index">
+                               {{ item?.room +','+ item?.shelf +','+ item?.rack +','+ item?.bin +',' }}
                             </p> 
                         </div>
                         
@@ -153,6 +153,9 @@ const dropdown = namespace("dropdown");
 export default class medicationInfoModal extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
+
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
   @Prop({ type: String, default: "" })
   id!: string;
