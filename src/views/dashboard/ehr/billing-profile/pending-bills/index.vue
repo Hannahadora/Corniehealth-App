@@ -1,13 +1,12 @@
 <template>
-  <div class="rounded-2xl bg-white p-10">
-    <div class="border-b pb-4 font-bold text-2xl">All Transactions</div>
+  <div>
     <div class="flex w-full py-10 space-x-12">
       <div class="flex-1 rounded-2xl px-10 py-5 shadow-lg">
         <div class="flex">
           <div class="flex-1">
             <div class="flex flex-col">
-              <div class="text-gray-400">Transaction Volume</div>
-              <div class="font-bold text-xl">1132</div>
+              <div class="text-gray-400">Bill Count</div>
+              <div class="font-bold text-xl">{{ pendingBills.length }}</div>
             </div>
           </div>
           <div class="flex-none">
@@ -19,8 +18,8 @@
         <div class="flex">
           <div class="flex-1">
             <div class="flex flex-col">
-              <div class="text-gray-400">Total Receivables Value</div>
-              <div class="font-bold text-xl">N32,094,045</div>
+              <div class="text-gray-400">Total Bills Value</div>
+              <div class="font-bold text-xl">₦ 0</div>
             </div>
           </div>
           <div class="flex-none">
@@ -28,6 +27,11 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="flex justify-end w-full pb-5">
+      <button class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold">
+        New Bill
+      </button>
     </div>
     <cornie-table @filter="showFDialog" :columns="headers" v-model="items">
       <template #status="{ item: { status } }">
@@ -47,23 +51,22 @@
         </span>
       </template>
     </cornie-table>
-    <transaction-filter-dialog v-model="showDialog" />
   </div>
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import { cornieClient } from "@/plugins/http";
+  import pendingBills from "@/types/IPendingBills";
   import { Options, Vue } from "vue-class-component";
-  import transactionFilterDialog from "./components/transaction-filter-dialog.vue";
+
   @Options({
-    name: "Billing Transactions",
+    name: "Pending Bills",
     components: {
       CornieTable,
-      transactionFilterDialog,
+      // transactionFilterDialog,
     },
   })
-  export default class BillingTransactions extends Vue {
-    showDialog = false;
+  export default class PendingBills extends Vue {
     headers = [
       {
         title: "Bill date",
@@ -73,19 +76,13 @@
       },
       {
         title: "Bill id",
-        key: "id",
+        key: "idn",
         show: true,
         noOrder: true,
       },
       {
         title: "Biller",
         key: "biller",
-        show: true,
-        noOrder: true,
-      },
-      {
-        title: "Patient/subject",
-        key: "patient",
         show: true,
         noOrder: true,
       },
@@ -114,51 +111,54 @@
         noOrder: true,
       },
     ];
-    bills = [];
 
+    pendingBills = [] as pendingBills[];
+
+    printRecorded(date: Date) {
+      return new Date(date).toLocaleDateString();
+    }
     get items() {
       // return new Array(6).fill({
       //   date: new Date().toLocaleDateString(),
-      //   id: "XXXXXX",
-      //   biller: "XXXXXX",
-      //   patient: "XXXXXX",
-      //   account: "MTN\n 3209320932",
-      //   payor: "MTN",
-      //   total: "N40,000",
-      //   status: "Ongoing",
+      //   id: "CRH353434",
+      //   biller: "Dr John Adeniyi",
+      //   // patient: "XXXXXX",
+      //   account: "3209320932",
+      //   payor: "James Daniel",
+      //   total: "₦ 40,000",
+      //   status: "Pending",
       // });
-      return this.bills.length == 0
-        ? this.bills
-        : this.bills.map((x: any) => {
+      return this.pendingBills.length == 0
+        ? this.pendingBills
+        : this.pendingBills.map((x) => {
             return {
               date: this.printRecorded(x.createdAt),
-              id: x.idn,
-              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
-              patient: x.subject,
+              //@ts-ignore
+              idn: x.idn,
               total: `₦ ${x.total}`,
+              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
+              account: "XXXXX",
+              payor: x.subject,
               status: x.status,
-              account: "-----",
-              payor: "-----",
             };
           });
     }
 
-    showFDialog() {
-      this.showDialog = true;
+    get patientId() {
+      return this.$route.params.id;
     }
 
-    printRecorded(date: string) {
-      return new Date(date).toLocaleDateString();
-    }
-
-    async getBills() {
-      const { data } = await cornieClient().get("/api/v1/bill");
-      console.log("bills", data);
-      this.bills = data;
+    async fetchPendingBills() {
+      const pending = cornieClient().get(
+        `/api/v1/billing-profile/patient/${this.patientId}/pending-bills`
+      );
+      const response = await Promise.all([pending]);
+      console.log("pending bills", response[0].data);
+      this.pendingBills = response[0].data;
     }
 
     async mounted() {
-      await this.getBills();
+      await this.fetchPendingBills();
     }
   }
 </script>
