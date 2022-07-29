@@ -12,7 +12,7 @@
     <textarea
       :rows="rows"
       :cols="cols"
-      maxlength="255"
+      :maxlength="maxlength"
       :placeholder="placeholder"
       :class="{
         'border-red-500': Boolean(errorMessage),
@@ -24,7 +24,7 @@
       v-model="valueSync"
     />
     <span class="w-full block text-right text-xs text-gray-500">
-      {{ textCount }}/255
+      {{ textCount }}/{{ maxlength }}
     </span>
     <span v-if="errorMessage" class="text-xs text-red-500 block">
       {{ errorMessage }}
@@ -61,6 +61,9 @@ export default class DInput extends Vue {
 
   @Prop({ type: String, default: "50" })
   cols!: string;
+
+  @Prop({ type: String, default: "255" })
+  maxlength!: string;
 
   @Prop({ type: String, default: "" })
   placeholder!: string;
