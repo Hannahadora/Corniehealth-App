@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col">
     <div class="flex items-center mb-3">
+      <check-icon/>
       <div class="font-bold flex-1 capitalize">
         {{ accountNumber }} - {{ selectedAccount }}
       </div>
@@ -30,16 +31,21 @@
   import { nextTick } from "vue";
   import { Options, Vue } from "vue-class-component";
   import { Prop, PropSync } from "vue-property-decorator";
+  import CheckIcon from "./icons/check-green-bg.vue";
 
   @Options({
     name: "Billing account component",
     components: {
       CornieSelect,
+      CheckIcon,
     },
   })
   export default class BillingAccountComponent extends Vue {
     @Prop({ type: String, default: "" })
     modelValue!: string;
+
+    @Prop({ type: String, default: "" })
+    id!: string;
 
     @PropSync("modelValue")
     account!: string;
@@ -65,7 +71,8 @@
 
     async getAccounts() {
       // if(!this.patientId)
-      const url = `/api/v1/patient/payment-account/patient/${this.patientId[0]?.patientId}`;
+      const id = this.id || this.patientId[0]?.patientId;
+      const url = `/api/v1/patient/payment-account/patient/${id}`;
       try {
         const response = await cornieClient().get(url);
         if (response.success) {

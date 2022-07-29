@@ -22,7 +22,7 @@ export default {
       const collectioncenters = await fetchCollectionCenters();
       ctx.commit("setCollectionCenter", collectioncenters);
     },
-    getBookingsiteById(ctx, id: string) {
+    getCollecitoncenterById(ctx, id: string) {
       return ctx.state.collectioncenters.find(
         collectioncenter => collectioncenter.id == id
       );

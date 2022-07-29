@@ -127,21 +127,22 @@
                         >
                         </cornie-select> -->
                         <div class="w-full -mt-1">
-                            <span class="text-sm font-semibold mb-3">Occurrence</span>
-                            <div class="flex space-x-2 w-full">
+                            <!-- <span class="text-sm font-semibold mb-3">Occurrence</span> -->
+                            <div class="w-full">
                                 <date-picker
                                 :rules="required"
                                 placeholder="--Enter--"
                                 class="grow w-full"
+                                :label="'Occurrence'"
                                 v-model="occurenceValue"
                                 />
-                                <cornie-select
+                                <!-- <cornie-select
                                 :items="['Date']"
                                 placeholder="Date"
                                 class="w-32 mt-0.5 flex-none"
                                 :setPrimary="true"
                                 v-model="occurenceUnit"
-                                />
+                                /> -->
                             </div>
                         </div>
                         <auto-complete :items="Specilaitems" v-model="specialty"  label="Specialty" placeholder="Select" :required="required" />

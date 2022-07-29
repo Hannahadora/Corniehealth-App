@@ -55,6 +55,7 @@
                         @input="searchData"
                         v-model="dataCode"
                         :placeholder="'Select'"
+                       
                     />
 
                     <cornie-select
@@ -64,6 +65,7 @@
                     @click="resultBrand(dataBrand)"
                     v-model="dataBrand"
                     :placeholder="'Select'"
+                    
                     />
                     <cornie-select
                     v-model="dataForm"
@@ -72,6 +74,7 @@
                     :placeholder="'Select'"
                     class="w-full"
                     @click="resultPack(dataForm)"
+                  
                     />
                     <cornie-input
                     :label="'Pack'"
@@ -820,10 +823,14 @@
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CollapseSection from "./dropdown.vue";
+import { string } from "yup";
+
+
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
 import Cornieradio from "@/views/dashboard/ehr/progressnotes/cornieradio.vue";
 import AddIcon from "@/components/icons/add-orange.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -832,11 +839,10 @@ import DatePicker from "@/components/datepicker.vue";
 import Avatar from "@/components/avatar.vue";
 import { useHandleImage } from "@/composables/useHandleImage";
 import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
+
 import NewVariant from "./new-variant.vue";
 import StockUnit from "./stockUnitMeasurement.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import DeleteRed from "@/components/icons/delete-red.vue";
-
+import CollapseSection from "./dropdown.vue";
 import {
   ICatalogueProduct,
   IInventory,
@@ -940,11 +946,11 @@ export default class NewProuct extends Vue {
   brandCode = "";
   description = "description";
   genericCode = "";
-  size = undefined;
+  size = "";
   brand = "";
   classification = "";
   subClassification = "";
-  category = undefined;
+  category = "";
   ingredientStatus = "";
   ingredient = "";
   regNo = "";
@@ -952,6 +958,8 @@ export default class NewProuct extends Vue {
   applyVAT = true;
   applyDiscount = false;
   status = "active";
+
+  required = string().required();
 
   dataCode = "";
   dataBrand = "";
@@ -1420,8 +1428,8 @@ export default class NewProuct extends Vue {
     this.genericName= "";
     this.brandCode = "";
     this.brand = "";
-    this.category = undefined;
-    this.size = undefined;
+    this.category = "";
+    this.size = "";
     this.classification = "";
     this.subClassification = "";
     this.form = "";
@@ -1439,14 +1447,14 @@ export default class NewProuct extends Vue {
       subClassification: this.subClassification,
       applyDiscount: this.applyDiscount,
       type: this.type,
-      category: this.category,
+      category: this.category || undefined,
       genericName: this.aBrandName,
       status: this.status,
       brand: this.aBrandCode,
       ingredient: this.ingredient,
       ingredientStatus: this.ingredientStatus,
       description: this.description,
-      size: this.size,
+      size: this.size || undefined,
       inventoryUOM: this.inventoryUOM,
       purchaseUOM: this.purchaseUOM,
       salesUOMs: this.salesUOMs,
@@ -1469,14 +1477,14 @@ export default class NewProuct extends Vue {
       subClassification: this.subClassification,
       applyDiscount: this.applyDiscount,
       type: this.type,
-      category: this.category,
+      category: this.category || undefined,
       genericName:  this.genericName,
       status: this.status,
       brand:  this.genericCode,
       ingredient: this.ingredient,
       ingredientStatus: this.ingredientStatus,
       description: this.description,
-      size: this.size,
+      size: this.size || undefined,
       inventoryUOM: this.inventoryUOM,
       purchaseUOM: this.purchaseUOM,
       salesUOMs: this.salesUOMs,
@@ -1499,24 +1507,30 @@ export default class NewProuct extends Vue {
     this.loading = false;
   }
   async createProductInventory() {
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/catalogue-product",
-        this.payload
-      );
-      if (response.success) {
+    if(this.payload.genericCode && this.payload.brandCode && this.payload.form && this.payload.brand == ''){
+       return window.notify({ msg: "All fields are required", status: "success" });
+    }else{
+      
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/catalogue-product",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({
+            msg: "Catalogue product created",
+            status: "success",
+          });
+          this.$router.go(-1);
+        }
+      } catch (error: any) {
         window.notify({
-          msg: "Catalogue product created",
-          status: "success",
+          msg: "Catalogue product not created",
+          status: "error",
         });
-        this.$router.go(-1);
       }
-    } catch (error: any) {
-      window.notify({
-        msg: error.response.data.message,
-        status: "error",
-      });
     }
+   
   }
   async updateProduct() {
     const url = `/api/v1/catalogue-product/${this.id}`;
@@ -1530,7 +1544,7 @@ export default class NewProuct extends Vue {
         this.$router.go(-1);
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Catalogue product not  updated", status: "error" });
     }
   }
 
@@ -1747,7 +1761,6 @@ export default class NewProuct extends Vue {
     return (this.fullBrand = pt ? pt.form : {});
   }
   async resultPack(id: any) {
-    console.log(id, "NAFADAC dataCode");
     const pt = this.fullInfo.find((i: any) => i.id === id);
     this.resultStrength(id);
     this.size = pt.pack;

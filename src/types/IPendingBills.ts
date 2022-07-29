@@ -1,5 +1,5 @@
-import IPractitioner from '@/types/IPractitioner';
-import Ihistory from './Ihistory';
+import IPractitioner from "@/types/IPractitioner";
+import Ihistory from "./Ihistory";
 export default interface pendingBills {
   id: string;
   encounterId: string;

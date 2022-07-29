@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mt-8">
+  <div class="w-full">
 
     <div class="pb-5">
       <div class="">
@@ -7,11 +7,11 @@
         :items="tabLinks"
         v-model="currentTab"
         :width="'w-2/4 lg:w-34 sm:w-2/4'"
-        class="mt-12"
+        class="mt-8"
       >
-        <private-section />
-        <hmo-section />
-        <self-section />
+        <private-section @collectioncenterAdded="collectioncenterAdded" :id="collectionCenterId?.id" :selectedItem="collectionCenterId"/>
+        <hmo-section @collectioncenterAdded="collectioncenterAdded" :id="collectionCenterId?.id" :selectedItem="collectionCenterId"/>
+        <self-section @collectioncenterAdded="collectioncenterAdded" :id="collectionCenterId?.id" :selectedItem="collectionCenterId"/>
       </new-tab>
     </div>
     </div>
@@ -22,15 +22,17 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class"; 
+
+import ICollectionCenters from "@/types/ICollectionCenters";
+
 import cornieRadio from "@/components/cornieradio.vue";
 import NewTab from "@/components/newtab.vue";
-
 import PrivateSection from "./private.vue";
 import HmoSection from "./hmo.vue";
 import SelfSection from "./selfaccount.vue";
 
-
-import { namespace } from "vuex-class";
+const collectioncenter = namespace("collectioncenter");
 
 @Options({
   name: "CollectionCenterIndex",
@@ -46,7 +48,7 @@ export default class CollectionCenterIndex extends Vue {
 
     loading = false;
 
-     tabLinks = ["Private (Out-of-Pocket)", "HMO","Self-Funded Accounts"];
+    tabLinks = ["Private (Out-of-Pocket)", "HMO","Self-Funded Accounts"];
 
     currentTab = 0;
 
@@ -54,7 +56,23 @@ export default class CollectionCenterIndex extends Vue {
 
     }
   
-  created() {}
+    @collectioncenter.Action
+    fetchCollectionCenters!: () => Promise<void>;
+
+    @collectioncenter.State
+    collectioncenters!: ICollectionCenters[];
+
+    async collectioncenterAdded(){
+        await this.fetchCollectionCenters();
+    }
+
+    get collectionCenterId(){
+      return this.collectioncenters?.flatMap((collection) => collection).find((center) => center) as any
+    }
+
+  async created() {
+      await this.fetchCollectionCenters();
+  }
 }
 </script>
 <style scoped>

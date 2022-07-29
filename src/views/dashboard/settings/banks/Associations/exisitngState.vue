@@ -27,29 +27,33 @@
           </div>
         </template>
         <template #pay="{ item }">
-        <div class="flex space-x-2 w-full">
-            <div
-              class=""
-              v-for="(input, index) in item.paymentCategories"
-              :key="index"
-            >
-              <span
-                class="bg-green-100 text-green-700 p-2 rounded-md"
-                v-if="input == 'Diagnostics'"
-                >{{ input }}</span
+          <div class="flex space-x-2 w-full">
+              <div
+                class=""
+                v-for="(input, index) in item.paymentCategories"
+                :key="index"
               >
-              <span
-                class="bg-red-100 text-red-700 p-2 rounded-md"
-                v-if="input == 'In-Patient'"
-                >{{ input }}</span
-              >
-              <span
-                class="bg-yellow-100 text-yellow-500 p-2 rounded-md"
-                v-if="input == 'Pharmacy'"
-                >{{ input }}</span
-              >
-            </div>
-        </div>
+                <span
+                  class="bg-green-100 text-green-700 p-2 rounded-md"
+                  v-if="input == 'Diagnostics'"
+                  >{{ input }}</span
+                >
+                <span
+                  class="bg-red-100 text-red-700 p-2 rounded-md"
+                  v-if="input == 'In-Patient'"
+                  >{{ input }}</span
+                >
+                <span
+                  class="bg-yellow-100 text-yellow-500 p-2 rounded-md"
+                  v-if="input == 'Pharmacy'"
+                  >{{ input }}</span
+                >
+              </div>
+          </div>
+        </template>
+        <template #account="{ item }">
+          <span>{{ item.associatedAccounts.length }}</span>
+          <eye-icon class="fill-current text-danger cursor-pointer" @click="showAccounts(item.associatedAccounts)"/>
         </template>
     </cornie-table>
 </div>
@@ -58,6 +62,7 @@
     @accountAdded="accountAdded"
     :id="associationId"
   />
+  <accounts-modal v-model="showAccountsModal" :accounts="associateAccounts"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -81,11 +86,12 @@ import { cornieClient } from "@/plugins/http";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import AuthorizeIcon from "@/components/icons/authorize.vue";
 import TransactIcon from "@/components/icons/transact.vue";
-import EyeIcon from "@/components/icons/eye-yellow.vue";
+import EyeIcon from "@/components/icons/eye.vue";
 import PayIcon from "@/components/icons/pay.vue";
 import ICollection from "@/types/ICollection";
 import IAssociate from "@/types/IAssociate";
 import LocationModal from "./associateModal.vue";
+import AccountsModal from "./accountModal.vue";
 
 const collections = namespace("collections");
 const association = namespace("association");
@@ -102,6 +108,7 @@ const association = namespace("association");
     AuthorizeIcon,
     CornieSelect,
     AccordionComponent,
+    AccountsModal,
     // NubanModal,
     TransactIcon,
     EyeIcon,
@@ -128,6 +135,10 @@ export default class Payments extends Vue {
   accountId = "";
   associationId = "";
   orgLocation = [] as any;
+  associateAccounts = [];
+  showAccountsModal = false;
+
+ 
 
   @collections.Action
   fetchCollectionAccounts!: (orgId: string) => Promise<void>;
@@ -181,12 +192,16 @@ export default class Payments extends Vue {
         keydisplay: "XXXXXXX",
         default: this.getBankName(association.defaultAccount),
         location: this.getLocation(association.location),
-        account: association.associatedAccounts.length
+        //account: association.associatedAccounts.length
       
       };
     });
     if (!this.query) return associations;
     return search.searchObjectArray(associations, this.query);
+  }
+   showAccounts(accounts:any){
+    this.associateAccounts = accounts;
+    this.showAccountsModal = true;
   }
   getPaymentCategoreis(value: any) {
     return value;
