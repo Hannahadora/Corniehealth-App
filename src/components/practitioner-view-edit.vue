@@ -952,8 +952,9 @@
         ...this.educations,
       ];
 
-      this.qualificationIssuer = this.qualificationCode = "";
-      // this.graduationYear =
+      this.qualificationIssuer = undefined;
+      this.qualificationCode = undefined;
+      this.graduationYear = undefined;
       //   "";
     }
     removeEducation(i: number) {
@@ -973,7 +974,9 @@
         ...this.licenses,
       ];
 
-      this.licenseIssuer = this.licenseNumber = this.licensePeriod = "";
+      this.licenseIssuer = "";
+      this.licenseNumber = "";
+      this.licensePeriod = undefined;
     }
 
     sendspeicality(e: any) {
@@ -1001,7 +1004,7 @@
     practiceDurationunit = "Year";
     newspecialties = [] as any;
 
-    qualificationCode = "";
+    qualificationCode: any = "";
     addEmergencyContact = false;
     useSameAddress = false;
     name = "";
@@ -1042,7 +1045,7 @@
       },
     ];
     qualificationIdentifier = "1122";
-    qualificationIssuer = "";
+    qualificationIssuer: any = "";
     licenseNumber = "";
     type = "General Practitioner";
     makeAvailable = "";
@@ -1094,7 +1097,7 @@
       value: 0,
       unit: "Hour",
     };
-    graduationYear = "";
+    graduationYear: any = "";
     licenseIssuer = "";
     newservices = [] as any;
     licensePeriod = "" as any;

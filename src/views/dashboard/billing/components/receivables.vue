@@ -110,7 +110,7 @@
         const startDate = new Date(start).toISOString();
         const endDate = new Date(end).toISOString();
         const response = await cornieClient().get(
-          `api/v1/bill/stat/collections?start=${startDate}&end=${endDate}`
+          `api/v1/bill/stat/receivables?start=${startDate}&end=${endDate}`
         );
         const { privateAccount, selfFunded, insurance } = response.data;
         this.totalCollectables = this.sumTotalCollectables(response.data);
