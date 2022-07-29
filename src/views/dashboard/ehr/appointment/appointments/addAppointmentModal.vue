@@ -321,10 +321,12 @@
             <accordion-component :addborder="true" :title="'Billing Type'" :opened="false">
                   <template v-slot:default>
                       <div class="w-full border-dashed border-b-2 pb-4 border-gray-100">
-                        <div class="flex w-full">
-                                <div class="w-full">
+                        <div class="w-full">
+                            <billing-account  v-model="billingAccountId"
+                            :id="patientId"/>
+                                <!-- <div class="w-full">
                                   <span class="text-xs text-gray-400 font-semibold">{{billingType}}</span>    
-                                </div>
+                                </div> -->
                                 <!-- <div class="w-full">
                                     <span class="text-xs flex justify-end w-full text-danger cursor-pointer" @click="showBilling = true">Change billing type</span>
                                 </div> -->
@@ -434,6 +436,7 @@ import IAppointment from "@/types/IAppointment";
 import ILocation from "@/types/ILocation";
 import IPractitioner from "@/types/IPractitioner";
 import { string } from "yup";
+import BillingAccount from "@/components/billing-account-component.vue";
 
 const appointment = namespace("appointment");
 const location = namespace("location");
@@ -469,6 +472,7 @@ const practitioner = namespace("practitioner");
     IconInput,
     CornieInput,
     CornieSelect,
+    BillingAccount,
     CornieBtn,
 
     SelectOption
@@ -530,6 +534,7 @@ export default class appointmentModal extends Vue {
   showShare = false;
   showPost = false;
   showBill = false;
+  billingAccountId = "";
 
 
 
@@ -599,6 +604,7 @@ export default class appointmentModal extends Vue {
     this.comment = appointment.comment;
     this.newPractitioners = appointment.Practitioners[0];
     this.bookingLocationId = appointment?.bookingLocationId;
+    this.billingAccountId = appointment?.billingAccountId;
    
 
   }
@@ -624,7 +630,8 @@ export default class appointmentModal extends Vue {
       locationId : this.locationId,
       bookingLocationId: this.bookingLocationId || undefined,
       practitionerId: this.appoimtentId,
-      patientId: this.patientId
+      patientId: this.patientId,
+      billingAccountId : this.billingAccountId || undefined,
 
     }
   }

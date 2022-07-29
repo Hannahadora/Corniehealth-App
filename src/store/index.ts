@@ -66,6 +66,8 @@ import PracticeImageStore from "./practiceimage";
 import BookingsiteStore from "./bookingsite";
 import PreferenceStore from "./preference";
 import RatingStore from "./ratings";
+import BillingcenterStore from "./billingcenters";
+import CollectioncenterStore from "./collectioncenters";
 
 export default createStore({
   modules: {
@@ -138,6 +140,8 @@ export default createStore({
     materialreturn: MaterialreturnStore,
     waybill: WaybillStore,
     practiceimage: PracticeImageStore,
+    billingcenter: BillingcenterStore,
+    collectioncenter : CollectioncenterStore,
 
     encounter: encounter,
     bookingsite: BookingsiteStore,

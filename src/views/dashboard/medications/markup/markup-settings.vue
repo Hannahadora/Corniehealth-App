@@ -165,9 +165,10 @@
     <div class="flex flex-col gap-4 mt-3">
       <span class="font-bold text-sm text-jet_black">Allow location admins to modify 
         <tooltip-section :text="'An update in one location applies only to that location and will not impact on other locations settings.'">
-          <template>
-            <info-icon/>
-          </template>
+
+          <info-icon class="fill-current text-primary"/>
+            
+          
         </tooltip-section> 
       </span>
       <div class="flex gap-4">
@@ -370,7 +371,7 @@ export default class MarkupSettings extends Vue {
   }
 
   get minimumPrice() {
-    return Math.abs(this.CDM * (1 - this.MaxDiscount));
+    return Math.abs(this.CDM * (1 - (this.MaxDiscount/100)));
   }
   get discountMargin() {
     return Math.abs(this.minimumPrice - this.SUC);

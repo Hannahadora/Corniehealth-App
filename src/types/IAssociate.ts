@@ -1,7 +1,7 @@
 export default interface IAssociate {
   id?: string;
   location: string;
-  paymentCategories: [];
+  collectionCenter: [];
   accounts: [];
   associatedAccounts:[];
   defaultAccount: string;

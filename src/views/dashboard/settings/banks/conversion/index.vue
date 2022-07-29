@@ -56,8 +56,9 @@
       </cornie-table>
     </div>
   </div>
-  <default-currency v-model="showDefaultCurrencyModal" />
+  <default-currency v-model="showDefaultCurrencyModal" :defaultcurency="defaultcurency"/>
   <new-exchange-rate
+  :defaultcurency="defaultcurency"
     v-model="showNewExchangeRateModal"
     @currency-added="currencyadded"
     :id="currencyId"
@@ -157,6 +158,12 @@ export default class PracticeformExistingState extends Vue {
 
   @currency.Action
   fetchCurrencys!: () => Promise<void>;
+
+  @currency.Action
+  fetchDefaultCurrency!: () => Promise<void>;
+
+   @currency.State
+  defaultcurency!: any;
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -267,9 +274,11 @@ export default class PracticeformExistingState extends Vue {
     this.fetchCurrencys();
   }
   async created() {
+     this.fetchDefaultCurrency();
     this.fetchPractitioners();
     this.fetchCurrencys();
     if (this.currencys.length < 1) this.fetchCurrencys();
+
   }
 }
 </script>

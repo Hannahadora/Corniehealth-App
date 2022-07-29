@@ -66,20 +66,7 @@
                           placeholder="--Select--"
                           reference="http://hl7.org/fhir/ValueSet/request-priority"
                         />
-                        <!-- <cornie-select
-                        required
-                          class="required"
-                          :rules="required"
-                          :items="[
-                            'Inpatient',
-                            'Outpatient',
-                            'Community',
-                            'Discharge',
-                          ]"
-                          label="priority"
-                          v-model="priority"
-                          placeholder="--Select--">
-                        </cornie-select> -->
+                      
                         <cornie-select
                         required
                             class="required w-full"
@@ -132,8 +119,31 @@
             <accordion-component title="Medication" :opened="false">
               <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                     <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
-                    <cornie-select :label="'Brand Name'"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
-                      <div>
+                    <cornie-select :label="'Brand Name'"  @click="resultBrand(emptyMedicationDetails.genericName)"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
+                      <cornie-select
+                    v-model="dataForm"
+                    :label="'Form'"
+                    :items="allForms"
+                    :placeholder="'Select'"
+                    class="w-full"
+                    @click="resultPack(dataForm)"
+                  
+                    />
+                    <cornie-input
+                    :label="'Pack'"
+                    v-model="pack"
+                    placeholder="--Autoloaded--"
+                    class="w-full"
+                    :disabled="true"
+                    />
+                    <cornie-input
+                    :label="'Strength'"
+                    v-model="strength"
+                    placeholder="--Autoloaded--"
+                    class="w-full"
+                    :disabled="true"
+                    />
+                    <div>
                             <p class="text-sm text-black font-semibold mb-1">
                               Medication Reference
                             </p>
@@ -146,16 +156,7 @@
                                 <plusIcon class="fill-current text-danger mt-1" />
                               </span>
                             </div>
-                          </div>
-                    
-                    <!-- <cornie-select
-                        class="w-full"
-                        :items="['Condition', 'Observation']"
-                        label="medication reference"
-                        placeholder="--Select--"
-                        v-model="emptyMedicationDetails.reference"
-                    >
-                    </cornie-select> -->
+                    </div>
                     <cornie-select
                         class="required w-full"
                         :rules="required"
@@ -214,9 +215,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
-   
-             
+                </div>           
               <accordion-component title="Dispense Request - Initial Fill" :opened="true">
                   <template v-slot:default>
 
@@ -235,7 +234,6 @@
 
                   </template>   
               </accordion-component>
-
               <accordion-component
                   title="Refill"
                   :opened="false"
@@ -289,9 +287,6 @@
                           </div>
                   </div>
               </accordion-component>
-
-             
-
               <accordion-component title="Substitution Allowed?" :opened="false">
                 <div class="flex space-x-4 w-full mt-5">
                   <cornie-radio :label="'Yes'" :value="true" v-model="emptyMedicationDetails.substitutionAllowed"
@@ -703,6 +698,13 @@ export default class MedicationModal extends Vue {
   showRefModal = false;
   showMedRefModal = false;
 
+  dataForm = "";
+  pack = "";
+  strength = "";
+  fullBrand = [] as any;
+  Nafdac = "";
+  size = "";
+
   days = "";
   days2 = "";
   basedOn = "";
@@ -759,7 +761,6 @@ export default class MedicationModal extends Vue {
     this.setRequest();
   }
    async setRequest() {
-    console.log('hey')
     const request = this.getRequestById(this.selectedItem.id);
     if (!request) return;
     this.basedOn = request.basedOn;
@@ -795,7 +796,6 @@ export default class MedicationModal extends Vue {
   
 
   addMedicationDetails() {
-    //this.resultData(this.emptyMedicationDetails.code);
 
     this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
     this.emptyMedicationDetails.code = this.emptyMedicationDetails?.genericCode?.toString();
@@ -876,6 +876,39 @@ export default class MedicationModal extends Vue {
         };
         });
     }
+    async resultBrand(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.id === id);
+      return (this.fullBrand = pt ? pt.form : {});
+    }
+
+     async resultPack(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.id === id);
+      this.resultStrength(id);
+      this.size = pt.pack;
+      return (this.pack = pt  ? `${pt?.pack}` : "Pack not available");
+    }
+
+    async resultStrength(id: any) {
+        const pt = this.fullInfo.find((i: any) => i.id === id);
+        this.resultNadac(id);
+
+        return (this.strength = pt ? `${pt?.strength}` : "Strength not available");
+    }
+    async resultNadac(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.id === id);
+      return (this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available");
+    }
+
+    get allForms() {
+    if (!this.fullBrand || this.fullBrand.length === 0) return [];
+    return this.fullInfo.map((i: any) => {
+      return {
+        code: i.id,
+        value: i.id,
+        display: i.form,
+      };
+    });
+  }
     // get allConditions() {
     //     if (!this.conditions || this.conditions.length === 0) return [];
     //     return this.conditions.map((i: any) => {
@@ -1021,7 +1054,6 @@ export default class MedicationModal extends Vue {
     await this.createMapper();
     await this.fetchPatients();
     await this.fetchPractitioners();
-    // await this.resultData(this.emptyMedicationDetails.genericCode);
   }
 }
 </script>

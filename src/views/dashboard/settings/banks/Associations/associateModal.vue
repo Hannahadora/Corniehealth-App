@@ -29,7 +29,7 @@
               <div>
                 <span class="text-sm font-semibold mb-1">Collection Center</span>
                 <Multiselect
-                  v-model="paymentCategories"
+                  v-model="collectionCenter"
                   mode="tags"
                   :closeOnSelect="true"
                   :searchable="true"
@@ -212,7 +212,7 @@
     accountoption = false;
 
     location = "";
-    paymentCategories = [];
+    collectionCenter = [];
     accounts = [];
     defaultAccount = "";
     actualaccounts = [] as any;
@@ -267,7 +267,7 @@
       const assoication = await this.getAssociationById(this.id);
       if (!assoication) return;
       this.location = assoication.location;
-      this.paymentCategories = assoication.paymentCategories;
+      this.collectionCenter = assoication.collectionCenter;
       this.accounts = assoication.accounts;
       this.defaultAccount = assoication.defaultAccount;
     }
@@ -275,7 +275,7 @@
     get payload() {
       return {
         location: this.location,
-        paymentCategories: this.paymentCategories,
+        collectionCenter: this.collectionCenter,
         accounts: this.accounts,
         defaultAccount: this.defaultAccount,
       };
@@ -407,7 +407,7 @@
         return;
       }
 
-      if (this.paymentCategories.length == 0) {
+      if (this.collectionCenter.length == 0) {
         window.notify({ msg: "Choose a payment category", status: "error" });
         return;
       }

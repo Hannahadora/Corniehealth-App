@@ -325,41 +325,6 @@
               />
             </template>
           </accordion-component>
-          <!-- <accordion-component
-            :title="'Period'"
-            :addborder="true"
-            :opened="false"
-          >
-            <template v-slot:default>
-              <div class="mt-4">
-                <date-picker
-                  label="Start Date"
-                  placeholder="--/04/2021"
-                  class="w-full"
-                  v-model="date"
-                  :disabled="[appoitmentDate != '' ? false : true]"
-                />
-                <div class="grid mt-5 grid-cols-2 gap-4">
-                  <cornie-input
-                    :type="'time'"
-                    label="Start Time"
-                    placeholder="00:00"
-                    class="w-full"
-                    v-model="startTime"
-                  
-                  />
-                  <cornie-input
-                    :type="'time'"
-                    label="End Time"
-                    placeholder="00:00"
-                    class="w-full"
-                    v-model="endTime"
-                     :disabled="[range2 != '' ? true : false]"
-                  />
-                </div>
-              </div>
-            </template>
-          </accordion-component> -->
           <div class="w-full mt-2 mb-2">
             <div class="flex w-full border-dashed border-b border-gray-100">
               <div class="w-full">
@@ -416,7 +381,7 @@
                             /> -->
                 <billing-account-component
                   v-model="billingAccountId"
-                  :patientId="Patients"
+                  :id="singlePatientId"
                 />
               </div>
 
@@ -515,6 +480,7 @@
   import TimePicker from "@/components/Timepicker.vue";
   import { cornieClient } from "@/plugins/http";
   import IAppointment from "@/types/IAppointment";
+import IDevice from "@/types/IDevice";
   import ILocation from "@/types/ILocation";
   import Period from "@/types/IPeriod";
   import IPractitioner from "@/types/IPractitioner";
@@ -641,7 +607,7 @@
     period = {} as Period;
     participantDetail = [];
     Practitioners = [] as any;
-    Devices = [];
+    Devices = [] as any;
     Patients = [] as any;
     Locations = [];
     HealthCare = [];
@@ -687,6 +653,7 @@
       this.comment = appointment.comment;
       this.newPractitioners = appointment.Practitioners[0];
       this.bookingLocationId = appointment?.bookingLocationId;
+      this.billingAccountId = appointment.billingAccountId;
     }
 
     get payload() {
@@ -710,7 +677,7 @@
         bookingLocationId: this.bookingLocationId || undefined,
         practitionerId: this.appoimtentId,
         patientId: this.singlePatientId,
-        billingAccountId: this.billingAccountId,
+        billingAccountId: this.billingAccountId || undefined,
       };
     }
     async submit() {

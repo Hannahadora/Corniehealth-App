@@ -22,7 +22,7 @@ export default {
       const billingcenters = await fetchBillingcenters();
       ctx.commit("setBillingCenter", billingcenters);
     },
-    getBookingsiteById(ctx, id: string) {
+    getBillingCenterById(ctx, id: string) {
       return ctx.state.billingcenters.find(
         billingcenter => billingcenter.id == id
       );

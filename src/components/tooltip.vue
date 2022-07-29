@@ -27,6 +27,9 @@
   .tooltip-box {
     position: relative;
     display: inline-block;
+        top: 5px;
+    left: 5px;
+
   }
 
   .tooltip-box:hover .tooltip {
