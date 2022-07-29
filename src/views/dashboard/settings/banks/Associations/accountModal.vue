@@ -16,8 +16,12 @@
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <div class="w-full justify-between" v-for="(item, index) in accounts" :key="index">
-         <p>{{ item}}</p>
+        <div class="flex space-x-4 w-full justify-between" v-for="(item, index) in accounts" :key="index">
+         <p class="text-lg text-gray-500">{{ getBankName(item.bank) }}</p>
+         <p class="text-lg">
+            {{ item.accountNumber }}
+            <span class="text-sm text-green-300" v-if="item.defaultAccount">Default</span>
+         </p>
         </div>
       </cornie-card-text>
       <cornie-card>
@@ -26,7 +30,7 @@
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
-            Cancel
+            Close
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -96,6 +100,26 @@
 
     @Prop({ type: Object, default: [] })
     accounts!: any;
+
+    allBanks = [] as any;
+
+     getBankName(code:string){
+        const pt = this.allBanks.find((x:any) => x.code == code);
+        return pt ? `${pt?.name}` : ''
+    }
+      async fetchDropDown() {
+      try {
+        const response = await cornieClient().get(
+          "https://api.paystack.co/bank"
+        );
+        this.allBanks = response.data || {};
+      } catch (error) {
+        window.notify({ msg: "Could not fetch banks", status: "error" });
+      }
+    }
+        async created(){
+            await this.fetchDropDown();
+        }
 
   }
 </script>
