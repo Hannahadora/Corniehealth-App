@@ -129,7 +129,7 @@
     v-model="showActor"
     @schedule-added="scheduleadded"
     :id="scheduleId"
-    :practitionerId="practitionerId"
+
   />
 </template>
 <script lang="ts">

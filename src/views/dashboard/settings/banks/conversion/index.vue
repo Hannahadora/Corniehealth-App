@@ -4,8 +4,8 @@
     v-if="empty3"
   >
     <img src="@/assets/img/nocurrency.svg" />
-    <h3 class="text-center text-black mt-5">No collection account recorded</h3>
-    <h4 class="text-black text-center">Add new account</h4>
+    <h1 class="text-center font-bold text-black mt-5">No Exchange Rate on Record</h1>
+    <!-- <h4 class="text-black text-center">Add new account</h4> -->
     <button
       class="bg-danger rounded-lg text-sm text-white mb-5 mt-5 py-2 pl-6 pr-6 px-4 pb-2 focus:outline-none hover:opacity-90 flex"
       @click="showNewExchangeRateModal = true"
@@ -56,8 +56,9 @@
       </cornie-table>
     </div>
   </div>
-  <default-currency v-model="showDefaultCurrencyModal" />
+  <default-currency v-model="showDefaultCurrencyModal" :defaultcurency="defaultcurency"/>
   <new-exchange-rate
+  :defaultcurency="defaultcurency"
     v-model="showNewExchangeRateModal"
     @currency-added="currencyadded"
     :id="currencyId"
@@ -157,6 +158,12 @@ export default class PracticeformExistingState extends Vue {
 
   @currency.Action
   fetchCurrencys!: () => Promise<void>;
+
+  @currency.Action
+  fetchDefaultCurrency!: () => Promise<void>;
+
+   @currency.State
+  defaultcurency!: any;
 
   @practitioner.State
   practitioners!: IPractitioner[];
@@ -267,9 +274,11 @@ export default class PracticeformExistingState extends Vue {
     this.fetchCurrencys();
   }
   async created() {
+     this.fetchDefaultCurrency();
     this.fetchPractitioners();
     this.fetchCurrencys();
     if (this.currencys.length < 1) this.fetchCurrencys();
+
   }
 }
 </script>

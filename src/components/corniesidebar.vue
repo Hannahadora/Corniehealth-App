@@ -291,7 +291,7 @@
         hasSubsection: false,
       },
       {
-        name: "Bills & Payments",
+        name: "Billing Profile",
         to: "bills",
         icon: "debit-card-icon",
         hasSubsection: false,

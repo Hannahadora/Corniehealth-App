@@ -70,7 +70,7 @@ export default class Daily extends Vue {
   @user.Getter
   cornieData!: IPractitioner;
 
-  dayCalendar = [];
+  dayCalendar = [] as any;
 
   actorsValue = [] as any;
 

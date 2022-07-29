@@ -54,7 +54,7 @@ const settings: ISetting = {
     { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
     { name: "Devices", to: "devices", icon: "devices-icon" },
     { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
-    { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
+    { name: "Billing & Collections", to: "billing-collections", icon: "bank-icon" },
   ],
   "Practice Management": [
     {
@@ -94,7 +94,7 @@ const soloSettings = {
       icon: "health-service-icon",
     },
     { name: "Markup & Discounts", to: "markup", icon: "markup-icon" },
-    { name: "Billing Accounts", to: "bank-accounts", icon: "bank-icon" },
+    { name: "Billing & Collections", to: "billing-collections", icon: "bank-icon" },
   ],
   "Practice Management": [
     { name: "Groups", to: "group", icon: "group-icon" },

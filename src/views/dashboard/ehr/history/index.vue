@@ -3,7 +3,7 @@
     <div class="w-full mx-5">
       <span class="w-full">
          <history-empty-state v-if="empty" />
-        <history-existing-state v-else :patientId="patientId"/>
+        <history-existing-state v-else />
       </span>
     </div>
   </div>
@@ -29,11 +29,11 @@ export default class HistoryIndex extends Vue {
   addHistory = false;
   show = false;
 
-  @Prop({ type: String, default: "" })
-  patientId!: string;
-
   get empty() {
     return this.historys?.length < 1;
+  }
+  get patientId() {
+    return this.$route.params.id as string;
   }
  
   @history.State

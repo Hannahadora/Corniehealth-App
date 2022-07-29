@@ -829,14 +829,6 @@ export default class Medication extends Vue {
     this.practitioner = response[0].data;
   }
 
-  async fetchAllergy() {
-    const AllAllergy = cornieClient().get(
-      `/api/v1/allergy/findAllByPatient/${this.patientId}`
-    );
-    const response = await Promise.all([AllAllergy]);
-    this.allergy = response[0].data.result;
-  }
-
   async created() {
     await this.fetchPatientConditions(this.patientId);
     this.setRequest();

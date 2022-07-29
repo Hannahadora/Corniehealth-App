@@ -141,6 +141,7 @@ import { cornieClient } from "@/plugins/http";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
+import { mapDisplay } from "@/plugins/definitions";
 
 import search from "@/plugins/search";
 import IOtherrequest from "@/types/IOtherrequest";
@@ -182,6 +183,9 @@ import PrintModal from "./print.vue";
 
 import StatusModal from "./status.vue";
 import EmptyState from "./emptyState.vue";
+import { getDropdown } from "@/plugins/definitions";
+import { Codeable } from "@/types/misc";
+
 
 const refferal = namespace("refferal");
 const special = namespace("special");
@@ -285,6 +289,8 @@ export default class ReffferalExistingState extends Vue {
   othercurrentStatus = "";
   otherupdate = "";
   selectedItem = {} as any;
+  Specilaitems: Codeable[] = [];
+  medicationMapper = (code: string) => "";
 
 
    get aPatientId() {
@@ -378,6 +384,7 @@ export default class ReffferalExistingState extends Vue {
         action: refferal.id,
         specialty: this.getspecialtyname(refferal.specialty),
         subject: refferal?.patient?.firstname +' '+ refferal?.patient?.lastname,
+        bodySite: this.medicationMapper(refferal.bodySite),
         // category: "Pathology",
         // service: "XXXXXX",
         // subject: "James E. Flair",
@@ -388,10 +395,16 @@ export default class ReffferalExistingState extends Vue {
     if (!this.query) return refferals;
     return search.searchObjectArray(refferals, this.query);
   }
- 
+
+   async createMapper() {
+    this.medicationMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/body-site"
+    );
+  }
+
  getspecialtyname(id: string) {
-    const pt = this.specials.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
+    const pt = this.Specilaitems.find((i: any) => i.code === id);
+    return pt ? `${pt.display}` : "";
   }
 
   getPatientName(id: string) {
@@ -484,8 +497,24 @@ export default class ReffferalExistingState extends Vue {
   async statusadded(){
     await this.fetchRefferalById(this.aPatientId);
   }
+    async setRefs() {
+    const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
+    const ref = reference.trim();
+    const defs = await getDropdown(ref);
+    if (defs && Array.isArray(defs)) {
+      this.Specilaitems = defs;
+    } else {
+      window.notify({
+        status: "error",
+        msg: `Cannot get definitions for ${reference}`,
+      });
+    }
+  }
+
 
   async created() {
+    await this.createMapper();
+   await this.setRefs();
    await this.fetchRefferalById(this.aPatientId);
     await this.fetchSpecials();
     await this.getPatients();

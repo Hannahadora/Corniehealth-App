@@ -67,11 +67,11 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                    name="object_true" :native="false" :object="true"
+                   
                   :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
-                    trackBy="display"
+                    trackBy="code"
                     label="display"
                     placeholder="--Select--"
                     class="w-full"
@@ -101,11 +101,11 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                     name="object_true" :native="false" :object="true"
+                    
                   :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
-                    trackBy="display"
+                    trackBy="code"
                     label="display"
                     placeholder="--Select--"
                     class="w-full"
@@ -657,8 +657,8 @@ export default class scheduleModal extends Vue {
   type = "";
 
   practitoners: IPractitioner[] = [];
-  services: ICatalogueService[] = [];
-  breaks: Break[] = [] as any;
+  services = [] as any;
+  breaks = [] as any;
 
   endTime = "";
   startTime = "";
@@ -763,6 +763,8 @@ cancel(){
     this.repeat = "";
     this.serviceType = "";
     this.slotSize = 0;
+
+    this.show = false;
 }
   async submit() {
     this.loading = true;

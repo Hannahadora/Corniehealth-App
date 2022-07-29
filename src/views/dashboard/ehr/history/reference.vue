@@ -41,7 +41,7 @@
                         v-model="refType"
                     />
                     <cornie-radio
-                        label="Allegry Intolerance"
+                        label="Allergy Intolerance"
                         class="text-xs"
                         name="reference"
                         :value="'allergy'"

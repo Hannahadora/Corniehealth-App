@@ -63,6 +63,10 @@
                         placeholder="--Select--"
                         v-model="basedOn"
                         >
+                        <template #labelicon>
+                            <span class="text-xs text-gray-500">(Optional)</span>
+                            
+                            </template>
                         </cornie-select>
                         <cornie-select
                         class="required"
@@ -123,32 +127,34 @@
                         >
                         </cornie-select> -->
                         <div class="w-full -mt-1">
-                            <span class="text-sm font-semibold mb-3">Occurrence</span>
-                            <div class="flex space-x-2 w-full">
+                            <!-- <span class="text-sm font-semibold mb-3">Occurrence</span> -->
+                            <div class="w-full">
                                 <date-picker
                                 :rules="required"
                                 placeholder="--Enter--"
                                 class="grow w-full"
+                                :label="'Occurrence'"
                                 v-model="occurenceValue"
                                 />
-                                <cornie-select
+                                <!-- <cornie-select
                                 :items="['Date']"
                                 placeholder="Date"
                                 class="w-32 mt-0.5 flex-none"
                                 :setPrimary="true"
                                 v-model="occurenceUnit"
-                                />
+                                /> -->
                             </div>
                         </div>
-                        <cornie-select
+                        <auto-complete :items="Specilaitems" v-model="specialty"  label="Specialty" placeholder="Select" :required="required" />
+                        <!-- <cornie-select
                             class="required"
                             :rules="required"
-                            :items="allSpecials"
+                            :items="Specilaitems"
                             label="Specialty"
                             v-model="specialty"
                             placeholder="Select"
                         >
-                        </cornie-select>
+                        </cornie-select> -->
                         <cornie-select
                             class="required"
                             :rules="required"
@@ -161,11 +167,11 @@
                         <cornie-select
                             class="required"
                             :rules="required"
-                            :items="allLocations"
+                            :items="allPractionersLocations"
                             label="Location"
                             v-model="performerLocationId"
                             placeholder="Select performer’s address"
-                            :disabled="true"
+                           
                         >
                         </cornie-select>
                     </div>
@@ -184,24 +190,15 @@
                             :rules="required"
                             label="Request Code"
                             v-model="reasonCode"
-                            placeholder="--Select--"
+                            placeholder="--Enter--"
                         />
                         <cornie-input
                             class="required"
                             :rules="required"
                             label="Order Detail"
                             v-model="orderDetail"
-                            placeholder="--Select--"
+                            placeholder="--Enter--"
                         />
-                         <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
-                            label="Order Detail"
-                            v-model="orderDetail"
-                            placeholder="--Select--"
-                        >
-                        </cornie-select> -->
                         <div class="w-full -mt-1">
                             <span class="text-sm font-semibold mb-3">Quantity <span class="text-xs text-gray-300">(optional)</span></span>
                             <div class="flex space-x-2 w-full">
@@ -210,10 +207,11 @@
                                 class="grow w-full"
                                 :setfull="true"
                                 v-model="quantityValue"
+                                type="number"
                                 />
                                 <cornie-select
                                 :items="['Day']"
-                                placeholder="Ratio"
+                                placeholder="Day"
                                 class="w-32 mt-0.5 flex-none"
                                 :setPrimary="true"
                                 v-model="quantityUnit"
@@ -224,31 +222,22 @@
                                 :rules="required"
                                 class="grow w-full"
                                 :label="'Request Description'"
-                                :placeholder="'Enter'"
+                                :placeholder="'--Enter--'"
                                 v-model="requestDescriptions"
                           />
                           <fhir-input
                             reference="http://hl7.org/fhir/ValueSet/body-site"
                             class="w-full"
-                            label="Body Site (Optional)"
-                            v-model="bodySite"
-                            placeholder="--Select--"
-                          />
-               
-                        <!-- <cornie-select
-                            class="required"
-                            :rules="required"
-                            :items="['Routine', 'Urgent', 'ASAP', 'STAT']"
                             label="Body Site"
                             v-model="bodySite"
                             placeholder="--Select--"
-                        >
-                         <template #labelicon>
+                          >
+                           <template #labelicon>
                             <span class="text-xs text-gray-500">(Optional)</span>
                             
                             </template>
-                        </cornie-select> -->
-                     
+                          
+                          </fhir-input>
                     </div>
                 </template>
             </accordion-component>
@@ -307,22 +296,7 @@
                               </span>
                             </div>
                           </div>
-                          <!-- <cornie-select
-                            :rules="required"
-                            :items="['reason reference']"
-                            label="Reason Reference"
-                            placeholder="--Select--"
-                            class="w-full"
-                             v-model="reasonReference"
-                        >
-                        </cornie-select> -->
-                         <!-- <cornie-input
-                            :rules="required"
-                            label="Note"
-                            placeholder="--Select--"
-                            class="w-full"
-                        >
-                        </cornie-input> -->
+                          
                          <cornie-input
                             label="Patient Instruction"
                             placeholder="--Enter--"
@@ -414,6 +388,7 @@ import { IPatient } from "@/types/IPatient";
 import IRefferal from "@/types/IRefferal";
 import ILocation from "@/types/ILocation";
 import IPracticeform from "@/types/IPracticeform";
+import ICarePartner from "@/types/ICarePartner";
 
 import AccordionComponent from "@/components/form-accordion.vue";
 import CornieCard from "@/components/cornie-card";
@@ -438,6 +413,9 @@ import Multiselect from "@vueform/multiselect";
 import ReasonrefModal from "./reasonref.vue";
 import plusIcon from "@/components/icons/plus.vue";
 import FhirInput from "@/components/fhir-input.vue";
+import { getDropdown } from "@/plugins/definitions";
+import { Codeable } from "@/types/misc";
+import AutoComplete from "@/components/autocomplete.vue";
 
 
 const practitioner = namespace("practitioner");
@@ -447,7 +425,7 @@ const location = namespace("location");
 const practiceform = namespace("practiceform");
 const special = namespace("special");
 const user = namespace("user");
-
+const CarePartnersStore = namespace("CarePartnersStore");
 type Sorter = (a: any, b: any) => number;
 
 
@@ -456,7 +434,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "MedicationModal",
+  name: "RefferalModal",
   components: {
     ...CornieCard,
     AccordionComponent,
@@ -480,7 +458,8 @@ function defaultFilter(item: any, query: string) {
     CloseIcon,
     ReasonrefModal,
     plusIcon,
-    FhirInput
+    FhirInput,
+    AutoComplete
   },
 })
 export default class RefferalModal extends Vue {
@@ -516,8 +495,7 @@ export default class RefferalModal extends Vue {
 
     @refferal.Action
     fetchRefferalById!: (patientId: string) => Promise<void>;
-  
-  
+
     @location.State
     locations!: ILocation[];
 
@@ -539,6 +517,9 @@ export default class RefferalModal extends Vue {
     @user.Getter
     authCurrentLocation!: string;
 
+    @user.Getter
+   authPractitioner!: IPractitioner;
+
     loading = false;
     localSrc = require("../../../../assets/img/placeholder.png");
     query = "";
@@ -553,9 +534,9 @@ export default class RefferalModal extends Vue {
 
     
     status =  "active";
-    basedOn = "";
-    intent =  "";
-    priority = "";
+    basedOn = null;
+    intent =  null;
+    priority = null;
     category = "";
     patientId = "";
     reasonCode = null;
@@ -566,21 +547,23 @@ export default class RefferalModal extends Vue {
     orderDetail = "";
     requestDescription = "";
     bodySite = "";
-    quantityUnit = "";
-    quantityValue = "";
+    quantityUnit = "Day";
+    quantityValue = null;
     encounterId = null;
     performerId = "";
-    occurenceUnit = "";
+    occurenceUnit = "Date";
     occurenceValue = "";
     replaces = null;
     asNeeded = false;
     asNeededCode = null;
     forms = [] as any;
     patientInstruction = null;
+    performerType = "";
 
     specialty = "";
-    performerLocationId = "";
+    performerLocationId = null;
     requestDescriptions = "";
+    Specilaitems: Codeable[] = [];
 
   
   
@@ -597,9 +580,9 @@ export default class RefferalModal extends Vue {
         const diagnostic = await this.getOneRefferalById(this.id);
         if (!diagnostic) return;
           this.status =  diagnostic.status;
-          this.basedOn =  diagnostic.basedOn;
-          this.intent =  diagnostic.intent;
-          this.priority =  diagnostic.priority;
+          this.basedOn =  diagnostic.basedOn as any;
+          this.intent =  diagnostic.intent as any;
+          this.priority =  diagnostic.priority as any;
           this.category =  diagnostic.category;
           this.patientId =  diagnostic.patientId;
           this.reasonCode =  diagnostic.reasonCode;
@@ -610,7 +593,7 @@ export default class RefferalModal extends Vue {
           this.bodySite =  diagnostic.bodySite;
           this.requestDescription =  diagnostic.requestDescription;
           this.quantityUnit =  diagnostic.quantityUnit;
-          this.quantityValue =  diagnostic.quantityValue;
+          this.quantityValue =  diagnostic.quantityValue as any;
           this.encounterId =  diagnostic.encounterId;
           this.performerId =  diagnostic.performerId;
           this.occurenceUnit =  diagnostic.occurenceUnit;
@@ -621,12 +604,12 @@ export default class RefferalModal extends Vue {
           this.forms =  diagnostic.forms;
           this.patientInstruction =  diagnostic.patientInstruction;
           this.specialty =  diagnostic.specialty;
-          this.performerLocationId =  diagnostic.performerLocationId;
+          this.performerLocationId =  diagnostic.performerLocationId as any;
           this.requestDescriptions =  diagnostic.requestDescriptions;
     }
- get aPatientId() {
-    return this.$route.params.id as string;
-  }
+    get aPatientId() {
+      return this.$route.params.id as string;
+    }
     get payload() {
         return {
             status: this.status,
@@ -643,9 +626,9 @@ export default class RefferalModal extends Vue {
             requestDescription: this.requestDescription,
             bodySite: this.bodySite,
             quantityUnit: this.quantityUnit,
-            quantityValue: this.quantityValue.toString(),
+            quantityValue: this.quantityValue || null,
             encounterId: this.encounterId,
-            performerId: this.performerId,
+            performerId: this.authPractitioner.organizationId,
             occurenceUnit: this.occurenceUnit,
             occurenceValue: this.occurenceValue,
             replaces: this.replaces,
@@ -654,11 +637,27 @@ export default class RefferalModal extends Vue {
             forms: this.forms,
             patientInstruction: this.patientInstruction,
             specialty: this.specialty,
-            performerLocationId: this.performerLocationId,
+            performerLocationId: this.performerLocationId || this.authCurrentLocation,
             requestDescriptions: this.requestDescriptions,
         };
-     }
+    }
 
+  
+   get getPractitonerLocation() {
+    if(this.performerId){
+      const pt = this.practitioners.find((i: any) => i.id == this.performerId);
+      return pt?.locationRoles;
+    }
+  }
+  get allPractionersLocations () {
+        if (!this.getPractitonerLocation || this.getPractitonerLocation.length === 0) return [];
+          return this.getPractitonerLocation.map((i: any) => {
+          return {
+              code: i.locationId,
+              display: i.location.name,
+          };
+        });
+  }
 
      get allRequester() {
         if (!this.patients || this.patients.length === 0) return [];
@@ -683,21 +682,22 @@ export default class RefferalModal extends Vue {
         if (!this.practitioners || this.practitioners.length === 0) return [];
         return this.practitioners.map((i: any) => {
         return {
-            code: i.organizationId,
+            code: i.id,
             display: i.firstName + " " + i.lastName,
         };
         });
     }
 
 
-      get allLocations() {
+   get allLocations() {
         return this.locations.map((i: any) => {
           return {
             code: i.id,
             display: i.name,
           };
         });
-      }
+    }
+
     get allForms() {
       if (!this.practiceforms || this.practiceforms.length === 0) return [];
       return this.practiceforms.map((i: any) => {
@@ -770,9 +770,44 @@ export default class RefferalModal extends Vue {
         this.$emit("medication-added");
         this.show = false;
     }
+  get spaciallItems() {
+    let foundDuplicate = false;
+    this.specials.some(existingItem => {
+      this.Specilaitems = this.Specilaitems.filter(item=> {
+        if (existingItem.name != item.display) {
+          return item;
+        } else {
+          foundDuplicate = true;
+        }
+      });
+      return foundDuplicate;
+    });
+
+      const newArray = this.Specilaitems.filter(val => !this.specials.includes(val as any));
+   
+    return newArray.map((c) => {
+      return {
+        name: c.display
+      }
+    })
+  }
+
+  async setRefs() {
+    const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
+    const ref = reference.trim();
+    const defs = await getDropdown(ref);
+    if (defs && Array.isArray(defs)) {
+      this.Specilaitems = defs;
+    } else {
+      window.notify({
+        status: "error",
+        msg: `Cannot get definitions for ${reference}`,
+      });
+    }
+  }
 
   async created() {
-    this.performerLocationId = this.authCurrentLocation;
+      await this.setRefs();
       await this.fetchPatients();
       await this.fetchRefferalById(this.aPatientId);
       await this.fetchPractitioners();

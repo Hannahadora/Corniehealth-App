@@ -19,14 +19,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="newmeasurable.ageValue"
+              v-model="measurable.age"
               />
               <cornie-select
-                 :items="['Days', 'Months', 'Years']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="newmeasurable.ageUnit"
+                v-model="measurable.ageUnit"
               />
           </div>
        </div>
@@ -39,14 +39,14 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="newmeasurable.min"
+              v-model="measurable.min"
               />
               <cornie-select
-                 :items="['Days', 'Months', 'Years']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="newmeasurable.minUnit"
+                v-model="measurable.minUnit"
               />
           </div>
        </div>
@@ -57,24 +57,20 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="newmeasurable.max"
+              v-model="measurable.max"
               />
               <cornie-select
-                :items="['Days', 'Months', 'Years']"
+                :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
-                v-model="newmeasurable.maxUnit"
+                v-model="measurable.maxUnit"
               />
           </div>
        </div>
-
-      <!-- <cornie-input label="Unit of Measurement" v-model="measurable.unit" />
-      <cornie-input label="Range (min)" v-model="measurable.min" />
-      <cornie-input label="Range (max)" v-model="measurable.max" /> -->
     </div>
     <div class="grid grid-cols-2 gap-3 mt-4" v-if="type == 'string'">
-      <cornie-input label="Year" v-model="newmeasurable.string" :placeholder="'Enter'" />
+      <cornie-input label="Year" v-model="measurable.string" :placeholder="'Enter'" />
     </div>
   </div>
 </template>
@@ -89,16 +85,15 @@ import IMeasurable from "@/types/IMeasurable";
 import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
-  age: "" || null,
-  ageUnit: "" || null,
-  ageValue: "" || null,
-  day: "" || null,
-  unit: "years" || null,
-  min: "" || null,
-  max: "" || null,
-  string: "" || null,
-  minUnit: "" || null,
- maxUnit: "" || null,
+  age: "" ,
+  ageUnit: "",
+  day: "",
+  unit: "years",
+  min: "",
+  max: "",
+  string: "",
+  minUnit: "years",
+ maxUnit: "years",
 };
 
 @Options({
@@ -127,15 +122,14 @@ export default class TimeablePicker extends Vue {
 
    newmeasurable = {
       age: "",
-      ageUnit: "",
-      ageValue: "",
+      ageUnit: "years",
       day: "",
       unit: "years",
       min: "",
       max: "",
       string: "",
-      minUnit: "",
-      maxUnit: "",
+      minUnit: "years",
+      maxUnit: "years",
     };
 
 

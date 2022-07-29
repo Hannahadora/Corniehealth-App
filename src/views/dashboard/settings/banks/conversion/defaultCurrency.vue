@@ -87,13 +87,18 @@ export default class defaultCurrency extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Object, default: {} })
+  defaultcurency!: any;
+
   @currency.Action
   getCurrencyById!: (id: string) => ICurrency;
+
+  
 
   @Prop({ type: Array, default: () => [] })
   available!: object;
 
-  @Watch("id")
+  @Watch("defaultcurency")
   idChanged() {
     this.setCurrency();
   }
@@ -109,9 +114,9 @@ export default class defaultCurrency extends Vue {
   }
 
   async setCurrency() {
-    const currency = await this.getCurrencyById(this.id);
+    const currency =  this.getCurrencyById(this.defaultcurency.id);
     if (!currency) return;
-    this.defaultCurrency = currency.currency;
+    this.defaultCurrency = this.defaultcurency.code;
     this.exchangeRate = currency.exchangeRate;
   }
 
@@ -168,7 +173,9 @@ export default class defaultCurrency extends Vue {
   }
 
   created() {
+    this.setCurrency();
     this.fetchDropDown();
+   
   }
 }
 </script>

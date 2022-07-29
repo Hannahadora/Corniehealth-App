@@ -206,12 +206,6 @@ import MedicationRequestModal from "./medicationModal.vue";
 import StatusModal from "./status.vue";
 import RefillModal from "./refill.vue";
 
-// import MedicationModal from "./medication.vue";
-// import EditMedicationModal from "./updateMedication.vue";
-// import NotesAdd from "./notes.vue";
-// import StatusModal from "./status.vue";
-// import OtherStatusModal from "./statusother.vue";
-// import OtherNotesAdd from "./othernote.vue";
 import EmptyState from "./emptyState.vue";
 
 const request = namespace("request");
@@ -220,15 +214,12 @@ const otherrequest = namespace("otherrequest");
 
 @Options({
   components: {
-    //Close,
     SortIcon,
     ThreeDotIcon,
     MedicationRequestModal,
     ViewModal,
     StatusModal,
-    // OtherNotesAdd,
     SearchIcon,
-    // NotesAdd,
     PrintIcon,
    BillIcon,
     PlusIcon,
@@ -241,8 +232,6 @@ const otherrequest = namespace("otherrequest");
     EyeIcon,
     ColumnFilter,
     MedicationDrug,
-    // MedicationModal,
-    // EditMedicationModal,
     CancelIcon,
     DangerIcon,
     TableOptions,

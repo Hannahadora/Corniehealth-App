@@ -10,35 +10,35 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import IAppointment from "@/types/IAppointment";
-import { namespace } from "vuex-class";
-import AppointmentEmptyState from "./emptyState.vue";
-import AppointmentExistingState from "./existingState.vue";
+  import IAppointment from "@/types/IAppointment";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import AppointmentEmptyState from "./emptyState.vue";
+  import AppointmentExistingState from "./existingState.vue";
 
-const appointment = namespace("appointment");
+  const appointment = namespace("appointment");
 
-@Options({
-  name: "AppointmentIndex",
-  components: {
-    AppointmentEmptyState,
-    AppointmentExistingState,
-  },
-})
-export default class AppointmentIndex extends Vue {
+  @Options({
+    name: "AppointmentIndex",
+    components: {
+      AppointmentEmptyState,
+      AppointmentExistingState,
+    },
+  })
+  export default class AppointmentIndex extends Vue {
+    account = "";
+    get empty() {
+      return this.appointments.length < 1;
+    }
 
-  get empty() {
-    return this.appointments.length < 1;
+    @appointment.State
+    appointments!: IAppointment[];
+
+    @appointment.Action
+    fetchAppointments!: () => Promise<void>;
+
+    async created() {
+      await this.fetchAppointments();
+    }
   }
-
-  @appointment.State
-  appointments!: IAppointment[];
-
-  @appointment.Action
-  fetchAppointments!: () => Promise<void>;
-
-  async created() {
-    await this.fetchAppointments();
-  }
-}
 </script>

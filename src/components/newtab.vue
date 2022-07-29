@@ -1,9 +1,9 @@
 <template>
   <div class="">
-    <div class="flex mb-12 font-semibold bg-gray-100 rounded py-2 px-2  mt-4" :class="width">
+    <div class="flex mb-12 font-semibold bg-gray-100 rounded-lg py-2 px-2  mt-4" :class="width">
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
         <span
-          class="flex py-1 px-14  rounded text-sm cursor-pointer text-black hover:bg-gray-300 hover:bg-opacity-20"
+          class="flex py-1 px-14  rounded-lg text-sm cursor-pointer text-black hover:bg-gray-300 hover:bg-opacity-20"
           :class="syncedValue == index ? ['bg-white font-semibold'] : ['font-light']"
           @click="syncedValue = index"
         >

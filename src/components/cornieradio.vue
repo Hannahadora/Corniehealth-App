@@ -1,7 +1,7 @@
 <template>
   <span class="flex items-center relative">
     <label class="radio-container text-xs">
-      <span class="block pt-0 text-black font-medium">
+      <span class="block pt-0 font-medium" :class="[disabled ? 'text-gray-200' : 'text-black']">
         {{ label }}
       </span>
       <input
@@ -10,7 +10,7 @@
         type="radio"
         v-model="checked"
       />
-      <span class="-mt-1" :class="[ disabled ? 'checkmark2' : 'checkmark']"></span>
+      <span class="-mt-1" :class="[ disabled ? 'checkmark2 ' : 'checkmark']"></span>
     </label>
   </span>
 </template>
@@ -121,7 +121,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  border: 1px solid #c2c7d6;
+  border: 1px solid #c2c7d640;
   height: 25px;
   width: 25px;
   background-color: #fff;

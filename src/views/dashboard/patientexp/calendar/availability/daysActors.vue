@@ -6,24 +6,28 @@
 
             <span v-for="(actor, index) in actors" :key="index" :class="{ 'img-hover': index > 0 }">
                 <div
-                    class="image-con rounded-full border flex items-center justify-center"
+                    class="image-con rounded-full border flex items-center justify-center cursor-pointer"
                     v-if="actor.user.image"
                     @click="showActorModal(items)"
                 >
                     <!-- <img :src="actor.image" class="rounded-full" style="width: 100%;height:100%" :alt="actor.name"> -->
                     <avatar :src="actor.user.image" />
                 </div>
-                <!-- <div
+                <div
                     v-if="!actor.user.image && actor.user.firstName"
-                    class="image-con rounded-full relative -ml-4 flex items-center border justify-center bg-white"
+                    class="image-con rounded-full border flex items-center justify-center bg-white cursor-pointer"
+                    @click="showActorModal(items)"
                 >
-                    <span class="text-warning"
-                    >{{ actor.user.firstName ? actor.user.firstName : "" }}
+                    <span class="text-warning">
+                      {{
+                          `${actor.user.firstName
+                            .substr(0, 1)
+                            ?.toUpperCase()}${actor.user.lastName 
+                            ?.substr(0, 1)
+                            ?.toUpperCase()}`
+                        }}
                     </span>
-                    <span class="text-warning"
-                    >{{ actor.user.lastName ? actor.user.lastName : "" }}
-                    </span>
-                </div> -->
+                </div>
             </span>
             <div class="text-xs font-semibold float-right flex justify-end w-full">
                 <div class="text-xxs italic text-gray-400 float-right flex justify-end mr-5 w-full"> {{ range +' - '+ range2  }}</div>

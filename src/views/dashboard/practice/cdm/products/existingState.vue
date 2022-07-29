@@ -20,16 +20,13 @@
           </div>
         </template>
         <template #status="{ item }">
-          <div class="text-no-wrap">
-            <span
-              class="status p-1"
-              :class="{
-                active: item.status === 'active',
-                inactive: item.status === 'inactive',
-              }"
-            >
-              {{ item.status }}</span
-            >
+          <div class="flex items-center">
+            <span class="text-xs bg-green-100 text-green-400 p-1 rounded" v-if="item.status == 'active'">
+            {{ item.status }}
+            </span>
+            <span class="text-xs bg-red-100 text-red-400 p-1 rounded" v-if="item.status == 'inactive'">
+            {{ item.status }}
+            </span>
           </div>
         </template>
         <template #availability="{ item }">
@@ -39,24 +36,43 @@
         </template>
          <template #actions="{ item }">
          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newproduct/${item.id}`)">
-          <edit-icon class="text-purple-700 fill-current" />
+          <eye-icon class="text-purple-700 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="$router.push(`newproduct/${item.id}`)">
+          <edit-icon class="text-yellow-300 fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id)">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showMedInfo(item)">
+          <drug-icon class="text-primary fill-current" />
+          <span class="ml-3 text-xs">Medication Information</span>
+        </div>
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="displayStatusModal(item)">
+          <update-icon class="text-green-700 fill-current" />
+          <span class="ml-3 text-xs">Update Status</span>
+        </div>
+         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showvariantModal = true">
+            <plus-icon class="text-blue-400 fill-current" />
+          <span class="ml-3 text-xs">Add Variant</span>
+        </div> -->
+         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="deleteItem(item.id, item.status)">
             <deactivate-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Delete</span>
+          <span class="ml-3 text-xs">{{ item.status == 'active' ? 'Deactivate' : 'Activate'}}</span>
         </div>
       </template>
       </cornie-table>
     </div>
 
   </div>
+  <info-modal v-model="showMedInfoModal" :selectedItem="selectedItem"/>
+  <variant-modal v-model="showvariantModal"/>
+  <status-modal v-model="showStatusModal" :selectedItem="selectedItem" @status-updated="productAdded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
-
+import { cornieClient } from "@/plugins/http";
 
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 
@@ -67,7 +83,12 @@ import UpdateIcon from "@/components/icons/newupdate.vue";
 import HistoryIcon from "@/components/icons/history.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import DeactivateIcon from "@/components/icons/deactivate.vue";
+import EyeIcon from "@/components/icons/eye.vue";
+import DrugIcon from "@/components/icons/drug.vue";
 
+import InfoModal from "../components/medicationInformation.vue";
+import variantModal from "../components/variantModal.vue";
+import StatusModal from "./updateStatus.vue";
 
 const catalogue = namespace("catalogues");
 
@@ -81,6 +102,11 @@ const catalogue = namespace("catalogues");
     PlusIcon,
     HistoryIcon,
     DeactivateIcon,
+    EyeIcon,
+    DrugIcon,
+    InfoModal,
+    variantModal,
+    StatusModal,
   },
 })
 export default class ProductExistingState extends Vue {
@@ -102,6 +128,12 @@ export default class ProductExistingState extends Vue {
   loading = false;
   cdm = 0;
 
+  selectedItem = {};
+
+  showMedInfoModal = false;
+  showvariantModal = false;
+  showStatusModal = false
+
  headers = [
     {
       title: "Name",
@@ -110,7 +142,7 @@ export default class ProductExistingState extends Vue {
     },
     {
       title: "Item Code",
-      key: "code",
+      key: "identifier",
       show: true,
     },
     {
@@ -180,6 +212,16 @@ export default class ProductExistingState extends Vue {
     return search.searchObjectArray(products, this.query);
   }
 
+  displayStatusModal(value:any){
+    this.selectedItem = value;
+    this.showStatusModal = true
+  }
+
+  showMedInfo(value:any){
+    this.selectedItem = value;
+    this.showMedInfoModal = true;
+  }
+
 getsales(value:any,  id:string){
   const pt = value.find((i: any) => value.length > 0);
     return pt ? `${pt?.unitName}` : "";
@@ -204,16 +246,32 @@ getDiscount(value:any,  id:string){
     this.getProducts();
   }
 
-  async deleteItem(id: string) {
+   async activate(id:string, status:string) {
+    const url = `/api/v1/catalogue-product/status/${id}`;
+    const body = {
+      status: status == 'active' ? 'inactive' : 'active',
+    };
+    try {
+      const response = await cornieClient().patch(url, body);
+      if (response.success) {
+        window.notify({ msg: status == 'active' ? 'Product deactivated' : 'Product activated', status: "success" });
+        await this.productAdded();
+      }
+    } catch (error) {
+      window.notify({ msg: status == 'active' ? 'Product not deactivated' : 'Product noy activated', status: "error" });
+      this.loading = false;
+    }
+  }
+
+  async deleteItem(id: string, status:string) {
     const confirmed = await window.confirmAction({
-      message: "You are about to delete this product",
-      title: "Delete product",
+      message: status === 'active' ? "You are about to deactivate this product" : "You are about to activate this product",
+      title: status === 'active' ? "Deactivate product" : "Activate product",
     });
     if (!confirmed) return;
-
-    if (await this.deleteProduct(id))
-      window.notify({ msg: "Product deleted", status: "success" });
-    else window.notify({ msg: "Product not deleted", status: "error" });
+  
+    await this.activate(id,status)
+    
   }
 
   async created() {

@@ -19,10 +19,10 @@
               placeholder="0"
               class="grow w-full"
               :setfull="true"
-              v-model="measurable.ageValue"
+              v-model="measurable.age"
               />
               <cornie-select
-                 :items="['Days', 'Months', 'Years']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
@@ -42,7 +42,7 @@
               v-model="measurable.min"
               />
               <cornie-select
-                 :items="['Days', 'Months', 'Years']"
+                 :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
@@ -60,7 +60,7 @@
               v-model="measurable.max"
               />
               <cornie-select
-                :items="['Days', 'Months', 'Years']"
+                :items="['days', 'months', 'years']"
                 placeholder="Days"
                 class="w-32 mt-0.5 flex-none"
                 :setPrimary="true"
@@ -90,15 +90,14 @@ import CornieSelect from "@/components/cornieselect.vue";
 
 const measurable = {
   age: "",
-  ageUnit: "",
-  ageValue: "",
+  ageUnit: "years",
   day: "" ,
   unit: "",
   min: "",
   max: "",
   string: "",
-  minUnit: "",
- maxUnit: "",
+  minUnit: "years",
+ maxUnit: "years",
 };
 
 @Options({
@@ -124,6 +123,20 @@ export default class TimeablePicker extends Vue {
 
   @Prop({ type: String })
   label!: string;
+
+  // newmeasurable = {
+  //     age: "",
+  //     ageUnit: "years",
+  //     ageValue: "",
+  //     day: "",
+  //     unit: "years",
+  //     min: "",
+  //     max: "",
+  //     string: "",
+  //     minUnit: "years",
+  //     maxUnit: "years",
+  //   };
+
 
 
 
