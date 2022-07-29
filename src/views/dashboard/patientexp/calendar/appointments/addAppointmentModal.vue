@@ -653,7 +653,7 @@ import IDevice from "@/types/IDevice";
       this.comment = appointment.comment;
       this.newPractitioners = appointment.Practitioners[0];
       this.bookingLocationId = appointment?.bookingLocationId;
-      this.billingAccountId = appointment.billingAccountId;
+      this.billingAccountId = appointment?.billingAccountId;
     }
 
     get payload() {

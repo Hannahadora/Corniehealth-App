@@ -12,16 +12,11 @@
 
       <cornie-table :columns="rawHeaders" v-model="items" :check="false">
         <template #actions>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <eye-icon class="text-blue-400 fill-current" />
             <span class="ml-3 text-xs">View Availability</span>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <edit-icon class="text-purple-500 fill-current" />
             <span class="ml-3 text-xs">Edit Service</span>
           </div>
@@ -32,32 +27,20 @@
             <calendar-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Confirm Appointment</span>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <link-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Link Form</span>
           </div>
 
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <copy-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Copy Site Link </span>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <share-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Share Site Link</span>
           </div>
-          <div
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           
-          >
+          <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
             <deactivate-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">Deactivate</span>
           </div>
@@ -65,7 +48,7 @@
       </cornie-table>
     </div>
   </div>
-  <appointmentconfirm-modal v-model="showConfirmModal"/>
+  <appointmentconfirm-modal v-model="showConfirmModal" />
   <appointment-modal
     :id="typeId"
     v-model="registerNew"
@@ -81,12 +64,10 @@ import { Prop } from "vue-property-decorator";
 import search from "@/plugins/search";
 import { namespace } from "vuex-class";
 
-
 import { IDesignation } from "@/types/IDesignation";
 import IAppointmentTypes from "@/types/IAppointmentTypes";
 import ICatalogueService from "@/types/ICatalogue";
 import IPractitioner from "@/types/IPractitioner";
-
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -111,13 +92,14 @@ import DeactivateIcon from "@/components/icons/deactivate.vue";
 
 import AppointmentModal from "./Appointmentdialog.vue";
 import AppointmentconfirmModal from "./confrimModal.vue";
-
+import ISpecial from "@/types/ISpecial";
 
 const userStore = namespace("user");
 
 const designation = namespace("designation");
 const appointmentType = namespace("appointmentType");
 const catalogues = namespace("catalogues");
+const special = namespace("special");
 
 @Options({
   name: "AppoitmentTypesExistingState",
@@ -154,9 +136,16 @@ export default class AppointmentTypes extends Vue {
   practitioner = [] as any;
   typeId = "";
   showConfirmModal = false;
+  bookingServices: Array<any> = [];
 
   @appointmentType.State
   appointmentTypes!: IAppointmentTypes[];
+
+  @special.State
+  specials!: ISpecial[];
+
+  @special.Action
+  fetchSpecials!: () => Promise<void>;
 
   @appointmentType.Action
   fetchappointmentTypes!: () => Promise<void>;
@@ -176,6 +165,11 @@ export default class AppointmentTypes extends Vue {
   // appointmentId ="";
   rawHeaders = [
     {
+      title: "Specialty",
+      key: "specialty",
+      show: true,
+    },
+    {
       title: "service name",
       key: "service",
       show: true,
@@ -183,11 +177,6 @@ export default class AppointmentTypes extends Vue {
     {
       title: "Duration",
       key: "duration",
-      show: true,
-    },
-    {
-      title: "Link forms",
-      key: "forms",
       show: true,
     },
     {
@@ -201,12 +190,16 @@ export default class AppointmentTypes extends Vue {
       show: true,
     },
     {
+      title: "Link forms",
+      key: "forms",
+      show: true,
+    },
+    {
       title: "Status",
       key: "status",
       show: true,
     },
   ];
-
 
   closeModal() {
     this.registerNew = false;
@@ -216,38 +209,31 @@ export default class AppointmentTypes extends Vue {
     return this.appointmentTypes.length < 1;
   }
   async typeadded() {
-    await this.fetchappointmentTypes();
+    await this.fetchServices();
   }
-  // get items() {
-  //   const appointmentTypes = this.appointmentTypes.map((appointmentType) => {
-  //     (appointmentType as any).createdAt = new Date(
-  //       (appointmentType as any).createdAt
-  //     ).toLocaleDateString("en-US");
-  //     return {
-  //       ...appointmentType,
-  //       action: appointmentType.id,
-  //       keydisplay: "XXXXXXX",
-  //       service: this.getServiceName(appointmentType.serviceId),
-  //       duration: this.getDuration(appointmentType.serviceId),
-  //       forms: "-----",
-  //       practitioners:
-  //         this.authPractitioner.firstName +
-  //         " " +
-  //         this.authPractitioner.lastName,
-  //       booking: "-----",
-  //       status: "Active",
-  //     };
-  //   });
-  //   if (!this.query) return appointmentTypes;
-  //   return search.searchObjectArray(appointmentTypes, this.query);
-  // }
-   get items() {
-      return [{
+  get items() {
+    const bookingServices = this.bookingServices.map((service) => {
+      (service as any).createdAt = new Date(
+        (service as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...service,
+        action: service.id,
         keydisplay: "XXXXXXX",
+        service: service.name,
+        duration: service.serviceUOM,
         forms: "-----",
+        practitioners:
+          this.authPractitioner.firstName +
+          " " +
+          this.authPractitioner.lastName,
         booking: "-----",
-        status: "Active",
-      }];
+        specialty: this.findSpecialty(service.specialtyId),
+        status: service.status,
+      };
+    });
+    if (!this.query) return bookingServices;
+    return search.searchObjectArray(bookingServices, this.query);
   }
 
   showTypeModal(value: string) {
@@ -284,8 +270,34 @@ export default class AppointmentTypes extends Vue {
     const response = await Promise.all([AllPractitioner]);
     this.practitioner = response[0].data;
   }
+
+  findSpecialty(id: string) {
+    const el = this.services.find((i: any) => i.id === id);
+    return el ? `${el.name}` : "";
+  }
+
+  async fetchServices() {
+    const url = "/api/v1/booking-site/services";
+    const payload = {};
+    try {
+      const response = await cornieClient().get(url, payload);
+      if (response.success) {
+        this.bookingServices = response.data;
+      }
+    } catch (error) {
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+
   async created() {
-  
+    await this.fetchSpecials();
+    await this.fetchServices();
+    if (this.bookingServices.length < 1) {
+      await this.fetchServices();
+    }
   }
 }
 </script>

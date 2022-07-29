@@ -267,7 +267,7 @@
       const assoication = await this.getAssociationById(this.id);
       if (!assoication) return;
       this.location = assoication.location;
-      this.collectionCenter = assoication.collectionCenter;
+      this.collectionCenter = assoication?.collectionCenter as any;
       this.accounts = assoication.accounts;
       this.defaultAccount = assoication.defaultAccount;
     }
