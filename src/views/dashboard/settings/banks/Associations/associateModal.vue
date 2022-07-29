@@ -82,7 +82,7 @@
 
                   <template v-slot:option="{ option }">
                     <select-option @click="setDefault(option.code)" />
-                    <span class="w-full text-sm">{{ option.display }}</span>
+                    <span class="w-full text-sm" @click="setDefault(option.code)">{{ option.display }}</span>
                     <span
                       class="text-xs text-success flex justify-end float-right w-full"
                       v-if="option.code === defaultAccount && defaultText"

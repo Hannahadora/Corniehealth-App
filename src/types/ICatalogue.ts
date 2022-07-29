@@ -26,6 +26,7 @@ export default interface ICatalogueService {
   telecom:string;
   requiresAppointment:boolean;
   locations: [];
+  locationAvailabilities:[];
   availableTimes: AvailableTimes[];
   updatedAt?: string | Date;
   createdAt?: string | Date;

@@ -202,7 +202,8 @@ export default class LocationDays extends Vue {
   locationDays = [] as any;
   newlocationDays = [] as any;
 
-  data = [] as any;
+  data = {} as any;
+  newdata = [] as any;
 
 
 
@@ -236,23 +237,30 @@ export default class LocationDays extends Vue {
   setActive(item: string) {
     if (item == "mon") {
       this.isActiveMon = !this.isActiveMon;
+      this.newdata.push('mon')
       this.data.mon = "mon .";
     } else if (item == "tue") {
+      this.newdata.push('tue')
       this.data.tue = "tue .";
       this.isActiveTue = !this.isActiveTue;
     } else if (item == "wed") {
+      this.newdata.push('wed')
       this.data.wed = "wed .";
       this.isActiveWed = !this.isActiveWed;
     } else if (item == "thu") {
+      this.newdata.push('thu')
       this.data.thu = "thu .";
       this.isActiveThu = !this.isActiveThu;
     } else if (item == "fri") {
+      this.newdata.push('fri')
       this.data.fri = "fri .";
       this.isActiveFir = !this.isActiveFir;
     } else if (item == "sat") {
+      this.newdata.push('sat')
       this.data.sat = "sat .";
       this.isActiveSat = !this.isActiveSat;
     } else {
+      this.newdata.push('sun')
       this.data.sun = "sun .";
       this.isActiveSun = !this.isActiveSun;
     }
@@ -265,7 +273,7 @@ export default class LocationDays extends Vue {
     })
     this.newlocationDays.push({
         locationId: this.location,
-        days: [this.data]
+        days: this.newdata
     })
     this.locationsId.push(this.location);
     this.data = {};

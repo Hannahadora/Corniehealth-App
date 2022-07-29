@@ -26,11 +26,11 @@
             <span class="ml-3 text-xs">Delete</span>
           </div>
         </template>
-        <template #pay="{ item }">
+        <template #collection="{ item }">
           <div class="flex space-x-2 w-full">
               <div
                 class=""
-                v-for="(input, index) in item.paymentCategories"
+                v-for="(input, index) in item.collectionCenter"
                 :key="index"
               >
                 <span
@@ -52,8 +52,10 @@
           </div>
         </template>
         <template #account="{ item }">
+        <div class="flex space-x-2">
           <span>{{ item.associatedAccounts.length }}</span>
-          <eye-icon class="fill-current text-danger cursor-pointer" @click="showAccounts(item.associatedAccounts)"/>
+          <eye-icon class="fill-current text-danger cursor-pointer -mt-1" @click="showAccounts(item.associatedAccounts)"/>
+        </div>
         </template>
     </cornie-table>
 </div>
@@ -168,7 +170,7 @@ export default class Payments extends Vue {
 
   rawHeaders = [
     { title: "Location Name", key: "location", show: true },
-    { title: "Pay Categories", key: "pay", show: true },
+    { title: "Collection Center", key: "collection", show: true },
     {
       title: "Accounts",
       key: "account",

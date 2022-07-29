@@ -371,7 +371,36 @@
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-3 gap-4">
+          <div class="grid grid-cols-3 gap-4" v-if="id">
+            <div
+              class="bg-white shadow-md p-1 w-full mt-5 rounded-lg"
+              v-for="(item, index) in locations"
+              :key="index"
+            >
+              <div class="flex space-x-4 w-full">
+                <span class="flex items-center">
+                  <avatar :src="localSrc" class="mr-1" />
+                </span>
+                <div class="w-full">
+                  <p class="font-bold text-sm">
+                    {{ item.locationName }}
+                  </p>
+                  <span class="text-gray-400 text-xs font-light">
+                    {{ item.days.join(' ') }}
+                  </span>
+                </div>
+                <div class="float-right flex justify-end w-full">
+                  <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
+                    <delete-red
+                      class="mt-1"
+                      @click="deleteLocationDays(index)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+           <div class="grid grid-cols-3 gap-4" v-else>
             <div
               class="bg-white shadow-md p-1 w-full mt-5 rounded-lg"
               v-for="(item, index) in locations"
@@ -386,7 +415,7 @@
                     {{ getLocationName(item.locationId) }}
                   </p>
                   <span class="text-gray-400 text-xs font-light">
-                    {{ item?.days?.mon }} {{ item?.days?.tue }}
+                    {{ item?.days?.mon  }} {{ item?.days?.tue }}
                     {{ item?.days?.wed }} {{ item?.days?.thu }}
                     {{ item?.days?.fri }} {{ item?.days?.sat }}
                     {{ item?.days?.sun }}
@@ -841,7 +870,7 @@ export default class NwService extends Vue {
     this.channelOfService = service.channelOfService;
     this.telecom = service.telecom;
     this.requiresAppointment = service.requiresAppointment;
-    this.locations = service.locations;
+    this.locations = service.locationAvailabilities;
     this.availableTimes = service.availableTimes;
     this.cost = service.cost;
   }
@@ -970,7 +999,7 @@ export default class NwService extends Vue {
   }
   get allSpeciality() {
     if (!this.specials || this.specials.length === 0) return [];
-    return this.specials.map((i: any) => {
+    return this?.specials?.map((i: any) => {
       return {
         code: i.id,
         display: i.name,
@@ -1005,11 +1034,12 @@ export default class NwService extends Vue {
     return pt;
   }
   async created() {
+    await this.setServices();
+
     await this.fetchMarkups();
     await this.fetchSpecials();
     await this.setDropdown();
     await this.fetchLocation();
-    await this.setServices();
     this.discountLimit = this.markupData?.maxAllowedDiscount;
     this.markup = this.markupData?.markupPercentage;
   }
