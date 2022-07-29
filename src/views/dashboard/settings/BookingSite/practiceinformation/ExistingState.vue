@@ -84,9 +84,9 @@
         <label
           for="ecounter"
           class="w-full capitalize text-black text-sm font-bold mt-12"
-          >Site Message
+          >About Us
           <span class="text-xs text-red-600 font-medium italic"
-            >(Max 150 characters)</span
+            >(Max 1500 characters)</span
           ></label
         >
         <div class="w-full -mt-6">
@@ -94,6 +94,7 @@
             class="w-full text-xs"
             placeholder="Text Area"
             :rules="required"
+            :maxlength="'1500'"
             v-model="siteMessage"
           />
         </div>
@@ -210,9 +211,9 @@
         <label
           for="ecounter"
           class="w-full capitalize text-black text-sm font-bold"
-          >Site Message
+          >About Us
           <span class="text-xs text-red-600 font-medium italic"
-            >(Max 150 characters)</span
+            >(Max 1500 characters)</span
           ></label
         >
         <div class="w-full">
@@ -220,6 +221,7 @@
             class="w-full text-xs"
             placeholder="Start typing...."
             :rules="required"
+            :maxlength="'1500'"
             v-model="siteMessage"
           />
         </div>
