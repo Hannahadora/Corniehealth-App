@@ -80,7 +80,6 @@
             v-if="selectedOption == 'medication request'"
             class="flex flex-col space-y-5"
           >
-            heelo
             <div v-for="d in medicationRequest">hello</div>
           </div>
         </div>
