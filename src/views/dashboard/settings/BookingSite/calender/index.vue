@@ -116,7 +116,7 @@
 
     <accordion-component :opened="true" title="Reminders">
        <template v-slot:default>
-            <reminder-section class="mt-8" />
+            <reminder-section class="mt-8" :id="appointmentReminders.id" :appointmentReminders="appointmentReminders"/>
            
          </template>
     </accordion-component>
@@ -284,6 +284,7 @@ export default class CalenderExistingState extends Vue {
   fetchPrefrences!: () => IPrefrence;
 
   data: any = {};
+  appointmentReminders = {} as any;
   query = "";
   CalendarId = "";
   preferenceId = "";
@@ -327,11 +328,11 @@ export default class CalenderExistingState extends Vue {
   async setCalendar() {
     const calendar = await this.getCalendarById(this.calendarsId);
     if (!calendar) return;
-    this.onlineBookingRequirements.no = calendar.onlineBookingRequirements.no;
+    this.onlineBookingRequirements.no = calendar.onlineBookingRequirements?.no;
     this.onlineBookingRequirements.type =
-      calendar.onlineBookingRequirements.type;
-    this.showAvailability = calendar.showAvailability;
-    this.bookingNotification = calendar.bookingNotification;
+      calendar.onlineBookingRequirements?.type;
+    this.showAvailability = calendar?.showAvailability;
+    this.bookingNotification = calendar?.bookingNotification;
   }
 
   get payload() {
@@ -396,7 +397,7 @@ export default class CalenderExistingState extends Vue {
     }
   }
   async updateCalendar() {
-    const url = `/api/v1calendar`;
+    const url = `/api/v1/calendar`;
     const payload = {
       ...this.payload,
     };
@@ -429,7 +430,22 @@ export default class CalenderExistingState extends Vue {
     this.loading = false;
   }
 
+  async allReminders() {
+        try {
+          const { data } = await cornieClient().get(
+            `/api/v1/appointment-reminders/`
+          );
+          this.appointmentReminders = data;
+        } catch (error) {
+          window.notify({
+            msg: "There was an error when fetching appointment reminders",
+            status: "error",
+          });
+        }
+  }
+
   async created() {
+    await this.allReminders();
      this.setCalendar();
      this.setPreference();
     await this.fetchCalendars();

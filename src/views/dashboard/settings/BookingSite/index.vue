@@ -17,7 +17,6 @@
           <calender-preference :calenderid="calendarsId" :prefereid="preferencesId"/>
           <notification-template />
           <cancel-section  :canceId="cancellationId"/>
-          <rating-section />
         </tabs>
       </span>
     </div>
@@ -77,15 +76,17 @@ export default class Bookings extends Vue {
   tabLinks = [
     "Practice Information",
     "Booking Site",
-    // "Appointment Types",
     "Services",
     "Appointment Rooms",
-    // "Reminders",
     "Calendar",
     "Notification Templates",
     "Cancellation",
+
+    // "Appointment Types",
+    // "Appointment Rooms",
+    // "Reminders",
     // "Photos",
-    "Rating",
+    // "Rating",
   ];
   currentTab = 0;
   bookindId = "";

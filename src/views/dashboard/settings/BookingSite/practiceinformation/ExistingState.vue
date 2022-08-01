@@ -17,7 +17,7 @@
             settings.
           </p>
         </div>
-        <div>
+        <!-- <div>
           <div
             class="flex text-primary font-semibold text-sm mt-3 cursor-pointer"
             v-if="showEdit"
@@ -32,7 +32,7 @@
           >
             <edit-icon class="fill-current text-danger mr-4" /> Edit
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div v-if="showEdit" class="w-full">
@@ -84,9 +84,9 @@
         <label
           for="ecounter"
           class="w-full capitalize text-black text-sm font-bold mt-12"
-          >Site Message
+          >About Us
           <span class="text-xs text-red-600 font-medium italic"
-            >(Max 150 characters)</span
+            >(Max 1500 characters)</span
           ></label
         >
         <div class="w-full -mt-6">
@@ -94,6 +94,7 @@
             class="w-full text-xs"
             placeholder="Text Area"
             :rules="required"
+            :maxlength="'1500'"
             v-model="siteMessage"
           />
         </div>
@@ -123,7 +124,7 @@
         <div class="flex flex-col items-center justify-center">
           <img class="w-24 h-24" v-if="organizationInfo?.image" :src="organizationInfo?.image" />
           <avatar class="mr-2 w-24 h-24" v-else :src="localSrc" />
-          <star-icon class="mt-2" />
+          <!-- <star-icon class="mt-2" /> -->
           <div class="text-gray-300 text-xs mt-2">
             {{ organizationInfo?.registrationNumber }}
           </div>
@@ -161,7 +162,7 @@
             {{ organizationInfo?.phone?.dialCode +' '+   organizationInfo?.phone?.number}}
           </div>
         </div>
-        <div class="flex space-x-4 mt-2">
+        <!-- <div class="flex space-x-4 mt-2">
           <span class="text-gray-600 text-sm"
             >Total Ratings :
             <span class="text-black text-sm">16</span>
@@ -172,7 +173,7 @@
             >Patients Seen :
             <span class="text-black text-6m">24</span>
           </span>
-        </div>
+        </div> -->
         <a href="organizationInfo.website" target="_blank" class="text-blue-500 underline text-sm mb-1">{{ organizationInfo?.website }}</a>
 
         <!-- <div class="flex space-x-4 items-center justify-center mt-2">
@@ -210,9 +211,9 @@
         <label
           for="ecounter"
           class="w-full capitalize text-black text-sm font-bold"
-          >Site Message
+          >About Us
           <span class="text-xs text-red-600 font-medium italic"
-            >(Max 150 characters)</span
+            >(Max 1500 characters)</span
           ></label
         >
         <div class="w-full">
@@ -220,6 +221,7 @@
             class="w-full text-xs"
             placeholder="Start typing...."
             :rules="required"
+            :maxlength="'1500'"
             v-model="siteMessage"
           />
         </div>

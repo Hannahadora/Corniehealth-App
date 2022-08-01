@@ -73,7 +73,7 @@
                     <avatar :src="localSrc" class="mr-1" />
                   </span>
                 <div class="w-full">
-                  <p class="font-bold text-sm">{{ getLocationName(item.location) }}</p>
+                  <p class="font-bold text-sm">{{ getLocationName(item.locationId) }}</p>
                    <span class="text-gray-400 text-xs font-light">
                         {{ isActiveMon ? item?.days?.mon : '' }} {{isActiveTue ? item?.days?.tue : ''}}  {{isActiveWed ? item?.days?.wed : ''}}
                         {{isActiveThu ? item?.days?.thu : ''}}  {{isActiveFir ? item?.days?.fri : ''}}  {{isActiveSat ? item?.days?.sat : ''}}
@@ -200,8 +200,10 @@ export default class LocationDays extends Vue {
   localSrc = require("../../../../../assets/img/placeholder.png");
 
   locationDays = [] as any;
+  newlocationDays = [] as any;
 
   data = {} as any;
+  newdata = [] as any;
 
 
 
@@ -235,23 +237,30 @@ export default class LocationDays extends Vue {
   setActive(item: string) {
     if (item == "mon") {
       this.isActiveMon = !this.isActiveMon;
+      this.newdata.push('mon')
       this.data.mon = "mon .";
     } else if (item == "tue") {
+      this.newdata.push('tue')
       this.data.tue = "tue .";
       this.isActiveTue = !this.isActiveTue;
     } else if (item == "wed") {
+      this.newdata.push('wed')
       this.data.wed = "wed .";
       this.isActiveWed = !this.isActiveWed;
     } else if (item == "thu") {
+      this.newdata.push('thu')
       this.data.thu = "thu .";
       this.isActiveThu = !this.isActiveThu;
     } else if (item == "fri") {
+      this.newdata.push('fri')
       this.data.fri = "fri .";
       this.isActiveFir = !this.isActiveFir;
     } else if (item == "sat") {
+      this.newdata.push('sat')
       this.data.sat = "sat .";
       this.isActiveSat = !this.isActiveSat;
     } else {
+      this.newdata.push('sun')
       this.data.sun = "sun .";
       this.isActiveSun = !this.isActiveSun;
     }
@@ -259,8 +268,12 @@ export default class LocationDays extends Vue {
 
   async add(){
     this.locationDays.push({
-        location: this.location,
+        locationId: this.location,
         days: this.data
+    })
+    this.newlocationDays.push({
+        locationId: this.location,
+        days: this.newdata
     })
     this.locationsId.push(this.location);
     this.data = {};
@@ -274,7 +287,7 @@ export default class LocationDays extends Vue {
   async submit(){
     this.loading = true;
 
-     this.$emit("location-days", this.locationDays, this.locationsId);
+     this.$emit("location-days", this.locationDays, this.newlocationDays, this.locationsId);
 
      this.loading = false;
      this.done();
@@ -287,7 +300,7 @@ export default class LocationDays extends Vue {
   
   async fetchLocation() {
     const AllLocation = cornieClient().get(
-      "/api/v1/location/myOrg/getMyOrgLocations"
+      "/api/v1/location/myOrg/getMyOrgLocations/"
     );
     const response = await Promise.all([AllLocation]);
     this.locations = response[0].data;

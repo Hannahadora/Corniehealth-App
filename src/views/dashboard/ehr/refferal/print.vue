@@ -200,7 +200,7 @@
                         </div>
                         <div class="mt-5"> 
                             <p class="text-gray-400 text-xs text-center">Save Earth, Go Paperless. Join so many other amazing providers and patients on CornieHealth.</p>
-                            <p class="text-center text-xs">Document Type: Medication Prescription|Rx ID: 234567 | Requester: Dr. Sarah Johnson | DateTime Created: 22 January 2022, 14:00</p>
+                            <p class="text-center text-xs">Document Type: Referral Requests |Rx ID: {{ selectedItem.identifier }} | Requester: Dr. {{ selectedItem.requester }} | DateTime Created: {{ new Date(selectedItem.createdAt).toLocaleDateString()}}</p>
                         </div>
                     </div>
 

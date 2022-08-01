@@ -141,8 +141,8 @@ const links: ISidebarLink[] = [
     ],
   },
   {
-    name: "Bills & Payments",
-    to: "Billing & payments",
+    name: "Billing Profile",
+    to: "Billing Profile",
     icon: "debit-card-icon",
     hasSubsection: true,
     children: [

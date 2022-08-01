@@ -10,11 +10,11 @@
               notification emails.
             </p>
           </div>
-          <div
+          <!-- <div
             class="flex space-x-4 text-primary font-semibold text-sm mt-3 cursor-pointer"
           >
             <edit-icon class="fill-current text-primary mr-4" /> Edit
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="w-full mb-14">
@@ -208,7 +208,8 @@ export default class Cancellation extends Vue {
 
   async submit() {
     this.loading = true;
-    await this.createCancel();
+    if(this.canceId)await this.updateCancel();
+    else await this.createCancel();
     this.loading = false;
   }
 
@@ -226,9 +227,9 @@ export default class Cancellation extends Vue {
     }
   }
 
-  async updateLocation() {
-    const url = `/api/v1/cancellations9policy/${this.id}`;
-    const payload = { ...this.payload, id: this.id };
+  async updateCancel() {
+    const url = `/api/v1/cancellations-policy/${this.canceId}`;
+    const payload = { ...this.payload};
     try {
       const response = await cornieClient().put(url, payload);
       window.notify({ msg: "Cancellations Updated", status: "success" });

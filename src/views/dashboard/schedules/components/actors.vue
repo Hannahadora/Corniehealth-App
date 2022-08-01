@@ -52,7 +52,7 @@ export default class ActorsList extends Vue {
 
   get actors() {
     if (!this.items || this.items.length === 0) return [];
-    if (this.items.length >= 3) return this.items;
+    if (this.items.length >= 3) return this.items.slice(0, 3);
     return this.items.slice(0, 3);
   }
 }

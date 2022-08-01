@@ -93,17 +93,20 @@
           </template>
           <td v-if="!menushow">
             <div class="flex justify-center">
-                <delete-icon v-if="deleteRow" class="cursor-pointer" @click="$emit('delete',index)"/>
-              <cornie-menu top="30px" v-else right="100%">
-                <template #activator="{ on }">
-                  <icon-btn v-on="on">
-                    <dots-horizontal-icon v-on="on"/>
-                  </icon-btn>
-                </template>
-                <cornie-card-text :tablecard="true">
-                  <slot name="actions" :item="row" :index="index" />
-                </cornie-card-text>
-              </cornie-menu>
+                <edit-icon v-if="editRow" class="text-primary fill-current cursor-pointer" @click="$emit('edit',row.id)"/>
+                <div v-else>
+                  <delete-icon v-if="deleteRow" class="cursor-pointer" @click="$emit('delete',index)"/>
+                  <cornie-menu top="30px" v-else right="100%">
+                    <template #activator="{ on }">
+                      <icon-btn v-on="on">
+                        <dots-horizontal-icon v-on="on"/>
+                      </icon-btn>
+                    </template>
+                    <cornie-card-text :tablecard="true">
+                      <slot name="actions" :item="row" :index="index" />
+                    </cornie-card-text>
+                  </cornie-menu>
+                </div>
             </div>
           </td>
         </tr>
@@ -146,6 +149,7 @@ import CornieCard from "@/components/cornie-card";
 import DeleteIcon from "@/components/icons/deleteorange.vue";
 import CorniePagination from "@/components/corniePagination.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
+import EditIcon from "@/components/icons/edit.vue";
 
 interface IPage {
   data: any[];
@@ -189,6 +193,7 @@ function defaultFilter(item: any, query: string) {
     RefreshIcon,
     ...CornieCard,
     CorniePagination,
+    EditIcon,
   },
 })
 export default class CornieTable extends Vue {
@@ -218,6 +223,9 @@ export default class CornieTable extends Vue {
 
   @Prop({ type: Boolean, default: false })
   deleteRow!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  editRow!: boolean;
 
   @Prop({ type: Boolean, default: false })
   refreshing!: boolean;

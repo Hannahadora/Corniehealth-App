@@ -14,6 +14,9 @@
                 {{ label }}
               </template>
               <span class="text-danger ml-1" v-if="required"> * </span>
+              <span class="ml-1 mb-1" v-if="$slots.labelicon">
+                <slot name="labelicon" />
+              </span>
             </label>
             <field
               v-slot="{ errorMessage, meta, handleChange }"
@@ -122,6 +125,10 @@ export default class AutoComplete extends Vue {
 
   @PropSync("modelValue")
   modelValueSync!: string;
+
+  @Prop({ type: String, default: "" })
+  labelicon!: string;
+
 
   @Prop({ type: Boolean, default: false })
   required!: boolean;

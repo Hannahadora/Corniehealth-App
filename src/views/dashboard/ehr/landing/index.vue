@@ -62,7 +62,7 @@
             <span class="ml-3 text-xs">View patient details</span>
           </table-action>
           <table-action @click="encounterPatient(item)">
-            <newview-icon class="text-yellow-500 fill-current" />
+            <plus-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
           <table-action
@@ -259,6 +259,7 @@ import ehrHelper from "./helper/ehr-service";
 import User from "@/types/user";
 import IPractitioner from "@/types/IPractitioner";
 import { cornieClient } from "@/plugins/http";
+import plusIcon from "@/components/icons/plus.vue";
 
 const userStore = namespace("user");
 const patients = namespace("patients");
@@ -284,6 +285,7 @@ const visitsStore = namespace("visits");
     PasswordInput,
     SearchInput,
     SearchDropdown,
+    plusIcon,
   },
 })
 export default class ExistingState extends Vue {

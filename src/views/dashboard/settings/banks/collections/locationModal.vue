@@ -26,7 +26,7 @@
               <div>
                 <span class="text-sm font-semibold mb-1">Pay Categories</span>
                 <Multiselect
-                  v-model="paymentCategories"
+                  v-model="collectionCenter"
                   mode="tags"
                   :closeOnSelect="true"
                   :searchable="true"
@@ -54,8 +54,8 @@
                 <span class="text-sm font-semibold mb-1">Account</span>
                 <Multiselect
                   v-model="accounts"
-                  mode="tags"
-                  :hide-selected="false"
+                  mode="multiple"
+                  :hide-selected="true"
                   id="field-id"
                   :options="allAccounts"
                   value-prop="code"
@@ -64,7 +64,7 @@
                   placeholder="--Select--"
                   class="w-full"
                 >
-                  <!-- <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                  <template v-slot:tag="{ option, handleTagRemove, disabled }">
                     <div class="multiselect-tag is-user">
                       {{ option.display }}
                       <span
@@ -75,30 +75,33 @@
                         <span class="multiselect-tag-remove-icon"></span>
                       </span>
                     </div>
-                  </template> -->
+                  </template>
                   <template v-slot:option="{ option }">
-                    <select-option @click="setDefault(option.code)" />
                     <span class="w-full text-sm">{{ option.display }}</span>
-                    <span
-                      class="text-xs text-success flex justify-end float-right w-full"
-                      v-if="option.code == defaultAccount"
-                      >Default</span
-                    >
-                    <span
-                      v-else
-                      class="text-xs text-danger flex justify-end float-right w-full"
-                      @click="setDefault(option.code)"
-                      >Set as default</span
-                    >
                   </template>
                 </Multiselect>
               </div>
               <div
-                class="flex space-x-4 justify-between w-full mt-8 border-gray-200 pb-8 border-b-2"
+                class="flex space-x-4 w-full mt-8 border-gray-200 pb-8 border-b-2"
                 v-for="(input, index) in accounts"
                 :key="`${index}`"
               >
-                {{ getAccount(input) }}
+                <div class="flex-1">
+                  {{ getAccount(input) }}
+                </div>
+                <div class="flex-none">
+                  <span
+                    class="text-xs text-success flex justify-end float-right w-full"
+                    v-if="input == defaultAccount"
+                    >Default</span
+                  >
+                  <span
+                    v-else
+                    class="text-xs text-danger cursor-pointer flex justify-end float-right w-full"
+                    @click="setDefault(input)"
+                    >Set as default</span
+                  >
+                </div>
                 <!-- <p class="float-left text-sm">{{ input.name }}</p>
                 <correct-icon class="float-right" /> -->
               </div>
@@ -208,7 +211,7 @@
     accountoption = false;
 
     location = "";
-    paymentCategories = [];
+    collectionCenter = [];
     accounts = [];
     defaultAccount = "";
     actualaccounts = [] as any;
@@ -253,17 +256,12 @@
           this.defaultText = true;
         }
       }
-      // if(this.accounts == index){
-
-      //   this.defaultAccount = index;
-      //   this.defaultText = true;
-      // }
     }
     async setAccount() {
       const assoication = await this.getAssociationById(this.id);
       if (!assoication) return;
       this.location = assoication.location;
-      this.paymentCategories = assoication.paymentCategories;
+      this.collectionCenter = assoication?.collectionCenter as any;
       this.accounts = assoication.accounts;
       this.defaultAccount = assoication.defaultAccount;
     }
@@ -271,7 +269,7 @@
     get payload() {
       return {
         location: this.location,
-        paymentCategories: this.paymentCategories,
+        collectionCenter: this.collectionCenter,
         accounts: this.accounts,
         defaultAccount: this.defaultAccount,
       };
@@ -385,7 +383,7 @@
         return;
       }
 
-      if (this.paymentCategories.length == 0) {
+      if (this.collectionCenter.length == 0) {
         window.notify({ msg: "Choose a payment category", status: "error" });
         return;
       }
@@ -416,93 +414,106 @@
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>
-  .bg-gray {
-    background-color: #f6f8f9;
+  .multiselect-option.is-selected.is-pointed {
+    background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+    color: var(--ms-option-color-selected-pointed, #fff);
   }
-  .icon-wrap {
-    content: counter(step);
-    counter-increment: step;
-    background: #fff;
+  .multiselect-option.is-selected {
+    background: var(--ms-option-bg-selected, #fe4d3c);
+    color: var(--ms-option-color-selected, #fff);
+  }
+
+  .multiselect {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+    border-radius: var(--ms-radius, 4px);
+    background: var(--ms-bg, #fff);
+    font-size: var(--ms-font-size, 1rem);
+    min-height: calc(
+      var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+        var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+    );
+  }
+
+  .multiselect-tags {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-wrap: wrap;
+    margin: var(--ms-tag-my, 0.25rem) 0 0;
+    padding-left: var(--ms-py, 0.5rem);
+    align-items: center;
+  }
+
+  .multiselect-tag.is-user {
+    padding: 5px 12px;
+    border-radius: 22px;
+    background: #080056;
+    margin: 3px 3px 8px;
+    position: relative;
+    left: -10px;
+  }
+
+  /* .multiselect-clear-icon {
+      -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
+      mask-image: url("/components/icons/chevrondownprimary.vue");
+      background-color: #080056;
+      display: inline-block;
+      transition: .3s;
+  } */
+
+  .multiselect-placeholder {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    color: #667499;
+  }
+
+  .multiselect-caret {
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+    -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+    mask-image: url("../../../../../assets/img/Chevron.png");
+    background-color: #080056;
+    margin: 0 var(--ms-px, 0.875rem) 0 0;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    flex-grow: 0;
+    pointer-events: none;
+  }
+
+  .multiselect-tag.is-user img {
+    width: 18px;
     border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #fe4d3c;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -54em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
+    height: 18px;
+    margin-right: 8px;
+    border: 2px solid #ffffffbf;
   }
-  .icon-wrap2 {
-    background: #fff;
+
+  .multiselect-tag.is-user i:before {
+    color: #ffffff;
     border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #fe4d3c;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: -7.5em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
   }
-  .icon-wrap3 {
-    background: #fff;
+
+  .multiselect-tag-remove {
+    display: flex;
+    align-items: center;
+    /* border: 1px solid #fff;
+    background: #fff; */
     border-radius: 50%;
-    top: -0.3em;
-    z-index: -1;
     color: #fff;
-    border: 2px solid #fe4d3c;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 52em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
-  }
-  .icon-wrap4 {
-    background: #fff;
-    border-radius: 50%;
-    top: -0.3em;
-    z-index: 1;
-    color: #fff;
-    border: 2px solid #fe4d3c;
-    display: block;
-    height: 1.4em;
-    margin: 0 auto -0.6em;
-    left: 42em;
-    right: 0;
-    position: absolute;
-    width: 1.4em;
-  }
-  .icon-check-mark {
-    top: 1.3em;
-    z-index: 1;
-    left: 5em;
-    right: 0;
-    position: absolute;
-  }
-  .icon-check-mark2 {
-    top: 1.3em;
-    z-index: 1;
-    left: 23em;
-    right: 0;
-    position: absolute;
-  }
-  .icon-check-mark3 {
-    top: 1.3em;
-    z-index: 1;
-    left: 45.5em;
-    right: 0;
-    position: absolute;
-  }
-  .bg-danger-100 {
-    background-color: #fe4d3c;
+    justify-content: center;
+    padding: 0.77px;
+    margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
   }
 </style>

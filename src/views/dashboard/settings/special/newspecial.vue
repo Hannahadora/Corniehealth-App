@@ -187,7 +187,7 @@ dropdownData = {} as IIndexableObject;
      await this.save();
     this.loading = false;
   }
-   get spaciallItems() {
+ get spaciallItems() {
     let foundDuplicate = false;
     this.specials.some(existingItem => {
       this.Specilaitems = this.Specilaitems.filter(item=> {

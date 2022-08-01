@@ -56,7 +56,6 @@
                 />
               </div>
               <div class="w-full grid grid-cols-3 gap-4">
-                
                 <cornie-input
                   :rules="required"
                   v-model="name"
@@ -325,8 +324,7 @@
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialtyNames}}
-                      
+                        {{ specialtyNames }}
                       </div>
                       <div class="flex-none justify-end">
                         <add-icon @click="showSpecialModal" />
@@ -374,7 +372,6 @@
                   :required="true"
                 />
 
-               
                 <div class="flex flex-col space-y-0.5">
                   <div class="text-sm font-semibold mb-1">Visit Type</div>
 
@@ -765,8 +762,6 @@
     :deletedRole="deletedRole"
     @add-access-roles="addAccessRoles"
   />
-
- 
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
@@ -912,9 +907,9 @@
         ...this.educations,
       ];
 
-      this.qualificationIssuer = this.qualificationCode = "";
-      // this.graduationYear =
-      //   "";
+      this.qualificationIssuer = "";
+      this.qualificationCode = "";
+      this.graduationYear = "";
     }
     removeEducation(i: number) {
       this.educations.splice(i, 1);
@@ -1071,8 +1066,10 @@
       this.setPractitioner();
     }
 
-    get specialtyNames(){
-      return this.specialties.map((x:any) => this.getSpecialityName(x) || x?.display).join(', ')
+    get specialtyNames() {
+      return this.specialties
+        .map((x: any) => this.getSpecialityName(x) || x?.display)
+        .join(", ");
     }
     @Watch("useSameAddress")
     populateEmergencyAddress() {
@@ -1260,7 +1257,7 @@
         boardLicenses: this.licenses,
         education: this.educations,
         gender: this.gender,
-        
+
         phone: {
           number: this.phone,
           dialCode: this.dialCode,

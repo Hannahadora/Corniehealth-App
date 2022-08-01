@@ -39,6 +39,7 @@ export default interface IAppointment {
   venueAddress: string;
   meetingLink: string;
   venue: string;
+  billingAccountId: string;
 }
 export interface Practitioners {
   id?: string;

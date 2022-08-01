@@ -10,6 +10,15 @@ export async function fetchCurrencys() {
   } catch (error) {}
   return [] as ICurrency[];
 }
+export async function fetchDefaultCurrency() {
+  try {
+    const response = await cornieClient().get(
+      "/api/v1/currency/org/defaultCurrency"
+    );
+    if (response.success) return response.data;
+  } catch (error) {}
+  return [] as ICurrency[];
+}
 export async function deleteCurrency(id: string) {
   try {
     const response = await cornieClient().delete(`/api/v1/currency/${id}`);

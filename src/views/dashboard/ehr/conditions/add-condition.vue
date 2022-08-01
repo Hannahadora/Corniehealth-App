@@ -310,15 +310,15 @@ const timeable = {
 
 const measurable = {
   age: "",
-  ageUnit: "",
+  ageUnit: "years",
   ageValue: "",
   day: "",
-  unit: "Days",
+  unit: "years",
   min: "",
-  minUnit: "Days",
+  minUnit: "years",
   minValue: "",
   max: "",
-  maxUnit: "Days",
+  maxUnit: "years",
   maxValue: "",
   string: "",
   startDate: "",
@@ -496,14 +496,14 @@ isEmptyObject(object:any){
 }
 get onset() {
    const range = {
-      unit: this.onsetMeasurable.unit,
+      unit: this.onsetMeasurable.minUnit,
       min: this.onsetMeasurable.min,
       max: this.onsetMeasurable.max
     
     }; 
     const age = {
        unit: this.onsetMeasurable.ageUnit,
-        value: this.onsetMeasurable.ageValue,
+        value: this.onsetMeasurable.age,
     
     }; 
     const period = {
@@ -516,20 +516,20 @@ get onset() {
     return {
       range: this.isEmptyObject (range) ? undefined : range,
       age: this.isEmptyObject (age) ? undefined : age,
-      string: this.onsetMeasurable.string || null,
+      string: this.onsetMeasurable.string || undefined,
       period:this.isEmptyObject (period) ? undefined : period,
     };
   }
   get setabatement() {
     const range = {
-        unit: this.abatementMeasurable.unit,
+        unit: this.abatementMeasurable.minUnit,
         min: this.abatementMeasurable.min,
         max: this.abatementMeasurable.max,
     
     }; 
     const age = {
        unit: this.abatementMeasurable.ageUnit,
-        value: this.abatementMeasurable.ageValue,
+        value: this.abatementMeasurable.age,
     }; 
     const period = {
        start: this.abatementMeasurable.startDate,
@@ -542,7 +542,7 @@ get onset() {
     return {
       range: this.isEmptyObject (range) ? undefined : range,
       age: this.isEmptyObject (age) ? undefined : age,
-      string: this.abatementMeasurable.string || null,
+      string: this.abatementMeasurable.string || undefined,
       period:this.isEmptyObject (period) ? undefined : period,
       dateTime:  this.safeBuildDateTime(
        this.abatementMeasurable.date as any,

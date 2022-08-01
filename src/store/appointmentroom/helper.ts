@@ -1,4 +1,5 @@
 import { cornieClient } from "@/plugins/http";
+import IAppointmentRoom from "@/types/IAppointmentRoom";
 
 export async function fetchAppointmentrooms(page = 1, limit?: number) {
   limit = limit ?? 10;
@@ -11,6 +12,17 @@ export async function fetchAppointmentrooms(page = 1, limit?: number) {
     notify({ msg: "There was an error fetching schedules", status: "error" });
   }
   return {data:[], pageInfo:{}};
+}
+export async function fetchByIdAppointmentsRooms(locationId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/appointment-rooms/findAllByLocationId/${locationId}`
+    );
+    if (response.success) {
+      return response.data;
+    }
+  } catch (error) {}
+  return [] as IAppointmentRoom[];
 }
 export async function deleteAppointmentroom(id: string) {
   try {

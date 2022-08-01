@@ -133,8 +133,12 @@
             return {
               date: this.printRecorded(x.createdAt),
               id: x.idn,
+              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
+              patient: x.subject,
               total: `₦ ${x.total}`,
               status: x.status,
+              account: "-----",
+              payor: "-----",
             };
           });
     }

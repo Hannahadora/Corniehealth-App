@@ -68,7 +68,7 @@
         <div
           class="bg-blue-100 text-black p-3 text-center rounded flex font-semibold justify-center mt-5 text-sm"
         >
-          1 {{ basecurrency }} ~= {{ exchangeRate }} {{ currency }}
+          1 {{ defaultCurrency }} ~= {{ exchangeRate }} {{ currency }}
         </div>
       </cornie-card-text>
       <cornie-card>
@@ -137,12 +137,20 @@ export default class NewExchangeRate extends Vue {
   @currency.Action
   getCurrencyById!: (id: string) => ICurrency;
 
+  @Prop({ type: Object, default: {} })
+  defaultcurency!: any;
+
   @Prop({ type: Array, default: () => [] })
   available!: object;
 
   @Watch("id")
   idChanged() {
     this.setCurrency();
+  }
+
+  @Watch("defaultcurency")
+  currencyChanged() {
+    this.setDefaultCurrency();
   }
 
   currency = "";
@@ -154,16 +162,21 @@ export default class NewExchangeRate extends Vue {
   basecurrency = "";
   orgLocation = [];
   options = ["Batman", "Robin", "Joker"];
+  defaultCurrency = "";
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
   }
   async setCurrency() {
-    const currency = await this.getCurrencyById(this.id);
+    const currency =  this.getCurrencyById(this.id);
     if (!currency) return;
     this.currency = currency.code;
     this.exchangeRate = currency.exchangeRate;
   }
+   async setDefaultCurrency() {
+    this.defaultCurrency = this.defaultcurency.code;
+  }
+
 
   get payload() {
     return {
@@ -268,6 +281,7 @@ export default class NewExchangeRate extends Vue {
   }
 
   created() {
+    this.setDefaultCurrency()
     this.fetchDropDown();
     this.fetchLocation();
   }
@@ -355,8 +369,8 @@ export default class NewExchangeRate extends Vue {
 .multiselect-tag-remove {
   display: flex;
   align-items: center;
-  border: 1px solid #fff;
-  background: #fff;
+  /* border: 1px solid #fff;
+  background: #fff; */
   border-radius: 50%;
   color: #080056;
   justify-content: center;

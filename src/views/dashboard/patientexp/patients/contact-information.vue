@@ -51,7 +51,6 @@
           v-model="postCode"
           label="Post Code"
           placeholder="Enter"
-          :rules="requiredString"
           :readonly="readonly"
         />
         <cornie-input
@@ -74,7 +73,6 @@
           class="w-full"
           v-model="email"
           label="Email"
-          :rules="requiredEmail"
           placeholder="Enter"
           :readonly="readonly"
         />
@@ -192,10 +190,10 @@
         primaryAddress: this.primaryAddress,
         country: this.nationState.country,
         state: this.state,
-        postalCode: this.postCode,
+        postalCode: this.postCode ? this.postCode : undefined,
         city: this.city,
         phone: { number: this.phoneNumber, dialCode: this.dialCode },
-        email: this.email,
+        email: this.email ? this.email : undefined,
         type: this.type,
         apartment: this.apartment,
       } as Contact;
