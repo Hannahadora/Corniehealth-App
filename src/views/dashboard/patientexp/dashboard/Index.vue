@@ -11,10 +11,10 @@
 
       <div class="s1-slider mt-8">
         <span
-          @click="dashboardType = 'mine'"
+          @click="dashboardType = 'personal'"
           class="px-5 py-2 rounded-lg cursor-pointer mr-1"
           :class="{
-            'bg-white font-semibold': dashboardType === 'mine',
+            'bg-white font-semibold': dashboardType === 'personal',
           }"
           >My Dashbord</span
         >
@@ -52,6 +52,7 @@
 
         <div>
           <button
+            @click="fetchRecord"
             class="py-3 px-20 rounded-lg text-white font-bold text-base"
             style="background: #fe4d3c"
             type="button"
@@ -147,7 +148,7 @@ const yesterdayStr = splitDate(yesterday);
     BillingsChart,
     MedicationChart,
     RatingChart,
-    ResourceChart,
+    ResourceChart,    
     DatePicker,
   },
 })
@@ -160,7 +161,7 @@ export default class DashboardHome extends Vue {
   @user.Getter
   authCurrentLocation!: string;
 
-  dashboardType = "mine";
+  dashboardType = "personal";
   startDate = yesterdayStr;
   endDate = todayStr;
 
@@ -181,6 +182,10 @@ export default class DashboardHome extends Vue {
     else if (hrs >= 12 && hrs <= 17) return "Afternoon";
     else if (hrs >= 17 && hrs <= 24) return "Evening";
   }
+
+  // fetchRecord() {
+  //   this.chartContext()
+  // }
 }
 </script>
 

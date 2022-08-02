@@ -870,7 +870,7 @@ export default class NwService extends Vue {
     this.channelOfService = service.channelOfService;
     this.telecom = service.telecom;
     this.requiresAppointment = service.requiresAppointment;
-    this.locations = service.locationAvailabilities;
+    this.locations = service.locationAvailabilities as any;
     this.availableTimes = service.availableTimes;
     this.cost = service.cost;
   }

@@ -44,10 +44,10 @@
       return groupData(this.rawEncounter, this.order);
     }
 
-    rawCollections: IStat[] = [];
+    rawBilled: IStat[] = [];
 
-    get totalCollectionChart() {
-      return groupData(this.rawCollections, this.order);
+    get totalBilledChart() {
+      return groupData(this.rawBilled, this.order);
     }
 
     raw: IStat[] = [];
@@ -66,12 +66,12 @@
         const startDate = new Date(start).toISOString();
         const endDate = new Date(end).toISOString();
         const response = await cornieClient().get(
-          `api/v1/bill/stat/collection-trend?start=${startDate}&end=${endDate}`
+          `api/v1/bill/stat/billing-trend?start=${startDate}&end=${endDate}`
         );
 
-        const { totalEncounters, totalCollections } = response.data;
+        const { totalEncounters, totalBilled } = response.data;
         this.rawEncounter = totalEncounters;
-        this.rawCollections = totalCollections;
+        this.rawBilled = totalBilled;
         if (response.data == "You are not allowed to access this resource") {
           this.restricted = true;
         }
@@ -96,7 +96,7 @@
       this.mountChart();
     }
 
-    @Watch("totalCollectionChart")
+    @Watch("totalBilledChart")
     CchartUpdated() {
       this.mountChart();
     }
@@ -131,8 +131,8 @@
                 target: "origin",
                 below: "rgb(0, 102, 102)",
               },
-              label: "Total Collection",
-              data: this.totalCollectionChart.dataSet,
+              label: "Total Billed",
+              data: this.totalBilledChart.dataSet,
               borderColor: "rgb(0, 102, 102)",
               // showLine: true,
               borderWidth: 2,

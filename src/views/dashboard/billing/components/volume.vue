@@ -6,21 +6,12 @@
     <div class="pt-16">
       <table class="w-full">
         <tbody>
-          <tr>
-            <td>Private</td>
-            <td>{{ privateAccountPer }} %</td>
-            <td>₦ {{ totalPrivateAccount }}</td>
+          <tr v-for="v in displayView">
+            <td class="capitalize">{{ v.name }}</td>
+            <td>{{ v.percent }} %</td>
+            <td>₦ {{ v.total }}</td>
           </tr>
-          <tr>
-            <td>Self Funded</td>
-            <td>{{ selfFunPer }} %</td>
-            <td>₦ {{ totalSelfFunded }}</td>
-          </tr>
-          <tr>
-            <td>Insurance</td>
-            <td>{{ InsurancePer }} %</td>
-            <td>₦ {{ totalInsurance }}</td>
-          </tr>
+
           <tr class="font-bold">
             <td>Total</td>
             <td>100%</td>
@@ -74,59 +65,64 @@
       console.log("range", this.range);
       this.fetchData();
     }
-    totalPrivateAccount = 0;
-    totalSelfFunded = 0;
-    totalInsurance = 0;
+
     totalCollectables = 0;
 
-    get privateAccountPer() {
-      let p = this.percentage(this.totalPrivateAccount, this.totalCollectables);
-      return isNaN(p) ? 0 : p;
-    }
-
-    get selfFunPer() {
-      let t = this.percentage(this.totalSelfFunded, this.totalCollectables);
-      return isNaN(t) ? 0 : t;
-    }
-
-    get InsurancePer() {
-      let r = this.percentage(this.totalInsurance, this.totalCollectables);
-      return isNaN(r) ? 0 : r;
-    }
-
     percentage(partialValue: number, totalValue: number) {
-      return (100 * Number(partialValue)) / Number(totalValue);
+      let r = (100 * Number(partialValue)) / Number(totalValue);
+      return isNaN(r) ? 0 : r;
     }
 
     sumTotalCollectables(obj: object) {
       return Object.values(obj).reduce((a, b) => a + b);
     }
 
-    isEmpty = true;
-    async fetchData() {
-      try {
-        const { start, end } = this.range as any;
-        if (!start || !end) return;
-        const startDate = new Date(start).toISOString();
-        const endDate = new Date(end).toISOString();
-        const response = await cornieClient().get(
-          `api/v1/bill/stat/collections?start=${startDate}&end=${endDate}`
-        );
-        const { privateAccount, selfFunded, insurance } = response.data;
-        this.totalCollectables = this.sumTotalCollectables(response.data);
-        this.totalPrivateAccount = privateAccount;
-        this.totalSelfFunded = selfFunded;
-        this.totalInsurance = insurance;
-        this.isEmpty = false;
-      } catch (error) {
-        console.log("error", error);
-        this.isEmpty = true;
-        window.notify({ msg: "Failed to fetch chart data", status: "error" });
-      }
+    generateView(obj: object) {
+      return Object.entries(obj).map((x) => {
+        const [keys, value] = x;
+        return {
+          name: this.camelToKeb(keys),
+          percent: this.percentage(value, this.totalCollectables),
+          total: value,
+        };
+      });
     }
+    displayView: any[] = [
+      {
+        name: "clinical",
+        percent: 0,
+        total: 0,
+      },
+      {
+        name: "Diagnostics",
+        percent: 0,
+        total: 0,
+      },
+      {
+        name: "Pharmacy",
+        percent: 0,
+        total: 0,
+      },
+      {
+        name: "In-patient",
+        percent: 0,
+        total: 0,
+      },
+      {
+        name: "Others",
+        percent: 0,
+        total: 0,
+      },
+    ];
+
+    camelToKeb(string: string) {
+      var result = string.replace(/([A-Z])/g, " $1");
+      return result.split(" ").join(" ").replace("Volume", "").toLowerCase();
+    }
+
     get emptyChartData() {
       return {
-        labels: ["Private", "Self funded", "Insurance claims"],
+        labels: [...this.displayView.map((x) => x.name)],
         datasets: [
           {
             label: "Dataset 1",
@@ -139,15 +135,11 @@
 
     get chartData() {
       return {
-        labels: ["Private", "Self funded", "Insurance claims"],
+        labels: [...this.displayView.map((x) => x.name)],
         datasets: [
           {
             label: "My First Dataset",
-            data: [
-              this.totalPrivateAccount,
-              this.totalSelfFunded,
-              this.totalInsurance,
-            ],
+            data: [...this.displayView.map((x) => x.total)],
             backgroundColor: [
               "rgb(255, 99, 132)",
               "rgb(54, 162, 235)",
@@ -159,12 +151,33 @@
       };
     }
 
+    isEmpty = true;
+
     get chartText() {
       return `Total - ₦ ${this.totalCollectables}`;
     }
 
+    async fetchData() {
+      try {
+        const { start, end } = this.range as any;
+        if (!start || !end) return;
+        const startDate = new Date(start).toISOString();
+        const endDate = new Date(end).toISOString();
+        const response = await cornieClient().get(
+          `api/v1/bill/stat/volume?start=${startDate}&end=${endDate}`
+        );
+
+        this.totalCollectables = this.sumTotalCollectables(response.data);
+        this.displayView = this.generateView(response.data);
+        this.isEmpty = false;
+      } catch (error) {
+        console.log("error", error);
+        this.isEmpty = true;
+        window.notify({ msg: "Failed to fetch chart data", status: "error" });
+      }
+    }
     mountChart() {
-      const data = this.isEmpty == true ? this.emptyChartData : this.chartData;
+      const data = this.isEmpty ? this.emptyChartData : this.chartData;
       const ctx: any = this.$refs.chart;
       this.chart?.destroy();
       this.chart = new Chart(ctx, {

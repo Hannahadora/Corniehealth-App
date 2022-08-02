@@ -590,7 +590,7 @@ export default class appointmentModal extends Vue {
 
 
   async setAppoitment() {
-    const appointment = await this.getAppointmentById(this.id);
+    const appointment: any = await this.getAppointmentById(this.id);
     if (!appointment) return;
     this.appointmentType = appointment.appointmentType;
     this.description = appointment.description;

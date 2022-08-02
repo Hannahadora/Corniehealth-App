@@ -48,7 +48,7 @@ function getSessionData(key: string) {
 
 export async function refreshUser() {
   const user = store.state.user.user;
-  if (user?.user?.id) return;
+  if (user?.id) return;
   const data = await fetchUserData();
 
   if (!data) return;

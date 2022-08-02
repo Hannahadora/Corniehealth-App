@@ -1416,7 +1416,7 @@ export default class NewProuct extends Vue {
     this.salesUnit.quantity = product.purchaseUOM.itemQuantity;
    this.salesUnit.inventory = product.inventoryUOM.unitName;
     this.salesUnit.itemInventory = product.inventoryUOM.unitName;
-    this.itemCode = product.identifier;
+    this.itemCode = product?.identifier as any;
    // this.salesUnit.sales = product.purchaseUOM.unitName;
    //this.salesUnit.purchase = product.purchaseUOM.unitName;
 
