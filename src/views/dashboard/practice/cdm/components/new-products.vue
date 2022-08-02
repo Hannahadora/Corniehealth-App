@@ -52,7 +52,7 @@
                         :label="'Generic Name'"
                         :items="allName"
                         @click="resultData(dataCode)"
-                        @input="searchData"
+                        @keyup="searchData"
                         v-model="dataCode"
                         :placeholder="'Select'"
                        
@@ -67,7 +67,7 @@
                     :placeholder="'Select'"
                     
                     />
-                    <cornie-select
+                    <!-- <cornie-select
                     v-model="dataForm"
                     :label="'Form'"
                     :items="allForms"
@@ -75,6 +75,13 @@
                     class="w-full"
                     @click="resultPack(dataForm)"
                   
+                    /> -->
+                    <cornie-input
+                     v-model="dataForm"
+                    :label="'Form'"
+                    placeholder="--Autoloaded--"
+                    class="w-full"
+                    :disabled="true"
                     />
                     <cornie-input
                     :label="'Pack'"
@@ -1721,24 +1728,29 @@ export default class NewProuct extends Vue {
   }
 
   async searchData(event: any) {
-    const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
-      keyword: event.target.value,
-    });
-    const response = await Promise.all([AllNotes]);
-    if (response[0].data === 0) {
-      this.searchresult = "No medication code found";
-    } else {
-      this.searchresult = response[0].data;
+    console.log(event.target.value.length)
+    if(event.target.value.length > 2){
+      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
+        keyword: event.target.value,
+      });
+      const response = await Promise.all([AllNotes]);
+      if (response[0].data === 0) {
+        this.searchresult = "No medication code found";
+      } else {
+        this.searchresult = response[0].data;
+      }
     }
   }
 
   async resultData(id: any) {
-    const AllNotes = cornieClient().get(`/api/v1/emdex/generic-brands/${id}`);
+    if(id){
+      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-brands/${id}`);
     const response = await Promise.all([AllNotes]);
     if (response[0].data === 0) {
       this.fullInfo = "No medication code found";
     } else {
       this.fullInfo = response[0].data;
+    }
     }
   }
 
@@ -1757,7 +1769,12 @@ export default class NewProuct extends Vue {
 
 
   async resultBrand(id: any) {
+    console.log({id})
     const pt = this.fullInfo.find((i: any) => i.id === id);
+    this.dataForm = pt?.form;
+    this.pack = pt?.pack;
+    this.strength = pt?.strength;
+    this.Nafdac = pt?.NAFDAC;
     return (this.fullBrand = pt ? pt.form : {});
   }
   async resultPack(id: any) {
