@@ -136,7 +136,9 @@ export default class Signin extends Vue {
         !store.state.user.requiresTwoFactorAuth ||
         !store.state.user.requiresSecurityQuestion
       ) {
-        this.$router.push("/dashboard");
+        if (this.$route.query.practitioner) {
+          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/book-appointment/doctor/${this.$route.query.practitioner}/book/step2`;
+        } else this.$router.push("/dashboard");
       } else {
         this.$emit("logged-in");
         console.log("2fa");
