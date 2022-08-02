@@ -50,10 +50,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
   {
-    path: "/dashboard/:type",
+    path: "/dashboard/provider",
     name: "Dashboard",
     component: Dashboard,
-    redirect: to => `${to.path}/home`.replace("//", "/"),
+    redirect: (to) => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
     children: [
       {
