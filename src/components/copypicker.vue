@@ -27,7 +27,7 @@
               <div class="flex space-3 w-full float-left">
                 <span class="flex text-gray-300 pr-3">| </span>
                 <calendar-icon
-                  class="cursor-pointer mr-3"
+                  class="cursor-pointer mr-3 text-danger fill-current"
                   @click="toggleDropdown"
                 />
                 <input

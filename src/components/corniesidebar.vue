@@ -1,5 +1,6 @@
 <template>
-  <div @mouseover="hovered = true" @mouseleave="hovered = false">
+<div>
+  <div @mouseover="hovered = true" @mouseleave="hovered = false"  v-if="accType == 'provider'">
     <div
       class="flex flex-col py-4 px-1 items-center min-h-screen h-screen bg-primary shadow-md fixed justify-center w-auto"
     >
@@ -38,6 +39,8 @@
       </sidebar-link>
     </div>
   </div>
+  <patient-sidebar v-else />
+</div>
 </template>
 <script lang="ts">
   import { getPracticeNav } from "@/features/navigation";
@@ -60,6 +63,7 @@
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
   import SidebarLink from "./sidebarlink.vue";
+  import PatientSidebar from "./corniepatientssidebar.vue";
 
   interface ISidebarLink {
     name: string;
@@ -89,6 +93,7 @@
       ClipBoardIcon,
       PatientIcon,
       CategoriesIcon,
+      PatientSidebar,
     },
   })
   export default class CorniDashboardeSideBar extends Vue {
@@ -98,17 +103,18 @@
     accountMeta!: AccountMeta;
 
     get links() {
-      let links: ISidebarLink[];
-      if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
-      links = getPracticeNav(this.accountMeta.practiceType);
       const accType = this.accType?.toLowerCase();
-      return links.map((link) => {
-        return {
-          ...link,
-          to: `/dashboard/${accType}/${link.to}/`,
-        };
-      });
+        let links: ISidebarLink[];
+        if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
+        links = getPracticeNav(this.accountMeta.practiceType);
+        return links.map((link) => {
+          return {
+            ...link,
+            to: `/dashboard/${accType}/${link.to}/`,
+          };
+        });
     }
+
 
     providerLinks: ISidebarLink[] = [
       {
@@ -315,6 +321,7 @@
         hasSubsection: false,
       },
     ];
+   
 
     get accType() {
       return this.$route.params.type as string;

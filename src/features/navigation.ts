@@ -272,6 +272,15 @@ const links: ISidebarLink[] = [
   //   ]
   // },
 ];
+const patientLinks: ISidebarLink[] = [
+  {
+    name: "Dashboard",
+    to: "home",
+    icon: "dashboard-icon",
+    hasSubsection: false,
+  },
+
+];
 
 const soloLinks = [
   {

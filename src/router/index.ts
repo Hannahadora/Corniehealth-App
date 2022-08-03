@@ -1,6 +1,7 @@
 import Settings from "@/views/dashboard/settings/index.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../views/dashboard/dashboard.vue";
+import PatientDashboard from "../views/dashboardPatients/dashboard.vue";
 import Home from "../views/Home.vue";
 import { BillingRoutes } from "./billing";
 import { ClinicalsRoute } from "./clinical";
@@ -279,6 +280,22 @@ const routes: Array<RouteRecordRaw> = [
         name: "PriceBook",
         component: () =>
           import("@/views/dashboard/settings/pricebook/index.vue"),
+      },
+    ],
+  },
+  //Patient Routes
+  {
+    path: "/dashboard/patient",
+    name: "Patient-Dashboard",
+    component: PatientDashboard,
+    redirect: to => `${to.path}/home`.replace("//", "/"),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "home",
+        name: "Patient Dashboard",
+        component: () =>
+          import("@/views/dashboardPatients/patients/dashboard/Index.vue"),
       },
     ],
   },

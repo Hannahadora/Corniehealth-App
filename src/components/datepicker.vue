@@ -30,7 +30,7 @@
             v-model="inputFieldText"
           >
             <template #prepend-inner>
-              <calendar-icon class="cursor-pointer" @click="toggleDropdown" />
+              <calendar-icon class="cursor-pointer text-danger fill-current" @click="toggleDropdown" />
             </template>
             <template #append-inner>
               <slot name="time" />

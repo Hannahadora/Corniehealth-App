@@ -23,6 +23,7 @@ export interface CornieUser {
   lastName: string;
   organizationId: string;
   image: string;
+  mrn:string;
   accountType: "provider" | "patient";
   roleId: string;
   phone: {

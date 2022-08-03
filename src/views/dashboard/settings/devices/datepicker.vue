@@ -9,7 +9,7 @@
       class="rounded-lg border p-2 focus:outline-none"
       v-model="valueSync"
     >
-      <template v-slot:prepend> <calendar-icon class="" /> </template>
+      <template v-slot:prepend> <calendar-icon class="text-danger fill-current" /> </template>
     </icon-input>
   </span>
 </template>

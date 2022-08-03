@@ -10,7 +10,7 @@
         v-model="date"
       >
         <template #prepend-inner>
-          <calendar-icon />
+          <calendar-icon class="text-danger fill-current"/>
         </template>
       </cornie-input>
     </template>
