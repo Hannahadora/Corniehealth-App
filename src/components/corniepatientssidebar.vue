@@ -33,9 +33,9 @@
             to="support"
             :hovered="hovered"
             text="Referrals"
-            class="mt-auto bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+            class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
         >
-            <reffer-icon class="" />
+            <reffer-icon class="text-primary fill-current" />
         </sidebar-link>
     </div>
 </div>

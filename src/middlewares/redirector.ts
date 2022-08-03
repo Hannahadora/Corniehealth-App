@@ -9,6 +9,7 @@ export async function redirector(
   if (!to.path.includes("dashboard")) return next();
   const accountType = await getAccountType();
   if (!accountType) return next({ path: "/signin" });
+
   const expectedPath = `/dashboard/${accountType}`.toLowerCase();
   if (to.path.includes(expectedPath)) return next();
   const newPath = to.fullPath.replace("/dashboard", expectedPath);

@@ -1,5 +1,5 @@
 import store from "@/store";
-import { AuthPayload } from "@/types/auth";
+import { AuthPayload, UserType } from "@/types/auth";
 import { cornieClient, quantumClient } from "./http";
 import localstore from "./localstore";
 
@@ -24,14 +24,15 @@ export async function login(payload: AuthPayload) {
 }
 
 export async function getAccountType() {
-  let type = store.getters["user/accountType"] ?? getSessionData("accountType");
+  let type: string =
+    store.getters["user/accountType"] ?? getSessionData("accountType");
 
   if (!type) {
     const { user } = await fetchCornieData();
-    type = user?.accountType;
+    type = user?.accountType?.toLowerCase();
     setSessionData("accountType", type);
   }
-  return type;
+  return type as UserType;
 }
 
 function setSessionData(key: string, val: string) {

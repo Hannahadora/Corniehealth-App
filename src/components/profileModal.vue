@@ -62,11 +62,11 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
          <ul class="w-full">            
-              <li class="flex md:hidden w-full mb-5 pb-5">
+              <li class="flex md:hidden w-full  mb-1">
                     <span class="text-black font-bold">{{ name }}</span>
               </li>
                <li class="flex w-full border-b border-gray-200  mb-5 pb-5">
-                    <span class="text-black font-bold">MRN - #234511989</span>
+                    <span class="text-black font-bold">MRN - {{ mrn }}</span>
               </li>
               <li class="w-full mb-7">
                 <div class="flex w-full justify-between">
@@ -174,7 +174,7 @@ export default class Settings extends Vue {
   show!: boolean;
 
   @Prop({ type: String, default: "" })
-  id!: string;
+  mrn!: string;
 
   @Prop({ type: String, default: "" })
   profilePhoto!: string;

@@ -65,15 +65,15 @@
   import SidebarLink from "./sidebarlink.vue";
   import PatientSidebar from "./corniepatientssidebar.vue";
 
-  interface ISidebarLink {
-    name: string;
-    to: string | { name: string };
-    icon?: string;
-    hasSubsection: boolean;
-    children?: ISidebarLink[];
-  }
+interface ISidebarLink {
+  name: string;
+  to: string | { name: string };
+  icon?: string;
+  hasSubsection: boolean;
+  children?: ISidebarLink[];
+}
 
-  const user = namespace("user");
+const user = namespace("user");
 
   @Options({
     components: {
@@ -99,8 +99,8 @@
   export default class CorniDashboardeSideBar extends Vue {
     hovered = false;
 
-    @user.Getter
-    accountMeta!: AccountMeta;
+  @user.Getter
+  accountMeta!: AccountMeta;
 
     get links() {
       const accType = this.accType?.toLowerCase();
@@ -113,6 +113,10 @@
             to: `/dashboard/${accType}/${link.to}/`,
           };
         });
+    }
+
+    get accType(){
+      return this.$route.params.type.toString()
     }
 
 
@@ -220,111 +224,51 @@
           },
         ],
       },
+    ]
 
-      {
-        name: "Analytics",
-        to: "analytics",
-        icon: "chart-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Practice",
-        to: "practice",
-        icon: "practice-icon",
-        hasSubsection: true,
-        children: [
-          {
-            name: "Locations",
-            to: "locations",
-            hasSubsection: false,
-          },
-          {
-            name: "Charge Description Master",
-            to: "/dashboard/provider/practice/practice",
-            hasSubsection: false,
-          },
-          {
-            name: "Inventory Stock",
-            to: "/dashboard/provider/practice/inventory",
-            hasSubsection: false,
-          },
-          {
-            name: "Practitoner Directory",
-            to: "practitioners",
-            hasSubsection: false,
-          },
-          {
-            name: "Care Partners",
-            to: "/dashboard/provider/practice/care-partners",
-            hasSubsection: false,
-          },
-          {
-            name: "Care Plan",
-            to: "/dashboard/provider/practice/care-plan",
-            hasSubsection: false,
-          },
-          {
-            name: "Care Teams",
-            to: "/dashboard/provider/practice/care-team",
-            hasSubsection: false,
-          },
-          {
-            name: "Groups",
-            to: "group",
-            hasSubsection: false,
-          },
-        ],
-      },
-    ];
-
-    hmoLinks: ISidebarLink[] = [
-      {
-        name: "Dashboard",
-        to: "settings",
-        icon: "dashboard-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Experience",
-        to: "experience",
-        icon: "refer-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Health Plans",
-        to: "health-plans",
-        icon: "book-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Billing Profile",
-        to: "bills",
-        icon: "debit-card-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Accounting",
-        to: "accounting",
-        icon: "wallet-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Analytics",
-        to: "analytics",
-        icon: "chart-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Approvals",
-        to: "analytics",
-        icon: "chart-icon",
-        hasSubsection: false,
-      },
-    ];
-   
-
-    get accType() {
-      return this.$route.params.type as string;
-    }
-  }
+  hmoLinks: ISidebarLink[] = [
+    {
+      name: "Dashboard",
+      to: "settings",
+      icon: "dashboard-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Experience",
+      to: "experience",
+      icon: "refer-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Health Plans",
+      to: "health-plans",
+      icon: "book-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Billing Profile",
+      to: "bills",
+      icon: "debit-card-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Accounting",
+      to: "accounting",
+      icon: "wallet-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Analytics",
+      to: "analytics",
+      icon: "chart-icon",
+      hasSubsection: false,
+    },
+    {
+      name: "Approvals",
+      to: "analytics",
+      icon: "chart-icon",
+      hasSubsection: false,
+    },
+  ];
+}
 </script>

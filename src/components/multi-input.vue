@@ -31,7 +31,7 @@ export default class MultiInput extends Vue {
   @Prop({ type: String, default: "" })
   customClass!: string;
 
-  model: any[] = [];
+  model: { val: string }[] = [];
 
   @Prop({ default: "", type: String })
   modelValue!: string;
@@ -44,7 +44,7 @@ export default class MultiInput extends Vue {
 
   @Watch("model", { deep: true })
   inputChanged() {
-    const modelValue = this.model.reduce((prev, curr) => prev + curr.val, "");
+    const modelValue = this.model.map((entry) => entry.val).join("");
     this.$emit("update:modelValue", modelValue);
   }
 

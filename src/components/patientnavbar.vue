@@ -46,7 +46,7 @@
                         {{ name }}
                     </p>
                     <p class="text-sm text-gray-400 font-light">
-                        MRN - {{ email }}
+                        MRN - {{ mrn }}
                     </p>
                 </span>
             </div>
@@ -225,7 +225,7 @@
     </div>
   </nav>
   <settings-modal v-model="showSettingsModal" />
-  <profile-section v-model="showProfileModal" :name="name" :profilePhoto="profilePhoto"/>
+  <profile-section v-model="showProfileModal" :name="name" :mrn="mrn" :profilePhoto="profilePhoto"/>
   <mobile-menu v-model="showMobileMenu"/>
   <profile-mobile v-model="showProfileMobile"/>
 </template>
@@ -307,6 +307,7 @@ export default class NavBar extends Vue {
     return this.$route.fullPath === '/dashboard/provider/clinical/' ? 'EHR' : this.$route.name;
   }
 
+
   @routerStore.State("recents")
   recentRoutes!: { path: string; name: string }[];
 
@@ -327,6 +328,9 @@ export default class NavBar extends Vue {
 
   @account.Getter
   cornieUser!: CornieUser;
+
+  @account.State
+  cornieData!: any;
 
   @account.Mutation
   switchCurrentLocation!: (locationId: any) => void;
@@ -354,6 +358,10 @@ export default class NavBar extends Vue {
 
   get email() {
     return this.cornieUser?.email || "";
+  }
+
+  get mrn(){
+    return this.cornieData?.patient?.mrn || "";
   }
 
   get name() {

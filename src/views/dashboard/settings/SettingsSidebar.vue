@@ -203,7 +203,11 @@ export default class Settings extends Vue {
       // },
       { name: "Devices", to: "devices", icon: "devices-icon" },
       // { name: "Care Partners", to: "care-partners", icon: "partners-icon" },
-      { name: "Billing & Collections", to: "billing-collections", icon: "bank-icon" },
+      {
+        name: "Billing & Collections",
+        to: "billing-collections",
+        icon: "bank-icon",
+      },
       { name: "Inventory", to: "inventory", icon: "bank-icon" },
     ];
   }
@@ -262,7 +266,7 @@ export default class Settings extends Vue {
     };
 
     const type = this.$route.params.type as string;
-    if (type.toLowerCase() == "hmo") return hmo;
+    if (type.toLowerCase() == "payer") return hmo;
     return provider;
   }
 

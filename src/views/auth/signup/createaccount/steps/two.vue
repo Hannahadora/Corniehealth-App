@@ -35,7 +35,7 @@
       label="Email Address"
     />
     <cornie-select
-      v-if="account === 'Patient'"
+      v-if="account === 'patient'"
       v-model="subType"
       :items="['Private', 'Employer']"
       class="w-full col-span-2"
@@ -44,7 +44,7 @@
       required
     />
     <cornie-select
-      v-if="account === 'Provider'"
+      v-if="account === 'provider'"
       v-model="subType"
       :items="[
         'Hospital/Clinic',

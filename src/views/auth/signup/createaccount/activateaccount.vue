@@ -210,7 +210,9 @@ export default class ActivateAccount extends Vue {
       }
       store.commit("user/setLoginInfo", data);
       await this.saveCornieData();
-      this.$router.replace("/dashboard");
+    if(this.$route.query.practitioner) {
+      location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/book-appointment/doctor/${this.$route.query.practitioner}/book/step2`
+    } else this.$router.replace("/dashboard");
     } catch (error) {
       if (error instanceof ErrorResponse) {
         const msg = error.response.data.message;

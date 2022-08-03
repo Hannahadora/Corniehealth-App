@@ -3,3 +3,5 @@ export interface AuthPayload {
   authPassword: string;
   accountId?: string;
 }
+
+export type UserType = "patient" | "provider" | "payer";
