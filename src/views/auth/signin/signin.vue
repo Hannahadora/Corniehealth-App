@@ -120,9 +120,7 @@ export default class Signin extends Vue {
   }
 
   get userId() {
-    return {
-      userId: store.state.user.user.id,
-    };
+    return store.state.user.user.id
   }
 
   requiredRule = string().required();
