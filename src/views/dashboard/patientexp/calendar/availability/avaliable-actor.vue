@@ -39,7 +39,7 @@
                     <card-text>
                         <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" 
                         @click="showAppointmentModal(actor.id)">
-                        <calendar-icon />
+                        <calendar-icon class="text-danger fill-current"/>
                         <span class="ml-3 text-xs">Book appointment</span>
                         </div>
                     </card-text>

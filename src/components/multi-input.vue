@@ -5,13 +5,12 @@
       :key="i"
       maxlength="1"
       :class="[customClass]"
-      class="max-w-xs md:w-16 w-12 rounded mb-2 border py-4 px-4 text-center focus:outline-none"
+      class="max-w-xs w-20 rounded mb-2 border py-4 px-6 text-center focus:outline-none"
       placeholder="--"
-      @keyup="keyPressed(i - 1)"
+      @keydown="keyPressed(i - 1)"
       :ref="`input${i - 1}`"
       required
       v-model="model[i - 1].val"
-      @paste="pasteValues"
     />
   </div>
 </template>
@@ -60,23 +59,11 @@ export default class MultiInput extends Vue {
   keyPressed(index: number) {
     let next: any;
     if (this.model[index].val) {
-      [next] = (this.$refs[`input${index + 1}`] as any[]) || [];
+      next = this.$refs[`input${index + 1}`];
     } else {
-      [next] = (this.$refs[`input${index - 1}`] as any[]) || [];
+      next = this.$refs[`input${index - 1}`];
     }
-    return next?.focus();
-  }
-
-  pasteValues(e: any) {
-    const pasted = e.clipboardData.getData("text/plain") as string;
-    if (pasted.length != this.model.length) {
-      return;
-    }
-    for (const i in pasted as any) {
-      const index = Number(i);
-      const value = pasted.charAt(Number(index));
-      this.model[index].val = value;
-    }
+    next?.focus();
   }
 }
 </script>

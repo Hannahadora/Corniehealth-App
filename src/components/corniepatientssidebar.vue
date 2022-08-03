@@ -1,45 +1,47 @@
 <template>
-  <div @mouseover="hovered = true" @mouseleave="hovered = false">
+<div @mouseover="hovered = true" @mouseleave="hovered = false">
     <div
-      class="flex flex-col py-4 px-1 items-center min-h-screen h-screen bg-primary shadow-md fixed justify-center w-auto"
-    >
-      <div
-        class="flex flex-row justify-between border-b-2 pb-1 items-center border-gray-300"
-      >
-        <img src="@/assets/img/logo.svg" />
-        <h2 class="text-white text-xl font-semibold ml-1" v-if="hovered">
-          CornieHealth
-        </h2>
-      </div>
-      <div
-        class="mt-5 flex h-3/4 gap-y-6 items-center w-full flex-col text-white text-lg overflow-y-auto"
-      >
-        <sidebar-link
-          v-for="(link, i) in links"
-          :key="i"
-          :to="link.to"
-          :text="link.name"
-          :children="link.children"
-          :hovered="hovered"
-          :hasSubsection="link.hasSubsection"
+        class="hidden md:flex flex-col py-4 px-1 items-center min-h-screen h-screen bg-white fixed justify-center"
+        :class="[hovered ? 'w-72' : 'w-auto']"
         >
-          <keep-alive>
-            <component :is="link.icon"></component>
-          </keep-alive>
+        <div
+            class="flex flex-row justify-between border-b-2 pb-1 items-center border-gray-300"
+        >
+            <img src="@/assets/img/logo.svg" />
+            <h2 class="text-primary text-xl font-semibold ml-1" v-if="hovered">
+            CornieHealth
+            </h2>
+        </div>
+        <div
+            class="mt-5 flex h-full gap-y-6 items-center w-full flex-col text-primary text-lg overflow-y-auto"
+        >
+            <sidebar-link
+            v-for="(link, i) in links"
+            :key="i"
+            :to="link.to"
+            :text="link.name"
+            :children="link.children"
+            :hovered="hovered"
+            :hasSubsection="link.hasSubsection"
+            >
+            <keep-alive>
+                <component class="text-primary fill-current" :is="link.icon"></component>
+            </keep-alive>
+            </sidebar-link>
+        </div>
+        <sidebar-link
+            to="support"
+            :hovered="hovered"
+            text="Referrals"
+            class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+        >
+            <reffer-icon class="text-primary fill-current" />
         </sidebar-link>
-      </div>
-      <sidebar-link
-        to="support"
-        :hovered="hovered"
-        text="Feedback & Support"
-        class="mt-auto bg-opacity-20 bg-white text-white py-2 rounded-2xl w-full px-3"
-      >
-        <support-icon class="" />
-      </sidebar-link>
     </div>
-  </div>
+</div>
 </template>
 <script lang="ts">
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
   import { getPracticeNav } from "@/features/navigation";
   import { AccountMeta } from "@/types/user";
   import { Options, Vue } from "vue-class-component";
@@ -49,7 +51,7 @@
   import ChartIcon from "./icons/chart.vue";
   import ClinicIcon from "./icons/clinic.vue";
   import ClipBoardIcon from "./icons/clipboard.vue";
-  import DashboardIcon from "./icons/dashboard.vue";
+  import DashboardIcon from "./icons/home.vue";
   import DebitCardIcon from "./icons/debitcard.vue";
   import MedalIcon from "./icons/medal.vue";
   import PatientIcon from "./icons/PatientIcon.vue";
@@ -59,7 +61,19 @@
   import ScheduleIcon from "./icons/schedule.vue";
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
-  import SidebarLink from "./sidebarlink.vue";
+ 
+ import CalendarIcon from "./icons/appointment.vue";
+ import SpecialistIcon from "./icons/specialist.vue";
+ import VisitIcon from "./icons/visits.vue";
+ import HealthIcon from "./icons/healthrecord.vue";
+ import LabIcon from "./icons/labs.vue";
+ import MedicationIcon from "./icons/medication.vue";
+ import BillIcon from "./icons/billpayment.vue";
+ import MessageIcon from "./icons/messagechat.vue";
+ import RefferIcon from "./icons/reffer.vue";
+
+
+  import SidebarLink from "./sidebarlinkpatient.vue";
 
   interface ISidebarLink {
     name: string;
@@ -89,80 +103,123 @@
       ClipBoardIcon,
       PatientIcon,
       CategoriesIcon,
+      CalendarIcon,
+      SpecialistIcon,
+      VisitIcon,
+      HealthIcon,
+      LabIcon,
+      MedicationIcon,
+      BillIcon,
+      MessageIcon,
+      RefferIcon
     },
   })
-  export default class CorniDashboardeSideBar extends Vue {
+  export default class CorniPatinetDashboardeSideBar extends Vue {
     hovered = false;
 
     @user.Getter
     accountMeta!: AccountMeta;
 
+    // @Prop({ type: Array, default: [] })
+    // links!: ISidebarLink[];
+
     get links() {
-      let links: ISidebarLink[];
-      if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
-      links = getPracticeNav(this.accountMeta.practiceType);
-      const accType = this.accType?.toLowerCase();
-      return links.map((link) => {
-        return {
-          ...link,
-          to: `/dashboard/${accType}/${link.to}/`,
-        };
-      });
+        let links: ISidebarLink[];
+        if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
+        links = this.patientLinks;
+        //links = getPracticeNav(this.accountMeta.practiceType);
+        const accType = 'patient';
+        return links.map((link) => {
+          return {
+            ...link,
+            to: `/dashboard/${accType}/${link.to}/`,
+          };
+        });
     }
 
+  
     patientLinks: ISidebarLink[] = [
       {
-        name: "Dashboard",
+        name: "Patient-Dashboard",
         to: "home",
         icon: "dashboard-icon",
         hasSubsection: false,
       },
-     
-    ];
+      {
+        name: "Appointments",
+        to: "appointments",
+        icon: "calendar-icon",
+        hasSubsection: false,
+      },
+      {
+        name: "Specialist Referrals",
+        to: "specialist",
+        icon: "specialist-icon",
+        hasSubsection: false,
+      },
+      {
+        name: "Visits",
+        to: "visits",
+        icon: "visit-icon",
+        hasSubsection: false,
+      },
+      {
+        name: "Health Records",
+        to: "health",
+        icon: "health-icon",
+        hasSubsection: false,
+      },
+      {
+        name: "Labs & Imaging",
+        to: "labs",
+        icon: "lab-icon",
+        hasSubsection: false,
+      },
+      {
+        name: "Medications",
+        to: "medications",
+        icon: "medication-icon",
+        hasSubsection: false,
+      },
 
-    hmoLinks: ISidebarLink[] = [
       {
-        name: "Dashboard",
-        to: "settings",
-        icon: "dashboard-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Experience",
-        to: "experience",
-        icon: "refer-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Health Plans",
-        to: "health-plans",
-        icon: "book-icon",
-        hasSubsection: false,
-      },
-      {
-        name: "Billing Profile",
+        name: "Bills & Payments",
         to: "bills",
-        icon: "debit-card-icon",
+        icon: "bill-icon",
         hasSubsection: false,
       },
       {
-        name: "Accounting",
-        to: "accounting",
-        icon: "wallet-icon",
+        name: "Messages",
+        to: "messages",
+        icon: "message-icon",
         hasSubsection: false,
       },
-      {
-        name: "Analytics",
-        to: "analytics",
-        icon: "chart-icon",
-        hasSubsection: false,
+        {
+        name: "Others",
+        to: "others",
+        hasSubsection: true,
+        children: [
+          {
+            name: "Questionnaires",
+            to: "/dashboard/provider/settings/diagnostics",
+            icon: "question-icon",
+            hasSubsection: false,
+          },
+          {
+            name: "One-Time Access",
+            to: "/dashboard/provider/settings/virtual-lab-orders",
+              icon: "onetime-icon",
+            hasSubsection: false,
+          },
+          {
+            name: "Health Insurance",
+            to: "/dashboard/provider/settings/observations",
+             icon: "health-icon",
+            hasSubsection: false,
+          },
+        ],
       },
-      {
-        name: "Approvals",
-        to: "analytics",
-        icon: "chart-icon",
-        hasSubsection: false,
-      },
+    
     ];
 
     get accType() {
