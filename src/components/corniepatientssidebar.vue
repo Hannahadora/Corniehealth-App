@@ -140,7 +140,7 @@
   
     patientLinks: ISidebarLink[] = [
       {
-        name: "Patient-Dashboard",
+        name: "Home",
         to: "home",
         icon: "dashboard-icon",
         hasSubsection: false,

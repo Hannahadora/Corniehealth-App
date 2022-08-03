@@ -286,7 +286,7 @@ const routes: Array<RouteRecordRaw> = [
   //Patient Routes
   {
     path: "/dashboard/patient",
-    name: "Patient-Dashboard",
+    name: "Home",
     component: PatientDashboard,
     redirect: to => `${to.path}/home`.replace("//", "/"),
     meta: { requiresAuth: true },
