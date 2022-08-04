@@ -105,7 +105,7 @@
               </li>
               <li class="w-full mb-7">
                  <div>
-                    <span class="font-medium text-black cursor-pointer">Account Settings</span>
+                    <router-link to="/dashboard/patient/account-settings" @click="show = false" class="font-medium text-black cursor-pointer">Account Settings</router-link>
                 </div>
               </li>
                <li class="w-full mb-7">
