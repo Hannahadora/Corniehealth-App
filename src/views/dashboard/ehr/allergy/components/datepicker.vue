@@ -21,7 +21,7 @@
             v-model="inputFieldText"
           >
             <template #prepend-inner>
-              <calendar-icon />
+              <calendar-icon  class="text-danger fill-current"/>
             </template>
           </cornie-input>
         </div>

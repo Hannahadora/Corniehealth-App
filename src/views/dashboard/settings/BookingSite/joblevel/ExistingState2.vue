@@ -204,7 +204,7 @@
               <cornie-input class="w-1/2 mr-5" readonly style="width: 18em">
                 <template #prepend-inner>
                   <calendar-icon
-                    class="cursor-pointer"
+                    class="cursor-pointer text-danger fill-current"
                     @click="toggleDropdown"
                   />
                   <input type="time" class="w-full p-2 outline-none" />

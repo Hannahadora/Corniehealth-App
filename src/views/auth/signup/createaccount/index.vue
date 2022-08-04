@@ -10,7 +10,7 @@
       Sign Up
     </span>
     <span
-      @click="$router.push('/signin')"
+      @click="$router.push($route.query.practitioner ? `/signin?practitioner=${$route.query.practitioner}`: '/signin')"
       class="px-6 py-4 text-white font-bold cursor-pointer text-lg"
     >
       Sign In
@@ -20,7 +20,7 @@
   <div class="w-full flex flex-col justify-center bg-white px-9 py-6">
     <div
       class="bg-light_gray text-sm w-full p-4 text-jet_black mb-12"
-      v-if="accountType == 'Patient'"
+      v-if="accountType == 'patient'"
     >
       You must be 18 or older to create a CornieCare Patient Online account.
       Parents must create dependent accounts for patients under 18.
@@ -172,7 +172,7 @@ export default class CreateAccount extends Vue {
   phone = "";
   dialCode = "+234";
   fullName = "";
-  accountType = "Patient";
+  accountType = "patient";
   loading = false;
   createaccount = false;
   checked = true;
@@ -242,7 +242,7 @@ export default class CreateAccount extends Vue {
     this.checked = true;
     this.checked2 = false;
     this.checked3 = false;
-    this.accountType = "Patient";
+    this.accountType = "patient";
     this.$emit("check-type", this.accountType);
   }
   checkValue2() {
@@ -250,14 +250,14 @@ export default class CreateAccount extends Vue {
     this.checked2 = true;
     this.checked = false;
     this.checked3 = false;
-    this.accountType = "Provider";
+    this.accountType = "provider";
     this.$emit("check-type", this.accountType);
   }
   checkValue3() {
     this.checked2 = false;
     this.checked = false;
     this.checked3 = true;
-    this.accountType = "Payer";
+    this.accountType = "payer";
     this.$emit("check-type", this.accountType);
   }
 

@@ -22,7 +22,7 @@
 <script lang="ts">
   import BreadCrumbs from "@/components/breadcrumbs.vue";
   import CornieSideBar from "@/components/corniepatientssidebar.vue";
-  import NavBar from "@/components/navbar.vue";
+  import NavBar from "@/components/patientnavbar.vue";
   import { Options, Vue } from "vue-class-component";
 
   @Options({

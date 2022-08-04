@@ -12,8 +12,7 @@
       <h3 class="text-center mt-8 font-bold text-2xl ">
        Patient currently have no vitals on record
       </h3>
-      <h3 class="mt-4 mb-8 text-base text-center" style="color: #667499">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fermentum aenean mattis mi diam eget.</h3>
-      <div class="w-full flex items-center justify-center text-center">
+      <div class="w-full flex items-center justify-center text-center mt-4">
         <button
           class="text-white font-semibold bg-danger rounded-xl py-3 px-14 mx-3 focus:outline-none hover:opacity-90"
           @click="() => $emit('addnew')"

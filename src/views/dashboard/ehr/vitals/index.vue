@@ -346,34 +346,34 @@ export default class ExistingState extends Vue {
   getDataCount(obj: any) {
     const total = Object.keys(obj).length - 7;
     let filled = 0;
-    if (obj.bloodPressure.length > 0) {
+    if (obj.bloodPressure?.length > 0) {
       filled++;
     }
-    if (obj.bodyTemperature.value) {
+    if (obj.bodyTemperature?.value) {
       filled++;
     }
-    if (obj.bodyWeight.bodyMassIndex.value) {
+    if (obj.bodyWeight?.bodyMassIndex?.value) {
       filled++;
     }
-    if (obj.bodyWeight.bodyWeight.value) {
+    if (obj.bodyWeight?.bodyWeight?.value) {
       filled++;
     }
-    if (obj.circumferences.bodyHeight.value) {
+    if (obj.circumferences?.bodyHeight?.value) {
       filled++;
     }
-    if (obj.circumferences.headCircumferences.value) {
+    if (obj.circumferences?.headCircumferences?.value) {
       filled++;
     }
-    if (obj.respiration.heartRate.value) {
+    if (obj.respiration?.heartRate?.value) {
       filled++;
     }
-    if (obj.respiration.oxygenSaturation.value) {
+    if (obj.respiration?.oxygenSaturation?.value) {
       filled++;
     }
-    if (obj.respiration.bloodGlucoseLevel.value) {
+    if (obj.respiration?.bloodGlucoseLevel?.value) {
       filled++;
     }
-    if (obj.respiration.respiratoryRate.value) {
+    if (obj.respiration?.respiratoryRate?.value) {
       filled++;
     }
 

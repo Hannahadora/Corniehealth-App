@@ -1,6 +1,7 @@
 import Settings from "@/views/dashboard/settings/index.vue";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../views/dashboard/dashboard.vue";
+import PatientDashboard from "../views/dashboardPatients/dashboard.vue";
 import Home from "../views/Home.vue";
 import { BillingRoutes } from "./billing";
 import { ClinicalsRoute } from "./clinical";
@@ -9,8 +10,9 @@ import { NewSettingsRoutes } from "./newsettings";
 import { PracticeRoutes } from "./practice";
 import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
-
 import { InPatientRoutes } from "./in-patient";
+//Profile routes
+import { ProfileSettingsRoute } from "./patientaccount";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -50,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/auth/reset/resetpassword.vue"),
   },
   {
-    path: "/dashboard/provider",
+    path: "/dashboard/:type",
     name: "Dashboard",
     component: Dashboard,
     redirect: to => `${to.path}/home`.replace("//", "/"),
@@ -280,6 +282,23 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboard/settings/pricebook/index.vue"),
       },
+    ],
+  },
+  //Patient Routes
+  {
+    path: "/dashboard/patient",
+    name: "Home",
+    component: PatientDashboard,
+    redirect: to => `${to.path}/home`.replace("//", "/"),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "home",
+        name: "Patient Dashboard",
+        component: () =>
+          import("@/views/dashboardPatients/patients/dashboard/Index.vue"),
+      },
+      ProfileSettingsRoute
     ],
   },
 ];

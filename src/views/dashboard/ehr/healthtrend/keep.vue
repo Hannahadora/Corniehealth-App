@@ -25,7 +25,7 @@
                     <td class="px-1 py-1 whitespace-nowrap">
                       <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10">
-                          <calendar-icon/>
+                          <calendar-icon class="text-danger fill-current"/>
                         </div>
                         <div class="ml-0">
                           <div class="text-sm font-bold text-primary">
