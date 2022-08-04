@@ -16,7 +16,7 @@
           :class="{
             'bg-white font-semibold': dashboardType === 'personal',
           }"
-          >My Dashbord</span
+          >My Dashboard</span
         >
         <span
           @click="dashboardType = 'admin'"
