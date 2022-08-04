@@ -535,19 +535,19 @@ export default class VitalsForm extends Vue {
     const circumferences: any = {};
     const bodyWeight: any = {};
     if (
-      this.vitalData.bodyTemperature.unit &&
-      this.vitalData.bodyTemperature.value
+      this.vitalData?.bodyTemperature?.unit &&
+      this.vitalData?.bodyTemperature?.value
     )
       data.bodyTemperature = this.vitalData.bodyTemperature;
     if (
-      this.vitalData.respiration.respiratoryRate.value &&
-      this.vitalData.respiration.respiratoryRate.unit
+      this.vitalData?.respiration?.respiratoryRate.value &&
+      this.vitalData?.respiration?.respiratoryRate.unit
     ) {
       respiration.respiratoryRate = this.vitalData.respiration.respiratoryRate;
     }
     if (
-      this.vitalData.respiration.heartRate.value &&
-      this.vitalData.respiration.heartRate.unit
+      this.vitalData?.respiration?.heartRate.value &&
+      this.vitalData?.respiration?.heartRate.unit
     ) {
       respiration.heartRate = this.vitalData.respiration.heartRate;
     }
@@ -588,14 +588,16 @@ export default class VitalsForm extends Vue {
       bodyWeight.bodyMassIndex = this.vitalData.bodyWeight.bodyMassIndex;
     }
 
-    data.circumferences = Object.keys(circumferences).length > 0 ? circumferences : undefined 
-    data.respiration = Object.keys(respiration).length > 0 ? respiration : undefined 
-    data.bodyWeight = Object.keys(bodyWeight).length > 0 ? bodyWeight : undefined 
+    data.circumferences =
+      Object.keys(circumferences).length > 0 ? circumferences : undefined;
+    data.respiration =
+      Object.keys(respiration).length > 0 ? respiration : undefined;
+    data.bodyWeight =
+      Object.keys(bodyWeight).length > 0 ? bodyWeight : undefined;
     data.patientId = this.patientId;
     data.practitionerId = this.practitionerId;
-    data.bloodPressure = this.collectedPressures.length > 0
-      ? this.collectedPressures
-      : [];
+    data.bloodPressure =
+      this.collectedPressures.length > 0 ? this.collectedPressures : [];
 
     return data;
   }
@@ -609,11 +611,11 @@ export default class VitalsForm extends Vue {
 
   async createVitals() {
     this.vitalData.bodyWeight.bodyMassIndex.value = this.bmi;
-    console.log('payload', this.payload)
     try {
       this.loading = true;
       const res: any = await this.createVital(this.payload as any);
       if (res.success) {
+        notify({ msg: "Vitals recorded successfully", status: "success" });
         this.getVitals(this.patientId);
         this.loading = false;
         this.done();
