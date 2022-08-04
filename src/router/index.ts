@@ -10,8 +10,9 @@ import { NewSettingsRoutes } from "./newsettings";
 import { PracticeRoutes } from "./practice";
 import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
-
 import { InPatientRoutes } from "./in-patient";
+//Profile routes
+import { ProfileSettingsRoute } from "./patientaccount";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -297,6 +298,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboardPatients/patients/dashboard/Index.vue"),
       },
+      ProfileSettingsRoute
     ],
   },
 ];

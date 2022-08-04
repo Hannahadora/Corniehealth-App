@@ -3,8 +3,8 @@
     <div class="flex w-full font-semibold py-2 mx-auto mt-4">
       <template v-for="(tab, index) in items" :key="`tab-${index}`">
         <span
-          class="flex px-3 py-2 border-b-4 text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20"
-          :class="syncedValue == index ? ['border-danger'] : ['text-gray-500']"
+          class="flex px-3 py-2 border-b-4  text-sm cursor-pointer hover:bg-gray-300 hover:bg-opacity-20"
+          :class="syncedValue == index ? ['border-danger text-black font-semibold'] : ['text-gray-400']"
           @click="syncedValue = index"
         >
           {{ tab }}
