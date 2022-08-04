@@ -251,7 +251,7 @@
             class="text-white bg-danger px-3 py-1 rounded-lg"
             @click="addSales(1)"
           >
-            Completed Sales
+            Complete Sales
           </cornie-btn>
         </div>
       </div>

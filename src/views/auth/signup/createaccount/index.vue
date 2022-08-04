@@ -10,7 +10,7 @@
       Sign Up
     </span>
     <span
-      @click="$router.push('/signin')"
+      @click="$router.push($route.query.practitioner ? `/signin?practitioner=${$route.query.practitioner}`: '/signin')"
       class="px-6 py-4 text-white font-bold cursor-pointer text-lg"
     >
       Sign In
