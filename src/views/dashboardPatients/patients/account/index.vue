@@ -10,7 +10,13 @@
       </span>
       <span class="w-full h-screen">
         <tabs :items="tabLinks" v-model="currentTab">
-         <association-section/>
+            <profile-section/>
+            <contact-section/>
+            <association-section/>
+            <payment-section/>
+            <provider-section/>
+            <security-section/>
+            <notification-section />
         </tabs>
       </span>
     </div>
@@ -24,7 +30,14 @@ import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
 import { namespace } from "vuex-class";
 
-import AssociationSection from "../association/index.vue";
+import AssociationSection from "./association/index.vue";
+import ProfileSection from "./accountprofile/index.vue";
+import ContactSection from "./contact/index.vue";
+import PaymentSection from "./paymentaccount/index.vue";
+import ProviderSection from "./providers/index.vue";
+import SecuritySection from "./secuirty/index.vue";
+import NotificationSection from "./notifications/index.vue";
+
 
 
 
@@ -34,7 +47,13 @@ import AssociationSection from "../association/index.vue";
     Tabs,
     ChevronRightIcon,
     ChevronLeftIcon,
-    AssociationSection
+    AssociationSection,
+    ProfileSection,
+    ContactSection,
+    PaymentSection,
+    ProviderSection,
+    SecuritySection,
+    NotificationSection
 
   },
 })
