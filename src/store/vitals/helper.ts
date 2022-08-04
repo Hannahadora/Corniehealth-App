@@ -47,9 +47,7 @@ export async function createVital(body: IVital) {
   try {
     const response = await cornieClient().post("/api/v1/vitals/signs", body);
 
-    if (response?.data?.id)
-      notify({ msg: "Vitals recorded successfully", status: "success" });
-    return response.data as boolean;
+   return response
   } catch (error) {
     notify({ msg: "Vitals recording failed", status: "error" });
   }
