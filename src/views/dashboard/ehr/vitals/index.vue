@@ -16,10 +16,7 @@
         <span class="flex justify-end w-full m4-5">
           <cornie-btn
             class="bg-danger text-white m-5 rounded-xl font-semibold"
-            @click="
-              showNewModal = true;
-              selectedVitalId = '';
-            "
+            @click="addNew"
           >
             New Vitals
           </cornie-btn>
@@ -78,12 +75,7 @@
           </template>
           <template #status="{ item }">
             <div class="flex items-center">
-              <!-- <p
-              class="text-xs bg-gray-300 p-1 rounded"
-              v-if="item.status == 'draft'"
-            >
-              {{ item.status }}
-            </p> -->
+              =
               <p
                 class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
                 v-if="item.status == 'corrected'"
@@ -134,12 +126,6 @@
         "
       />
     </div>
-    <!--
-    <advanced-filter
-      v-model:filtered="filteredPatients"
-      v-model="filterAdvanced"
-      :patients="patients"
-    /> -->
 
     <vitals-form
       @vitals-added="getVitals(activePatientId)"
@@ -312,6 +298,11 @@ export default class ExistingState extends Vue {
   updateData: any = {
     status: this.selectedVital.status ?? "",
   };
+
+  addNew() {
+    this.selectedVitalId = "";
+    this.showNewModal = true;
+  }
 
   selectedVitalId = "";
 
