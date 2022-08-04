@@ -79,7 +79,7 @@
       </div>
       <div class="w-full flex flex-col justify-center items-center" v-else>
         <p class="my-2"><empty-history-icon /></p>
-        <p class="grey-text">No patient history</p>
+        <p class="grey-text">No Visit history</p>
       </div>
     </div>
   </div>
