@@ -7,10 +7,12 @@
     <div class="flex space-x-4">
          <button
             class="bg-white border-2 border-primary rounded-lg text-primary mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
+            @click="showPatientModal = true"
             >
            Add Existing
         </button>
         <button
+        @click="showPatientModal = true"
             class="bg-danger rounded-lg text-white mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
             >
            Add Member
@@ -18,21 +20,21 @@
     </div>
     
   </div>
-
+  <existing-patient-modal v-model="showPatientModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
-import IPractitioner from "@/types/IPractitioner";
-import IAssociate from "@/types/IAssociate";
+import ExistingPatientModal from "../existingPatient.vue";
 
 
 @Options({
   components: {
+    ExistingPatientModal
   },
 })
 export default class familyemptyState extends Vue {
-  
+  showPatientModal = false;
   
 }
 </script>
