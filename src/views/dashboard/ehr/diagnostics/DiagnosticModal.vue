@@ -230,7 +230,7 @@
           </div>
           <accordion-component
             title="Optional Section"
-            :spanText="'(This fields aren’t mandatory for creating a medication request)'"
+            :spanText="'(This Fields Aren’t Mandatory For Creating A Diagnostic Request)'"
             :spanCaption="true"
             :opened="false"
           >
