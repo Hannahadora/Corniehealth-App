@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white mb-32 h-full shadow-lg p-3 mt-2 rounded-lg w-full"
+    class="flex justify-center bg-white mb-32  h-full shadow-lg p-3 mt-2 rounded-lg w-full"
   >
     <div class="w-full">
       <span
@@ -8,15 +8,15 @@
       >
        Private Profile & Settings
       </span>
-      <span class="w-full h-screen">
+      <span class="w-full">
         <tabs :items="tabLinks" v-model="currentTab">
             <profile-section/>
             <contact-section/>
-            <association-section/>
             <payment-section/>
             <provider-section/>
             <security-section/>
             <notification-section />
+            <association-section/>
         </tabs>
       </span>
     </div>
@@ -61,11 +61,11 @@ export default class AccountSettings extends Vue {
   tabLinks = [
     "Account Profile",
     "Contact",
-    "Association",
     "Payment Accounts",
     "Providers",
     "Security",
     "Notifications",
+    "Linked Accounts",
   ];
   currentTab = 0;
 

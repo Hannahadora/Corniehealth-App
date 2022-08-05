@@ -30,6 +30,7 @@
                 >
                 </cornie-input>
                 <cornie-select
+                v-if="id"
                   :rules="required"
                   :items="['active', 'inactive']"
                   v-model="status"
@@ -37,14 +38,14 @@
                   placeholder="Select"
                 >
                 </cornie-select>
-                <cornie-select
+                <auto-complete
                   :rules="required"
                   :items="dropdowns.category"
                   v-model="category"
                   label="Category"
                   placeholder="Select"
                 >
-                </cornie-select>
+                </auto-complete>
                 <!-- <fhir-input
                         reference="http://hl7.org/fhir/ValueSet/care-team-category"
                         class="w-full"
@@ -169,7 +170,6 @@
                   :label="'Email Address'"
                   v-model="email"
                   placeholder="Enter"
-                  :required="true"
                 >
                 </cornie-input>
                 <phone-input
@@ -253,6 +253,7 @@ import Multiselect from "@vueform/multiselect";
 import FhirInput from "@/components/fhir-input.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import InfoBlueBg from "@/components/icons/info-blue-bg.vue";
+
 
 import AddActor from "./actors.vue";
 
@@ -340,7 +341,7 @@ export default class careTeamModal extends Vue {
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-  status = "";
+  status = "active";
   category = "";
   name = "";
   participants: Participants[] = [];
