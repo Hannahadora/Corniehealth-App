@@ -8,12 +8,12 @@
          <button
             class="bg-white border-2 border-primary rounded-lg text-primary mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
             >
-           Add Existing
+           Search Organisation
         </button>
         <button
             class="bg-danger rounded-lg text-white mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
             >
-           Add Member
+           Create New
         </button>
     </div>
     
