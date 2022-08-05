@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-8/12 h-full">
+  <cornie-dialog v-model="show" right class="w-6/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -24,18 +24,14 @@
                 <div class="grid grid-cols-2 gap-4 w-full mt-5">
                   <cornie-select
                     class="required"
-                    :items="[
-                      'CarePlan',
-                      'MedicationRequest',
-                      'ServiceRequest',
-                      'ImmunizationRecommendation',
-                    ]"
+                    :items="allCarePlans"
                     label="Based on"
                     v-model="basedOn"
                     placeholder="--Select--"
                   >
                   </cornie-select>
                   <cornie-select
+                  v-if="id"
                     class="required"
                     :items="[
                       'Draft',
@@ -79,6 +75,16 @@
                       />
                     </div>
                   </div>
+
+                   <!-- <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
+                    class="required w-full"
+                    v-model="category"
+                    label="Category"
+                    placeholder="--Select--"
+                    required
+                  /> -->
+
 
                   <cornie-select
                     class="required"
@@ -483,6 +489,12 @@ export default class carePlanModal extends Vue {
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
+  @careplan.Action
+  getPatientCarePlans!: (patientId: string) => Promise<void>;
+
+  @careplan.State
+  patientCarePlans!: ICarePlan[];
+
   loading = false;
 
   patientId = "";
@@ -492,7 +504,7 @@ export default class carePlanModal extends Vue {
   replaces = "";
   partOf = "";
   intent = "";
-  status = "";
+  status = "active";
   author = "";
   scheduleTimingType = "day";
   contributor = "";
@@ -562,6 +574,15 @@ export default class carePlanModal extends Vue {
   }
   get allLocations() {
     return this.locations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+  }
+
+  get allCarePlans() {
+    return this.patientCarePlans.map((i: any) => {
       return {
         code: i.id,
         display: i.name,
@@ -674,6 +695,7 @@ export default class carePlanModal extends Vue {
   }
 
   async created() {
+    await this.getPatientCarePlans(this.activePatientId);
     await this.fetchPractitioners();
     await this.fetchLocations();
     await this.fetchPatients();
