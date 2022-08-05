@@ -20,7 +20,7 @@
         </cornie-icon-btn>
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-              {{ isUpdate ? "Edit Actors" : `Add Actors` }}
+              {{ isUpdate ? "Edit Participant" : ` Add Participant` }}
             </h2>
              <cancel-icon
                 class="float-right cursor-pointer"
@@ -93,23 +93,21 @@
                       ></cornie-radio>
                   </div>
                   <div class="mt-4" v-if="singleId == actor.id">
-                        <cornie-select
+                        <cauto-complete
                           :rules="required"
                           :items="dropdowns.role"
                           label="Role"
                           v-model="role"
                           placeholder="Select"
                         >
-                        </cornie-select>
+                        </cauto-complete>
                         <cornie-input
+                        :label="'On behalf of'"
                           v-model="onBehalfOf"
                           placeholder="--Enter--"
                           :rules="required"
                         >
-                          <template #label>On behalf of</template>
-                          <template #labelicon>
-                            <info-blue-bg class="w-4" />
-                          </template>
+                        
                         </cornie-input>
                         <div class="mb-5 mt-5">
                           <div class="font-semibold leading-none text-sm">
@@ -153,23 +151,22 @@
                     ></cornie-radio>
                   </div>
                  <div class="mt-4" v-if="singleId == actor.id">
-                        <cornie-select
+                        <auto-complete
                           :rules="required"
                           :items="dropdowns.role"
                           label="Role"
                           v-model="role"
                           placeholder="Select"
                         >
-                        </cornie-select>
+                        </auto-complete>
                         <cornie-input
+                        :label="'On behalf of'"
                           v-model="onBehalfOf"
                           placeholder="--Enter--"
                           :rules="required"
                         >
                           <template #label>On behalf of</template>
-                          <template #labelicon>
-                            <info-blue-bg class="w-4" />
-                          </template>
+                      
                         </cornie-input>
                         <div class="mb-5 mt-5">
                           <div class="font-semibold leading-none text-sm">
@@ -238,7 +235,7 @@ import CornieRadio from "@/components/cornieradio.vue";
 import CornieDatePicker from "@/components/CornieDatePicker.vue";
 import DRangePicker from "@/components/daterangepicker.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
-
+import AutoComplete from "@/components/autocomplete.vue";
 
 const practitioner = namespace("practitioner");
 const device = namespace("device");
@@ -261,6 +258,7 @@ const dropdown = namespace("dropdown");
     CornieRadio,
     CornieDatePicker,
     DRangePicker,
+    AutoComplete,
   },
 })
 export default class AddActor extends Vue {
