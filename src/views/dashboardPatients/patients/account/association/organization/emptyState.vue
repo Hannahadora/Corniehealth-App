@@ -7,6 +7,7 @@
     <div class="flex space-x-4">
          <button
             class="bg-white border-2 border-primary rounded-lg text-primary mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
+            @click="showOrgModal = true"
             >
            Search Organisation
         </button>
@@ -18,21 +19,22 @@
     </div>
     
   </div>
-
+  <org-modal v-model="showOrgModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
-import IPractitioner from "@/types/IPractitioner";
-import IAssociate from "@/types/IAssociate";
+
+import OrgModal from "../exisitingOrg.vue";
 
 
 @Options({
   components: {
+    OrgModal
   },
 })
-export default class familyemptyState extends Vue {
-    showAccountModal = false;
+export default class orgmptyState extends Vue {
+    showOrgModal = false;
 
 
 }

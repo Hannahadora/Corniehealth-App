@@ -1,11 +1,9 @@
 <template>
   <div class="h-full flex justify-center">
-    <div class="w-full">
-      <span class="w-full">
-        <family-empty-state/>
-        <!-- <family-existing-state /> -->
-      </span>
-    </div>
+
+        <!-- <family-empty-state/> -->
+        <family-exisiting-state />
+     
   </div>
 </template>
 

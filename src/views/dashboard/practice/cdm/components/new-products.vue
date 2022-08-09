@@ -67,7 +67,7 @@
                     :placeholder="'Select'"
                     
                     />
-                    <!-- <cornie-select
+                    <cornie-select
                     v-model="dataForm"
                     :label="'Form'"
                     :items="allForms"
@@ -75,14 +75,14 @@
                     class="w-full"
                     @click="resultPack(dataForm)"
                   
-                    /> -->
-                    <cornie-input
+                    />
+                    <!-- <cornie-input
                      v-model="dataForm"
                     :label="'Form'"
                     placeholder="--Autoloaded--"
                     class="w-full"
                     :disabled="true"
-                    />
+                    /> -->
                     <cornie-input
                     :label="'Pack'"
                     v-model="pack"
@@ -345,13 +345,13 @@
                   v-model="purchaseType"
                 />
               </span>
-              <span class="ml-8"
+              <!-- <span class="ml-8"
                 ><cornieradio
                   :label="'Non Purchase item'"
                   :value="'non-purchase'"
                   v-model="purchaseType"
                 />
-              </span>
+              </span> -->
             </div>
           </div>
           <div class="w-full">
@@ -699,6 +699,7 @@
               v-model="inventory.itemVariant"
             />
             <cornie-select
+              required
               :label="'Valuation Method'"
               v-model="inventory.valuationMethod"
               :items="['fifo', 'lifo', 'weighted-average']"
@@ -965,6 +966,7 @@ export default class NewProuct extends Vue {
   applyVAT = true;
   applyDiscount = false;
   status = "active";
+  anewBrand = [] as any;
 
   required = string().required();
 
@@ -1447,9 +1449,9 @@ export default class NewProuct extends Vue {
   get payload() {
     if(this.type == 'medication'){
       return {
-      genericCode: this.aBrandCode,
-      brandCode: this.aBrandCode,
-      form: this.allGenericForm,
+      genericCode: this.genericCode,
+      brandCode: this.genericCode,
+      form: this.form,
       classification: this.classification,
       subClassification: this.subClassification,
       applyDiscount: this.applyDiscount,
@@ -1457,7 +1459,7 @@ export default class NewProuct extends Vue {
       category: this.category || undefined,
       genericName: this.aBrandName,
       status: this.status,
-      brand: this.aBrandCode,
+      brand: this.dataBrand,
       ingredient: this.ingredient,
       ingredientStatus: this.ingredientStatus,
       description: this.description,
@@ -1471,9 +1473,7 @@ export default class NewProuct extends Vue {
       storage: this.storage,
       regNo: this.Nafdac,
       strength: this.strength,
-
-
-      
+    
     };
     }else{
       return {
@@ -1709,16 +1709,16 @@ export default class NewProuct extends Vue {
     if (!this.fullInfo || this.fullInfo.length === 0) return [];
     return this.fullInfo.map((i: any) => {
       return {
-        code: i.id,
-        value: i.id,
-        display: i.name,
+        code: i.label,
+        value: i.label,
+        display: i.label,
       };
     });
   }
 
   get allForms() {
-    if (!this.fullBrand || this.fullBrand.length === 0) return [];
-    return this.fullInfo.map((i: any) => {
+    if (!this.anewBrand || this.anewBrand.length === 0) return [];
+    return this.anewBrand.map((i: any) => {
       return {
         code: i.id,
         value: i.id,
@@ -1728,7 +1728,6 @@ export default class NewProuct extends Vue {
   }
 
   async searchData(event: any) {
-    console.log(event.target.value.length)
     if(event.target.value.length > 2){
       const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
         keyword: event.target.value,
@@ -1749,7 +1748,18 @@ export default class NewProuct extends Vue {
     if (response[0].data === 0) {
       this.fullInfo = "No medication code found";
     } else {
-      this.fullInfo = response[0].data;
+      const info = response[0].data;
+     const newData = [...new Set(info.map((d:any) => d.name))].map(label => {
+        return {
+          label,
+          data: info.filter((d:any) => d.name === label).flatMap((d:any) => {
+            return {
+              ...d
+            }
+          })
+        }
+      })
+      this.fullInfo = newData
     }
     }
   }
@@ -1759,29 +1769,31 @@ export default class NewProuct extends Vue {
     return (this.genericName = pt ? pt.name : "");
   }
   get allGenericCode() {
-    const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
+    const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
     return (this.genericCode = pt ? pt.name : "");
   }
   get allGenericForm() {
-    const pt = this.fullInfo.find((i: any) => i.id === this.dataForm);
+    const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
     return (this.form = pt ? pt.form : "");
   }
 
 
   async resultBrand(id: any) {
-    console.log({id})
-    const pt = this.fullInfo.find((i: any) => i.id === id);
-    this.dataForm = pt?.form;
-    this.pack = pt?.pack;
-    this.strength = pt?.strength;
-    this.Nafdac = pt?.NAFDAC;
-    return (this.fullBrand = pt ? pt.form : {});
+    const pt = this.fullInfo.find((i: any) => i.label === id);
+    this.anewBrand = pt?.data;
+    return pt || [];
   }
   async resultPack(id: any) {
-    const pt = this.fullInfo.find((i: any) => i.id === id);
-    this.resultStrength(id);
-    this.size = pt.pack;
-    return (this.pack = pt  ? `${pt?.pack}` : "Pack not available");
+    const pt = this.anewBrand.find((i: any) => i.id === id);
+    //this.resultStrength(id);
+    if(pt){
+      console.log({pt})
+      this.pack = pt.pack;
+      this.strength = pt.strength;
+      this.Nafdac = pt.NAFDAC;
+      this.form = pt.form
+    }
+    return pt;
   }
 
   async resultStrength(id: any) {

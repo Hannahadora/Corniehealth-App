@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="flex w-full justify-end items-center pt-3 pb-3 cursor-pointer" @click="showProfileModal = true">
+    <div class="flex w-full justify-end items-center pt-3 pb-3 cursor-pointer">
 
         <span class="ml-8">
             <cart-icon/>
@@ -56,123 +56,123 @@
         <div class="dropdown flex">
           <span class="ml-5 mt-2">
             <chevron-down class="cursor-pointer" />
-            <!-- <ul
-              class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-2 absolute -mt-2 z-10 shadow-lg hidden"
-            >
-              <li class="flex w-full justify-between mb-3">
-                <div class="flex space-x-3 items-center">
-                    <span class="w-10 h-10 relative justify-center">
-                    <div
-                        class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer"
-                    >
-                        <img
-                        v-if="profilePhoto"
-                        :src="profilePhoto"
-                        class="object-cover object-center w-full h-full visible group-hover:hidden"
-                        />
-                        <img
-                        v-else
-                        src="@/assets/img/placeholder.png"
-                        class="object-cover object-center w-fullh-full visible group-hover:hidden"
-                        />
-                        <span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="absolute top-8 left-8"
-                            width="6"
-                            height="6"
-                            viewBox="0 0 6 6"
-                            fill="none"
-                        >
-                            <path
-                            d="M0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3Z"
-                            fill="#35BA83"
-                            />
-                            <path
-                            d="M3 5C1.89543 5 1 4.10457 1 3H-1C-1 5.20914 0.790861 7 3 7V5ZM5 3C5 4.10457 4.10457 5 3 5V7C5.20914 7 7 5.20914 7 3H5ZM3 1C4.10457 1 5 1.89543 5 3H7C7 0.790861 5.20914 -1 3 -1V1ZM3 -1C0.790861 -1 -1 0.790861 -1 3H1C1 1.89543 1.89543 1 3 1V-1Z"
-                            fill="white"
-                            />
-                        </svg>
-                        </span>
-                    </div>
-                    </span>
-                    <p class="text-lg text-blue-600 font-extrabold">
-                        {{ name }}
-                    </p>
-                </div>
-                <span>
-                    <close-icon/>
-                </span>
-              </li>             
-              <li class="flex w-full border-b border-gray-200  mb-5 pb-5">
-                    <span class="text-lg text-black font-bold">MRN - #234511989</span>
-              </li>
-              <li class="w-full mb-4">
-                <div class="flex w-full justify-between">
-                    <div>
-                        <span class="text-lg font-medium text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
-                    </div>
-                    <div>
-                        <chevron-down-icon
-                            v-if="showPatient"
-                            @click="showPatient = false"
-                            class="cursor-pointer stroke-current text-danger"
+              <ul
+                class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-2 absolute -mt-2 z-10 shadow-lg hidden"
+              >
+                <li class="flex w-full justify-between mb-3">
+                  <div class="flex space-x-3 items-center">
+                      <span class="w-10 h-10 relative justify-center">
+                      <div
+                          class="group w-10 flex justify-center h-full mb-4 rounded-full overflow-hidden shadow-inner text-center bg-purple cursor-pointer"
+                      >
+                          <img
+                          v-if="profilePhoto"
+                          :src="profilePhoto"
+                          class="object-cover object-center w-full h-full visible group-hover:hidden"
+                          />
+                          <img
+                          v-else
+                          src="@/assets/img/placeholder.png"
+                          class="object-cover object-center w-fullh-full visible group-hover:hidden"
+                          />
+                          <span>
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="absolute top-8 left-8"
+                              width="6"
+                              height="6"
+                              viewBox="0 0 6 6"
+                              fill="none"
+                          >
+                              <path
+                              d="M0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3Z"
+                              fill="#35BA83"
+                              />
+                              <path
+                              d="M3 5C1.89543 5 1 4.10457 1 3H-1C-1 5.20914 0.790861 7 3 7V5ZM5 3C5 4.10457 4.10457 5 3 5V7C5.20914 7 7 5.20914 7 3H5ZM3 1C4.10457 1 5 1.89543 5 3H7C7 0.790861 5.20914 -1 3 -1V1ZM3 -1C0.790861 -1 -1 0.790861 -1 3H1C1 1.89543 1.89543 1 3 1V-1Z"
+                              fill="white"
+                              />
+                          </svg>
+                          </span>
+                      </div>
+                      </span>
+                      <p class="text-lg text-blue-600 font-extrabold">
+                          {{ name }}
+                      </p>
+                  </div>
+                  <span>
+                      <close-icon/>
+                  </span>
+                </li>             
+                <li class="flex w-full border-b border-gray-200  mb-5 pb-5">
+                      <span class="text-lg text-black font-bold">MRN - #234511989</span>
+                </li>
+                <li class="w-full mb-4">
+                  <div class="flex w-full justify-between">
+                      <div>
+                          <span class="text-lg font-medium text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
+                      </div>
+                      <div>
+                          <chevron-down-icon
+                              v-if="showPatient"
+                              @click="showPatient = false"
+                              class="cursor-pointer stroke-current text-primary"
 
-                        />
-                        <chevron-right-icon
-                            @click="showPatient = !showPatient"
-                            v-else
-                            class="cursor-pointer stroke-current text-danger"
-                        />
-                    </div>
-                </div>
-                <div v-if="showPatient" class="w-full">
-                    <div class="flex space-x-4 items-center py-3 px-3">
-                        <span class="w-7 h-7">
-                            <img src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden" alt="profile">
-                        </span>
-                        <span>Kamara Claire</span>
-                    </div>
-                    <div class="flex space-x-4 items-center py-3 px-3">
-                        <span class="w-7 h-7">
-                            <img src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden" alt="profile">
-                        </span>
-                        <span>Alfred Claire</span>
-                    </div>
-                </div>
+                          />
+                          <chevron-right-icon
+                              @click="showPatient = !showPatient"
+                              v-else
+                              class="cursor-pointer stroke-current text-primary"
+                          />
+                      </div>
+                  </div>
+                  <div v-if="showPatient" class="w-full">
+                      <div class="flex space-x-4 items-center py-3 px-3">
+                          <span class="w-7 h-7">
+                              <img src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden" alt="profile">
+                          </span>
+                          <span>Kamara Claire</span>
+                      </div>
+                      <div class="flex space-x-4 items-center py-3 px-3">
+                          <span class="w-7 h-7">
+                              <img src="@/assets/img/placeholder.png" class="object-cover object-center w-fullh-full visible group-hover:hidden" alt="profile">
+                          </span>
+                          <span>Alfred Claire</span>
+                      </div>
+                  </div>
 
-              </li>
-              <li class="w-full mb-4">
-                 <div>
-                    <span class="text-lg font-medium text-black cursor-pointer">Account Settings</span>
-                </div>
-              </li>
-               <li class="w-full mb-4">
-                 <div>
-                    <span class="text-lg font-medium text-black cursor-pointer">Support</span>
-                </div>
-              </li>
-               <li class="w-full mb-4">
-                 <div>
-                    <span class="text-lg font-medium text-black cursor-pointer">Feedback</span>
-                </div>
-              </li>
-               <li class="w-full mb-4 border-b border-gray-200 pb-5">
-                 <div>
-                    <span class="text-lg font-medium text-black cursor-pointer">Terms of Service</span>
-                </div>
-              </li>
-              <li class="w-full mb-4">
-                 <div>
-                    <span class="text-lg font-medium text-danger cursor-pointer" @click="logout">Sign Out</span>
-                </div>
-              </li>
-              <li class="w-full mb-4">
-                   <cornie-btn class="text-white bg-danger px-10 py-1 font-semibold rounded-xl">Switch to a provider account</cornie-btn>
-              </li>
+                </li>
+                <li class="w-full mb-4">
+                  <div>
+                      <router-link to="/dashboard/patient/account-settings" class="text-lg font-medium text-black cursor-pointer">Account Settings</router-link>
+                  </div>
+                </li>
+                <li class="w-full mb-4">
+                  <div>
+                      <span class="text-lg font-medium text-black cursor-pointer">Support</span>
+                  </div>
+                </li>
+                <li class="w-full mb-4">
+                  <div>
+                      <span class="text-lg font-medium text-black cursor-pointer">Feedback</span>
+                  </div>
+                </li>
+                <li class="w-full mb-4 border-b border-gray-200 pb-5">
+                  <div>
+                      <span class="text-lg font-medium text-black cursor-pointer">Terms of Service</span>
+                  </div>
+                </li>
+                <li class="w-full mb-4">
+                  <div>
+                      <span class="text-lg font-medium text-danger cursor-pointer" @click="logout">Sign Out</span>
+                  </div>
+                </li>
+                <li class="w-full mb-4">
+                    <cornie-btn class="text-white bg-danger px-10 py-1 font-semibold rounded-xl">Switch to a provider account</cornie-btn>
+                </li>
 
-            
-            </ul> -->
+              
+              </ul>
           </span>
         </div>
     </div>
