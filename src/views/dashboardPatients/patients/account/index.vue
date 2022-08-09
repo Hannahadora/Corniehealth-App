@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white mb-32 overflow-y-auto h-full  shadow-lg p-3 mt-2 rounded-lg w-full"
+    class="flex justify-center bg-white mb-32 h-full overflow-x-hidden overflow-y-scroll shadow-lg p-3 mt-2 rounded-lg w-full"
   >
     <div class="w-full">
       <span
@@ -35,6 +35,7 @@ import ProfileSection from "./accountprofile/index.vue";
 import ContactSection from "./contact/index.vue";
 import PaymentSection from "./paymentaccount/index.vue";
 import ProviderSection from "./providers/index.vue";
+//import ProviderSection from "./providers/existingState.vue";
 import SecuritySection from "./secuirty/index.vue";
 import NotificationSection from "./notifications/index.vue";
 

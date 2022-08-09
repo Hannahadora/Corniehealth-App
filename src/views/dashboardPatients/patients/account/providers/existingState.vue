@@ -2,32 +2,10 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full mb-3">
       <button
-        @click="showMemeberList = !showMemeberList"
-        class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
+        class="bg-danger rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
       >
-      <span>
-            Add Member
-      </span>
-      <span>
-        |
-      </span>   
-       <chevron-down-icon class="stroke-current text-white"/>
+       Add Provider
       </button>
-      <div
-        :class="[
-            !showMemeberList ? 'hidden' : 'o',
-        ]"
-        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-40 right-7 m-3 rounded overflow-y-auto mt-2"
-        style="width: 12%;top: 500px;"
-        >
-            
-           <div class="mb-2 w-full">
-               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Add Member</span>
-           </div>
-            <div class="mb-2 w-full">
-                <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Add Existing</span>
-            </div>
-        </div>
     </span>
     <cornie-table
       :columns="rawHeaders"
@@ -40,7 +18,7 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showViewProvider = true"
         >
-          <eye-icon class="text-yellow-400 fill-current" />
+          <eye-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
@@ -53,12 +31,12 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <delete-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Deactivate</span>
+          <span class="ml-3 text-xs">Delete</span>
         </div>
       </template>
       <template #status>
           <span
-            class="bg-green-200 text-green-700 text-center rounded-md py-2 px-4 bg-opacity-20"
+            class="bg-green-200 text-green-800 text-center rounded-md p-1 bg-opacity-20"
           >
             Active
           </span>
@@ -77,7 +55,6 @@
     </cornie-table>
   </div>
   <view-modal v-model="showViewProvider"/>
-   <existing-patient-modal v-model="showPatientModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -95,14 +72,13 @@ import ILocation, { HoursOfOperation } from "@/types/ILocation";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
-import DeleteIcon from "@/components/icons/deactivate.vue";
+import DeleteIcon from "@/components/icons/delete.vue";
 import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import { Watch } from "vue-property-decorator";
-import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import ExistingPatientModal from "../existingPatient.vue";
 
+import ViewModal from "./viewModal.vue";
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
@@ -123,15 +99,21 @@ const dropdown = namespace("dropdown");
     EyeIcon,
     ColumnFilter,
     TableOptions,
-    ChevronDownIcon,
-    ExistingPatientModal,
+    ViewModal,
   },
 })
-export default class FamilyAsscoation extends Vue {
+export default class ProviderExistingState extends Vue {
   showColumnFilter = false;
-  showMemeberList = false;
-  showPatientModal = false;
   query = "";
+
+  @location.State
+  locations!: ILocation[];
+
+  @location.Action
+  fetchLocations!: () => Promise<void>;
+
+  @location.Action
+  deleteLocation!: (id: string) => Promise<boolean>;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -144,47 +126,38 @@ export default class FamilyAsscoation extends Vue {
   dropdowns = {} as IIndexableObject;
 
   rawHeaders = [
-    { title: "DATE ADDED", key: "date", show: true },
-    { title: "MRN #", key: "mrn", show: true },
     {
-      title: "name",
+      title: "NAME",
       key: "name",
       show: true,
     },
+    { title: "TYPE", key: "type", show: true },
+    { title: "ADDRESS", key: "address", show: true },
     {
-      title: "DATE OF BIRTH",
-      key: "dob",
+      title: "CONTACT NUMBERS",
+      key: "contactnumber",
       show: true,
     },
     {
-      title: "GENDER",
-      key: "gender",
-      show: true,
+      title: "EMAIL  ADDRESS",
+      key: "emailaddress",
+      show: false,
     },
     {
-      title: "Payment Account",
-      key: "payment",
-      show: true,
-    },
-     {
-      title: "Status",
+      title: "STATUS",
       key: "status",
-      show: true,
-    },
-
+      show: false,
+    }
   ];
 
    get items() {
     return [{
         ...location,
-        index: '1',
-        date: '23-11-2022',
-        mrn: '0899233445',
-        name: 'Emma Ibeh Account Owner',
+        name: 'Kessigton Hospital',
         type: 'Hospital/Clinic',
-        dob: '05-09-1987',
-        gender: 'Male',
-        payment: 'Account',
+        address: '5. Avenue Road, Surulere ',
+        contactnumber: '09083445488',
+        emailaddress: 'Info@kessignton.com',
       }];
   }
 
@@ -204,7 +177,16 @@ export default class FamilyAsscoation extends Vue {
 //   }
 
 
-  
+  async deleteLoc(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "You are about to delete this location",
+    });
+    if (!confirmed) return;
+
+    if (await this.deleteLocation(id))
+      window.notify({ msg: "Location deleted", status: "success" });
+    else window.notify({ msg: "Location not deleted", status: "error" });
+  }
 //   get sortLocations() {
 //     return this.items.slice().sort(function (a, b) {
 //       return a.createdAt < b.createdAt ? 1 : -1;
