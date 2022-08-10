@@ -17,15 +17,15 @@
         :class="[
             !showMemeberList ? 'hidden' : 'o',
         ]"
-        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-40 right-7 m-3 rounded overflow-y-auto mt-2"
+        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-10 right-7 m-3 rounded overflow-y-auto mt-2"
         style="width: 12%;top: 500px;"
         >
             
            <div class="mb-2 w-full">
-               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Add Member</span>
+               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showMember = true">Add Member</span>
            </div>
             <div class="mb-2 w-full">
-                <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Add Existing</span>
+                <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showPatientModal = true">Add Existing</span>
             </div>
         </div>
     </span>
@@ -78,6 +78,7 @@
   </div>
   <view-modal v-model="showViewProvider"/>
    <existing-patient-modal v-model="showPatientModal"/>
+   <member-modal v-model="showMember"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -103,6 +104,7 @@ import { Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import ExistingPatientModal from "../existingPatient.vue";
 
+import MemberModal from "../organization/memberModal.vue";
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
@@ -125,6 +127,7 @@ const dropdown = namespace("dropdown");
     TableOptions,
     ChevronDownIcon,
     ExistingPatientModal,
+    MemberModal,
   },
 })
 export default class FamilyAsscoation extends Vue {
@@ -140,6 +143,7 @@ export default class FamilyAsscoation extends Vue {
 
   refreshing = false;
   showViewProvider = false;
+  showMember = false;
 
   dropdowns = {} as IIndexableObject;
 
