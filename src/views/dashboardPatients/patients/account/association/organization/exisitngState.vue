@@ -17,12 +17,12 @@
         :class="[
             !showMemeberList ? 'hidden' : 'o',
         ]"
-        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-40 right-8 m-3 rounded overflow-y-auto mt-2"
+        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-10 right-8 m-3 rounded overflow-y-auto mt-2"
         style="width: 14%;top: 500px;"
         >
             
            <div class="mb-2 w-full">
-               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Search Organisation</span>
+               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showOrgModal = true">Search Organisation</span>
            </div>
             <div class="mb-2 w-full">
                 <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3">Create New</span>
@@ -79,6 +79,8 @@
   </div>
   <view-modal v-model="showViewProvider"/>
   <dependant-modal v-model="showDependant"/>
+  <member-modal v-model="showMember"/>
+  <org-modal v-model="showOrgModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -102,9 +104,11 @@ import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
 import { Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+
 import FamilyIcon from "../icons/family.vue";
 import DependantModal from "./dependants.vue";
-
+import MemberModal from "./memberModal.vue";
+import OrgModal from "../exisitingOrg.vue";
 
 
 const location = namespace("location");
@@ -129,13 +133,17 @@ const dropdown = namespace("dropdown");
     ChevronDownIcon,
     FamilyIcon,
     DependantModal,
+    MemberModal,
+    OrgModal,
   },
 })
-export default class FamilyAsscoation extends Vue {
+export default class OrganizationLinkedAccount extends Vue {
   showColumnFilter = false;
   showMemeberList = false;
   query = "";
   showDependant = false;
+  showMember = false;
+  showOrgModal = false;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
