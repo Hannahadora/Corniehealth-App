@@ -150,6 +150,7 @@
               </div>
 
               <cornie-input
+                v-if="id"
                 :label="'Item Code'"
                 v-model="itemCode"
                 placeholder="--DNS Generated--"
@@ -308,7 +309,7 @@
               pb-5
             "
           >
-            <fhir-input
+            <!-- <fhir-input
               reference="http://hl7.org/fhir/ValueSet/service-referral-method"
               class="w-full mb-5"
               v-model="referralMethod"
@@ -316,8 +317,84 @@
               placeholder="--Select--"
               :rules="required"
               required
-            />
-            <cornie-select
+            /> -->
+            <div>
+                <span class="text-sm font-semibold mb-1">Referral Method</span>
+                 <Multiselect
+                v-model="referralMethod"
+                   mode="multiple"
+                  :close-on-select="false"
+                  :options="allRefferalMethod"
+                  name="object_true" :native="false" :object="true"
+                  :searchable = true
+                   label-prop="name"
+                  value-prop="name"
+                  trackBy="name"
+                  label="name"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+
+                   <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.name }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-slot:option="{ option }">
+                    <!-- <select-option :value="true" v-model="setValue" @click="sendValue(option.value,option)"/> -->
+                       {{ option.name }}
+                  </template> 
+                </Multiselect>
+            </div>
+             <div>
+                <span class="text-sm font-semibold mb-1">Visit Type</span>
+                 <Multiselect
+                v-model="channelOfService"
+                   mode="multiple"
+                  :close-on-select="false"
+                  :options="[
+                   'Hospital/Clinic',
+                    'In-Patient',
+                    'Virtual',
+                    'Home Care'
+                  ]"
+                  name="object_true" :native="false" :object="true"
+                  :searchable = true
+                   label-prop="name"
+                  value-prop="name"
+                  trackBy="name"
+                  label="name"
+                  placeholder="--Select--"
+                  class="w-full"
+                >
+
+                   <template v-slot:tag="{ option, handleTagRemove, disabled }">
+                    <div class="multiselect-tag is-user">
+                      {{ option.name }}
+                      <span
+                        v-if="!disabled"
+                        class="multiselect-tag-remove"
+                        @mousedown.prevent="handleTagRemove(option, $event)"
+                      >
+                        <span class="multiselect-tag-remove-icon"></span>
+                      </span>
+                    </div>
+                  </template>
+                  <template v-slot:option="{ option }">
+                    <!-- <select-option :value="true" v-model="setValue" @click="sendValue(option.value,option)"/> -->
+                       {{ option.name }}
+                  </template> 
+                </Multiselect>
+            </div>
+
+            <!-- <cornie-select
               v-model="channelOfService"
               label="Channel of Service"
               :items="['dental', 'hospice']"
@@ -325,8 +402,26 @@
               class="w-full mb-5"
               :rules="required"
               required
-            />
-            <cornie-select
+            /> -->
+            <div class="w-full -mt-1">
+                <span class="text-sm font-semibold mb-3">Telecom</span>
+                <div class="flex space-x-2 w-full">
+                  <cornie-select
+                    :items="['Fax', 'Phone', 'Email', 'Secure Messaging','Secure Email','Mail']"
+                    placeholder="Days"
+                    class="w-32 mt-0.5 flex-none"
+                    :setPrimary="true"
+                    v-model="telecomunit"
+                  />
+                  <cornie-input
+                    placeholder="--Enter--"
+                    class="grow w-full"
+                    :setfull="true"
+                    v-model="telecom"
+                  />
+                </div>
+              </div>
+            <!-- <cornie-select
               :items="dropdown.CommunicationLanguage"
               v-model="telecom"
               label="Telecom"
@@ -334,7 +429,7 @@
               class="w-full"
               :rules="required"
               required
-            />
+            /> -->
             <cornie-input
               label="Location & Days"
               placeholder="Select"
@@ -550,6 +645,7 @@ import LocationModal from "./location-days.vue";
 import DeleteRed from "@/components/icons/delete-red.vue";
 import Avatar from "@/components/avatar.vue";
 import ISpecial from "@/types/ISpecial";
+import SelectOption from "@/components/custom-checkbox.vue";
 
 const dropdown = namespace("dropdown");
 const catalogue = namespace("catalogues");
@@ -577,9 +673,10 @@ const special = namespace("special");
     Multiselect,
     PlusIcon,
     CornieInputIcon,
+    SelectOption,
   },
 })
-export default class NwService extends Vue {
+export default class NewService extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
@@ -615,6 +712,62 @@ export default class NwService extends Vue {
 
   @markup.Action
   fetchMarkups!: () => Promise<void>;
+
+  
+  source = "insourced";
+  supplier = "";
+  unitOfService = 0;
+  unitOfServicePer = "";
+  image = "";
+  category = "";
+  subcategory = "subcategory";
+  name = "";
+  description = "";
+  itemCode = "code";
+  serviceUOM = "";
+  quantity = 0;
+  cost = 0;
+  markup = 0;
+  availabilityExceptions = [];
+  discountLimit = 0;
+  applyVat = false;
+  status = "active";
+  organizationId = "";
+  specialty = "";
+  type = "";
+  coverageArea = "coverageArea";
+  providedBy = "coverageArea";
+  priced = true;
+  channelOfService = [];
+  telecom = "";
+  specialtyId = "";
+  showLocationSidebar = false;
+  localSrc = require("../../../../../assets/img/placeholder.png");
+  telecomunit = 'Email';
+
+  referralMethod = [] as any;
+  requiresAppointment = false;
+  locations = [] as any;
+  newlocations = [] as any;
+  availableTimes: AvailableTimes[] = [];
+  hoursOfOperation: HoursOfOperation[] = [];
+
+  img = setup(() => useHandleImage());
+  required = string().required();
+  nationState = setup(() => useCountryStates());
+  addNew = false;
+  loading = false;
+  // markupData = {} as any;
+  dropdown = {} as IIndexableObject;
+  location = [] as any;
+  locationsId = [] as any;
+  apply = "yes";
+  reqBody = {
+    quantity: 1,
+    cost: 10,
+    status: "active",
+  } as ICatalogueService;
+  setValue = false;
 
   get cdmPrice() {
     let total = 0;
@@ -768,6 +921,17 @@ export default class NwService extends Vue {
     ];
   }
 
+  get allRefferalMethod(){
+    return [
+        'All',
+        'Electronic Referral',
+        'Email',
+       'Phone',
+        'Paper Referral',
+       'Not Applicable',
+      ]
+  }
+
   options = [
     { value: "holidays", label: "Holidays" },
     { value: "weekends", label: "Weekends" },
@@ -775,58 +939,6 @@ export default class NwService extends Vue {
     { value: "sundays", label: "Sundays" },
   ];
 
-  source = "insourced";
-  supplier = "";
-  unitOfService = 0;
-  unitOfServicePer = "";
-  image = "";
-  category = "";
-  subcategory = "subcategory";
-  name = "";
-  description = "";
-  itemCode = "code";
-  serviceUOM = "";
-  quantity = 0;
-  cost = 0;
-  markup = 0;
-  availabilityExceptions = [];
-  discountLimit = 0;
-  applyVat = false;
-  status = "active";
-  organizationId = "";
-  specialty = "";
-  type = "";
-  coverageArea = "coverageArea";
-  providedBy = "coverageArea";
-  priced = true;
-  channelOfService = "";
-  telecom = "";
-  specialtyId = "";
-  showLocationSidebar = false;
-  localSrc = require("../../../../../assets/img/placeholder.png");
-
-  referralMethod = "";
-  requiresAppointment = false;
-  locations = [] as any;
-  newlocations = [] as any;
-  availableTimes: AvailableTimes[] = [];
-  hoursOfOperation: HoursOfOperation[] = [];
-
-  img = setup(() => useHandleImage());
-  required = string().required();
-  nationState = setup(() => useCountryStates());
-  addNew = false;
-  loading = false;
-  // markupData = {} as any;
-  dropdown = {} as IIndexableObject;
-  location = [] as any;
-  locationsId = [] as any;
-  apply = "yes";
-  reqBody = {
-    quantity: 1,
-    cost: 10,
-    status: "active",
-  } as ICatalogueService;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -903,6 +1015,17 @@ export default class NwService extends Vue {
       availableTimes: this.availableTimes,
       specialtyId: this.specialtyId,
     };
+  }
+
+  sendValue(value:string,option:any){
+    const {value: _, ...newObj} = option;
+    if(value == 'all'){
+      this.referralMethod.push(newObj);
+    }else{
+
+      this.setValue = true;
+      this.referralMethod.push(value);
+    }
   }
 
   async submit() {

@@ -21,8 +21,8 @@ export default interface ICatalogueService {
   priced:boolean;
   specialtyId: string;
   availabilityExceptions: [];
-  referralMethod:string;
-  channelOfService:string;
+  referralMethod:[];
+  channelOfService:[];
   telecom:string;
   requiresAppointment:boolean;
   locations: [];
