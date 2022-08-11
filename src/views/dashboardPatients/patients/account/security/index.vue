@@ -70,27 +70,6 @@ const userStore = namespace("user");
   },
 })
 export default class PatientSecurity extends Vue {
-  // async resetPassword() {
-  //   try {
-  //     this.loading = true;
-  //     const changed = await this.changePassword({
-  //     });
-  //     this.loading = false;
-  //     if (!changed) {
-  //       notify({
-  //         msg: "There was an error chnging your password",
-  //         status: "error",
-  //       });
-  //     } else {
-  //       notify({
-  //         msg: "Password Changed Successfully",
-  //         status: "success",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     this.loading = false;
-  //   }
-  // }
 }
 </script>
 

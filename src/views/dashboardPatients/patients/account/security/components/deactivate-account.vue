@@ -67,7 +67,11 @@
           </span>
         </Button>
 
-        <Button :loading="false" class="focus:outline-none">
+        <Button
+          :loading="false"
+          class="focus:outline-none"
+          @click="deactivateAccount"
+        >
           <span
             style="background: #fe4d3c"
             class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
@@ -85,6 +89,7 @@ import { Options, Vue } from "vue-class-component";
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
+import { cornieClient } from "@/plugins/http";
 
 @Options({
   components: {
@@ -94,9 +99,31 @@ import CornieRadio from "@/components/cornieradio.vue";
   },
 })
 export default class TwoFA extends Vue {
-  options = "";
+  options = "I understand the implications, deactivate my account";
+  loading = false;
   closeSection() {
     this.$emit("closesection");
+  }
+
+  async deactivateAccount() {
+    try {
+      this.loading = true;
+      const res = await cornieClient().get("/api/v1/patient-portal/security/deactivate-account");
+      this.loading = false;
+      if (!res.status) {
+        notify({
+          msg: "There was an error deactivating your account",
+          status: "error",
+        });
+      } else {
+        notify({
+          msg: "Account Deactivated",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      this.loading = false;
+    }
   }
 }
 </script>
