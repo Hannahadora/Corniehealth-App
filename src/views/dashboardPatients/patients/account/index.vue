@@ -36,7 +36,7 @@ import ContactSection from "./contact/index.vue";
 import PaymentSection from "./paymentaccount/index.vue";
 import ProviderSection from "./providers/index.vue";
 //import ProviderSection from "./providers/existingState.vue";
-import SecuritySection from "./secuirty/index.vue";
+import SecuritySection from "./security/index.vue";
 import NotificationSection from "./notifications/index.vue";
 
 
