@@ -3,6 +3,9 @@
     class="bg-white mb-32 h-full overflow-x-hidden overflow-y-scroll shadow-lg p-3 mt-2 rounded-lg w-full"
   >
     <div class="flex font-semibold text-xl py-2">
+      <icon-btn @click="$router.go(-1)" class="border-r px-2 mr-4">
+          <arrow-left stroke="#ffffff" />
+        </icon-btn>
       <h2>Account Security</h2>
     </div>
 
@@ -18,7 +21,7 @@
                 >The same password strength are enforced for all users across
                 the app.</span
               >
-              <a class="text-blue-500 uppercase font-semibold text-xs"
+              <a class="text-blue-500 uppercase font-semibold text-xs ml-3"
                 >View Policy</a
               >
             </p>
@@ -155,7 +158,7 @@
               >
                 <span
                   style="background: #fe4d3c"
-                  class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full"
+                  class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
                 >
                   Save
                 </span>
@@ -215,35 +218,22 @@
         <div
           class="container-fluid w-full flex justify-between items-center py-2"
         >
-          <div class="w-9/12">
-            <h2 class="mb-2 font-semibold text-lg">Security Questions</h2>
-            <p class="flex">
-              Security questions not enforced for all users within your domain.
-              <span class="ml-3"><Icon :type="2" /></span>
-            </p>
-          </div>
-          <div class="w-3/12 flex justify-end">
-            <Button
-              :loading="false"
-              class="focus:outline-none"
-              @click="toggleQuestionsSection"
-              v-if="!willUpdateQuestions"
-            >
-              <span
-                class="text-gray-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-12 rounded-full"
-              >
-                Configure
-              </span>
-            </Button>
+          <div class="">
+            <h2 class="mb-2 font-semibold text-lg">Deactivate Account</h2>
+            <div class="w-full flex justify-between">
+              <span>Deactivate your account</span>
+              <accordion-right class="cursor-pointer" @click="toggleDeactivateAccountSection"
+              v-if="!deactivateAccountsection"/>
+            </div>
           </div>
         </div>
       </div>
 
       <div
         class="w-full mt-3 password-section"
-        :class="{ 'update-questions border-b-2 pb-6': willUpdateQuestions }"
+        :class="{ 'deactivate-account-section border-b-2 pb-6': deactivateAccountsection }"
       >
-        <SecurityQuestions @closesection="closeSection" />
+        <deactivate-account @closesection="closeSection" />
       </div>
     </div>
 
@@ -256,11 +246,14 @@ import { Options, Vue } from "vue-class-component";
 import Icon from "@/views/dashboard/settings/rolesprivileges/components/icon.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import TwoFA from "./components/two-fa.vue";
-// import SecurityQuestions from "./components/security-questions.vue";
+import AccordionRight from "@/components/icons/accordion-right.vue";
+import DeactivateAccount from "./components/deactivate-account.vue";
 import Tooltip from "@/components/tooltip.vue";
 import { namespace } from "vuex-class";
 import User from "@/types/user";
 import Button from "@/components/globals/corniebtn.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
 import { string } from "yup";
 
 const userSettingsStore = namespace("usersettings");
@@ -271,15 +264,18 @@ const userStore = namespace("user");
     Icon,
     CornieInput,
     TwoFA,
-    // SecurityQuestions,
+    DeactivateAccount,
     Tooltip,
     Button,
+    AccordionRight,
+    ArrowLeft,
+    IconBtn
   },
 })
 export default class UserSecurity extends Vue {
   willUpdatePassword = false;
   willUpdate2fa = false;
-  willUpdateQuestions = false;
+  deactivateAccountsection = false;
 
   loading = false;
 
@@ -315,7 +311,7 @@ export default class UserSecurity extends Vue {
     if (area === "2fa") {
       this.willUpdate2fa = false;
     } else {
-      this.willUpdateQuestions = false;
+      this.deactivateAccountsection = false;
     }
   }
 
@@ -333,8 +329,8 @@ export default class UserSecurity extends Vue {
     this.willUpdate2fa = !this.willUpdate2fa;
   }
 
-  toggleQuestionsSection() {
-    this.willUpdateQuestions = !this.willUpdateQuestions;
+  toggleDeactivateAccountSection() {
+    this.deactivateAccountsection = !this.deactivateAccountsection;
   }
 
   async resetPassword() {
@@ -392,12 +388,12 @@ export default class UserSecurity extends Vue {
 }
 
 .update-2fa {
-  height: 315px;
+  height: 400px;
   overflow-y: hidden;
   transition: all 0.5s ease-in-out;
 }
 
-.update-questions {
+.deactivate-account-section {
   height: 480px;
   overflow-y: hidden;
   transition: all 0.5s ease-in-out;
