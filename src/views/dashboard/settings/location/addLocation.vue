@@ -78,7 +78,6 @@
 
                   <cornie-input
                     :rules="required"
-                    required
                     v-model="description"
                     label="Description"
                     placeholder="--Enter--"
@@ -267,292 +266,295 @@
   </div>
 </template>
 <script lang="ts">
-import AutoComplete from "@/components/autocomplete.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import FhirInput from "@/components/fhir-input.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import OperationHours from "@/components/new-operation-hours.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import Textarea from "@/components/textarea.vue";
-import { IndexableObject } from "@/lib/http";
-import { cornieClient } from "@/plugins/http";
-import { getCountries, getStates } from "@/plugins/nation-states";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import IPhone from "@/types/IPhone";
-import Multiselect from "@vueform/multiselect";
-import { Options, Vue } from "vue-class-component";
-import { Prop, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { string } from "yup";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import FhirInput from "@/components/fhir-input.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import OperationHours from "@/components/new-operation-hours.vue";
+  import PhoneInput from "@/components/phone-input.vue";
+  import Textarea from "@/components/textarea.vue";
+  import { IndexableObject } from "@/lib/http";
+  import { cornieClient } from "@/plugins/http";
+  import { getCountries, getStates } from "@/plugins/nation-states";
+  import ILocation, { HoursOfOperation } from "@/types/ILocation";
+  import IPhone from "@/types/IPhone";
+  import Multiselect from "@vueform/multiselect";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { string } from "yup";
 
-const countries = getCountries();
+  const countries = getCountries();
 
-const dropdown = namespace("dropdown");
-const location = namespace("location");
+  const dropdown = namespace("dropdown");
+  const location = namespace("location");
 
-@Options({
-  components: {
-    CornieInput,
-    AutoComplete,
-    CornieSelect,
-    InfoIcon,
-    PhoneInput,
-    OperationHours,
-    Multiselect,
-    Textarea,
-    FhirInput,
-    AccordionComponent,
-  },
-})
-export default class AddLocation extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
-
-  @location.Action
-  getLocationById!: (id: string) => Promise<any | ILocation>;
-
-  loading = false;
-
-  name = "";
-  locationStatus = "";
-  operationalStatus = "";
-  description = "";
-  alias = "";
-  mode = "";
-  type = "";
-  phoneNumber = "";
-  dialCode = "+234";
-  email = "";
-  address = "";
-  country = "";
-  state = "";
-  city = "";
-  physicalType = "";
-  latitude = "";
-  longitude = "";
-  altitude = "";
-  managingOrg = "";
-  partOf = "";
-  availabilityExceptions = "";
-  careOptions = [];
-  openTo = "";
-  hoursOfOperation: HoursOfOperation[] = [];
-
-  operationalStatusDropdown = {} as IndexableObject;
-
-  dropdowns = {} as IIndexableObject;
-
-  required = string().required();
-  requiredEmail = string().required().email();
-
-  visitType = [
-    {
-      label: "In-person",
-      value: "in-person",
+  @Options({
+    components: {
+      CornieInput,
+      AutoComplete,
+      CornieSelect,
+      InfoIcon,
+      PhoneInput,
+      OperationHours,
+      Multiselect,
+      Textarea,
+      FhirInput,
+      AccordionComponent,
     },
-    {
-      label: "Virtual",
-      value: "virtual",
-    },
-    {
-      label: "At home",
-      value: "at home",
-    },
-  ];
+  })
+  export default class AddLocation extends Vue {
+    @Prop({ type: String, default: "" })
+    id!: string;
 
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+    @location.Action
+    getLocationById!: (id: string) => Promise<any | ILocation>;
 
-  get identifier() {
-    return this.id || "System generated";
-  }
+    loading = false;
 
-  @Watch("id")
-  idChanged() {
-    this.setLocation();
-  }
+    name = "";
+    locationStatus = "";
+    operationalStatus = "";
+    description = "";
+    alias = "";
+    mode = "";
+    type = "";
+    phoneNumber = "";
+    dialCode = "+234";
+    email = "";
+    address = "";
+    country = "";
+    state = "";
+    city = "";
+    physicalType = "";
+    latitude = "";
+    longitude = "";
+    altitude = "";
+    managingOrg = "";
+    partOf = "";
+    availabilityExceptions = "";
+    careOptions = [];
+    openTo = "";
+    hoursOfOperation: HoursOfOperation[] = [];
 
-  // get coordinatesCB() {
-  //   const address = `${this.address}, ${this.state} ${this.country}`;
-  //   return () => getCoordinates(address);
-  // }
+    operationalStatusDropdown = {} as IndexableObject;
 
-  // @Watch("coordinatesCB")
-  // async coordinatesFetched(cb: () => Promise<any>) {
-  //   const data = await cb();
-  //   this.longitude = String(data.longitude);
-  //   this.latitude = String(data.latitude);
-  // }
+    dropdowns = {} as IIndexableObject;
 
-  states = [] as any;
-  countries = countries;
+    required = string().required();
+    requiredEmail = string().required().email();
 
-  @Watch("country")
-  async countryPicked(country: string) {
-    const states = await getStates(country);
-    this.states = states;
-  }
+    visitType = [
+      {
+        label: "In-person",
+        value: "in-person",
+      },
+      {
+        label: "Virtual",
+        value: "virtual",
+      },
+      {
+        label: "At home",
+        value: "at home",
+      },
+    ];
 
-  async setLocation() {
-    const location = await this.getLocationById(this.id);
-    console.log(location);
-    if (!location) return;
-    this.name = location.name;
-    this.locationStatus = location.locationStatus;
-    this.operationalStatus = location.operationalStatus;
-    this.description = location.description;
-    this.alias = location.alias;
-    this.mode = location.mode;
+    @dropdown.Action
+    getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
-    this.type = location.type;
-    this.phoneNumber = location.phone.number;
-    this.dialCode = location.phone.dialCode;
-    this.email = location.email;
-    this.address = location.address;
-    this.country = location.country;
-    this.state = location.state;
-    this.city = location.city;
-    this.physicalType = location.physicalType;
+    get identifier() {
+      return this.id || "System generated";
+    }
 
-    this.managingOrg = location.managingOrg;
-    this.partOf = location.partOf;
-    this.availabilityExceptions = location.availabilityExceptions;
-    this.careOptions = location.careOptions;
-    this.openTo = location.openTo;
-    this.hoursOfOperation = location.hoursOfOperation;
-  }
+    @Watch("id")
+    idChanged() {
+      this.setLocation();
+    }
 
-  get payload() {
-    return {
-      name: this.name,
-      locationStatus: this.locationStatus,
-      operationalStatus: this.operationalStatus,
-      description: this.description || undefined,
-      alias: this.alias || undefined,
-      mode: this.mode,
-      type: this.type,
-      phone: {
-        number: this.phoneNumber,
-        dialCode: this.dialCode,
-      } as any as IPhone,
-      email: this.email,
-      address: this.address,
-      country: this.country,
-      state: this.state,
-      city: this.city,
-      physicalType: this.physicalType,
-      managingOrg: this.managingOrg,
-      partOf: this.partOf,
-      availabilityExceptions: this.availabilityExceptions || undefined,
-      careOptions: this.careOptions,
-      openTo: this.openTo,
-      hoursOfOperation: this.hoursOfOperation,
-    };
-  }
+    // get coordinatesCB() {
+    //   const address = `${this.address}, ${this.state} ${this.country}`;
+    //   return () => getCoordinates(address);
+    // }
 
-  async submit() {
-    this.loading = true;
-    if (this.id) await this.updateLocation();
-    else await this.createLocation();
-    this.loading = false;
-  }
+    // @Watch("coordinatesCB")
+    // async coordinatesFetched(cb: () => Promise<any>) {
+    //   const data = await cb();
+    //   this.longitude = String(data.longitude);
+    //   this.latitude = String(data.latitude);
+    // }
 
-  async createLocation() {
-    try {
-      const response = await cornieClient().post(
-        "/api/v1/location",
-        this.payload
-      );
-      if (response.success) {
-        window.notify({ msg: "Location Created", status: "success" });
-        this.$router.push("/dashboard/provider/practice/locations");
+    states = [] as any;
+    countries = countries;
+
+    @Watch("country")
+    async countryPicked(country: string) {
+      const states = await getStates(country);
+      this.states = states;
+    }
+
+    async setLocation() {
+      const location = await this.getLocationById(this.id);
+      console.log(location);
+      if (!location) return;
+      this.name = location.name;
+      this.locationStatus = location.locationStatus;
+      this.operationalStatus = location.operationalStatus;
+      this.description = location.description;
+      this.alias = location.alias;
+      this.mode = location.mode;
+
+      this.type = location.type;
+      this.phoneNumber = location.phone.number;
+      this.dialCode = location.phone.dialCode;
+      this.email = location.email;
+      this.address = location.address;
+      this.country = location.country;
+      this.state = location.state;
+      this.city = location.city;
+      this.physicalType = location.physicalType;
+
+      this.managingOrg = location.managingOrg;
+      this.partOf = location.partOf;
+      this.availabilityExceptions = location.availabilityExceptions;
+      this.careOptions = location.careOptions;
+      this.openTo = location.openTo;
+      this.hoursOfOperation = location.hoursOfOperation;
+    }
+
+    get payload() {
+      return {
+        name: this.name,
+        locationStatus: this.locationStatus,
+        operationalStatus: this.operationalStatus,
+        description: this.description || undefined,
+        alias: this.alias || undefined,
+        mode: this.mode,
+        type: this.type,
+        phone: {
+          number: this.phoneNumber,
+          dialCode: this.dialCode,
+        } as any as IPhone,
+        email: this.email,
+        address: this.address,
+        country: this.country,
+        state: this.state,
+        city: this.city,
+        physicalType: this.physicalType,
+        managingOrg: this.managingOrg,
+        partOf: this.partOf,
+        availabilityExceptions: this.availabilityExceptions || undefined,
+        careOptions: this.careOptions,
+        openTo: this.openTo,
+        hoursOfOperation: this.hoursOfOperation,
+      };
+    }
+
+    async submit() {
+      this.loading = true;
+      if (this.id) await this.updateLocation();
+      else await this.createLocation();
+      this.loading = false;
+    }
+
+    async createLocation() {
+      try {
+        const response = await cornieClient().post(
+          "/api/v1/location",
+          this.payload
+        );
+        if (response.success) {
+          window.notify({ msg: "Location Created", status: "success" });
+          this.$router.push("/dashboard/provider/practice/locations");
+        }
+      } catch (error) {
+        window.notify({ msg: "Location not Created", status: "error" });
       }
-    } catch (error) {
-      window.notify({ msg: "Location not Created", status: "error" });
+    }
+
+    async updateLocation() {
+      const url = `/api/v1/location/${this.id}`;
+      const payload = { ...this.payload, id: this.id };
+      try {
+        const response = await cornieClient().put(url, payload);
+        window.notify({ msg: "Location Updated", status: "success" });
+        this.$router.push("/dashboard/provider/practice/locations");
+      } catch (error) {
+        window.notify({ msg: "Location not Updated", status: "error" });
+      }
+    }
+
+    async created() {
+      this.setLocation();
+      const data = await this.getDropdowns("location");
+
+      this.dropdowns = data;
+
+      let op = this.dropdowns.operationalStatus.filter(
+        (item: any) => item.code !== "U"
+      );
+
+      this.operationalStatusDropdown = [
+        { code: "U", display: "Opened" },
+        ...op,
+      ];
     }
   }
-
-  async updateLocation() {
-    const url = `/api/v1/location/${this.id}`;
-    const payload = { ...this.payload, id: this.id };
-    try {
-      const response = await cornieClient().put(url, payload);
-      window.notify({ msg: "Location Updated", status: "success" });
-      this.$router.push("/dashboard/provider/practice/locations");
-    } catch (error) {
-      window.notify({ msg: "Location not Updated", status: "error" });
-    }
-  }
-
-  async created() {
-    this.setLocation();
-    const data = await this.getDropdowns("location");
-
-    this.dropdowns = data;
-
-    let op = this.dropdowns.operationalStatus.filter(
-      (item: any) => item.code !== "U"
-    );
-
-    this.operationalStatusDropdown = [{ code: "U", display: "Opened" }, ...op];
-  }
-}
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 
 <style>
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
-}
+  .multiselect-option.is-selected.is-pointed {
+    background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+    color: var(--ms-option-color-selected-pointed, #fff);
+  }
+  .multiselect-option.is-selected {
+    background: var(--ms-option-bg-selected, #fe4d3c);
+    color: var(--ms-option-color-selected, #fff);
+  }
 
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
-}
+  .multiselect {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+    border-radius: var(--ms-radius, 4px);
+    background: var(--ms-bg, #fff);
+    font-size: var(--ms-font-size, 1rem);
+    min-height: calc(
+      var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+        var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+    );
+  }
 
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
-}
+  .multiselect-tags {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-wrap: wrap;
+    margin: var(--ms-tag-my, 0.25rem) 0 0;
+    padding-left: var(--ms-py, 0.5rem);
+    align-items: center;
+  }
 
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
+  .multiselect-tag.is-user {
+    padding: 5px 12px;
+    border-radius: 22px;
+    background: #080056;
+    margin: 3px 3px 8px;
+    position: relative;
+    left: -10px;
+  }
 
-/* .multiselect-clear-icon {
+  /* .multiselect-clear-icon {
       -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
       mask-image: url("/components/icons/chevrondownprimary.vue");
       background-color: #080056;
@@ -560,49 +562,49 @@ export default class AddLocation extends Vue {
       transition: .3s;
   } */
 
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
+  .multiselect-placeholder {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    color: #667499;
+  }
 
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
+  .multiselect-caret {
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+    -webkit-mask-image: url("../../../../assets/img/Chevron.png");
+    mask-image: url("../../../../assets/img/Chevron.png");
+    background-color: #080056;
+    margin: 0 var(--ms-px, 0.875rem) 0 0;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    flex-grow: 0;
+    pointer-events: none;
+  }
 
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
+  .multiselect-tag.is-user img {
+    width: 18px;
+    border-radius: 50%;
+    height: 18px;
+    margin-right: 8px;
+    border: 2px solid #ffffffbf;
+  }
 
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
+  .multiselect-tag.is-user i:before {
+    color: #ffffff;
+    border-radius: 50%;
+  }
 
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
+  .multiselect-tag-remove {
+    display: flex;
+    align-items: center;
+    /* border: 1px solid #fff;
     background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
-}
+    border-radius: 50%;
+    color: #fff;
+    justify-content: center;
+    padding: 0.77px;
+    margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
+  }
 </style>

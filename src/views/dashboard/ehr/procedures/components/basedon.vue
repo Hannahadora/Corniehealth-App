@@ -80,7 +80,7 @@
             v-if="selectedOption == 'medication request'"
             class="flex flex-col space-y-5"
           >
-            <div v-for="d in medicationRequest">hello</div>
+            <div v-for="d in medicationRequest"></div>
           </div>
         </div>
       </cornie-card-text>
