@@ -30,6 +30,13 @@
         :readonly="viewOnly"
       />
 
+      <cornie-input
+        :rules="emailRule"
+        v-model="email"
+        placeholder="--Enter--"
+        label="Email"
+      />
+
       <date-picker
         class="w-full"
         label="Date of Birth"
@@ -161,12 +168,18 @@
   import CornieRadio from "@/components/cornieradio.vue";
   import CornieSelect from "@/components/cornieselect.vue";
   import DatePicker from "@/components/datepicker.vue";
+  import { namespace } from "vuex-class";
 
   import { useHandleImage } from "@/composables/useHandleImage";
 
   import { Options, setup, Vue } from "vue-class-component";
 
+  import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
+  import { CornieUser } from "@/types/user";
   import { date, number, string } from "yup";
+  const account = namespace("user");
+  const routerStore = namespace("routerStore");
 
   @Options({
     name: "Account Profile",
@@ -194,6 +207,8 @@
     multipleBirth = "";
     multipleBirthInteger = 0;
     multipleBirthRule = number().min(0).max(10);
+    emailRule = string().email().required();
+    email = "";
 
     dobRule = date().max(
       new Date(),
@@ -224,6 +239,35 @@
     get viewOnly() {
       return this.$route.path.includes("view");
     }
+
+    @account.Getter
+    cornieUser!: CornieUser;
+
+    @account.Mutation
+    updatePractitioner!: (practitioners: IPractitioner[]) => void;
+
+    @account.Getter
+    authPractitioner!: IPractitioner;
+
+    userDetails = "";
+    async fetchUserDetails() {
+      const details = cornieClient().get(
+        `/api/v1/patient/get-patient/${this.userId}`
+      );
+      const response = await Promise.all([details]);
+      this.userDetails = response[0].data;
+    }
+    get userId() {
+      return this.cornieUser?.id;
+    }
+    async mounted() {
+      await this.updatePractitioner(this.authPractitioner as any);
+
+      await this.fetchUserDetails();
+
+      console.log("details", this.userDetails);
+    }
+
     saveBasic() {}
   }
 </script>

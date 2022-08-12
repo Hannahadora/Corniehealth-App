@@ -71,13 +71,7 @@
         :readonly="viewOnly"
       />
 
-      <cornie-input
-        :rules="emailRule"
-        v-model="email"
-        :required="true"
-        placeholder="--Enter--"
-        label="Email"
-      />
+    
 
       <phone-input
         v-model="phone.number"
