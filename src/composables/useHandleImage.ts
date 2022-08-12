@@ -12,13 +12,13 @@ async function uploadImage(img: any): Promise<string> {
       }
     );
     if (!response.ok) {
-      alert("File upload failed");
+      window.notify({ msg: "File upload failed", status: "error" });
       return "";
     }
     const data = await response.json();
     return data.fileUrl;
   } catch (error) {
-    alert("File not uploaded");
+    window.notify({ msg: "File not uploaded", status: "error" });
   }
   return "";
 }

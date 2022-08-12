@@ -1,7 +1,9 @@
 <template>
   <div class="w-full pb-80">
     <div>
-      <cornie-table v-model="items" :columns="headers">
+      <cornie-table v-model="items" :columns="headers" :showPagination="true"
+        @pagechanged="getServices"
+        :pageInfo="pageInfo">
         <template #name="{ item }">
           <div
             class="text-no-wrap flex items-center uppercase text-xs"
@@ -72,6 +74,7 @@ import search from "@/plugins/search";
 import { mapDisplay } from "@/plugins/definitions";
 
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IPageInfo from "@/types/IPageInfo";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -123,7 +126,10 @@ export default class ServiceExistingState extends Vue {
   services!: ICatalogueService[];
 
   @catalogue.Action
-  getServices!: () => Promise<void>;
+  getServices!: (page?:number, limit?:number) => Promise<void>;
+
+  @catalogue.State
+  pageInfo!: IPageInfo;
 
 
 

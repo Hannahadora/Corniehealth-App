@@ -30,6 +30,15 @@
         :readonly="viewOnly"
       />
 
+      <cornie-input
+        :rules="emailRule"
+        v-model="email"
+        placeholder="--Enter--"
+        label="Email"
+        :readonly="true"
+        :disabled="true"
+      />
+
       <date-picker
         class="w-full"
         label="Date of Birth"
@@ -147,7 +156,7 @@
       <cornie-btn
         loading-color="white"
         type="button"
-        @click="saveBasic"
+        @click="saveProfile"
         class="bg-primary text-white px-6 py-1 rounded-md"
       >
         Save
@@ -161,12 +170,18 @@
   import CornieRadio from "@/components/cornieradio.vue";
   import CornieSelect from "@/components/cornieselect.vue";
   import DatePicker from "@/components/datepicker.vue";
+  import { namespace } from "vuex-class";
 
   import { useHandleImage } from "@/composables/useHandleImage";
 
   import { Options, setup, Vue } from "vue-class-component";
 
+  import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
+  import { CornieUser } from "@/types/user";
   import { date, number, string } from "yup";
+  const account = namespace("user");
+  const routerStore = namespace("routerStore");
 
   @Options({
     name: "Account Profile",
@@ -194,6 +209,8 @@
     multipleBirth = "";
     multipleBirthInteger = 0;
     multipleBirthRule = number().min(0).max(10);
+    emailRule = string().email().required();
+    email = "";
 
     dobRule = date().max(
       new Date(),
@@ -224,6 +241,103 @@
     get viewOnly() {
       return this.$route.path.includes("view");
     }
-    saveBasic() {}
+
+    @account.Getter
+    cornieUser!: CornieUser;
+
+    @account.Getter
+    corniePatient!: any;
+
+    @account.Mutation
+    updatePractitioner!: (practitioners: IPractitioner[]) => void;
+
+    @account.Getter
+    authPractitioner!: IPractitioner;
+
+    userDetails = "";
+    async fetchUserDetails() {
+      const details = cornieClient().get(
+        `/api/v1/patient/get-patient/${this.userId}`
+      );
+      const response = await Promise.all([details]);
+      this.userDetails = response[0].data;
+    }
+    get userId() {
+      return this.cornieUser?.id;
+    }
+    setDetails(details: CornieUser) {
+      this.firstName = details?.firstName;
+      this.lastName = details?.lastName;
+      this.middleName = details?.middleName as any;
+      this.email = details?.email;
+      this.img.url = details?.image as any;
+    }
+    setPatientDetails(details: any) {
+      this.bloodGroup = details?.bloodGroup;
+      this.genotype = details?.genotype || "";
+      this.gender = details?.gender || "";
+      this.maritalStatus = details?.maritalStatus || "";
+      this.multipleBirthInteger = details?.multipleBirthInteger || "";
+      this.dateOfBirth = details?.dateOfBirth || "";
+      this.numberOfChildren = details?.numberOfChildren || "";
+      this.hasChild =
+        details?.numberOfChildren && details?.numberOfChildren > 0
+          ? "yes"
+          : "no";
+      this.multipleBirth = details?.multipleBirth == true ? "yes" : "no";
+    }
+
+    async getUpdatePayload() {
+      return {
+        id: this.cornieUser?.id,
+        mrn: this.corniePatient.mrn,
+
+        firstname: this.firstName,
+        middlename: this.middleName,
+        lastname: this.lastName,
+        email: this.email,
+        profilePhoto: this.img.url,
+        dateOfBirth: this.dateOfBirth,
+        gender: this.gender,
+        maritalStatus: this.maritalStatus,
+        multipleBirths: this.multipleBirth == "yes" ? true : false,
+        multipleBirthInteger: this.multipleBirthInteger,
+        identityNos: this.corniePatient.identityNos,
+        contactInfo: this.corniePatient.contactInfo,
+        generalPractitioners: this.corniePatient.generalPractitioners,
+        emergencyContacts: this.corniePatient.emergencyContacts,
+        preferredLabs: this.corniePatient.preferredLabs,
+        preferredPharmacies: this.corniePatient.preferredPharmacies,
+        guarantor: null,
+        accountType: this.cornieUser?.accountType,
+        vip: this.corniePatient.vip,
+        deceased: this.corniePatient.deceased,
+        demographicsData: this.corniePatient.demographicsData,
+        // belongsToPractice: true,
+        // organizationId: "string",
+        // associationRelationship: "Spouse",
+        // associationType: "Family",
+      };
+    }
+    mounted() {
+      this.updatePractitioner(this.authPractitioner as any);
+      console.log("details", this.cornieUser);
+      this.setDetails(this.cornieUser);
+      this.setPatientDetails(this.corniePatient);
+    }
+    async created() {
+      await this.updatePractitioner(this.authPractitioner as any);
+      // await this.fetchUserDetails();
+    }
+
+    async saveProfile() {
+      const details = cornieClient().put(
+        `/api/v1/patient/${this.userId}`,
+        this.getUpdatePayload
+      );
+      const response = await Promise.all([details]);
+      const r = response[0].data;
+      console.log("result", r);
+    }
   }
 </script>
