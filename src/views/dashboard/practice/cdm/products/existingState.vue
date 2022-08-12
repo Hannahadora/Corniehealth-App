@@ -1,7 +1,9 @@
 <template>
   <div class="w-full pb-80">
     <div>
-    <cornie-table v-model="items" :columns="headers">
+    <cornie-table v-model="items" :columns="headers" :showPagination="true"
+        @pagechanged="getProducts"
+        :pageInfo="pageInfo">
         <template #name="{ item }">
           <div
             class="text-no-wrap flex items-center uppercase text-xs"
@@ -75,6 +77,7 @@ import search from "@/plugins/search";
 import { cornieClient } from "@/plugins/http";
 
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
+import IPageInfo from "@/types/IPageInfo";
 
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import EditIcon from "@/components/icons/edit.vue";
@@ -118,10 +121,13 @@ export default class ProductExistingState extends Vue {
   products!: ICatalogueProduct[];
 
   @catalogue.Action
-  getProducts!: () => Promise<void>;
+  getProducts!: (page?:number, limit?:number) => Promise<void>;
 
   @catalogue.Action
   deleteProduct!: (serviceId: string) => Promise<boolean>;
+
+  @catalogue.State
+  pageInfo!: IPageInfo;
 
   productId = "";
   query = "";

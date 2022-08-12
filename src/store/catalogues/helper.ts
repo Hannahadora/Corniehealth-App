@@ -1,20 +1,31 @@
 import { cornieClient } from "@/plugins/http";
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 
-export const getServices = async () => {
+export const getServices = async (page = 1, limit?: number) => {
+  limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/catalogue-service/");
-
-    return response.data;
+    const response = await cornieClient().get("/api/v1/catalogue-service/", {page, limit});
+    const { currentPage, nextPage, numberOfPages, previousPage} = response;
+    const pageInfo = {currentPage, nextPage, numberOfPages, previousPage }
+    if (response.success) {
+      return {data: response.data, pageInfo};
+    }
   } catch (error) {}
+  return {data:[], pageInfo:{}};
 };
 
-export const getProducts = async () => {
+export const getProducts = async (page = 1, limit?: number) => {
+  limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/catalogue-product/");
+    const response = await cornieClient().get("/api/v1/catalogue-product/", {page, limit});
 
-    return response.data;
+    const { currentPage, nextPage, numberOfPages, previousPage} = response;
+    const pageInfo = {currentPage, nextPage, numberOfPages, previousPage }
+    if (response.success) {
+      return {data: response.data, pageInfo};
+    }
   } catch (error) {}
+  return {data:[], pageInfo:{}};
 };
 
 export const createService = async (body: ICatalogueService) => {

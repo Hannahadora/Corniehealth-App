@@ -323,9 +323,8 @@
                  <Multiselect
                 v-model="referralMethod"
                    mode="multiple"
-                  :close-on-select="false"
+                  :close-on-select="true"
                   :options="allRefferalMethod"
-                  name="object_true" :native="false" :object="true"
                   :searchable = true
                    label-prop="name"
                   value-prop="name"
@@ -358,14 +357,14 @@
                  <Multiselect
                 v-model="channelOfService"
                    mode="multiple"
-                  :close-on-select="false"
+                  :close-on-select="true"
                   :options="[
                    'Hospital/Clinic',
                     'In-Patient',
                     'Virtual',
                     'Home Care'
                   ]"
-                  name="object_true" :native="false" :object="true"
+              
                   :searchable = true
                    label-prop="name"
                   value-prop="name"
@@ -978,8 +977,8 @@ export default class NewService extends Vue {
     this.providedBy = service.providedBy;
     this.priced = service.priced;
     this.availabilityExceptions = service.availabilityExceptions;
-    this.referralMethod = service.referralMethod;
-    this.channelOfService = service.channelOfService;
+    this.referralMethod = service.referralMethods;
+    this.channelOfService = service.channelsOfService;
     this.telecom = service.telecom;
     this.requiresAppointment = service.requiresAppointment;
     this.locations = service.locationAvailabilities as any;
@@ -1007,8 +1006,8 @@ export default class NewService extends Vue {
       providedBy: this.providedBy,
       priced: this.priced,
       availabilityExceptions: this.availabilityExceptions,
-      referralMethod: this.referralMethod,
-      channelOfService: this.channelOfService,
+      referralMethods: this.referralMethod,
+      channelsOfService: this.channelOfService,
       telecom: this.telecom,
       requiresAppointment: this.requiresAppointment,
       locationAvailabilities: this.newlocations,

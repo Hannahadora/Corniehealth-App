@@ -1,6 +1,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 import { StoreOptions } from "vuex";
+import IPageInfo from "@/types/IPageInfo";
 import {
   createService,
   getServices,
@@ -14,6 +15,7 @@ import {
 interface CatalogueStore {
   services: ICatalogueService[];
   products: ICatalogueProduct[];
+  pageInfo : IPageInfo;
 }
 
 export default {
@@ -21,6 +23,7 @@ export default {
   state: {
     services: [],
     products: [],
+    pageInfo: {},
   },
 
   mutations: {
@@ -28,6 +31,10 @@ export default {
       if (service) {
         state.services.unshift(service);
       }
+    },
+
+    setPageInfo(state, pageInfo){
+      state.pageInfo = pageInfo;
     },
 
     setServices(state, services) {
@@ -59,10 +66,13 @@ export default {
   },
 
   actions: {
-    async getServices({ commit }) {
-      const res = await getServices();
-      commit("setServices", res);
+    async getServices(ctx,payload? : {page:number, limit:number}) {
+      const { page, limit } = payload ?? {}
+      const { data, pageInfo } = await getServices(page ?? 1, limit ?? 10);
+      ctx.commit("setServices", data);
+      ctx.commit("setPageInfo", pageInfo);
     },
+
     getServicesById(ctx, id: string) {
       return ctx.state.services.find(
         service => service.id == id
@@ -73,11 +83,12 @@ export default {
         product => product.id == id
       );
     },
-    async getProducts({ commit }) {
-      const res = await getProducts();
-      commit("setProducts", res);
+    async getProducts(ctx,payload? : {page:number, limit:number}) {
+      const { page, limit } = payload ?? {}
+      const { data, pageInfo } = await getProducts(page ?? 1, limit ?? 10);
+      ctx.commit("setProducts", data);
+      ctx.commit("setPageInfo", pageInfo);
     },
-
     async createService({ commit }, data: ICatalogueService) {
       const res = await createService(data);
       if (!res?.id) return false;
