@@ -298,7 +298,17 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import("@/views/dashboardPatients/patients/dashboard/Index.vue"),
       },
-      ProfileSettingsRoute
+      ProfileSettingsRoute,
+      {
+        path: "account-security",
+        name: "Account Security",
+        component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
+      },
+      {
+        path: "access-control",
+        name: "Access Control & Priviledges",
+        component: () => import("@/views/dashboardPatients/patients/account/security/access-control.vue"),
+      },
     ],
   },
 ];
