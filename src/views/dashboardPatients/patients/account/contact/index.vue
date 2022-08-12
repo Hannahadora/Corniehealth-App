@@ -71,8 +71,6 @@
         :readonly="viewOnly"
       />
 
-    
-
       <phone-input
         v-model="phone.number"
         v-model:code="phone.dialCode"
@@ -107,9 +105,15 @@
   import { useCountryStates } from "@/composables/useCountryStates";
   import { useHandleImage } from "@/composables/useHandleImage";
 
+  import { cornieClient } from "@/plugins/http";
   import { Options, setup, Vue } from "vue-class-component";
 
+  import IPractitioner from "@/types/IPractitioner";
+  import { CornieUser } from "@/types/user";
+  import { namespace } from "vuex-class";
   import { string } from "yup";
+
+  const account = namespace("user");
 
   @Options({
     name: "Account Profile",
@@ -140,9 +144,78 @@
       dialCode: "+234",
       number: "",
     };
+    @account.Getter
+    cornieUser!: CornieUser;
+
+    @account.Mutation
+    updatePractitioner!: (practitioners: IPractitioner[]) => void;
+
+    @account.Getter
+    authPractitioner!: IPractitioner;
+    get userId() {
+      return this.cornieUser?.id;
+    }
     get viewOnly() {
       return this.$route.path.includes("view");
     }
-    saveContact() {}
+    userContact: any = {};
+    async fetchUserContact() {
+      const details = cornieClient().get(
+        `/api/v1/patient/getContact/${this.userId}`
+      );
+      const response = await Promise.all([details]);
+      this.userContact = response[0].data;
+      this.contactType = this.userContact.type;
+      this.address = this.userContact.primaryAddress;
+      this.postcode = this.userContact.postcode;
+      this.city = this.userContact.city;
+      this.nationality = this.userContact.country;
+      this.state = this.userContact.state;
+      this.phone = this.userContact.phone;
+    }
+    get payload() {
+      return {
+        type: this.contactType,
+        patientId: this.cornieUser?.id,
+        primaryAddress: this.address,
+        secondaryAddress: undefined,
+        postalCode: this.postcode || null,
+        city: this.city,
+        country: this.nationality,
+        state: this.state,
+        phone: {
+          number: this.phone.number,
+          dialCode: this.phone.dialCode,
+        },
+      };
+    }
+    validate() {
+      return (
+        !!this.contactType &&
+        !!this.address &&
+        !!this.city &&
+        !!this.nationality &&
+        !!this.state &&
+        !!this.phone.number
+      );
+    }
+    setDetails() {}
+    async saveContact() {
+      // console.log("payload,", this.payload, this.validate());
+      if (!this.validate()) return;
+      const details = cornieClient().put(
+        `/api/v1/patient/contact/${this.userId}`,
+        this.payload
+      );
+      const response = await Promise.all([details]);
+      const r = response[0].data;
+      await this.fetchUserContact();
+    }
+    async mounted() {
+      await this.updatePractitioner(this.authPractitioner as any);
+      await this.fetchUserContact();
+      console.log("contact", this.userContact);
+      // this.setDetails(this.cornieUser);
+    }
   }
 </script>
