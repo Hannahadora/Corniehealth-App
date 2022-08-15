@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white mb-32 h-full overflow-x-hidden overflow-y-scroll shadow-lg p-3 mt-2 rounded-lg w-full"
+    class="bg-white mb-32 h-full overflow-x-hidden overflow-y-scroll shadow-lg p-6 mt-2 rounded-lg w-full"
   >
     <div class="flex font-semibold text-xl py-2">
       <icon-btn @click="$router.go(-1)" class="border-r px-2 mr-4">
