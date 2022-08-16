@@ -244,7 +244,7 @@
 
     query = "";
 
-    radioValues = ["Practitioner", "Patient", "Related Person"];
+    radioValues = ["Practitioner"];
 
     async created() {
       await this.fetchPractitioners();
