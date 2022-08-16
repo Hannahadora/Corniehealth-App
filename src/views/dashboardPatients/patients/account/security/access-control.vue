@@ -23,7 +23,7 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-4 flex items-center">
+          <div class="w-1/2 mr-8 flex items-center">
             <p>
               Allow my admin to view and manage my profile, including personal
               health records?
@@ -45,6 +45,7 @@
                 :value="true"
                 v-model="access.allowAdminRecordAccess"
                 name="allowAdminRecordAccess"
+                @change="handleChange"
               />
             </div>
             <div class="">
@@ -53,13 +54,14 @@
                 :value="false"
                 v-model="access.allowAdminRecordAccess"
                 name="allowAdminRecordAccess"
+                @change="handleChange"
               />
             </div>
           </div>
         </div>
 
         <div class="flex items-center mb-9">
-          <div class="w-1/2 mr-4 flex items-center">
+          <div class="w-1/2 mr-8 flex items-center">
             <p>Allow my admin to manage my healthcare finances?</p>
             <Tooltip
               class="text-white text-sm dropdown-menu"
@@ -78,6 +80,7 @@
                 :value="true"
                 v-model="access.allowAdminFinanceAccess"
                 name="allowAdminFinanceAccess"
+                @change="handleChange"
               />
             </div>
             <div class="">
@@ -86,6 +89,7 @@
                 :value="false"
                 v-model="access.allowAdminFinanceAccess"
                 name="allowAdminFinanceAccess"
+                @change="handleChange"
               />
             </div>
           </div>
@@ -103,7 +107,7 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-4 flex items-center">
+          <div class="w-1/2 mr-8 flex items-center">
             <p>
               Allow only pre-authorised Practices and Doctors access to my
               global PHR.
@@ -125,6 +129,7 @@
                 :value="true"
                 v-model="access.requireRegistrationApproval"
                 name="requireRegistrationApproval"
+                @change="handleChange"
               />
             </div>
             <div class="">
@@ -133,6 +138,7 @@
                 :value="false"
                 v-model="access.requireRegistrationApproval"
                 name="requireRegistrationApproval"
+                @change="handleChange"
               />
             </div>
           </div>
@@ -144,7 +150,7 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-4 flex items-center">
+          <div class="w-1/2 mr-8 flex items-center">
             <p>I want to approve every new registration by a practice.</p>
             <Tooltip
               class="text-white text-sm dropdown-menu"
@@ -163,6 +169,7 @@
                 :value="true"
                 v-model="access.restrictUnauthorizedAccess"
                 name="restrictUnauthorizedAccess"
+                @change="handleChange"
               />
             </div>
             <div class="">
@@ -171,6 +178,7 @@
                 :value="false"
                 v-model="access.restrictUnauthorizedAccess"
                 name="restrictUnauthorizedAccess"
+                @change="handleChange"
               />
             </div>
           </div>
@@ -273,9 +281,13 @@ export default class AccessControl extends Vue {
   loading = false;
   leaveFamilyAccountModal = false;
 
-  @Watch("access", { deep: true })
-  async onUpdate() {
-    await this.updateAccessData;
+  // @Watch("access", { deep: true })
+  // async onUpdate() {
+  //   await this.updateAccessData();
+  // }
+
+  async handleChange() {
+     await this.updateAccessData();
   }
 
   async getAccessData() {
