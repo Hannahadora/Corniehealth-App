@@ -237,7 +237,7 @@ export default class AccessTable extends Vue {
   }
   manage(id: string) {
     this.itemId = id;
-    this.managePermissionModal = true;
+    // this.managePermissionModal = true;
   }
   decline(id: string) {
     this.itemId = id;

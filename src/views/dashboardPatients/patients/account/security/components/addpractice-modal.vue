@@ -57,7 +57,7 @@
                 >
                   {{ item?.name || item }}
                   <p class="text-xs text-gray-400 italic">
-                    {{ item?.brandCode || item?.form }}
+                    {{ item?.address }}
                   </p>
                 </div>
               </div>
@@ -79,11 +79,28 @@
 
           <div class="flex justify-end">
             <cornie-btn
-              @click="show = false"
               class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
             >
               Add
             </cornie-btn>
+          </div>
+
+          <div>
+            <div
+              v-for="(item, i) in selectedPractices"
+              :key="i"
+              class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+            >
+              <div class="flex items-start">
+                <span class="">{{ i + 1 }}.</span>
+                <div class="ml-4">
+                  <p class="text-lg mb-2">{{ item?.name || item }}</p>
+                  <p class="text-xs text-gray-400 italic">
+                    {{ item?.address }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </v-form>
       </cornie-card-text>
@@ -97,6 +114,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
+          @click="addPractice"
           :loading="loading"
           class="text-white bg-danger font-semibold px-6 rounded-xl"
         >
@@ -153,7 +171,7 @@ function defaultFilter(item: any, query: string) {
     IconInput,
     SearchIcon,
     Tooltip,
-    TooltipIcon
+    TooltipIcon,
   },
 })
 export default class addPractice extends Vue {
@@ -196,7 +214,7 @@ export default class addPractice extends Vue {
     try {
       this.loading = true;
       const res = await cornieClient().get(
-        `/api/v1/utils/practice?query=${query}`
+        `/api/v1/utils/practice/search?query=${query}`
       );
       this.loading = false;
       this.practices = res.data || [];
@@ -209,8 +227,37 @@ export default class addPractice extends Vue {
     }
   }
 
+  addPractice(query: any) {
+    this.selectedPractices.forEach(async (practice: any) => {
+      try {
+        this.loading = true;
+        const res = await cornieClient().post(
+          "/api/v1/patient-portal/provider-permission/add-practice",
+          {
+            recordId: practice.recordId || undefined,
+            organizationId: practice.id,
+          }
+        );
+        this.loading = false;
+        this.show = false;
+        this.$emit("practice-added");
+        notify({
+          msg: "Practice has been added",
+          status: "success",
+        });
+      } catch (error) {
+        this.loading = false;
+        notify({
+          msg: "There was an error adding practice",
+          status: "error",
+        });
+      }
+    });
+  }
+
   selected(item: any) {
-    this.selectedPractices.push(item)
+    this.showDatalist = false;
+    this.selectedPractices.push(item);
   }
 
   async created() {}

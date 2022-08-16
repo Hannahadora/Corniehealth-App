@@ -9,9 +9,19 @@
       <h2>Access Control & Privileges</h2>
     </div>
 
-    <p class="text-sm font-semibold py-10">
-      Your account is part of a family account
-    </p>
+    <div class="flex items-center justify-between">
+      <p class="text-sm font-semibold py-10">
+        Your account is part of a family account
+      </p>
+      <Button :loading="false" class="focus:outline-none">
+        <span
+          @click="leaveFamilyAccountModal = true"
+          class="bg-red-500 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
+        >
+          Leave Family Account
+        </span>
+      </Button>
+    </div>
 
     <div class="w-full my-5">
       <div class="w-full curved py-2">
@@ -225,7 +235,7 @@
     <!-- <div class="w-full" style="height: 100px"></div> -->
 
     <invitepractice-modal v-model="inviteModal" />
-    <addpractice-modal v-model="addModal" />
+    <addpractice-modal v-model="addModal" @practiceAdded="getAccessData" />
     <leave-family-account v-model="leaveFamilyAccountModal" />
   </div>
 </template>
@@ -249,6 +259,7 @@ import { string } from "yup";
 import CornieRadio from "@/components/cornieradio.vue";
 import { cornieClient } from "@/plugins/http";
 import AccordionComponent from "@/components/form-accordion.vue";
+import LeaveFamilyAccount from "./components/leavefamilyaccount.vue";
 
 const userSettingsStore = namespace("usersettings");
 const userStore = namespace("user");
@@ -267,6 +278,7 @@ const userStore = namespace("user");
     AccordionComponent,
     InvitepracticeModal,
     AddpracticeModal,
+    LeaveFamilyAccount,
   },
 })
 export default class AccessControl extends Vue {
@@ -287,7 +299,7 @@ export default class AccessControl extends Vue {
   // }
 
   async handleChange() {
-     await this.updateAccessData();
+    await this.updateAccessData();
   }
 
   async getAccessData() {
