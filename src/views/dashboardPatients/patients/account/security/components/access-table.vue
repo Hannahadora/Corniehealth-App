@@ -76,6 +76,10 @@
     </cornie-table>
 
     <manage-permissions v-model="managePermissionModal" />
+    <accept :id="itemId" v-model="acceptModal" />
+    <decline :id="itemId" v-model="declineModal" />
+    <revoke :id="itemId" v-model="revokeModal" />
+    <care-team :id="itemId" v-model="careTeamModal" />
   </div>
 </template>
 
@@ -85,6 +89,9 @@ import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import ManagePermissions from "./manage-permissions.vue";
+import Accept from "./accept.vue";
+import Decline from "./decline.vue";
+import Revoke from "./revoke.vue";
 import { cornieClient } from "@/plugins/http";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -97,6 +104,9 @@ import search from "@/plugins/search";
     CornieRadio,
     CornieTable,
     ManagePermissions,
+    Accept,
+    Decline,
+    Revoke,
   },
 })
 export default class AccessTable extends Vue {
@@ -106,6 +116,10 @@ export default class AccessTable extends Vue {
   providerPermissions = [];
   itemId = "";
   managePermissionModal = true;
+  acceptModal = false;
+  declineModal = false;
+  revokeModal = false;
+  careTeamModal = false;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -211,12 +225,15 @@ export default class AccessTable extends Vue {
 
   viewPermissions(id: string) {
     this.itemId = id;
+    this.managePermissionModal = true;
   }
   viewCareTeam(id: string) {
     this.itemId = id;
+    this.careTeamModal = true;
   }
   accept(id: string) {
     this.itemId = id;
+    this.acceptModal = true;
   }
   manage(id: string) {
     this.itemId = id;
@@ -224,9 +241,11 @@ export default class AccessTable extends Vue {
   }
   decline(id: string) {
     this.itemId = id;
+    this.declineModal = true;
   }
   revoke(id: string) {
     this.itemId = id;
+    this.revokeModal = true;
   }
 
   async created() {

@@ -4,12 +4,14 @@
       height="100%"
       class="flex flex-col h-full bg-white px-4 py-4 rounded-lg"
     >
-      <cornie-card-title class="w-full">
-        <div class="w-full flex items-center justify-between">
-          <h2 class="font-bold float-left text-lg text-primary">
-            Leave Family Account
+      <cornie-card-title class="flex items-center">
+        <icon-btn @click="show = false">
+          <arrow-left stroke="#ffffff" />
+        </icon-btn>
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Care Team
           </h2>
-
           <cancel-red-bg
             class="float-right cursor-pointer"
             @click="show = false"
@@ -17,7 +19,7 @@
         </div>
       </cornie-card-title>
 
-      <p class="my-4">Confirm you want to leave this family account.</p>
+      <p class="my-4">Confirm you want to accept this registration.</p>
 
       <div class="flex justify-end">
         <cornie-btn
@@ -55,6 +57,8 @@ import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
 
 const user = namespace("user");
 
@@ -64,7 +68,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "LeaveFamilyAccountModal",
+  name: "CareTeam",
   components: {
     CornieIconBtn,
     ArrowLeftIcon,
@@ -75,9 +79,11 @@ function defaultFilter(item: any, query: string) {
     CornieBtn,
     CancelRedBg,
     CornieSelect,
+    ArrowLeft,
+    IconBtn,
   },
 })
-export default class LeaveFamilyAccountModal extends Vue {
+export default class CareTeam extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -88,43 +94,29 @@ export default class LeaveFamilyAccountModal extends Vue {
   id!: string;
 
   @user.Getter
-  authCurrentLocation!: any;
-
-  practice = {
-    email: "",
-    healthRecord: "",
-  };
   loading = false;
 
-  // get locationId() {
-  //   return this.authCurrentLocation;
-  // }
-
-  // get locationId() {
-  //   return "21b84341-2051-4cad-b6b6-feae04f81215";
-  // }
-
-    async submit() {
-  //   try {
-  //     this.loading = true;
-  //     const res = await cornieClient().get(
-  //       "/api/v1/patient-portal/provider-permission/"
-  //     );
-  //     this.loading = false;
-  //     if (!res.status) {
-  //       notify({
-  //         msg: "There was an error with leaving family account",
-  //         status: "error",
-  //       });
-  //     } else {
-  //        notify({
-  //         msg: "Successful",
-  //         status: "success",
-  //       })
-  //     }
-  //   } catch (error) {
-  //     this.loading = false;
-  //   }
+  async submit() {
+    try {
+      this.loading = true;
+      const res = await cornieClient().get(
+        `/api/v1/patient-portal/provider-permission/accept/${this.id}`
+      );
+      this.loading = false;
+      if (!res.status) {
+        notify({
+          msg: "There was an error with leaving family account",
+          status: "error",
+        });
+      } else {
+        notify({
+          msg: "Successful",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      this.loading = false;
+    }
   }
 
   async created() {}

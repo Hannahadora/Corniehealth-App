@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-1/2 h-full">
+  <cornie-dialog v-model="show" right class="w-2/3 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
@@ -20,11 +20,12 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable mt-8">
-        <div class="mb-6">
+        <div class="mb-6 w-full flex items-center">
+          <sort-icon class="mr-5" />
           <span class="w-full rounded-full">
             <icon-input
               autocomplete="off"
-              class="border border-gray-600 rounded-full focus:outline-none"
+              class="w-full border border-gray-600 rounded-full focus:outline-none"
               type="search"
               placeholder="Search Practice/Doctor"
               v-model="query"
@@ -35,34 +36,38 @@
             </icon-input>
           </span>
         </div>
-        <v-form ref="form">
-          <cornie-input
-            class="w-full my-6"
-            label="Email"
-            placeholder="--Enter--"
-            v-model="practice.email"
-          />
 
-          <cornie-select
-            class="w-full"
-            label="Health Record"
-            placeholder="--Select--"
-            v-model="practice.healthRecord"
-          />
+        <p class="mt-10 mb-5 font-bold text-lg">Select Health Record</p>
 
-          <div class="flex justify-end">
-            <cornie-btn
-              @click="show = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-            >
-              Add
-            </cornie-btn>
+        <div
+          class="flex items-center justify-between mb-6"
+          v-for="(option, index) in options"
+          :key="index"
+        >
+          <div class="w-1/2">
+            <cornie-radio
+              :label="option"
+              :value="option"
+              :modelValue="option[index]"
+              :name="option"
+            />
           </div>
-        </v-form>
+
+          <div class="w-1/2 flex items-center">
+            <div class="mr-44 flex items-center">
+              <label for="" class="mr-3 text-base">View</label>
+              <cornie-checkbox v-model="view" />
+            </div>
+            <div class="flex items-center">
+              <label for="" class="mr-3 text-base">Create</label>
+              <cornie-checkbox v-model="create" />
+            </div>
+          </div>
+        </div>
       </cornie-card-text>
 
       <!-- <cornie-card> -->
-      <div class="flex justify-end">
+      <div class="flex justify-end mt-16">
         <cornie-btn
           @click="show = false"
           class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
@@ -101,6 +106,8 @@ import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import SortIcon from "@/components/icons/sort.vue";
 
 const user = namespace("user");
 
@@ -110,7 +117,7 @@ function defaultFilter(item: any, query: string) {
 }
 
 @Options({
-  name: "invitePractice",
+  name: "ManagePermissions",
   components: {
     ArrowLeftIcon,
     CancelIcon,
@@ -124,9 +131,11 @@ function defaultFilter(item: any, query: string) {
     IconBtn,
     IconInput,
     SearchIcon,
+    CornieCheckbox,
+    SortIcon,
   },
 })
-export default class invitePractice extends Vue {
+export default class ManagePermissions extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -139,12 +148,25 @@ export default class invitePractice extends Vue {
   @user.Getter
   authCurrentLocation!: any;
 
-  practice = {
-    email: "",
-    healthRecord: "",
-  };
+  view = false;
+  create = true;
+  option = false;
+
   loading = false;
   query = "";
+  options = [
+    "Health Trends",
+    "Medical History",
+    "Family History",
+    "Allergies",
+    "Vitals",
+    "Encounter Notes",
+    "Medications",
+    "Diagnostics",
+    "Referrals",
+    "Care Teams",
+    "Care Plans",
+  ];
 
   // get locationId() {
   //   return this.authCurrentLocation;
