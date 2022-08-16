@@ -7,7 +7,7 @@
         >
         <div class="w-3/12 flex justify-end">
           <Button :loading="false" class="focus:outline-none">
-            <span
+            <span @click="leaveFamilyAccountModal = true"
               class="bg-red-500 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
             >
               Leave Family Account
@@ -51,6 +51,7 @@
     </div>
 
     <div class="w-full" style="height: 100px"></div>
+    <leave-family-account v-model="leaveFamilyAccountModal" />
   </div>
 </template>
 
@@ -59,6 +60,7 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import Button from "@/components/globals/corniebtn.vue";
 import AccordionRight from "@/components/icons/accordion-right.vue";
+import LeaveFamilyAccount from "./components/leavefamilyaccount.vue"
 
 const userSettingsStore = namespace("usersettings");
 const userStore = namespace("user");
@@ -67,30 +69,11 @@ const userStore = namespace("user");
   components: {
     Button,
     AccordionRight,
+    LeaveFamilyAccount,
   },
 })
 export default class PatientSecurity extends Vue {
-  // async resetPassword() {
-  //   try {
-  //     this.loading = true;
-  //     const changed = await this.changePassword({
-  //     });
-  //     this.loading = false;
-  //     if (!changed) {
-  //       notify({
-  //         msg: "There was an error chnging your password",
-  //         status: "error",
-  //       });
-  //     } else {
-  //       notify({
-  //         msg: "Password Changed Successfully",
-  //         status: "success",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     this.loading = false;
-  //   }
-  // }
+  leaveFamilyAccountModal = false
 }
 </script>
 
