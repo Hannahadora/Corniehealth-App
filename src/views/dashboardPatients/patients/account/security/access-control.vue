@@ -23,11 +23,20 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-8">
+          <div class="w-1/2 mr-4 flex items-center">
             <p>
               Allow my admin to view and manage my profile, including personal
               health records?
             </p>
+            <Tooltip
+              class="text-white text-sm dropdown-menu"
+              text="Yes by default. If turned No, Admin will no longer be able to navigate to your profile.
+                "
+            >
+              <div class="text-black text-sm flex space-x-2">
+                <tooltip-icon class="cursor-pointer" />
+              </div>
+            </Tooltip>
           </div>
           <div class="flex">
             <div class="mr-6">
@@ -50,8 +59,17 @@
         </div>
 
         <div class="flex items-center mb-9">
-          <div class="w-1/2 mr-8">
+          <div class="w-1/2 mr-4 flex items-center">
             <p>Allow my admin to manage my healthcare finances?</p>
+            <Tooltip
+              class="text-white text-sm dropdown-menu"
+              text="Yes by default. If turned No, the primary account will no longer be charged for transactions on this account.
+                "
+            >
+              <div class="text-black text-sm flex space-x-2">
+                <tooltip-icon class="cursor-pointer" />
+              </div>
+            </Tooltip>
           </div>
           <div class="flex mr-8">
             <div class="mr-6">
@@ -85,11 +103,20 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-8">
+          <div class="w-1/2 mr-4 flex items-center">
             <p>
               Allow only pre-authorised Practices and Doctors access to my
               global PHR.
             </p>
+            <Tooltip
+              class="text-white text-sm dropdown-menu"
+              text="This implies that all other physicians and providers (facilities) will create a new HR instance on registration..
+                "
+            >
+              <div class="text-black text-sm flex space-x-2">
+                <tooltip-icon class="cursor-pointer" />
+              </div>
+            </Tooltip>
           </div>
           <div class="flex mr-8">
             <div class="mr-6">
@@ -117,8 +144,17 @@
         </div>
 
         <div class="flex items-center my-9">
-          <div class="w-1/2 mr-8">
+          <div class="w-1/2 mr-4 flex items-center">
             <p>I want to approve every new registration by a practice.</p>
+            <Tooltip
+              class="text-white text-sm dropdown-menu"
+              text="You will have to approve this registration before this provider can access your profile info. If this provider is not pre-authorized we will create a new HR instance which you can manage as you wish. In cases of emergencies, this provider will be given full access to your global HR.
+                "
+            >
+              <div class="text-black text-sm flex space-x-2">
+                <tooltip-icon class="cursor-pointer" />
+              </div>
+            </Tooltip>
           </div>
           <div class="flex mr-8">
             <div class="mr-6">
@@ -195,6 +231,7 @@ import AccessTable from "./components/access-table.vue";
 import InvitepracticeModal from "./components/invitepractice-modal.vue";
 import AddpracticeModal from "./components/addpractice-modal.vue";
 import Tooltip from "@/components/tooltip.vue";
+import TooltipIcon from "@/components/icons/formtip.vue";
 import { namespace } from "vuex-class";
 import User from "@/types/user";
 import Button from "@/components/globals/corniebtn.vue";
@@ -213,6 +250,7 @@ const userStore = namespace("user");
     Icon,
     AccessTable,
     Tooltip,
+    TooltipIcon,
     Button,
     AccordionRight,
     ArrowLeft,
@@ -225,8 +263,8 @@ const userStore = namespace("user");
 })
 export default class AccessControl extends Vue {
   access: any = {
-    allowAdminRecordAccess: false,
-    allowAdminFinanceAccess: false,
+    allowAdminRecordAccess: true,
+    allowAdminFinanceAccess: true,
     requireRegistrationApproval: false,
     restrictUnauthorizedAccess: false,
   };
