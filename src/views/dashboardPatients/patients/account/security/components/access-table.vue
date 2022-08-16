@@ -115,7 +115,7 @@ export default class AccessTable extends Vue {
   query = "";
   providerPermissions = [];
   itemId = "";
-  managePermissionModal = true;
+  managePermissionModal = false;
   acceptModal = false;
   declineModal = false;
   revokeModal = false;
