@@ -188,7 +188,7 @@
             </div>
           </div>
 
-          <div v-if="selectedOption == 'organization'">
+          <div v-if="selectedOption == 'organisation'">
             <div
               @click="() => (selectedId = input.id)"
               :class="`rounded-full flex px-5 py-3 cursor-pointer`"
@@ -320,13 +320,7 @@
 
     localSrc = require("../../../../../assets/img/placeholder.png");
 
-    radioValues = [
-      "Practitioner",
-      "Organization",
-      "Patient",
-      "Related Person",
-      "Device",
-    ];
+    radioValues = ["Practitioner", "Organisation", "Patient", "Device"];
     selectedOption = "";
     selectedId = "";
     selectedData: any = {};

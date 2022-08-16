@@ -49,7 +49,10 @@
             v-if="selectedOption == 'care plan'"
             class="flex flex-col space-y-5"
           >
-            <div v-for="c in careplan">
+            <div v-if="careplan.length == 0" class="font bold pt-4 text-lg">
+              No care plan available
+            </div>
+            <div v-else v-for="c in careplan">
               <div
                 @click="() => (selectedId = c.id)"
                 :class="`rounded-full flex px-5 py-3 cursor-pointer ${
@@ -64,7 +67,13 @@
             v-if="selectedOption == 'diagnostics request'"
             class="flex flex-col space-y-5"
           >
-            <div v-for="c in diagnosticsRequest">
+            <div
+              v-if="diagnosticsRequest.length == 0"
+              class="font bold pt-4 text-lg"
+            >
+              No Diagnostics request available
+            </div>
+            <div v-else v-for="c in diagnosticsRequest">
               <div
                 @click="() => (selectedId = c.id)"
                 :class="`rounded-full flex px-5 py-3 cursor-pointer ${
@@ -80,6 +89,12 @@
             v-if="selectedOption == 'medication request'"
             class="flex flex-col space-y-5"
           >
+            <div
+              v-if="medicationRequest.length == 0"
+              class="font bold pt-4 text-lg"
+            >
+              No Medication request available
+            </div>
             <div v-for="d in medicationRequest"></div>
           </div>
         </div>

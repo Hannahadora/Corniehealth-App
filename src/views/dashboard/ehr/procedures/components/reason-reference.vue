@@ -12,12 +12,15 @@
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
             Reason Reference
           </h2>
-          <cancel-icon class="float-right cursor-pointer" @click="show = false" />
+          <cancel-icon
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
         <div class="font-bold mb-4">Reference</div>
-        <div class="grid grid-cols-4 gap-3 border-b border-dashed border-2">
+        <div class="grid grid-cols-4 gap-3">
           <div
             v-for="(r, i) in radioValues"
             :key="r"
@@ -42,74 +45,227 @@
               <search-icon />
             </template>
           </icon-input>
+          <div
+            v-if="selectedOption == 'condition'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="conditions.length == 0" class="font bold pt-4 text-lg">
+              No Patient Condition found
+            </div>
+            <div v-else v-for="c in conditions">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'observation'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="observations.length == 0" class="font bold pt-4 text-lg">
+              No Observation available
+            </div>
+            <div v-else v-for="c in observations">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'procedure'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="procedures.length == 0" class="font bold pt-4 text-lg">
+              No Procedures available
+            </div>
+            <div v-else v-for="c in procedures">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'diagnostic report'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="diagnostics.length == 0" class="font bold pt-4 text-lg">
+              No Diagnostic Report available
+            </div>
+            <div v-else v-for="c in diagnostics">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'document reference'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="diagnostics.length == 0" class="font bold pt-4 text-lg">
+              No Document Reference available
+            </div>
+            <div v-else v-for="c in document">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </cornie-card-text>
+      <div class="flex items-center justify-end mt-24">
+        <div class="flex items-center mb-6">
+          <cornie-btn
+            @click="show = false"
+            class="border-primary border-2 px-6 py-1 mr-3 rounded-lg text-primary"
+          >
+            Cancel
+          </cornie-btn>
+          <cornie-btn
+            @click="submit"
+            type="submit"
+            class="text-white bg-danger px-3 py-1 rounded-lg"
+          >
+            Add
+          </cornie-btn>
+        </div>
+      </div>
     </cornie-card>
   </cornie-dialog>
 </template>
 <script lang="ts">
-import AutoComplete from "@/components/autocomplete.vue";
-import CornieCard from "@/components/cornie-card";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CustomCheckbox from "@/components/custom-checkbox.vue";
-import DateTimePicker from "@/components/date-time-picker.vue";
-import AccordionComponent from "@/components/dialog-accordion.vue";
-import IconInput from "@/components/IconInput.vue";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import PlusIcon from "@/components/icons/plus.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PractionerSelect from "@/components/practitioner-select.vue";
-import { Options, Vue } from "vue-class-component";
-import { PropSync } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import IconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CustomCheckbox from "@/components/custom-checkbox.vue";
+  import DateTimePicker from "@/components/date-time-picker.vue";
+  import AccordionComponent from "@/components/dialog-accordion.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import ArrowLeft from "@/components/icons/arrowleft.vue";
+  import CancelIcon from "@/components/icons/cancel.vue";
+  import PlusIcon from "@/components/icons/plus.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import PractionerSelect from "@/components/practitioner-select.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
 
-const hierarchy = namespace("hierarchy");
-const orgFunctions = namespace("OrgFunctions");
-const user = namespace("user");
-const appointmentRoom = namespace("appointmentRoom");
-const patients = namespace("patients");
-const report = namespace("diagnosticReport");
+  const hierarchy = namespace("hierarchy");
+  const orgFunctions = namespace("OrgFunctions");
+  const user = namespace("user");
+  const appointmentRoom = namespace("appointmentRoom");
+  const patients = namespace("patients");
+  const report = namespace("diagnosticReport");
 
-@Options({
-  name: "createReport",
-  components: {
-    CornieDialog,
-    ...CornieCard,
-    ArrowLeft,
-    IconBtn,
-    CornieInput,
-    CornieSelect,
-    CustomCheckbox,
-    CornieBtn,
-    AutoComplete,
-    CornieRadio,
-    DateTimePicker,
-    CancelIcon,
-    AccordionComponent,
-    PlusIcon,
-    PractionerSelect,
-    SearchIcon,
-    IconInput,
-  },
-})
-export default class PersonReference extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  @Options({
+    name: "createReport",
+    components: {
+      CornieDialog,
+      ...CornieCard,
+      ArrowLeft,
+      IconBtn,
+      CornieInput,
+      CornieSelect,
+      CustomCheckbox,
+      CornieBtn,
+      AutoComplete,
+      CornieRadio,
+      DateTimePicker,
+      CancelIcon,
+      AccordionComponent,
+      PlusIcon,
+      PractionerSelect,
+      SearchIcon,
+      IconInput,
+    },
+  })
+  export default class PersonReference extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  radioValues = [
-    "Condition",
-    "Observation",
-    "Procedure",
-    "Diagnostic Report",
-    "Document Reference",
-  ];
-  selectedOption = "";
-  query = "";
-}
+    @Prop()
+    conditions!: any[];
+
+    @Prop()
+    observations!: any[];
+
+    @Prop()
+    procedures!: any[];
+
+    @Prop()
+    diagnostics!: any[];
+
+    @Prop()
+    document!: any[];
+
+    radioValues = [
+      "Condition",
+      "Observation",
+      "Procedure",
+      "Diagnostic Report",
+      "Document Reference",
+    ];
+    selectedOption = "";
+    selectedId = "";
+    selectedData = {};
+    query = "";
+
+    submit() {
+      if (!this.selectedId) return;
+      let u = this.$route.params.id.toLocaleString();
+
+      if (this.selectedOption == "procedure") {
+        this.selectedData = this.procedures.find(
+          (x) => x.id == this.selectedId
+        );
+      }
+
+      if (this.selectedOption == "observation") {
+        this.selectedData = this.observations.find(
+          (x: any) => x.id == this.selectedId
+        );
+      }
+      //@ts-ignore
+      this.$emit("selectedId", {
+        typeData: this.selectedOption,
+        ...this.selectedData,
+      });
+      this.show = false;
+    }
+    mounted() {
+      console.log("reason reference");
+      console.log("condition", this.conditions);
+      console.log("observations", this.observations);
+      console.log("diagnostics", this.diagnostics);
+    }
+  }
 </script>
