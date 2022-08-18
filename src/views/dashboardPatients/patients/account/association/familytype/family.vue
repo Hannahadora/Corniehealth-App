@@ -1,34 +1,5 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full mb-3">
-      <button
-        @click="showMemeberList = !showMemeberList"
-        class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
-      >
-      <span>
-            Add Member
-      </span>
-      <span>
-        |
-      </span>   
-       <chevron-down-icon class="stroke-current text-white"/>
-      </button>
-      <div
-        :class="[
-            !showMemeberList ? 'hidden' : 'o',
-        ]"
-        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-10 right-7 m-3 rounded overflow-y-auto mt-2"
-        style="width: 11.8%;top: 500px;"
-        >
-            
-           <div class="mb-2 w-full">
-               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showMember = true">Add Member</span>
-           </div>
-            <div class="mb-2 w-full">
-                <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showPatientModal = true">Add Existing</span>
-            </div>
-        </div>
-    </span>
     <cornie-table
       :columns="rawHeaders"
       v-model="sortAssocaitons"
@@ -151,28 +122,30 @@ export default class FamilyAsscoation extends Vue {
 
   dropdowns = {} as IIndexableObject;
 
-   @patientassociation.State
-  patientassociations!: IPatientAssociation[];
+   
+  @patientassociation.State
+  familyassociations!: IPatientAssociation[];
 
   @patientassociation.Action
-  fetchPatientAssociation!: (associationType: string) => Promise<void>;
+  fetchFamilyAssociations!: () => Promise<void>;
+
 
 
   rawHeaders = [
     { title: "DATE ADDED", key: "date", show: true },
-    { title: "MRN #", key: "mrn", show: true },
+    { title: "FAMILY ID #", key: "id", show: true },
     {
       title: "name",
       key: "name",
       show: true,
     },
     {
-      title: "DATE OF BIRTH",
+      title: "RELATIONSHIP",
       key: "dob",
       show: true,
     },
     {
-      title: "GENDER",
+      title: "ROLE",
       key: "gender",
       show: true,
     },
@@ -192,9 +165,9 @@ export default class FamilyAsscoation extends Vue {
 
 
   get items() {
-    const patientassociations = this.patientassociations.map((patientassociation) => {
+    const familyassociations = this.familyassociations.map((familyassociation) => {
       return {
-        ...patientassociation,
+        ...familyassociation,
         name: 'Kessigton Hospital',
         type: 'Hospital/Clinic',
         address: '5. Avenue Road, Surulere ',
@@ -202,8 +175,8 @@ export default class FamilyAsscoation extends Vue {
         emailaddress: 'Info@kessignton.com',
       };
     });
-    if (!this.query) return patientassociations;
-    return search.searchObjectArray(patientassociations, this.query);
+    if (!this.query) return familyassociations;
+    return search.searchObjectArray(familyassociations, this.query);
   }
 
 
@@ -216,7 +189,7 @@ export default class FamilyAsscoation extends Vue {
 
 
   async created() {
-    this.fetchPatientAssociation('Family');
+    this.fetchFamilyAssociations();
   }
 }
 </script>

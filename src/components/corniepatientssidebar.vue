@@ -1,8 +1,8 @@
 <template>
 <div @mouseover="hovered = true" @mouseleave="hovered = false">
     <div
-        class="hidden md:flex flex-col py-4 px-1 items-center min-h-screen h-screen bg-white fixed justify-center"
-        :class="[hovered ? 'w-72' : 'w-auto']"
+        class="hidden md:flex flex-col py-4 px-1  items-center min-h-screen h-screen bg-white fixed justify-center"
+        :class="[hovered ? 'w-auto' : 'w-auto']"
         >
         <div
             class="flex flex-row justify-between border-b-2 pb-1 items-center border-gray-300"
@@ -13,7 +13,7 @@
             </h2>
         </div>
         <div
-            class="mt-5 flex h-full gap-y-6 items-center w-full flex-col text-primary text-lg overflow-y-auto"
+            class="mt-5 flex h-full gap-y-6 items-center w-full flex-col text-primary text-lg overflow-x-hidden overflow-y-auto"
         >
             <sidebar-link
             v-for="(link, i) in links"

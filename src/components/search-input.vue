@@ -5,7 +5,7 @@
       type="search"
       :placeholder="$attrs.placeholder"
       v-model="query"
-      class="rounded-full w-full border-2 focus:outline-none"
+      class="rounded-full w-full border-2 border-gray-300 py-2 focus:outline-none"
     >
       <template v-slot:prepend>
         <search-icon />
