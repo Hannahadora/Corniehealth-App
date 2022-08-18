@@ -13,14 +13,14 @@
       <p class="text-sm font-semibold py-10">
         Your account is part of a family account
       </p>
-      <Button :loading="false" class="focus:outline-none">
+      <!-- <Button :loading="false" class="focus:outline-none">
         <span
           @click="leaveFamilyAccountModal = true"
           class="bg-red-500 cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
         >
           Leave Family Account
         </span>
-      </Button>
+      </Button> -->
     </div>
 
     <div class="w-full my-5">
