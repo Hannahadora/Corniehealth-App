@@ -144,14 +144,12 @@
                   class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
                   @click="getValue(input)"
                 >
-                  <div class="w-full">
+                  <div class="w-full flex items-center justify-between">
                     <div class="w-full">
                       <p class="capitalize text-sm text-dark mb-1 font-meduim">
                         {{ codeMapper(input.code) }} {{ input.category }}
                       </p>
-                      <p class="capitalize text-sm text-dark mb-1 font-medium">
-                        {{ input.criticality }}
-                      </p>
+                      
                       <p class="capitalize text-xs text-gray-300">
                         {{
                           new Date(input?.recordDate).toLocaleDateString(
@@ -162,6 +160,15 @@
                     </div>
 
                     <div>
+                      <p class="capitalize text-sm text-dark mb-1 font-medium">
+                        {{ input.criticality }}
+                      </p>
+                      <p class="capitalize text-xs text-gray-300">
+                        {{ input.type }}
+                      </p>
+                    </div>
+
+                    <!-- <div>
                       <p class="capitalize text-sm">
                         <span>{{
                           findPractitionerName(input?.practitionerId)
@@ -170,7 +177,7 @@
                       <p class="capitalize text-xs text-gray-300">
                         {{ findPractitionerSpecialty(input?.practitionerId) }}
                       </p>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>

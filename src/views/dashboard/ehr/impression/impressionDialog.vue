@@ -128,10 +128,11 @@
               </div>
             </div>
 
-            <main-cornie-select
+
+             <main-cornie-select
               class="w-full"
-              :items="previousImpressions"
-              v-model="impressionModel.recorded.previous"
+              :items="['Active', 'Inactive', 'Resolved']"
+               v-model="impressionModel.recorded.previous"
               label="previous"
             >
             </main-cornie-select>
@@ -141,7 +142,7 @@
                 v-bind="$attrs"
                 label="Problem"
                 readonly
-                @click="show = true"
+                @click="showProblemModal = true"
               >
                 <template #append-inner>
                   <plus-icon class="fill-current text-danger" />
@@ -480,41 +481,6 @@ const impression = namespace("impression");
 const user = namespace("user");
 const allergy = namespace("allergy");
 
-const emptyImpression: any = {
-  patientId: "",
-  status: "Completed",
-  updatedAt: "",
-  basicInfo: <any>{
-    code: "",
-    description: undefined,
-  },
-  effective: {
-    effectiveDate: undefined,
-    effectivePeriod: {
-      start: undefined,
-      end: undefined,
-    } as any,
-  },
-  investigation: [] as { item: any }[],
-  findings: [] as { itemType: any[]; basis: "" }[],
-  prognosis: {
-    itemCode: undefined,
-    itemReference: undefined,
-    supportingInfo: undefined,
-    note: undefined,
-  },
-  recorded: {
-    recordDate: undefined,
-    previous: undefined,
-    asserterId: undefined,
-    problem: <any>[],
-  },
-  protocol: {
-    protocol: undefined,
-    summary: undefined,
-  },
-} as any;
-
 @Options({
   name: "impressionDialog",
   components: {
@@ -562,7 +528,41 @@ export default class Impression extends Vue {
   @user.Getter
   authPractitioner!: IPractitioner;
 
-  impressionModel = {} as IImpression;
+  impressionModel = {
+    patientId: "",
+    status: "Completed",
+    statusReason: "",
+    updatedAt: "",
+    basicInfo: <any>{
+      code: "",
+      description: undefined,
+    },
+    effective: {
+      effectiveDate: undefined,
+      effectivePeriod: {
+        start: undefined,
+        end: undefined,
+      } as any,
+    },
+    investigation: [] as { item: any }[],
+    findings: [] as { itemType: any[]; basis: "" }[],
+    prognosis: {
+      itemCode: undefined,
+      itemReference: undefined,
+      supportingInfo: undefined,
+      note: undefined,
+    },
+    recorded: {
+      recordDate: undefined,
+      previous: undefined,
+      asserterId: undefined,
+      problem: <any>[],
+    },
+    protocol: {
+      protocol: undefined,
+      summary: undefined,
+    },
+  };
 
   effectiveType = "date-time";
 
@@ -616,9 +616,6 @@ export default class Impression extends Vue {
   showFindingModal = false;
   findingItems = <any>[];
 
-  async setImpressionModel() {
-    this.impressionModel = JSON.parse(JSON.stringify({ ...emptyImpression }));
-  }
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
@@ -688,7 +685,7 @@ export default class Impression extends Vue {
 
   get previousImpressions() {
     return this.allImpressions?.map((el: any) => {
-      return el.basicInfo && el.basicInfo.code; 
+      return el.basicInfo && el.basicInfo.code;
     });
   }
 
@@ -751,12 +748,12 @@ export default class Impression extends Vue {
         this.data.startDate;
       (this.payload.effective.effectivePeriod.end as any) = this.data.endDate;
     } else (this.payload.effective.effectivePeriod as any) = undefined;
-    this.payload.recorded.asserterId = this.asseterId as string;
+    (this.payload.recorded.asserterId as any) = this.asseterId as string;
     if (this.conditionItems.length > 0) {
       this.payload.recorded.problem = this.conditionItems;
     }
 
-    this.payload.recorded.recordDate = this.buildDateTime(
+    (this.payload.recorded.recordDate as any) = this.buildDateTime(
       this.recordedDate,
       this.recordedTime
     );
@@ -852,15 +849,13 @@ export default class Impression extends Vue {
     }
   }
 
-
   async created() {
-    await this.fetchAllergys(this.activePatientId)
+    await this.fetchAllergys(this.activePatientId);
     if (this.id) {
       await this.setImpression();
     }
     this.fetchRoles();
     this.fetchPractitioners();
-    this.setImpressionModel();
     this.fetchObservations();
     this.fetchConditions();
     this.fetchFamilyHistories();
