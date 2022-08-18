@@ -126,7 +126,7 @@
         </template>
     </cornie-table>
 
-    <medication-request-modal v-model="showMedicationRequest" :selectedItem="selectedItem" @medication-added="medicationadded"/>
+    <medication-request-modal v-model="showMedicationRequest" :selectedItem="selectedItem" :id="requestId" @medication-added="medicationadded"/>
 
     <view-modal v-model="showDetails" :selectedItem="selectedItem" :id="requestId" :medicationid="medicationId"/>
     <refill-modal v-model="showRefill" :id="requestId"/>
@@ -520,6 +520,7 @@ export default class RequestExistingState extends Vue {
   }
   showModal(item:any){
     this.showMedicationRequest = true;
+    this.requestId = item.id;
      this.selectedItem = item;
   }
   async showOtherStatus(value: string) {

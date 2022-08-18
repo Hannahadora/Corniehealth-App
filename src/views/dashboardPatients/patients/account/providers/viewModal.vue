@@ -56,7 +56,7 @@
                 <location-icon/>
                 <div>
                     <span class="text-bold font-semibold">Address</span>
-                    <p class="text-gray-400 text-sm">234 Admiralty Way Lekki, Lagos</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.address}}</p>
                 </div>
             </div>
             
@@ -109,6 +109,8 @@ import PhoneIcon from "./icons/phone.vue";
 import EmailIcon from "./icons/email.vue";
 import LocationIcon from "./icons/location.vue";
 
+const patientprovider = namespace("patientprovider");
+
 @Options({
   name: "viewProvider",
   components: {
@@ -139,6 +141,12 @@ export default class viewProvider extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @patientprovider.State
+  primarydoctors!: any;
+
+  @patientprovider.Action
+  fetchPrimaryDoctors!: () => Promise<void>;
+
   localSrc = require("../../../../../assets/img/placeholder.png");
 
   done() {
@@ -146,7 +154,7 @@ export default class viewProvider extends Vue {
   }
 
   async created() {
- 
+    await this.fetchPrimaryDoctors()
   }
 }
 </script>

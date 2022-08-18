@@ -17,11 +17,11 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-       <div class="flex flex-col py-2 px-4">
+       <div class="flex flex-col py-2 px-4 border-2 border-gray-200 rounded shadow-sm">
             <div class="flex w-full justify-start">
             <cornie-avatar-field v-model="img.url" />
             </div>
-            <div class="w-full mt-4 grid grid-cols-3 gap-5">
+            <div class="w-full mt-4 grid grid-cols-3 gap-4">
             <cornie-input
                 class="w-full"
                 label="First Name"
