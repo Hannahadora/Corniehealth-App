@@ -131,7 +131,7 @@
 
              <main-cornie-select
               class="w-full"
-              :items="['Active', 'Inactive', 'Resolved']"
+              :items="previousImpressions"
                v-model="impressionModel.recorded.previous"
               label="previous"
             >
