@@ -83,107 +83,107 @@
   </div>
 </template>
 <script>
-import DInput from "@/components/cornieinput.vue";
-import DSelect from "@/components/cornieselect.vue";
-import PhoneInput from "@/components/phone-input.vue";
-import { getCoordinates } from "@/plugins/utils";
+  import DInput from "@/components/cornieinput.vue";
+  import DSelect from "@/components/cornieselect.vue";
+  import PhoneInput from "@/components/phone-input.vue";
+  import { getCoordinates } from "@/plugins/utils";
 
-import { cornieClient } from "@/plugins/http";
+  import { cornieClient } from "@/plugins/http";
 
-export default {
-  components: {
-    DInput,
-    DSelect,
-    PhoneInput,
-  },
-  data() {
-    return {
-      name: "",
-      id: "",
-      locationStatus: "",
-      operationalStatus: "",
-      description: "",
-      alias: "",
-      mode: "",
-      type: "",
-      phone: "",
-      email: "",
-      address: "",
-      physicalType: "",
-      longitude: "",
-      latitude: "",
-      altitude: "",
-      managingOrg: "",
-      partOf: "",
-    };
-  },
-  computed: {
-    coordinatesCB() {
-      const address = `${this.address}, ${this.state} ${this.country}`;
-      return () => getCoordinates(address);
+  export default {
+    components: {
+      DInput,
+      DSelect,
+      PhoneInput,
     },
-    payload() {
+    data() {
       return {
-        name: this.name,
-        locationStatus: this.locationStatus,
-        operationalStatus: this.operationalStatus,
-        description: this.desription,
-        alias: this.alias || undefined,
-        mode: this.mode,
-        type: this.type,
-        phone: this.phone,
-        email: this.email,
-        address: this.address,
-        country: this.country,
-        state: this.state,
-        physicalType: this.physicalType,
-        latitude: this.latitude,
-        longitude: this.longitude,
-        altitude: this.altitude,
-        managingOrg: this.managingOrg,
-        partOf: this.partOf,
+        name: "",
+        id: "",
+        locationStatus: "",
+        operationalStatus: "",
+        description: "",
+        alias: "",
+        mode: "",
+        type: "",
+        phone: "",
+        email: "",
+        address: "",
+        physicalType: "",
+        longitude: "",
+        latitude: "",
+        altitude: "",
+        managingOrg: "",
+        partOf: "",
       };
     },
-  },
-  async created() {
-    try {
-      await this.fetchDropDown();
-    } catch (error) {}
-  },
-  Watch: {
-    async coordinatesCB(cb) {
-      const data = await cb();
-      this.longitude = String(data.longitude);
-      this.latitude = String(data.latitude);
+    computed: {
+      coordinatesCB() {
+        const address = `${this.address}, ${this.state} ${this.country}`;
+        return () => getCoordinates(address);
+      },
+      payload() {
+        return {
+          name: this.name,
+          locationStatus: this.locationStatus,
+          operationalStatus: this.operationalStatus,
+          description: this.desription,
+          alias: this.alias || undefined,
+          mode: this.mode,
+          type: this.type,
+          phone: this.phone,
+          email: this.email,
+          address: this.address,
+          country: this.country,
+          state: this.state,
+          physicalType: this.physicalType,
+          latitude: this.latitude,
+          longitude: this.longitude,
+          altitude: this.altitude,
+          managingOrg: this.managingOrg,
+          partOf: this.partOf,
+        };
+      },
     },
-  },
-  methods: {
-    async submit() {
+    async created() {
       try {
-        const response = await cornieClient.post(
-          "api/v1/location",
-          this.payload
-        );
-        if (response.success) {
-          window.notify({ msg: "Location Created", status: "success" });
-        }
-      } catch (error) {
-        window.notify({ msg: "Location not Updated", status: "error" });
-      }
+        await this.fetchDropDown();
+      } catch (error) {}
     },
-  },
-};
+    Watch: {
+      async coordinatesCB(cb) {
+        const data = await cb();
+        this.longitude = String(data.longitude);
+        this.latitude = String(data.latitude);
+      },
+    },
+    methods: {
+      async submit() {
+        try {
+          const response = await cornieClient.post(
+            "api/v1/location",
+            this.payload
+          );
+          if (response.success) {
+            window.notify({ msg: "Location Created", status: "success" });
+          }
+        } catch (error) {
+          window.notify({ msg: "Location not Updated", status: "error" });
+        }
+      },
+    },
+  };
 </script>
 <style>
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
-  color: transparent;
-  background: transparent;
-}
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    color: transparent;
+    background: transparent;
+  }
 </style>

@@ -36,7 +36,7 @@
             </div>
           </div>
           <fhir-input
-            reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-category"
+            reference="http://hl7.org/fhir/ValueSet/procedure-category"
             class="required w-full"
             v-model="basic.category"
             label="category"
@@ -88,8 +88,8 @@
                   v-model="age.value"
                 />
                 <cornie-select
-                  :items="['Day']"
-                  placeholder="/ Day"
+                  :items="['Days', 'Months', 'Years']"
+                  placeholder="Days"
                   class="w-32 mt-0.5 flex-none"
                   :setPrimary="true"
                   v-model="age.day"
@@ -123,8 +123,8 @@
                       v-model="range.min"
                     />
                     <cornie-select
-                      :items="['Day']"
-                      placeholder="/ Day"
+                      :items="['Days', 'Months', 'Years']"
+                      placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
                       v-model="range.unit"
@@ -141,8 +141,8 @@
                       v-model="range.max"
                     />
                     <cornie-select
-                      :items="['Day']"
-                      placeholder="/ Day"
+                      :items="['Days']"
+                      placeholder="Days"
                       class="w-32 mt-0.5 flex-none"
                       :setPrimary="true"
                       v-model="range.unit"
@@ -268,11 +268,13 @@
               </div>
             </div>
           </div>
-          <cornie-select
-            :label="'Reason Code'"
+          <fhir-input
+            reference="http://hl7.org/fhir/ValueSet/procedure-reason"
+            class="required w-full"
             v-model="code"
+            label="Reason Code"
             placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+            required
           />
           <div class="flex flex-col w-full">
             <div class="capitalize text-black text-sm font-semibold">
@@ -299,7 +301,7 @@
             :label="'Outcome'"
             v-model="code"
             placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+            :items="['Successful', 'Unsuccessful', 'Partially Successful']"
           />
           <div class="flex flex-col w-full">
             <div class="capitalize text-black text-sm font-semibold">
@@ -315,11 +317,13 @@
               </div>
             </div>
           </div>
-          <cornie-select
-            :label="'Complication'"
-            v-model="code"
+
+          <fhir-input
+            v-model="location.body"
+            reference="http://hl7.org/fhir/ValueSet/condition-code"
+            :rules="required"
+            label="Complication"
             placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
           />
           <cornie-select
             :label="'Complication Detail'"
@@ -327,17 +331,9 @@
             placeholder="Select"
             :items="['ASAP', 'Callback results', 'callback for scheduling']"
           />
-          <cornie-select
-            :label="'Follow Up'"
-            v-model="code"
-            placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
-          />
-          <cornie-input
-            class="w-full"
-            :label="'Note'"
-            placeholder="Autoloaded"
-          />
+          <cornie-input class="w-full" label="Follow Up" placeholder="Enter" />
+
+          <cornie-input class="w-full" :label="'Note'" placeholder="Enter" />
         </div>
       </accordion-component>
 
@@ -347,17 +343,16 @@
         :opened="false"
       >
         <div class="grid grid-cols-2 gap-6 py-6">
-          <cornie-select
-            :label="'Action'"
-            v-model="code"
+          <fhir-input
+            v-model="location.body"
+            reference="http://hl7.org/fhir/ValueSet/device-action"
+            label="Action"
             placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
           />
-          <cornie-select
-            :label="'Manipulated'"
-            v-model="code"
-            placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
+          <cornie-input
+            class="w-full"
+            label="Manipulated"
+            placeholder="Enter"
           />
         </div>
       </accordion-component>
@@ -382,11 +377,11 @@
               </div>
             </div>
           </div>
-          <cornie-select
-            :label="'Used Code'"
-            v-model="code"
+          <fhir-input
+            v-model="location.body"
+            reference="http://hl7.org/fhir/ValueSet/device-kind"
+            label="Used Code"
             placeholder="Select"
-            :items="['ASAP', 'Callback results', 'callback for scheduling']"
           />
         </div>
         <div class="flex w-full justify-end">
@@ -405,7 +400,7 @@
           @click="show = false"
           class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
         >
-          Pause Encounter
+          Cancel
         </cornie-btn>
         <cornie-btn
           :loading="loading"
@@ -444,9 +439,19 @@
       :observations="observations"
       v-model="showFunction"
     />
-    <locationM v-model="showLocation" />
-    <reason-reference v-model="showReasonReference" />
-    <report v-model="showReport" />
+    <locationM
+      :locations="locations"
+      :organisation="organisation"
+      v-model="showLocation"
+    />
+    <reason-reference
+      :conditions="conditions"
+      :observations="observations"
+      :procedures="procedures"
+      :diagnostics="diagnosticReport"
+      v-model="showReasonReference"
+    />
+    <report :diagnostics="diagnosticReport" v-model="showReport" />
     <used-reference v-model="showUsedReference" />
     <assesor-modal
       :practitioners="practitioner"
@@ -554,7 +559,7 @@
     };
     age = {
       value: "",
-      day: "",
+      day: "Days",
     };
     period = {
       start: "",
@@ -563,7 +568,7 @@
       endTime: "",
     };
     range = {
-      unit: "",
+      unit: "Days",
       min: "",
       max: "",
     };
@@ -599,7 +604,7 @@
     partOf: any = {};
     recorder: any = {};
     showAssessorModal = false;
-    familyHistories = <any>[];
+    familyHistories = [];
     get recorderP() {
       this.recorder.id = this.authPractitioner.id;
       return (
@@ -737,6 +742,9 @@
     @locationStore.State
     locations!: any;
 
+    conditions = [];
+    diagnosticReport = [];
+
     async submit() {
       let g = {
         patientId: this.$route.params.id,
@@ -868,6 +876,22 @@
       }
     }
 
+    async fetchConditions() {
+      const url = `/api/v1/condition/patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.conditions = response.data;
+      }
+    }
+
+    async fetchDiagnosticsReport() {
+      const url = `/api/v1/diagnostic/report/patient/${this.$route.params.id}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.diagnosticReport = response.data;
+      }
+    }
+
     async fetchOrganisation() {
       const url = "/api/v1/organization";
       const response = await cornieClient().get(url);
@@ -898,6 +922,9 @@
       await this.fetchFamilyHistories();
       await this.fetchOrganisation();
       await this.fetchDevices();
+      await this.fetchLocations();
+      await this.fetchConditions();
+      await this.fetchDiagnosticsReport();
     }
   }
 </script>

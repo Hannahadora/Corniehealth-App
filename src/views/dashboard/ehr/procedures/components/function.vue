@@ -50,7 +50,28 @@
             v-if="selectedOption == 'procedure'"
             class="flex flex-col space-y-5"
           >
-            <div v-for="c in procedures">
+            <div v-if="procedures.length == 0" class="font bold pt-4 text-lg">
+              No Procedures available
+            </div>
+            <div v-else v-for="c in procedures">
+              <div
+                @click="() => (selectedId = c.id)"
+                :class="`rounded-full flex px-5 py-3 cursor-pointer ${
+                  selectedId == c.id ? 'bg-blue-50' : ''
+                }`"
+              >
+                <div>{{ c.title || "Unknown" }}</div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="selectedOption == 'observation'"
+            class="flex flex-col space-y-5"
+          >
+            <div v-if="observations.length == 0" class="font bold pt-4 text-lg">
+              No Observation available
+            </div>
+            <div v-else v-for="c in observations">
               <div
                 @click="() => (selectedId = c.id)"
                 :class="`rounded-full flex px-5 py-3 cursor-pointer ${

@@ -12,6 +12,7 @@ interface UserState {
   requiresSecurityQuestion: boolean;
   authTime?: Date;
   cornieData: {
+    patient: any;
     user: CornieUser;
     practitioner: IPractitioner;
     organization: IOrganization;
@@ -53,6 +54,9 @@ export default {
     },
     cornieUser(state) {
       return state.cornieData?.user;
+    },
+    corniePatient(state) {
+      return state.cornieData?.patient;
     },
     authPractitioner(state) {
       return state.cornieData?.practitioner;

@@ -268,7 +268,7 @@ import Multiselect from "@vueform/multiselect";
 const practitioner = namespace("practitioner");
 const diagnostic = namespace("diagnostic");
 const patients = namespace("patients");
-const location = namespace("location");
+const locationf = namespace("location");
 const practiceform = namespace("practiceform");
 
 type Sorter = (a: any, b: any) => number;

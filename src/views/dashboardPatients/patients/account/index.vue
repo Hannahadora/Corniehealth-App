@@ -1,7 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white mb-auto pb-72 h-full  shadow-lg p-3 mt-2 rounded-lg w-full"
-  >
+    class="flex justify-center bg-white mb-auto pb-72 h-full  shadow-lg p-3 mt-2 rounded-lg w-full">
     <div class="w-full">
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-2xl text-primary py-2"

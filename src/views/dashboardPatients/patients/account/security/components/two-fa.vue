@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid mb-9">
     <div class="container-fluid w-full flex items-center justify-between">
       <div class="border-b-2 w-11/12"></div>
       <div
@@ -41,11 +41,11 @@
         </div>
       </div>
 
-      <div class="w-full mt-6 mb-2 flex justify-end">
+      <div class="w-full mt-6 mb-8 flex justify-end">
         <Button :loading="false" class="focus:outline-none">
           <span
             style="background: #fe4d3c"
-            class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-full"
+            class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
           >
             Save
           </span>

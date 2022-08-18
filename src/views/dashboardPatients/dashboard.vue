@@ -4,7 +4,7 @@
     :class="{ 'main-app': hovered, 'mini-app': !hovered }"
   >
     <div
-      class="block"
+      class="block z-50"
       @mouseover="hovered = true"
       @mouseleave="hovered = false"
     >
