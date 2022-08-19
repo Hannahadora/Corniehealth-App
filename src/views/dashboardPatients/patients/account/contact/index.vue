@@ -204,7 +204,7 @@
       // console.log("payload,", this.payload, this.validate());
       if (!this.validate()) return;
       const details = cornieClient().put(
-        `/api/v1/patient/contact/${this.userId}`,
+        `/api/v1/patient-portal/contact/${this.userId}`,
         this.payload
       );
       const response = await Promise.all([details]);
