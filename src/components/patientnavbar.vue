@@ -96,7 +96,7 @@
                           </span>
                       </div>
                       </span>
-                      <p class="text-lg text-blue-600 font-extrabold">
+                      <p class="text-sm text-blue-600 font-extrabold">
                           {{ name }}
                       </p>
                   </div>
@@ -105,12 +105,12 @@
                   </span>
                 </li>             
                 <li class="flex w-full border-b border-gray-200  mb-5 pb-5">
-                      <span class="text-lg text-black font-bold">MRN - #234511989</span>
+                      <span class="text-sm text-black font-bold">MRN - #{{ mrn }}</span>
                 </li>
                 <li class="w-full mb-4">
                   <div class="flex w-full justify-between">
                       <div>
-                          <span class="text-lg font-medium text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
+                          <span class="text-sm font-medium text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
                       </div>
                       <div>
                           <chevron-down-icon
@@ -149,22 +149,22 @@
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-lg font-medium text-black cursor-pointer">Support</span>
+                      <span class="text-sm font-medium text-black cursor-pointer">Support</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-lg font-medium text-black cursor-pointer">Feedback</span>
+                      <span class="text-sm font-medium text-black cursor-pointer">Feedback</span>
                   </div>
                 </li>
                 <li class="w-full mb-4 border-b border-gray-200 pb-5">
                   <div>
-                      <span class="text-lg font-medium text-black cursor-pointer">Terms of Service</span>
+                      <span class="text-sm font-medium text-black cursor-pointer">Terms of Service</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-lg font-medium text-danger cursor-pointer" @click="logout">Sign Out</span>
+                      <span class="text-sm font-medium text-danger cursor-pointer" @click="logout">Sign Out</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">

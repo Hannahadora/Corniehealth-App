@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-6/12 h-full">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -17,46 +17,115 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-       <div class="flex flex-col py-2 px-4 border-2 border-gray-200 rounded shadow-sm">
-        <div class="w-full mt-4 grid grid-cols-2 gap-4">
+          <div class="">
+            <span
+              class="mb-2 w-full rounded-full"
+              @click="showDatalist = !showDatalist"
+            >
+              <icon-input
+                autocomplete="off"
+                class="border border-gray-400 py-2 rounded-full focus:outline-none"
+                type="search"
+                placeholder="Search Existing"
+                v-model="query"
+              >
+                <template v-slot:prepend>
+                  <search-icon />
+                </template>
+              </icon-input>
+            </span>
+            <div
+              :class="[
+                !showDatalist ? 'hidden' : 'o',
+                results.length === 0 ? 'h-20' : 'h-auto',
+              ]"
+              class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+              style="width: 96%"
+              
+            >
+              <div class="flex flex-col w-full p-2">
+                <div
+                  v-for="(item, i) in results"
+                  :key="i"
+                  @click="selected(item)"
+                  class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                >
+                  <div
+                    class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+                  >
+                    {{ item.firstname +' '+ item.lastname }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="w-full mt-4 px-1">
+              <div class="mb-4">
+                <span class="text-sm font-semibold mb-2">Payment Accounts</span>
+                <Multiselect
+                  v-model="paymentAccounts"
+                  mode="tags"
+                  :hide-selected="false"
+                  id="field-id"
+                  :options="[]"
+                  value-prop="code"
+                  trackBy="code"
+                  label="display"
+                  placeholder="--Select applicable accounts--"
+                  class="w-full"
+                >
+                  <template v-slot:option="{ option }">
+                    <select-option @click="setDefault(option.code)" />
+                    <span class="w-full text-sm" @click="setDefault(option.code)">{{ option.display }}</span>
+                    <span
+                      class="text-xs text-success flex justify-end float-right w-full"
+                      v-if="option.code === defaultPaymentAccountId"
+                      >Default</span
+                    >
+                    <span
+                      v-else
+                      class="text-xs text-danger flex justify-end float-right w-full"
+                      @click="setDefault(option.code)"
+                      >Set as default</span
+                    >
+                  </template>
+                </Multiselect>
+              </div>
                 <cornie-input
-                    class="w-full"
+                    class="w-full mb-4 -mt-8"
                     label="First Name"
                     placeholder="Enter"
                     :rules="requiredRule"
                     v-model="firstName"
-                    :readonly="viewOnly"
                 />
                 <cornie-input
-                    class="w-full"
+                    class="w-full mb-4"
                     label="Middle Name"
                     placeholder="Enter"
                     v-model="middleName"
-                    :readonly="viewOnly"
                 />
                 <cornie-input
-                    class="w-full"
+                    class="w-full mb-5"
                     label="Last Name"
                     placeholder="Enter"
                     v-model="lastName"
                     :rules="requiredRule"
-                    :readonly="viewOnly"
                 />
                 <date-picker
-                    class="w-full"
+                    class="w-full mt-5"
                     label="Date of Birth"
                     placeholder="Enter"
                     :rules="dobRule"
                     v-model="dateOfBirth"
-                    :readonly="viewOnly"
                 />
                 <cornie-select
                     label="Relationship"
-                    class="w-full"
+                    class="w-full mt-4"
                     placeholder="Enter"
-                    v-model="associationRelationship"
+                    v-model="relationship"
                     :items="['Spouse','Child','Parent','Relative','Other','Employee','Member']"
-                    :readonly="viewOnly"
+                    :required="true"
+                    :rules="requiredRule"
                 />
 
                 <cornie-input
@@ -65,6 +134,7 @@
                     :required="true"
                     placeholder="Enter"
                     label="Email"
+                    class="mb-4"
                 />
                 <phone-input
                     v-model="phone.number"
@@ -73,19 +143,45 @@
                     :required="true"
                     label="Phone Number"
                     placeholder="--Enter--"
+                    class="mb-4 mt-4"
                 />
                 <cornie-select
                     label="Member Role"
-                    class="w-full"
+                    class="w-full mb-4 mt-4"
                     placeholder="Enter"
                     v-model="memberRole"
                     :items="['Admin','User']"
-                    :readonly="viewOnly"
                 />
+                <div class="flex space-x-4 w-full mb-5">
+                  <cornie-radio :label="'This account will be managed from admin profile'"/>
+                   <tooltip class="ml-3" right>
+                    <template #activator="{ on }">
+                      <span v-on="on">
+                        <info-icon />
+                      </span>
+                    </template>
+                    <div>
+                      Create and manage dependant accounts for non-adult members of your family. You can navigate from your profile to access and manage dependant accounts.
+                    </div>
+                  </tooltip>
+                </div>
+                <div class="flex space-x-4 w-full mb-5">
+                  <cornie-radio :label="'This account will be managed from admin profile'"/>
+                   <tooltip class="ml-3" right>
+                    <template #activator="{ on }">
+                      <span v-on="on">
+                        <info-icon />
+                      </span>
+                    </template>
+                    <div>
+                      Create and manage dependant accounts for non-adult members of your family. You can navigate from your profile to access and manage dependant accounts.
+                    </div>
+                  </tooltip>
+                </div>
 
-            </div>
-          
         </div>
+          
+
      
       </cornie-card-text>
 
@@ -117,7 +213,10 @@ import search from "@/plugins/search";
 import { namespace } from "vuex-class";
 import { createDate } from "@/plugins/utils";
 import { string, date, number } from "yup";
+import { useHandleImage } from "@/composables/useHandleImage";
+import User, { CornieUser } from "@/types/user";
 
+ import { IPatient } from "@/types/IPatient";
 
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -128,8 +227,10 @@ import CornieSelect from "@/components/autocomplete.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import { cornieClient } from "@/plugins/http";
 import IconInput from "@/components/IconInput.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import User, { CornieUser } from "@/types/user";
+import Tooltip from "@/components/CornieTooltip.vue";
+import Multiselect from "@vueform/multiselect";
+import SelectOption from "@/components/custom-checkbox.vue";
+
 
 import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
 import CornieRadio from "@/components/cornieradio.vue";
@@ -154,7 +255,10 @@ const account = namespace("user");
     CornieAvatarField,
     DatePicker,
     InfoIcon,
-    PhoneInput
+    PhoneInput,
+    Tooltip,
+    Multiselect,
+    SelectOption
   },
 })
 export default class MemberModal extends Vue {
@@ -164,84 +268,106 @@ export default class MemberModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: String, default: "" })
+  familyId!: string;
+
+
+
   @account.Getter
   cornieUser!: CornieUser;
 
   loading = false;
 
-    img = "";
     requiredRule = string().required();
     firstName = "";
     middleName = "";
     lastName = "";
-    bloodGroup = "";
     dateOfBirth = "";
-    genotype = "";
-    gender = "";
-    maritalStatus = "";
-    hasChild = "";
-    numberOfChildren = "";
-    multipleBirth = "";
-    multipleBirthInteger = 0;
-    multipleBirthRule = number().min(0).max(10);
-    belongsToPractice = true;
-    organizationId = "";
-    associationRelationship = "";
-    associationType = "Family";
     emailRule = string().email().required();
     email = "";
     memberRole = "";
+    showDatalist = false;
+    query = "";
+    searchResults = [] as any;
+    relationship = "";
+    paymentAccounts = [];
+    accountManger = "";
+    defaultPaymentAccountId = "";
+    allAccounts = [];
+    accounts = [];
+    results = [] as any;
+    patientId = ""
 
     dobRule = date().max(
       new Date(),
       `Date must be on or before ${new Date().toLocaleDateString("en-NG")}`
     );
-    bloodGroupOptions = [
-      "A+",
-      "A-",
-      "B+",
-      "B-",
-      "O+",
-      "O-",
-      "AB+",
-      "AB-",
-      "NOT SURE",
-    ];
-
+  
      phone = {
      dialCode: "+234",
       number: "",
     };
 
-    genotypeOptions = ["AA", "AS", "AC", "SS", "SC", "NOT SURE"];
-    genderOptions = [
-      { code: "male", display: "Male" },
-      { code: "female", display: "Female" },
-      { code: "other", display: "Other" },
-    ];
-    multipleBirthOptions = [
-      { code: "yes", display: "Yes" },
-      { code: "no", display: "No" },
-    ];
-    get viewOnly() {
-      return this.$route.path.includes("view");
+    
+  @Watch("query")
+  async search(query: string) {
+    if (!query) return (this.results = []);
+    await this.searchpatients(query);
+  }
+
+   async searchpatients(query: string) {
+      const AllNotes = cornieClient().get(`/api/v1/patient/search?query=${query}`);
+      const response = await Promise.all([AllNotes]);
+      const info = response[0].data;
+        this.results = info.map((p:IPatient) => ({
+        ...p,
+        display: this.printPatient(p),
+      }));
+
+  }
+
+  
+  printPatient(patient: IPatient) {
+    return `${patient.firstname} ${patient.lastname}`;
+  }
+
+    setDefault(index: any) {
+      for (var i = 0; i < this.allAccounts.length; i++) {
+        if (this.accounts[i] == index) {
+          this.defaultPaymentAccountId = index;
+        }
+      }
+    }
+
+    get patientName(){
+      return this.firstName +''+ this.middleName +''+ this.lastName;
     }
 
     get payload() {
         return {
-        firstname: this.firstName,
-        middleName: this.middleName,
-        lastname: this.lastName,
-        dateOfBirth: this.dateOfBirth,
+        firstName: this.firstName,
+        lastName: this.lastName,
         email: this.email,
         phone: this.phone,
-        multipleBirthInteger: this.multipleBirthInteger,
-        associationRelationship: this.associationRelationship,
-        associationType: this.associationType,
-        patientOrganizationId: this.cornieUser.organizationId,
-        memberRole: this.memberRole,
+        dob: this.dateOfBirth,
+        relationship: this.relationship,
+        role: this.memberRole,
+        patientId: this.patientId || undefined
 
         };
+    }
+
+    selected(value:any){
+      this.showDatalist = false; 
+
+        this.firstName = value.firstname;
+        this.lastName = value.lastname;
+        this.email = value.email;
+        this.phone = value?.contactInfo[0]?.phone;
+        this.dateOfBirth = value.dateOfBirth;
+        this.relationship = value.relationship;
+        this.memberRole = value.role;
+        this.patientId = value.id;
     }
 
     async submit() {
@@ -255,9 +381,9 @@ export default class MemberModal extends Vue {
  async createPatientAssociation() {
     // const { valid } = await (this.$refs.form as any).validate();
     // if (!valid) return;
-    console.log(this.payload)
+    // console.log(this.payload)
     try {
-      const { data } = await cornieClient().post("/api/v1/patient-portal/association/create-patient-with-association",this.payload);
+      const { data } = await cornieClient().post("/api/v1/patient-portal/family/member/",this.payload);
       window.notify({ msg: "Member Added" , status: "success" });
       this.done();
       //this.reset();
@@ -288,18 +414,78 @@ export default class MemberModal extends Vue {
   }
 
    done() {
-    this.$emit("allergy-added");
+    this.$emit("family-added");
     this.show = false;
   }
 
 }
 </script>
-
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style>
 .border-r-0 {
   border-right-width: 0px !important;
 }
 .border-l-0 {
   border-left-width: 0px !important;
+}
+  .multiselect-option.is-selected {
+  background: #fe4d3c;
+  color: var(--ms-option-color-selected, #fff);
+}
+.multiselect-option.is-selected.is-pointed {
+  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+  color: var(--ms-option-color-selected-pointed, #fff);
+}
+.multiselect-option.is-selected {
+  background: var(--ms-option-bg-selected, #fe4d3c);
+  color: var(--ms-option-color-selected, #fff);
+}
+
+.multiselect {
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+  border-radius: var(--ms-radius, 4px);
+  background: var(--ms-bg, #fff);
+  font-size: var(--ms-font-size, 1rem);
+  min-height: calc(
+    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+  );
+}
+
+.multiselect-tags {
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--ms-tag-my, 0.25rem) 0 0;
+  padding-left: var(--ms-py, 0.5rem);
+  align-items: center;
+}
+
+.multiselect-tag.is-user {
+  padding: 5px 12px;
+  border-radius: 22px;
+  background: #080056;
+  margin: 3px 3px 8px;
+  position: relative;
+  left: -10px;
+}
+.multiselect-tag {
+  padding: 5px 12px;
+  border-radius: 22px;
+  background: #080056;
+  margin: 3px 3px 8px;
+  position: relative;
+  left: -10px;
 }
 </style>

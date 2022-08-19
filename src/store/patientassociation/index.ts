@@ -1,7 +1,7 @@
 import ObjectSet from "@/lib/objectset";
 import {IPatientAssociation} from "@/types/IPatientAssociation";
 import { StoreOptions } from "vuex";
-import { fetchFamilyAssociations, fetchFamilyMember, deleteFamilyMember} from "./helper";
+import { fetchFamilyAssociations, fetchFamilyMember, deleteFamilyMember, acceptFamilyMember, declineFamilyMember} from "./helper";
 
 interface FamilyAssociationState {
     familyassociations: IPatientAssociation[];
@@ -38,6 +38,14 @@ export default {
       familymembers.splice(index, 1);
       state.familymembers = [...familymembers];
     },
+    acceptFamilyMember(state, familymembers: IPatientAssociation[]) {
+      const familymemberSet = new ObjectSet([...state.familymembers, ...familymembers], "id");
+      state.familymembers = [...familymemberSet];
+    },
+    declineFamilyMember(state, familymembers: IPatientAssociation[]) {
+      const familymemberSet = new ObjectSet([...state.familymembers, ...familymembers], "id");
+      state.familymembers = [...familymemberSet];
+    },
   },
   actions: {
     async fetchFamilyAssociations(ctx) {
@@ -61,6 +69,20 @@ export default {
       const deleted = await deleteFamilyMember(associateId);
       if (!deleted) return false;
       ctx.commit("deleteFamilyMember", associateId);
+      return true;
+    },
+    async acceptFamilyMember(ctx, { associateId }: any) {
+      if (!associateId) return;
+      const deleted = await acceptFamilyMember(associateId);
+      if (!deleted) return false;
+      ctx.commit("acceptFamilyMember", associateId);
+      return true;
+    },
+    async declineFamilyMember(ctx, { associateId }: any) {
+      if (!associateId) return;
+      const deleted = await declineFamilyMember(associateId);
+      if (!deleted) return false;
+      ctx.commit("declineFamilyMember", associateId);
       return true;
     },
   },

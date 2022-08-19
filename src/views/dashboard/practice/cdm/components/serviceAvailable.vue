@@ -20,7 +20,7 @@
             <div class="mt-5">
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">Item Code</p>
-                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem.itemCode }}</p>
+                            <p class="flex justify-end text-sm float-right w-full">{{ selectedItem.identifier }}</p>
                         </div>
                         <div class="flex space-x-4 w-full mb-5">
                             <p class="flex text-sm text-gray-400 float-left w-full">category</p>
@@ -31,27 +31,14 @@
                             <p class="flex justify-end text-sm float-right w-full">1</p>
                         </div>
             </div>
-            <div class="bg-white py-3 px-4 shadow rounded-lg mb-4 flex w-full space-x-2" style="align-items: center;">
+            <div class="bg-white py-3 hidden px-4 shadow rounded-lg mb-4 flex w-full space-x-2" style="align-items: center;">
                 <location-icon/>
                 <div>
                     <p class="text-lg font-bold">Ikeja</p>
                     <p class="text-gray-400">Mon . Tue . Wed</p>
                 </div>
             </div>
-             <div class="bg-white py-3 px-4 shadow rounded-lg mb-4 flex w-full space-x-2" style="align-items: center;">
-                <location-icon/>
-                <div>
-                    <p class="text-lg font-bold">Ikeja</p>
-                    <p class="text-gray-400">Mon . Tue . Wed</p>
-                </div>
-            </div>
-             <div class="bg-white py-3 px-4 shadow rounded-lg mb-4 flex w-full space-x-2" style="align-items: center;">
-                <location-icon/>
-                <div>
-                    <p class="text-lg font-bold">Ikeja</p>
-                    <p class="text-gray-400">Mon . Tue . Wed</p>
-                </div>
-            </div>
+ 
            
       </cornie-card-text>
       

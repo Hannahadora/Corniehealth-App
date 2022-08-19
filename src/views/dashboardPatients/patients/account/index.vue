@@ -3,7 +3,7 @@
     class="flex justify-center bg-white mb-auto pb-72 h-full  shadow-lg p-3 mt-2 rounded-lg w-full">
     <div class="w-full">
       <span
-        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-2xl text-primary py-2"
+        class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
        Private Profile & Settings
       </span>
@@ -15,7 +15,7 @@
             <provider-section/>
             <security-section/>
             <notification-section />
-            <association-section/>
+            <association-section :id="id"/>
         </tabs>
       </span>
     </div>
@@ -28,6 +28,7 @@ import Tabs from "@/components/tabs.vue";
 import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
 import { namespace } from "vuex-class";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 import AssociationSection from "./association/index.vue";
 import ProfileSection from "./accountprofile/index.vue";
@@ -58,6 +59,10 @@ import NotificationSection from "./notifications/index.vue";
   },
 })
 export default class AccountSettings extends Vue {
+
+  @Prop({ type: String, default: "" })
+  id!: string;
+
   tabLinks = [
     "Account Profile",
     "Contact",
