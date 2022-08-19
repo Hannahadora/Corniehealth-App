@@ -255,13 +255,6 @@
     authPractitioner!: IPractitioner;
 
     userDetails = "";
-    async fetchUserDetails() {
-      const details = cornieClient().get(
-        `/api/v1/patient/get-patient/${this.userId}`
-      );
-      const response = await Promise.all([details]);
-      this.userDetails = response[0].data;
-    }
     get userId() {
       return this.cornieUser?.id;
     }
@@ -287,7 +280,7 @@
       this.multipleBirth = details?.multipleBirth == true ? "yes" : "no";
     }
 
-    async getUpdatePayload() {
+    get getUpdatePayload() {
       return {
         id: this.cornieUser?.id,
         mrn: this.corniePatient.mrn,
@@ -331,8 +324,9 @@
     }
 
     async saveProfile() {
-      const details = cornieClient().put(
-        `/api/v1/patient/${this.userId}`,
+      console.log("Saving profile...", this.getUpdatePayload);
+      const details = cornieClient().patch(
+        `/api/v1/patient-portal/account`,
         this.getUpdatePayload
       );
       const response = await Promise.all([details]);
