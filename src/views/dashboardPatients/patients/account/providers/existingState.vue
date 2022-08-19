@@ -47,30 +47,30 @@
               </div>
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.provider.id)"
+                @click="deleteItem(item.provid.id)"
               >
                 <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
-            <template #status>
+            <!-- <template #status>
                 <span
                   class="bg-green-200 text-green-800 text-center rounded-md p-1 bg-opacity-20"
                 >
                   Active
                 </span>
-              </template>
-            <!-- <template #status="{item}">
+              </template> -->
+            <template #status="{item}">
                 <span
                   :class="{
-                    'bg-green-200 text-green-800': status == 'active',
-                    ' bg-red-500 text-red-400': status == 'inactive',
+                    'bg-green-200 text-green-800': item.status == 'Active',
+                    ' bg-red-500 text-red-400': item.status == 'inactive',
                   }"
                   class="text-center rounded-md p-1 bg-opacity-20"
                 >
-                  {{ status }}
+                  {{ item.status }}
                 </span>
-              </template> -->
+              </template>
           </cornie-table>
         </div>
         </span>
@@ -174,12 +174,12 @@ export default class ProviderExistingState extends Vue {
     {
       title: "EMAIL  ADDRESS",
       key: "email",
-      show: false,
+      show: true,
     },
     {
       title: "STATUS",
       key: "status",
-      show: false,
+      show: true,
     }
   ];
 
