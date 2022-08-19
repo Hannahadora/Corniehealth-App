@@ -33,5 +33,24 @@ export async function deleteFamilyMember(associateId:string) {
   }
   return false;
 }
-  
+
+export async function acceptFamilyMember(associateId:string) {
+  try {
+    const response = await cornieClient().patch(`/api/v1/patient-portal/family/member/${associateId}/accept`, {});
+    if (response.success) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
+}
+
+export async function declineFamilyMember(associateId:string) {
+  try {
+    const response = await cornieClient().patch(`/api/v1/patient-portal/family/member/${associateId}/decline`, {});
+    if (response.success) return true;
+  } catch (error) {
+    return false;
+  }
+  return false;
+}
 

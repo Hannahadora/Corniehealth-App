@@ -2,88 +2,77 @@
   <div class="w-full pb-7">
     <span class="flex justify-end w-full mb-3">
       <button
-        @click="showMemeberList = !showMemeberList"
+        @click="showMember = true"
         class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
       >
-      <span>
             Add Member
-      </span>
-      <span>
-        |
-      </span>   
-       <chevron-down-icon class="stroke-current text-white"/>
       </button>
-      <div
-        :class="[
-            !showMemeberList ? 'hidden' : 'o',
-        ]"
-        class="absolute shadow h-auto overflow-x-hidden bg-white py-4 border-gray-400 border top-100 z-10 right-7 m-3 rounded overflow-y-auto mt-2"
-        style="width: 11.8%;top: 500px;"
-        >
-            
-           <div class="mb-2 w-full">
-               <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showMember = true">Add Member</span>
-           </div>
-            <div class="mb-2 w-full">
-                <span class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3" @click="showPatientModal = true">Add Existing</span>
-            </div>
-        </div>
+
+    
     </span>
-    <cornie-table
+  <cornie-table
       :columns="rawHeaders"
       v-model="sortAssocaitons"
       :check="false"
       :fixeHeight="true"
     >
-      <template #actions>
+      <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showViewProvider = true"
         >
           <eye-icon class="text-yellow-400 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showMemberModal(item.id)"
         >
-          <edit-icon class="text-primary fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
+          <edit-icon />
+          <span class="ml-3 text-xs">Update</span>
+        </div>
+         <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <money-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Payment Account</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="declineFamilyMember(item.id, item.patientName)"
         >
-          <delete-icon class="text-danger fill-current" />
+          <cancel-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Deactivate</span>
         </div>
+        
       </template>
-      <template #status>
-          <span
-            class="bg-green-200 text-green-700 text-center rounded-md py-2 px-4 bg-opacity-20"
-          >
-            Active
-          </span>
-        </template>
-      <!-- <template #status="{item}">
+      <template #status="{item}">
           <span
             :class="{
-              'bg-green-200 text-green-800': status == 'active',
-              ' bg-red-500 text-red-400': status == 'inactive',
+              'bg-green-200 text-green-800': item.status == 'Active',
+              ' bg-red-500 text-red-400': item.status == 'Inactive',
             }"
             class="text-center rounded-md p-1 bg-opacity-20"
           >
-            {{ status }}
+            {{ item.status }}
           </span>
-        </template> -->
+        </template>
+        <template #familyId="{item}">
+         <span class="text-blue-500">{{ item.familyId}}</span>
+        </template>
+         <template #patientName="{item}">
+         <span class="text-blue-500">{{ item.patientName}}</span>
+        </template>
     </cornie-table>
   </div>
   <view-modal v-model="showViewProvider"/>
    <existing-patient-modal v-model="showPatientModal"/>
-   <member-modal v-model="showMember"/>
+   <member-modal v-model="showMember" :familyId="id" :id="memberId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
 import {IPatientAssociation} from "@/types/IPatientAssociation";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -96,6 +85,7 @@ import ColumnFilter from "@/components/columnfilter.vue";
 import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { cornieClient } from "@/plugins/http";
 import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
@@ -103,9 +93,9 @@ import DeleteIcon from "@/components/icons/deactivate.vue";
 import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
-import { Watch } from "vue-property-decorator";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import ExistingPatientModal from "../existingPatient.vue";
+import MoneyIcon from "../icons/money.vue";
 
 import MemberModal from "./memberModal.vue";
 
@@ -132,13 +122,18 @@ const patientassociation = namespace("patientassociation");
     ChevronDownIcon,
     ExistingPatientModal,
     MemberModal,
+    MoneyIcon,
   },
 })
-export default class FamilyAsscoation extends Vue {
+export default class FamilyAsscoationExisitngState extends Vue {
   showColumnFilter = false;
   showMemeberList = false;
   showPatientModal = false;
   query = "";
+  memberId = "";
+
+  @Prop({ type: String, default: "" })
+  id!: string;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -152,39 +147,46 @@ export default class FamilyAsscoation extends Vue {
   dropdowns = {} as IIndexableObject;
 
    @patientassociation.State
-  patientassociations!: IPatientAssociation[];
+  familymembers!: IPatientAssociation[];
 
   @patientassociation.Action
-  fetchPatientAssociation!: (associationType: string) => Promise<void>;
+  fetchFamilyMember!: (familyId: string) => Promise<void>;
+
+  
 
 
-  rawHeaders = [
-    { title: "DATE ADDED", key: "date", show: true },
-    { title: "MRN #", key: "mrn", show: true },
+   rawHeaders = [
+    { title: "DATE ADDED", key: "dateAdded", show: true, noOrder:true },
+    { title: "MRN #", key: "familyId", show: true , noOrder:true},
     {
       title: "name",
-      key: "name",
+      key: "patientName",
       show: true,
+       noOrder:true
     },
     {
-      title: "DATE OF BIRTH",
-      key: "dob",
+      title: "RELATIONSHIP",
+      key: "relationship",
       show: true,
+       noOrder:true
     },
     {
-      title: "GENDER",
-      key: "gender",
+      title: "ROLE",
+      key: "role",
       show: true,
+       noOrder:true
     },
     {
       title: "Payment Account",
       key: "payment",
       show: true,
+       noOrder:true
     },
      {
       title: "Status",
       key: "status",
       show: true,
+       noOrder:true
     },
 
   ];
@@ -192,18 +194,16 @@ export default class FamilyAsscoation extends Vue {
 
 
   get items() {
-    const patientassociations = this.patientassociations.map((patientassociation) => {
+    const familyassociations = this.familymembers.map((familyassociation) => {
+         (familyassociation as any).dateAdded = new Date(
+        (familyassociation as any).dateAdded
+      ).toLocaleDateString("en-US");
       return {
-        ...patientassociation,
-        name: 'Kessigton Hospital',
-        type: 'Hospital/Clinic',
-        address: '5. Avenue Road, Surulere ',
-        contactnumber: '09083445488',
-        emailaddress: 'Info@kessignton.com',
+        ...familyassociation,
       };
     });
-    if (!this.query) return patientassociations;
-    return search.searchObjectArray(patientassociations, this.query);
+    if (!this.query) return familyassociations;
+    return search.searchObjectArray(familyassociations, this.query);
   }
 
 
@@ -214,9 +214,79 @@ export default class FamilyAsscoation extends Vue {
     });
   }
 
+  showMemberModal(value:string){
+    this.memberId = value;
+    this.showMember = true;
+  }
+
+     async deleteFamilyMember(id:string){
+      const confirmed = await window.confirmAction({
+      message: "You have opted to revoke membership of Ibeh’s family account. Click below to confirm",
+      title: "Revoke",
+    });
+    if (!confirmed) {
+      return;
+    } else {
+      try {
+        const response = await cornieClient().delete(
+          `/api/v1/patient-portal/family/member/${id}/revoke`
+        );
+        if (response.success) {
+          window.notify({ msg: "Membership revoked successfully", status: "success" });
+          await this.fetchFamilyMember(this.id);
+        }
+      } catch (error) {
+        window.notify({ msg: "Membership revoked unsuccessfully", status: "error" });
+      }
+    }
+  }
+
+    async declineFamilyMember(id:string, name:string){
+      const confirmed = await window.confirmAction({
+      message: `You have been added to ${name} family account. Click below to decline`,
+      title: "Decline",
+    });
+    if (!confirmed) {
+      return;
+    } else {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/family/member/${id}/decline`,{}
+        );
+        if (response.success) {
+          window.notify({ msg: "Declined Successfully", status: "success" });
+          await this.fetchFamilyMember(this.id);
+        }
+      } catch (error) {
+        window.notify({ msg: "Declined Unsuccessfull", status: "error" });
+      }
+    }
+  }
+  async acceptFamilyMember(id:string, name:string){
+      const confirmed = await window.confirmAction({
+      message: `You have been added to ${name} family account. Click below to accept`,
+      title: "Accept",
+    });
+    if (!confirmed) {
+      return;
+    } else {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/family/member/${id}/accept`,{}
+        );
+        if (response.success) {
+          window.notify({ msg: "Accepted Successfully", status: "success" });
+          await this.fetchFamilyMember(this.id);
+        }
+      } catch (error) {
+        window.notify({ msg: "Not Accepted", status: "error" });
+      }
+    }
+  }
+
 
   async created() {
-    this.fetchPatientAssociation('Family');
+    this.fetchFamilyMember(this.id);
   }
 }
 </script>

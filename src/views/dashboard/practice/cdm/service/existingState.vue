@@ -6,7 +6,7 @@
         :pageInfo="pageInfo">
         <template #name="{ item }">
           <div
-            class="text-no-wrap flex items-center uppercase text-xs"
+            class="text-no-wrap flex items-center capitalize text-xs"
             style="white-space: nowrap"
           >
             <Avatar :src="item.image" />
@@ -150,7 +150,7 @@ headers = [
     },
     {
       title: "Item Code",
-      key: "itemCode",
+      key: "identifier",
       show: true,
       noOrder: true,
     },
@@ -206,7 +206,7 @@ headers = [
         ...service,
         lastUpdated: service.createdAt,
         category: this.categoryMapper(service.category),
-        cost: '₦' + service.cost,
+        cost: '₦' + service.markup,
         discount: service.discountLimit + '%'
       };
     });

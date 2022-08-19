@@ -1,9 +1,13 @@
 <template>
   <div class="h-full flex justify-center">
 
-        <family-empty-state v-if="empty"/>
-        <!-- <family-exisiting-state v-else/> -->
-        <family-state v-else/>
+      <span v-if="id" class="w-full">
+          <family-exisiting-state :id="id" />
+      </span>
+      <span v-else class="w-full">
+        <family-empty-state v-if="empty" @family-added="familyadded"/>
+        <family-state v-else @family-added="familyadded"/>
+      </span>
      
   </div>
 </template>
@@ -15,6 +19,7 @@ import { namespace } from "vuex-class";
 import FamilyEmptyState from "./emptyState.vue";
 import FamilyExisitingState from "./exisitngState.vue";
 import FamilyState from "./family.vue";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 const patientassociation = namespace("patientassociation");
 
@@ -28,9 +33,18 @@ const patientassociation = namespace("patientassociation");
 })
 export default class familytypeIndex extends Vue {
 
+  @Prop({ type: String, default: "" })
+  id!: string;
+
   get empty() {
     return this.familyassociations.length < 1;
   }
+
+  
+    @Watch("id")
+    idChanged() {
+      this.fetchFamilyMember(this.id);
+    }
 
   @patientassociation.State
   familyassociations!: IPatientAssociation[];
@@ -38,12 +52,20 @@ export default class familytypeIndex extends Vue {
   @patientassociation.Action
   fetchFamilyAssociations!: () => Promise<void>;
 
-   async specialadded(){
-     await this.fetchFamilyAssociations();
+  @patientassociation.State
+  familymembers!: IPatientAssociation[];
+
+  @patientassociation.Action
+  fetchFamilyMember!: (familyId: string) => Promise<void>;
+
+
+
+  async familyadded(){
+    await this.fetchFamilyAssociations();
   }
 
-   created() {
-     this.fetchFamilyAssociations();
+   async created() {
+     await this.fetchFamilyAssociations();
   }
 
 }

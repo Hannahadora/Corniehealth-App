@@ -1451,8 +1451,8 @@ export default class NewProuct extends Vue {
   get payload() {
     if(this.type == 'medication'){
       return {
-      genericCode: this.genericCode,
-      brandCode: this.genericCode,
+      genericCode: this.dataCode,
+      brandCode: this.dataCode,
       form: this.form,
       classification: this.classification,
       subClassification: this.subClassification,
@@ -1473,14 +1473,14 @@ export default class NewProuct extends Vue {
       applyVAT: this.applyVAT,
       inventory: this.inventory,
       storage: this.storage,
-      regNo: this.Nafdac,
+      regNo: this.Nafdac || 'N/A',
       strength: this.strength,
     
     };
     }else{
       return {
-      genericCode: this.genericCode,
-      brandCode: this.genericCode,
+      genericCode: this.dataCode,
+      brandCode: this.dataCode,
       form: this.form,
       classification: this.classification || undefined,
       subClassification: this.subClassification,
@@ -1501,7 +1501,7 @@ export default class NewProuct extends Vue {
       applyVAT: this.applyVAT,
       inventory: this.inventory,
       storage: this.storage,
-      regNo: this.Nafdac,
+      regNo: this.Nafdac || 'N/A',
       strength: this.strength,
 
 
@@ -1516,10 +1516,13 @@ export default class NewProuct extends Vue {
     this.loading = false;
   }
   async createProductInventory() {
+        this.payload.genericCode = this.dataCode.toString();
+        this.payload.brandCode = this.dataCode.toString();
     if(this.payload.genericCode && this.payload.brandCode && this.payload.form && this.payload.brand == ''){
        return window.notify({ msg: "All fields are required", status: "success" });
     }else{
-      
+
+
       try {
         const response = await cornieClient().post(
           "/api/v1/catalogue-product",

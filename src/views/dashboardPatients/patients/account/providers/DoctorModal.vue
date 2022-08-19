@@ -221,7 +221,7 @@ export default class DoctorModal extends Vue {
     this.email = practitioner.email;
     this.referenceOrganization = practitioner.practitioner.id;
     this.organizationId = practitioner.organizationId;
-    this.phone = practitioner.phone as any;
+    this.phone = practitioner?.phone as any;
     this.identifier = practitioner.organizationId;
   }
 
