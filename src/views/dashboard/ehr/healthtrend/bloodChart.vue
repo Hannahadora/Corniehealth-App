@@ -2,7 +2,7 @@
   <chart-card height="338px" title="Blood Pressure" @ordered="onOrder">
     <p class="text-primary font-bold text-sm -mt-5 mb-3">
       {{ diastolicAverage }}/{{ systolicAverage || 0 }}
-      <span class="font-light">mmHgz</span>
+      <span class="font-light">mmHg</span>
     </p>
     <canvas ref="chart" style="margin: auto; width: 100%"></canvas>
   </chart-card>
