@@ -182,13 +182,13 @@
                         class="grow w-full"
                         v-model="occurenceValue"
                         />
-                        <cornie-select
+                        <!-- <cornie-select
                         :items="['Date']"
                         placeholder="Date"
                         class="w-32 mt-0.5 flex-none"
                         :setPrimary="true"
                         v-model="occurenceUnit"
-                        />
+                        /> -->
 
                       <!-- <cornie-select
                         :items="['Period', 'Timing']"

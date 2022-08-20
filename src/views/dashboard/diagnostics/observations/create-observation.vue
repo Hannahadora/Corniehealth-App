@@ -336,11 +336,10 @@
             :opened="false"
           >
             <div class="grid grid-cols-2 gap-6 py-6">
-              <fhir-input
-                reference="http://terminology.hl7.org/CodeSystem/data-absent-reason"
+                 <cornie-input
                 class="w-full"
                 label="Date Absent Reason"
-                placeholder="Select"
+                placeholder="Enter"
                 v-model="reasonInfo.dateAbsentReason"
               />
               <fhir-input
@@ -369,22 +368,22 @@
         </v-form>
       </cornie-card-text>
 
-      <div class="flex items-center justify-end mt-24 mb-6">
-          <cornie-btn
-           @click="show = false"
-            class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
-          >
-           Cancel
-          </cornie-btn>
-          <cornie-btn
-            @click="save('')"
-            :loading="loading"
-            type="submit"
-            class="text-white bg-danger px-3 py-1 rounded-lg"
-          >
-            Save
-          </cornie-btn>
-        </div>
+      <div class="flex items-center justify-end mt-6 mb-6">
+        <cornie-btn
+          @click="show = false"
+          class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
+        >
+          Cancel
+        </cornie-btn>
+        <cornie-btn
+          @click="save('')"
+          :loading="loading"
+          type="submit"
+          class="text-white bg-danger px-3 py-1 rounded-lg"
+        >
+          Save
+        </cornie-btn>
+      </div>
     </cornie-card>
   </cornie-dialog>
 
@@ -595,13 +594,15 @@ export default class ObservationDialog extends Vue {
       this.member.hasMemer = value.id;
     } else if (this.refSubject === "derivedFrom") {
       this.member.derivedFrom = value.id;
-    } else if(this.refSubject === 'device') {
+    } else if (this.refSubject === "device") {
       this.reasonInfo.device = value.deviceName.name;
-    } if (this.refSubject === "basedOn") {
+    }
+    if (this.refSubject === "basedOn") {
       this.basicInfo.basedOn = value.id;
-    }  if (this.refSubject === "partOf") {
+    }
+    if (this.refSubject === "partOf") {
       this.basicInfo.partOf = value.id;
-    } 
+    }
     // this.refSubject = ''
   }
 
@@ -665,11 +666,13 @@ export default class ObservationDialog extends Vue {
   }
 
   buildDateTime(dateString: string, time: string) {
-    const date = new Date(dateString);
-    const [hour, minute] = time.split(":");
-    date.setMinutes(Number(minute));
-    date.setHours(Number(hour));
-    return date.toISOString();
+    if (dateString || time) {
+      const date = new Date(dateString);
+      const [hour, minute] = time.split(":");
+      date.setMinutes(Number(minute));
+      date.setHours(Number(hour));
+      return date.toISOString();
+    }
   }
 
   get payload() {
