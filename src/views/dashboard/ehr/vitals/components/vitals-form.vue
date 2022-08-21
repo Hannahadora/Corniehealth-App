@@ -290,7 +290,7 @@
       </accordion-component>
     </v-form>
 
-    <template #optionactions>
+    <template #optionactions v-if="!viewState">
       <div class="flex items-center justify-end">
         <cornie-btn
           @click="show = false"
@@ -334,6 +334,7 @@ import UnitsSelect from "./units-select.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import { cornieClient } from "@/plugins/http";
 import ClinicalDialog from "../../conditions/clinical-dialog.vue";
+import { boolean } from "yup/lib/locale";
 
 const vitalsStore = namespace("vitals");
 const userStore = namespace("user");
@@ -381,6 +382,9 @@ export default class VitalsForm extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @Prop({ type: Boolean, default: false })
+  viewState!: boolean;
+
   @Prop({ type: Object, default: <any>{} })
   vital!: IVital;
 
@@ -410,7 +414,7 @@ export default class VitalsForm extends Vue {
     time: "",
   };
   vitalData: any = {
-    status: "preliminary",
+    status: "final",
     bodyTemperature: {
       unit: undefined,
       value: undefined,
