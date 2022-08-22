@@ -73,7 +73,7 @@
                 label="Type"
                 placeholder="--Select--"
                 v-model="type"
-                :items="['pickup']"
+                :items="['pickup', 'delivery']"
                 :disabled="salesData && checkSales"
               />
             </div>
@@ -141,7 +141,7 @@
                     <td>Sub Total</td>
                     <td>{{ subTotal || 0.0 }}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="type === 'delivery'">
                     <td class="font-bold">Shipping Cost</td>
                     <td>{{ shippingCost || 0.0 }}</td>
                   </tr>
@@ -532,7 +532,7 @@ export default class PosDialog extends Vue {
         };
       }),
       customer: {
-        name: this.customerId,
+        name: this.customerId ? this.customerId : undefined,
       },
       payments:
         this.activeTab === "Full Payment"
