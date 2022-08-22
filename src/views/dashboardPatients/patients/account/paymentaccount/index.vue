@@ -37,8 +37,8 @@
         @newpaymentaccount="() => (showNewPaymentAccount = true)"
       />
       <existing-state
-        @procedure="() => (showNewPaymentAccount = true)"
-        :procedures="allPatientAccount"
+        @newpaymentaccount="() => (showNewPaymentAccount = true)"
+        :patientAccounts="allPatientAccount"
         v-else
       />
       <new-payment-account
@@ -47,7 +47,10 @@
       />
       <new-card-payment v-model="showCardPayment" />
       <new-wallet-payment v-model="showWalletPayment" />
-      <new-insurance-payment v-model="showInsurancePayment" />
+      <new-insurance-payment
+        @reloadPayment="fetchPaymentAccounts"
+        v-model="showInsurancePayment"
+      />
     </div>
   </div>
 </template>

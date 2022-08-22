@@ -33,7 +33,7 @@
         label="Priority"
         v-model="priority"
         placeholder="Select"
-        :items="[]"
+        :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
       />
       <cornie-input
         class="w-full"
@@ -104,9 +104,14 @@
   import CornieRadio from "@/components/cornieradio.vue";
   import CornieSelect from "@/components/cornieselect.vue";
   import DateTimePicker from "@/components/date-time-picker.vue";
+  import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import { Options, Vue } from "vue-class-component";
   import { PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+
+  const account = namespace("user");
 
   @Options({
     components: {
@@ -116,6 +121,7 @@
       CornieSelect,
       DateTimePicker,
     },
+    emits: ["reloadPayment"],
   })
   export default class NewInsurancePayment extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
@@ -137,6 +143,73 @@
       start: "",
       startTime: "",
     };
-    save() {}
+
+    @account.Getter
+    corniePatient!: any;
+
+    @account.Mutation
+    updatePractitioner!: (practitioners: IPractitioner[]) => void;
+
+    @account.Getter
+    authPractitioner!: IPractitioner;
+
+    async mounted() {
+      await this.updatePractitioner(this.authPractitioner as any);
+    }
+
+    get payload() {
+      return {
+        // id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        accountType: this.corniePatient?.accountType,
+        type: "insure-pri",
+        ownerId: this.corniePatient?.id,
+        insurance: {
+          patientId: this.corniePatient?.id,
+          priority: this.priority,
+          payer: this.payor,
+          plan: this.plan,
+          policyNo: this.policy,
+          policyExpiry: this.period.end,
+          deductible: this.detuctable,
+          mainPolicyHolder: this.owner,
+          groupPolicyId: this.groupPolicyId,
+          description: this.description,
+          coverage: this.coverage,
+          excess: Number(this.excess) || 0,
+          policyStartDate: this.period.start,
+        },
+      };
+    }
+    validate() {
+      //@ts-ignore
+      return Object.values(this.payload.insurance).every((x) => x !== "");
+    }
+    async save() {
+      console.log("Saving payload", this.validate());
+      if (!this.validate()) {
+        window.notify({
+          msg: "All fields are required",
+          status: "error",
+        });
+        return;
+      }
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/patient-portal/payment`,
+          this.payload
+        );
+        window.notify({
+          msg: "Payment account added successfully",
+          status: "success",
+        });
+        this.show = false;
+        this.$emit("reloadPayment");
+      } catch (error) {
+        window.notify({
+          msg: "Error updating payment account",
+          status: "error",
+        });
+      }
+    }
   }
 </script>
