@@ -72,9 +72,12 @@
 
     get payload() {
       return {
-        accountType: "family",
-        type: "cc",
-        ownerId: this.userId,
+        accountType: this.corniePatient?.accountType,
+        type: "dc",
+        ownerId: this.corniePatient?.id,
+        card: {
+          email: this.corniePatient?.email,
+        },
       };
     }
 
@@ -84,9 +87,14 @@
         this.payload
       );
       console.log("response:", response.data);
+      const { url } = response.data;
+      console.log(url);
+
+      window.location.href = url;
       // this.allPatientAccount = response.data;
     }
 
+    async save() {}
     async mounted() {
       await this.updatePractitioner(this.authPractitioner as any);
     }

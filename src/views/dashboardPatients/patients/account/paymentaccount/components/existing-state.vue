@@ -3,10 +3,10 @@
     <div>
       <div class="flex justify-end w-full mb-8">
         <button
-          @click="newProcedure"
+          @click="newPaymentAccount"
           class="bg-danger rounded-lg text-white mt-5 py-4 px-8 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
-          New Procedure
+          Add New Account
         </button>
       </div>
       <cornie-table :columns="headers" v-model="items">
@@ -188,43 +188,37 @@
       PlusIcon,
       HistoryIcon,
     },
-    emits: ["new_encounter", "view_encounter"],
+    emits: ["newpaymentaccount"],
   })
   export default class EncounterExistingState extends Vue {
     @Prop()
-    procedures!: any[];
-
-    @encounter.Action
-    getEncounters!: (id: any) => Promise<void>;
-
-    @encounter.State
-    encounters!: any[];
+    patientAccounts!: any[];
 
     headers = [
       {
-        title: "Procedure id",
-        key: "identifier",
+        title: "Account Type",
+        key: "accountType",
         show: true,
         noOrder: true,
       },
       {
-        title: "date recorded",
-        key: "date",
+        title: "Payment Type",
+        key: "paymentType",
         show: true,
       },
       {
-        title: "based on",
-        key: "basedOn",
+        title: "Account Name",
+        key: "accountName",
         show: true,
       },
       {
-        title: "code",
-        key: "diagnosis",
+        title: "Account ID#",
+        key: "accountId",
         show: true,
       },
       {
-        title: "performer",
-        key: "attP",
+        title: "Expiry Date",
+        key: "expiryDate",
         show: true,
       },
       {
@@ -234,18 +228,23 @@
       },
     ];
 
+    //insure-emp, insure-pri, flerxi, wallet, cash, dc, cc, corp-bill-acct
+
     get items() {
-      console.log("vcvcvc", this.procedures);
+      console.log("vcvcvc", this.patientAccounts);
       const items =
-        this.procedures.length > 0
-          ? this.procedures.map((p) => {
+        this.patientAccounts.length > 0
+          ? this.patientAccounts.map((p) => {
               return {
-                identifier: p.id || "",
-                date: this.printRecorded(p.createdAt),
-                code: p.code || "",
-                status: p.status,
-                attP: p.performers.length,
-                basedOn: "care-plan",
+                accountType: p?.accountType,
+                paymentType: this.getpaymentType(p?.type) || "",
+                //@ts-ignore
+                accountName: this.getAccountName(p)?.accountName,
+                //@ts-ignore
+                accountId: this.getAccountName(p)?.accountId,
+                //@ts-ignore
+                expiryDate: this.getAccountName(p)?.expiryDate,
+                status: p?.status || "XXXXXX",
               };
             })
           : [];
@@ -253,18 +252,55 @@
       return items;
     }
 
+    getAccountName(p: any) {
+      const paymentType = this.getpaymentType(p?.type);
+      if (paymentType == "Card") {
+        const { card } = p;
+        console.log("card account name", card);
+        if (!card) return "XXXXXXX";
+        return {
+          accountName: card?.name,
+          accountId: `**** **** **${card?.lastFourDigits}`,
+          expiryDate: `${card?.expiryMonth}-${card?.expiryYear}`,
+        };
+      } else if (paymentType == "Insurance") {
+        const { insurance } = p;
+        if (!insurance) return "XXXXXXX";
+        return {
+          accountName: `${insurance?.payer}|${insurance?.plan}`,
+          accountId: `${insurance?.policyNo}`,
+          expiryDate: `${insurance?.policyExpiry}`,
+        };
+      } else if (paymentType == "Wallet") {
+        return {
+          accountName: `XXXXXX`,
+          accountId: `XXXXXX`,
+          expiryDate: `XXXXXX`,
+        };
+      }
+    }
+
+    getpaymentType(type: string) {
+      let t = "";
+      if (type == "cc" || type == "dc") return "Card";
+      if (
+        type == "insure-emp" ||
+        type == "insure-pri" ||
+        type == "flerxi" ||
+        type == "corp-bill-acct"
+      )
+        return "Insurance";
+
+      if (type == "wallet") return "Wallet";
+      return "Card";
+    }
     printRecorded(dateR: any) {
       const dateString = dateR;
       const date = new Date(dateString);
       return date.toLocaleDateString();
     }
-
-    newProcedure() {
-      this.$emit("procedure");
-    }
-
-    viewCondition(e: any) {
-      this.$emit("view_encounter", e);
+    newPaymentAccount() {
+      this.$emit("newpaymentaccount");
     }
   }
 </script>
