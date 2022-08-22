@@ -6,43 +6,49 @@
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="viewPermissions(item.id)"
         >
-          <eye-blue class="text-danger fill-current" />
+          <eye-yellow class="text-danger fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="viewCareTeam(item.id)"
         >
-          <update-status-yellow class="text-danger fill-current" />
+          <careteam-blue class="text-danger fill-current" />
           <span class="ml-3 text-xs">Care Team</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="accept(item.id)"
         >
-          <update-status-purple class="text-danger fill-current" />
+          <check-green-bg class="text-danger fill-current" />
           <span class="ml-3 text-xs">Accept</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="manage(item.id)"
         >
-          <correct-green class="text-danger fill-current" />
+          <settings-blue class="text-danger fill-current" />
           <span class="ml-3 text-xs">Manage Permission</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="decline(item.id)"
         >
-          <amend-blue class="text-danger fill-current" />
+          <cancel-red-bg class="text-danger fill-current" />
           <span class="ml-3 text-xs">Decline</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="revoke(item.id)"
         >
-          <cancel-red-bg class="text-danger fill-current" />
+          <decline class="text-danger fill-current" />
           <span class="ml-3 text-xs">Revoke Access</span>
+        </div>
+      </template>
+      <template #contactPerson="{ item }">
+        <div>
+          <p>{{ item.contactPerson }}</p>
+          <p>{{ item.contactPersonPhone }}</p>
         </div>
       </template>
       <template #status="{ item }">
@@ -76,22 +82,30 @@
     </cornie-table>
 
     <manage-permissions v-model="managePermissionModal" />
-    <accept :id="itemId" v-model="acceptModal" />
-    <decline :id="itemId" v-model="declineModal" />
-    <revoke :id="itemId" v-model="revokeModal" />
-    <care-team :id="itemId" v-model="careTeamModal" />
+    <accept-modal :id="itemId" v-model="acceptModal" />
+    <decline-modal :id="itemId" v-model="declineModal" />
+    <revoke-modal :id="itemId" v-model="revokeModal" />
+    <care-team-modal :id="itemId" v-model="careTeamModal" />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import EyeYellow from "@/components/icons/eye-yellow.vue";
+import Decline from "@/components/icons/decline.vue";
+import Revoke from "@/components/icons/revoke.vue";
+import CareteamBlue from "@/components/icons/careteam-blue.vue";
+import SettingsBlue from "@/components/icons/settings-blue.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue"
+import CheckGreenBg from "@/components/icons/check-green-bg.vue"
 import ToggleCheck from "@/components/ToogleCheck.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import ManagePermissions from "./manage-permissions.vue";
-import Accept from "./accept.vue";
-import Decline from "./decline.vue";
-import Revoke from "./revoke.vue";
+import AcceptModal from "./accept.vue";
+import DeclineModal from "./decline.vue";
+import RevokeModal from "./revoke.vue";
+import CareTeamModal from "./care-team.vue"
 import { cornieClient } from "@/plugins/http";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
@@ -104,9 +118,17 @@ import search from "@/plugins/search";
     CornieRadio,
     CornieTable,
     ManagePermissions,
-    Accept,
+    AcceptModal,
+    DeclineModal,
+    RevokeModal,
+    CareTeamModal,
+    EyeYellow,
     Decline,
     Revoke,
+    CareteamBlue,
+    CancelRedBg,
+    CheckGreenBg,
+    SettingsBlue,
   },
 })
 export default class AccessTable extends Vue {
@@ -131,12 +153,12 @@ export default class AccessTable extends Vue {
     },
     {
       title: "PRACTICE NAME",
-      key: "practiceIName",
+      key: "practiceName",
       show: true,
     },
     {
       title: "TYPE",
-      key: "type",
+      key: "practiceType",
       show: true,
     },
     {
@@ -182,21 +204,21 @@ export default class AccessTable extends Vue {
   ];
 
   get items() {
-    const providerPermissions = this.providerPermissions.map((report: any) => {
-      (report as any).createdAt = new Date(
-        (report as any).createdAt
+    const providerPermissions = this.providerPermissions.map((practice: any) => {
+      (practice as any).createdAt = new Date(
+        (practice as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...report,
-        // action: sale.id,
-        keydisplay: report.id,
-        patientId: report.patientId ?? "XXXX",
-        patientName: report.patientName,
-        type: report.type,
-        speialty: report.specialty,
-        contactPerson: report.contactPerson,
-        addedBy: report.addedBy,
-        status: report.status,
+        ...practice,
+        action: practice.id,
+        keydisplay: practice.id,
+        practiceId: practice.practiceIdentifier ?? "XXXX",
+        practiceName: practice.practiceName,
+        practiceType: practice.practiceType || 'N/A',
+        speialty: practice.specialty,
+        contactPerson: practice.contactPerson,
+        addedBy: practice.addedBy,
+        status: practice.status,
       };
     });
     if (!this.query) return providerPermissions;
@@ -225,7 +247,7 @@ export default class AccessTable extends Vue {
 
   viewPermissions(id: string) {
     this.itemId = id;
-    this.managePermissionModal = true;
+    // this.managePermissionModal = true;
   }
   viewCareTeam(id: string) {
     this.itemId = id;

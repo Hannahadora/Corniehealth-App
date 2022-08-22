@@ -170,7 +170,7 @@
                     placeholder="select"
                     class="w-full"
                     :label="'Encounter'"
-                    :patientId="patientId"
+                    :patientId="apatientId"
                     v-model="encounterId"
                   />
                   <div class="w-full -mt-1">
@@ -182,13 +182,13 @@
                         class="grow w-full"
                         v-model="occurenceValue"
                         />
-                        <cornie-select
+                        <!-- <cornie-select
                         :items="['Date']"
                         placeholder="Date"
                         class="w-32 mt-0.5 flex-none"
                         :setPrimary="true"
                         v-model="occurenceUnit"
-                        />
+                        /> -->
 
                       <!-- <cornie-select
                         :items="['Period', 'Timing']"
@@ -571,7 +571,7 @@ export default class MedicationModal extends Vue {
   encounterId = null;
   // performerId = "";
   locationId = "";
-  occurenceUnit = "";
+  occurenceUnit = "date";
   occurenceValue = "";
   replaces = null;
   asNeeded = null;
@@ -758,6 +758,8 @@ export default class MedicationModal extends Vue {
       if (response.success) {
         window.notify({ msg: "Diagnostic Request Created", status: "success" });
         this.done();
+      } else {
+        window.notify({ msg: response.message[0].message, status: "error" });
       }
     } catch (error: any) {
       window.notify({ msg: "Diagnostic Request Not Created", status: "error" });

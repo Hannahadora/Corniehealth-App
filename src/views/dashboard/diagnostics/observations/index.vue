@@ -4,11 +4,11 @@
       <p class="text-xl font-bold">{{ $route.name }}</p>
     </div>
     <div
-      class="w-full h-2/3 mt-12 flex flex-col justify-center items-center"
+      class="w-full flex flex-col justify-center items-center h-96"
       v-if="empty"
     >
-      <img src="@/assets/rafiki.svg" class="mb-2" />
-      <h4 class="text-black text-center">There is no record.</h4>
+        <img src="@/assets/img/empty-requests.svg" />
+        <h3 class="text-center mt-5">No Record!<br /></h3>
       <cornie-btn
         class="bg-danger px-3 rounded-full text-white m-5"
         @click="createObs = true"
@@ -215,14 +215,12 @@ const patients = namespace("patients");
 })
 export default class DiagnosticReport extends Vue {
   query = "";
-  empty = "";
   typeId = "";
 
   selectedObservation = <any>{};
   dateUpdated = "";
   currentStatus = "";
   updatedBy = "";
-
 
   showRecord = false;
   showResult = false;
@@ -233,7 +231,7 @@ export default class DiagnosticReport extends Vue {
   location = [] as any;
 
   observations = [] as any;
-  
+
   @patients.State
   patients!: IPatient[];
 
@@ -291,6 +289,10 @@ export default class DiagnosticReport extends Vue {
     },
   ];
 
+  get empty() {
+    return this.observations.length === 0;
+  }
+
   get items() {
     const observations = this.observations.map((report: any) => {
       (report as any).createdAt = new Date(
@@ -300,7 +302,7 @@ export default class DiagnosticReport extends Vue {
         ...report,
         // action: sale.id,
         keydisplay: report.id,
-        observationId: report.identifier ?? 'XXXX',
+        observationId: report.identifier ?? "XXXX",
         basedOn: report.basicInfo?.basedOn,
         category: report.basicInfo?.category,
         observationCode: report.basicInfo.code,
@@ -321,12 +323,12 @@ export default class DiagnosticReport extends Vue {
   updateStatus(value: string) {
     this.statusModal = true;
     this.typeId = value;
-     this.selectedObservation = this.observations.find(
+    this.selectedObservation = this.observations.find(
       (el: any) => el.id === value
     );
     this.dateUpdated = this.selectedObservation.updatedAt;
-  this.currentStatus = this.selectedObservation.status;
-  this.updatedBy = this.selectedObservation.performer;
+    this.currentStatus = this.selectedObservation.status;
+    this.updatedBy = this.selectedObservation.performer;
   }
 
   viewItem(value: string) {

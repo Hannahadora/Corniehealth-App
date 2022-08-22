@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" center class="w-1/4 h-auto">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-4 py-4 rounded-lg"
@@ -19,22 +19,42 @@
         </div>
       </cornie-card-title>
 
-      <p class="my-4">Confirm you want to accept this registration.</p>
+      <p class="my-6 font-bold text-lg">{{ practice.name }}</p>
 
-      <div class="flex justify-end">
+      <div class="flex items-start justify-between">
+        <p>Address</p>
+        <div>
+          {{ practice.address }}
+        </div>
+      </div>
+
+      <p class="my-6 font-bold text-lg">Team Members</p>
+      
+      <div>
+        <table class="w-full">
+          <tr>
+            <th>Name</th>
+            <th>Specialty</th>
+            <th>Designation</th>
+          </tr>
+          <tr v-for="(practitioner, i) in practice.practititioners" :key="i">
+            <td>{{ practitioner.name }}</td>
+            <td>{{ practitioner.specialty }}</td>
+            <td>{{ practitioner.designation }}</td>
+          </tr>
+        </table>
+      </div>
+
+
+      <div class="absolute right-6 bottom-6">
+        <div class="flex justify-end">
         <cornie-btn
           @click="show = false"
           class="text-base border-primary border-2 mr-3 rounded-xl text-primary"
         >
-          Cancel
+          Close
         </cornie-btn>
-        <cornie-btn
-          @click="submit"
-          :loading="loading"
-          class="text-base text-white bg-danger font-semibold rounded-xl"
-        >
-          Confirm
-        </cornie-btn>
+      </div>
       </div>
     </cornie-card>
   </cornie-dialog>
@@ -50,7 +70,6 @@ import search from "@/plugins/search";
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from "@/components/cornieradio.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
@@ -70,12 +89,12 @@ function defaultFilter(item: any, query: string) {
 @Options({
   name: "CareTeam",
   components: {
+    ...CornieCard,
     CornieIconBtn,
     ArrowLeftIcon,
     CancelIcon,
     CornieDialog,
     CornieInput,
-    CornieRadio,
     CornieBtn,
     CancelRedBg,
     CornieSelect,
@@ -92,6 +111,8 @@ export default class CareTeam extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
+
+  practice = <any>{}
 
   @user.Getter
   loading = false;

@@ -25,7 +25,7 @@
       <div class="w-full flex justify-between pb-2 border-b">
         <div class="w-full flex items-center">
           <avatar :src="photo" />
-          <div class="text-xs flex flex-col">
+          <div class="text-sm flex flex-col ml-2">
             <span class="font-semibold">{{ input.category }}</span>
             <span class="font-semibold">{{ input.performer }}</span>
             <span class="">

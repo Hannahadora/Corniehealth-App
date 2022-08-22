@@ -85,19 +85,24 @@
         </template>
       </auto-complete>
 
-      <div class="">
+      <div class="relative">
+        <div class=" absolute left-28 -top-1">
+          <Tooltip
+          class="text-white text-sm dropdown-menu "
+          text="What the observation is about when it is not about the subject of record
+                "
+        >
+          <div class="text-black text-sm flex space-x-2">
+            <tooltip-icon class="cursor-pointer" />
+          </div>
+        </Tooltip>
+        </div>
         <cornie-input
           class="w-full"
           label="Focus (Optional)"
           placeholder="Enter"
           v-model="basicInfo.focus"
         />
-        <Tooltip
-          class="text-white text-sm dropdown-menu"
-          text="What the observation is about when it is not about the subject of record
-                "
-        >
-        </Tooltip>
       </div>
       <encounter-select
         class="w-full"
@@ -123,6 +128,7 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import FhirInput from "@/components/fhir-input.vue";
 import EncounterSelect from "@/views/dashboard/ehr/allergy/encounter-select.vue";
+import TooltipIcon from "@/components/icons/formtip.vue";
 
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
@@ -147,6 +153,7 @@ import search from "@/plugins/search";
     Tooltip,
     FhirInput,
     EncounterSelect,
+    TooltipIcon,
   },
 })
 export default class BasicInfo extends Vue {
@@ -157,7 +164,6 @@ export default class BasicInfo extends Vue {
 
   customerDetails = [];
   query = "";
-  
 
   @Watch("customers")
   queryUpdate() {
