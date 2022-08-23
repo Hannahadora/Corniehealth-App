@@ -61,29 +61,29 @@
           </span>
         </template>
         <template #actions="{ item }">
-          <div
+          <!-- <div
             @click="viewPayment(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
-          </div>
+          </div> -->
 
-          <div
+          <!-- <div
             v-if="item.paymentType !== 'Card'"
             @click="editAccount(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs"> Edit </span>
-          </div>
-          <div
+          </div> -->
+          <!-- <div
             @click="deleteAccount(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <delete-icon class="text-danger fill-current cursor-pointer" />
             <span class="ml-3 text-xs">Delete</span>
-          </div>
+          </div> -->
         </template>
       </cornie-table>
     </div>
