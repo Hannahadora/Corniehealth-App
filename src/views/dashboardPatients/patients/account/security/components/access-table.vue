@@ -9,13 +9,13 @@
           <eye-yellow class="text-danger fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="viewCareTeam(item.id)"
         >
           <careteam-blue class="text-danger fill-current" />
           <span class="ml-3 text-xs">Care Team</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="accept(item.id)"

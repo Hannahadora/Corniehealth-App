@@ -54,6 +54,13 @@
                   @query="fetchCustomers"
                   :disabled="salesData && checkSales"
                 >
+                  <template #alt>
+                    <div v-if="!item" class="w-full flex items-center my-1">
+                      <div class="ml-4 flex flex-col my-2">
+                        <span class="text-sm">Walk-In Customer</span>
+                      </div>
+                    </div>
+                  </template>
                   <template #item="{ item }">
                     <div class="w-full flex items-center my-1">
                       <!-- <avatar :src="item.image" /> -->
