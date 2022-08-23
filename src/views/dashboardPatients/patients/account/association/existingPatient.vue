@@ -32,6 +32,7 @@
                   type="search"
                   placeholder="Search"
                   v-model="query"
+                
                 >
                   <template v-slot:prepend>
                     <search-icon />
@@ -45,7 +46,13 @@
                 class="absolute shadow h-auto overflow-x-hidden bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
                 style="width: 96%"
               >
-                <div class="flex space-x-4 items-center justify-between w-full p-2">
+                <div v-if="searchResults.length === 0">
+                    <span
+                      class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                      >No result found!</span
+                    >
+                  </div>
+                <div v-else class="flex space-x-4 items-center justify-between w-full p-2">
                       <div class="flex items-center space-x-3">
                         <avatar :src="localSrc"/>
                           <div>
@@ -160,6 +167,7 @@ export default class ExisitingPatient extends Vue {
   percentage = 0;
   name = "";
   localSrc = require("../../../../../assets/img/placeholder.png");
+  searchResults = [];
 
 
   //Date of birth validation
@@ -171,6 +179,21 @@ export default class ExisitingPatient extends Vue {
   emailRule = string().email("A valid email is required").required();
   orderBy: Sorter = () => 1;
 
+    @Watch("query")
+    idChanged() {
+      this.fetchPatientName(this.query);
+    }
+
+
+   async fetchPatientName(patientName: any) {
+      const AllNotes = cornieClient().get(`/api/v1/patient-portal/association/search-patient?${patientName}`);
+      const response = await Promise.all([AllNotes]);
+     const info = response[0].data;
+     this.searchResults = response[0].data;
+     console.log({info})
+    
+  }
+
   async submit() {
  
   }
@@ -178,6 +201,7 @@ export default class ExisitingPatient extends Vue {
 
   async created() {
    
+   if(this.query !=='') await this.fetchPatientName(this.query)
   }
 }
 </script>

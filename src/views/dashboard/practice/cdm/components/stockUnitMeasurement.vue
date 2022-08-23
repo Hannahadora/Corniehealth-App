@@ -150,7 +150,7 @@ async setStock(){
   this.stock.sales = newstock.sales;
   this.stock.itemSales = newstock.itemSales;
 
-  this.salesUOMs = this.salesStock;
+  this.salesUOMs = this?.salesStock;
 
  
 }

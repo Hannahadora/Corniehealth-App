@@ -1,16 +1,6 @@
 <template>
   <div class="w-full pb-7">
-    <span class="flex justify-end w-full mb-3">
-      <button
-        @click="showMember = true"
-        class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
-      >
-            Add Member
-      </button>
-
-    
-    </span>
-  <cornie-table
+    <cornie-table
       :columns="rawHeaders"
       v-model="sortAssocaitons"
       :check="false"
@@ -19,31 +9,32 @@
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+           @click="$router.push(`/dashboard/patient/account-settings/${item.familyId}`)"
         >
           <eye-icon class="text-yellow-400 fill-current" />
-          <span class="ml-3 text-xs">View</span>
+          <span class="ml-3 text-xs">View Members</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showMemberModal(item.id)"
+          @click="acceptFamilyMember(item.associationId, item.patientName)"
         >
-          <edit-icon />
-          <span class="ml-3 text-xs">Update</span>
+          <accept-icon />
+          <span class="ml-3 text-xs">Accept</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="declineFamilyMember(item.associationId, item.patientName)"
+        >
+          <delete-icon class="text-blue-600 fill-current" />
+          <span class="ml-3 text-xs">Decline</span>
         </div>
          <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteFamilyMember(item.associationId)"
         >
-          <money-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Payment Account</span>
+          <cancel-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Revoke</span>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="declineFamilyMember(item.id, item.patientName)"
-        >
-          <cancel-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Deactivate</span>
-        </div>
-        
       </template>
       <template #status="{item}">
           <span
@@ -66,13 +57,16 @@
   </div>
   <view-modal v-model="showViewProvider"/>
    <existing-patient-modal v-model="showPatientModal"/>
-   <member-modal v-model="showMember" :familyId="id" :id="memberId"/>
+   <member-modal v-model="showMember" :familyId="familyId"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-
+import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
+import { getTableKeyValue } from "@/plugins/utils";
+import { Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import {IPatientAssociation} from "@/types/IPatientAssociation";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -82,22 +76,20 @@ import TableRefreshIcon from "@/components/icons/tablerefresh.vue";
 import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import search from "@/plugins/search";
-import { getTableKeyValue } from "@/plugins/utils";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { cornieClient } from "@/plugins/http";
-import { namespace } from "vuex-class";
+
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import DeleteIcon from "@/components/icons/deactivate.vue";
+import CancelIcon from "@/components/icons/cancel-red-bg.vue"
 import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
+
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import ExistingPatientModal from "../existingPatient.vue";
-import MoneyIcon from "../icons/money.vue";
 
 import MemberModal from "./memberModal.vue";
+import AcceptIcon from "../icons/accept.vue";
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
@@ -122,18 +114,15 @@ const patientassociation = namespace("patientassociation");
     ChevronDownIcon,
     ExistingPatientModal,
     MemberModal,
-    MoneyIcon,
+    AcceptIcon,
+    CancelIcon
   },
 })
-export default class FamilyAsscoationExisitngState extends Vue {
+export default class FamilyAsscoation extends Vue {
   showColumnFilter = false;
   showMemeberList = false;
   showPatientModal = false;
   query = "";
-  memberId = "";
-
-  @Prop({ type: String, default: "" })
-  id!: string;
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -143,21 +132,32 @@ export default class FamilyAsscoationExisitngState extends Vue {
   refreshing = false;
   showViewProvider = false;
   showMember = false;
+  familyId = "";
 
   dropdowns = {} as IIndexableObject;
 
-   @patientassociation.State
-  familymembers!: IPatientAssociation[];
+   
+  @patientassociation.State
+  familyassociations!: IPatientAssociation[];
 
   @patientassociation.Action
-  fetchFamilyMember!: (familyId: string) => Promise<void>;
+  fetchFamilyAssociations!: () => Promise<void>;
 
-  
+//   @patientassociation.Action
+//   deleteFamilyMember!: (id: string) => Promise<boolean>;
+
+//   @patientassociation.Action
+//   acceptFamilyMember!: (id: string) => Promise<boolean>;
+
+//   @patientassociation.Action
+//   declineFamilyMember!: (id: string) => Promise<boolean>;
 
 
-   rawHeaders = [
+
+
+  rawHeaders = [
     { title: "DATE ADDED", key: "dateAdded", show: true, noOrder:true },
-    { title: "MRN #", key: "familyId", show: true , noOrder:true},
+    { title: "FAMILY ID #", key: "familyId", show: true , noOrder:true},
     {
       title: "name",
       key: "patientName",
@@ -194,7 +194,7 @@ export default class FamilyAsscoationExisitngState extends Vue {
 
 
   get items() {
-    const familyassociations = this.familymembers.map((familyassociation) => {
+    const familyassociations = this.familyassociations.map((familyassociation) => {
          (familyassociation as any).dateAdded = new Date(
         (familyassociation as any).dateAdded
       ).toLocaleDateString("en-US");
@@ -205,8 +205,6 @@ export default class FamilyAsscoationExisitngState extends Vue {
     if (!this.query) return familyassociations;
     return search.searchObjectArray(familyassociations, this.query);
   }
-
-
   
   get sortAssocaitons() {
     return this.items.slice().sort(function (a, b) {
@@ -215,11 +213,11 @@ export default class FamilyAsscoationExisitngState extends Vue {
   }
 
   showMemberModal(value:string){
-    this.memberId = value;
     this.showMember = true;
+    this.familyId = value;
   }
 
-     async deleteFamilyMember(id:string){
+   async deleteFamilyMember(id:string){
       const confirmed = await window.confirmAction({
       message: "You have opted to revoke membership of Ibeh’s family account. Click below to confirm",
       title: "Revoke",
@@ -233,7 +231,7 @@ export default class FamilyAsscoationExisitngState extends Vue {
         );
         if (response.success) {
           window.notify({ msg: "Membership revoked successfully", status: "success" });
-          await this.fetchFamilyMember(this.id);
+          await this.fetchFamilyAssociations();
         }
       } catch (error) {
         window.notify({ msg: "Membership revoked unsuccessfully", status: "error" });
@@ -255,7 +253,7 @@ export default class FamilyAsscoationExisitngState extends Vue {
         );
         if (response.success) {
           window.notify({ msg: "Declined Successfully", status: "success" });
-          await this.fetchFamilyMember(this.id);
+          await this.fetchFamilyAssociations();
         }
       } catch (error) {
         window.notify({ msg: "Declined Unsuccessfull", status: "error" });
@@ -276,7 +274,7 @@ export default class FamilyAsscoationExisitngState extends Vue {
         );
         if (response.success) {
           window.notify({ msg: "Accepted Successfully", status: "success" });
-          await this.fetchFamilyMember(this.id);
+          await this.fetchFamilyAssociations();
         }
       } catch (error) {
         window.notify({ msg: "Not Accepted", status: "error" });
@@ -284,9 +282,8 @@ export default class FamilyAsscoationExisitngState extends Vue {
     }
   }
 
-
   async created() {
-    this.fetchFamilyMember(this.id);
+    await this.fetchFamilyAssociations();
   }
 }
 </script>

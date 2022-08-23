@@ -230,7 +230,7 @@
                 </div>
                 <div class="w-full flex tbs py-2" style="min-width: 1330px">
                   <div class="th flex items-center">
-                    <span class="small-text">{{ serviceUOM }}</span>
+                    <span class="small-text capitalize">{{ serviceUOM }}</span>
                   </div>
                   <div class="th items-center hidden">
                     <span class="small-text">{{ quantity }}</span>
@@ -479,9 +479,9 @@
                   <p class="font-bold text-sm">
                     {{ item.locationName }}
                   </p>
-                  <span class="text-gray-400 text-xs font-light">
-                    {{ item.days.join(' ') }}
-                  </span>
+                  <!-- <span class="text-gray-400 text-xs font-light">
+                    {{ item?.days?.join(' ') }}
+                  </span> -->
                 </div>
                 <div class="float-right flex justify-end w-full">
                   <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
@@ -987,7 +987,7 @@ export default class NewService extends Vue {
   }
   get payload() {
     return {
-      image: this.img?.url,
+      image: this.img?.url || undefined,
       category: this.category,
       name: this.name,
       description: this.description,
@@ -1047,7 +1047,7 @@ export default class NewService extends Vue {
         this.$router.go(-1);
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Catalogue service not Created", status: "error" });
     }
   }
 
@@ -1059,7 +1059,7 @@ export default class NewService extends Vue {
       window.notify({ msg: "Catalogue service Updated", status: "success" });
       this.$router.go(-1);
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Catalogue service not updated", status: "error" });
     }
   }
 

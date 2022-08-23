@@ -2,7 +2,7 @@
   <cornie-dialog v-model="show" right class="md:w-4/12 w-12/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
-        <cornie-icon-btn @click="show = false" class="">
+        <cornie-icon-btn @click="closeModal" class="">
           <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
@@ -21,57 +21,15 @@
           <div
             class="w-full pb-2 mb-7 border-gray-300"
           >
-            <span class="text-dark text-sm font-medium"
-              >Add your primary doctor</span
-            >
-            <div class="">
-              <span
-                class="mb-2 w-full rounded-full"
-                @click="showDatalist = !showDatalist"
-              >
-                <icon-input
-                  autocomplete="off"
-                  class="border border-gray-400 py-2 rounded-full focus:outline-none"
-                  type="search"
-                  placeholder="Search by practitioner  name"
-                  v-model="query"
-                >
-                  <template v-slot:prepend>
-                    <search-icon />
-                  </template>
-                </icon-input>
-              </span>
-              <div
-                :class="[
-                  !showDatalist ? 'hidden' : 'o',
-                  filteredItems.length === 0 ? 'h-20' : 'h-auto',
-                ]"
-                class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-                style="width: 96%"
-                
-              >
-                <div class="flex flex-col w-full p-2">
-                  <div
-                    v-for="(item, i) in filteredItems"
-                    :key="i"
-                    @click="selected(item)"
-                    class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
-                  >
-                    <div
-                      class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
-                    >
-                      {{ item.firstName || item }}
-                    </div>
-                  </div>
-                  <div v-if="filteredItems.length === 0">
-                    <span
-                      class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
-                      >No result found!</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
+            <span class="text-dark text-sm font-medium">Add your primary doctor</span>
+            <search-input
+              v-model="query"
+              :results="results"
+              @selected="selected"
+              placeholder="Search by name or email"
+              class="py-3"
+            />
+
           </div>
           <cornie-input
             label="Doctor’s Name"
@@ -79,13 +37,15 @@
             placeholder="--Enter--/--Autoloaded--"
             v-model="name"
             :disabled="true"
+          
           />
           <cornie-input
             label="Email Address"
             class="w-full mb-8"
             placeholder="--Enter--/--Autoloaded--"
-            v-model="name"
+            v-model="email"
             :disabled="true"
+          
           />
           <div class="mb-8">
               <phone-input
@@ -94,13 +54,14 @@
                    :rules="requiredRule"
                    label="Phone Number"
                    class="w-full"
+                   :disabled="true"
                />
           </div>
              <cornie-input
             label="Reference Organization"
             class="w-full mb-8"
             placeholder="--Enter--/--Autoloaded--"
-            v-model="name"
+            v-model="identifier"
             :disabled="true"
           />
 
@@ -117,6 +78,7 @@
           </cornie-btn>
           <cornie-btn
             :loading="loading"
+            @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Save
@@ -146,11 +108,16 @@ import SearchIcon from "@/components/icons/search.vue";
 import { string, date, number } from "yup";
 import PhoneInput from "@/components/phone-input.vue";
 import search from "@/plugins/search";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import {IPatientProvider} from "@/types/IPatientProvider";
+import  {IPatientPractitioners}  from "@/types/IPatientPractitioners";
+import IPractitioner from "@/types/IPractitioner";
+import SearchInput from "@/components/search-input.vue";
 
+const patientprovider = namespace("patientprovider");
 
-const practitioner = namespace("practitioner");
-
+interface Result extends IPractitioner {
+  display: string;
+}
 
 type Sorter = (a: any, b: any) => number;
 
@@ -171,6 +138,7 @@ function defaultFilter(item: any, query: string) {
     CornieInput,
     CornieSelect,
     CornieBtn,
+    SearchInput
   },
 })
 export default class DoctorModal extends Vue {
@@ -183,11 +151,19 @@ export default class DoctorModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+  @patientprovider.State
+  patientproviders!: IPatientProvider[];
 
-@practitioner.Action
-fetchPractitioners!: () => Promise<void>;
+  @patientprovider.Action
+  fetchPatientProvider!: () => Promise<void>;
+
+  @patientprovider.State
+  primarydoctors!: IPatientPractitioners[];
+
+  @patientprovider.Action
+  fetchPrimaryDoctors!: () => Promise<void>;
+
+  results: Result[] = [];
 
 
   query = "";
@@ -195,6 +171,11 @@ fetchPractitioners!: () => Promise<void>;
   loading = false;
   percentage = 0;
   name = "";
+  email = "";
+  referenceOrganization = "";
+  organizationId = "";
+  identifier = "";
+  type ="";
 
   phone = {
     number: "",
@@ -211,26 +192,111 @@ fetchPractitioners!: () => Promise<void>;
   emailRule = string().email("A valid email is required").required();
   orderBy: Sorter = () => 1;
 
- 
+  @Watch("query")
+  async search(query: string) {
+    if (!query) return (this.results = []);
+    await this.searchPractitioners(query);
+  }
 
-  get filteredItems() {
-    return this.practitioners
-      .filter((item: any) => this.filter(item, this.query))
-      .sort(this.orderBy);
+   async searchPractitioners(query: string) {
+      const AllNotes = cornieClient().get(`/api/v1/booking-website/search/practitionerByName?query=${query}`);
+      const response = await Promise.all([AllNotes]);
+      const info = response[0].data;
+        this.results = info.map((p:IPractitioner) => ({
+        ...p,
+        display: this.printPractitioner(p),
+      }));
+
   }
-  selected(item: any) {
-    this.showDatalist = false;
-    this.name = item.fullName;
+
+
+  printPractitioner(practitioner: IPractitioner) {
+    return `${practitioner.firstName} ${practitioner.lastName}`;
   }
+
+ 
+ 
+  async selected(practitioner: any) {
+    this.name = practitioner.firstName +''+ practitioner.lastName;
+    this.email = practitioner.email;
+    this.referenceOrganization = practitioner.practitioner.id;
+    this.organizationId = practitioner.organizationId;
+    this.phone = practitioner?.phone as any;
+    this.identifier = practitioner.organizationId;
+  }
+
+  resetForm(){
+     this.name = '';
+    this.email = '';
+    this.referenceOrganization = '';
+    this.organizationId = '';
+    this.phone = this.phone;
+    this.identifier = '';
+  }
+
 
  
 
   get payload() {
     return {
       name: this.name,
-      percentage: this.percentage,
+      email: this.email,
+      phone: this.phone,
+      referenceOrganization: this.referenceOrganization,
+      organizationId: this.organizationId,
+      type : this.type 
+
     };
   }
+   async submit() {
+        this.loading = true;
+        if (this.id) await this.updatePrimaryDoctor();
+        else await this.createPrimaryDoctor();
+        this.loading = false;
+    }
+
+
+ async createPrimaryDoctor() {
+    // const { valid } = await (this.$refs.form as any).validate();
+    // if (!valid) return;
+    console.log(this.payload)
+    try {
+      const { data } = await cornieClient().put(`/api/v1/patient-portal/practitioner/default-doctor/${this.referenceOrganization}`,{});
+      window.notify({ msg: "Primary Doctor Added" , status: "success" });
+      this.done();
+      this.resetForm();
+      //this.reset();
+    } catch (error:any) {
+      window.notify({ msg: "Primary Doctor Not Added", status: "error" });
+    }
+  }
+
+  async updatePrimaryDoctor() {
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
+
+    const id = this.id;
+    const url = `/api/v1/patient-portal/provider/${id}`;
+    const payload = this.payload;
+    try {
+      const response = await cornieClient().put(url, this.payload);
+      if (response.success) {
+        window.notify({
+          msg: "Primary Doctor Updated",
+          status: "success",
+        });
+        this.done();
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Primary Doctor Not Updated", status: "error" });
+    }
+  }
+
+  closeModal(){
+    this.resetForm();
+    this.show = false
+  }
+
 
   get newaction() {
     return this.id ? "Update" : "Add";
@@ -240,8 +306,9 @@ fetchPractitioners!: () => Promise<void>;
     this.show = false;
   }
 
+  
   async created() {
-   await this.fetchPractitioners();
+    await this.fetchPrimaryDoctors();
   }
 }
 </script>

@@ -114,28 +114,6 @@
         </cornie-card-text>
       </cornie-card>
     </cornie-card>
-    <assesor-modal
-      :practitioners="practitioner"
-      :roles="role"
-      @update:preferred="showAssessor"
-      v-model:visible="showAssessorModal"
-    />
-    <problem-modal
-      :conditions="conditions"
-      :allergy="allergy"
-      @update:preferred="showProblem"
-      v-model:visible="showProblemModal"
-    />
-    <item-modal
-      :observations="observations"
-      :questions="questions"
-      @update:preferred="showItem"
-      v-model:visible="showItemModal"
-    />
-    <reference-modal
-      @update:preferred="showFindings"
-      v-model:visible="showFindingModal"
-    />
   </cornie-dialog>
 </template>
 
@@ -237,11 +215,7 @@ export default class Medication extends Vue {
     this.name = item.fullName;
   }
 
-  //   @Watch("id")
-  //   idChanged() {
-  //     this.setImpression();
-  //   }
-
+  
   async submit() {
     const form = this.$refs.form as any;
     const { valid } = await form.validate();

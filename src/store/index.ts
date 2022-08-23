@@ -68,6 +68,8 @@ import PreferenceStore from "./preference";
 import RatingStore from "./ratings";
 import BillingcenterStore from "./billingcenters";
 import CollectioncenterStore from "./collectioncenters";
+import PatientassociationStore from "./patientassociation";
+import PatientproviderStore from "./patientprovider";
 
 export default createStore({
   modules: {
@@ -147,5 +149,7 @@ export default createStore({
     bookingsite: BookingsiteStore,
     preference: PreferenceStore,
     rating: RatingStore,
+    patientassociation:PatientassociationStore,
+    patientprovider: PatientproviderStore,
   },
 } as StoreOptions<any>);

@@ -12,7 +12,7 @@ import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
 import { InPatientRoutes } from "./in-patient";
 //Profile routes
-import { ProfileSettingsRoute } from "./patientaccount";
+import  { ProfileSettingsRoute }  from "./patientaccount";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -299,6 +299,13 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/dashboardPatients/patients/dashboard/Index.vue"),
       },
       ProfileSettingsRoute,
+      //Patient Portal Accounts
+      {
+        path: "/other-providers",
+        props: true,
+        name: "Other Providers",
+        component: () => import("@/views/dashboardPatients/patients/account/providers/existingState.vue"),
+      },
       {
         path: "account-security",
         name: "Account Security",
@@ -311,6 +318,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  
 ];
 
 const router = createRouter({

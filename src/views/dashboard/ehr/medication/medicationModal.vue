@@ -118,7 +118,7 @@
           <div class="border-b-2 pb-5 border-dashed border-gray-200">
             <accordion-component title="Medication" :opened="false">
               <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                    <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="search"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
+                    <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="searchData"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
                     <cornie-select :label="'Brand Name'"  @click="resultBrand(emptyMedicationDetails.genericName)"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
                       <cornie-select
                     v-model="dataForm"
@@ -571,6 +571,7 @@ import AutoComplete from "@/components/autocomplete.vue";
 import ReferenceModal from "./referenceModal.vue";
 import plusIcon from "@/components/icons/plus.vue";
 import MedicationRef from "./medicationRefModal.vue";
+import { ImageResolutionProperty } from "csstype";
 
 const practitioner = namespace("practitioner");
 const request = namespace("request");
@@ -704,6 +705,7 @@ export default class MedicationModal extends Vue {
   fullBrand = [] as any;
   Nafdac = "";
   size = "";
+  anewBrand = [] as any;
 
   days = "";
   days2 = "";
@@ -715,7 +717,7 @@ export default class MedicationModal extends Vue {
   patientId = "";
   dispenserId = "";
   supportingInformation =  null;
-  medications = [] as any;
+  medications = [] as Medications[];
   status = "active";
   reasonCode = null;
   reasonReference = "reasonReference";
@@ -756,12 +758,12 @@ export default class MedicationModal extends Vue {
   };
 
 
-  @Watch("selectedItem")
+  @Watch("id")
   idChanged() {
     this.setRequest();
   }
    async setRequest() {
-    const request = this.getRequestById(this.selectedItem.id);
+    const request = this.getRequestById(this.id);
     if (!request) return;
     this.basedOn = request.basedOn;
     this.intent = request.intent;
@@ -771,7 +773,7 @@ export default class MedicationModal extends Vue {
     this.patientId = request.patientId;
     this.dispenserId = request.dispenserId;
     this.supportingInformation = request.supportingInformation;
-    this.medications = request.medications;
+    this.medications = request.medications as any;
     this.status = request.status;
     this.reasonCode = request.reasonCode;
     this.reasonReference = request.reasonReference;
@@ -796,10 +798,12 @@ export default class MedicationModal extends Vue {
   
 
   addMedicationDetails() {
-
     this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
     this.emptyMedicationDetails.code = this.emptyMedicationDetails?.genericCode?.toString();
-    this.medications.push(this.emptyMedicationDetails);
+
+
+    const med = this.emptyMedicationDetails as any;
+    this.medications.push(med);
     this.emptyMedicationDetails.refills.push(this.emptyRefill);
   }
   removemedication(index: number) {
@@ -867,26 +871,34 @@ export default class MedicationModal extends Vue {
         };
         });
     }
-    get allBrand(){
-       if (!this.fullInfo || this.fullInfo.length === 0) return [];
-        return this.fullInfo.map((i: any) => {
-        return {
-            code: i.name,
-            display: i.name,
-        };
-        });
-    }
-    async resultBrand(id: any) {
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-      return (this.fullBrand = pt ? pt.form : {});
-    }
+    get allBrand() {
+    if (!this.fullInfo || this.fullInfo.length === 0) return [];
+    return this.fullInfo.map((i: any) => {
+      return {
+        code: i.label,
+        value: i.label,
+        display: i.label,
+      };
+    });
+  }
+     async resultBrand(id: any) {
+        const pt = this.fullInfo.find((i: any) => i.label === id);
+        this.anewBrand = pt?.data;
+        return pt || [];
+      }
 
      async resultPack(id: any) {
-      const pt = this.fullInfo.find((i: any) => i.id === id);
-      this.resultStrength(id);
-      this.size = pt.pack;
-      return (this.pack = pt  ? `${pt?.pack}` : "Pack not available");
-    }
+        const pt = this.anewBrand.find((i: any) => i.id === id);
+        //this.resultStrength(id);
+        if(pt){
+          console.log({pt})
+          this.pack = pt.pack;
+          this.strength = pt.strength;
+          this.Nafdac = pt.NAFDAC;
+          //this.form = pt.form
+        }
+        return pt;
+      }
 
     async resultStrength(id: any) {
         const pt = this.fullInfo.find((i: any) => i.id === id);
@@ -899,9 +911,9 @@ export default class MedicationModal extends Vue {
       return (this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available");
     }
 
-    get allForms() {
-    if (!this.fullBrand || this.fullBrand.length === 0) return [];
-    return this.fullInfo.map((i: any) => {
+   get allForms() {
+    if (!this.anewBrand || this.anewBrand.length === 0) return [];
+    return this.anewBrand.map((i: any) => {
       return {
         code: i.id,
         value: i.id,
@@ -989,7 +1001,7 @@ export default class MedicationModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request Not Created", status: "error" });
     }
   }
   async updateRequest() {
@@ -1004,7 +1016,7 @@ export default class MedicationModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Request Not Updated", status: "error" });
     }
   }
 
@@ -1015,41 +1027,62 @@ export default class MedicationModal extends Vue {
     );
   }
 
-  async search(event: any) {
-    const AllNotes = cornieClient().get(
-      `/api/v1/emdex/generic-by-keyword/`,
-      {
+   async searchData(event: any) {
+    if(event.target.value.length > 2){
+      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
         keyword: event.target.value,
+      });
+      const response = await Promise.all([AllNotes]);
+      if (response[0].data === 0) {
+        this.searchresult = "No medication code found";
+      } else {
+        this.searchresult = response[0].data;
       }
-    );
+    }
+  }
+  async resultData(id: any) {
+    if(id){
+      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-brands/${id}`);
     const response = await Promise.all([AllNotes]);
     if (response[0].data === 0) {
-      this.searchresult = 'No medication code found'
+      this.fullInfo = "No medication code found";
     } else {
-      this.searchresult = response[0].data;
+      const info = response[0].data;
+     const newData = [...new Set(info.map((d:any) => d.name))].map(label => {
+        return {
+          label,
+          data: info.filter((d:any) => d.name === label).flatMap((d:any) => {
+            return {
+              ...d
+            }
+          })
+        }
+      })
+      this.fullInfo = newData
     }
-
-  }
-  async resultData(code: string) {
-    const AllNotes = cornieClient().get(
-      `/api/v1/emdex/generic-brands/${code}`,
-    );
-    const response = await Promise.all([AllNotes]);
-    if (response[0].data === 0) {
-      this.fullInfo = 'No medication code found'
-    } else {
-
-      this.fullInfo = response[0].data;
     }
-
   }
+
+  // async resultData(code: string) {
+  //   const AllNotes = cornieClient().get(
+  //     `/api/v1/emdex/generic-brands/${code}`,
+  //   );
+  //   const response = await Promise.all([AllNotes]);
+  //   if (response[0].data === 0) {
+  //     this.fullInfo = 'No medication code found'
+  //   } else {
+
+  //     this.fullInfo = response[0].data;
+  //   }
+
+  // }
   done() {
     this.$emit("medication-added");
     this.show = false;
   }
 
   async created() {
-    this.setRequest();
+    await this.setRequest();
     await this.getRoles();
     await this.createMapper();
     await this.fetchPatients();

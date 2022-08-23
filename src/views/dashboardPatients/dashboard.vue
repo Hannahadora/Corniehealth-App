@@ -10,7 +10,7 @@
     >
       <cornie-side-bar />
     </div>
-    <div class="h-full flex flex-col w-auto">
+    <div class="h-full flex flex-col overflow-y-auto w-auto">
       <nav-bar class="" />
       <div class="pr-6 pl-6 pt-2 flex flex-col body-content bg-gray-100">
         <!-- <bread-crumbs class="" /> -->

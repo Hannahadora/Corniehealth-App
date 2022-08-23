@@ -17,9 +17,9 @@
             <div class="flex justify-between w-full">
                 <div class="flex space-x-2">
                     <avatar :src="localSrc"/>
-                    <p class="text-2xl text-primary font-bold">Dr. Sarah Smith | F</p>
+                    <p class="text-2xl text-primary font-bold">Dr. {{ primarydoctors?.practitioner?.firstName +' '+ primarydoctors?.practitioner?.lastName }} | {{ primarydoctors?.practitioner?.gender }}</p>
                 </div>
-                <div class="flex space-x-3">
+                <div class="flex space-x-3 cursor-pointer" @click="showModal(primarydoctors.PractitionerId)">
                     <edit-icon class="fill-current text-danger"/>
                     <span>Update</span>
                 </div>
@@ -28,35 +28,35 @@
                 <doctor-icon/>
                 <div>
                     <span class="text-bold font-semibold">Specialization</span>
-                    <p class="text-gray-400 text-sm">Dentist</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.type }}</p>
                 </div>
             </div>
              <div class="w-full flex space-x-4 mt-5 items-center">
                 <reference-icon/>
                 <div>
                     <span class="text-bold font-semibold">Reference Organisation</span>
-                    <p class="text-gray-400 text-sm">Reddington Hospital</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.type }}</p>
                 </div>
             </div>
              <div class="w-full flex space-x-4 mt-5 items-center">
                 <phone-icon/>
                 <div>
                     <span class="text-bold font-semibold">Phone Number</span>
-                    <p class="text-gray-400 text-sm">+234 813 563 8883</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.phone?.dialCode +' '+primarydoctors?.practitioner?.phone?.number || '' }}</p>
                 </div>
             </div>
              <div class="w-full flex space-x-4 mt-5 items-center">
                 <email-icon/>
                 <div>
                     <span class="text-bold font-semibold">Email</span>
-                    <p class="text-gray-400 text-sm">Mikeobi@reddington.com</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.email }}</p>
                 </div>
             </div>
              <div class="w-full flex space-x-4 mt-5 items-center">
                 <location-icon/>
                 <div>
                     <span class="text-bold font-semibold">Address</span>
-                    <p class="text-gray-400 text-sm">234 Admiralty Way Lekki, Lagos</p>
+                    <p class="text-gray-400 text-sm">{{ primarydoctors?.practitioner?.address}}</p>
                 </div>
             </div>
             
@@ -80,7 +80,11 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
+
+  <doctor-modal :id="doctorId" v-model="showDoctor"/>
+
 </template>
+
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
@@ -109,6 +113,10 @@ import PhoneIcon from "./icons/phone.vue";
 import EmailIcon from "./icons/email.vue";
 import LocationIcon from "./icons/location.vue";
 
+import DoctorModal from "./DoctorModal.vue";
+
+const patientprovider = namespace("patientprovider");
+
 @Options({
   name: "viewProvider",
   components: {
@@ -128,7 +136,8 @@ import LocationIcon from "./icons/location.vue";
     ReferenceIcon,
     PhoneIcon,
     EmailIcon,
-    LocationIcon
+    LocationIcon,
+    DoctorModal
   },
 })
 export default class viewProvider extends Vue {
@@ -139,14 +148,28 @@ export default class viewProvider extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
+  @patientprovider.State
+  primarydoctors!: any;
+
+  @patientprovider.Action
+  fetchPrimaryDoctors!: () => Promise<void>;
+
   localSrc = require("../../../../../assets/img/placeholder.png");
+  showDoctor = false;
+
+  doctorId = "";
+
+  showModal(value:string){
+    this.showDoctor = true;
+    this.doctorId = value;
+  }
 
   done() {
  
   }
 
   async created() {
- 
+    await this.fetchPrimaryDoctors()
   }
 }
 </script>

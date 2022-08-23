@@ -3,95 +3,99 @@
     <div class="flex w-full justify-start">
       <cornie-avatar-field v-model="img.url" />
     </div>
-    <div class="w-full mt-4 grid grid-cols-3 gap-5">
-      <cornie-input
-        class="w-full"
-        label="First Name"
-        placeholder="Enter"
-        :rules="requiredRule"
-        v-model="firstName"
-        :readonly="viewOnly"
-      />
-
-      <cornie-input
-        class="w-full"
-        label="Middle Name"
-        placeholder="Enter"
-        v-model="middleName"
-        :readonly="viewOnly"
-      />
-
-      <cornie-input
-        class="w-full"
-        label="Last Name"
-        placeholder="Enter"
-        v-model="lastName"
-        :rules="requiredRule"
-        :readonly="viewOnly"
-      />
-
-      <cornie-input
-        :rules="emailRule"
-        v-model="email"
-        placeholder="--Enter--"
-        label="Email"
-        :readonly="true"
-        :disabled="true"
-      />
-
-      <date-picker
-        class="w-full"
-        label="Date of Birth"
-        placeholder="Enter"
-        :rules="dobRule"
-        v-model="dateOfBirth"
-        :readonly="viewOnly"
-      />
-      <cornie-select
-        class="w-full"
-        label="Blood Group"
-        placeholder="Select One"
-        :items="bloodGroupOptions"
-        v-model="bloodGroup"
-        :readonly="viewOnly"
-      />
-      <cornie-select
-        label="Genotype"
-        class="w-full"
-        placeholder="Enter"
-        v-model="genotype"
-        :items="genotypeOptions"
-        :readonly="viewOnly"
-      />
-
-      <cornie-select
-        class="w-full"
-        label="Gender"
-        :rules="requiredRule"
-        placeholder="Select One"
-        :items="genderOptions"
-        v-model="gender"
-        :readonly="viewOnly"
-      />
-
-      <cornie-select
-        class="w-full"
-        placeholder="Select One"
-        :items="['Single', 'Divorced', 'Widowed', 'Married']"
-        v-model="maritalStatus"
-        :rules="requiredRule"
-        :readonly="viewOnly"
-      >
-        <template #labelicon>
-          <cornie-tooltip>
-            <template #tooltip>
-              <span>Marital status</span>
-            </template>
-            <question-icon class="fill-current text-primary leading-none" />
-          </cornie-tooltip>
-        </template>
-        <template #label> Marital status </template>
-      </cornie-select>
+    <div class="w-full mt-4 grid md:grid-cols-3 grid-cols-1 gap-5">
+      <div class="col-span-1">
+        <cornie-input
+          label="First Name"
+          placeholder="Enter"
+          :rules="requiredRule"
+          v-model="firstName"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-input
+          label="Middle Name"
+          placeholder="Enter"
+          v-model="middleName"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-input
+          label="Last Name"
+          placeholder="Enter"
+          v-model="lastName"
+          :rules="requiredRule"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-input
+          :rules="emailRule"
+          v-model="email"
+          placeholder="--Enter--"
+          label="Email"
+          :readonly="true"
+          :disabled="true"
+        />
+      </div>
+      <div class="col-span-1">
+        <date-picker
+          label="Date of Birth"
+          placeholder="Enter"
+          :rules="dobRule"
+          v-model="dateOfBirth"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-select
+          label="Blood Group"
+          placeholder="Select One"
+          :items="bloodGroupOptions"
+          v-model="bloodGroup"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-select
+          label="Genotype"
+          placeholder="Enter"
+          v-model="genotype"
+          :items="genotypeOptions"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-select
+          label="Gender"
+          :rules="requiredRule"
+          placeholder="Select One"
+          :items="genderOptions"
+          v-model="gender"
+          :readonly="viewOnly"
+        />
+      </div>
+      <div class="col-span-1">
+        <cornie-select
+          placeholder="Select One"
+          :items="['Single', 'Divorced', 'Widowed', 'Married']"
+          v-model="maritalStatus"
+          :rules="requiredRule"
+          :readonly="viewOnly"
+        >
+          <template #labelicon>
+            <cornie-tooltip>
+              <template #tooltip>
+                <span>Marital status</span>
+              </template>
+              <question-icon class="fill-current text-primary leading-none" />
+            </cornie-tooltip>
+          </template>
+          <template #label> Marital status </template>
+        </cornie-select>
+      </div>
 
       <div class="col-span-3">
         <div class="w-full flex space-x-9 flex-wrap items-center py-5">
@@ -117,7 +121,6 @@
 
       <cornie-input
         label="Number of Children"
-        class="w-full"
         placeholder="Enter"
         v-model="numberOfChildren"
         :readonly="viewOnly"
@@ -125,7 +128,6 @@
       </cornie-input>
 
       <cornie-select
-        class="w-full"
         label="Multiple Birth?"
         placeholder="Select One"
         :items="multipleBirthOptions"
@@ -134,7 +136,6 @@
       />
       <cornie-input
         v-if="multipleBirth == 'yes'"
-        class="w-full"
         placeholder="Enter"
         v-model.number="multipleBirthInteger"
         type="number"
@@ -255,13 +256,6 @@
     authPractitioner!: IPractitioner;
 
     userDetails = "";
-    async fetchUserDetails() {
-      const details = cornieClient().get(
-        `/api/v1/patient/get-patient/${this.userId}`
-      );
-      const response = await Promise.all([details]);
-      this.userDetails = response[0].data;
-    }
     get userId() {
       return this.cornieUser?.id;
     }
@@ -277,7 +271,7 @@
       this.genotype = details?.genotype || "";
       this.gender = details?.gender || "";
       this.maritalStatus = details?.maritalStatus || "";
-      this.multipleBirthInteger = details?.multipleBirthInteger || "";
+      this.multipleBirthInteger = details?.multipleBirthInteger || 0;
       this.dateOfBirth = details?.dateOfBirth || "";
       this.numberOfChildren = details?.numberOfChildren || "";
       this.hasChild =
@@ -287,43 +281,31 @@
       this.multipleBirth = details?.multipleBirth == true ? "yes" : "no";
     }
 
-    async getUpdatePayload() {
+    get getUpdatePayload() {
       return {
-        id: this.cornieUser?.id,
-        mrn: this.corniePatient.mrn,
-
+        // id: this.cornieUser?.id,
+        // mrn: this.corniePatient.mrn,
         firstname: this.firstName,
         middlename: this.middleName,
         lastname: this.lastName,
         email: this.email,
-        profilePhoto: this.img.url,
-        dateOfBirth: this.dateOfBirth,
-        gender: this.gender,
-        maritalStatus: this.maritalStatus,
+        profilePhoto: this.img.url || undefined,
+        dateOfBirth: this.dateOfBirth || undefined,
+        gender: this.gender || undefined,
+        maritalStatus: this.maritalStatus || undefined,
         multipleBirths: this.multipleBirth == "yes" ? true : false,
-        multipleBirthInteger: this.multipleBirthInteger,
-        identityNos: this.corniePatient.identityNos,
-        contactInfo: this.corniePatient.contactInfo,
-        generalPractitioners: this.corniePatient.generalPractitioners,
-        emergencyContacts: this.corniePatient.emergencyContacts,
-        preferredLabs: this.corniePatient.preferredLabs,
-        preferredPharmacies: this.corniePatient.preferredPharmacies,
-        guarantor: null,
-        accountType: this.cornieUser?.accountType,
-        vip: this.corniePatient.vip,
-        deceased: this.corniePatient.deceased,
-        demographicsData: this.corniePatient.demographicsData,
-        // belongsToPractice: true,
-        // organizationId: "string",
-        // associationRelationship: "Spouse",
-        // associationType: "Family",
+        multipleBirthInteger: this.multipleBirthInteger || undefined,
+        bloodGroup: this.bloodGroup || undefined,
+        genotype: this.genotype || undefined,
+        numberOfChildren: this.numberOfChildren || undefined,
       };
     }
     mounted() {
       this.updatePractitioner(this.authPractitioner as any);
-      console.log("details", this.cornieUser);
       this.setDetails(this.cornieUser);
       this.setPatientDetails(this.corniePatient);
+      console.log("user", this.cornieUser);
+      console.log("patient", this.corniePatient);
     }
     async created() {
       await this.updatePractitioner(this.authPractitioner as any);
@@ -331,13 +313,35 @@
     }
 
     async saveProfile() {
-      const details = cornieClient().put(
-        `/api/v1/patient/${this.userId}`,
-        this.getUpdatePayload
-      );
-      const response = await Promise.all([details]);
-      const r = response[0].data;
-      console.log("result", r);
+      console.log("Saving profile...", this.getUpdatePayload);
+      if (!this.getUpdatePayload.dateOfBirth) {
+        window.notify({
+          msg: "Date of Birth is required",
+          status: "error",
+        });
+        return;
+      }
+      try {
+        const details = cornieClient().patch(
+          `/api/v1/patient-portal/account`,
+          this.getUpdatePayload
+        );
+        const response = await Promise.all([details]);
+        const r = response[0].data;
+        console.log("result", r);
+        window.notify({
+          msg: "Profile updated successfully",
+          status: "success",
+        });
+        this.updatePractitioner(this.authPractitioner as any);
+        this.setDetails(this.cornieUser);
+        this.setPatientDetails(this.corniePatient);
+      } catch (error) {
+        window.notify({
+          msg: "Error updating account profile",
+          status: "error",
+        });
+      }
     }
   }
 </script>
