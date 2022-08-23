@@ -316,6 +316,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Access Control & Priviledges",
         component: () => import("@/views/dashboardPatients/patients/account/security/access-control.vue"),
       },
+      {
+        path: "appointments",
+        name: "Appointments",
+        component: () => import("@/views/dashboardPatients/patients/account/appointments/index.vue"),
+      },
     ],
   },
   
