@@ -7,70 +7,35 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-           Existing Organisation
+            Existing Organisation
           </h2>
-          <!-- <cancel-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          /> -->
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form class="container" ref="form">
-          <div
-            class="w-full  pb-2 mb-7 border-gray-300"
-          >
-            <span class="text-dark text-sm font-medium"
-              >Search existing director to add</span
-            >
-            <div class="">
-              <span
-                class="mb-2 w-full rounded-full"
-                @click="showDatalist = !showDatalist"
-              >
-                <icon-input
-                  autocomplete="off"
-                  class="border border-gray-400 py-2 rounded focus:outline-blue-400"
-                  type="search"
-                  placeholder="Search"
-                  v-model="query"
-                >
-                  <template v-slot:prepend>
-                    <search-icon />
-                  </template>
-                </icon-input>
-              </span>
-              <div
-                :class="[
-                  !showDatalist ? 'hidden' : 'o',
-                ]"
-                class="absolute shadow h-auto overflow-x-hidden bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-                style="width: 96%"
-              >
-                <div class="flex space-x-4 items-center justify-between w-full p-2">
-                      <div class="flex items-center space-x-3">
-                        <avatar :src="localSrc"/>
-                          <div>
+          <div class="w-full pb-2 mb-7 border-gray-300">
+            <span class="text-dark text-sm font-medium">
+              Search existing organization to join
+            </span>
+            <v-form class="grid grid-cols-1 gap-y-4" ref="form">
+              <org-select v-model="organization" />
+              <cornie-input
+                label="Name"
+                disabled
+                readonly
+                placeholder="--"
+                :rules="requiredRule"
+                :modelValue="organization.organizationName ?? ''"
+              />
 
-                            <span class="text-black text-lg mb-0">Scelloo</span> 
-                            <p class="text-sm text-gray-500">SCE345885645 Obi</p>
-                          </div>
-                      </div>
-                      <div  v-if="showDrop">
-                        <cornie-select
-                          class="border-none w-full"
-                          :items="['Employee','Employee - Dependant','Member - Dependant','Member']"
-                          :placeholder="'Specify Relationship'"
-                        />
-                      </div>
-                      <div>
-                        <cornie-radio name="patient" @click="showDrop = !showDrop"/>
-                      </div>
-                </div>
-                
-              </div>
-            </div>
+              <cornie-select
+                :items="['Member', 'Employee']"
+                label="Relationship"
+                :rules="requiredRule"
+                v-model="relationship"
+              />
+            </v-form>
           </div>
         </v-form>
       </cornie-card-text>
@@ -88,7 +53,7 @@
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+            Join
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -98,14 +63,9 @@
 
 <script lang="ts">
 import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { Prop, PropSync, Ref } from "vue-property-decorator";
 import search from "@/plugins/search";
-import { namespace } from "vuex-class";
-import { createDate } from "@/plugins/utils";
-import { string, date, number } from "yup";
-
-
-import { IPatient } from "@/types/IPatient";
+import { string } from "yup";
 
 import CornieCard from "@/components/cornie-card";
 import CornieIconBtn from "@/components/CornieIconBtn.vue";
@@ -121,13 +81,9 @@ import AccordionComponent from "@/components/dialog-accordion.vue";
 import PhoneInput from "@/components/phone-input.vue";
 import Avatar from "@/components/avatar.vue";
 import CornieRadio from "@/components/cornieradio.vue";
-
-
-type Sorter = (a: any, b: any) => number;
-
-function defaultFilter(item: any, query: string) {
-  return search.searchObject(item, query);
-}
+import OrgSelect from "./organization/components/org-select.vue";
+import { IPatientOrganization } from "./organization/types";
+import { FormRef } from "@/types";
 
 @Options({
   name: "ExisitingOrg",
@@ -145,42 +101,51 @@ function defaultFilter(item: any, query: string) {
     CornieBtn,
     Avatar,
     CornieRadio,
+    OrgSelect,
   },
 })
-export default class ExisitingOrg extends Vue {
+export default class ExistingOrg extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
- 
+  @Ref("form")
+  form!: FormRef;
+
   @Prop({ type: String, default: "" })
   id!: string;
 
- 
-  query = "";
-  showDatalist = false;
-  showDrop = false;
   loading = false;
-  percentage = 0;
-  name = "";
-  localSrc = require("../../../../../assets/img/placeholder.png");
 
+  organization = {} as IPatientOrganization;
+  relationship = "";
 
-  //Date of birth validation
-  dobValidator = date().max(
-    createDate(0, 0, -16),
-    "Director must be at least 16yrs."
-  );
-  //Email Valitdaiton
-  emailRule = string().email("A valid email is required").required();
-  orderBy: Sorter = () => 1;
+  requiredRule = string().required();
 
-  async submit() {
- 
+  isValid() {
+    return Boolean(this.organization?.id) && Boolean(this.relationship);
   }
 
+  get payload() {
+    return {
+      organizationId: this.organization?.id,
+      relationship: this.relationship,
+    };
+  }
+  async submit() {
+    if (!this.isValid()) return;
 
-  async created() {
-   
+    this.loading = true;
+    try {
+      await cornieClient().post(
+        "/api/v1/patient-portal/employer/join",
+        this.payload
+      );
+      this.show = false;
+      window.notify({ msg: "Joined organization", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Unable to join organization", status: "error" });
+    }
+    this.loading = false;
   }
 }
 </script>
