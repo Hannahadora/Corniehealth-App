@@ -6,6 +6,15 @@
     <div class="w-full mt-4 grid md:grid-cols-3 grid-cols-1 gap-5">
       <div class="col-span-1">
         <cornie-input
+          label="Full Name"
+          placeholder="Enter"
+          :rules="requiredRule"
+          v-model="fullname"
+          :readonly="viewOnly"
+        />
+      </div>
+      <!-- <div class="col-span-1">
+        <cornie-input
           label="First Name"
           placeholder="Enter"
           :rules="requiredRule"
@@ -29,7 +38,7 @@
           :rules="requiredRule"
           :readonly="viewOnly"
         />
-      </div>
+      </div> -->
       <div class="col-span-1">
         <cornie-input
           :rules="emailRule"
@@ -120,6 +129,7 @@
       </div>
 
       <cornie-input
+        v-if="hasChild == 'yes'"
         label="Number of Children"
         placeholder="Enter"
         v-model="numberOfChildren"
@@ -128,6 +138,7 @@
       </cornie-input>
 
       <cornie-select
+        v-if="hasChild == 'yes'"
         label="Multiple Birth?"
         placeholder="Select One"
         :items="multipleBirthOptions"
@@ -135,7 +146,7 @@
         :readonly="viewOnly"
       />
       <cornie-input
-        v-if="multipleBirth == 'yes'"
+        v-if="multipleBirth == 'yes' && hasChild == 'yes'"
         placeholder="Enter"
         v-model.number="multipleBirthInteger"
         type="number"
@@ -212,6 +223,7 @@
     multipleBirthRule = number().min(0).max(10);
     emailRule = string().email().required();
     email = "";
+    fullname = "";
 
     dobRule = date().max(
       new Date(),
@@ -243,6 +255,9 @@
       return this.$route.path.includes("view");
     }
 
+    @account.State
+    cornieData!: any;
+
     @account.Getter
     cornieUser!: CornieUser;
 
@@ -265,6 +280,8 @@
       this.middleName = details?.middleName as any;
       this.email = details?.email;
       this.img.url = details?.image as any;
+
+      this.fullname = `${this.firstName} ${this.middleName} ${this.lastName}`;
     }
     setPatientDetails(details: any) {
       this.bloodGroup = details?.bloodGroup;
@@ -272,7 +289,7 @@
       this.gender = details?.gender || "";
       this.maritalStatus = details?.maritalStatus || "";
       this.multipleBirthInteger = details?.multipleBirthInteger || 0;
-      this.dateOfBirth = details?.dateOfBirth || "";
+      this.dateOfBirth = details?.dateOfBirth || undefined;
       this.numberOfChildren = details?.numberOfChildren || "";
       this.hasChild =
         details?.numberOfChildren && details?.numberOfChildren > 0
@@ -282,12 +299,14 @@
     }
 
     get getUpdatePayload() {
+      const [firstName, middleName, lastName] = this.fullname.split(" ");
       return {
         // id: this.cornieUser?.id,
         // mrn: this.corniePatient.mrn,
-        firstname: this.firstName,
-        middlename: this.middleName,
-        lastname: this.lastName,
+
+        firstname: firstName,
+        middlename: middleName,
+        lastname: lastName,
         email: this.email,
         profilePhoto: this.img.url || undefined,
         dateOfBirth: this.dateOfBirth || undefined,
@@ -300,15 +319,12 @@
         numberOfChildren: this.numberOfChildren || undefined,
       };
     }
-    mounted() {
-      this.updatePractitioner(this.authPractitioner as any);
+
+    async mounted() {
+      // this.updatePractitioner(this.authPractitioner as any);
+      console.log("created", this.cornieData);
       this.setDetails(this.cornieUser);
       this.setPatientDetails(this.corniePatient);
-      console.log("user", this.cornieUser);
-      console.log("patient", this.corniePatient);
-    }
-    async created() {
-      await this.updatePractitioner(this.authPractitioner as any);
       // await this.fetchUserDetails();
     }
 

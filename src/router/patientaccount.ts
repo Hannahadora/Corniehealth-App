@@ -5,3 +5,5 @@ export const ProfileSettingsRoute: RouteRecordRaw = {
   name: "Private Profile & Settings",
   component: () => import("@/views/dashboardPatients/patients/account/index.vue"),
 };
+
+

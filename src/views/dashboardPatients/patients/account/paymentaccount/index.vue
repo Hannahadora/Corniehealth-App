@@ -37,6 +37,7 @@
         @newpaymentaccount="() => (showNewPaymentAccount = true)"
       />
       <existing-state
+        @reloadPayment="fetchPaymentAccounts"
         @newpaymentaccount="() => (showNewPaymentAccount = true)"
         :patientAccounts="allPatientAccount"
         v-else

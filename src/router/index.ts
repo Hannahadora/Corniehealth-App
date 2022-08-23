@@ -6,13 +6,13 @@ import Home from "../views/Home.vue";
 import { BillingRoutes } from "./billing";
 import { ClinicalsRoute } from "./clinical";
 import { ExperienceRoutes } from "./experience";
+import { InPatientRoutes } from "./in-patient";
 import { NewSettingsRoutes } from "./newsettings";
 import { PracticeRoutes } from "./practice";
 import { SettingsRoute } from "./settings";
 import { UserRoute } from "./user";
-import { InPatientRoutes } from "./in-patient";
 //Profile routes
-import  { ProfileSettingsRoute }  from "./patientaccount";
+import { ProfileSettingsRoute } from "./patientaccount";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Sign In",
     alias: "/signin",
     component: () => import("@/views/auth/signin/index.vue"),
+  },
+  {
+    path: "/payment-response",
+    name: "Payment Success",
+    component: () => import("@/views/dashboardPatients/patients/account/paymentaccount/components/payment-success.vue"),
   },
   //reset password
   {
@@ -318,7 +323,7 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  
+
 ];
 
 const router = createRouter({
