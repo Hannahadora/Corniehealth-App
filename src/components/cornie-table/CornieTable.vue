@@ -20,8 +20,8 @@
         <div class="flex">
           <cornie-menu top="30px" right="100%">
             <template #activator="{ on }">
-              <icon-btn v-on="on" style="height: unset;width: unset;">
-                  <dots-horizontal-icon class="mr-7" />
+              <icon-btn v-on="on" style="height: unset; width: unset">
+                <dots-horizontal-icon class="mr-7" />
               </icon-btn>
             </template>
             <cornie-card-text :tablecard="true">
@@ -81,7 +81,12 @@
           class="border-t-2 border-2 border-y-gray"
         >
           <td class="p-2" v-if="check">
-            <cornie-checkbox @click="select(row, index)" @change='updateCheckall()' v-model="selectedOne[index]" :checked="isSelected(row)" />
+            <cornie-checkbox
+              @click="select(row, index)"
+              @change="updateCheckall()"
+              v-model="selectedOne[index]"
+              :checked="isSelected(row)"
+            />
           </td>
           <td class="p-2">{{ index + 1 }}</td>
           <template v-for="(column, i) in preferredColumns" :key="i">
@@ -93,26 +98,34 @@
           </template>
           <td v-if="!menushow">
             <div class="flex justify-center">
-                <edit-icon v-if="editRow" class="text-primary fill-current cursor-pointer" @click="$emit('edit',row.id)"/>
-                <div v-else>
-                  <delete-icon v-if="deleteRow" class="cursor-pointer" @click="$emit('delete',index)"/>
-                  <cornie-menu top="30px" v-else right="100%">
-                    <template #activator="{ on }">
-                      <icon-btn v-on="on">
-                        <dots-horizontal-icon v-on="on"/>
-                      </icon-btn>
-                    </template>
-                    <cornie-card-text :tablecard="true">
-                      <slot name="actions" :item="row" :index="index" />
-                    </cornie-card-text>
-                  </cornie-menu>
-                </div>
+              <edit-icon
+                v-if="editRow"
+                class="text-primary fill-current cursor-pointer"
+                @click="$emit('edit', row.id)"
+              />
+              <div v-else>
+                <delete-icon
+                  v-if="deleteRow"
+                  class="cursor-pointer"
+                  @click="$emit('delete', index)"
+                />
+                <cornie-menu top="30px" v-else right="100%">
+                  <template #activator="{ on }">
+                    <icon-btn v-on="on" class="hover:bg-gray-200">
+                      <dots-horizontal-icon v-on="on" />
+                    </icon-btn>
+                  </template>
+                  <cornie-card-text :tablecard="true">
+                    <slot name="actions" :item="row" :index="index" />
+                  </cornie-card-text>
+                </cornie-menu>
+              </div>
             </div>
           </td>
         </tr>
       </table>
       <cornie-pagination
-      v-if="showPagination"
+        v-if="showPagination"
         :pageInfo="pageInfo"
         @pagechanged="pushPageChanges"
       />
@@ -127,240 +140,236 @@
 </template>
 
 <script lang="ts">
-import { Options, prop, Vue } from "vue-class-component";
-import SortIcon from "@/components/icons/sort.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import PrintIcon from "@/components/icons/print.vue";
-import TableSettingsIcon from "@/components/icons/tablesetting.vue";
-import FilterIcon from "@/components/icons/filter.vue";
-import IconInput from "@/components/IconInput.vue";
-import CornieSpacer from "@/components/CornieSpacer.vue";
-import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
-import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
-import FilterByIcon from "@/components/icons/FilterByIcon.vue";
-import ColumnFilter from "@/components/columnfilter.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import IconBtn from "@/components/CornieIconBtn.vue";
-import CornieMenu from "@/components/CornieMenu.vue";
-import Card from "@/components/cornie-card/CornieCard.vue";
-import RefreshIcon from "@/components/icons/RefreshIcon.vue";
-import search from "@/plugins/search";
-import CornieCard from "@/components/cornie-card";
-import DeleteIcon from "@/components/icons/deleteorange.vue";
-import CorniePagination from "@/components/corniePagination.vue";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import EditIcon from "@/components/icons/edit.vue";
+  import ColumnFilter from "@/components/columnfilter.vue";
+  import CornieCard from "@/components/cornie-card";
+  import IconBtn from "@/components/CornieIconBtn.vue";
+  import CornieMenu from "@/components/CornieMenu.vue";
+  import CorniePagination from "@/components/corniePagination.vue";
+  import CornieSpacer from "@/components/CornieSpacer.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import DeleteIcon from "@/components/icons/deleteorange.vue";
+  import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
+  import DotsVerticalIcon from "@/components/icons/DotsVerticalIcon.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import FilterIcon from "@/components/icons/filter.vue";
+  import FilterByIcon from "@/components/icons/FilterByIcon.vue";
+  import PrintIcon from "@/components/icons/print.vue";
+  import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import SortIcon from "@/components/icons/sort.vue";
+  import TableSettingsIcon from "@/components/icons/tablesetting.vue";
+  import search from "@/plugins/search";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
 
-interface IPage {
-  data: any[];
-  numberOfPages: number;
-  previousPage: number;
-  nextPage: number;
-}
-
-type Sorter = (a: any, b: any) => number;
-type ItemLoader = (page: number) => Promise<IPage>;
-
-interface IColumn {
-  title: string;
-  key: string | number;
-  orderBy: Sorter;
-}
-
-function defaultFilter(item: any, query: string) {
-  return search.searchObject(item, query);
-}
-
-@Options({
-  name: "cornie-table",
-  emits: ["refresh", "filter"],
-  components: {
-    SortIcon,
-    IconInput,
-    SearchIcon,
-    TableSettingsIcon,
-    PrintIcon,
-    FilterIcon,
-    CornieSpacer,
-    DotsHorizontalIcon,
-    DeleteIcon,
-    DotsVerticalIcon,
-    ColumnFilter,
-    FilterByIcon,
-    CornieCheckbox,
-    IconBtn,
-    CornieMenu,
-    RefreshIcon,
-    ...CornieCard,
-    CorniePagination,
-    EditIcon,
-  },
-})
-export default class CornieTable extends Vue {
-  @Prop()
-  columns!: IColumn[];
-
-  @Prop({ type: Function, default: defaultFilter })
-  filter!: (item: any, query: string) => boolean;
-
-  @PropSync("modelValue", { type: Array, default: [] })
-  items!: any[];
-
-  @Prop({ type: Object, default: {} })
-  pageInfo!: any;
-
-  @Prop({ type: Boolean, default: true })
-  check!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  menushow!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  listmenu!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  showPagination!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  deleteRow!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  editRow!: boolean;
-
-  @Prop({ type: Boolean, default: false })
-  refreshing!: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  search!: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  showActions!: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  menu!: boolean;
-
-  @Prop({ type: Number})
-  totalPages!: number;
-
-  @Prop({ type: Number })
-  perPage!: number;
-
-  @Prop({ type: Number })
-  totalItems!: number;
-
-  @Prop({ type: Number })
-  currentPage!: number;
-
-  @Prop({ type: Number })
-  maxVisibleButtons!: number;
-
-  @PropSync("refreshing")
-  refreshSync!: boolean;
-
-  @PropSync("loader", { type: Function })
-  loaderProp!: ItemLoader;
-
-  query = "";
-
-  orderBy: Sorter = () => 1;
-  selectedItems: any[] = [];
-  selectedAll = false;
-  selectedOne = false;
-  showColumnFilter = false;
-  preferredColumns: IColumn[] = [];
-
-  nextPage = 1;
-  numberOfPages = 0;
-
-  get filteredItems() {
-    return this.items
-      .filter((item: any) => this.filter(item, this.query))
-      .sort(this.orderBy);
+  interface IPage {
+    data: any[];
+    numberOfPages: number;
+    previousPage: number;
+    nextPage: number;
   }
 
-  refresh() {
-    this.$emit("refresh");
-    this.refreshSync = true;
+  type Sorter = (a: any, b: any) => number;
+  type ItemLoader = (page: number) => Promise<IPage>;
+
+  interface IColumn {
+    title: string;
+    key: string | number;
+    orderBy: Sorter;
   }
 
-  setOrderBy(orderBy: Sorter) {
-    this.orderBy = orderBy || this.orderBy;
+  function defaultFilter(item: any, query: string) {
+    return search.searchObject(item, query);
   }
 
-  isSelected(item: any): boolean {
-    this.selectedOne = true;
-    return !this.selectedItems.every((element: any) => element.id != item.id);
-  }
+  @Options({
+    name: "cornie-table",
+    emits: ["refresh", "filter"],
+    components: {
+      SortIcon,
+      IconInput,
+      SearchIcon,
+      TableSettingsIcon,
+      PrintIcon,
+      FilterIcon,
+      CornieSpacer,
+      DotsHorizontalIcon,
+      DeleteIcon,
+      DotsVerticalIcon,
+      ColumnFilter,
+      FilterByIcon,
+      CornieCheckbox,
+      IconBtn,
+      CornieMenu,
+      RefreshIcon,
+      ...CornieCard,
+      CorniePagination,
+      EditIcon,
+    },
+  })
+  export default class CornieTable extends Vue {
+    @Prop()
+    columns!: IColumn[];
 
-    updateCheckall (){
-      if(this.selectedItems.length == this.filteredItems.length){
-         this.selectedAll = true;
-      }else{
-         this.selectedAll = false;
+    @Prop({ type: Function, default: defaultFilter })
+    filter!: (item: any, query: string) => boolean;
+
+    @PropSync("modelValue", { type: Array, default: [] })
+    items!: any[];
+
+    @Prop({ type: Object, default: {} })
+    pageInfo!: any;
+
+    @Prop({ type: Boolean, default: true })
+    check!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    menushow!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    listmenu!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    showPagination!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    deleteRow!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    editRow!: boolean;
+
+    @Prop({ type: Boolean, default: false })
+    refreshing!: boolean;
+
+    @Prop({ type: Boolean, default: true })
+    search!: boolean;
+
+    @Prop({ type: Boolean, default: true })
+    showActions!: boolean;
+
+    @Prop({ type: Boolean, default: true })
+    menu!: boolean;
+
+    @Prop({ type: Number })
+    totalPages!: number;
+
+    @Prop({ type: Number })
+    perPage!: number;
+
+    @Prop({ type: Number })
+    totalItems!: number;
+
+    @Prop({ type: Number })
+    currentPage!: number;
+
+    @Prop({ type: Number })
+    maxVisibleButtons!: number;
+
+    @PropSync("refreshing")
+    refreshSync!: boolean;
+
+    @PropSync("loader", { type: Function })
+    loaderProp!: ItemLoader;
+
+    query = "";
+
+    orderBy: Sorter = () => 1;
+    selectedItems: any[] = [];
+    selectedAll = false;
+    selectedOne = false;
+    showColumnFilter = false;
+    preferredColumns: IColumn[] = [];
+
+    nextPage = 1;
+    numberOfPages = 0;
+
+    get filteredItems() {
+      return this.items
+        .filter((item: any) => this.filter(item, this.query))
+        .sort(this.orderBy);
+    }
+
+    refresh() {
+      this.$emit("refresh");
+      this.refreshSync = true;
+    }
+
+    setOrderBy(orderBy: Sorter) {
+      this.orderBy = orderBy || this.orderBy;
+    }
+
+    isSelected(item: any): boolean {
+      this.selectedOne = true;
+      return !this.selectedItems.every((element: any) => element.id != item.id);
+    }
+
+    updateCheckall() {
+      if (this.selectedItems.length == this.filteredItems.length) {
+        this.selectedAll = true;
+      } else {
+        this.selectedAll = false;
       }
     }
 
-  select(item: any, index:number) {
-    if (this.isSelected(item)){
-      this.selectedItems = this.selectedItems.filter(
-        (element: any) => element.id != item.id
-      );
-      this.$emit('selectedItem', this.selectedItems)
-      
-    }
-    else {
-      this.selectedItems.push(item)
-       this.$emit('selectedItem',this.selectedItems, index)
-    };
-  }
-
-  async loadItems() {
-    const response = await this.loaderProp(this.nextPage);
-    this.nextPage = response.nextPage as number;
-    this.numberOfPages = response.numberOfPages as number;
-    this.items = response.data;
-  }
-
-  @Watch("selectedAll")
-  onSelectedAllChange(newValue: boolean) {
-    this.selectedItems = [];
-    if (newValue){
-       for (const item of this.filteredItems) {
-         this.selectedItems.push(item);
-         this.selectedOne = true;
-        this.$emit('selectedItem', this.selectedItems)
-       }
-    }
-     
-  }
-  pushPageChanges(payload:any) {
-          this.$emit('pagechanged', payload);
+    select(item: any, index: number) {
+      if (this.isSelected(item)) {
+        this.selectedItems = this.selectedItems.filter(
+          (element: any) => element.id != item.id
+        );
+        this.$emit("selectedItem", this.selectedItems);
+      } else {
+        this.selectedItems.push(item);
+        this.$emit("selectedItem", this.selectedItems, index);
+      }
     }
 
-  mounted() {
-    this.preferredColumns = this.columns;
-    if (this.loaderProp != null) this.loadItems();
+    async loadItems() {
+      const response = await this.loaderProp(this.nextPage);
+      this.nextPage = response.nextPage as number;
+      this.numberOfPages = response.numberOfPages as number;
+      this.items = response.data;
+    }
+
+    @Watch("selectedAll")
+    onSelectedAllChange(newValue: boolean) {
+      this.selectedItems = [];
+      if (newValue) {
+        for (const item of this.filteredItems) {
+          this.selectedItems.push(item);
+          this.selectedOne = true;
+          this.$emit("selectedItem", this.selectedItems);
+        }
+      }
+    }
+    pushPageChanges(payload: any) {
+      this.$emit("pagechanged", payload);
+    }
+
+    mounted() {
+      this.preferredColumns = this.columns;
+      if (this.loaderProp != null) this.loadItems();
+    }
   }
-}
 </script>
 
 <style scoped>
-.table-card {
-  overflow-x: visible;
-  overflow-y: visible !important;
-  min-height: auto;
-}
-.table-card::-webkit-scrollbar {
-  width: 5px !important;
-  height: 5px !important;
-}
-.table-card::-webkit-scrollbar-track {
-  background-color: #f0f4fe;
-  border-radius: 2rem;
-}
-.table-card::-webkit-scrollbar-thumb {
-  background-color: #949eb8;
-  border-radius: 2rem;
-  border-color: #949eb8;
-}
+  .table-card {
+    overflow-x: visible;
+    overflow-y: visible !important;
+    min-height: auto;
+  }
+  .table-card::-webkit-scrollbar {
+    width: 5px !important;
+    height: 5px !important;
+  }
+  .table-card::-webkit-scrollbar-track {
+    background-color: #f0f4fe;
+    border-radius: 2rem;
+  }
+  .table-card::-webkit-scrollbar-thumb {
+    background-color: #949eb8;
+    border-radius: 2rem;
+    border-color: #949eb8;
+  }
 </style>
