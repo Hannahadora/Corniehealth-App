@@ -19,11 +19,6 @@
       >
         Join Organisation
       </button>
-      <button
-        class="bg-danger rounded-lg text-white mt-5 py-2 px-8 text-sm font-semibold focus:outline-none hover:opacity-90"
-      >
-        Create New
-      </button>
     </div>
   </div>
   <org-modal v-model="showOrgModal" />
