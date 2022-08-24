@@ -61,99 +61,29 @@
           </span>
         </template>
         <template #actions="{ item }">
-          <div
-            @click="viewCondition(item)"
+          <!-- <div
+            @click="viewPayment(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
-          </div>
+          </div> -->
 
-          <div
-            @click="recordAbatement(item)"
+          <!-- <div
+            v-if="item.paymentType !== 'Card'"
+            @click="editAccount(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <edit-icon class="text-yellow-800 fill-current" />
+            <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs"> Edit </span>
-          </div>
-          <div
-            @click="updateStatus(item)"
+          </div> -->
+          <!-- <div
+            @click="deleteAccount(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <update-icon class="text-purple-500 fill-current" />
-            <span class="ml-3 text-xs"> Update Status </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> End encounter </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Pause encounter </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Admit Patient </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Clinical Impression </span>
-          </div>
-
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Medication Request </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs">Diagnostics Request </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs">Referral Request </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Manage Bill </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs"> Progress Notes </span>
-          </div>
-          <div
-            @click="addNote(item)"
-            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          >
-            <plus-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs">Class History </span>
-          </div>
+            <delete-icon class="text-danger fill-current cursor-pointer" />
+            <span class="ml-3 text-xs">Delete</span>
+          </div> -->
         </template>
       </cornie-table>
     </div>
@@ -161,11 +91,13 @@
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import DeleteIcon from "@/components/icons/cancel.vue";
   import EditIcon from "@/components/icons/edit.vue";
   import HistoryIcon from "@/components/icons/history.vue";
   import UpdateIcon from "@/components/icons/newupdate.vue";
   import NewViewIcon from "@/components/icons/newview.vue";
   import PlusIcon from "@/components/icons/plus.vue";
+  import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
   import { namespace } from "vuex-class";
@@ -187,8 +119,9 @@
       UpdateIcon,
       PlusIcon,
       HistoryIcon,
+      DeleteIcon,
     },
-    emits: ["newpaymentaccount"],
+    emits: ["newpaymentaccount", "reloadPayment"],
   })
   export default class EncounterExistingState extends Vue {
     @Prop()
@@ -245,6 +178,7 @@
                 //@ts-ignore
                 expiryDate: this.getAccountName(p)?.expiryDate,
                 status: p?.status || "XXXXXX",
+                ...p,
               };
             })
           : [];
@@ -293,6 +227,24 @@
 
       if (type == "wallet") return "Wallet";
       return "Card";
+    }
+
+    async deleteAccount(id: string) {
+      try {
+        const response = await cornieClient().delete(
+          `/api/v1/patient-portal/payment/${id}`
+        );
+        window.notify({
+          msg: "Payment account added successfully",
+          status: "success",
+        });
+        this.$emit("reloadPayment");
+      } catch (error) {
+        window.notify({
+          msg: "Error updating payment account",
+          status: "error",
+        });
+      }
     }
     printRecorded(dateR: any) {
       const dateString = dateR;
