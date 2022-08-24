@@ -45,7 +45,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showDependant = true"
+          @click="showDependents(item.associationId)"
         >
           <family-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">Dependants</span>

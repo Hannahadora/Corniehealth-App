@@ -45,7 +45,7 @@
               label="Date of Birth"
               placeholder="Enter"
               :rules="dobRule"
-              v-model="dateOfBirth"
+              v-model="dob"
               :readonly="viewOnly"
             />
             <cornie-select
@@ -112,6 +112,7 @@
             Cancel
           </cornie-btn>
           <cornie-btn
+            :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
@@ -150,6 +151,7 @@ import { FormRef } from "@/types";
 
 @Options({
   name: "MemberModal",
+  emits: ["refresh"],
   components: {
     ...CornieCard,
     InfoIcon,
@@ -174,7 +176,10 @@ export default class MemberModal extends Vue {
   @Ref("form")
   form!: FormRef;
 
-  img = setup(() => useHandleImage());
+  @Prop({ type: String })
+  associationId!: string;
+
+  loading = false;
   selectedPatient: IPatient | null = null;
   requiredRule = string().required();
   emailRule = string().email().required();
@@ -210,7 +215,7 @@ export default class MemberModal extends Vue {
     return {
       patientId: this.selectedPatient?.id,
       relationship: this.relationship,
-      memberRole: this.memberRole,
+      role: this.memberRole,
       accountManager: this.accountManager,
     };
   }
@@ -218,7 +223,6 @@ export default class MemberModal extends Vue {
   get newPatientPayload() {
     return {
       paymentAccounts: [],
-
       firstName: this.firstName,
       lastName: this.lastName,
       dob: this.dob,
@@ -230,12 +234,33 @@ export default class MemberModal extends Vue {
     };
   }
 
+  get payload() {
+    return this.selectedPatient?.id
+      ? this.existingPatientPayload
+      : this.newPatientPayload;
+  }
+
   get viewOnly() {
     return this.$route.path.includes("view");
   }
 
   async submit() {
-    this.form.validate();
+    const { valid } = await this.form.validate();
+    if (!valid) return;
+    this.loading = true;
+
+    try {
+      await cornieClient().post(
+        `/api/v1/patient-portal/employer/${this.associationId}/dependent`,
+        [this.payload]
+      );
+      this.$emit("refresh");
+      this.show = false;
+      window.notify({ msg: "Dependent added", status: "success" });
+    } catch (error) {
+      window.notify({ msg: "Dependent not added", status: "error" });
+    }
+    this.loading = false;
   }
 }
 </script>

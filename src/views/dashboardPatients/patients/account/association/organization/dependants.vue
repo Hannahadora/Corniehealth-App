@@ -60,7 +60,11 @@
         </div>
       </cornie-card-text>
     </cornie-card>
-    <member-modal v-model="addMember" />
+    <member-modal
+      v-model="addMember"
+      @refresh="refreshed"
+      :associationId="associationId"
+    />
   </cornie-dialog>
 </template>
 
@@ -174,12 +178,16 @@ export default class Dependants extends Vue {
     if (!this.associationId) return;
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/employer/${this.associationId}/dependent`
+        `/api/v1/patient-portal/employer/${this.associationId}/dependent`
       );
       this.dependents = data;
     } catch (error) {
       window.notify({ msg: "Failed to fetch dependents", status: "error" });
     }
+  }
+
+  refreshed() {
+    this.fetchDependents();
   }
 }
 </script>
