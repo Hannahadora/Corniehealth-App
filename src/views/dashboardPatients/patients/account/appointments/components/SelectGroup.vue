@@ -16,7 +16,8 @@
           :placeholder="locationPlaceholder"
           :items="locations"
           :active="locationActive"
-          @query="findCity"
+          item-label-prop="name"
+          item-value-prop="id"
         />
         <multiselectsearch
           v-model="search.hospital"
@@ -97,10 +98,13 @@ export default class addMedications extends Vue {
   @Prop({ type: String, default: "" })
   selectedLocation!: string;
 
+  @Prop({ type: Array, default: [] })
+  locations!: any[];
+
   loading = false;
   search = {
     specialty: "",
-    location: undefined,
+    location: "",
     hospital: undefined,
     min: undefined,
     max: undefined,
@@ -112,7 +116,7 @@ export default class addMedications extends Vue {
   };
   specialties: any = [];
 
-  locations: any = [];
+  // locations: any = [];
 
   hospitals: any = [];
 
@@ -156,7 +160,7 @@ export default class addMedications extends Vue {
   }
 
   @Watch("search", { deep: true })
-  async handler() {
+  handler() {
     this.$emit("searchQuery", this.search);
     this.$emit("loadingState", this.loading);
     this.$router.push(
@@ -164,6 +168,22 @@ export default class addMedications extends Vue {
         this.$route.path
       }?specialty=${this.search.specialty.toLowerCase()}?location=${this.search.location.toLowerCase()}`
     );
+  }
+
+  @Watch("selectedSpecialty") 
+  updated() {
+    this.selectedSpecialty
+      ? (this.search.specialty = (this.selectedSpecialty as any))
+      : undefined;
+      this.specialtyActive = true;
+  }
+
+  @Watch("selecetedLocation") 
+  updatedx() {
+    this.selectedLocation
+      ? (this.search.specialty = (this.selectedLocation as any))
+      : undefined;
+      this.locationActive = true;
   }
 
   async findCity(query: any) {
@@ -204,7 +224,7 @@ export default class addMedications extends Vue {
     try {
       this.loading = true;
       const { data } = await cornieClient().get(
-        `/api/v1/booking-website/search?query=${search}`
+        `/api/v1/booking-website/search?query=${query}`
       );
       const xspecialties = data.specialties;
       this.specialties = xspecialties.specialties.map((el: any) => el.name);
@@ -231,12 +251,6 @@ export default class addMedications extends Vue {
   }
 
   created() {
-    this.selectedSpecialty
-      ? (this.search.specialty = this.selectedSpecialty)
-      : undefined;
-    this.selectedLocation
-      ? (this.search.location = this.selectedLocation)
-      : undefined;
     this.setActiveStates();
   }
 }

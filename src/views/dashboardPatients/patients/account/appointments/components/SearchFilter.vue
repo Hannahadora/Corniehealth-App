@@ -112,10 +112,7 @@ import SortIcon from "@/components/icons/sort.vue";
 export default class SearchFilter extends Vue {
   practitionersDropdown = false;
   type = "";
-  providerData = "";
   providerName = "";
-  locationId = "";
-  rLocations = [] as any;
   specialties = [] as any;
   providers = [] as any;
   practitioners = [] as any;
@@ -162,12 +159,8 @@ export default class SearchFilter extends Vue {
   }
 
   selectProvider(value: any, type: string) {
-    this.$emit('getSelectedInput', value)
-    this.providerData = value;
+    this.$emit("getSelectedInput", value);
     this.type = type;
-    this.rLocations = value.locations;
-    this.$route.query.specialty = value.name
-    this.$route.query.specialty = value.locations.length > 0 && value.locations[0].name
     setTimeout(() => {
       this.practitionersDropdown = false;
     }, 500);

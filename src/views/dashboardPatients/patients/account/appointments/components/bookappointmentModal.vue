@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/3 h-full">
+  <cornie-dialog v-model="show" right class="w-10/12 h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
@@ -53,11 +53,21 @@
 
         <select-group
           :tab="selectedTab"
+          :locations="shownLocations"
           :selectedSpecialty="search.specialty"
           :selectedLocation="search.location"
           @searchQuery="getSearchQuery"
           @loadingState="getLoadingState"
         />
+
+        <div>
+          <div v-if="selectedTab === 'doctors'">
+            <doctors :practitioners="doctors" />
+          </div>
+          <div v-if="selectedTab === 'hospitals'">
+            <hospitals :hospitals="hospitals" />
+          </div>
+        </div>
       </cornie-card-text>
     </cornie-card>
   </cornie-dialog>
@@ -83,8 +93,8 @@ import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-// import Doctors from "~/components/BookAppointment/Search/Doctors.vue"
-// import Hospitals from "~/components/BookAppointment/Search/Hospitals.vue"
+import Doctors from "./Doctors.vue"
+import Hospitals from "./Hospitals.vue"
 import SelectGroup from "./SelectGroup.vue";
 import SearchFilter from "./SearchFilter.vue";
 // import LinearLoader from "~/components/LinearLoader.vue"
@@ -114,6 +124,8 @@ function defaultFilter(item: any, query: string) {
     ChevronLeftIcon,
     SelectGroup,
     SearchFilter,
+    Doctors,
+    Hospitals,
   },
 })
 export default class BookAppointmentModal extends Vue {
@@ -121,6 +133,9 @@ export default class BookAppointmentModal extends Vue {
   search: any = {};
   loading: Boolean = false;
   show = false;
+  shownLocations: any = [];
+  doctors: any = [];
+  hospitals: any = [];
 
   //   @practitioners.Getter
   //     relatedPractitioners!: []
@@ -134,6 +149,7 @@ export default class BookAppointmentModal extends Vue {
   }
 
   getSelectedInput(value: any) {
+    this.shownLocations = value.locations;
     this.search.specialty = value.name;
     this.search.location =
       value.locations.length > 0 && value.locations[0].name;
@@ -174,6 +190,7 @@ export default class BookAppointmentModal extends Vue {
       const { data } = await cornieClient().get(
         `/api/v1/booking-website/search/practitioners?${queryString}`
       );
+      this.doctors = data
     } catch (error) {
       window.notify({
         msg: "There was an error fetching doctors",
@@ -192,6 +209,7 @@ export default class BookAppointmentModal extends Vue {
           this.search.specialty ?? ""
         }&location=${this.search.location ?? ""}`
       );
+      this.hospitals = data
     } catch (error) {
       window.notify({
         msg: "There was an error fetching hospitals",
