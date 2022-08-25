@@ -18,8 +18,9 @@
           <span
             class="text-black cursor-pointer w-full px-4 flex text-left text-sm hover:bg-blue-100 rounded-full py-3"
             @click="showOrgModal = true"
-            >Search Organisation</span
           >
+            Search Organisation
+          </span>
         </div>
         <div class="mb-2 w-full">
           <span
@@ -159,6 +160,10 @@ export default class OrganizationLinkedAccount extends Vue {
     },
   ];
 
+  @Watch("showOrgModal")
+  orgModalShown() {
+    if (this.showOrgModal) this.showMemeberList = false;
+  }
   showDependents(associationId: string) {
     this.showDependant = true;
     this.currentAssociation = associationId;

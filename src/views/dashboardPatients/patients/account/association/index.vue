@@ -1,29 +1,24 @@
 <template>
   <div class="w-full">
-
     <div class="pb-5">
       <div class="">
         <span class="text-sm mb-0 text-black font-bold">Account Type</span>
-      <new-tab
-        :items="tabLinks"
-        v-model="currentTab"
-        :width="'w-2/4 lg:w-1/4 sm:w-2/4'"
-        class=""
-      >
-        <family-section/>
-        <orgainzation-section />
-    
-      </new-tab>
+        <new-tab
+          :items="tabLinks"
+          v-model="currentTab"
+          :width="'w-2/4 lg:w-1/3 '"
+          class=""
+        >
+          <family-section />
+          <orgainzation-section />
+        </new-tab>
+      </div>
     </div>
-    </div>
-
-
- 
   </div>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { namespace } from "vuex-class"; 
+import { namespace } from "vuex-class";
 
 import ICollectionCenters from "@/types/ICollectionCenters";
 
@@ -33,51 +28,49 @@ import NewTab from "@/components/newtab.vue";
 import FamilySection from "./familytype/index.vue";
 import OrgainzationSection from "./organization/index.vue";
 
-
 const collectioncenter = namespace("collectioncenter");
 
 @Options({
   name: "linkedAccounts",
   components: {
-   cornieRadio,
-   NewTab,
-   FamilySection,
-   OrgainzationSection,
+    cornieRadio,
+    NewTab,
+    FamilySection,
+    OrgainzationSection,
   },
 })
 export default class linkedAccounts extends Vue {
+  loading = false;
 
-    loading = false;
+  tabLinks = ["Family", "Organisation"];
 
-    tabLinks = ["Family", "Organisation"];
+  currentTab = 0;
 
-    currentTab = 0;
+  submit() {}
 
-    submit(){
+  @collectioncenter.Action
+  fetchCollectionCenters!: () => Promise<void>;
 
-    }
-  
-    @collectioncenter.Action
-    fetchCollectionCenters!: () => Promise<void>;
+  @collectioncenter.State
+  collectioncenters!: ICollectionCenters[];
 
-    @collectioncenter.State
-    collectioncenters!: ICollectionCenters[];
+  async collectioncenterAdded() {
+    await this.fetchCollectionCenters();
+  }
 
-    async collectioncenterAdded(){
-        await this.fetchCollectionCenters();
-    }
-
-    get collectionCenterId(){
-      return this.collectioncenters?.flatMap((collection) => collection).find((center) => center) as any
-    }
+  get collectionCenterId() {
+    return this.collectioncenters
+      ?.flatMap((collection) => collection)
+      .find((center) => center) as any;
+  }
 
   async created() {
-      await this.fetchCollectionCenters();
+    await this.fetchCollectionCenters();
   }
 }
 </script>
 <style scoped>
 .w-34 {
-    width: 45%;
+  width: 45%;
 }
 </style>
