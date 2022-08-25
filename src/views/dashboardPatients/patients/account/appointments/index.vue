@@ -5,17 +5,19 @@
     >
       <div class="w-full">
         <span
-          class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
+          class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
         >
           Apppointments
         </span>
       </div>
 
     <div>
-      <empty-state v-if="noAppointment"/>
-      <existing-state v-else />
+      <empty-state v-if="noAppointment" @openModal="openModal"/>
+      <existing-state v-else  @openModal="openModal"/>
     </div>
     </div>
+
+    <book-appointment-modal v-model="appointmentModal"/>
   </div>
 </template>
 
@@ -26,7 +28,8 @@ import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
 import { namespace } from "vuex-class";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import EmptyState from './emptyState.vue';
-import ExistingState from './existingState.vue'
+import ExistingState from './existingState.vue';
+import BookAppointmentModal from './components/bookappointmentModal.vue';
 
 @Options({
   name: "AppointmentPage",
@@ -35,6 +38,7 @@ import ExistingState from './existingState.vue'
     ChevronLeftIcon,
     EmptyState,
     ExistingState,
+    BookAppointmentModal
   },
 })
 export default class AppointmentPage extends Vue {
@@ -43,9 +47,14 @@ export default class AppointmentPage extends Vue {
 
   currentTab = 0;
   appointments = <any>[];
+  appointmentModal: Boolean = false;
 
   get noAppointment() {
-    return this.appointments.length > 0
+    return this.appointments.length === 0
+  }
+
+  openModal() {
+    this.appointmentModal = true
   }
 
   async created() {}

@@ -10,7 +10,7 @@
         with your preferred provider for you or for a family member.
       </p>
       <span class="flex justify-center w-full">
-        <button
+        <button @click="$emit('openModal')"
           class="bg-danger rounded-lg text-white mt-8 py-3 px-6 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
         >
           Book Appointment
