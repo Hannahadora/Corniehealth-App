@@ -3,7 +3,7 @@
       <img src="@/assets/img/empty-requests.svg" />
     <h3 class="text-center mt-5">
         You’ve made no requests!<br />
-        Make a new service reques by clicking on “New Request” above
+        Make a new service request by clicking on “New Request” below
     </h3>
     <button
        @click="showModalDiagnostic = true"

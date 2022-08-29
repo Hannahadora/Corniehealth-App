@@ -14,6 +14,4 @@ export interface IPatientAssociation {
   accountManger?: string;
   associationId?: string;
   defaultPaymentAccountId?: string;
-
-
 }

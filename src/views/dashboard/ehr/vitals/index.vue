@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full h-screen overflow-auto"
+    class="flex-col justify-center bg-white shadow-md p-3 mt-2 mb-2 rounded w-full"
   >
     <div class="container-fluid" v-if="vitals?.length > 0">
       <div class="w-full p-2">
@@ -56,7 +56,7 @@
               <newview-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">View</span>
             </table-action>
-            <table-action @click="viewVital(item.id)">
+            <table-action @click="editVital(item.id)">
               <edit-icon class="text-yellow-500 fill-current" />
               <span class="ml-3 text-xs">Edit</span>
             </table-action>
@@ -75,7 +75,6 @@
           </template>
           <template #status="{ item }">
             <div class="flex items-center">
-              =
               <p
                 class="text-xs bg-yellow-100 text-yellow-400 p-1 rounded"
                 v-if="item.status == 'corrected'"
@@ -132,6 +131,7 @@
       :id="selectedVitalId"
       :vital="selectedVital"
       v-model="showNewModal"
+      :viewState="viewState"
     />
 
     <update-status
@@ -251,6 +251,7 @@ export default class ExistingState extends Vue {
   patientId = "";
   showUpdateStatusModal = false;
   showNewModal = false;
+  viewState = false;
 
   headers = [
     {
@@ -338,9 +339,15 @@ export default class ExistingState extends Vue {
     this.selectedVitalId = "";
   }
 
+  editVital(id: string) {
+    this.selectedVitalId = id;
+    this.showNewModal = true;
+  }
+
   viewVital(id: string) {
     this.selectedVitalId = id;
     this.showNewModal = true;
+    this.viewState = true
   }
 
   getDataCount(obj: any) {

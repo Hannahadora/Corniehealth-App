@@ -9,10 +9,10 @@
           <avatar class="mr-2 h-24 w-24 m-5" :src="items.photo" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
-          <span class="text-sm text-black font-bold">{{ items.fullname }}</span>
+          <span class="text-sm text-black font-bold mb-2">{{ items.fullname }}</span>
           | {{ items.email }} <br />
-          <p>MRN-{{ items.mrn }}</p>
-          <p>
+          <p class="my-2">MRN-{{ items.mrn }}</p>
+          <p class="mb-2">
             {{ items.dob }}
           </p>
           <p>
@@ -114,8 +114,9 @@
         </div>
         <span
           @click="() => (showFullHeight = !showFullHeight)"
-          class="text-danger more font-bold cursor-pointer p-5 text-sm flex justify-center"
-          >{{ showFullHeight ? "See less" : "See more" }}</span
+          class="text-danger more font-bold cursor-pointer p-5 text-sm flex items-center justify-center"
+          ><merge-record-icon class="mr-2" v-if="showFullHeight" />
+          {{ showFullHeight ? "Merge Records" : "See more" }}</span
         >
       </div>
     </div>
@@ -193,6 +194,7 @@
   import FormIcon from "@/components/icons/ehrforms.vue";
   import ImpressionIcon from "@/components/icons/ehrimpression.vue";
   import MedicalIcon from "@/components/icons/ehrmedical.vue";
+  import MergeRecordIcon from "@/components/icons/merge-record.vue";
   import MedicationIcon from "@/components/icons/ehrmedication.vue";
   import ProceedIcon from "@/components/icons/ehrprocedure.vue";
   import RefferIcon from "@/components/icons/ehrreffer.vue";
@@ -242,6 +244,7 @@
       CorrespondIcon,
       AttachIcon,
       FormIcon,
+      MergeRecordIcon,
     },
   })
   export default class Settings extends Vue {
@@ -396,7 +399,11 @@
     printDOB(dateOfBirth?: string) {
       if (!dateOfBirth) return "N/A";
       const date = new Date(dateOfBirth);
-      return date.toLocaleDateString("en-NG");
+      const yearOfBirth = new Date(dateOfBirth).getFullYear()          
+      const thisYear = new Date().getFullYear()
+      const age = thisYear - yearOfBirth    
+      const yr =  age < 2 ? 'yr' : 'yrs ' 
+      return `${date.toLocaleDateString('en-US')} (${age} ${yr})` ;
     }
     printLastVisited(updatedAt?: string) {
       if (!updatedAt) return "N/A";
@@ -409,7 +416,8 @@
       return date.toLocaleDateString("en-NG");
     }
     printMRN(mrn?: string) {
-      return `${mrn?.substr(31)}`;
+      // return `${mrn?.substr(31)}`;
+      return `${mrn}`;
     }
     printPolicyId(patient: IPatient) {
       if (!patient?.insurances?.length) return "N/A";
@@ -431,7 +439,7 @@
 </script>
 <style scoped>
   .experience-links-con-max {
-    height: 225px;
+    height: auto;
     overflow: hidden;
     transition: all 0.5s ease-in-out;
   }

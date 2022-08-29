@@ -179,7 +179,7 @@
         patientId: this.cornieUser?.id,
         primaryAddress: this.address,
         secondaryAddress: undefined,
-        postalCode: this.postcode || null,
+        postalCode: this.postcode || undefined,
         city: this.city,
         country: this.nationality,
         state: this.state,
@@ -203,13 +203,24 @@
     async saveContact() {
       // console.log("payload,", this.payload, this.validate());
       if (!this.validate()) return;
-      const details = cornieClient().put(
-        `/api/v1/patient/contact/${this.userId}`,
-        this.payload
-      );
-      const response = await Promise.all([details]);
-      const r = response[0].data;
-      await this.fetchUserContact();
+      try {
+        const details = cornieClient().put(
+          `/api/v1/patient-portal/contact/${this.userId}`,
+          this.payload
+        );
+        const response = await Promise.all([details]);
+        const r = response[0].data;
+        window.notify({
+          msg: "Contact information updated successfully",
+          status: "success",
+        });
+        await this.fetchUserContact();
+      } catch (error) {
+        window.notify({
+          msg: "Error updating contact information",
+          status: "error",
+        });
+      }
     }
     async mounted() {
       await this.updatePractitioner(this.authPractitioner as any);

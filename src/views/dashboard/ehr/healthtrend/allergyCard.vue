@@ -26,11 +26,11 @@
           :key="index"
         >
           <div class="w-full flex items-center">
-            <div class="text-xs flex flex-col">
-              <span class="font-semibold text-primary capitalize">
+            <div class="flex flex-col">
+              <span class="font-semibold text-xs text-primary capitalize">
                 {{ input.name }}
               </span>
-              <span class="">
+              <span class="text-xs">
                 <span class="text-gray-600 capitalize">
                   <h5>{{ input.recordDate }}</h5></span
                 >
@@ -106,17 +106,17 @@ export default class AllergyCard extends Vue {
 
   async loadMappers() {
     this.severityMapper = await mapDisplay(
-      "http://hl7.org/fhir/ValueSet/condition-severity"
+      "http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
     );
     this.codeMapper = await mapDisplay(
-      "http://hl7.org/fhir/ValueSet/condition-code"
+      "http://hl7.org/fhir/ValueSet/allergyintolerance-code"
     );
   }
 
   get items() {
     if (!this.medicationMapper) return [];
     const newallergys = this.newallergys.map((allergy) => ({
-      name: allergy.name,
+      name: this.codeMapper(allergy.name),
       severity: this.severityMapper(allergy.severity),
       recordDate: new Date(allergy.recordDate).toLocaleString('en-US'),
     }));

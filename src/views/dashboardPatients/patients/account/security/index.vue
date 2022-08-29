@@ -5,7 +5,7 @@
         <span class="font-semibold"
           >Your account is part of a family account</span
         >
-        <div class="w-3/12 flex justify-end">
+        <!-- <div class="w-3/12 flex justify-end">
           <Button :loading="false" class="focus:outline-none">
             <span
               @click="leaveFamilyAccountModal = true"
@@ -14,7 +14,7 @@
               Leave Family Account
             </span>
           </Button>
-        </div>
+        </div> -->
       </div>
     </div>
 

@@ -71,6 +71,7 @@
                   <search-icon />
                 </template>
               </icon-input>
+              <slot name="alt" @click="selected"></slot>
               <div
                 v-for="(item, i) in processedItems"
                 :key="i"
@@ -129,7 +130,6 @@ export default class AutoComplete extends Vue {
   @Prop({ type: String, default: "" })
   labelicon!: string;
 
-
   @Prop({ type: Boolean, default: false })
   required!: boolean;
 
@@ -187,7 +187,7 @@ export default class AutoComplete extends Vue {
     this.showDatalist = !this.showDatalist;
   }
 
-  selected(item: any) {
+  selected(item?: any) {
     nextTick(() => {
       this.showDatalist = false;
       this.modelValueSync = item.code || item;

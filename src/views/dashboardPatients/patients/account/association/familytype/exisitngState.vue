@@ -5,21 +5,17 @@
         @click="showMember = true"
         class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
       >
-            Add Member
+        Add Member
       </button>
-
-    
     </span>
-  <cornie-table
+    <cornie-table
       :columns="rawHeaders"
       v-model="sortAssocaitons"
       :check="false"
       :fixeHeight="true"
     >
-      <template #actions="{item}">
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <eye-icon class="text-yellow-400 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
@@ -30,9 +26,7 @@
           <edit-icon />
           <span class="ml-3 text-xs">Update</span>
         </div>
-         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
           <money-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">Payment Account</span>
         </div>
@@ -43,35 +37,34 @@
           <cancel-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Deactivate</span>
         </div>
-        
       </template>
-      <template #status="{item}">
-          <span
-            :class="{
-              'bg-green-200 text-green-800': item.status == 'Active',
-              ' bg-red-500 text-red-400': item.status == 'Inactive',
-            }"
-            class="text-center rounded-md p-1 bg-opacity-20"
-          >
-            {{ item.status }}
-          </span>
-        </template>
-        <template #familyId="{item}">
-         <span class="text-blue-500">{{ item.familyId}}</span>
-        </template>
-         <template #patientName="{item}">
-         <span class="text-blue-500">{{ item.patientName}}</span>
-        </template>
+      <template #status="{ item }">
+        <span
+          :class="{
+            'bg-green-200 text-green-800': item.status == 'Active',
+            ' bg-red-500 text-red-400': item.status == 'Inactive',
+          }"
+          class="text-center rounded-md p-1 bg-opacity-20"
+        >
+          {{ item.status }}
+        </span>
+      </template>
+      <template #familyId="{ item }">
+        <span class="text-blue-500">{{ item.familyId }}</span>
+      </template>
+      <template #patientName="{ item }">
+        <span class="text-blue-500">{{ item.patientName }}</span>
+      </template>
     </cornie-table>
   </div>
-  <view-modal v-model="showViewProvider"/>
-   <existing-patient-modal v-model="showPatientModal"/>
-   <member-modal v-model="showMember" :familyId="id" :id="memberId"/>
+  <view-modal v-model="showViewProvider" />
+  <existing-patient-modal v-model="showPatientModal" />
+  <member-modal v-model="showMember" :familyId="id" :id="memberId" />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import {IPatientAssociation} from "@/types/IPatientAssociation";
+import { IPatientAssociation } from "@/types/IPatientAssociation";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
@@ -135,67 +128,56 @@ export default class FamilyAsscoationExisitngState extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
-
-  getKeyValue = getTableKeyValue;
-
   refreshing = false;
   showViewProvider = false;
   showMember = false;
 
   dropdowns = {} as IIndexableObject;
 
-   @patientassociation.State
+  @patientassociation.State
   familymembers!: IPatientAssociation[];
 
   @patientassociation.Action
   fetchFamilyMember!: (familyId: string) => Promise<void>;
 
-  
-
-
-   rawHeaders = [
-    { title: "DATE ADDED", key: "dateAdded", show: true, noOrder:true },
-    { title: "MRN #", key: "familyId", show: true , noOrder:true},
+  rawHeaders = [
+    { title: "DATE ADDED", key: "dateAdded", show: true, noOrder: true },
+    { title: "MRN #", key: "familyId", show: true, noOrder: true },
     {
       title: "name",
       key: "patientName",
       show: true,
-       noOrder:true
+      noOrder: true,
     },
     {
       title: "RELATIONSHIP",
       key: "relationship",
       show: true,
-       noOrder:true
+      noOrder: true,
     },
     {
       title: "ROLE",
       key: "role",
       show: true,
-       noOrder:true
+      noOrder: true,
     },
     {
       title: "Payment Account",
       key: "payment",
       show: true,
-       noOrder:true
+      noOrder: true,
     },
-     {
+    {
       title: "Status",
       key: "status",
       show: true,
-       noOrder:true
+      noOrder: true,
     },
-
   ];
-
-
 
   get items() {
     const familyassociations = this.familymembers.map((familyassociation) => {
-         (familyassociation as any).dateAdded = new Date(
+      (familyassociation as any).dateAdded = new Date(
         (familyassociation as any).dateAdded
       ).toLocaleDateString("en-US");
       return {
@@ -206,22 +188,21 @@ export default class FamilyAsscoationExisitngState extends Vue {
     return search.searchObjectArray(familyassociations, this.query);
   }
 
-
-  
   get sortAssocaitons() {
     return this.items.slice().sort(function (a, b) {
       return a.createdAt < b.createdAt ? 1 : -1;
     });
   }
 
-  showMemberModal(value:string){
+  showMemberModal(value: string) {
     this.memberId = value;
     this.showMember = true;
   }
 
-     async deleteFamilyMember(id:string){
-      const confirmed = await window.confirmAction({
-      message: "You have opted to revoke membership of Ibeh’s family account. Click below to confirm",
+  async deleteFamilyMember(id: string) {
+    const confirmed = await window.confirmAction({
+      message:
+        "You have opted to revoke membership of Ibeh’s family account. Click below to confirm",
       title: "Revoke",
     });
     if (!confirmed) {
@@ -232,17 +213,23 @@ export default class FamilyAsscoationExisitngState extends Vue {
           `/api/v1/patient-portal/family/member/${id}/revoke`
         );
         if (response.success) {
-          window.notify({ msg: "Membership revoked successfully", status: "success" });
+          window.notify({
+            msg: "Membership revoked successfully",
+            status: "success",
+          });
           await this.fetchFamilyMember(this.id);
         }
       } catch (error) {
-        window.notify({ msg: "Membership revoked unsuccessfully", status: "error" });
+        window.notify({
+          msg: "Membership revoked unsuccessfully",
+          status: "error",
+        });
       }
     }
   }
 
-    async declineFamilyMember(id:string, name:string){
-      const confirmed = await window.confirmAction({
+  async declineFamilyMember(id: string, name: string) {
+    const confirmed = await window.confirmAction({
       message: `You have been added to ${name} family account. Click below to decline`,
       title: "Decline",
     });
@@ -251,7 +238,8 @@ export default class FamilyAsscoationExisitngState extends Vue {
     } else {
       try {
         const response = await cornieClient().patch(
-          `/api/v1/patient-portal/family/member/${id}/decline`,{}
+          `/api/v1/patient-portal/family/member/${id}/decline`,
+          {}
         );
         if (response.success) {
           window.notify({ msg: "Declined Successfully", status: "success" });
@@ -262,8 +250,8 @@ export default class FamilyAsscoationExisitngState extends Vue {
       }
     }
   }
-  async acceptFamilyMember(id:string, name:string){
-      const confirmed = await window.confirmAction({
+  async acceptFamilyMember(id: string, name: string) {
+    const confirmed = await window.confirmAction({
       message: `You have been added to ${name} family account. Click below to accept`,
       title: "Accept",
     });
@@ -272,7 +260,8 @@ export default class FamilyAsscoationExisitngState extends Vue {
     } else {
       try {
         const response = await cornieClient().patch(
-          `/api/v1/patient-portal/family/member/${id}/accept`,{}
+          `/api/v1/patient-portal/family/member/${id}/accept`,
+          {}
         );
         if (response.success) {
           window.notify({ msg: "Accepted Successfully", status: "success" });
@@ -283,7 +272,6 @@ export default class FamilyAsscoationExisitngState extends Vue {
       }
     }
   }
-
 
   async created() {
     this.fetchFamilyMember(this.id);
