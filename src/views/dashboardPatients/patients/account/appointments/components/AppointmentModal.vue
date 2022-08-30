@@ -179,12 +179,22 @@ export default class DoctorsPage extends Vue {
     return new Date(date).toDateString();
   }
 
+  get startTime() {
+    const t = this.selectedTime.split('.')
+    return `${t[0]}:${t[1]}`
+  }
+  get endTime() {
+    const t = this.selectedTime.split('.')
+    const et = Number(t[0]) + 1
+    return `${et}:${t[1]}`
+  }
+
   async proceedToBook() {
     const data = {
       locationId: this.locationId,
       date: this.selectedDate,
-      startTime: this.selectedTime,
-      endTime: undefined,
+      startTime: this.startTime,
+      endTime: this.endTime,
       billingType: "insurance",
       practitionerId: this.id,
       patientId: this.userId,
