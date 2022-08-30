@@ -17,7 +17,7 @@
     </div>
     </div>
 
-    <book-appointment-modal v-model="appointmentModal"/>
+    <book-appointment-modal v-model="appointmentModal" @close="appointmentModal = false" />
   </div>
 </template>
 

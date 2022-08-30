@@ -5,7 +5,7 @@
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
     >
       <cornie-card-title class="flex items-center">
-        <icon-btn @click="show = false">
+        <icon-btn @click="$emit('close')">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
@@ -16,7 +16,7 @@
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="$emit('close')"
           />
         </div>
       </cornie-card-title>
@@ -61,7 +61,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-doctor-white.png"
+                    src="@/assets/book-appointment/icon-doctor-white.png"
                     alt=""
                   />
                   <div>
@@ -81,7 +81,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
                   />
                   <div>
@@ -100,7 +100,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-fee-white.png"
+                    src="@/assets/book-appointment/icon-fee-white.png"
                     alt=""
                   />
                   <div>
@@ -117,7 +117,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
                   />
                   <div>
@@ -137,7 +137,7 @@
                 <!-- <div class="flex items-start xl:mb-0 mb-6">
 						<img
 							class="mr-2"
-							src="@/assets/book-appointment/Icon (3).png"
+							src="@/assets/book-appointment/icon (3).png"
 							alt=""
 						/>
 						<div>
@@ -151,11 +151,11 @@
 					</div> -->
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-phone-white.png"
+                    src="@/assets/book-appointment/icon-phone-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
                     <span class="font-bold mb-2"
                       >Phone Number</span
@@ -167,11 +167,11 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/Icon-mail-white.png"
+                    src="@/assets/book-appointment/icon-mail-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
                     <span class="font-bold mb-2"
                       >Email</span
@@ -237,6 +237,7 @@
       :practitioner="practitioner"
       :practitionerLocations="locations"
       v-model="showAppointmentModal"
+      @close="showAppointmentModal= false"
     />
   </cornie-dialog>
 </template>

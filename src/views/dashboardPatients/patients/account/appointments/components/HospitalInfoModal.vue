@@ -5,7 +5,7 @@
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
     >
       <cornie-card-title class="flex items-center">
-        <icon-btn @click="show = false">
+        <icon-btn @click="$emit('close')">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
@@ -16,27 +16,27 @@
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="$emit('close')"
           />
         </div>
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable mt-4">
-        <div class="w-full xl:mt-16 mt-14">
-          <div class="xl:mt-40 mt-16">
+        <div class="w-full">
+          <div class="">
             <hospital-profile :hospital="hospital" />
-            <p class="sub-titles-3 text-center text-red-500 mt-9 mb-14">
+            <p class="font-bold text-sm text-center text-red-500 mt-9 mb-5">
               View address in map
             </p>
 
-            <div class="info-container p-6 mb-28">
-              <div class="sub-titles-1 mb-8">Photos</div>
+            <div class="info-container p-6 mb-4">
+              <div class="font-bold text-sm mb-8">Photos</div>
               <div class="px-12">
                 <hospital-photos :hospital="hospital" />
               </div>
             </div>
 
-            <div class="info-container p-6 mb-28">
+            <div class="info-container p-6 mb-4">
               <ul class="flex items-center border-b mb-8">
                 <li
                   v-for="(tab, index) in tabs"
@@ -62,21 +62,12 @@
                 >
                   <doctors-card
                     :practitioner="practitioner"
-                    @viewProfile="$emit('practitioner')"
-                    @openAppointmentModal="showAppointmentModal = true"
                   />
                 </div>
               </div>
               <div v-if="activeTab === 'Insurance'"></div>
             </div>
           </div>
-          <!-- 
-      <appointment-modal
-        :id="practitioner.id"
-        :practitioner="practitioner"
-        :practitionerLocations="locations"
-        v-model="showAppointmentModal"
-      /> -->
         </div>
       </cornie-card-text>
     </cornie-card>
@@ -104,7 +95,7 @@ import HospitalPhotos from "./HospitalPhotos.vue";
 import AppointmentModal from "./AppointmentModal.vue";
 
 @Options({
-  name: "HospitalDetails",
+  name: "HospitalDetailsModal",
   components: {
     ...CornieCard,
     CancelIcon,
@@ -119,12 +110,11 @@ import AppointmentModal from "./AppointmentModal.vue";
     AppointmentModal,
   },
 })
-export default class DoctorsProfile extends Vue {
+export default class HospitalDetailsModal extends Vue {
   activeTab: string = "Specialties";
   practitionerId: string = "";
   tabs: Array<any> = ["Specialties", "Doctors"];
   loading: boolean = false;
-  practitioners: Array<any> = [];
   show = false;
   showAppointmentModal: Boolean = false;
 
@@ -134,32 +124,11 @@ export default class DoctorsProfile extends Vue {
   @Prop({ type: Array, default: [] })
   locations!: any[];
 
+  @Prop({ type: Array, default: [] })
+  practitioners!: any[];
+
   handleActiveTab(tab: any) {
     this.activeTab = tab;
-  }
-
-  //   async fetchPractitioners() {
-  //     try {
-  //       this.loading = true;
-  //       const res = await this.$store.dispatch(
-  //         "practitioners/fetchPractitioners",
-  //         {
-  //           hospital: this.$route.params.id,
-  //         }
-  //       );
-  //       if (res.data.success === true) {
-  //         this.practitioners = res.data.data;
-  //         this.loading = false;
-  //       }
-  //     } catch (err) {
-  //       alert(err);
-  //     } finally {
-  //       this.loading = false;
-  //     }
-  //   }
-
-  async created() {
-    // await this.fetchPractitioners();
   }
 }
 </script>
@@ -174,6 +143,14 @@ export default class DoctorsProfile extends Vue {
   border-bottom: 4px solid #fe4d3c;
   font-weight: 600;
   color: #14171f;
+}
+
+.info-container {
+  background: #ffffff;
+  border: 0.2px solid #c2c7d6;
+  box-sizing: border-box;
+  box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
+  border-radius: 16px;
 }
 
 .info-container > ul > li:nth-of-type(1) {

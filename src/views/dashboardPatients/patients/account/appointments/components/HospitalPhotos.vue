@@ -6,7 +6,7 @@
 			</div>
 		</div>
 
-		<div class="xl:hidden block">
+		<!-- <div class="xl:hidden block">
 			<hooper
 				v-for="(photo, idx) in photos"
 				:key="idx"
@@ -18,22 +18,22 @@
 
 				<hooper-navigation slot="hooper-addons"></hooper-navigation>
 			</hooper>
-		</div>
+		</div> -->
 
 		<div v-if="noPhoto" class="h-40">None</div>
 	</div>
 </template>
 
 <script>
-import { Hooper, Slide, Navigation as HooperNavigation } from "hooper"
-import "hooper/dist/hooper.css"
+// import { Hooper, Slide, Navigation as HooperNavigation } from "hooper"
+// import "hooper/dist/hooper.css"
 
 export default {
   name: "Hospitalphoto",
   components: {
-    Hooper,
-    Slide,
-    HooperNavigation,
+    // Hooper,
+    // Slide,
+    // HooperNavigation,
   },
 
   props: {
@@ -45,23 +45,23 @@ export default {
 
   data() {
     return {
-      hooperSettings: {
-        itemsToShow: 1,
-        centerMode: true,
-        breakpoints: {
-          1280: {
-            itemsToShow: 3,
-          },
+      // hooperSettings: {
+      //   itemsToShow: 1,
+      //   centerMode: true,
+      //   breakpoints: {
+      //     1280: {
+      //       itemsToShow: 3,
+      //     },
 
-          1024: {
-            itemsToShow: 2,
-          },
+      //     1024: {
+      //       itemsToShow: 2,
+      //     },
 
-          768: {
-            itemsToShow: 1,
-          },
-        },
-      },
+      //     768: {
+      //       itemsToShow: 1,
+      //     },
+      //   },
+      // },
     }
   },
 

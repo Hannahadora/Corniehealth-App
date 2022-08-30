@@ -34,8 +34,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "nuxt-property-decorator"
-@Component({
+import { Options, Vue, setup } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
+@Options({
+	name: 'ListOfDoctors',
   components: {},
 })
 export default class ListOfDoctors extends Vue {

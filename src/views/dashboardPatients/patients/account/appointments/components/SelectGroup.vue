@@ -31,10 +31,11 @@
         />
         <multiselectsearch
           v-if="tab === 'doctors'"
-          v-model="search.experience"
+          v-model="experience"
           icon="@/assets/book-appointment/icon-experience-grey.png"
           placeholder="Experience"
           :items="experiences"
+          :active="experienceActive"
         />
         <multiselectsearch
           v-if="tab === 'doctors'"
@@ -101,13 +102,28 @@ export default class addMedications extends Vue {
   @Prop({ type: Array, default: [] })
   locations!: any[];
 
+  @Watch('experience')
+  onChange() {
+    if(this.experience === 'All' || this.experience === ''){
+      this.search.min = undefined;
+       this.search.max = undefined
+    } else {
+      const fminmax = this.experience.split(' ')
+      console.log(fminmax, 'fminmax')
+      const dMinmax = fminmax[0].split('-')
+      console.log(dMinmax, 'dminmax')
+      // this.search.min = Number(dMinmax[0])
+      // this.search.max = Number(dMinmax[1])
+    }
+  }
+
   loading = false;
   search = {
     specialty: "",
     location: "",
     hospital: undefined,
-    min: undefined,
-    max: undefined,
+    min: 0 || undefined,
+    max: 0 || undefined,
     insurance: undefined,
     language: undefined,
     gender: undefined,
@@ -129,13 +145,15 @@ export default class addMedications extends Vue {
   ];
 
   visitTypes = ["Visit", "Walk in", "Virtual"];
-  ratings = ["All", "1 star", "2 stars", "3 stars", "4 stars, 5 stars"];
+  ratings = ["All", "1 star", "2 stars", "3 stars", "4 stars", "5 stars"];
   insurances = ["All", "1-5 years", "6-10 years", "11-15 years", "16-20 years"];
   languages = ["English", "Yoruba", "Ibo", "Hausa", "French"];
   genders = ["All", "Male", "Female"];
   specialtyActive = false;
   locationActive = false;
   hospitalActive = false;
+  experienceActive = false;
+  experience = "";
 
   get specialtyPlaceholder() {
     if (this.search.specialty) {
@@ -158,9 +176,17 @@ export default class addMedications extends Vue {
       return "Hospital";
     }
   }
+  get experiencePlaceholder() {
+    if (this.experience) {
+      return `${this.search.min} - ${this.search.max} Years`;
+    } else {
+      return "Experience";
+    }
+  }
 
   @Watch("search", { deep: true })
   handler() {
+    console.log(this.search)
     this.$emit("searchQuery", this.search);
     this.$emit("loadingState", this.loading);
     this.$router.push(
@@ -247,6 +273,9 @@ export default class addMedications extends Vue {
     }
     if (this.search.hospital) {
       this.hospitalActive = true;
+    }
+    if (this.experience) {
+      this.experienceActive = true;
     }
   }
 

@@ -72,12 +72,12 @@
       >
         <cornie-btn
           class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
-          @click="show = false"
+          @click="$emit('close')"
         >
           Close
         </cornie-btn>
         <cornie-btn
-          class="xl:w-auto w-full bg-red-500 px-6 py-1mpll text-white rounded-xl"
+          class="xl:w-auto w-full bg-red-500 px-6 py-1 text-white rounded-xl"
           :disabled="!selectedTime.length || !selectedDate.length"
           @click="proceedToBook"
           :loading="loading"
