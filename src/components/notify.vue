@@ -1,5 +1,9 @@
 <template>
-  <div :class="visibility" class="justify-center fixed right-3 top-3 z-20">
+  <div
+    :class="visibility"
+    class="justify-center fixed right-3 top-3"
+    style="z-index: 99999999999 !important"
+  >
     <div
       class="max-w-md w-full shadow-lg flex items-center sm:w-auto sm:m-4 sm:rounded-lg sm:flex-row bg-transparent"
     >
@@ -73,7 +77,7 @@ export default class Notify extends Vue {
 
   created() {
     this.reset();
-    window.notify = this.toast;
+    window.notify = this.toast.bind(this);
   }
 }
 </script>

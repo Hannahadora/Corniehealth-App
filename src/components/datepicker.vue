@@ -30,7 +30,10 @@
             v-model="inputFieldText"
           >
             <template #prepend-inner>
-              <calendar-icon class="cursor-pointer text-danger fill-current" @click="toggleDropdown" />
+              <calendar-icon
+                class="cursor-pointer text-danger fill-current"
+                @click="toggleDropdown"
+              />
             </template>
             <template #append-inner>
               <slot name="time" />
@@ -66,74 +69,74 @@
   </span>
 </template>
 <script lang="ts">
-import { DatePicker as VDatePicker } from "v-calendar";
-import { Options, Vue } from "vue-class-component";
-import CalendarIcon from "@/components/icons/calendar.vue";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { Field } from "vee-validate";
-import { clickOutside, createDate } from "@/plugins/utils";
-import { date } from "yup";
-import CornieInput from "./cornieinput.vue";
-@Options({
-  name: "DatePicker",
-  inheritAttrs: false,
-  components: {
-    VDatePicker,
-    CalendarIcon,
-    CornieInput,
-    Field,
-  },
-})
-export default class DatePicker extends Vue {
-  @Prop({
-    required: false,
-    type: String,
-    default: new Date(Date.now()).toLocaleDateString("en-NG"),
+  import CalendarIcon from "@/components/icons/calendar.vue";
+  import { clickOutside } from "@/plugins/utils";
+  import { DatePicker as VDatePicker } from "v-calendar";
+  import { Field } from "vee-validate";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import { date } from "yup";
+  import CornieInput from "./cornieinput.vue";
+  @Options({
+    name: "DatePicker",
+    inheritAttrs: false,
+    components: {
+      VDatePicker,
+      CalendarIcon,
+      CornieInput,
+      Field,
+    },
   })
-  modelValue!: string;
-  @PropSync("modelValue")
-  date!: string;
-  @Prop({ type: Object })
-  rules!: any;
-  @Prop({ type: Boolean, default: false })
-  disabled!: boolean;
-  @Prop({ type: Boolean, default: false })
-  left!: boolean;
-  @Prop({ type: Boolean, default: false })
-  right!: boolean;
-  visible = false;
+  export default class DatePicker extends Vue {
+    @Prop({
+      required: false,
+      type: String,
+      default: new Date(Date.now()).toLocaleDateString("en-NG"),
+    })
+    modelValue!: string;
+    @PropSync("modelValue")
+    date!: string;
+    @Prop({ type: Object })
+    rules!: any;
+    @Prop({ type: Boolean, default: false })
+    disabled!: boolean;
+    @Prop({ type: Boolean, default: false })
+    left!: boolean;
+    @Prop({ type: Boolean, default: false })
+    right!: boolean;
+    visible = false;
 
-  toggleDropdown(): void {
-    if (this.disabled) return;
-    this.visible = !this.visible;
-  }
+    toggleDropdown(): void {
+      if (this.disabled) return;
+      this.visible = !this.visible;
+    }
 
-  get customRules() {
-    const defaultRule = date().typeError("Invalid date");
-    if (this.rules) return defaultRule.concat(this.rules);
-    return defaultRule;
-  }
+    get customRules() {
+      const defaultRule = date().typeError("Invalid date").nullable();
+      if (this.rules) return defaultRule.concat(this.rules);
+      return defaultRule;
+    }
 
-  @Watch("date")
-  changed() {
-    this.visible = false;
-  }
+    @Watch("date")
+    changed() {
+      this.visible = false;
+    }
 
-  get inputFieldText() {
-    if (!this.date) return "dd/mm/yyyy";
-    return new Date(this.date).toLocaleDateString("en-NG");
-  }
+    get inputFieldText() {
+      if (!this.date) return "dd/mm/yyyy";
+      return new Date(this.date).toLocaleDateString("en-NG");
+    }
 
-  @Prop({ type: String, default: "" })
-  name: any;
-  @Prop({ type: String, default: "" })
-  label: any;
-  get inputName() {
-    const id = Math.random().toString(36).substring(2, 9);
-    return this.name || `input-${id}`;
+    @Prop({ type: String, default: "" })
+    name: any;
+    @Prop({ type: String, default: "" })
+    label: any;
+    get inputName() {
+      const id = Math.random().toString(36).substring(2, 9);
+      return this.name || `input-${id}`;
+    }
+    mounted() {
+      clickOutside(this.inputName, () => (this.visible = false));
+    }
   }
-  mounted() {
-    clickOutside(this.inputName, () => (this.visible = false));
-  }
-}
 </script>

@@ -7,6 +7,7 @@
     <div class="flex flex-col">
       <div class="flex w-full items-center justify-center h-40 border">
         <cornie-btn
+          :loading="loading"
           @click="proceed"
           class="text-white bg-primary px-6 rounded-xl"
         >
@@ -66,6 +67,7 @@
     @account.Getter
     authPractitioner!: IPractitioner;
 
+    loading = false;
     get userId() {
       return this.cornieUser?.id;
     }
@@ -82,6 +84,7 @@
     }
 
     async proceed() {
+      this.loading = true;
       const response = await cornieClient().post(
         `/api/v1/patient-portal/payment`,
         this.payload
@@ -89,8 +92,9 @@
       console.log("response:", response.data);
       const { url } = response.data;
       console.log(url);
-
+      this.loading = false;
       window.location.href = url;
+
       // this.allPatientAccount = response.data;
     }
 

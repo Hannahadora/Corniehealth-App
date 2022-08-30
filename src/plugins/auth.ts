@@ -66,14 +66,14 @@ async function fetchUserData() {
       cornieResponse,
     ]);
     return { quantum: quantum.data, cornie };
-  } catch (error) {}
+  } catch (error) { }
 }
 
 export async function fetchCornieData() {
   try {
     const res = await cornieClient().get("/api/v1/account");
     return res.success ? res.data : {};
-  } catch (error) {}
+  } catch (error) { }
   return {};
 }
 
@@ -102,7 +102,7 @@ async function refreshToken() {
     if (!data.success) return;
     const token = data.token;
     store.commit("user/setAuthToken", token);
-  } catch (error) {}
+  } catch (error) { }
 }
 
 function daysBetweenDates(start: Date, end: Date) {
