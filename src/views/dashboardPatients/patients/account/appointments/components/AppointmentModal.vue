@@ -15,13 +15,13 @@
 
       <div class="my-6 w-full">
         <cornie-select
-				v-model="locationSelected"
-				placeholder="Select a particular location"
-				:readonly="false"
-				:items="practitionerLocations.map((el) => el.name)"
-				required
-				@changed="handleChange"
-			></cornie-select>
+          v-model="locationSelected"
+          placeholder="Select a particular location"
+          :readonly="false"
+          :items="practitionerLocations.map((el) => el.name)"
+          required
+          @changed="handleChange"
+        ></cornie-select>
       </div>
 
       <div
@@ -95,15 +95,14 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
+import { CornieUser } from "@/types/user";
 
 import moment from "moment";
 import CornieBtn from "@/components/CornieBtn.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CornieDialog from "@/components/CornieDialog.vue";
 
-// const appointment = namespace("appointment")
-// const practitioners = namespace("practitioners")
-// const misc = namespace("misc")
+const account = namespace("user");
 
 @Options({
   components: {
@@ -124,20 +123,17 @@ export default class DoctorsPage extends Vue {
   show: Boolean = false;
   loading: Boolean = false;
 
+  @account.Getter
+  cornieUser!: CornieUser;
+
   @Prop({ type: String, default: "" })
   id!: "";
 
   @Prop({ type: Array, default: [] })
   practitionerLocations!: any[];
-  
+
   @Prop({ type: Object, default: {} })
   practitioner!: any;
-
-  // @appointment.Mutation
-  //   SET_SELECTEDDATE!: (data: any) => void
-
-  // @appointment.Mutation
-  //   SET_SELECTEDTIME!: (data: any) => void
 
   @Watch("date")
   onInput() {
@@ -146,6 +142,10 @@ export default class DoctorsPage extends Vue {
       this.findLocationId();
       this.fetchAvailability();
     }
+  }
+
+  get userId() {
+    return this.cornieUser?.id;
   }
 
   findLocationId() {
@@ -157,12 +157,10 @@ export default class DoctorsPage extends Vue {
 
   handleDate(date: any) {
     this.selectedDate = date;
-    // this.SET_SELECTEDDATE(date)
   }
 
   handleTime(val: any) {
     this.selectedTime = val;
-    // this.SET_SELECTEDTIME(val)
   }
 
   getAvailableTime() {
@@ -181,12 +179,44 @@ export default class DoctorsPage extends Vue {
     return new Date(date).toDateString();
   }
 
-  proceedToBook() {
-    this.$nextTick(() => {
-      this.$router.push(
-        `/patients/appointment/doctor/${this.practitioner.id}/book/step1?locationId=${this.locationId}`
-      );
-    });
+  get startTime() {
+    const t = this.selectedTime.split('.')
+    return `${t[0]}:${t[1]}`
+  }
+  get endTime() {
+    const t = this.selectedTime.split('.')
+    const et = Number(t[0]) + 1
+    return `${et}:${t[1]}`
+  }
+
+  async proceedToBook() {
+    const data = {
+      locationId: this.locationId,
+      date: this.selectedDate,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      billingType: "insurance",
+      practitionerId: this.id,
+      patientId: this.userId,
+    };
+    try {
+      this.loading = true;
+      await cornieClient().post("/api/v1/patient-portal/appointment", {
+        ...data,
+      });
+      this.$emit("close");
+      window.notify({
+        msg: "Appointment has been booked, proceed to make payment",
+        status: "success",
+      });
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching availability hours",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   checkPastTime(time: any) {
@@ -226,7 +256,6 @@ export default class DoctorsPage extends Vue {
 
   async created() {
     this.selectedDate = this.date;
-    // this.SET_SELECTEDDATE(this.selectedDate)
   }
 }
 </script>
@@ -283,5 +312,23 @@ img {
   border: 1px solid #080056;
   box-shadow: 0px 15px 40px rgba(20, 31, 21, 0.04);
   border-radius: 8px;
+}
+
+.time-card {
+  background: #ffffff;
+  border: 1px solid #c2c7d6;
+  box-sizing: border-box;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #667499;
+}
+
+.time-card-active {
+  background: #080056;
+  border: 1px solid #ffffff;
+  color: #ffffff;
 }
 </style>
