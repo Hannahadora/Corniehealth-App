@@ -326,6 +326,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Appointments",
         component: () => import("@/views/dashboardPatients/patients/account/appointments/index.vue"),
       },
+      {
+        path: "health",
+        name: "Health Records",
+        component: () => import("@/views/dashboardPatients/patients/account/health-records/index.vue"),
+      },
     ],
   },
 
