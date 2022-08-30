@@ -159,7 +159,7 @@ export default class SearchFilter extends Vue {
   }
 
   selectProvider(value: any, type: string) {
-    this.$emit("getSelectedInput", value);
+    this.$emit("getSelectedInput", value, type);
     this.type = type;
     setTimeout(() => {
       this.practitionersDropdown = false;

@@ -1,11 +1,12 @@
 <template>
   <cornie-dialog v-model="show" right class="w-10/12 h-full">
     <cornie-card
+      v-if="valueType === 'specialty'"
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
     >
       <cornie-card-title class="flex items-center">
-        <icon-btn @click="show = false">
+        <icon-btn @click="$emit('close')">
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
@@ -16,7 +17,7 @@
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
-            @click="show = false"
+            @click="$emit('close')"
           />
         </div>
       </cornie-card-title>
@@ -30,7 +31,7 @@
           >
             <img
               class="mr-2"
-              src="@/assets/book-appointment/Icon-doctor-black.png"
+              src="@/assets/book-appointment/icon-doctor-black.png"
               alt=""
             />
             <span class="text-lg text-grey-eth font-bold">Doctors</span>
@@ -70,6 +71,20 @@
         </div>
       </cornie-card-text>
     </cornie-card>
+
+    <doctors-profile-modal
+      :practitioner="selectedPractitioner"
+      :locations="shownLocations"
+      v-model="showDoctorsprofile"
+      @close="closeDosctorsProfile"
+    />
+    <hospital-info-modal
+      :hospital="selectedProvider"
+      :locations="shownLocations"
+      :practitioners="providerPractitioners"
+      v-model="showHospitalsprofile"
+      @close="closeHospitalsProfile"
+    />
   </cornie-dialog>
 </template>
 
@@ -93,10 +108,12 @@ import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-import Doctors from "./Doctors.vue"
-import Hospitals from "./Hospitals.vue"
+import Doctors from "./Doctors.vue";
+import Hospitals from "./Hospitals.vue";
 import SelectGroup from "./SelectGroup.vue";
 import SearchFilter from "./SearchFilter.vue";
+import DoctorsProfileModal from "./DoctorsProfileModal.vue";
+import HospitalInfoModal from "./HospitalInfoModal.vue"
 // import LinearLoader from "~/components/LinearLoader.vue"
 
 const user = namespace("user");
@@ -126,29 +143,121 @@ function defaultFilter(item: any, query: string) {
     SearchFilter,
     Doctors,
     Hospitals,
+    DoctorsProfileModal,
+    HospitalInfoModal,
   },
 })
 export default class BookAppointmentModal extends Vue {
   selectedTab: String = "doctors";
   search: any = {};
   loading: Boolean = false;
+  showAppointmentModal: Boolean = false;
+  showDoctorsprofile: Boolean = false;
+  showHospitalsprofile: Boolean = false;
   show = false;
   shownLocations: any = [];
   doctors: any = [];
   hospitals: any = [];
-
-  //   @practitioners.Getter
-  //     relatedPractitioners!: []
-
-  //   @practitioners.Getter
-  //     relatedProviders!: []
+  valueType: String = "specialty";
+  selectedPractitioner: any = {};
+  selectedProvider: any = {};
+  selectedData: any = {};
+  providerPractitioners: any = [];
 
   @Watch("selectedTab")
   onChange() {
     this.fetchData();
   }
 
-  getSelectedInput(value: any) {
+  @Watch("valueType")
+  async onUpdate() {
+    if (this.valueType === "practitioner") {
+      await this.findPractitioner();
+      this.showDoctorsprofile = true;
+    }
+    if (this.valueType === "provider") {
+      await this.findProvider();
+      await this.fetchProviderPractitioners();
+      this.showHospitalsprofile = true;
+    }
+  }
+
+  closeDosctorsProfile() {
+    this.showDoctorsprofile = false
+    this.valueType = 'specialty'
+  }
+
+  closeHospitalsProfile() {
+    this.showHospitalsprofile = false
+    this.valueType = 'specialty'
+  }
+
+  async findPractitioner() {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        `/api/v1/booking-website/get-profile/${this.selectedData.id}`
+      );
+      this.selectedPractitioner = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching data",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async findProvider() {
+    let locationId
+    const xlocationId =
+      (this.selectedData?.locations?.length &&
+        this.selectedData?.locations[0]?.id) ||
+      "";
+    if (xlocationId) {
+      locationId = `locationId=${xlocationId}`;
+    }
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        `/api/v1/booking-website/practice/${this.selectedData.id}?${locationId}`
+      );
+      this.selectedProvider = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching provider data",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async fetchProviderPractitioners() {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        `/api/v1/booking-website/search/practitioners?hospital=${this.selectedProvider.id}`
+      );
+      this.providerPractitioners = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching practitioners for this organization",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  openAppointmentModal() {
+    this.showAppointmentModal = true;
+  }
+
+  getSelectedInput(value: any, vType: any) {
+    this.valueType = vType;
+    this.selectedData = value;
     this.shownLocations = value.locations;
     this.search.specialty = value.name;
     this.search.location =
@@ -174,8 +283,8 @@ export default class BookAppointmentModal extends Vue {
     };
   }
 
-  async fetchPractitioners() {
-    const queryString = Object.keys(this.payload)
+  get queryString() {
+    return Object.keys(this.payload)
       .map((filter) => {
         if (this.payload[filter] || Number.isInteger(this.payload[filter])) {
           return `${filter}=${this.payload[filter]}`;
@@ -184,13 +293,15 @@ export default class BookAppointmentModal extends Vue {
       })
       .filter((item) => item)
       .join("&");
+  }
 
+  async fetchPractitioners() {
     try {
       this.loading = true;
       const { data } = await cornieClient().get(
-        `/api/v1/booking-website/search/practitioners?${queryString}`
+        `/api/v1/booking-website/search/practitioners?${this.queryString}`
       );
-      this.doctors = data
+      this.doctors = data;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching doctors",
@@ -205,11 +316,9 @@ export default class BookAppointmentModal extends Vue {
     try {
       this.loading = true;
       const { data } = await cornieClient().get(
-        `/api/v1/booking-website/practice/search?specialty=${
-          this.search.specialty ?? ""
-        }&location=${this.search.location ?? ""}`
+        `/api/v1/booking-website/practice/search?${this.queryString}`
       );
-      this.hospitals = data
+      this.hospitals = data;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching hospitals",

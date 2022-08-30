@@ -17,7 +17,7 @@
 				<span>
 					<img class="mr-2" :src="icon" alt="" />
 				</span>
-				<div v-if="selectedItem && active" class="overflow-x-hidden capitalize" style="white-space: nowrap;">
+				<div v-if="selectedItem" class="overflow-x-hidden capitalize" style="white-space: nowrap;">
 					{{ selectedItem[itemLabelProp] }}
 				</div>
 				<template v-else>
@@ -61,7 +61,7 @@
 						>
 							no match found
 						</div>
-						<div
+						<!-- <div
 							v-for="item in matchingItems"
 							:key="item[itemValueProp]"
 							class="px-4 py-3"
@@ -73,9 +73,9 @@
 								:name="item[itemLabelProp]"
 								@change="selectItem(item)"
 							/>
-							<label :for="item">{{ item[itemLabelProp] }}</label>
-						</div>
-						<!-- <div
+							<label :for="item" class="ml-2 -mt-4">{{ item[itemLabelProp] }}</label>
+						</div> -->
+						<div
               @click="selectItem(item)"
               v-for="item in matchingItems"
               :key="item[itemValueProp]"
@@ -87,7 +87,7 @@
               class="py-2 px-4 dropdown-list-item"
             >
               {{ item[itemLabelProp] }}
-            </div> -->
+            </div>
 					</div>
 				</div>
 			</div>
@@ -246,7 +246,7 @@ export default {
       this.itemListVisible = false
     },
     selectItem(item) {
-      this.active = true
+      // this.active = true
       this.selectedItem = item
       this.itemListVisible = false
       this.$emit("input", this.returnObject ? item : item[this.itemValueProp])
