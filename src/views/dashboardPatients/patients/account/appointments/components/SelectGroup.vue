@@ -192,7 +192,7 @@ export default class addMedications extends Vue {
     this.$router.push(
       `${
         this.$route.path
-      }?specialty=${this.search.specialty.toLowerCase()}?location=${this.search.location.toLowerCase()}`
+      }?specialty=${this.search.specialty.toLowerCase()}`
     );
   }
 

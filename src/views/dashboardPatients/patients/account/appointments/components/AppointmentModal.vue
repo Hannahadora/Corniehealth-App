@@ -211,7 +211,7 @@ export default class DoctorsPage extends Vue {
       });
     } catch (error) {
       window.notify({
-        msg: "There was an error fetching availability hours",
+        msg: "There was an error with the booking process",
         status: "error",
       });
     } finally {
