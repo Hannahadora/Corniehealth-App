@@ -60,9 +60,10 @@
             </div>
           </div>
         <div class="w-full mt-4 px-1">
-              <div class="mb-4">
+              <div class="mb-4" v-if="id">
                 <p class="text-sm font-semibold mb-2">Payment Accounts</p>
                 <Multiselect
+                
                   v-model="defaultAccount"
                   :options="allPatientAccount"
                   :can-deselect="true" 
@@ -97,7 +98,8 @@
                 </Multiselect>
               </div>
                 <cornie-input
-                    class="w-full mb-4 -mt-8"
+                    class="w-full mb-4"
+                    :class="{'-mt-8': id}"
                     label="First Name"
                     placeholder="Enter"
                     :rules="requiredRule"
@@ -368,12 +370,12 @@ export default class MemberModal extends Vue {
     return `${patient.firstname} ${patient.lastname}`;
   }
 
-    setDefault(index: any) {
+     setDefault(index: any) {
       console.log({index})
-      if(this.defaultPaymentAccountId){
-
-      }
        this.defaultPaymentAccountId = index;
+       if(this.id){
+        this.acceptFamilyMember();
+       }
     }
 
     get patientName(){
@@ -390,7 +392,6 @@ export default class MemberModal extends Vue {
         relationship: this.relationship,
         role: this.memberRole,
         patientId: this.patientId || undefined,
-        defaultPaymentAccountId: this.defaultPaymentAccountId
 
         };
     }
@@ -457,6 +458,18 @@ export default class MemberModal extends Vue {
   done() {
     this.$emit("family-added");
     this.show = false;
+  }
+   async acceptFamilyMember(){
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/family/member/${this.id}/default-account/${this.defaultPaymentAccountId}`,{}
+        );
+        if (response.success) {
+          window.notify({ msg: "Default payment account set", status: "success" });
+        }
+      } catch (error) {
+        window.notify({ msg: "Default payment account not set", status: "error" });
+      }
   }
    get allPatientAccount() {
       if (!this.paymentAccounts || this.paymentAccounts.length === 0)
