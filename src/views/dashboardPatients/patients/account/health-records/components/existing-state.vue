@@ -190,8 +190,8 @@
               return {
                 id: p.id,
                 mode: p.mode,
-                practiceName: p.practiceName,
-                practiceType: p.practiceType,
+                practiceName: p.organization.name,
+                practiceType: p.organization.practiceType,
                 createdAt: this.printDate(p.createdAt),
                 updatedAt: this.printDate(p.updatedAt),
                 addedBy: p.addedBy,
