@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-2/5 h-full">
+  <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -13,7 +13,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-        <div class="flex flex-col py-2 px-4 rounded">
+        <div class="flex flex-col px-4 rounded">
           <patient-search v-model="selectedPatient" />
           <v-form
             ref="form"

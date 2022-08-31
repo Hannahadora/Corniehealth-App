@@ -312,6 +312,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/account/providers/existingState.vue"),
       },
       {
+        path: "/family-members/:id?",
+        name: "Family Members",
+        props:true,
+        component: () => import("@/views/dashboardPatients/patients/account/association/familytype/exisitngState.vue"),
+      },
+      {
         path: "account-security",
         name: "Account Security",
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
@@ -325,6 +331,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "appointments",
         name: "Appointments",
         component: () => import("@/views/dashboardPatients/patients/account/appointments/index.vue"),
+      },
+      {
+        path: "specialist-refferal",
+        name: "Specialist Referrals",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
       },
     ],
   },

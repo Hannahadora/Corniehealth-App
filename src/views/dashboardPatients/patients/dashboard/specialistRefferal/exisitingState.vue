@@ -2,41 +2,41 @@
   <div class="w-full pb-7">
     <cornie-table
       :columns="rawHeaders"
-      v-model="sortAssocaitons"
+      v-model="items"
       :check="false"
       :fixeHeight="true"
+      class="hidden md:block"
     >
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="$router.push(`/family-members/${item.familyId}`)"
+           @click="showViewModal = true"
         >
           <eye-icon class="text-yellow-400 fill-current" />
-          <span class="ml-3 text-xs">View Members</span>
+          <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="acceptFamilyMember(item.associationId, item.patientName)"
         >
-          <accept-icon />
-          <span class="ml-3 text-xs">Accept</span>
+          <appointment-icon />
+          <span class="ml-3 text-xs">Book Appointment</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="declineFamilyMember(item.associationId, item.patientName)"
         >
-          <delete-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Decline</span>
-        </div>
-         <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteFamilyMember(item.associationId)"
-        >
-          <cancel-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs">Revoke</span>
+          <check-in class="text-blue-600 fill-current" />
+          <span class="ml-3 text-xs">Check-In</span>
         </div>
       </template>
-      <template #status="{item}">
+       <template #status>
+          <span
+            class="bg-green-200 text-green-800 text-center rounded-md p-1 bg-opacity-20"
+          >
+            Active
+          </span>
+        </template>
+      <!-- <template #status="{item}">
           <span
             :class="{
               'bg-green-200 text-green-800': item.status == 'Active',
@@ -46,7 +46,7 @@
           >
             {{ item.status }}
           </span>
-        </template>
+        </template> -->
         <template #familyId="{item}">
          <span class="text-blue-500">{{ item.familyId}}</span>
         </template>
@@ -54,10 +54,54 @@
          <span class="text-blue-500">{{ item.patientName}}</span>
         </template>
     </cornie-table>
+    <div class="block md:hidden">
+        <div class="mb-5">
+            <search-section :placeholder="'Search Table'"/>
+        </div>
+        <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full">
+            <div class="justify-between flex mb-5 border-b-2 py-2 border-gray-200">
+                <p class="text-primary">#</p>
+                <p>1</p>
+            </div>
+            <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">request date</p>
+                <p>22/01/20</p>
+            </div>
+             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">referral id</p>
+                <p>A1XCD45</p>
+            </div>
+             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">category</p>
+                <p>Counselling</p>
+            </div>
+             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">specialty</p>
+                <p>XXXXXX</p>
+            </div>
+             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">requester</p>
+                <p>XXXXXX</p>
+            </div>
+
+             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
+                <p class="text-primary uppercase font-bold text-sm">performer</p>
+                <p>XXXXXX</p>
+            </div>
+            <div class="justify-between flex mb-5 border-b-2 border-gray-200">
+                <p class="text-primary">status</p>
+                <p class="bg-yellow-100 text-yellow-500 rounded py-1 text-sm px-2">On-Hold</p>
+            </div>
+            <div class="flex w-full justify-center py-2">
+                    <DotsHorizontalIcon/>
+            </div>
+
+
+        </div>
+
+    </div>
   </div>
-  <view-modal v-model="showViewProvider"/>
-   <existing-patient-modal v-model="showPatientModal"/>
-   <member-modal v-model="showMember" :familyId="familyId"/>
+  <refferal-modal v-model="showViewModal"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -84,12 +128,15 @@ import CancelIcon from "@/components/icons/cancel-red-bg.vue"
 import LocationIcon from "@/components/icons/location.vue";
 import EyeIcon from "@/components/icons/newview.vue";
 import EditIcon from "@/components/icons/edit.vue";
+import CheckIn from "@/components/icons/checkin.vue";
+import SearchSection from "@/components/search-input.vue";
+import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
 
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-import ExistingPatientModal from "../existingPatient.vue";
+import AppointmentIcon from "./icon/appointment.vue";
+import RefferalModal from "./viewModal.vue";
 
-import MemberModal from "./memberModal.vue";
-import AcceptIcon from "../icons/accept.vue";
+
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
@@ -112,16 +159,18 @@ const patientassociation = namespace("patientassociation");
     ColumnFilter,
     TableOptions,
     ChevronDownIcon,
-    ExistingPatientModal,
-    MemberModal,
-    AcceptIcon,
-    CancelIcon
+    CancelIcon,
+    CheckIn,
+    AppointmentIcon,
+    RefferalModal,
+    SearchSection,
+    DotsHorizontalIcon
   },
 })
 export default class FamilyAsscoation extends Vue {
   showColumnFilter = false;
   showMemeberList = false;
-  showPatientModal = false;
+  showViewModal = false;
   query = "";
 
   @dropdown.Action
@@ -156,29 +205,29 @@ export default class FamilyAsscoation extends Vue {
 
 
   rawHeaders = [
-    { title: "DATE ADDED", key: "dateAdded", show: true, noOrder:true },
-    { title: "FAMILY ID #", key: "familyId", show: true , noOrder:true},
+    { title: "request date", key: "date", show: true, noOrder:true },
+    { title: "referral id", key: "referralId", show: true , noOrder:true},
     {
-      title: "name",
-      key: "patientName",
+      title: "category",
+      key: "category",
       show: true,
        noOrder:true
     },
     {
-      title: "RELATIONSHIP",
-      key: "relationship",
+      title: "specialty",
+      key: "specialty",
       show: true,
        noOrder:true
     },
     {
-      title: "ROLE",
-      key: "role",
+      title: "requester",
+      key: "requester",
       show: true,
        noOrder:true
     },
     {
-      title: "Payment Account",
-      key: "payment",
+      title: "performer",
+      key: "performer",
       show: true,
        noOrder:true
     },
@@ -192,25 +241,35 @@ export default class FamilyAsscoation extends Vue {
   ];
 
 
+ get items() {
+    return [{
+        date: "22/01/20",
+        referralId: "A1XCD45",
+        category: "Counselling",
+        specialty: "XXXXXX",
+        requester: "XXXXXX",
+        performer: "XXXXXX",
+    }]
+  }
 
-  get items() {
-    const familyassociations = this.familyassociations.map((familyassociation) => {
-         (familyassociation as any).dateAdded = new Date(
-        (familyassociation as any).dateAdded
-      ).toLocaleDateString("en-US");
-      return {
-        ...familyassociation,
-      };
-    });
-    if (!this.query) return familyassociations;
-    return search.searchObjectArray(familyassociations, this.query);
-  }
+//   get items() {
+//     const familyassociations = this.familyassociations.map((familyassociation) => {
+//          (familyassociation as any).dateAdded = new Date(
+//         (familyassociation as any).dateAdded
+//       ).toLocaleDateString("en-US");
+//       return {
+//         ...familyassociation,
+//       };
+//     });
+//     if (!this.query) return familyassociations;
+//     return search.searchObjectArray(familyassociations, this.query);
+//   }
   
-  get sortAssocaitons() {
-    return this.items.slice().sort(function (a, b) {
-      return a.createdAt < b.createdAt ? 1 : -1;
-    });
-  }
+//   get sortAssocaitons() {
+//     return this.items.slice().sort(function (a, b) {
+//       return a.createdAt < b.createdAt ? 1 : -1;
+//     });
+//   }
 
   showMemberModal(value:string){
     this.showMember = true;
