@@ -11,6 +11,7 @@ interface ConfirmSetup {
   yes?: string;
   no?: string;
   title?: string;
+  submessage?:string;
 }
 
 import { ChartTypeRegistry } from "chart.js";

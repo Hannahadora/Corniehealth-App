@@ -37,6 +37,9 @@
                     <p class="text-sm leading-2 font-semibold">
                       {{ message }}
                     </p>
+                     <p class="text-xs mt-4 text-gray-300 italic leading-2 font-semibold">
+                      {{ submessage }}
+                    </p>
                   </div>
                 </div>
                 <close-icon
@@ -89,6 +92,7 @@ export default {
         "Are you sure you want to do this? This action cannot be undone.",
       title: "Confirm this action",
       show: false,
+      submessage: "Terms and conditions apply",
     };
   },
   methods: {
@@ -108,9 +112,11 @@ export default {
       this.message =
         "Are you sure you want to do this? This action cannot be undone.";
       this.title = "Confirm this action";
+      this.submessage = "Terms and conditions apply";
     },
     confirm(setup = {}) {
       this.message = setup.message || this.message;
+      this.submessage = setup.submessage || this.submessage;
       this.yes = setup.yes || this.yes;
       this.no = setup.no || this.no;
       this.title = setup.title || this.title;

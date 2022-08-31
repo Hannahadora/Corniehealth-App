@@ -159,7 +159,7 @@
       },
       {
         name: "Visits",
-        to: "visits",
+        to: "visits-patients",
         icon: "visit-icon",
         hasSubsection: false,
       },
