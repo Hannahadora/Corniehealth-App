@@ -27,11 +27,11 @@
             v-model="items"
             :check="false"
             :fixeHeight="true"
+            :listmenu="true "
           >
             <template #actions>
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="showViewProvider = true"
               >
                 <eye-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>

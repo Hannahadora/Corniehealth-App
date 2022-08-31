@@ -47,30 +47,43 @@
               </div>
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.provider.id)"
+                @click="deleteItem(item.provid.id)"
               >
                 <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>
               </div>
             </template>
-            <template #status>
+            <!-- <template #status>
                 <span
                   class="bg-green-200 text-green-800 text-center rounded-md p-1 bg-opacity-20"
                 >
                   Active
                 </span>
-              </template>
-            <!-- <template #status="{item}">
+              </template> -->
+            <template #status="{item}">
                 <span
                   :class="{
-                    'bg-green-200 text-green-800': status == 'active',
-                    ' bg-red-500 text-red-400': status == 'inactive',
+                    'bg-green-200 text-green-800': item.status == 'Active',
+                    ' bg-red-500 text-red-400': item.status == 'inactive',
                   }"
                   class="text-center rounded-md p-1 bg-opacity-20"
                 >
-                  {{ status }}
+                  {{ item.status }}
                 </span>
-              </template> -->
+              </template>
+              <template #contactnumber="{item}">
+                  <div>
+                    <p>{{ item.email }}</p>
+                    <span>
+                      {{
+                      item?.patientprovider?.provider?.organizationDetails?.phone.dialCode 
+                     
+                      }}
+                      {{ item?.patientprovider?.provider?.organizationDetails?.phone?.number}}
+                      </span>
+                  </div>
+              
+              </template>
           </cornie-table>
         </div>
         </span>
@@ -159,27 +172,28 @@ export default class ProviderExistingState extends Vue {
   dropdowns = {} as IIndexableObject;
 
   rawHeaders = [
+     {
+      title: "Practice id #",
+      key: "ProviderId",
+      show: true,
+    },
     {
       title: "NAME",
       key: "name",
       show: true,
     },
     { title: "TYPE", key: "type", show: true },
+    { title: "Specialty", key: "specialty", show: true },
     { title: "ADDRESS", key: "address", show: true },
     {
-      title: "CONTACT NUMBERS",
+      title: "CONTACT Info",
       key: "contactnumber",
       show: true,
     },
     {
-      title: "EMAIL  ADDRESS",
-      key: "email",
-      show: false,
-    },
-    {
       title: "STATUS",
       key: "status",
-      show: false,
+      show: true,
     }
   ];
 
@@ -188,10 +202,11 @@ export default class ProviderExistingState extends Vue {
     const patientproviders = this.patientproviders.map((patientprovider:any) => {
       return {
         ...patientprovider,
-        contactnumber: (patientprovider?.provider?.organizationDetails?.phone.dialCode +' '+ patientprovider?.provider?.organizationDetails?.phone?.number) || '',
+        // contactnumber: (patientprovider?.provider?.organizationDetails?.phone.dialCode +' '+ patientprovider?.provider?.organizationDetails?.phone?.number) || '',
         email:  patientprovider.provider.email,
         name:  patientprovider.provider.name,
         address:  patientprovider?.provider?.organizationDetails?.address,
+        specialty: 'XXXXXX'
 
       };
     });

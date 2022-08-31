@@ -110,7 +110,7 @@
                 <li class="w-full mb-4">
                   <div class="flex w-full justify-between">
                       <div>
-                          <span class="text-sm font-medium text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
+                          <span class="text-sm font-semibold text-black cursor-pointer" @click="showPatient = !showPatient">Profiles</span>
                       </div>
                       <div>
                           <chevron-down-icon
@@ -144,27 +144,27 @@
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <router-link to="/dashboard/patient/account-settings" class="text-lg font-medium text-black cursor-pointer">Account Settings</router-link>
+                      <router-link to="/dashboard/patient/account-settings" class="text-sm font-semibold text-black cursor-pointer">Account Settings</router-link>
                   </div>
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-sm font-medium text-black cursor-pointer">Support</span>
+                      <span class="text-sm font-semibold text-black cursor-pointer">Support</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-sm font-medium text-black cursor-pointer">Feedback</span>
+                      <span class="text-sm font-semibold text-black cursor-pointer">Feedback</span>
                   </div>
                 </li>
                 <li class="w-full mb-4 border-b border-gray-200 pb-5">
                   <div>
-                      <span class="text-sm font-medium text-black cursor-pointer">Terms of Service</span>
+                      <span class="text-sm font-semibold text-black cursor-pointer">Terms of Service</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <span class="text-sm font-medium text-danger cursor-pointer" @click="logout">Sign Out</span>
+                      <span class="text-sm font-bold text-danger cursor-pointer" @click="logout">Sign Out</span>
                   </div>
                 </li>
                 <li class="w-full mb-4">
