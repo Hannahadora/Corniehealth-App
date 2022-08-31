@@ -22,24 +22,24 @@
           </div>
         </div>
 
-        <div class="mt-6 grid grid-cols-1 gap-4">
+        <div class="mt-6 grid grid-cols-1 gap-3">
           <div class="flex items-start">
-            <!-- <img
+            <img
               class="mr-2"
               src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
-            /> -->
+            />
             <div>
               <p class="mr-2">{{ practitioner.specialty }}</p>
             </div>
           </div>
 
           <div class="flex items-start">
-            <!-- <img
+            <img
               class="mr-2"
               src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
-            /> -->
+            />
             <div>
               <p class="mr-2">Visit Type - {{ practitioner.visitType }}</p>
             </div>
@@ -57,11 +57,11 @@
           </div>
 
           <div class="flex items-start">
-            <!-- <img
+            <img
               class="mr-2"
-              src="@/assets/book-appointment/Icon-fee-white.png"
+              src="@/assets/book-appointment/icon-fee-white.png"
               alt=""
-            /> -->
+            />
             <div>
               <p class="mr-2">
                 Consultation Fee - {{ practitioner.consultationRate }}
@@ -73,27 +73,34 @@
         <div
           class="flex xl:flex-row flex-col items-center xl:justify-between justify-center xl:mt-6 mt-8"
         >
-          <button
-            type="button"
-            class="xl:mr-6 xl:mb-0 mb-6 xl:w-1/2 w-full"
-            :primary="true"
-            small
-            @click="$emit('viewProfile')"
+          <cornie-btn
+            class="xl:mr-6 xl:mb-0 mb-6 xl:w-1/2 w-full border-2 border-primary text-primary py-1 px-6 rounded-xl text-xs"
+            @click="showDoctorsprofile = true"
           >
             View profile
-          </button>
-          <button
-            class="xl:w-1/2 w-full"
-            type="button"
-            :secondary="true"
-            small
-            @click="$emit('openAppointmentModal')"
+          </cornie-btn>
+          <cornie-btn
+            class="xl:w-1/2 w-full bg-red-500 text-white rounded-xl py-1 px-6 text-xs"
+            @click="showAppointmentModal = true"
           >
             Book Appointment
-          </button>
+          </cornie-btn>
         </div>
       </div>
     </div>
+    <doctors-profile-modal
+      :practitioner="practitioner"
+      :locations="practitioner.locations"
+      v-model="showDoctorsprofile"
+    />
+
+    <appointment-modal
+      :id="practitioner.id"
+      :practitioner="practitioner"
+      :practitionerLocations="practitioner.locations"
+      v-model="showAppointmentModal"
+      @close="showAppointmentModal = false"
+    />
   </div>
 </template>
 
@@ -104,13 +111,28 @@ import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
 
+import CornieBtn from "@/components/CornieBtn.vue";
+import DoctorsProfileModal from "./DoctorsProfileModal.vue";
+import AppointmentModal from "./AppointmentModal.vue";
+
 @Options({
   name: "ReviewsInfo",
+  components: { CornieBtn, DoctorsProfileModal, AppointmentModal },
 })
 export default class DoctorsCard extends Vue {
   @Prop({ type: Object, default: {} })
   practitioner!: any;
+  showDoctorsprofile = false;
+  showAppointmentModal = false;
 }
 </script>
 
-<style></style>
+<style scoped>
+.info-container {
+  background: #ffffff;
+  border: 0.2px solid #c2c7d6;
+  box-sizing: border-box;
+  box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
+  border-radius: 16px;
+}
+</style>
