@@ -15,7 +15,7 @@
         @click="showMemberModal = true"
             class="bg-danger rounded-lg text-white mt-5 py-3 px-12 text-sm font-semibold focus:outline-none hover:opacity-90"
             >
-           Add Member
+           Add Dependant
         </button>
     </div>
     

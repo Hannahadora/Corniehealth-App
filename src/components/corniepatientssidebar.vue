@@ -153,7 +153,7 @@
       },
       {
         name: "Specialist Referrals",
-        to: "specialist",
+        to: "specialist-refferal",
         icon: "specialist-icon",
         hasSubsection: false,
       },

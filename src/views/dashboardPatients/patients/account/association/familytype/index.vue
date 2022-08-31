@@ -1,10 +1,6 @@
 <template>
   <div class="h-full flex justify-center">
-
-      <span v-if="id" class="w-full">
-          <family-exisiting-state :id="id" />
-      </span>
-      <span v-else class="w-full">
+      <span  class="w-full">
         <family-empty-state v-if="empty" @family-added="familyadded"/>
         <family-state v-else @family-added="familyadded"/>
       </span>

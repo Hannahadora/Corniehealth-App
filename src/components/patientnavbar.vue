@@ -144,7 +144,7 @@
                 </li>
                 <li class="w-full mb-4">
                   <div>
-                      <router-link to="/dashboard/patient/account-settings" class="text-lg font-medium text-black cursor-pointer">Account Settings</router-link>
+                      <router-link to="/dashboard/patient/account-settings" class="text-sm font-medium text-black cursor-pointer">Account Settings</router-link>
                   </div>
                 </li>
                 <li class="w-full mb-4">

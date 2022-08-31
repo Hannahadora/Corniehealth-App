@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-            Add Member
+            {{ id ? 'Update':'Add'}} Member
           </h2>
           <!-- <cancel-icon
             class="float-right cursor-pointer"
@@ -61,32 +61,37 @@
           </div>
         <div class="w-full mt-4 px-1">
               <div class="mb-4">
-                <span class="text-sm font-semibold mb-2">Payment Accounts</span>
+                <p class="text-sm font-semibold mb-2">Payment Accounts</p>
                 <Multiselect
-                  v-model="paymentAccounts"
-                  mode="tags"
-                  :hide-selected="false"
-                  id="field-id"
-                  :options="[]"
-                  value-prop="code"
-                  trackBy="code"
-                  label="display"
+                  v-model="defaultAccount"
+                  :options="allPatientAccount"
+                  :can-deselect="true" 
+                  :can-clear="true"
+                  
+                  value-prop="id"
+                
+                  label="display" 
                   placeholder="--Select applicable accounts--"
                   class="w-full"
                 >
                   <template v-slot:option="{ option }">
-                    <select-option @click="setDefault(option.code)" />
-                    <span class="w-full text-sm" @click="setDefault(option.code)">{{ option.display }}</span>
+                    <span class="flex space-x-2 w-full">
+                      <select-option @click="setDefault(option.id)" :value="option.id" :checked="option.id === defaultPaymentAccountId ? true : false"/>
+                      <div class="">
+                        <p class="text-sm">{{ option.code}}</p>
+                        <span>{{ option.display}}</span>
+                      </div>
+                    </span>
+                    <!-- <span class="w-full text-sm" @click="setDefault(option.id)">{{ option.display }}</span> -->
                     <span
-                      class="text-xs text-success flex justify-end float-right w-full"
-                      v-if="option.code === defaultPaymentAccountId"
+                      class="text-xs text-danger font-bold flex justify-end float-right w-full"
+                      v-if="option.id === defaultPaymentAccountId"
                       >Default</span
                     >
                     <span
                       v-else
-                      class="text-xs text-danger flex justify-end float-right w-full"
-                      @click="setDefault(option.code)"
-                      >Set as default</span
+                      class="text-xs text-danger font-bold flex justify-end float-right w-full"
+                      >Make Default</span
                     >
                   </template>
                 </Multiselect>
@@ -96,6 +101,7 @@
                     label="First Name"
                     placeholder="Enter"
                     :rules="requiredRule"
+                    :disabled="id ? true : false"
                     v-model="firstName"
                 />
                 <cornie-input
@@ -103,6 +109,7 @@
                     label="Middle Name"
                     placeholder="Enter"
                     v-model="middleName"
+                    :disabled="id ? true : false"
                 />
                 <cornie-input
                     class="w-full mb-5"
@@ -110,6 +117,7 @@
                     placeholder="Enter"
                     v-model="lastName"
                     :rules="requiredRule"
+                    :disabled="id ? true : false"
                 />
                 <date-picker
                     class="w-full mt-5"
@@ -117,6 +125,7 @@
                     placeholder="Enter"
                     :rules="dobRule"
                     v-model="dateOfBirth"
+                    :disabled="id ? true : false"
                 />
                 <cornie-select
                     label="Relationship"
@@ -126,6 +135,7 @@
                     :items="['Spouse','Child','Parent','Relative','Other','Employee','Member']"
                     :required="true"
                     :rules="requiredRule"
+                    
                 />
 
                 <cornie-input
@@ -135,6 +145,7 @@
                     placeholder="Enter"
                     label="Email"
                     class="mb-4"
+                    :disabled="id ? true : false"
                 />
                 <phone-input
                     v-model="phone.number"
@@ -144,6 +155,7 @@
                     label="Phone Number"
                     placeholder="--Enter--"
                     class="mb-4 mt-4"
+                    :disabled="id ? true : false"
                 />
                 <cornie-select
                     label="Member Role"
@@ -151,10 +163,11 @@
                     placeholder="Enter"
                     v-model="memberRole"
                     :items="['Admin','User']"
+                    :readonly="id ? true : false"
                 />
                 <div class="flex space-x-4 w-full mb-5">
-                  <cornie-radio :label="'This account will be managed from admin profile'"/>
-                   <tooltip class="ml-3" right>
+                  <cornie-radio :label="'This account will be managed from admin profile'" :value="'profile'" v-model="accountManger"/>
+                   <tooltip class="cursor-pointer"  top>
                     <template #activator="{ on }">
                       <span v-on="on">
                         <info-icon />
@@ -166,15 +179,15 @@
                   </tooltip>
                 </div>
                 <div class="flex space-x-4 w-full mb-5">
-                  <cornie-radio :label="'This account will be managed from admin profile'"/>
-                   <tooltip class="ml-3" right>
+                  <cornie-radio :label="'This account will be exclusively managed by the dependant'" :value="'dependent'" v-model="accountManger"/>
+                   <tooltip  class="cursor-pointer" top>
                     <template #activator="{ on }">
                       <span v-on="on">
                         <info-icon />
                       </span>
                     </template>
                     <div>
-                      Create and manage dependant accounts for non-adult members of your family. You can navigate from your profile to access and manage dependant accounts.
+                     Create self-managed dependant accounts. These members will be able to access their health records and exclusively manage them; however, you are still able to link their payment accounts to yours.
                     </div>
                   </tooltip>
                 </div>
@@ -198,7 +211,7 @@
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+             {{ id ? 'Update':'Save'}}
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>
@@ -271,7 +284,29 @@ export default class MemberModal extends Vue {
   @Prop({ type: String, default: "" })
   familyId!: string;
 
+   @Prop({ type: String, default: {}})
+  selectedPatient!: any;
 
+  @Watch("selectedPatient")
+  idChanged() {
+    this.patientPicked();
+  }
+  async patientPicked() {
+    if (!this?.id) return;
+    let [first, middle, last] = this.selectedPatient.patientName.split(" ")
+    if (!last) {
+      last = middle; 
+      middle = '';
+    }
+    this.firstName = first ?? "";
+    this.lastName = last ?? "";
+    this.email = (this.selectedPatient as any).email ?? "";
+    this.middleName = middle ?? "";
+    this.dateOfBirth = this.selectedPatient.dob ?? "";
+    this.relationship = this.selectedPatient.relationship ?? ""; 
+    this.memberRole = this.selectedPatient.role;
+    this.defaultAccount = this.selectedPatient.defaultPaymentAccountId ?? "";
+  }
 
   @account.Getter
   cornieUser!: CornieUser;
@@ -290,13 +325,15 @@ export default class MemberModal extends Vue {
     query = "";
     searchResults = [] as any;
     relationship = "";
-    paymentAccounts = [];
-    accountManger = "";
+    accountManger = "dependent";
     defaultPaymentAccountId = "";
     allAccounts = [];
     accounts = [];
     results = [] as any;
-    patientId = ""
+    patientId = "";
+    paymentAccounts = [] as any;
+
+    defaultAccount = "";
 
     dobRule = date().max(
       new Date(),
@@ -332,11 +369,11 @@ export default class MemberModal extends Vue {
   }
 
     setDefault(index: any) {
-      for (var i = 0; i < this.allAccounts.length; i++) {
-        if (this.accounts[i] == index) {
-          this.defaultPaymentAccountId = index;
-        }
+      console.log({index})
+      if(this.defaultPaymentAccountId){
+
       }
+       this.defaultPaymentAccountId = index;
     }
 
     get patientName(){
@@ -352,10 +389,12 @@ export default class MemberModal extends Vue {
         dob: this.dateOfBirth,
         relationship: this.relationship,
         role: this.memberRole,
-        patientId: this.patientId || undefined
+        patientId: this.patientId || undefined,
+        defaultPaymentAccountId: this.defaultPaymentAccountId
 
         };
     }
+
 
     selected(value:any){
       this.showDatalist = false; 
@@ -392,30 +431,54 @@ export default class MemberModal extends Vue {
     }
   }
 
-  async updatePatientAssociation() {
-    const { valid } = await (this.$refs.form as any).validate();
-    if (!valid) return;
+    async updatePatientAssociation() {
+    // const { valid } = await (this.$refs.form as any).validate();
+    // if (!valid) return;
 
     const id = this.id;
-    const url = `/api/v1/allergy/${id}`;
-    const payload = this.payload;
+    const url = `/api/v1/patient-portal/family/member/${id}`;
+    const payload = {
+      relationship: this.relationship,
+    }
     try {
-      const response = await cornieClient().put(url, this.payload);
+      const response = await cornieClient().put(url, payload);
       if (response.success) {
         window.notify({
-          msg: "Allergy Updated",
+          msg: "Member Updated",
           status: "success",
         });
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: "Allergy Not Updated", status: "error" });
+      window.notify({ msg: "Member Not Updated", status: "error" });
     }
   }
 
-   done() {
+  done() {
     this.$emit("family-added");
     this.show = false;
+  }
+   get allPatientAccount() {
+      if (!this.paymentAccounts || this.paymentAccounts.length === 0)
+        return [];
+      return this.paymentAccounts.map((i: any) => {
+        return {
+          id:i?.id,
+          code: i?.insurance == null ? i?.card?.reference?.replace(i?.card?.reference?.substr(5,i?.card?.reference?.length-5), i?.card?.reference?.substr(1,i?.card?.reference?.length-5).replace(/./g,"*")) : i?.insurance?.mainPolicyHolder,
+          display: i?.insurance == null ? i?.card?.cardType : i?.insurance?.policyNo,
+        };
+      });
+    }
+   async fetchPaymentAccounts() {
+      const response = await cornieClient().get(
+        `/api/v1/patient-portal/payment`
+      );
+      this.paymentAccounts = response.data;
+    }
+
+  async  created() {
+    await this.patientPicked()
+    await this.fetchPaymentAccounts();
   }
 
 }
@@ -433,12 +496,12 @@ export default class MemberModal extends Vue {
   color: var(--ms-option-color-selected, #fff);
 }
 .multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+  background: var(--ms-option-bg-selected-pointed, #d7d7d7);
   color: var(--ms-option-color-selected-pointed, #fff);
 }
 .multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
+  background: var(--ms-option-bg-selected-pointed, #d7d7d7);
+  color: var(--ms-option-color-selected-pointed, #fff);
 }
 
 .multiselect {
