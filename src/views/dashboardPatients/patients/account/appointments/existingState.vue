@@ -3,7 +3,7 @@
     <span class="flex justify-end w-full mb-8">
       <button
         class="bg-danger rounded-lg text-white mt-5 py-3 px-6 pl-7 pr-7 font-semibold focus:outline-none hover:opacity-90"
-        @click="showAppointment('false')"
+        @click="$emit('openModal')"
       >
         Book Appointment
       </button>
