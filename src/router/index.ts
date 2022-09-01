@@ -333,6 +333,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/account/appointments/index.vue"),
       },
       {
+        path: "health",
+        name: "Health Records",
+        component: () => import("@/views/dashboardPatients/patients/account/health-records/index.vue"),
+      },
+      {        
         path: "specialist-refferal",
         name: "Specialist Referrals",
         component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
