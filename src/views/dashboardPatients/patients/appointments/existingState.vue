@@ -108,6 +108,12 @@
       </template>
     </cornie-table>
 
+    <review-payment-modal
+      :practitioner="selectedPractitioner"
+      v-model="showPaymentModal"
+      @close="showPaymentModal = false"
+    />
+
     <notes-add
       :appointmentNotes="appointmentNotes"
       :appointmentId="appointmentId"
@@ -119,19 +125,11 @@
       :appointmentId="appointmentId"
     />
     <appointment-modal
-      v-if="appointmentId == 'false'"
       @appointment-added="appointmentAdded"
       @show:modal="showAppointment"
       v-model="showAppointmentModal"
     />
-    <appointment-modal
-      v-else
-      :id="appointmentId"
-      @appointment-added="appointmentAdded"
-      @show:modal="showAppointment"
-      v-model="showAppointmentModal"
-    />
-
+  
     <status-modal
       :id="appointmentId"
       :updatedBy="updatedBy"
@@ -197,6 +195,7 @@ import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-ch
 // import NotesAdd from "./notes.vue";
 // import StatusModal from "./status-update.vue";
 // import ActorsSection from "./actors.vue";
+
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
