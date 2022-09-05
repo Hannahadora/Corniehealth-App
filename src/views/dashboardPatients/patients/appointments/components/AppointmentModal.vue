@@ -179,14 +179,18 @@ export default class DoctorsPage extends Vue {
     return new Date(date).toDateString();
   }
 
+  doubleDigit(s: any){
+    return s.length < 2 ? '0' + s : s
+  }
+
   get startTime() {
     const t = this.selectedTime.split('.')
-    return `${t[0]}:${t[1]}`
+    return `${this.doubleDigit(t[0])}:${t[1]}`
   }
   get endTime() {
     const t = this.selectedTime.split('.')
     const et = Number(t[0]) + 1
-    return `${et}:${t[1]}`
+    return `${this.doubleDigit(et)}:${t[1]}`
   }
 
   async proceedToBook() {
@@ -209,9 +213,9 @@ export default class DoctorsPage extends Vue {
         msg: "Appointment has been booked, proceed to make payment",
         status: "success",
       });
-    } catch (error) {
+    } catch (error: any) {
       window.notify({
-        msg: "There was an error fetching availability hours",
+        msg: error.message,
         status: "error",
       });
     } finally {
