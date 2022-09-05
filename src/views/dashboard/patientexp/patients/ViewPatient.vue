@@ -229,7 +229,6 @@
     }
     async setPateint() {
       const patient = this.patient;
-      console.log(patient, "PATIENTR");
       if (!patient) return;
       this.firstName = patient.firstname;
       this.mrn = patient?.mrn;

@@ -9,7 +9,7 @@
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="$router.push(`/dashboard/patient/account-settings/${item.familyId}`)"
+           @click="$router.push(`/family-members/${item.familyId}`)"
         >
           <eye-icon class="text-yellow-400 fill-current" />
           <span class="ml-3 text-xs">View Members</span>

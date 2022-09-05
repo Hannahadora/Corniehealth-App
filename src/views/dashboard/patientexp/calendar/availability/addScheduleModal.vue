@@ -67,8 +67,7 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                   
-                  :clear-on-select="false"
+                    :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
                     trackBy="code"
@@ -101,8 +100,7 @@
                     mode="multiple"
                     :searchable="true"
                     :options="allSpecialities"
-                    
-                  :clear-on-select="false"
+                    :clear-on-select="false"
                     label-prop="display"
                     value-prop="code"
                     trackBy="code"
@@ -150,7 +148,7 @@
                     class="w-full border-1 border-gray-300 rounded-lg px-2 py-2"
                     v-model="startTime"
                   />
-                   <input
+                  <input
                     type="time"
                     label="End Time"
                     placeholder="00:00"
@@ -158,7 +156,7 @@
                     v-model="endTime"
                   />
                 </div>
-                <div class=" my-3">
+                <div class="my-3">
                   <span
                     class="font-bold text-blue-700 text-sm cursor-pointer"
                     @click="showRepeat = !showRepeat"
@@ -276,10 +274,9 @@
                         v-model="repeattype"
                       />
                     </div>
-                    
                   </div>
                 </div>
-                <div  v-if="showRepeat">
+                <div v-if="showRepeat">
                   <div class="flex space-x-2" v-if="repeattype == 'After'">
                     <cornie-input
                       :rules="required"
@@ -288,7 +285,9 @@
                       v-model="repeat.end.value"
                       :setfull="true"
                     />
-                    <div class="bg-primary h-11 text-white rounded-lg py-2 px-3 mt-0.5 flex-none">
+                    <div
+                      class="bg-primary h-11 text-white rounded-lg py-2 px-3 mt-0.5 flex-none"
+                    >
                       Events
                     </div>
                     <!-- <cornie-select
@@ -300,7 +299,10 @@
                     /> -->
                   </div>
                 </div>
-                <div class="italic text-xs -mt-4 mb-5" v-if="showRepeat && repeattype == 'After'">
+                <div
+                  class="italic text-xs -mt-4 mb-5"
+                  v-if="showRepeat && repeattype == 'After'"
+                >
                   Event will end after {{ repeat.end.value }} events
                 </div>
                 <div class="mt-5" v-if="showRepeat && repeattype == 'On'">
@@ -350,35 +352,6 @@
                 @click="deletePractitionerItem(item.id, index)"
               />
             </div>
-            <!-- <div
-              class="w-full flex space-x-7 my-5"
-              v-for="(item, index) in patients"
-              :key="index"
-            >
-              <div class="w-full dflex space-x-4 mb-3">
-                <div class="w-10 h-10">
-                  <avatar
-                    class="mr-2"
-                    v-if="item.profilePhoto"
-                    :src="item.profilePhoto"
-                  />
-                  <avatar class="mr-2" v-else :src="localSrc" />
-                </div>
-                <div class="w-full">
-                  <p class="text-xs text-dark font-medium">
-                    {{ item.firstname }}
-                    {{ item.lastname }}
-                  </p>
-                  <p class="text-xs text-gray-500 font-meduim">
-                    {{ item.mrn }}
-                  </p>
-                </div>
-              </div>
-              <delete-icon
-                class="fill-current text-danger cursor-pointer"
-                @click="deletePractitionerItem(item.id, index)"
-              />
-            </div> -->
           </div>
           <div class="w-full mt-3 mb-2">
             <div class="flex w-full border-dashed border-b border-gray-100">
@@ -443,14 +416,14 @@
                   v-model="breakdescription"
                 />
                 <div class="grid grid-cols-2 gap-4">
-                   <input
+                  <input
                     type="time"
                     label="Start Time"
                     placeholder="00:00"
                     class="w-full mt-5 border-1 border-gray-300 rounded-lg px-2 py-2"
                     v-model="startTime"
                   />
-                   <input
+                  <input
                     type="time"
                     label="End Time"
                     placeholder="00:00"
@@ -474,7 +447,8 @@
                     <p class="text-sm text-dark font-medium">
                       {{ item.type }}
                       <span class="text-xs text-gray-300"
-                        >. {{ item.breakstartTime }} {{ item.breakendTime }}</span
+                        >. {{ item.breakstartTime }}
+                        {{ item.breakendTime }}</span
                       >
                     </p>
                     <p class="text-sm text-gray-500 font-meduim">
@@ -495,14 +469,14 @@
       <cornie-card>
         <cornie-card-text class="flex justify-end">
           <cornie-btn
-          v-if="!id"
+            v-if="!id"
             @click="cancel"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
             Cancel
           </cornie-btn>
-           <cornie-btn
-           v-else
+          <cornie-btn
+            v-else
             @click="show = false"
             class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
           >
@@ -673,11 +647,11 @@ export default class scheduleModal extends Vue {
   startDate = "";
   endDate = "";
   repeat = {
-    days:[],
+    days: [],
     end: {
-      type: 'events',
-      value: '0',
-   }
+      type: "events",
+      value: "0",
+    },
   } as any;
 
   serviceType = "serviceType";
@@ -693,6 +667,15 @@ export default class scheduleModal extends Vue {
   @Watch("id")
   idChanged() {
     this.setSchedule();
+  }
+
+  get repeatPayload(){
+    if(!this.repeat?.interval) return
+    const repeat = {...this.repeat}
+    if(Number(repeat.end?.value))  return repeat
+    const {end, ...rest} = repeat
+
+    return rest
   }
 
   async setSchedule() {
@@ -739,15 +722,15 @@ export default class scheduleModal extends Vue {
       practitioners: this.practitonerId,
       services: this.serviceName,
       breaks: this.breaks,
-      repeat: this.repeat.interval ? this.repeat : undefined,
+      repeat: this.repeatPayload,
       serviceType: this.serviceType,
       slotSize: this.slotSize,
       organizationId: this.authPractitioner.organizationId,
     };
   }
 
-cancel(){
-  this.availableForOnlineBooking = false;
+  cancel() {
+    this.availableForOnlineBooking = false;
     this.name = "";
     this.description = "";
     this.locationId = "";
@@ -765,7 +748,7 @@ cancel(){
     this.slotSize = 0;
 
     this.show = false;
-}
+  }
   async submit() {
     this.loading = true;
     if (this.id) await this.updateSchedule();
@@ -813,7 +796,7 @@ cancel(){
       endTime: this.breakendTime,
       status: "active",
     } as any;
-   // this.breaks.push(brekPayload);
+    // this.breaks.push(brekPayload);
 
     if (this.id) {
       try {
@@ -829,7 +812,7 @@ cancel(){
       }
     } else {
       this.breaks.push({
-        id:"",
+        id: "",
         description: this.description,
         endTime: this.endTime,
         startTime: this.startTime,
@@ -895,7 +878,7 @@ cancel(){
     }
   }
 
- exisitingpractitionerdata(value: any, valueId: any) {
+  exisitingpractitionerdata(value: any, valueId: any) {
     this.practitoners = value;
     this.practitonerId = valueId;
   }

@@ -153,13 +153,13 @@
       },
       {
         name: "Specialist Referrals",
-        to: "specialist",
+        to: "specialist-refferal",
         icon: "specialist-icon",
         hasSubsection: false,
       },
       {
         name: "Visits",
-        to: "visits",
+        to: "visits-patients",
         icon: "visit-icon",
         hasSubsection: false,
       },
