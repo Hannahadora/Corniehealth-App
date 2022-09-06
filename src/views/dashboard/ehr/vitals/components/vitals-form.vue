@@ -1,5 +1,5 @@
 <template>
-  <clinical-dialog v-model="show" :title="newaction + ' ' + 'Vitals'" class="">
+  <clinical-dialog v-model="show" :title="newaction + ' ' + 'Vitals'"  class="w-6/12 h-full">
     <v-form class="flex-grow flex flex-col" @submit="save">
       <accordion-component
         class="text-primary"
