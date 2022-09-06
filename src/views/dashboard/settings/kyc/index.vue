@@ -153,7 +153,7 @@
             <div class="grid grid-cols-2 gap-4 pb-8 w-full">
               <file-picker
                 @uploaded="addrssProofUploaded"
-                :label="'Please upload a proof of address *'"
+                :label="'Please a proof of address *'"
               />
               <div class="w-full upload-desc p-3">
                 <span class="pb-4 text-xs border-b-2 border-gray-200 mb-3">
@@ -341,7 +341,7 @@ export default class KYC extends Vue {
   address = "address";
   apartment = "apartment";
   phoneNumber = "";
-  proofOfAddressUpload = setup(() => useHandleImage()) as any;
+  proofOfAddress= setup(() => useHandleImage()) as any;
   particularOfDirectors = [] as IDirector[];
   newDirectors: any = this.particularOfDirectors;
   beneficialOwners = [] as IOwner[];
@@ -406,7 +406,7 @@ export default class KYC extends Vue {
     this.zipCode = kyc.zipCode;
     this.address = kyc.address;
     this.apartment = kyc.apartment;
-    this.proofOfAddressUpload = kyc.proofOfAddressUpload;
+    // this.proofOfAddress= kyc.proofOfAddressUpload;
     this.particularOfDirectors = kyc.directors;
     this.newowner = kyc.beneficialOwners;
     this.referees = kyc.referees;
@@ -430,7 +430,7 @@ export default class KYC extends Vue {
       zipCode: "zipCode",
       address: "address",
       apartment: "apartment",
-      proofOfAddressUpload: this.proofOfAddressUpload,
+      // proofOfAddressUpload: this.proofOfAddressUpload,
       directors: this.particularOfDirectors,
       beneficialOwners: this.newowner,
       referees: this.referees,
@@ -443,7 +443,7 @@ export default class KYC extends Vue {
   idFileUploaded(fileUrl: string) {
     this.director.uploadedIdentificationDocument = fileUrl;
     this.certificateOfIncoporation = fileUrl;
-    this.proofOfAddressUpload = fileUrl;
+    this.proofOfAddress= fileUrl;
     this.formCAC = fileUrl;
     this.memorandumAndArticleOfAssociation = fileUrl
   }
@@ -458,7 +458,7 @@ export default class KYC extends Vue {
     this.fileIndex = index;
   }
   addrssProofUploaded(fileUrl: string) {
-    this.data.proofOfAddressUpload = fileUrl;
+    this.data.proofOfAddress= fileUrl;
   }
   async directorAdded() {
     await this.fetchKycs();

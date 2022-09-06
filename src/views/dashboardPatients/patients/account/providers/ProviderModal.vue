@@ -421,7 +421,7 @@ export default class OtherDoctorModal extends Vue {
       this.email = provider.provider.email;
       this.organizationId = provider.provider.organizationId;
       this.type = provider.provider.type;
-      this.phone = provider.provider.organizationDetails.phone;
+      this.phone = provider.provider?.organizationDetails.phone;
      
     }
 
@@ -432,7 +432,7 @@ export default class OtherDoctorModal extends Vue {
     this.email = provider.email;
     this.referenceOrganization = provider.id;
     this.organizationId = provider.id;
-    this.phone = provider.phone as any;
+    this.phone = provider?.phone as any;
     this.identifier = provider.identifier;
     this.type = provider.type
   }

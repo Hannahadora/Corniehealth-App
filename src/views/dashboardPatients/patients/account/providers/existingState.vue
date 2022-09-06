@@ -47,7 +47,7 @@
               </div>
               <div
                 class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                @click="deleteItem(item.provid.id)"
+                @click="deleteItem(item.provider.id)"
               >
                 <delete-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Delete</span>

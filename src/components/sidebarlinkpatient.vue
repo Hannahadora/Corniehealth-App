@@ -14,7 +14,7 @@
         @click="hasChild ? (expand = !expand) : null"
         :is="!hasChild ? 'router-link' : 'span'"
         :to="to"
-        active-class="py-2 px-3 rounded-full bg-danger"
+        active-class="py-2 px-3 rounded-full bg-blue-50"
         class="hover:bg-light-blue-600 hover:opacity-50 pa-2 w-full cursor-pointer flex items-center"
         :class="{
           'justify-center': !hovered,

@@ -379,6 +379,7 @@
                                 class="w-full mt-4"
                                 v-model="billingType"
                             /> -->
+                            
                 <billing-account-component
                   v-model="billingAccountId"
                   :patientId="Patients"
@@ -629,7 +630,7 @@
     localSrc = require("../../../../../assets/img/placeholder.png");
     errmsg = "" as any;
     singlePatientId = "";
-    billingAccountId = "";
+    billingAccountId = {} as any;
     required = string().required();
 
     @Watch("id")
@@ -676,7 +677,7 @@
         bookingLocationId: this.bookingLocationId || undefined,
         practitionerId: this.appoimtentId,
         patientId: this.singlePatientId,
-        billingAccountId: this.billingAccountId || undefined,
+        billingAccountId: this.billingAccountId.code || undefined,
       };
     }
     async submit() {
@@ -684,6 +685,10 @@
       if (this.id) await this.updateAppointment();
       else await this.createAppointment();
       this.loading = false;
+    }
+
+    getBillingAccount(value:any){
+      this.billingAccountId = value.code
     }
 
     async createAppointment() {

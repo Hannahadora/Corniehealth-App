@@ -20,7 +20,7 @@
       class="w-full capitalize"
       label="Change Billing Account"
       @selected="update"
-      v-model="account"
+      :modelValue="account"
     />
   </div>
 </template>
@@ -98,6 +98,7 @@
         // this.$emit("update:modelValue", paymentId);
         this.account = paymentId.code;
       });
+      this.$emit('modelvalues',  this.modelValue)
     }
 
     async mounted() {

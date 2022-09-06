@@ -22,19 +22,19 @@
                 <div  class="w-full h-full">
                      <div class="w-full">
                             <div class="bg-primary p-5 w-full flex mb-5">
-                                <p class="float-left text-white w-full">Requisition ID #: <span class="font-semibold">234467 </span></p>
-                                    <p class="float-right flex justify-end w-full text-white">Status: <span class="font-semibold">Actice</span></p>
+                                <p class="float-left text-white w-full">Requisition ID #: <span class="font-semibold">{{ selectedItem.identifier }} </span></p>
+                                    <p class="float-right flex justify-end w-full text-white">Status: <span class="font-semibold">{{ selectedItem.status }}</span></p>
                             </div>
                             <div class="">
                                 <div class="flex space-x-8">
-                                      <!-- <avatar class="mr-2 w-16 h-16" v-if="authPractitioner.image" :src="authPractitioner.image" /> -->
-                                    <avatar class="mr-2 w-16 h-16" :src="localSrc" />
+                                      <avatar class="mr-2 w-16 h-16" v-if="authPractitioner.image" :src="authPractitioner.image" />
+                                    <avatar class="mr-2 w-16 h-16" v-else :src="localSrc" />
                                     <div class="float-right w-full flex justify-end">
                                         <div>
-                                            <p class="font-bold mb-2 text-right">St. Nicholas Hospital</p>
-                                            <p class="text-right mb-2">57 Campbell Street, Lagos Island. Lagos</p>
-                                            <p class="text-right mb-2">(+234) 802 290 8484<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
-                                            <p class="text-right mb-2"> <span class="text-gray-300">Practice ID #:</span>3276680BA</p>
+                                            <p class="font-bold mb-2 text-right">{{ selectedItem?.performer }}</p>
+                                            <p class="text-right mb-2">{{ selectedItem?.performerLocation?.name }}</p>
+                                            <p class="text-right mb-2">{{ selectedItem?.performerLocation?.phone?.dialCode +' '+ selectedItem?.performerLocation?.phone?.number }}<span class="font-bold text-2xl text-gray-400">.</span> Info@saintnicholashospital.com</p>
+                                            <p class="text-right mb-2"> <span class="text-gray-300">Practice ID #:</span>{{ selectedItem?.patientId }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
 
                     <div class="w-full border-b-2 mt-5 border-dashed border-gray-200 pb-8">
                         <div class="bg-primary p-5 w-full flex mb-5">
-                            <p class="float-left text-white w-full">Occurrence: <span class="font-semibold">22 January 2022, 14:00</span></p>
+                            <p class="float-left text-white w-full">Occurrence: <span class="font-semibold">{{ selectedItem?.occurenceValue }}</span></p>
                             <p class="float-right flex justify-end w-full text-white">Appointment Date: <span class="font-semibold">Appointment not booked.</span></p>
                         </div>
 
@@ -52,81 +52,81 @@
                                 <p class="text-lg font-bold">Request Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Date Requested</p>
-                                    <p class="text-sm text-right w-full">22 January 2022, 14:00</p>
+                                    <p class="text-sm text-right w-full">{{ new Date(selectedItem?.createdAt).toLocaleDateString('en-US') }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Encounter ID</p>
-                                    <p class="text-sm text-right w-full">EN-233298</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.encounterId || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Based On</p>
-                                    <p class="text-sm text-right w-full">32DA788</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.MedicationRequest || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Category</p>
-                                    <p class="text-sm text-right w-full">32DA788</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.category || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Priority</p>
-                                    <p class="text-sm text-right w-full">20/02/2022</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.priority || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Requester</p>
-                                    <p class="text-sm text-right w-full">Dr. Sarah Johnson</p>
+                                    <p class="text-sm text-right w-full">Dr. {{ selectedItem?.patient?.firstname +''+ selectedItem?.patient?.lastname  || 'N/A' }}</p>
                                 </div>
                             </div>
                              <div class="bg-white rounded-lg shadow-md p-3">
                                 <p class="text-lg font-bold">Performer Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practitioner Name</p>
-                                    <p class="text-sm text-right w-full">20/02/2022</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.performer || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practitioner ID</p>
-                                    <p class="text-sm text-right w-full">452290</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.performerId || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practice Name</p>
-                                    <p class="text-sm text-right w-full">Medplus</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.performer || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.performerLocation?.phone?.dialCode +' '+ selectedItem?.performerLocation?.phone?.number || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">Mike@medplus.ng</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.email || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">2A, Admiralty way, Lekki...</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.performerLocation?.name || 'N/A' }}</p>
                                 </div>
                             </div>
                              <div class="bg-blue-50 rounded-lg shadow-md p-3">
                                 <p class="text-lg font-bold">Patient Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Patient Name</p>
-                                    <p class="text-sm text-right w-full">Nkechi Claire Obi</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.firstname +''+ selectedItem?.patient?.lastname || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">MRN #:</p>
-                                    <p class="text-sm text-right w-full">***3454</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.mrn  || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Payment Profile</p>
-                                    <p class="text-sm text-right w-full">Self Pay</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.mrn  || 'N/A' }}</p>
                                 </div>
                                  <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Phone No</p>
-                                    <p class="text-sm text-right w-full">+234 802 343 8799</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.mrn  || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Email</p>
-                                    <p class="text-sm text-right w-full">nkechiobi@gmail.com</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.email  || 'N/A' }}</p>
                                 </div>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Address</p>
-                                    <p class="text-sm text-right w-full">2A, Admiralty way, Lekki...</p>
+                                    <p class="text-sm text-right w-full">{{ selectedItem?.patient?.address  || 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -148,11 +148,11 @@
                    <div class="grid grid-cols-3 gap-4 w-full border-b-2 border-dashed border-gray-300 pb-5">
                         <div class="p-2 w-full mt-3 flex space-x-4">
                             <check-icon class="fill-current text-green-600 mr-5"/>
-                            <span class=" mb-3 text-sm font-bold">Request Description: <span class="text-xs text-gray-300 mr-2"> XXXXXX</span></span>
+                            <span class=" mb-3 text-sm font-bold">Request Description: <span class="text-xs text-gray-300 mr-2"> {{ selectedItem?.requestDescriptions  || 'N/A' }}</span></span>
                         </div>
                         <div class="p-2 w-full mt-3 flex space-x-4">
                             <check-icon class="fill-current text-blue-600 mr-5"/>
-                            <span class=" mb-3 text-sm font-bold">Body Site: <span class="text-xs text-gray-300">XXXXXX</span></span>
+                            <span class=" mb-3 text-sm font-bold">Body Site: <span class="text-xs text-gray-300">{{ selectedItem?.bodySite  || 'N/A' }}</span></span>
                         </div>
 
                    </div>
@@ -160,36 +160,36 @@
                     <div class="w-full grid grid-cols-2 mt-5 gap-4">
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2"> <patient-icon class="mr-4"/> Patient Instruction</label>
-                            <p class="text-xs text-gray-800"> Click on the secure link below to pay for this bill. This service is provided in partnership with Paystack.</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem?.patientInstruction  || 'N/A' }}</p>
                         </div>
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2"> <note-icon class="mr-4"/> Notes</label>
-                            <p class="text-xs text-gray-800">A follow up appointment has been scheduled for patient on 18 October, 2021	</p>
+                            <p class="text-xs text-gray-800">{{ selectedItem?.note  || 'N/A' }}	</p>
                         </div>
 
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2">  <check-icon class="fill-current text-purple-600 mr-4"/>Reason Code</label>
-                            <p class="text-xs text-gray-800"> Aspirin, Codeine, Penicilin</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem?.reasonCode  || 'N/A' }}</p>
                         </div>
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2"><check-icon class="fill-current text-green-600 mr-4"/> As Needed</label>
-                            <p class="text-xs text-gray-800"> Aspirin, Codeine, Penicilin</p>
+                            <p class="text-xs text-gray-800"> {{ selectedItem?.asNeeded  || 'N/A' }}</p>
                         </div>
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2"><check-icon class="fill-current text-blue-200 mr-4"/> Reason Reference</label>
-                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> Prior Prescription</p>
+                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> {{ selectedItem?.reasonReference  || 'N/A' }}</p>
                         </div>
                          <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class=" mb-3 text-sm font-bold flex space-x-2"> <check-icon class="fill-current text-danger mr-4"/>As Needed Code</label>
-                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> Performer</p>
+                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> {{ selectedItem?.asNeededCode  || 'N/A' }}</p>
                         </div>
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class="text-sm font-bold flex space-x-2"><check-icon class="fill-current text-purple-800 mr-4"/>Replaces</label>
-                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span>Prior Prescription</p>
+                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span>{{ selectedItem?.replaces  || 'N/A' }}</p>
                         </div>
                         <div class="border-gray-100 border-2 p-2 w-full mt-3 rounded-md">
                             <label class="text-sm font-bold flex space-x-2"><check-icon class="fill-current text-blue-700 mr-4"/> Linked Forms</label>
-                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> Performer</p>
+                            <p class="text-xs text-gray-400 -mt-5"> <span class="text-5xl  font-bold text-gray-300">.</span> {{ selectedItem?.form  || 'N/A' }}</p>
                         </div>                        
                     </div>
 
@@ -289,6 +289,8 @@ export default class printSection extends Vue {
 
     @userStore.Getter
     authPractitioner!: any;
+
+    
 
 
     loading = false;

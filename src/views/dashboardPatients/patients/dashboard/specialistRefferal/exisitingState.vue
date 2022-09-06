@@ -10,14 +10,13 @@
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="showViewModal = true"
+           @click="showView(item)"
         >
           <eye-icon class="text-yellow-400 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="acceptFamilyMember(item.associationId, item.patientName)"
         >
           <appointment-icon />
           <span class="ml-3 text-xs">Book Appointment</span>
@@ -101,7 +100,7 @@
 
     </div>
   </div>
-  <refferal-modal v-model="showViewModal"/>
+  <refferal-modal v-model="showViewModal" :selectedItem="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -110,7 +109,7 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import {IPatientAssociation} from "@/types/IPatientAssociation";
+import  ISpecialistrefferal  from "@/types/ISpecialistrefferal";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -135,12 +134,12 @@ import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
 import AppointmentIcon from "./icon/appointment.vue";
 import RefferalModal from "./viewModal.vue";
-
-
+import { Codeable } from "@/types/misc";
+import { getDropdown } from "@/plugins/definitions";
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
-const patientassociation = namespace("patientassociation");
+const specialistrefferal = namespace("specialistrefferal");
 
 @Options({
   components: {
@@ -172,6 +171,7 @@ export default class FamilyAsscoation extends Vue {
   showMemeberList = false;
   showViewModal = false;
   query = "";
+  selectedItem = {};
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -184,29 +184,18 @@ export default class FamilyAsscoation extends Vue {
   familyId = "";
 
   dropdowns = {} as IIndexableObject;
+  Specilaitems: Codeable[] = [];
 
    
-  @patientassociation.State
-  familyassociations!: IPatientAssociation[];
+  @specialistrefferal.State
+  specialistrefferals!: ISpecialistrefferal[];
 
-  @patientassociation.Action
-  fetchFamilyAssociations!: () => Promise<void>;
-
-//   @patientassociation.Action
-//   deleteFamilyMember!: (id: string) => Promise<boolean>;
-
-//   @patientassociation.Action
-//   acceptFamilyMember!: (id: string) => Promise<boolean>;
-
-//   @patientassociation.Action
-//   declineFamilyMember!: (id: string) => Promise<boolean>;
-
-
-
+  @specialistrefferal.Action
+  fetchSpecialistRefferal!: () => Promise<void>;
 
   rawHeaders = [
-    { title: "request date", key: "date", show: true, noOrder:true },
-    { title: "referral id", key: "referralId", show: true , noOrder:true},
+    { title: "request date", key: "createdAt", show: true, noOrder:true },
+    { title: "referral id", key: "identifier", show: true , noOrder:true},
     {
       title: "category",
       key: "category",
@@ -240,109 +229,72 @@ export default class FamilyAsscoation extends Vue {
 
   ];
 
-
- get items() {
-    return [{
-        date: "22/01/20",
-        referralId: "A1XCD45",
-        category: "Counselling",
-        specialty: "XXXXXX",
-        requester: "XXXXXX",
-        performer: "XXXXXX",
-    }]
+  showView(value:any){
+    this.showViewModal = true;
+    this.selectedItem = value;
   }
 
-//   get items() {
-//     const familyassociations = this.familyassociations.map((familyassociation) => {
-//          (familyassociation as any).dateAdded = new Date(
-//         (familyassociation as any).dateAdded
-//       ).toLocaleDateString("en-US");
-//       return {
-//         ...familyassociation,
-//       };
-//     });
-//     if (!this.query) return familyassociations;
-//     return search.searchObjectArray(familyassociations, this.query);
+
+//  get items() {
+//     return [{
+//         date: "22/01/20",
+//         referralId: "A1XCD45",
+//         category: "Counselling",
+//         specialty: "XXXXXX",
+//         requester: "XXXXXX",
+//         performer: "XXXXXX",
+//     }]
 //   }
+
+  get items() {
+    const specialistrefferals = this.specialistrefferals.map((specialistrefferal:any) => {
+         (specialistrefferal as any).createdAt = new Date(
+        (specialistrefferal as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...specialistrefferal,
+        specialty: this.getspecialtyname(specialistrefferal.specialty),
+        performer: specialistrefferal.performer.name,
+        requester: 'XXXXXX'
+      };
+    });
+    if (!this.query) return specialistrefferals;
+    return search.searchObjectArray(specialistrefferals, this.query);
+  }
+  async setRefs() {
+    const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
+    const ref = reference.trim();
+    const defs = await getDropdown(ref);
+    if (defs && Array.isArray(defs)) {
+      this.Specilaitems = defs;
+    } else {
+      window.notify({
+        status: "error",
+        msg: `Cannot get definitions for ${reference}`,
+      });
+    }
+  }
+
+  getspecialtyname(id: string) {
+    const pt = this.Specilaitems.find((i: any) => i.code === id);
+    return pt ? `${pt.display}` : "";
+  }
   
-//   get sortAssocaitons() {
-//     return this.items.slice().sort(function (a, b) {
-//       return a.createdAt < b.createdAt ? 1 : -1;
-//     });
-//   }
+  get sortAssocaitons() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
 
   showMemberModal(value:string){
     this.showMember = true;
     this.familyId = value;
   }
 
-   async deleteFamilyMember(id:string){
-      const confirmed = await window.confirmAction({
-      message: "You have opted to revoke membership of Ibeh’s family account. Click below to confirm",
-      title: "Revoke",
-    });
-    if (!confirmed) {
-      return;
-    } else {
-      try {
-        const response = await cornieClient().delete(
-          `/api/v1/patient-portal/family/member/${id}/revoke`
-        );
-        if (response.success) {
-          window.notify({ msg: "Membership revoked successfully", status: "success" });
-          await this.fetchFamilyAssociations();
-        }
-      } catch (error) {
-        window.notify({ msg: "Membership revoked unsuccessfully", status: "error" });
-      }
-    }
-  }
-
-    async declineFamilyMember(id:string, name:string){
-      const confirmed = await window.confirmAction({
-      message: `You have been added to ${name} family account. Click below to decline`,
-      title: "Decline",
-    });
-    if (!confirmed) {
-      return;
-    } else {
-      try {
-        const response = await cornieClient().patch(
-          `/api/v1/patient-portal/family/member/${id}/decline`,{}
-        );
-        if (response.success) {
-          window.notify({ msg: "Declined Successfully", status: "success" });
-          await this.fetchFamilyAssociations();
-        }
-      } catch (error) {
-        window.notify({ msg: "Declined Unsuccessfull", status: "error" });
-      }
-    }
-  }
-  async acceptFamilyMember(id:string, name:string){
-      const confirmed = await window.confirmAction({
-      message: `You have been added to ${name} family account. Click below to accept`,
-      title: "Accept",
-    });
-    if (!confirmed) {
-      return;
-    } else {
-      try {
-        const response = await cornieClient().patch(
-          `/api/v1/patient-portal/family/member/${id}/accept`,{}
-        );
-        if (response.success) {
-          window.notify({ msg: "Accepted Successfully", status: "success" });
-          await this.fetchFamilyAssociations();
-        }
-      } catch (error) {
-        window.notify({ msg: "Not Accepted", status: "error" });
-      }
-    }
-  }
 
   async created() {
-    await this.fetchFamilyAssociations();
+    this.setRefs();
+    await this.fetchSpecialistRefferal();
   }
 }
 </script>

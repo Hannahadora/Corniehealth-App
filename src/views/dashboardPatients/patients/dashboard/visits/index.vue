@@ -12,8 +12,9 @@
       </div>
 
     <div>
-      <!-- <visit-empty-state  /> -->
+      <visit-empty-state  v-if="empty"/>
        <visit-exisiting-state
+       v-else
         />
     </div>
     </div>
@@ -23,11 +24,13 @@
 
 <script lang="ts">
 import { cornieClient } from "@/plugins/http";
-import { IPatientAssociation } from "@/types/IPatientAssociation";
+import  IPatientvisit  from "@/types/IPatientvisit";
 import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import VisitEmptyState from "./emptyState.vue";
 import VisitExisitingState from "./existingState.vue";
+
+const patientvisit = namespace("patientvisit");
 
 @Options({
   name: "visitIndex",
@@ -37,28 +40,17 @@ import VisitExisitingState from "./existingState.vue";
   },
 })
 export default class visitIndex extends Vue {
-  get isEmpty() {
-    return !Boolean(this.associations.length);
+ get empty() {
+    return this.patientvisits.length < 1;
   }
+  @patientvisit.State
+  patientvisits!: IPatientvisit[];
 
-  associations: IPatientAssociation[] = [];
-
-  async fetchAssociations() {
-    try {
-      const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/employer/associations"
-      );
-      this.associations = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error populating association data",
-        status: "error",
-      });
-    }
-  }
+  @patientvisit.Action
+  fetchPatientvisits!: () => Promise<void>;
 
   created() {
-    if (this.isEmpty) this.fetchAssociations();
+    this.fetchPatientvisits();
   }
 }
 </script>

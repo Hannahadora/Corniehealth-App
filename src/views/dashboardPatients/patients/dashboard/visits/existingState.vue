@@ -80,44 +80,43 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showCheckOutModal = true"
+          @click="showCheckOut(item)"
         >
           <check-out class="text-purple-800 fill-current" />
           <span class="ml-3 text-xs">Check Out</span>
         </div>
       </template>
-       <template #status>
-          <span
-            class="bg-green-200 text-green-400 text-center rounded-md p-1 bg-opacity-20"
-          >
-            Waitlisted
+       <template #period="{item }">
+          <span>
+            {{ new Date(item?.checkInTime).toLocaleTimeString('en-US') +'-'+ new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}
           </span>
         </template>
-         <!-- <template #status="{item}">
+         <template #status="{item}">
           <span
             :class="{
               'bg-yellow-100 text-yellow-400': item.status == 'On-time-late',
-              ' bg-purple-100 text-purple-600': item.status == 'Queued',
-              ' bg-green-100 text-green-400': item.status == 'Waitlisted',
-              ' bg-green-100 text-green-400': item.status == 'Consultation Completed',
-              ' bg-green-100 text-green-400': item.status == 'Diagnostics Completed',
-              ' bg-green-100 text-green-400': item.status == 'Medication Dispensed',
-              ' bg-green-100 text-green-400': item.status == 'Discharged',
-              ' bg-purple-100 text-purple-600': item.status == 'Vital Acquired',
-              ' bg-purple-100 text-purple-600': item.status == 'Referred',
-              ' bg-yellow-100 text-yellow-400': item.status == 'In-Progress',
-             ' bg-red-100 text-red-400': item.status == 'Visit Ended',
-             ' bg-red-100 text-red-400': item.status == 'Cancelled',
-             ' bg-gray-100 text-gray-400': item.status == 'Checked-Out',
-             ' bg-blue-100 text-blue-600': item.status == 'Bill Processing',
+              'bg-purple-300 text-purple-600': item.status == 'queued'||
+              item.status == 'vitalAcquired'
+              ||
+              item.status == 'referred',
+              'bg-green-100 text-green-400': item.status == 'waitlisted' 
+              || item.status == 'consultationCompleted'
+              || item.status == 'diagnosticsCompleted'
+              || item.status == 'nedicationDispensed'
+              || item.status == 'discharged'
+              ,
+              ' bg-yellow-100 text-yellow-400': item.status == 'in-Progress',
+             ' bg-red-100 text-red-400': item.status == 'visitEnded' || item.status == 'cancelled',
+             ' bg-gray-100 text-gray-400': item.status == 'checked-out',
+             ' bg-blue-100 text-blue-600': item.status == 'billProcessing',
 
              
             }"
-            class="text-center rounded-md p-1 bg-opacity-20"
+            class="text-center rounded-lg p-1 bg-opacity-20"
           >
             {{ item.status }}
           </span>
-        </template> -->
+        </template>
 
         <template #familyId="{item}">
          <span class="text-blue-500">{{ item.familyId}}</span>
@@ -182,7 +181,7 @@
     </div>
   </div>
   <view-modal  v-model="showViewModal"/>
-  <checkout-modal v-model="showCheckOutModal"/>
+  <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem"/>
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
@@ -196,7 +195,9 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { IPatientAssociation } from "@/types/IPatientAssociation";
+
+
+import  IPatientvisit  from "@/types/IPatientvisit";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -238,11 +239,10 @@ import PayModal from "./components/payBill.vue";
 import TimeLine from "./components/viewTimeLine.vue";
 
 
-
-
+const practitioner = namespace("practitioner");
 const location = namespace("location");
 const dropdown = namespace("dropdown");
-const patientassociation = namespace("patientassociation");
+const patientvisit = namespace("patientvisit");
 
 @Options({
   components: {
@@ -293,6 +293,7 @@ export default class PatientVisit extends Vue {
   showPaybill = false;
   showTimeLineModal = false;
   query = "";
+  selectedItem = {};
 
   @dropdown.Action
   getDropdowns!: (a: string) => Promise<IIndexableObject>;
@@ -307,27 +308,25 @@ export default class PatientVisit extends Vue {
   dropdowns = {} as IIndexableObject;
 
    
-  @patientassociation.State
-  familyassociations!: IPatientAssociation[];
+  @patientvisit.State
+  patientvisits!: IPatientvisit[];
 
-  @patientassociation.Action
-  fetchFamilyAssociations!: () => Promise<void>;
+  @patientvisit.Action
+  fetchPatientvisits!: () => Promise<void>;
 
-//   @patientassociation.Action
-//   deleteFamilyMember!: (id: string) => Promise<boolean>;
+  @practitioner.State
+  practitioners!: any[];
 
-//   @patientassociation.Action
-//   acceptFamilyMember!: (id: string) => Promise<boolean>;
 
-//   @patientassociation.Action
-//   declineFamilyMember!: (id: string) => Promise<boolean>;
+  @practitioner.Action
+  getPractitioners!: () => Promise<void>;
 
 
 
 
   rawHeaders = [
-    { title: "CHECK-IN TIME", key: "date", show: true, noOrder:true },
-    { title: "VISIT ID", key: "referralId", show: true , noOrder:true},
+    { title: "CHECK-IN TIME", key: "checkInTime", show: true, noOrder:true },
+    { title: "VISIT ID", key: "id", show: true , noOrder:true},
     {
       title: "visit type",
       key: "type",
@@ -348,7 +347,7 @@ export default class PatientVisit extends Vue {
     },
     {
       title: "period",
-      key: "performer",
+      key: "period",
       show: true,
        noOrder:true
     },
@@ -361,39 +360,53 @@ export default class PatientVisit extends Vue {
   ];
 
 
- get items() {
-    return [{
-        date: "22/01/20",
-        referralId: "A1XCD45",
-        type: "Counselling",
-        specialty: "XXXXXX",
-        requester: "XXXXXX",
-        performer: "XXXXXX",
-    }]
+//  get items() {
+//     return [{
+//         date: "22/01/20",
+//         referralId: "A1XCD45",
+//         type: "Counselling",
+//         specialty: "XXXXXX",
+//         requester: "XXXXXX",
+//         performer: "XXXXXX",
+//     }]
+//   }
+
+  get items() {
+    const patientvisits = this.patientvisits?.map((patientvisit) => {
+         (patientvisit as any).checkInTime = new Date(
+        (patientvisit as any).checkInTime
+      ).toLocaleTimeString('en-US');
+      return {
+        ...patientvisit,
+        type: 'XXXXXX',
+        specialty: 'XXXXXX',
+       // checkInTime: new Date(patientvisit.checkInTime).toLocaleDateString("en-US"),
+      };
+    });
+    if (!this.query) return patientvisits;
+    return search.searchObjectArray(patientvisits, this.query);
   }
 
-//   get items() {
-//     const familyassociations = this.familyassociations.map((familyassociation) => {
-//          (familyassociation as any).dateAdded = new Date(
-//         (familyassociation as any).dateAdded
-//       ).toLocaleDateString("en-US");
-//       return {
-//         ...familyassociation,
-//       };
-//     });
-//     if (!this.query) return familyassociations;
-//     return search.searchObjectArray(familyassociations, this.query);
-//   }
   
-//   get sortAssocaitons() {
-//     return this.items.slice().sort(function (a, b) {
-//       return a.createdAt < b.createdAt ? 1 : -1;
-//     });
-//   }
+  get sortAssocaitons() {
+    return this.items.slice().sort(function (a, b) {
+      return a.createdAt < b.createdAt ? 1 : -1;
+    });
+  }
+
+  getPractitionerName(id: string) {
+    const pt = this.practitioners.find((i: any) => i.organizationId === id);
+    return pt ? `${pt.firstName} ${pt.lastName}` : "";
+  }
 
   showMemberModal(value:string){
     this.showMember = true;
     this.familyId = value;
+  }
+
+  showCheckOut(value:any){
+    this.selectedItem = value;
+    this.showCheckOutModal = true
   }
 
 async deleteItem(id: string) {
@@ -402,14 +415,25 @@ async deleteItem(id: string) {
       title: "Cancel Visit",
       submessage:"*Terms and conditions apply"
     });
-    if (!confirmed) return;
-
-    // if (await this.deleteAllergy(id))
-    //   window.notify({ msg: "Allergy cancelled", status: "success" });
-    // else window.notify({ msg: "Allergy not cancelled", status: "error" });
+    if (!confirmed) {
+      return;
+    } else {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/visit/cancel/${id}/`,
+          {}
+        );
+        if (response.success) {
+          window.notify({ msg: "Accepted Successfully", status: "success" });
+          await this.fetchPatientvisits();
+        }
+      } catch (error) {
+        window.notify({ msg: "Not Accepted", status: "error" });
+      }
+    }
   }
   async created() {
-    await this.fetchFamilyAssociations();
+    await this.fetchPatientvisits();
   }
 }
 </script>
