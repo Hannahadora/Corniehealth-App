@@ -5,7 +5,12 @@
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
     >
       <cornie-card-title class="flex items-center">
-        <icon-btn @click="show = false; appointmentHasBeenRescheduled = false">
+        <icon-btn
+          @click="
+            show = false;
+            appointmentHasBeenRescheduled = false;
+          "
+        >
           <arrow-left stroke="#ffffff" />
         </icon-btn>
         <div class="w-full">
@@ -16,7 +21,10 @@
           </h2>
           <cancel-red-bg
             class="float-right cursor-pointer"
-            @click="show = false; appointmentHasBeenRescheduled = false"
+            @click="
+              show = false;
+              appointmentHasBeenRescheduled = false;
+            "
           />
         </div>
       </cornie-card-title>
@@ -119,7 +127,10 @@
           <div class="w-full mx-auto mt-12 flex items-center justify-end">
             <cornie-btn
               class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
-              @click="show = false; appointmentHasBeenRescheduled = false"
+              @click="
+                show = false;
+                appointmentHasBeenRescheduled = false;
+              "
             >
               Cancel
             </cornie-btn>
@@ -207,7 +218,7 @@ export default class RescheduleAppointment extends Vue {
   showAppointmentModal = true;
   newAppointmentDate = "";
   newAppointmentTime = "";
-  appointmentHasBeenRescheduled = false
+  appointmentHasBeenRescheduled = false;
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -216,9 +227,9 @@ export default class RescheduleAppointment extends Vue {
   appointment!: any;
 
   getNewDate(date: any, time: any) {
-    this.appointmentHasBeenRescheduled = true
+    this.appointmentHasBeenRescheduled = true;
     this.newAppointmentDate = date;
-    this.newAppointmentTime = time
+    this.newAppointmentTime = time;
   }
 
   formatDate(date: any) {
@@ -235,6 +246,48 @@ export default class RescheduleAppointment extends Vue {
       minute: "numeric",
       hour12: true,
     });
+  }
+
+  doubleDigit(s: any) {
+    return s.length < 2 ? "0" + s : s;
+  }
+
+  get startTime() {
+    const t = this.newAppointmentTime.split(".");
+    return `${this.doubleDigit(t[0])}:${t[1]}`;
+  }
+  get endTime() {
+    const t = this.newAppointmentTime.split(".");
+    const et = Number(t[0]) + 1;
+    return `${this.doubleDigit(et)}:${t[1]}`;
+  }
+
+  async submit() {
+    const data = {
+      appointmentId: this.appointment.id,
+      date: this.newAppointmentDate,
+      startTime: this.startTime,
+      endTime: this.endTime,
+    };
+    try {
+      this.loading = true;
+      await cornieClient().post("/api/v1/patient-portal/appointment/reschedule", {
+        ...data,
+      });
+      this.$emit("appointment-rescheduled");
+      this.appointmentHasBeenRescheduled = false
+      window.notify({
+        msg: "Appointment has been resheduled",
+        status: "success",
+      });
+    } catch (error: any) {
+      window.notify({
+        msg: error.message,
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   created() {}

@@ -4,7 +4,7 @@
       <div class="h-full xl:grid grid-cols-7 flex flex-wrap gap-4">
         <multiselectsearch
           v-model="search.specialty"
-          :icon="'assets/book-appointment/icon-doctor-grey.png'"
+          :icon="require('@/assets/book-appointment/icon-doctor-grey.png')"
           :placeholder="specialtyPlaceholder"
           :items="specialties"
           :active="specialtyActive"
@@ -12,7 +12,7 @@
         />
         <multiselectsearch
           v-model="search.location"
-          :icon="'assets/book-appointment/icon-location-grey.png'"
+          :icon="require('@/assets/book-appointment/icon-location-grey.png')"
           :placeholder="locationPlaceholder"
           :items="locations"
           :active="locationActive"
@@ -21,7 +21,7 @@
         />
         <multiselectsearch
           v-model="search.hospital"
-          icon="assets/book-appointment/icon-hospital-grey.png"
+          :icon="require('@/assets/book-appointment/icon-hospital-grey.png')"
           :placeholder="hospitalPlaceholder"
           item-label-prop="name"
           item-value-prop="id"
@@ -32,7 +32,7 @@
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="experience"
-          icon="assets/book-appointment/icon-experience-grey.png"
+          :icon="require('@/assets/book-appointment/icon-experience-grey.png')"
           placeholder="Experience"
           :items="experiences"
           :active="experienceActive"
@@ -40,27 +40,27 @@
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="search.visitType"
-          icon="assets/book-appointment/icon-visit-grey.png"
+          :icon="require('@/assets/book-appointment/icon-visit-grey.png')"
           placeholder="Visit Type"
           :items="visitTypes"
         />
         <!-- <multiselectsearch
 						v-model="search.insurance"
-						icon="@/assets/book-appointment/icon-insurance-grey.png"
+						:icon="require('@/assets/book-appointment/icon-insurance-grey.png')"
 						placeholder="Insurance"
 						:items="insurances"
 					/> -->
         <multiselectsearch
           v-if="tab === 'hospitals'"
           v-model="search.rating"
-          icon="assets/book-appointment/icon-insurance-grey.png"
+          :icon="require('@/assets/book-appointment/icon-insurance-grey.png')"
           placeholder="Rating"
           :items="ratings"
         />
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="search.language"
-          icon="assets/book-appointment/icon-lang-grey.png"
+          :icon="require('@/assets/book-appointment/icon-lang-grey.png')"
           placeholder="Language"
           :items="languages"
         />
@@ -68,7 +68,7 @@
           v-if="tab === 'doctors'"
           id="lcd"
           v-model="search.gender"
-          icon="assets/book-appointment/icon-gender-grey.png"
+          :icon="require('@/assets/book-appointment/icon-gender-grey.png')"
           placeholder="Gender"
           :items="genders"
         />

@@ -116,8 +116,9 @@
     <confirm-payment-modal
       v-model="confirmBookingModal"
       :practitioner="practitioner"
-      :appointment="selectedAppointment"
+      :appointment="appointment"
       @close="confirmBookingModal = false"
+      @confirmed="$emit('close')"
     />
   </cornie-dialog>
 </template>
@@ -189,11 +190,11 @@ export default class ReviewPaymentModal extends Vue {
   appointment!: any;
 
   get selectedDate() {
-    return this.appointment.date
+    return this.appointment?.date
   }
 
   get selectedTime() {
-    return this.appointment.startTime
+    return this.appointment?.startTime
   }
 
   get practitionerName() {

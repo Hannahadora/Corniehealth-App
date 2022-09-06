@@ -31,7 +31,7 @@
           >
             <img
               class="mr-2"
-              src="assets/book-appointment/icon-doctor-black.png"
+              src="@/assets/book-appointment/icon-doctor-black.png"
               alt=""
             />
             <span class="text-lg text-grey-eth font-bold">Doctors</span>
@@ -41,11 +41,11 @@
             class="mr-6 pb-4 cursor-pointer flex items-center"
             @click="selectTab('hospitals')"
           >
-            <!-- <img
+            <img
             class="mr-2"
-            src="@/assets/book-appointment/Icon-hospital-black.png"
+            src="@/assets/book-appointment/icon-hospital-black.png"
             alt=""
-          /> -->
+          />
             <span class="text-lg text-grey-eth font-bold">Hospital/Clinic</span>
           </div>
         </div>

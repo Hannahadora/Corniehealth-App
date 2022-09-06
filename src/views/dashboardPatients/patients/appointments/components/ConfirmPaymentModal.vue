@@ -70,7 +70,7 @@
               v-model="paymentAccountId"
               placeholder="Select a payment account type"
               :readonly="false"
-              :items="['nnn']"
+              :items="paymentAccounts"
               required
             >
             </cornie-select>
@@ -98,9 +98,7 @@
             <span class="text-right text-xs italic font-semibold">0/255</span>
           </div>
 
-          <div
-            class="w-full mx-auto mt-12 flex items-center justify-end"
-          >
+          <div class="w-full mx-auto mt-12 flex items-center justify-end">
             <cornie-btn
               class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
               @click="$emit('close')"
@@ -109,7 +107,7 @@
             </cornie-btn>
             <cornie-btn
               class="xl:w-auto w-full bg-red-500 px-6 py-1 text-white rounded-xl"
-              @click="confirmBookingModal = true"
+              @click="submit"
               :loading="loading"
             >
               Next
@@ -127,7 +125,14 @@
       @close="showAppointmentModal = false"
     />
 
-  </cornie-dialog>
+    <booking-confirmed
+        :id="practitioner.id"
+        :practitioner="practitioner"
+        :practitionerLocations="locations"
+        v-model="bookingConfirmed"
+        @close="$emit('confirmed')"
+      />
+    </cornie-dialog>
 </template>
 
 <script lang="ts">
@@ -183,9 +188,9 @@ export default class ReviewPaymentModal extends Vue {
   search: any = {};
   loading: Boolean = false;
   show = false;
-  showAppointmentModal = false;
   locations = [];
-  paymentAccountId = "";
+  paymentAccounts: any = [];
+  bookingConfirmed = false;
 
   @Prop({ type: Object, default: {} })
   practitioner!: any;
@@ -194,39 +199,60 @@ export default class ReviewPaymentModal extends Vue {
   appointment!: any;
 
   get selectedDate() {
-    return this.appointment.date
+    return this.appointment.date;
   }
 
   get selectedTime() {
-    return this.appointment.startTime
+    return this.appointment.startTime;
   }
 
   get practitionerName() {
-    return this.practitioner.name || this.practitioner.firstName + ' ' + this.practitioner.lastName
+    return (
+      this.practitioner.name ||
+      this.practitioner.firstName + " " + this.practitioner.lastName
+    );
   }
 
   get practitionerContact() {
-    if(this.appointment) {
-      return this.practitioner?.phone?.dialCode + ' ' + this.practitioner?.phone?.number
-    } else return this.practitioner.phone
+    if (this.appointment) {
+      return (
+        this.practitioner?.phone?.dialCode +
+        " " +
+        this.practitioner?.phone?.number
+      );
+    } else return this.practitioner.phone;
   }
 
-  async confirmPayment() {
-    // try {
-    //   const res = await this.$store.dispatch("practitioners/bookPractitioner", {
-    //     locationId: this.$route.query.locationId,
-    //     date: this.getSelectedDate,
-    //     startTime: this.getSelectedTime,
-    //     endTime: undefined,
-    //     billingType: "insurance",
-    //     practitionerId: this.selectedPractitioner.id,
-    //     patientId: this.userData.user.id,
-    //   });
-    //   if (res.status === true) {
-    //     alert("Booking confirmed!!");
-    //     this.$router.push("/");
-    //   }
-    // } catch (error: any) {}
+  get paymentAccountId() {
+    return undefined
+  }
+
+  async submit() {
+    const data = {
+      appointmentId: this.appointment.id,
+      paymentAccountId: this.paymentAccountId,
+    };
+    try {
+      this.loading = true;
+      await cornieClient().post(
+        "/api/v1/patient-portal/appointment/confirm",
+        {
+          ...data,
+        }
+      );
+      this.bookingConfirmed = true;;
+      window.notify({
+        msg: "Appointment has been confirmed",
+        status: "success",
+      });
+    } catch (error: any) {
+      window.notify({
+        msg: error.message,
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   created() {}
