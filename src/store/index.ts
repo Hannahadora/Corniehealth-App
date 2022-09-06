@@ -70,6 +70,8 @@ import BillingcenterStore from "./billingcenters";
 import CollectioncenterStore from "./collectioncenters";
 import PatientassociationStore from "./patientassociation";
 import PatientproviderStore from "./patientprovider";
+import PatientvisitStore from "./patientvisit";
+import SpecialistRefferalStore from "./specialistrefferal";
 
 export default createStore({
   modules: {
@@ -151,5 +153,7 @@ export default createStore({
     rating: RatingStore,
     patientassociation:PatientassociationStore,
     patientprovider: PatientproviderStore,
+    patientvisit: PatientvisitStore,
+    specialistrefferal: SpecialistRefferalStore
   },
 } as StoreOptions<any>);

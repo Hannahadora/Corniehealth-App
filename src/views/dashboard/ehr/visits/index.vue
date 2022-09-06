@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex justify-center bg-white shadow-sm rounded p-3 mb-2 w-full"
+    class="flex justify-center bg-white h-screen shadow-sm rounded p-3 mb-2 w-full"
   >
     <div class="w-full">
       <span
