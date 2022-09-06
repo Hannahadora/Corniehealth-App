@@ -58,7 +58,6 @@
           :selectedSpecialty="search.specialty"
           :selectedLocation="search.location"
           @searchQuery="getSearchQuery"
-          @loadingState="getLoadingState"
         />
 
         <div>
@@ -172,13 +171,13 @@ export default class BookAppointmentModal extends Vue {
   @Watch("valueType")
   async onUpdate() {
     if (this.valueType === "practitioner") {
-      await this.findPractitioner();
       this.showDoctorsprofile = true;
+      await this.findPractitioner();
     }
     if (this.valueType === "provider") {
+      this.showHospitalsprofile = true;
       await this.findProvider();
       await this.fetchProviderPractitioners();
-      this.showHospitalsprofile = true;
     }
   }
 
@@ -265,12 +264,8 @@ export default class BookAppointmentModal extends Vue {
     this.fetchData();
   }
 
-  getSearchQuery(values: any) {
+  getSearchQuery(values: any, doctors: any, hospitals: any) {
     this.search = values;
-  }
-
-  getLoadingState(value: Boolean) {
-    this.loading = value;
   }
 
   selectTab(tab: string) {
@@ -286,7 +281,7 @@ export default class BookAppointmentModal extends Vue {
   get queryString() {
     return Object.keys(this.payload)
       .map((filter) => {
-        if (this.payload[filter] || Number.isInteger(this.payload[filter])) {
+        if (this.payload[filter] || this.payload[filter] !== 0 || Number.isInteger(this.payload[filter])) {
           return `${filter}=${this.payload[filter]}`;
         }
         return null;

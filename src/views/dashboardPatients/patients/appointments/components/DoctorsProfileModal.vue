@@ -29,7 +29,7 @@
               <div class="flex items-center">
                 <img
                   class="mr-4 w-20 h-20 rounded-full"
-                  :src="require(practitioner.photo)"
+                  :src="practitioner.photo"
                   alt=""
                 />
                 <div

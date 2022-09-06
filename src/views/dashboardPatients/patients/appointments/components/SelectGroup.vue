@@ -105,8 +105,8 @@ export default class addMedications extends Vue {
   @Watch('experience')
   onChange() {
     if(this.experience === 'All' || this.experience === ''){
-      this.search.min = undefined;
-       this.search.max = undefined
+      this.search.min = 0;
+       this.search.max = 0
     } else {
       const fminmax = this.experience.split(' ')
       console.log(fminmax, 'fminmax')
@@ -118,17 +118,17 @@ export default class addMedications extends Vue {
   }
 
   loading = false;
-  search = {
+  search: any = {
     specialty: "",
     location: "",
-    hospital: undefined,
-    min: 0 || undefined,
-    max: 0 || undefined,
-    insurance: undefined,
-    language: undefined,
-    gender: undefined,
-    rating: undefined,
-    visitType: undefined,
+    hospital: "",
+    min: 0,
+    max: 0,
+    insurance: "",
+    language: "",
+    gender: "",
+    rating: "",
+    visitType: "",
   };
   specialties: any = [];
 
@@ -186,9 +186,7 @@ export default class addMedications extends Vue {
 
   @Watch("search", { deep: true })
   handler() {
-    console.log(this.search)
     this.$emit("searchQuery", this.search);
-    this.$emit("loadingState", this.loading);
     this.$router.push(
       `${
         this.$route.path
@@ -252,8 +250,7 @@ export default class addMedications extends Vue {
       const { data } = await cornieClient().get(
         `/api/v1/booking-website/search?query=${query}`
       );
-      const xspecialties = data.specialties;
-      this.specialties = xspecialties.specialties.map((el: any) => el.name);
+      this.specialties = data.specialties || [];
     } catch (error) {
       window.notify({
         msg: "There was an error fetching specialties",
