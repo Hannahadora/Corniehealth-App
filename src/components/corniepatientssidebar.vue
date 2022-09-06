@@ -25,7 +25,7 @@
             :hasSubsection="link.hasSubsection"
             >
             <keep-alive>
-                <component class="text-primary fill-current" :is="link.icon"></component>
+                <component  :is="link.icon"></component>
             </keep-alive>
             </sidebar-link>
         </div>
@@ -62,7 +62,7 @@
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
  
- import CalendarIcon from "./icons/appointment.vue";
+ import CalendarIcon from "./icons/calendar.vue";
  import SpecialistIcon from "./icons/specialist.vue";
  import VisitIcon from "./icons/visits.vue";
  import HealthIcon from "./icons/healthrecord.vue";

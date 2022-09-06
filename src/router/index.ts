@@ -339,7 +339,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "visits-patients",
-        name: "Visits",
+        name: "Visits Patients",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/index.vue"),
       },
       {

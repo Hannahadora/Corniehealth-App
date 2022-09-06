@@ -68,8 +68,8 @@
                 <div class="w-10 h-10">
                     <avatar
                         class="mr-2"
-                        v-if="item.checkedInBy.image"
-                        :src="item.checkedInBy.image"
+                        v-if="item.checkedInBy?.image"
+                        :src="item.checkedInBy?.image"
                     />
                     <avatar class="mr-2" v-else :src="localSrc" />
                 </div>

@@ -181,14 +181,14 @@
 
     get items() {
       const patients = this.filteredPatients;
-      return patients.map((patient) => ({
+      return patients.map((patient:any) => ({
         name: `${patient.firstname} ${patient.lastname}`,
         dob: this.printDOB(patient.dateOfBirth),
         email: this.printEmail(patient),
         phone: this.printPhone(patient),
         mrn: patient.mrn,
         gender: patient.gender,
-        photo: patient.profilePhoto,
+        photo: patient?.profilePhoto,
         id: patient.id,
       }));
     }
@@ -199,13 +199,13 @@
     }
     printPhone(patient: IPatient) {
       if (!patient.contactInfo) return "N/A";
-      const phone = patient.contactInfo[0].phone;
+      const phone = patient?.contactInfo[0]?.phone;
       return phone?.number || "N/A";
     }
 
     printEmail(patient: IPatient) {
       if (!patient.contactInfo) return "N/A";
-      return patient.contactInfo[0].email || "N/A";
+      return patient?.contactInfo[0]?.email || "N/A";
     }
     printDOB(dateOfBirth?: string) {
       if (!dateOfBirth) return "N/A";

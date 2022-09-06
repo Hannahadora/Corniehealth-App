@@ -30,7 +30,7 @@
                     </div>
                     <div class="w-full mt-2">
                         <p class="text-sm text-dark font-semibold">
-                           James E. Flair
+                           {{ selectedItem.patient.firstname +' '+ selectedItem.patient.lastname}}
                         </p>
                     </div>
                 </div>
@@ -55,14 +55,14 @@
                           <div class="w-10 h-10">
                               <avatar
                                   class="mr-2"
-                                  v-if="practitionerdata?.image"
-                                  :src="practitionerdata?.image"
+                                  v-if="selectedItem?.checkedInBy?.image"
+                                  :src="selectedItem?.checkedInBy?.image"
                               />
                               <avatar class="mr-2" v-else :src="localSrc" />
                           </div>
                           <div class="w-full mt-2">
                               <p class="text-sm text-dark font-semibold">
-                                 Dr. Ben Obi (Family Medicine)
+                                 Dr. {{ selectedItem?.checkedInBy?.firstName +' '+ selectedItem?.checkedInBy?.lastName}} ({{ selectedItem?.checkedInBy?.department}})
                               </p>
                           </div>
                       </div>
@@ -187,7 +187,7 @@ export default class checkoutModal extends Vue {
   patient!: any;
 
   @Prop({ type: Object, default: {} })
-  allvisit!: any;
+  selectedItem!: any;
 
 
 
@@ -253,7 +253,7 @@ export default class checkoutModal extends Vue {
 
     get payload(){
       return {
-       followUpId: this.allvisit.appointmentId || null
+       followUpId: this.selectedItem.appointmentId || null
       }
     }
 
@@ -278,7 +278,7 @@ export default class checkoutModal extends Vue {
     
       try {
         const response = await cornieClient().post(
-          `/api/v1/visit/check-out/${this.id}`,
+          `/api/v1/patient-portal/visit/check-out/${this.id}`,
           this.payload
         );
         if (response.success) {
@@ -317,7 +317,7 @@ export default class checkoutModal extends Vue {
    async fetchBill() {
      try {
       const response = await cornieClient().post(
-      `/api/v1/appointment/bill/generate/${this.allvisit.appointmentId}`,{}
+      `/api/v1/appointment/bill/generate/${this.selectedItem.appointmentId}`,{}
       );
       if (response.success) {
          this.bill = response.data;
@@ -328,7 +328,7 @@ export default class checkoutModal extends Vue {
   }
 
   async created() {
-    if(this.allvisit.appointmentId)  await this.fetchBill();
+    if(this.selectedItem.appointmentId)  await this.fetchBill();
    this.fetchPatientAppointment();
    await this.fetchPractitioners();
    await this.fetchLocations();

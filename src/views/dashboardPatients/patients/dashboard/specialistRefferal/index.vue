@@ -12,25 +12,14 @@
       </div>
 
     <div>
-      <!-- <refferal-empty-state  /> -->
+      <refferal-empty-state  v-if="empty"/>
        <refferal-exisiting-state
+       v-else
         />
     </div>
     </div>
 
   </div>
-
-  <!-- <div class="h-full flex justify-center">
-    <div class="w-full">
-      <span class="w-full">
-        <refferal-empty-state  />
-        <refferal-exisiting-state
-          :associations="associations"
-          @refresh="fetchAssociations"
-        />
-      </span>
-    </div>
-  </div> -->
 </template>
 
 <script lang="ts">
@@ -40,6 +29,9 @@ import { Options, Vue } from "vue-class-component";
 import { namespace } from "vuex-class";
 import RefferalEmptyState from "./emptyState.vue";
 import RefferalExisitingState from "./exisitingState.vue";
+import  ISpecialistrefferal  from "@/types/ISpecialistrefferal";
+
+const specialistrefferal = namespace("specialistrefferal");
 
 @Options({
   name: "specialistRefferalIndex",
@@ -49,28 +41,19 @@ import RefferalExisitingState from "./exisitingState.vue";
   },
 })
 export default class specialistRefferalIndex extends Vue {
-  get isEmpty() {
-    return !Boolean(this.associations.length);
+  get empty() {
+    return this.specialistrefferals.length < 1;
   }
 
-  associations: IPatientAssociation[] = [];
+  @specialistrefferal.State
+  specialistrefferals!: ISpecialistrefferal[];
 
-  async fetchAssociations() {
-    try {
-      const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/employer/associations"
-      );
-      this.associations = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error populating association data",
-        status: "error",
-      });
-    }
-  }
+  @specialistrefferal.Action
+  fetchSpecialistRefferal!: () => Promise<void>;
 
+ 
   created() {
-    if (this.isEmpty) this.fetchAssociations();
+    this.fetchSpecialistRefferal();
   }
 }
 </script>
