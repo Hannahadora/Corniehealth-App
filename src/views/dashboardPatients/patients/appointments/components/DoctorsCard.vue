@@ -26,7 +26,7 @@
           <div class="flex items-start">
             <img
               class="mr-2"
-              src="assets/book-appointment/icon-doctor-white.png"
+              src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
             />
             <div>
@@ -37,7 +37,7 @@
           <div class="flex items-start">
             <img
               class="mr-2"
-              src="assets/book-appointment/icon-doctor-white.png"
+              src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
             />
             <div>
@@ -46,11 +46,11 @@
           </div>
 
           <div class="flex items-start">
-            <!-- <img
+            <img
               class="mr-2"
               src="@/assets/book-appointment/icon-lang-white.png"
               alt=""
-            /> -->
+            />
             <div>
               <p class="mr-2">{{ practitioner.language }}</p>
             </div>
@@ -59,7 +59,7 @@
           <div class="flex items-start">
             <img
               class="mr-2"
-              src="assets/book-appointment/icon-fee-white.png"
+              src="@/assets/book-appointment/icon-fee-white.png"
               alt=""
             />
             <div>
@@ -92,6 +92,7 @@
       :practitioner="practitioner"
       :locations="practitioner.locations"
       v-model="showDoctorsprofile"
+      @close="showDoctorsprofile = false"
     />
 
     <appointment-modal

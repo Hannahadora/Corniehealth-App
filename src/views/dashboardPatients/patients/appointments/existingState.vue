@@ -8,25 +8,11 @@
         Book Appointment
       </button>
     </span>
-    <cornie-table :columns="rawHeaders" v-model="sortAppointments">
+    <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-          <newview-icon class="text-blue-300 fill-current" />
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="viewItem(item)">
+          <eye-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showAppointment(item.id)"
-        >
-          <newview-icon class="text-blue-300 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          @click="showStatus(item.id)"
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <update-icon class="text-danger fill-current" />
-          <span class="ml-3 text-xs"> Update Status </span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -37,28 +23,39 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="makeNotes(item.id)"
+          @click="rescheduleAppointment(item)"
         >
-          <note-icon class="text-green-600 fill-current" />
-          <span class="ml-3 text-xs">Make Notes</span>
+          <settings-blue class="text-blue-300 fill-current" />
+          <span class="ml-3 text-xs">Reschedule</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+          @click="confirmPayment(item)"
+        >
+          <check-green-bg class="text-green-600 fill-current" />
+          <span class="ml-3 text-xs">Confirm Payment</span>
+        </div>
+        <div
+          @click="showStatus(item.id)"
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <bill-payment class="text-danger fill-current" />
+          <span class="ml-3 text-xs">Pay Bill</span>
+        </div>
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="deleteItem(item)"
         >
           <cancel-icon />
           <span class="ml-3 text-xs">Cancel</span>
         </div>
       </template>
-      <!-- <template #Participants="{ item }">
-        <div class="flex items-center">
-          <span class="text-xs">{{ item.Participants }}</span>
-          <eye-icon
-            class="cursor-pointer ml-3"
-            @click="displayParticipants(item.id)"
-          />
+      <template #appointmentDateTime="{ item }">
+        <div class="">
+          <p class="text-sm">{{ formatDate(item.date) }}</p>
+          <p class="text-sm">{{ formatTime(item.startTime) }}</p>
         </div>
-      </template> -->
+      </template>
       <template #Participants="{ item }">
         <actors-section
           :items="item.Participants"
@@ -70,7 +67,7 @@
         <div class="flex items-center">
           <p
             class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'No-Show'"
+            v-if="item.status == 'No-Show' || item.status == 'Proposed'"
           >
             {{ item.status }}
           </p>
@@ -108,48 +105,33 @@
       </template>
     </cornie-table>
 
+    <cancel-appointment-modal
+      :id="appointmentId"
+      :appointment="selectedAppointment"
+      v-model="showCancelApppointment"
+      @appointmentCancelled="appointmentCancelled"
+    />
+
     <review-payment-modal
       :practitioner="selectedPractitioner"
+      :appointment="selectedAppointment"
       v-model="showPaymentModal"
       @close="showPaymentModal = false"
     />
-
-    <notes-add
-      :appointmentNotes="appointmentNotes"
-      :appointmentId="appointmentId"
-      @update:preferred="makeNotes"
-      v-model:visible="showNotes"
-    />
-    <all-participants
-      v-model="showPartcipants"
-      :appointmentId="appointmentId"
-    />
     <appointment-modal
       @appointment-added="appointmentAdded"
-      @show:modal="showAppointment"
       v-model="showAppointmentModal"
     />
-  
-    <status-modal
-      :id="appointmentId"
-      :updatedBy="updatedBy"
-      :currentStatus="currentStatus"
-      :dateUpdated="update"
-      @appointment-added="appointmentAdded"
-      v-model="showStatusModal"
+    <view-appointment-modal
+      @appointment-reschedule="rescheduleAppointment(selectedAppointment)"
+      v-model="showAppointmentDetail"
+      :appointment="selectedAppointment"
     />
-
-    <side-modal
-      :visible="showCheckin"
-      :header="'Check-In'"
-      :width="990"
-      @closesidemodal="() => (showCheckin = false)"
-    >
-      <checkin-component
-        :appointmentId="checkinAppointment"
-        @closesidemodal="() => (showCheckin = false)"
-      />
-    </side-modal>
+    <reschedule-appointment-modal
+      @appointment-rescheduled="appointmentRescheduled"
+      v-model="showRescheduleModal"
+      :appointment="selectedAppointment"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -176,26 +158,21 @@ import IconInput from "@/components/IconInput.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
 import TableOptions from "@/components/table-options.vue";
 import DeleteIcon from "@/components/icons/delete.vue";
-import EyeIcon from "@/components/icons/yelloweye.vue";
+import EyeIcon from "@/components/icons/eye-yellow.vue";
 import EditIcon from "@/components/icons/edit.vue";
-//import CloseIcon from "@/components/icons/CloseIcon.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import NoteIcon from "@/components/icons/notes.vue";
+import CancelIcon from "@/components/icons/cancel-red-bg.vue";
+import BillPayment from "@/components/icons/billpayment-blue.vue";
 import CheckinIcon from "@/components/icons/checkin.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
+import CheckGreenBg from "@/components/icons/check-green-bg.vue";
 import PlusIcon from "@/components/icons/plus.vue";
-import NewviewIcon from "@/components/icons/newview.vue";
+import SettingsBlue from "@/components/icons/settings-blue.vue";
 import MessageIcon from "@/components/icons/message.vue";
-import EHRVisits from "@/views/dashboard/ehr/visits/index.vue";
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
-import CheckinComponent from "@/views/dashboard/ehr/visits/components/patient-checkin.vue";
 
-// import AppointmentModal from "./appointmentDialog.vue";
-// import AllParticipants from "./allParticipants.vue";
-// import NotesAdd from "./notes.vue";
-// import StatusModal from "./status-update.vue";
-// import ActorsSection from "./actors.vue";
-
+import ViewAppointmentModal from "./components/ViewAppointmentModal.vue";
+import RescheduleAppointmentModal from "./components/RescheduleAppointment.vue";
+import AppointmentModal from "./components/AppointmentModal.vue";
+import CancelAppointmentModal from "./components/CancelAppointment.vue";
+import ReviewPaymentModal from "./components/ReviewPaymentModal.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -205,18 +182,14 @@ const patients = namespace("patients");
     CancelIcon,
     SortIcon,
     CheckinIcon,
-    NewviewIcon,
-    UpdateIcon,
-    // AppointmentModal,
-    NoteIcon,
-    // StatusModal,
+    SettingsBlue,
+    CheckGreenBg,
+    CancelAppointmentModal,
+    AppointmentModal,
+    BillPayment,
     ThreeDotIcon,
-    // NotesAdd,
     PlusIcon,
-    // ActorsSection,
     SearchIcon,
-    // AllParticipants,
-    //  CloseIcon,
     MessageIcon,
     PrintIcon,
     TableRefreshIcon,
@@ -230,46 +203,27 @@ const patients = namespace("patients");
     CornieTable,
     CardText,
     CornieDialog,
-    EHRVisits,
-    SideModal,
-    CheckinComponent,
+    ReviewPaymentModal,
+    ViewAppointmentModal,
+    RescheduleAppointmentModal
   },
 })
 export default class AppointmentExistingState extends Vue {
   showColumnFilter = false;
-  showModal = false;
+  showAppointmentModal = false;
   loading = false;
   query = "";
-  selected = 1;
-  showNotes = false;
   appointmentId = "";
-  showPartcipants = false;
-  singleParticipant = [];
-  showStatusModal = false;
-  updatedBy = "";
-  currentStatus = "";
-  update = "";
-  onePatientId = "";
-  onePractitionerId = "";
-  newslot: any;
-  appointmentNotes = [];
-  availableSlots = [];
-  create = "";
+  showPaymentModal = false;
+  selectedAppointment = "";
+  selectedPractitioner = "";
+  appointments: any = [];
+  showCancelApppointment = false;
+  showAppointmentDetail = false;
+  showRescheduleModal = false;
 
   @patients.State
   patients!: IPatient[];
-
-  // @Prop({ type: Array, default: [] })
-  //   appointments!: IAppointment[];
-
-  @appointment.State
-  patientappointments!: IAppointment[];
-
-  @appointment.Action
-  deleteAppointment!: (id: string) => Promise<boolean>;
-
-  @appointment.Action
-  fetchByIdAppointments!: (patientId: string) => Promise<void>;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -303,78 +257,104 @@ export default class AppointmentExistingState extends Vue {
     },
   ];
 
-  showCheckin = false;
-  checkinAppointment = "";
-  showCheckinPane(id: string) {
-    this.checkinAppointment = id;
-    this.showCheckin = true;
-  }
-
-  showAppointmentModal = false;
   async showAppointment(value: string) {
     this.showAppointmentModal = true;
     this.appointmentId = value;
   }
-  async showStatus(value: string) {
-    this.showStatusModal = true;
-    this.appointmentId = value;
+
+  deleteItem(item: any) {
+    this.selectedAppointment = item;
+    this.appointmentId = item.id;
+    this.showCancelApppointment = true;
   }
 
   appointmentAdded() {
-    this.fetchByIdAppointments(this.$route.params.id.toString());
+    this.fetchAppointments();
   }
+
+  appointmentCancelled() {
+    this.showCancelApppointment = false;
+    this.fetchAppointments();
+  }
+  appointmentRescheduled() {
+    this.showRescheduleModal = false;
+    this.fetchAppointments();
+  }
+
+  confirmPayment(item: any) {
+    this.selectedAppointment = item;
+    this.selectedPractitioner = item?.practitioner;
+    this.appointmentId = item.id;
+    this.showPaymentModal = true;
+  }
+
+  viewItem (item: any) {
+    this.showAppointmentDetail = true;
+    this.selectedAppointment = item
+  }
+  rescheduleAppointment (item: any) {
+    this.showRescheduleModal = true;
+    this.selectedAppointment = item
+  }
+
   get patientId() {
     return this.$route.params.id;
   }
 
-  get headers() {
-    const preferred =
-      this.preferredHeaders.length > 0
-        ? this.preferredHeaders
-        : this.rawHeaders;
-    const headers = preferred.filter((header) => header.show);
-    return [...first(4, headers), { title: "", value: "action", image: true }];
-  }
-
   get items() {
-    const filteritems = this.patientappointments.filter((c) => c !== null);
-    const patientappointments = filteritems.map((patientappointment: any) => {
-      (patientappointment as any).createdAt = new Date(
-        (patientappointment as any).createdAt
-      ).toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-
-      const pateintId = patientappointment.Patients.map((patient: any) => {
-        this.onePatientId = patient.patientId;
-      });
-      const practitionerId = patientappointment.Practitioners.map(
-        (Practitioner: any) => {
-          this.onePractitionerId = Practitioner.practitionerId;
-        }
-      );
-      this.updatedBy = this.getPatientName(this.onePatientId);
-      this.currentStatus = patientappointment.status;
-      this.update = (patientappointment as any).updatedAt = new Date(
-        (patientappointment as any).updatedAt
+    const appointments = this.appointments.map((appointment: any) => {
+      (appointment as any).createdAt = new Date(
+        (appointment as any).createdAt
       ).toLocaleDateString("en-US");
-      const patientNewId = this.onePatientId;
-
       return {
-        ...patientappointment,
-        action: patientappointment.id,
-        patient: this.getPatientName(this.onePatientId),
+        ...appointment,
+        action: appointment.id,
+        keydisplay: appointment.id,
+        requestDate: appointment.createdAt,
+        appointmentId: appointment.idn,
+        appointmentType: appointment.appointmentType,
+        specialty: appointment.serviceCategory,
+        participant: appointment.participants || "Nil",
+        appointmentDateTime: appointment.date,
+        status: appointment.status,
       };
     });
-    return patientappointments;
-  }
-  getPatientName(id: string) {
-    const pt = this.patients.find((i: any) => i.id === id);
-    return pt ? `${pt.firstname} ${pt.lastname}` : "";
+    if (!this.query) return appointments;
+    return search.searchObjectArray(appointments, this.query);
   }
 
+  async fetchAppointments() {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        "/api/v1/patient-portal/appointment/get-all-user-appointment"
+      );
+      this.appointments = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching appointments",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  formatDate(date: any) {
+    return new Date(date).toLocaleDateString("en-US");
+  }
+
+  formatTime(time: any) {
+    return time.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  }
+
+  async created() {
+    await this.fetchAppointments();
+  }
 }
 </script>
 <style scoped>

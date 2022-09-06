@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-10/12 h-full">
+  <cornie-dialog v-model="show" right class="xl:w-1/2 lg:w-10/12 w-full h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
@@ -22,42 +22,38 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable mt-1">
-        <div class="xl:w-2/3 w-full mx-auto">
-          <h2 class="xl:text-center text-left c-indigo mb-12">
-            Review Your Booking
-          </h2>
-
+        <div class="w-full">
           <table class="border w-full">
             <tr>
               <td>Appointment With</td>
-              <td>{{ selectedPractitioner.name }}</td>
+              <td>{{ practitionerName }}</td>
             </tr>
             <tr>
               <td>Date & Time</td>
               <td class="flex justify-between">
-                <span>{{ getSelectedDate }} | {{ getSelectedTime }}</span>
+                <span>{{ selectedDate }} | {{ selectedTime }}</span>
                 <div @click="showAppointmentModal = true">
-                  <copy-red class="cursor-pointer" />
+                  <edit class="cursor-pointer" />
                 </div>
               </td>
             </tr>
             <tr>
               <td>Consultation Fee</td>
-              <td>₦ {{ selectedPractitioner.ConsultationFeePerHour || 0 }}</td>
+              <td>₦ {{ practitioner.ConsultationFeePerHour || 0 }}</td>
             </tr>
             <tr>
               <td>Specialty</td>
-              <td>{{ selectedPractitioner.designation }}</td>
+              <td>{{ practitioner.designation }}</td>
             </tr>
             <tr>
               <td>Location</td>
-              <td>{{ selectedPractitioner.address }}</td>
+              <td>{{ practitioner.address }}</td>
             </tr>
             <tr>
               <td>Contact Info</td>
               <td>
-                {{ selectedPractitioner.phone }} |
-                {{ selectedPractitioner.email }}
+                {{ practitionerContact }} |
+                {{ practitioner.email }}
               </td>
             </tr>
             <tr>
@@ -74,7 +70,7 @@
               v-model="paymentAccountId"
               placeholder="Select a payment account type"
               :readonly="false"
-              :items="['nnn']"
+              :items="paymentAccounts"
               required
             >
             </cornie-select>
@@ -102,9 +98,7 @@
             <span class="text-right text-xs italic font-semibold">0/255</span>
           </div>
 
-          <div
-            class="w-full mx-auto mt-12 mb-72 flex items-center justify-center"
-          >
+          <div class="w-full mx-auto mt-12 flex items-center justify-end">
             <cornie-btn
               class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
               @click="$emit('close')"
@@ -113,7 +107,7 @@
             </cornie-btn>
             <cornie-btn
               class="xl:w-auto w-full bg-red-500 px-6 py-1 text-white rounded-xl"
-              @click="confirmBookingModal = true"
+              @click="submit"
               :loading="loading"
             >
               Next
@@ -124,18 +118,21 @@
     </cornie-card>
 
     <appointment-modal
-      :id="selectedPractitioner.id"
-      :practitioner="selectedPractitioner"
+      :id="practitioner.id"
+      :practitioner="practitioner"
       :practitionerLocations="locations"
       v-model="showAppointmentModal"
       @close="showAppointmentModal = false"
     />
 
-    <confirm-payment-modal
-      v-model="confirmBookingModal"
-      @close="confirmBookingModal = false"
-    />
-  </cornie-dialog>
+    <booking-confirmed
+        :id="practitioner.id"
+        :practitioner="practitioner"
+        :practitionerLocations="locations"
+        v-model="bookingConfirmed"
+        @close="$emit('confirmed')"
+      />
+    </cornie-dialog>
 </template>
 
 <script lang="ts">
@@ -158,7 +155,7 @@ import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CornieCheckbox from "@/components/custom-checkbox.vue";
 import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-import ConfirmPaymentModal from "./ConfirmPaymentModal.vue";
+
 import AppointmentModal from "./AppointmentModal.vue";
 
 const user = namespace("user");
@@ -184,38 +181,78 @@ function defaultFilter(item: any, query: string) {
     CornieCheckbox,
     ChevronRightIcon,
     ChevronLeftIcon,
-    ConfirmPaymentModal,
     AppointmentModal,
   },
 })
 export default class ReviewPaymentModal extends Vue {
   search: any = {};
   loading: Boolean = false;
-  confirmBookingModal: Boolean = false;
   show = false;
-  showAppointmentModal = false;
   locations = [];
-  paymentAccountId = "",
+  paymentAccounts: any = [];
+  bookingConfirmed = false;
 
   @Prop({ type: Object, default: {} })
-  selectedPractitioner!: any;
+  practitioner!: any;
 
-  async confirmPayment() {
-    // try {
-    //   const res = await this.$store.dispatch("practitioners/bookPractitioner", {
-    //     locationId: this.$route.query.locationId,
-    //     date: this.getSelectedDate,
-    //     startTime: this.getSelectedTime,
-    //     endTime: undefined,
-    //     billingType: "insurance",
-    //     practitionerId: this.selectedPractitioner.id,
-    //     patientId: this.userData.user.id,
-    //   });
-    //   if (res.status === true) {
-    //     alert("Booking confirmed!!");
-    //     this.$router.push("/");
-    //   }
-    // } catch (error: any) {}
+  @Prop({ type: Object, default: {} })
+  appointment!: any;
+
+  get selectedDate() {
+    return this.appointment.date;
+  }
+
+  get selectedTime() {
+    return this.appointment.startTime;
+  }
+
+  get practitionerName() {
+    return (
+      this.practitioner.name ||
+      this.practitioner.firstName + " " + this.practitioner.lastName
+    );
+  }
+
+  get practitionerContact() {
+    if (this.appointment) {
+      return (
+        this.practitioner?.phone?.dialCode +
+        " " +
+        this.practitioner?.phone?.number
+      );
+    } else return this.practitioner.phone;
+  }
+
+  get paymentAccountId() {
+    return undefined
+  }
+
+  async submit() {
+    const data = {
+      appointmentId: this.appointment.id,
+      paymentAccountId: this.paymentAccountId,
+    };
+    try {
+      this.loading = true;
+      await cornieClient().post(
+        "/api/v1/patient-portal/appointment/confirm",
+        {
+          ...data,
+        }
+      );
+      this.bookingConfirmed = true;;
+      window.notify({
+        msg: "Appointment has been confirmed",
+        status: "success",
+      });
+    } catch (error: any) {
+      window.notify({
+        msg: error.message,
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   created() {}
@@ -238,5 +275,26 @@ img {
 
 .text-grey-eth {
   color: #c2c7d6;
+}
+
+tr {
+  /* border-bottom: 1px solid rgb(95, 94, 94); */
+  line-break: normal;
+}
+td {
+  font-size: 16px;
+  padding: 16px;
+}
+tr:nth-child(even) {
+  background: #f0f4fe;
+}
+
+@media screen and (max-width: 768px) {
+  tr {
+    line-break: auto;
+  }
+  td {
+    font-size: 14px;
+  }
 }
 </style>

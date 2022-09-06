@@ -29,7 +29,7 @@
               <div class="flex items-center">
                 <img
                   class="mr-4 w-20 h-20 rounded-full"
-                  :src="practitioner.photo"
+                  :src="require(practitioner.photo)"
                   alt=""
                 />
                 <div
@@ -61,13 +61,11 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-doctor-white.png"
+                    src="@/assets/book-appointment/icon-doctor-white.png"
                     alt=""
                   />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Specialization</span
-                    >
+                    <span class="font-bold mb-2">Specialization</span>
                     <p class="text-grey-blue mr-2">
                       {{
                         practitioner &&
@@ -81,13 +79,11 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
                   />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Clinical Experience</span
-                    >
+                    <span class="font-bold mb-2">Clinical Experience</span>
                     <p class="text-grey-blue mr-2">
                       {{
                         practitioner && practitioner.clinicalExperienceInMonths
@@ -100,13 +96,11 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-fee-white.png"
+                    src="@/assets/book-appointment/icon-fee-white.png"
                     alt=""
                   />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Consultation Fee</span
-                    >
+                    <span class="font-bold mb-2">Consultation Fee</span>
                     <p>
                       <span class="text-grey-blue mr-2"><u></u></span> ₦
                       {{ practitioner && practitioner.consultationFeePerHour }}
@@ -117,14 +111,11 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
                   />
                   <div>
-                    <span
-                      class="font-bold capitalize mb-2"
-                      >Active Since</span
-                    >
+                    <span class="font-bold capitalize mb-2">Active Since</span>
                     <p
                       v-if="practitioner && practitioner.activeSince"
                       class="text-grey-blue mr-2"
@@ -151,15 +142,13 @@
 					</div> -->
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <!-- <img
+                  <img
                     class="mr-2"
                     src="@/assets/book-appointment/icon-phone-white.png"
                     alt=""
-                  /> -->
+                  />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Phone Number</span
-                    >
+                    <span class="font-bold mb-2">Phone Number</span>
                     <p class="text-grey-blue mr-2">
                       {{ practitioner && practitioner.phone }}
                     </p>
@@ -167,15 +156,13 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <!-- <img
+                  <img
                     class="mr-2"
                     src="@/assets/book-appointment/icon-mail-white.png"
                     alt=""
-                  /> -->
+                  />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Email</span
-                    >
+                    <span class="font-bold mb-2">Email</span>
                     <p class="text-grey-blue capitalize mr-2">
                       {{ practitioner && practitioner.email }}
                     </p>
@@ -185,13 +172,11 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-location-white.png"
+                    src="@/assets/book-appointment/icon-location-white.png"
                     alt=""
                   />
                   <div>
-                    <span class="font-bold mb-2"
-                      >Address</span
-                    >
+                    <span class="font-bold mb-2">Address</span>
                     <p class="text-grey-blue capitalize mr-2">
                       {{ practitioner && practitioner.address }}
                     </p>
@@ -231,13 +216,13 @@
         </div>
       </cornie-card-text>
     </cornie-card>
-    
+
     <appointment-modal
       :id="practitioner.id"
       :practitioner="practitioner"
       :practitionerLocations="locations"
       v-model="showAppointmentModal"
-      @close="showAppointmentModal= false"
+      @close="showAppointmentModal = false"
     />
   </cornie-dialog>
 </template>
@@ -257,9 +242,9 @@ import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 
 import BasicInfo from "./BasicInfo.vue";
-import Reviews from './Reviews.vue'
-import Insurance from './Insurance.vue'
-import AppointmentModal from './AppointmentModal.vue'
+import Reviews from "./Reviews.vue";
+import Insurance from "./Insurance.vue";
+import AppointmentModal from "./AppointmentModal.vue";
 
 // const user = namespace("user");
 
@@ -318,7 +303,7 @@ img {
 }
 
 .text-grey-blue {
-    color: #667499;
+  color: #667499;
 }
 .info-container {
   background: #ffffff;
@@ -326,7 +311,8 @@ img {
   box-sizing: border-box;
   box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
   border-radius: 16px;
-}.active-tab {
+}
+.active-tab {
   border-bottom: 4px solid #fe4d3c;
   font-weight: 600;
   color: #14171f;

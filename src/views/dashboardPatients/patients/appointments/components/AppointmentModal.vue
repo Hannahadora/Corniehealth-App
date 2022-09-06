@@ -135,6 +135,9 @@ export default class DoctorsPage extends Vue {
   @Prop({ type: Object, default: {} })
   practitioner!: any;
 
+  @Prop({ type: Boolean, default: false })
+  rescheduling!: boolean;
+
   @Watch("date")
   onInput() {
     this.selectedDate = this.date;
@@ -179,47 +182,52 @@ export default class DoctorsPage extends Vue {
     return new Date(date).toDateString();
   }
 
-  doubleDigit(s: any){
-    return s.length < 2 ? '0' + s : s
+  doubleDigit(s: any) {
+    return s.length < 2 ? "0" + s : s;
   }
 
   get startTime() {
-    const t = this.selectedTime.split('.')
-    return `${this.doubleDigit(t[0])}:${t[1]}`
+    const t = this.selectedTime.split(".");
+    return `${this.doubleDigit(t[0])}:${t[1]}`;
   }
   get endTime() {
-    const t = this.selectedTime.split('.')
-    const et = Number(t[0]) + 1
-    return `${this.doubleDigit(et)}:${t[1]}`
+    const t = this.selectedTime.split(".");
+    const et = Number(t[0]) + 1;
+    return `${this.doubleDigit(et)}:${t[1]}`;
   }
 
   async proceedToBook() {
-    const data = {
-      locationId: this.locationId,
-      date: this.selectedDate,
-      startTime: this.startTime,
-      endTime: this.endTime,
-      billingType: "insurance",
-      practitionerId: this.id,
-      patientId: this.userId,
-    };
-    try {
-      this.loading = true;
-      await cornieClient().post("/api/v1/patient-portal/appointment", {
-        ...data,
-      });
+    if (this.rescheduling) {
+      this.$emit("get-new-date", this.selectedDate, this.startTime);
       this.$emit("close");
-      window.notify({
-        msg: "Appointment has been booked, proceed to make payment",
-        status: "success",
-      });
-    } catch (error: any) {
-      window.notify({
-        msg: error.message,
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
+    } else {
+      const data = {
+        locationId: this.locationId,
+        date: this.selectedDate,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        billingType: "insurance",
+        practitionerId: this.id,
+        patientId: this.userId,
+      };
+      try {
+        this.loading = true;
+        await cornieClient().post("/api/v1/patient-portal/appointment", {
+          ...data,
+        });
+        this.$emit("close");
+        window.notify({
+          msg: "Appointment has been booked, proceed to make payment",
+          status: "success",
+        });
+      } catch (error: any) {
+        window.notify({
+          msg: error.message,
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
     }
   }
 
