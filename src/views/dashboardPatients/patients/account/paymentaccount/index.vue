@@ -2,35 +2,6 @@
   <div
     class="flex-col justify-center bg-white p-3 mt-2 mb-2 rounded w-full h-full overflow-auto"
   >
-    <!-- <cornie-card-text>
-      <div class="md:grid md:grid-cols-2 my-3 w-full">
-        <div
-          class="py-3 px-6"
-          v-for="(optionalItem, index) in optionalItems"
-          :key="index"
-        >
-          <cornie-card
-            height="150px"
-            @click="optionalItem.click"
-            class="cursor-pointer hover:bg-gray-50"
-          >
-            <cornie-card-text class="h-full">
-              <div class="flex h-full items-center">
-                <component :is="optionalItem.icon" class="mx-4" />
-                <div>
-                  <p class="font-extrabold text-lg text-primary">
-                    {{ optionalItem.name }}
-                  </p>
-                  <p class="text-xs text-gray-500">
-                    {{ optionalItem.number }} Added
-                  </p>
-                </div>
-              </div>
-            </cornie-card-text>
-          </cornie-card>
-        </div>
-      </div>
-    </cornie-card-text> -->
     <div class="w-full">
       <empty-state
         v-if="allPatientAccount.length <= 0"

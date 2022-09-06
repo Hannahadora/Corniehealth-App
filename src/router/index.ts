@@ -330,9 +330,19 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "appointments",
         name: "Appointments",
-        component: () => import("@/views/dashboardPatients/patients/account/appointments/index.vue"),
+        component: () => import("@/views/dashboardPatients/patients/appointments/index.vue"),
       },
       {
+        path: "medications",
+        name: "Medications",
+        component: () => import("@/views/dashboardPatients/patients/medications/index.vue"),
+      },
+      {
+        path: "health",
+        name: "Health Records",
+        component: () => import("@/views/dashboardPatients/patients/account/health-records/index.vue"),
+      },
+      {        
         path: "specialist-refferal",
         name: "Specialist Referrals",
         component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
@@ -360,3 +370,4 @@ const router = createRouter({
   },
 });
 export default router;
+ 
