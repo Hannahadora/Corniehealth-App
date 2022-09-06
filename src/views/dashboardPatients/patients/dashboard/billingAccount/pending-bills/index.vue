@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div v-if="pendingBills.length == 0">
+    <empty-state />
+  </div>
+  <div v-else>
     <div class="flex w-full py-10 space-x-12">
       <div class="flex-1 rounded-2xl px-10 py-5 shadow-lg">
         <div class="flex">
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Bill Count</div>
-              <div class="font-bold text-xl">{{ paidBills.length }}</div>
+              <div class="font-bold text-xl">{{ pendingBills.length }}</div>
             </div>
           </div>
           <div class="flex-none">
@@ -56,17 +59,19 @@
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import { cornieClient } from "@/plugins/http";
-  import paidBills from "@/types/IPaidBills";
+  import pendingBills from "@/types/IPendingBills";
   import { Options, Vue } from "vue-class-component";
+  import EmptyState from "../empty-state.vue";
 
   @Options({
     name: "Pending Bills",
     components: {
       CornieTable,
+      EmptyState,
       // transactionFilterDialog,
     },
   })
-  export default class PaidBills extends Vue {
+  export default class PendingBills extends Vue {
     headers = [
       {
         title: "Bill date",
@@ -76,13 +81,19 @@
       },
       {
         title: "Bill id",
-        key: "id",
+        key: "idn",
         show: true,
         noOrder: true,
       },
       {
         title: "Biller",
         key: "biller",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "Practitioner",
+        key: "practitioner",
         show: true,
         noOrder: true,
       },
@@ -105,18 +116,6 @@
         noOrder: true,
       },
       {
-        title: "Bank",
-        key: "bank",
-        show: true,
-        noOrder: true,
-      },
-      {
-        title: "Payment Date",
-        key: "paymentDate",
-        show: false,
-        noOrder: true,
-      },
-      {
         title: "status",
         key: "status",
         show: true,
@@ -124,12 +123,11 @@
       },
     ];
 
-    paidBills = [] as paidBills[];
+    pendingBills = [] as pendingBills[];
 
     printRecorded(date: Date) {
       return new Date(date).toLocaleDateString();
     }
-
     get items() {
       // return new Array(6).fill({
       //   date: new Date().toLocaleDateString(),
@@ -139,23 +137,19 @@
       //   account: "3209320932",
       //   payor: "James Daniel",
       //   total: "₦ 40,000",
-      //   bank: "GTB",
-      //   paymentDate: "18/07/2022",
       //   status: "Pending",
       // });
-      return this.paidBills.length == 0
-        ? this.paidBills
-        : this.paidBills.map((x) => {
+      return this.pendingBills.length == 0
+        ? this.pendingBills
+        : this.pendingBills.map((x) => {
             return {
               date: this.printRecorded(x.createdAt),
-              id: x.idn,
-              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
-              patient: x.subject,
-              account: "XXXXXX",
-              payor: x.subject,
+              //@ts-ignore
+              idn: x.idn,
               total: `₦ ${x.total}`,
-              bank: "XXXXXX",
-              paymentDate: this.printRecorded(x.paidAt),
+              biller: x.createdBy.firstName + " " + x.createdBy.lastName,
+              account: "XXXXX",
+              payor: x.subject,
               status: x.status,
             };
           });
@@ -165,17 +159,17 @@
       return this.$route.params.id;
     }
 
-    async fetchPaidBills() {
+    async fetchPendingBills() {
       const pending = cornieClient().get(
-        `/api/v1/billing-profile/patient/${this.patientId}/paid-bills`
+        `/api/v1/patient-portal/billing/pending-bills`
       );
       const response = await Promise.all([pending]);
-      console.log("paid bills", response[0].data);
-      this.paidBills = response[0].data;
+      console.log("pending bills", response[0].data);
+      this.pendingBills = response[0].data;
     }
 
     async mounted() {
-      await this.fetchPaidBills();
+      await this.fetchPendingBills();
     }
   }
 </script>

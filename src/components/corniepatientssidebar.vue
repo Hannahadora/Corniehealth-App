@@ -1,7 +1,6 @@
 <template>
-<div @mouseover="hovered = true" @mouseleave="hovered = false">
-    <div
-        class="hidden md:flex flex-col py-4 px-1  items-center min-h-screen h-screen bg-white fixed justify-center"
+  <div @mouseover="hovered = true" @mouseleave="hovered = false">
+      <div class="hidden md:flex flex-col py-4 px-1  items-center min-h-screen h-screen bg-white fixed justify-center"
         :class="[hovered ? 'w-auto' : 'w-auto']"
         >
         <div
@@ -29,20 +28,18 @@
             </keep-alive>
             </sidebar-link>
         </div>
-        <sidebar-link
-            to="support"
-            :hovered="hovered"
-            text="Referrals"
-            class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
-        >
-            <reffer-icon class="text-primary fill-current" />
-        </sidebar-link>
+      <sidebar-link
+        to="support"
+        :hovered="hovered"
+        text="Referrals"
+        class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+      >
+        <reffer-icon class="text-primary fill-current" />
+      </sidebar-link>
     </div>
-</div>
+  </div>
 </template>
 <script lang="ts">
-  import { Prop, PropSync, Watch } from "vue-property-decorator";
-  import { getPracticeNav } from "@/features/navigation";
   import { AccountMeta } from "@/types/user";
   import { Options, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
@@ -51,8 +48,8 @@
   import ChartIcon from "./icons/chart.vue";
   import ClinicIcon from "./icons/clinic.vue";
   import ClipBoardIcon from "./icons/clipboard.vue";
-  import DashboardIcon from "./icons/home.vue";
   import DebitCardIcon from "./icons/debitcard.vue";
+  import DashboardIcon from "./icons/home.vue";
   import MedalIcon from "./icons/medal.vue";
   import PatientIcon from "./icons/PatientIcon.vue";
   import PillIcon from "./icons/pill.vue";
@@ -61,17 +58,15 @@
   import ScheduleIcon from "./icons/schedule.vue";
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
- 
- import CalendarIcon from "./icons/calendar.vue";
- import SpecialistIcon from "./icons/specialist.vue";
- import VisitIcon from "./icons/visits.vue";
- import HealthIcon from "./icons/healthrecord.vue";
- import LabIcon from "./icons/labs.vue";
- import MedicationIcon from "./icons/medication.vue";
- import BillIcon from "./icons/billpayment.vue";
- import MessageIcon from "./icons/messagechat.vue";
- import RefferIcon from "./icons/reffer.vue";
-
+  import CalendarIcon from "./icons/appointment.vue";
+  import BillIcon from "./icons/billpayment.vue";
+  import HealthIcon from "./icons/healthrecord.vue";
+  import LabIcon from "./icons/labs.vue";
+  import MedicationIcon from "./icons/medication.vue";
+  import MessageIcon from "./icons/messagechat.vue";
+  import RefferIcon from "./icons/reffer.vue";
+  import SpecialistIcon from "./icons/specialist.vue";
+  import VisitIcon from "./icons/visits.vue";
 
   import SidebarLink from "./sidebarlinkpatient.vue";
 
@@ -111,7 +106,7 @@
       MedicationIcon,
       BillIcon,
       MessageIcon,
-      RefferIcon
+      RefferIcon,
     },
   })
   export default class CorniPatinetDashboardeSideBar extends Vue {
@@ -124,20 +119,19 @@
     // links!: ISidebarLink[];
 
     get links() {
-        let links: ISidebarLink[];
-        if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
-        links = this.patientLinks;
-        //links = getPracticeNav(this.accountMeta.practiceType);
-        const accType = 'patient';
-        return links.map((link) => {
-          return {
-            ...link,
-            to: `/dashboard/${accType}/${link.to}/`,
-          };
-        });
+      let links: ISidebarLink[];
+      if (!this.accountMeta.practiceType) links = [] as ISidebarLink[];
+      links = this.patientLinks;
+      //links = getPracticeNav(this.accountMeta.practiceType);
+      const accType = "patient";
+      return links.map((link) => {
+        return {
+          ...link,
+          to: `/dashboard/${accType}/${link.to}/`,
+        };
+      });
     }
 
-  
     patientLinks: ISidebarLink[] = [
       {
         name: "Home",
@@ -184,7 +178,7 @@
 
       {
         name: "Bills & Payments",
-        to: "bills",
+        to: "bills-account",
         icon: "bill-icon",
         hasSubsection: false,
       },
@@ -194,7 +188,7 @@
         icon: "message-icon",
         hasSubsection: false,
       },
-        {
+      {
         name: "Others",
         to: "others",
         hasSubsection: true,
@@ -208,18 +202,17 @@
           {
             name: "One-Time Access",
             to: "/dashboard/provider/settings/virtual-lab-orders",
-              icon: "onetime-icon",
+            icon: "onetime-icon",
             hasSubsection: false,
           },
           {
             name: "Health Insurance",
             to: "/dashboard/provider/settings/observations",
-             icon: "health-icon",
+            icon: "health-icon",
             hasSubsection: false,
           },
         ],
       },
-    
     ];
 
     get accType() {
