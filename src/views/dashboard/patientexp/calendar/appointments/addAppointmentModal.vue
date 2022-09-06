@@ -381,7 +381,7 @@
                             /> -->
                 <billing-account-component
                   v-model="billingAccountId"
-                  :id="singlePatientId"
+                  :patientId="Patients"
                 />
               </div>
 
@@ -480,7 +480,6 @@
   import TimePicker from "@/components/Timepicker.vue";
   import { cornieClient } from "@/plugins/http";
   import IAppointment from "@/types/IAppointment";
-import IDevice from "@/types/IDevice";
   import ILocation from "@/types/ILocation";
   import Period from "@/types/IPeriod";
   import IPractitioner from "@/types/IPractitioner";
@@ -822,6 +821,7 @@ import IDevice from "@/types/IDevice";
       await this.fetchPractitioners();
       if (this.appoimtentId && this.Practitioners.length != 1)
         await this.getAppointment();
+      console.log("patientid", this.singlePatientId);
     }
   }
 </script>

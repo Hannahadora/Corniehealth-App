@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div v-if="paidBills.length == 0">
+    <empty-state />
+  </div>
+  <div v-else>
     <div class="flex w-full py-10 space-x-12">
       <div class="flex-1 rounded-2xl px-10 py-5 shadow-lg">
         <div class="flex">
           <div class="flex-1">
             <div class="flex flex-col">
-              <div class="text-gray-400">Bill Count</div>
+              <div class="text-gray-400">Claims Count</div>
               <div class="font-bold text-xl">{{ paidBills.length }}</div>
             </div>
           </div>
@@ -18,7 +21,7 @@
         <div class="flex">
           <div class="flex-1">
             <div class="flex flex-col">
-              <div class="text-gray-400">Total Bills Value</div>
+              <div class="text-gray-400">Total Claims Value</div>
               <div class="font-bold text-xl">₦ 0</div>
             </div>
           </div>
@@ -58,15 +61,17 @@
   import { cornieClient } from "@/plugins/http";
   import paidBills from "@/types/IPaidBills";
   import { Options, Vue } from "vue-class-component";
+  import EmptyState from "../empty-state.vue";
 
   @Options({
     name: "Pending Bills",
     components: {
       CornieTable,
+      EmptyState,
       // transactionFilterDialog,
     },
   })
-  export default class PaidBills extends Vue {
+  export default class ClaimsBills extends Vue {
     headers = [
       {
         title: "Bill date",
@@ -75,7 +80,7 @@
         noOrder: true,
       },
       {
-        title: "Bill id",
+        title: "Claim id",
         key: "id",
         show: true,
         noOrder: true,
@@ -83,6 +88,12 @@
       {
         title: "Biller",
         key: "biller",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "Practitioner",
+        key: "practitioner",
         show: true,
         noOrder: true,
       },
@@ -102,18 +113,6 @@
         title: "Total amount",
         key: "total",
         show: true,
-        noOrder: true,
-      },
-      {
-        title: "Bank",
-        key: "bank",
-        show: true,
-        noOrder: true,
-      },
-      {
-        title: "Payment Date",
-        key: "paymentDate",
-        show: false,
         noOrder: true,
       },
       {
@@ -167,7 +166,7 @@
 
     async fetchPaidBills() {
       const pending = cornieClient().get(
-        `/api/v1/billing-profile/patient/${this.patientId}/paid-bills`
+        `/api/v1/patient-portal/billing/claims`
       );
       const response = await Promise.all([pending]);
       console.log("paid bills", response[0].data);

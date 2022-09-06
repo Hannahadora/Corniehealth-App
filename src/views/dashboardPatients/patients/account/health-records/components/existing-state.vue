@@ -15,7 +15,7 @@
           @click="newPaymentAccount"
           class="bg-danger rounded-xl text-white mt-5 py-4 px-8 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
-          Add New Account
+          Add/Invite a Provider
         </button>
       </div>
       <cornie-table :columns="headers" v-model="items">
@@ -70,38 +70,96 @@
           </span>
         </template>
         <template #actions="{ item }">
-          <!-- <div
-            @click="viewPayment(item)"
+          <div
+            @click="viewChart(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <new-view-icon class="text-yellow-500 fill-current" />
-            <span class="ml-3 text-xs">View</span>
-          </div> -->
+            <new-view-icon class="text-red-500 fill-current" />
+            <span class="ml-3 text-xs">View Chart</span>
+          </div>
+          <div
+            @click="showProviderProfile = true"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <new-view-icon class="text-primary-500 fill-current" />
+            <span class="ml-3 text-xs">View Profile</span>
+          </div>
+          <div
+            @click="acceptP(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <check-icon class="text-blue-500 fill-current" />
+            <span class="ml-3 text-xs">Accept</span>
+          </div>
 
-          <!-- <div
-            v-if="item.paymentType !== 'Card'"
-            @click="editAccount(item)"
+          <div
+            @click="declineP(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <edit-icon class="text-primary fill-current" />
-            <span class="ml-3 text-xs"> Edit </span>
-          </div> -->
-          <!-- <div
-            @click="deleteAccount(item.id)"
+            <decline class="text-yellow-500 fill-current" />
+            <span class="ml-3 text-xs">Decline</span>
+          </div>
+
+          <div
+            @click="viewProfile(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
-            <delete-icon class="text-danger fill-current cursor-pointer" />
-            <span class="ml-3 text-xs">Delete</span>
-          </div> -->
+            <!-- <decline class="text-yellow-500 fill-current" /> -->
+            <group-icon class="text-yellow-500 fill-current" />
+
+            <span class="ml-3 text-xs">Care Team</span>
+          </div>
+
+          <div
+            @click="viewProfile(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <!-- <decline class="text-yellow-500 fill-current" /> -->
+            <group-icon class="text-yellow-500 fill-current" />
+
+            <span class="ml-3 text-xs">Manage Permission</span>
+          </div>
+
+          <div
+            @click="viewProfile(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <!-- <decline class="text-yellow-500 fill-current" /> -->
+            <group-icon class="text-yellow-500 fill-current" />
+
+            <span class="ml-3 text-xs">Book Appointment</span>
+          </div>
+          <div
+            @click="revokeP(item.id)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <!-- <decline class="text-yellow-500 fill-current" /> -->
+            <group-icon class="text-yellow-500 fill-current" />
+
+            <span class="ml-3 text-xs">Revoke Access</span>
+          </div>
+          <div
+            @click="viewProfile(item)"
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          >
+            <!-- <decline class="text-yellow-500 fill-current" /> -->
+            <group-icon class="text-yellow-500 fill-current" />
+
+            <span class="ml-3 text-xs">Merge</span>
+          </div>
         </template>
       </cornie-table>
     </div>
+    <provider-profile v-model="showProviderProfile" />
   </div>
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import DeleteIcon from "@/components/icons/cancel.vue";
+  import CheckIcon from "@/components/icons/check-green-bg.vue";
+  import Decline from "@/components/icons/decline.vue";
   import EditIcon from "@/components/icons/edit.vue";
+  import GroupIcon from "@/components/icons/groupform.vue";
   import HistoryIcon from "@/components/icons/history.vue";
   import UpdateIcon from "@/components/icons/newupdate.vue";
   import NewViewIcon from "@/components/icons/newview.vue";
@@ -110,6 +168,7 @@
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
   import { namespace } from "vuex-class";
+  import ProviderProfile from "./provider-profile.vue";
 
   const encounter = namespace("encounter");
 
@@ -129,6 +188,10 @@
       PlusIcon,
       HistoryIcon,
       DeleteIcon,
+      Decline,
+      CheckIcon,
+      GroupIcon,
+      ProviderProfile,
     },
     emits: ["newpaymentaccount", "reloadPayment"],
   })
@@ -136,6 +199,7 @@
     @Prop()
     healthRecords!: any[];
 
+    showProviderProfile = false;
     headers = [
       {
         title: "Record ID",
@@ -206,6 +270,73 @@
 
     printDate(date: string) {
       return new Date(date).toLocaleDateString();
+    }
+    async acceptP(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "Confirm you want to accept this registration",
+        title: "Accept",
+      });
+      if (!confirmed) return;
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/provider-permission/accept/${id}`,
+          {}
+        );
+        window.notify({
+          msg: "Permission granted",
+          status: "success",
+        });
+      } catch (error) {
+        window.notify({
+          msg: "Error Accepting Permission",
+          status: "error",
+        });
+      }
+    }
+    async declineP(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "Confirm you want to decline this registration",
+        title: "Decline",
+      });
+      if (!confirmed) return;
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/provider-permission/decline/${id}`,
+          {}
+        );
+        window.notify({
+          msg: "Permission Declined",
+          status: "success",
+        });
+      } catch (error) {
+        window.notify({
+          msg: "Error Declining Permission",
+          status: "error",
+        });
+      }
+    }
+
+    async revokeP(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "Confirm you want to Revoke this registration",
+        title: "Revoke Access",
+      });
+      if (!confirmed) return;
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/provider-permission/revoke/${id}`,
+          {}
+        );
+        window.notify({
+          msg: "Permission Revoked",
+          status: "success",
+        });
+      } catch (error) {
+        window.notify({
+          msg: "Error Revoking Permission",
+          status: "error",
+        });
+      }
     }
     async deleteAccount(id: string) {
       try {
