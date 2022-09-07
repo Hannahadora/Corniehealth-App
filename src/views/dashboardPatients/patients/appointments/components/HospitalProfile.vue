@@ -27,7 +27,7 @@
               src="@/assets/book-appointment/icon-date-white.png"
               alt=""
             />
-            <span class="">Active Since{{ formatDate(hospital && hospital.activeSince) }}</span>
+            <span class="">Active Since; {{ formatDate(hospital && hospital.activeSince) }}</span>
           </div>
           <div class="lg:mb-2 mb-4 flex items-center">
             <img

@@ -8,7 +8,9 @@
           :placeholder="specialtyPlaceholder"
           :items="specialties"
           :active="specialtyActive"
-          @query="findSpecialtys"
+          @query="findSpecialtys"  
+          item-label-prop="name"
+          item-value-prop="id"
         />
         <multiselectsearch
           v-model="search.location"

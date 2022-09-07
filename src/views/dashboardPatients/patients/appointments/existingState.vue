@@ -10,7 +10,10 @@
     </span>
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="viewItem(item)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="viewItem(item)"
+        >
           <eye-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
@@ -36,7 +39,7 @@
           <span class="ml-3 text-xs">Confirm Payment</span>
         </div>
         <div
-          @click="showStatus(item.id)"
+          @click="payBill(item)"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <bill-payment class="text-danger fill-current" />
@@ -132,6 +135,15 @@
       v-model="showRescheduleModal"
       :appointment="selectedAppointment"
     />
+    <pay-bill-modal
+      @bill-payed="billPayed"
+      v-model="showPayBill"
+      :appointment="selectedAppointment"
+      @viewAppointment="
+        showPayBill = false;
+        showAppointmentDetail = true;
+      "
+    />
   </div>
 </template>
 <script lang="ts">
@@ -173,6 +185,7 @@ import RescheduleAppointmentModal from "./components/RescheduleAppointment.vue";
 import AppointmentModal from "./components/AppointmentModal.vue";
 import CancelAppointmentModal from "./components/CancelAppointment.vue";
 import ReviewPaymentModal from "./components/ReviewPaymentModal.vue";
+import PayBillModal from "./components/PayBill.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -205,7 +218,8 @@ const patients = namespace("patients");
     CornieDialog,
     ReviewPaymentModal,
     ViewAppointmentModal,
-    RescheduleAppointmentModal
+    RescheduleAppointmentModal,
+    PayBillModal,
   },
 })
 export default class AppointmentExistingState extends Vue {
@@ -221,6 +235,7 @@ export default class AppointmentExistingState extends Vue {
   showCancelApppointment = false;
   showAppointmentDetail = false;
   showRescheduleModal = false;
+  showPayBill = false;
 
   @patients.State
   patients!: IPatient[];
@@ -280,6 +295,10 @@ export default class AppointmentExistingState extends Vue {
     this.showRescheduleModal = false;
     this.fetchAppointments();
   }
+  billPayed() {
+    this.showPayBill = false;
+    this.fetchAppointments();
+  }
 
   confirmPayment(item: any) {
     this.selectedAppointment = item;
@@ -288,13 +307,17 @@ export default class AppointmentExistingState extends Vue {
     this.showPaymentModal = true;
   }
 
-  viewItem (item: any) {
+  viewItem(item: any) {
     this.showAppointmentDetail = true;
-    this.selectedAppointment = item
+    this.selectedAppointment = item;
   }
-  rescheduleAppointment (item: any) {
+  rescheduleAppointment(item: any) {
     this.showRescheduleModal = true;
-    this.selectedAppointment = item
+    this.selectedAppointment = item;
+  }
+  payBill(item: any) {
+    this.showPayBill = true;
+    this.selectedAppointment = item;
   }
 
   get patientId() {
