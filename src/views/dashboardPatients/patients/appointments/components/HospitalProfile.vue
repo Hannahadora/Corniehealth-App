@@ -4,7 +4,7 @@
       <div class="flex items-start mb-8">
         <img
           class="mr-4 hospital-icon"
-          src="@/assets/book-appointment/unsplash_gkZ-k3xf25w.png"
+          src="@/assets/img/book-appointment/unsplash_gkZ-k3xf25w.png"
           alt=""
         />
         <div class="w-3/5">
@@ -12,7 +12,7 @@
             <span class="font-bold text-lg mr-2">{{
               hospital && hospital.name
             }}</span>
-            <img src="@/assets/book-appointment/ratings.png" alt="" />
+            <img src="@/assets/img/book-appointment/ratings.png" alt="" />
           </div>
           <div class="mb-2">
             {{ hospital && hospital.website }} |
@@ -24,7 +24,7 @@
           <div class="lg:mb-2 mb-4 flex items-start">
             <img
               class="mr-3"
-              src="@/assets/book-appointment/icon-date-white.png"
+              src="@/assets/img/book-appointment/icon-date-white.png"
               alt=""
             />
             <span class="">Active Since; {{ formatDate(hospital && hospital.activeSince) }}</span>
@@ -32,7 +32,7 @@
           <div class="lg:mb-2 mb-4 flex items-center">
             <img
               class="mr-3"
-              src="@/assets/book-appointment/icon-sethos-grey.png"
+              src="@/assets/img/book-appointment/icon-sethos-grey.png"
               alt=""
             />
             <span class="">{{ hospital && hospital.practitionerCount }}</span>
@@ -40,7 +40,7 @@
           <div class="lg:mb-2 mb-4 flex items-center">
             <img
               class="mr-3"
-              src="@/assets/book-appointment/icon-patients-grey.png"
+              src="@/assets/img/book-appointment/icon-patients-grey.png"
               alt=""
             />
             <span class="">{{ hospital && hospital.patientCount }}</span>
@@ -51,7 +51,7 @@
       <div class="mb-8 flex items-start col-span-2">
         <img
           class="mr-3"
-          src="@/assets/book-appointment/icon-doctor-grey.png"
+          src="@/assets/img/book-appointment/icon-doctor-grey.png"
           alt=""
         />
         <div class="">

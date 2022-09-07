@@ -31,7 +31,7 @@
           >
             <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-doctor-black.png"
+              src="@/assets/img/book-appointment/icon-doctor-black.png"
               alt=""
             />
             <span class="text-lg text-grey-eth font-bold">Doctors</span>
@@ -43,7 +43,7 @@
           >
             <img
             class="mr-2"
-            src="@/assets/book-appointment/icon-hospital-black.png"
+            src="@/assets/img/book-appointment/icon-hospital-black.png"
             alt=""
           />
             <span class="text-lg text-grey-eth font-bold">Hospital/Clinic</span>

@@ -119,7 +119,7 @@
       :practitioner="selectedPractitioner"
       :appointment="selectedAppointment"
       v-model="showPaymentModal"
-      @close="showPaymentModal = false"
+      @close="appointmentConfirmed"
     />
     <appointment-modal
       @appointment-added="appointmentAdded"
@@ -289,6 +289,10 @@ export default class AppointmentExistingState extends Vue {
 
   appointmentCancelled() {
     this.showCancelApppointment = false;
+    this.fetchAppointments();
+  }
+  appointmentConfirmed() {
+    this.showPaymentModal = false;
     this.fetchAppointments();
   }
   appointmentRescheduled() {
