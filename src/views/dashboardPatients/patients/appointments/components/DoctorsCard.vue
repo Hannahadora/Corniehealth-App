@@ -24,44 +24,44 @@
 
         <div class="mt-6 grid grid-cols-1 gap-3">
           <div class="flex items-start">
-            <img
+            <!-- <img
               class="mr-2"
               src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
-            />
+            /> -->
             <div>
               <p class="mr-2">{{ practitioner.specialty }}</p>
             </div>
           </div>
 
           <div class="flex items-start">
-            <img
+            <!-- <img
               class="mr-2"
               src="@/assets/book-appointment/icon-doctor-white.png"
               alt=""
-            />
+            /> -->
             <div>
               <p class="mr-2">Visit Type - {{ practitioner.visitType }}</p>
             </div>
           </div>
 
           <div class="flex items-start">
-            <img
+            <!-- <img
               class="mr-2"
               src="@/assets/book-appointment/icon-lang-white.png"
               alt=""
-            />
+            /> -->
             <div>
               <p class="mr-2">{{ practitioner.language }}</p>
             </div>
           </div>
 
           <div class="flex items-start">
-            <img
+            <!-- <img
               class="mr-2"
               src="@/assets/book-appointment/icon-fee-white.png"
               alt=""
-            />
+            /> -->
             <div>
               <p class="mr-2">
                 Consultation Fee - {{ practitioner.consultationRate }}
@@ -106,34 +106,31 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import search from "@/plugins/search";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
 
-import CornieBtn from "@/components/CornieBtn.vue";
-import DoctorsProfileModal from "./DoctorsProfileModal.vue";
-import AppointmentModal from "./AppointmentModal.vue";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import AppointmentModal from "./AppointmentModal.vue";
+  import DoctorsProfileModal from "./DoctorsProfileModal.vue";
 
-@Options({
-  name: "ReviewsInfo",
-  components: { CornieBtn, DoctorsProfileModal, AppointmentModal },
-})
-export default class DoctorsCard extends Vue {
-  @Prop({ type: Object, default: {} })
-  practitioner!: any;
-  showDoctorsprofile = false;
-  showAppointmentModal = false;
-}
+  @Options({
+    name: "ReviewsInfo",
+    components: { CornieBtn, DoctorsProfileModal, AppointmentModal },
+  })
+  export default class DoctorsCard extends Vue {
+    @Prop({ type: Object, default: {} })
+    practitioner!: any;
+    showDoctorsprofile = false;
+    showAppointmentModal = false;
+  }
 </script>
 
 <style scoped>
-.info-container {
-  background: #ffffff;
-  border: 0.2px solid #c2c7d6;
-  box-sizing: border-box;
-  box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
-  border-radius: 16px;
-}
+  .info-container {
+    background: #ffffff;
+    border: 0.2px solid #c2c7d6;
+    box-sizing: border-box;
+    box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
+    border-radius: 16px;
+  }
 </style>
