@@ -58,15 +58,17 @@
   import ScheduleIcon from "./icons/schedule.vue";
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
-  import CalendarIcon from "./icons/appointment.vue";
-  import BillIcon from "./icons/billpayment.vue";
-  import HealthIcon from "./icons/healthrecord.vue";
-  import LabIcon from "./icons/labs.vue";
-  import MedicationIcon from "./icons/medication.vue";
-  import MessageIcon from "./icons/messagechat.vue";
-  import RefferIcon from "./icons/reffer.vue";
-  import SpecialistIcon from "./icons/specialist.vue";
-  import VisitIcon from "./icons/visits.vue";
+ 
+ import CalendarIcon from "./icons/calendar2.vue";
+ import SpecialistIcon from "./icons/specialist.vue";
+ import VisitIcon from "./icons/visits.vue";
+ import HealthIcon from "./icons/healthrecord.vue";
+ import LabIcon from "./icons/labs.vue";
+ import MedicationIcon from "./icons/medication.vue";
+ import BillIcon from "./icons/billpayment.vue";
+ import MessageIcon from "./icons/messagechat.vue";
+ import RefferIcon from "./icons/reffer.vue";
+
 
   import SidebarLink from "./sidebarlinkpatient.vue";
 
@@ -200,9 +202,9 @@
             hasSubsection: false,
           },
           {
-            name: "One-Time Access",
-            to: "/dashboard/provider/settings/virtual-lab-orders",
-            icon: "onetime-icon",
+            name: "One Time Access",
+            to: "one-time-access",
+              icon: "onetime-icon",
             hasSubsection: false,
           },
           {

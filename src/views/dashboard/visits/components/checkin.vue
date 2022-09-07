@@ -164,14 +164,13 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            v-if="BillStatus.length > 0"
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Submit
           </cornie-btn>
-          <split-button v-else :showup="true">
+          <!-- <split-button v-else :showup="true">
             <template #main>
               <span>Check-In</span>
             </template>
@@ -192,7 +191,7 @@
                 <span class="ml-3 text-xs">Check-In</span>
               </div>
             </template>
-          </split-button>
+          </split-button> -->
         </div>
       </cornie-card-text>
 

@@ -255,7 +255,7 @@ const userStore = namespace("user");
 
 
 @Options({
-  name: "printSection",
+  name: "viewReferal",
   components: {
     ...CornieCard,
     AccordionComponent,
@@ -279,7 +279,7 @@ const userStore = namespace("user");
     CornieTable
   },
 })
-export default class printSection extends Vue {
+export default class viewReferal extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 

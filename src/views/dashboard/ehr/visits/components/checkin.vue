@@ -20,7 +20,7 @@
         <v-form ref="form">
             <div v-if="appoitmentData.length > 0">
               <div class="w-full border-b-2 border-gray-200 pb-5 flex space-x-7 mt-4" v-for="(item, i) in appoitmentData" :key="i">     
-                  <div class="w-full flex space-x-4 mb-3" v-for="(value,index) in item.Patients">
+                  <div class="w-full flex space-x-4 mb-3" v-for="(value,index) in item.Patients" :key="index">
                       <div class="w-10 h-10">
                           <avatar
                               class="mr-2"
@@ -97,7 +97,7 @@
                 <span class="font-bold text-primary text-sm" >All patients for Dr. {{ practitionerName }}</span>
               </div>
               <div v-for="(item, i) in appoitmentData" :key="i">
-                <div class="container-fluid my-5 pb-2" v-for="(value,index) in item.Patients">
+                <div class="container-fluid my-5 pb-2" v-for="(value,index) in item.Patients" :key="index">
                   <patient-section :patient="value.patient" :time="item.startTime"/>
                 </div>
               </div>
@@ -129,14 +129,13 @@
             Cancel
           </cornie-btn>
            <cornie-btn
-            v-if="BillStatus.length > 0"
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Submit
           </cornie-btn>
-         <split-button v-else>
+         <!-- <split-button v-else>
           <template #main>
             <span>Check-In</span>
           </template>
@@ -152,7 +151,7 @@
             </div>
           </template>
 
-        </split-button>
+        </split-button> -->
         
 
         </cornie-card-text>

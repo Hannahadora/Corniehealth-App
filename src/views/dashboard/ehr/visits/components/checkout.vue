@@ -104,14 +104,13 @@
             Cancel
           </cornie-btn>
            <cornie-btn
-            v-if="BillStatus.length > 0"
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
            >
             Submit
           </cornie-btn>
-         <split-button v-else>
+         <!-- <split-button v-else>
           <template #main>
             <span>Collect Payment</span>
           </template>
@@ -128,12 +127,10 @@
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showPayLink = true">
               <span class="ml-3 text-xs">Share Pay Link</span>
             </div>
-            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"  @click="showPostClaim = true">
-              <span class="ml-3 text-xs">Post Claim</span>
-            </div> -->
+     
           </template>
 
-        </split-button>
+        </split-button> -->
 
         </cornie-card-text>
       </cornie-card>
