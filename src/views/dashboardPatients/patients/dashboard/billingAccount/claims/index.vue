@@ -53,11 +53,21 @@
           {{ status }}
         </span>
       </template>
+      <template #actions="{ item }">
+        <div
+          @click="viewChart(item)"
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <new-view-icon class="text-red-500 fill-current" />
+          <span class="ml-3 text-xs">View</span>
+        </div>
+      </template>
     </cornie-table>
   </div>
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import NewViewIcon from "@/components/icons/newview.vue";
   import { cornieClient } from "@/plugins/http";
   import paidBills from "@/types/IPaidBills";
   import { Options, Vue } from "vue-class-component";
@@ -68,6 +78,7 @@
     components: {
       CornieTable,
       EmptyState,
+      NewViewIcon,
       // transactionFilterDialog,
     },
   })
