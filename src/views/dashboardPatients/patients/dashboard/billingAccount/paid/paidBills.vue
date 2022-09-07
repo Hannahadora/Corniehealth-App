@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div v-if="paidBills.length == 0">
+    <empty-state />
+  </div>
+  <div v-else>
     <div class="flex w-full py-10 space-x-12">
       <div class="flex-1 rounded-2xl px-10 py-5 shadow-lg">
         <div class="flex">
@@ -58,11 +61,13 @@
   import { cornieClient } from "@/plugins/http";
   import paidBills from "@/types/IPaidBills";
   import { Options, Vue } from "vue-class-component";
+  import EmptyState from "../empty-state.vue";
 
   @Options({
     name: "Pending Bills",
     components: {
       CornieTable,
+      EmptyState,
       // transactionFilterDialog,
     },
   })
@@ -83,6 +88,12 @@
       {
         title: "Biller",
         key: "biller",
+        show: true,
+        noOrder: true,
+      },
+      {
+        title: "Practitioner",
+        key: "practitioner",
         show: true,
         noOrder: true,
       },
@@ -167,7 +178,7 @@
 
     async fetchPaidBills() {
       const pending = cornieClient().get(
-        `/api/v1/billing-profile/patient/${this.patientId}/paid-bills`
+        `/api/v1/patient-portal/billing/paid-bills`
       );
       const response = await Promise.all([pending]);
       console.log("paid bills", response[0].data);

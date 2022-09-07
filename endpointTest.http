@@ -1,0 +1,18 @@
+
+### Login user
+GET https://dev.corniehealth.com/api/v1/account? HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaWQiOiIzMjU0NWFiOS04YjE0LTRiOTItODFlMS05MTY4Mjc0YjY4NWYiLCJpYXQiOjE2NjIzMDIxNDA0MjksImV4cCI6MTY2MjM4ODU0MH0.vFthfFfb8TfRChkefY1eIdBhvsdDOlieYGTCHatMMN8
+Content-Type: application/json
+
+### Get user account
+POST  http://18.132.188.41:7000/auth/login HTTP/1.1
+Content-Type: application/json
+Accept-Encoding: gzip, deflate
+
+{
+    "authPassword":"Ob+hT6iZ",
+    "email": "dqoyengdbpwk@arxxwalls.com"
+}
+
+### Get Billing patient information
+GET https://dev.corniehealth.com/api/v1/patient-portal/billing/claims HTTP/1.1

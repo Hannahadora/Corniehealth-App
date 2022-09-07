@@ -29,7 +29,7 @@
               <div class="flex items-center">
                 <img
                   class="mr-4 w-20 h-20 rounded-full"
-                  :src="practitioner.photo"
+                  :src="require(practitioner.photo)"
                   alt=""
                 />
                 <div
@@ -59,15 +59,13 @@
 
               <div class="mt-8 xl:grid block grid-cols-4 gap-x-8 gap-y-8">
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-doctor-white.png"
+                    src="@/assets/book-appointment/icon-doctor-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Specialization</span
-                    >
+                    <span class="font-bold mb-2">Specialization</span>
                     <p class="text-grey-blue mr-2">
                       {{
                         practitioner &&
@@ -79,15 +77,13 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Clinical Experience</span
-                    >
+                    <span class="font-bold mb-2">Clinical Experience</span>
                     <p class="text-grey-blue mr-2">
                       {{
                         practitioner && practitioner.clinicalExperienceInMonths
@@ -98,15 +94,13 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-fee-white.png"
+                    src="@/assets/book-appointment/icon-fee-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Consultation Fee</span
-                    >
+                    <span class="font-bold mb-2">Consultation Fee</span>
                     <p>
                       <span class="text-grey-blue mr-2"><u></u></span> ₦
                       {{ practitioner && practitioner.consultationFeePerHour }}
@@ -115,16 +109,13 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-date-white.png"
+                    src="@/assets/book-appointment/icon-date-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
-                    <span
-                      class="font-bold capitalize mb-2"
-                      >Active Since</span
-                    >
+                    <span class="font-bold capitalize mb-2">Active Since</span>
                     <p
                       v-if="practitioner && practitioner.activeSince"
                       class="text-grey-blue mr-2"
@@ -157,9 +148,7 @@
                     alt=""
                   /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Phone Number</span
-                    >
+                    <span class="font-bold mb-2">Phone Number</span>
                     <p class="text-grey-blue mr-2">
                       {{ practitioner && practitioner.phone }}
                     </p>
@@ -173,9 +162,7 @@
                     alt=""
                   /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Email</span
-                    >
+                    <span class="font-bold mb-2">Email</span>
                     <p class="text-grey-blue capitalize mr-2">
                       {{ practitioner && practitioner.email }}
                     </p>
@@ -183,15 +170,13 @@
                 </div>
 
                 <div class="flex items-start xl:mb-0 mb-6">
-                  <img
+                  <!-- <img
                     class="mr-2"
-                    src="assets/book-appointment/icon-location-white.png"
+                    src="@/assets/book-appointment/icon-location-white.png"
                     alt=""
-                  />
+                  /> -->
                   <div>
-                    <span class="font-bold mb-2"
-                      >Address</span
-                    >
+                    <span class="font-bold mb-2">Address</span>
                     <p class="text-grey-blue capitalize mr-2">
                       {{ practitioner && practitioner.address }}
                     </p>
@@ -231,108 +216,107 @@
         </div>
       </cornie-card-text>
     </cornie-card>
-    
+
     <appointment-modal
       :id="practitioner.id"
       :practitioner="practitioner"
       :practitionerLocations="locations"
       v-model="showAppointmentModal"
-      @close="showAppointmentModal= false"
+      @close="showAppointmentModal = false"
     />
   </cornie-dialog>
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import search from "@/plugins/search";
+  import search from "@/plugins/search";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
 
-import CornieCard from "@/components/cornie-card";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import ArrowLeft from "@/components/icons/arrowleft.vue";
+  import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
 
-import BasicInfo from "./BasicInfo.vue";
-import Reviews from './Reviews.vue'
-import Insurance from './Insurance.vue'
-import AppointmentModal from './AppointmentModal.vue'
+  import AppointmentModal from "./AppointmentModal.vue";
+  import BasicInfo from "./BasicInfo.vue";
+  import Insurance from "./Insurance.vue";
+  import Reviews from "./Reviews.vue";
 
-// const user = namespace("user");
+  // const user = namespace("user");
 
-type Sorter = (a: any, b: any) => number;
-function defaultFilter(item: any, query: string) {
-  return search.searchObject(item, query);
-}
-
-@Options({
-  name: "DoctorsProfile",
-  components: {
-    ...CornieCard,
-    CancelIcon,
-    CornieDialog,
-    CancelRedBg,
-    ArrowLeft,
-    CornieBtn,
-    BasicInfo,
-    Reviews,
-    Insurance,
-    AppointmentModal,
-  },
-})
-export default class DoctorsProfile extends Vue {
-  activeTab: string = "Basic";
-  tabs: Array<any> = ["Basic"];
-  show = false;
-  loading = false;
-  showAppointmentModal = false;
-
-  @Prop({ type: Object, default: {} })
-  practitioner!: any;
-
-  @Prop({ type: Array, default: [] })
-  locations!: any[];
-
-  handleActiveTab(tab: any) {
-    this.activeTab = tab;
+  type Sorter = (a: any, b: any) => number;
+  function defaultFilter(item: any, query: string) {
+    return search.searchObject(item, query);
   }
 
-  formatDate(date: any) {
-    return new Date(date).toLocaleString("en-US");
-  }
+  @Options({
+    name: "DoctorsProfile",
+    components: {
+      ...CornieCard,
+      CancelIcon,
+      CornieDialog,
+      CancelRedBg,
+      ArrowLeft,
+      CornieBtn,
+      BasicInfo,
+      Reviews,
+      Insurance,
+      AppointmentModal,
+    },
+  })
+  export default class DoctorsProfile extends Vue {
+    activeTab: string = "Basic";
+    tabs: Array<any> = ["Basic"];
+    show = false;
+    loading = false;
+    showAppointmentModal = false;
 
-  created() {}
+    @Prop({ type: Object, default: {} })
+    practitioner!: any;
 
-  openAppointmentModal() {
-    this.showAppointmentModal = true;
+    @Prop({ type: Array, default: [] })
+    locations!: any[];
+
+    handleActiveTab(tab: any) {
+      this.activeTab = tab;
+    }
+
+    formatDate(date: any) {
+      return new Date(date).toLocaleString("en-US");
+    }
+
+    created() {}
+
+    openAppointmentModal() {
+      this.showAppointmentModal = true;
+    }
   }
-}
 </script>
 
 <style scoped>
-img {
-  filter: brightness(8.5);
-}
+  img {
+    filter: brightness(8.5);
+  }
 
-.text-grey-blue {
+  .text-grey-blue {
     color: #667499;
-}
-.info-container {
-  background: #ffffff;
-  border: 0.2px solid #c2c7d6;
-  box-sizing: border-box;
-  box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
-  border-radius: 16px;
-}.active-tab {
-  border-bottom: 4px solid #fe4d3c;
-  font-weight: 600;
-  color: #14171f;
-}
+  }
+  .info-container {
+    background: #ffffff;
+    border: 0.2px solid #c2c7d6;
+    box-sizing: border-box;
+    box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
+    border-radius: 16px;
+  }
+  .active-tab {
+    border-bottom: 4px solid #fe4d3c;
+    font-weight: 600;
+    color: #14171f;
+  }
 
-.text-grey-eth {
-  color: #c2c7d6;
-}
+  .text-grey-eth {
+    color: #c2c7d6;
+  }
 </style>
