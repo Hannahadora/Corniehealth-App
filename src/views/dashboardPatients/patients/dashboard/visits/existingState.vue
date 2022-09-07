@@ -52,7 +52,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showTimeLineModal = true"
+          @click="showTimeline(item)"
         >
           <timeline-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Timeline</span>
@@ -186,7 +186,7 @@
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
   <pay-modal v-model="showPaybill"/>
-  <time-line v-model="showTimeLineModal"/>
+  <time-line v-model="showTimeLineModal" :selectedItem="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -403,7 +403,10 @@ export default class PatientVisit extends Vue {
     this.showMember = true;
     this.familyId = value;
   }
-
+  showTimeline(value:any){
+    this.showTimeLineModal = true;
+    this.selectedItem = value.timelines;
+  }
   showCheckOut(value:any){
     this.selectedItem = value;
     this.showCheckOutModal = true
@@ -419,16 +422,16 @@ async deleteItem(id: string) {
       return;
     } else {
       try {
-        const response = await cornieClient().patch(
+        const response = await cornieClient().post(
           `/api/v1/patient-portal/visit/cancel/${id}/`,
           {}
         );
         if (response.success) {
-          window.notify({ msg: "Accepted Successfully", status: "success" });
+          window.notify({ msg: "Cancelled Successfully", status: "success" });
           await this.fetchPatientvisits();
         }
       } catch (error) {
-        window.notify({ msg: "Not Accepted", status: "error" });
+        window.notify({ msg: "Not Cancelled", status: "error" });
       }
     }
   }

@@ -62,7 +62,7 @@
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
  
- import CalendarIcon from "./icons/calendar.vue";
+ import CalendarIcon from "./icons/calendar2.vue";
  import SpecialistIcon from "./icons/specialist.vue";
  import VisitIcon from "./icons/visits.vue";
  import HealthIcon from "./icons/healthrecord.vue";
@@ -206,8 +206,8 @@
             hasSubsection: false,
           },
           {
-            name: "One-Time Access",
-            to: "/dashboard/provider/settings/virtual-lab-orders",
+            name: "One Time Access",
+            to: "one-time-access",
               icon: "onetime-icon",
             hasSubsection: false,
           },

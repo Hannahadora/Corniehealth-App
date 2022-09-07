@@ -177,6 +177,9 @@ export default class timelineModal extends Vue {
   @Prop({ type: Object, default: {} })
   patient!: any;
 
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
+
  
    @user.State
    currentLocation!: string;
