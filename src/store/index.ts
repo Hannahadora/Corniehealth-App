@@ -5,6 +5,8 @@ import AppointmentRoomStore from "./appointmentroom";
 import AppointmentTypeStore from "./appointments";
 import AssociationStore from "./associate";
 import Attachments from "./attachment";
+import BillingcenterStore from "./billingcenters";
+import BookingsiteStore from "./bookingsite";
 import CalenderStore from "./calendar";
 import CanelStore from "./cancel";
 import CarePartnersStore from "./CarePartners";
@@ -12,6 +14,7 @@ import CareplanStore from "./careplan";
 import CareteamStore from "./careteam";
 import CatalogueStore from "./catalogues";
 import CollectionStore from "./collection";
+import CollectioncenterStore from "./collectioncenters";
 import condition from "./condition";
 import ContactStore from "./contact";
 import CurrencyStore from "./currency";
@@ -42,13 +45,19 @@ import MaterialrequestStore from "./materialRequest";
 import MaterialreturnStore from "./materialReturn";
 import OrgStore from "./organization";
 import PatientStore from "./patient";
+import PatientassociationStore from "./patientassociation";
+import PatientproviderStore from "./patientprovider";
+import PatientvisitStore from "./patientvisit";
 import PaymentStore from "./payment";
 import PracticeformStore from "./practiceform";
+import PracticeImageStore from "./practiceimage";
 import PracticeInformationStore from "./practiceinformation";
 import practitioner from "./practitioner";
+import PreferenceStore from "./preference";
 import PrefrenceStore from "./prefrence";
 import ProcedureStore from "./procedure";
 import progressnote from "./progressnote";
+import RatingStore from "./ratings";
 import RefferalStore from "./refferal";
 import RequestStore from "./request";
 import RolesStore from "./roles";
@@ -56,22 +65,14 @@ import RouterStore from "./routing";
 import ScheduleStore from "./schedules";
 import ShiftsStore from "./shift";
 import SpecialStore from "./special";
+import SpecialistRefferalStore from "./specialistrefferal";
+import SubLocationStore from "./sub-location";
 import TaskStore from "./task";
 import UserStore from "./user";
 import UserSettingsStore from "./usersettings";
 import VisitsStore from "./visits";
 import VitalsStore from "./vitals";
 import WaybillStore from "./waybill";
-import PracticeImageStore from "./practiceimage";
-import BookingsiteStore from "./bookingsite";
-import PreferenceStore from "./preference";
-import RatingStore from "./ratings";
-import BillingcenterStore from "./billingcenters";
-import CollectioncenterStore from "./collectioncenters";
-import PatientassociationStore from "./patientassociation";
-import PatientproviderStore from "./patientprovider";
-import PatientvisitStore from "./patientvisit";
-import SpecialistRefferalStore from "./specialistrefferal";
 
 export default createStore({
   modules: {
@@ -80,6 +81,7 @@ export default createStore({
     device: DeviceStore,
     dropdown: Dropdown,
     location: LocationStore,
+    sublocation: SubLocationStore,
     contact: ContactStore,
     domain: DomainStore,
     payment: PaymentStore,
@@ -145,13 +147,13 @@ export default createStore({
     waybill: WaybillStore,
     practiceimage: PracticeImageStore,
     billingcenter: BillingcenterStore,
-    collectioncenter : CollectioncenterStore,
+    collectioncenter: CollectioncenterStore,
 
     encounter: encounter,
     bookingsite: BookingsiteStore,
     preference: PreferenceStore,
     rating: RatingStore,
-    patientassociation:PatientassociationStore,
+    patientassociation: PatientassociationStore,
     patientprovider: PatientproviderStore,
     patientvisit: PatientvisitStore,
     specialistrefferal: SpecialistRefferalStore

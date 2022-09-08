@@ -4,7 +4,7 @@
       <span
         class="flex border-b-2 w-full font-bold text-lg text-primary py-2 mx-auto"
       >
-        {{ id ? "Update Location" : "New Location" }}
+        {{ id ? "Update Sub Location" : "New Sub Location" }}
       </span>
       <span class="w-full">
         <div class="w-full h-screen">
@@ -298,7 +298,7 @@
   const countries = getCountries();
 
   const dropdown = namespace("dropdown");
-  const location = namespace("location");
+  const location = namespace("sublocation");
 
   @Options({
     components: {
@@ -421,8 +421,10 @@
     }
 
     async setLocation() {
-      const location = await this.getLocationById(this.id);
+      // if (!this.id) return;
+      const location = await this.getLocationById(this.locationId);
       console.log(location);
+
       if (!location) return;
       this.name = location.name;
       this.locationStatus = location.locationStatus;
@@ -474,6 +476,7 @@
         careOptions: this.careOptions,
         openTo: this.openTo,
         hoursOfOperation: this.hoursOfOperation,
+        parentId: this.locationId,
       };
     }
 
@@ -484,15 +487,19 @@
       this.loading = false;
     }
 
+    get locationId() {
+      return this.$route.params.id.toString();
+    }
+
     async createLocation() {
       try {
         const response = await cornieClient().post(
-          "/api/v1/location",
+          `/api/v1/location/`,
           this.payload
         );
         if (response.success) {
           window.notify({ msg: "Location Created", status: "success" });
-          this.$router.push("/dashboard/provider/practice/locations");
+          this.$router.push("sub-locations");
         }
       } catch (error) {
         window.notify({ msg: "Location not Created", status: "error" });
@@ -598,8 +605,8 @@
   .multiselect-caret {
     transform: rotate(0deg);
     transition: transform 0.3s;
-    -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-    mask-image: url("../../../../assets/img/Chevron.png");
+    -webkit-mask-image: url("../../../../../assets/img/Chevron.png");
+    mask-image: url("../../../../../assets/img/Chevron.png");
     background-color: #080056;
     margin: 0 var(--ms-px, 0.875rem) 0 0;
     position: relative;

@@ -55,6 +55,23 @@ export const PracticeRoutes: RouteRecordRaw = {
       component: () => import("@/views/dashboard/settings/location/index.vue"),
     },
     {
+      path: "location/:id",
+      name: "Practice Locations sub module",
+      component: () => import("@/views/dashboard/settings/location/sub-locations.vue"),
+      children: [
+        {
+          path: "sub-locations",
+          name: "sub-locations",
+          component: () => import("@/views/dashboard/settings/location/other-location/index.vue"),
+        },
+        {
+          path: "add-locations",
+          name: "sub-locations-add-locations",
+          component: () => import("@/views/dashboard/settings/location/other-location/add-location.vue"),
+        },
+      ]
+    },
+    {
       path: "add-location/:id?",
       props: true,
       name: "New Practice Location",
