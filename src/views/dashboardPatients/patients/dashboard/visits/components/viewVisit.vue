@@ -17,37 +17,33 @@
           <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Visit ID:</p>
-                <p>Vst.56718</p>
+                <p>{{ selectedItem.id }}</p>
             </div>
           </div>
            <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Attending Practitioner:</p>
-                <p>Olalekan Ismail</p>
+                <p>{{ selectedItem?.checkedInBy?.firstName +' '+ selectedItem?.checkedInBy?.lastName }}</p>
             </div>
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Specialty:</p>
-                <p>General Surgeon</p>
+                <p>{{ selectedItem?.specialty }}</p>
             </div>
           </div>
           <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Visit Date:</p>
-                <p>1st June 2022</p>
+                <p>{{ new Date(selectedItem?.createdAt).toLocaleDateString('en-US') }}</p>
             </div>
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Period:</p>
-                <p>1st June (11:15am - 1:33pm)</p>
+                <p>{{ selectedItem?.checkInTime +' 7- '+ new Date(selectedItem?.checkOutTime).toLocaleTimeString('en-US') }}</p>
             </div>
           </div>
           <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
             <div class="w-full flex justify-between space-x-4">
                 <p class="text-gray-400 float-left w-full">Location:</p>
-                <p class="float-right w-full">Mercy Specialist Hospital
-                21B, Broad Street, Lagos Island,
-                Lagos, Nigeria.
-                appointment@mercyhospi.com
-                +234809234567</p>
+                <p class="float-right w-full">{{ selectedItem?.room?.roomName }}</p>
             </div>
           </div>
            <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
@@ -59,7 +55,27 @@
           <div class="py-2 px-4 border-2 border-gray-200 rounded mb-8">
             <div class="w-full flex justify-between">
                 <p class="text-gray-400">Status</p>
-                <p class="text-green-400">Waitlisted </p>
+                <p :class="{
+              'bg-yellow-100 text-yellow-400': selectedItem.status == 'On-time-late',
+              'bg-purple-300 text-purple-600': selectedItem.status == 'queued'||
+              selectedItem.status == 'vitalAcquired'
+              ||
+              selectedItem.status == 'referred',
+              'bg-green-100 text-green-400': selectedItem.status == 'waitlisted' 
+              || selectedItem.status == 'consultationCompleted'
+              || selectedItem.status == 'diagnosticsCompleted'
+              || selectedItem.status == 'nedicationDispensed'
+              || selectedItem.status == 'discharged'
+              || selectedItem.status == 'checked-in'
+              || selectedItem.status == 'completed'
+              ,
+              ' bg-yellow-100 text-yellow-400': selectedItem.status == 'in-Progress',
+             ' bg-red-100 text-red-400': selectedItem.status == 'visitEnded' || selectedItem.status == 'cancelled',
+             ' bg-gray-100 text-gray-400': selectedItem.status == 'checked-out',
+             ' bg-blue-100 text-blue-600': selectedItem.status == 'billProcessing',
+
+             
+            }" class="text-center rounded-lg p-1 bg-opacity-20">Waitlisted </p>
             </div>
           </div>
         </v-form>
@@ -134,6 +150,9 @@ export default class viewVisit extends Vue {
 
   @patientprovider.State
   primarydoctors!: any;
+
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
   @patientprovider.Action
   fetchPrimaryDoctors!: () => Promise<void>;

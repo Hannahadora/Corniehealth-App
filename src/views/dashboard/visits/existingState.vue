@@ -35,54 +35,40 @@
     </span>
 
     <cornie-table :columns="rawHeaders" v-model="items">
-      <template #status="{ item }">
-        <div class="flex capitalize items-center">
-          <p
-            class="text-xs bg-gray-300 p-1 rounded"
-            v-if="
-              item.status == 'Vitals acquired' || item.status == 'Visit Ended'
-            "
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-yellow-100 text-yellow-500 p-1 rounded"
-            v-if="
-              item.status == 'queued' ||
-              item.status == 'Waitlisted' ||
-              item.status == 'In-Progress' ||
-              item.status == 'Bill Processing'
-            "
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-green-100 text-green-500 p-1 rounded"
-            v-if="
-              item.status == 'On-time | Late' ||
-              item.status == 'completed' ||
-              item.status == 'Diagnostics Completed' ||
-              item.status == 'Medication Dispensed' ||
-              item.status == 'Discharged' ||
-              item.status == 'checked-out' ||
-              item.status == 'checked-in'
-            "
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-purple-100 text-purple-600 p-1 rounded"
-            v-if="item.status == 'Referred'"
-          >
-            {{ item.status }}
-          </p>
-          <p
-            class="text-xs bg-red-100 text-red-600 p-1 rounded"
-            v-if="item.status == 'Cancelled'"
-          >
-            {{ item.status }}
-          </p>
-        </div>
+    
+       <template #status="{ item }">
+            <div class="flex items-center">
+              <p
+                class="text-xs bg-gray-300 p-1 rounded"
+                v-if="item.status == 'vitals-acquired' || item.status == 'visit-ended'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-yellow-100 text-yellow-500 p-1 rounded"
+                v-if="item.status == 'queued' || item.status == 'waitlisted' || item.status == 'in-progress' || item.status == 'bill-processing'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-green-100 text-green-500 p-1 rounded"
+                v-if="item.status == 'on-time | Late' || item.status == 'completed' || item.status == 'diagnostics-completed' || item.status == 'medication-dispensed' || item.status == 'discharged' || item.status == 'checked-out' || item.status == 'checked-in'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-purple-100 text-purple-600 p-1 rounded"
+                v-if="item.status == 'referred'"
+              >
+                {{ item.status }}
+              </p>
+              <p
+                class="text-xs bg-red-100 text-red-600 p-1 rounded"
+                v-if="item.status == 'cancelled'"
+              >
+                {{ item.status }}
+              </p>
+            </div>
       </template>
       <template #checkedInBy="{ item }">
         <div class="w-full flex space-x-4 mb-3">
@@ -352,6 +338,7 @@ import Actors from "../schedules/components/actors.vue";
 import PatientSearch from "./components/searchPatient.vue";
 import TimelineModal from "./components/timeline.vue";
 import ScheduledAppointment from "./components/schedulesPatient.vue";
+import IPageInfo from "@/types/IPageInfo";
 
 const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
@@ -455,6 +442,9 @@ export default class visitExistingState extends Vue {
   @visitsStore.Action
   getVisits!: () => Promise<void>;
 
+    @visitsStore.State
+  pageInfo!: IPageInfo;
+
   @visitsStore.State
   patients!: any[];
 
@@ -513,6 +503,24 @@ export default class visitExistingState extends Vue {
       noOrder: true,
     },
     {
+      title: "patient",
+      key: "patient",
+      show: true,
+      noOrder: true
+    },
+    {
+      title: "visit type",
+      key: "type",
+      show: true,
+      noOrder: true
+    },
+    {
+      title: "specialty",
+      key: "specialty",
+      show: true,
+      noOrder: true
+    },
+    {
       title: "practitioner",
       key: "checkedInBy",
       show: true,
@@ -565,9 +573,10 @@ export default class visitExistingState extends Vue {
         checkInTime,
         checkOutTime,
         action: visit.id,
-        patientName: patientName,
-        visittype: "xxxxxx",
-        period: checkInTime + "-" + checkOutTime,
+        type: 'xxxxxx',
+        period: visit.checkInTime +'-'+ visit.checkOutTime,
+        patient: visit?.patient?.firstname +' '+ visit?.patient?.lastname,
+        specialty: 'xxxxxx'
       };
     });
     if (!this.query) return visits;
