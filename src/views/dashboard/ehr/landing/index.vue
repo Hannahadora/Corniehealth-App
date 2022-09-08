@@ -20,8 +20,9 @@
             'text-gray-500': activeTab !== 0,
           }"
           @click="() => (activeTab = 0)"
-          >All Patients</a
         >
+          All Patients
+        </a>
         <a
           class="px-4 py-2 text-sm active-tab cursor-pointer"
           :class="{
@@ -29,8 +30,9 @@
             'text-gray-500': activeTab !== 1,
           }"
           @click="() => (activeTab = 1)"
-          >Active Visits</a
         >
+          Active Visits
+        </a>
       </div>
     </div>
 
@@ -159,7 +161,6 @@
       :patients="patients"
     />
 
-
     <modal :visible="showSearchModal">
       <template #title>
         <div class="w-full h-full">
@@ -265,7 +266,6 @@ const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
 
-
 @Options({
   name: "EHRPatients",
   components: {
@@ -310,8 +310,6 @@ export default class ExistingState extends Vue {
   @userStore.Getter
   authCurrentLocation!: string;
 
-
-
   @userStore.Getter
   authPractitioner!: IPractitioner;
 
@@ -340,8 +338,6 @@ export default class ExistingState extends Vue {
   activeVisits: IPatient[] = [];
   patientId = "";
   time: any;
-
-  
 
   headers = [
     {
@@ -409,21 +405,18 @@ export default class ExistingState extends Vue {
     }
   }
   async encounterPatient(patient: IPatient) {
-    const body ={
+    const body = {
       patientId: patient.id,
       practitionerId: this.authPractitioner.id,
       locationId: this.authCurrentLocation,
-      status: 'active',
-      class: 'consultation',
-      serviceType: 'consultation'
-    }
-     try {
-      const response = await cornieClient().post(
-        "/api/v1/encounter",
-       body
-      );
+      status: "active",
+      class: "consultation",
+      serviceType: "consultation",
+    };
+    try {
+      const response = await cornieClient().post("/api/v1/encounter", body);
       if (response.success) {
-       this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+        this.$router.push({ name: "Health Trend", params: { id: patient.id } });
       }
     } catch (error: any) {
       window.notify({ msg: "Encounter error", status: "error" });
@@ -475,7 +468,6 @@ export default class ExistingState extends Vue {
     if (deleted) window.notify({ msg: "Patient deleted", status: "success" });
     else window.notify({ msg: "Patient not deleted", status: "error" });
   }
-
 
   async searchForPatient() {
     try {
