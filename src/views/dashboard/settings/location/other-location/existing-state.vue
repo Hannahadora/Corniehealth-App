@@ -3,9 +3,9 @@
     <span class="flex justify-end w-full mb-3">
       <button
         class="bg-danger rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
-        @click="$router.push('add-location')"
+        @click="$router.push('add-locations')"
       >
-        Add New Location
+        Add New Sub-Location
       </button>
     </span>
     <cornie-table
@@ -18,7 +18,11 @@
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`add-location/${item.id}`)"
+          @click="
+            $router.push(
+              `/dashboard/provider/practice/location/${item.id}/add-locations`
+            )
+          "
         >
           <edit-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">Edit</span>
@@ -32,7 +36,11 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="$router.push(`location/${item.id}/sub-locations`)"
+          @click="
+            $router.push(
+              `/dashboard/provider/practice/location/${item.id}/sub-locations`
+            )
+          "
         >
           <eye-icon class="text-yellow-400 fill-current" />
           <span class="ml-3 text-xs">Sub locations</span>
@@ -76,7 +84,7 @@
   import { Watch } from "vue-property-decorator";
   import { namespace } from "vuex-class";
 
-  const location = namespace("location");
+  const location = namespace("sublocation");
   const dropdown = namespace("dropdown");
 
   @Options({
@@ -106,7 +114,7 @@
     locations!: ILocation[];
 
     @location.Action
-    fetchLocations!: () => Promise<void>;
+    fetchLocations!: (id: string) => Promise<void>;
 
     @location.Action
     deleteLocation!: (id: string) => Promise<boolean>;
@@ -202,13 +210,13 @@
     @Watch("refreshing")
     async refresh(val: boolean) {
       if (!val) return;
-      await this.fetchLocations();
+      await this.fetchLocations(this.$route.params.id.toString());
       this.refreshing = false;
     }
 
     async created() {
       const data = await this.getDropdowns("location");
-      await this.fetchLocations();
+      await this.fetchLocations(this.$route.params.id.toString());
 
       let op = data.operationalStatus.filter((item: any) => item.code !== "U");
       let operationalStatus = [{ code: "U", display: "Opened" }, ...op];
