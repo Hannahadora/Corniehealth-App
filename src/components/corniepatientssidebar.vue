@@ -27,15 +27,16 @@
                 <component  :is="link.icon"></component>
             </keep-alive>
             </sidebar-link>
+
+            <sidebar-link
+              to="/dashboard/patient/refferalinivite"
+              :hovered="hovered"
+              text="Referrals"
+              class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+            >
+              <reffer-icon class="text-primary fill-current" />
+            </sidebar-link>
         </div>
-      <sidebar-link
-        to="support"
-        :hovered="hovered"
-        text="Referrals"
-        class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
-      >
-        <reffer-icon class="text-primary fill-current" />
-      </sidebar-link>
     </div>
   </div>
 </template>
@@ -149,13 +150,13 @@
       },
       {
         name: "Specialist Referrals",
-        to: "specialist-refferal",
+        to: "specialistrefferal",
         icon: "specialist-icon",
         hasSubsection: false,
       },
       {
         name: "Visits",
-        to: "visits-patients",
+        to: "visitspatients",
         icon: "visit-icon",
         hasSubsection: false,
       },

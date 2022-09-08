@@ -18,7 +18,7 @@
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="showViewModal = true"
+           @click="showVisit(item)"
         >
           <eye-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">View Visit</span>
@@ -88,7 +88,7 @@
       </template>
        <template #period="{item }">
           <span>
-            {{ new Date(item?.checkInTime).toLocaleTimeString('en-US') +'-'+ new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}
+            {{ item?.checkInTime +' - ' + new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}
           </span>
         </template>
          <template #status="{item}">
@@ -104,6 +104,8 @@
               || item.status == 'diagnosticsCompleted'
               || item.status == 'nedicationDispensed'
               || item.status == 'discharged'
+              || item.status == 'checked-in'
+              || item.status == 'completed'
               ,
               ' bg-yellow-100 text-yellow-400': item.status == 'in-Progress',
              ' bg-red-100 text-red-400': item.status == 'visitEnded' || item.status == 'cancelled',
@@ -180,13 +182,13 @@
 
     </div>
   </div>
-  <view-modal  v-model="showViewModal"/>
+  <view-modal  v-model="showViewModal" :selectedItem="selectedItem"/>
   <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem"/>
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
   <pay-modal v-model="showPaybill"/>
-  <time-line v-model="showTimeLineModal" :selectedItem="selectedItem"/>
+  <time-line v-model="showTimeLineModal" :timeline="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -195,7 +197,7 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-
+import moment from "moment";
 
 import  IPatientvisit  from "@/types/IPatientvisit";
 
@@ -410,6 +412,18 @@ export default class PatientVisit extends Vue {
   showCheckOut(value:any){
     this.selectedItem = value;
     this.showCheckOutModal = true
+  }
+  showVisit(value:any){
+    this.showViewModal = true;
+    this.selectedItem = value;
+  }
+  getTimecheckedOut(time:string){
+    const newtime = new Date(time).toISOString();
+   return moment(newtime).format('LTS');
+  }
+  getTimecheckedIn(time:Date){
+    const newtime2 = new Date(time).toLocaleTimeString('en-US');
+    return newtime2;
   }
 
 async deleteItem(id: string) {
