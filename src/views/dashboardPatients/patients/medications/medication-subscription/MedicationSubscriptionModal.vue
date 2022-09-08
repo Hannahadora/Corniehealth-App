@@ -119,8 +119,8 @@
                 placeholder="--Enter--"
                 v-model="other.email"
               />
-              
-              <div class="col-span-2 grid grid-cols-2">
+
+              <div class="col-span-2 grid grid-cols-2 gap-6">
                 <phone-input
                   label="Phone Number"
                   v-model:code="other.dialCode"
@@ -128,6 +128,113 @@
                   :rules="requiredString"
                   :readonly="readonly"
                 />
+              </div>
+              <auto-complete
+                class="w-full"
+                v-model="country"
+                label="Country"
+                placeholder="Enter"
+                :rules="requiredString"
+                :readonly="readonly"
+                :items="countries"
+              />
+              <auto-complete
+                class="w-full"
+                v-model="state"
+                label="State"
+                :items="states"
+                placeholder="Enter"
+                :rules="requiredString"
+                :readonly="readonly"
+              />
+              <cornie-input
+                class="w-full"
+                v-model="city"
+                label="City"
+                placeholder="Enter"
+                :rules="requiredString"
+                :readonly="readonly"
+              />
+              <cornie-input
+                class="w-full"
+                v-model="postCode"
+                label="ZIP"
+                placeholder="Enter"
+                :rules="requiredString"
+                :readonly="readonly"
+              />
+            </div>
+          </accordion-component>
+
+          <accordion-component
+            class="text-primary"
+            title="Add Medications"
+            :opened="false"
+          >
+            <div class="p-2 text-sm" style="background: #f0f4fe">
+              Select your medications and specify quantities.
+            </div>
+            <div class="my-4" @click="medicationModal = true">
+              <span class="text-red-500 text-sm font-semibold"
+                >Add Medication</span
+              >
+            </div>
+
+            <div v-if="medications.length > 0">
+              <cornie-table
+                :columns="rawHeaders"
+                v-model="items"
+                :listmenu="true"
+                :check="false"
+                class="mt-7"
+              >
+                <template #actions="{ index }">
+                  <div
+                    class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                    @click="deleteItem(index)"
+                  >
+                    <delete-icon class="text-danger fill-current" />
+                    <span class="ml-3 text-xs">Delete</span>
+                  </div>
+                </template>
+                <template #quantity="{ item }">
+                  <input
+                    class="border p-1"
+                    type="number"
+                    placeholder="Enter"
+                    :min="1"
+                    :max="item.available"
+                    :modelValue="item.quantity"
+                    @input="
+                      (evt) => changeQuantity(item.id, Number(evt.data || 1))
+                    "
+                  />
+                </template>
+              </cornie-table>
+
+              <div class="mt-8 grid grid-cols-2 gap-6 border-t border-dash">
+                <div class="w-1/3">
+                  <table class="w-full">
+                    <tbody>
+                      <tr v-if="discount">
+                        <td>Total Discount</td>
+                        <td>{{ totalDiscount || 0.0 }}</td>
+                      </tr>
+                      <tr>
+                        <td>Sub Total</td>
+                        <td>{{ subTotal || 0.0 }}</td>
+                      </tr>
+                      <tr v-if="type === 'delivery'">
+                        <td class="font-bold">Shipping Cost</td>
+                        <td>{{ shippingCost || 0.0 }}</td>
+                      </tr>
+                      <tr class="">
+                        <td class="font-bold">Grand Total</td>
+                        <td>{{ grandTotal || 0.0 }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </accordion-component>
@@ -147,10 +254,11 @@
           type="submit"
           class="text-white bg-danger px-3 py-1 rounded-lg"
         >
-          Save
+          Pay
         </cornie-btn>
       </div>
     </cornie-card>
+    <add-medications v-model="medicationModal" @addMedication="addMedication" />
   </cornie-dialog>
 </template>
 <script lang="ts">
@@ -179,13 +287,20 @@ import FhirInput from "@/components/fhir-input.vue";
 import DateTimePicker from "@/components/date-time-picker.vue";
 import DatePicker from "@/components/datetime-picker.vue";
 import { first, getTableKeyValue } from "@/plugins/utils";
+import PhoneInput from "@/components/phone-input.vue";
+import AddMedications from "./AddMedications.vue";
+import TableOptions from "@/components/table-options.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 
 // import AccordionComponent from "@/components/dialog-accordion.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
+import { getCountries, getStates } from "@/plugins/nation-states";
+import ObjectSet from "@/lib/objectset";
 
 const user = namespace("user");
 const patients = namespace("patients");
 
+const countries = getCountries();
 @Options({
   name: "MedicationSubscriptionModal",
   components: {
@@ -205,6 +320,10 @@ const patients = namespace("patients");
     PlusIcon,
     DatePicker,
     FhirInput,
+    PhoneInput,
+    AddMedications,
+    CornieTable,
+    TableOptions,
   },
 })
 export default class MedicationSubscriptionModal extends Vue {
@@ -224,6 +343,7 @@ export default class MedicationSubscriptionModal extends Vue {
   loading = false;
   opened = true;
   subscriberModel = "self";
+  medicationModal = false;
 
   form: any = {
     condition: "",
@@ -240,6 +360,10 @@ export default class MedicationSubscriptionModal extends Vue {
     phoneNumber: "",
     dialCode: "",
   };
+  country = "";
+  state = "";
+  city = "";
+  postCode = "";
   conditionsList: any = [
     "Hypertension (High Blood Pressure)",
     "Coronary Heart Disease & Stroke",
@@ -261,8 +385,61 @@ export default class MedicationSubscriptionModal extends Vue {
     "Oral Health",
   ];
 
+  states = [] as any;
+  countries = countries;
+  medications: any = [];
+
+  @Watch("country")
+  async countryPicked(country: string) {
+    const states = await getStates(country);
+    this.states = states;
+  }
+
   @Watch("id")
   idChanged() {}
+
+  getKeyValue = getTableKeyValue;
+  preferredHeaders = [];
+  rawHeaders = [
+    {
+      title: "MEDICATION",
+      key: "medication",
+      show: true,
+    },
+    {
+      title: "FORM",
+      key: "form",
+      show: true,
+    },
+    {
+      title: "QUANTITY",
+      key: "quantity",
+      show: true,
+    },
+    {
+      title: "RETAIL PRICE",
+      key: "retailPrice",
+      show: true,
+    },
+    {
+      title: "OUR PRICE",
+      key: "ourPrice",
+      show: true,
+    },
+    {
+      title: "SAVINGS(N)",
+      key: "savings",
+      show: true,
+    },
+  ];
+
+  addMedication(chosenMedication: any) {
+    const medications = new ObjectSet(
+      [...this.medications, { ...chosenMedication, quantity: 1 }],
+      "id"
+    );
+    this.medications = [...medications];
+  }
 
   async created() {}
 }
