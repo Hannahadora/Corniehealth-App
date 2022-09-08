@@ -379,9 +379,10 @@
                                 class="w-full mt-4"
                                 v-model="billingType"
                             /> -->
+                            
                 <billing-account-component
                   v-model="billingAccountId"
-                  :id="singlePatientId"
+                  :patientId="Patients"
                 />
               </div>
 
@@ -480,7 +481,6 @@
   import TimePicker from "@/components/Timepicker.vue";
   import { cornieClient } from "@/plugins/http";
   import IAppointment from "@/types/IAppointment";
-import IDevice from "@/types/IDevice";
   import ILocation from "@/types/ILocation";
   import Period from "@/types/IPeriod";
   import IPractitioner from "@/types/IPractitioner";
@@ -630,7 +630,7 @@ import IDevice from "@/types/IDevice";
     localSrc = require("../../../../../assets/img/placeholder.png");
     errmsg = "" as any;
     singlePatientId = "";
-    billingAccountId = "";
+    billingAccountId = {} as any;
     required = string().required();
 
     @Watch("id")
@@ -677,7 +677,7 @@ import IDevice from "@/types/IDevice";
         bookingLocationId: this.bookingLocationId || undefined,
         practitionerId: this.appoimtentId,
         patientId: this.singlePatientId,
-        billingAccountId: this.billingAccountId || undefined,
+        billingAccountId: this.billingAccountId.code || undefined,
       };
     }
     async submit() {
@@ -685,6 +685,10 @@ import IDevice from "@/types/IDevice";
       if (this.id) await this.updateAppointment();
       else await this.createAppointment();
       this.loading = false;
+    }
+
+    getBillingAccount(value:any){
+      this.billingAccountId = value.code
     }
 
     async createAppointment() {
@@ -822,6 +826,7 @@ import IDevice from "@/types/IDevice";
       await this.fetchPractitioners();
       if (this.appoimtentId && this.Practitioners.length != 1)
         await this.getAppointment();
+      console.log("patientid", this.singlePatientId);
     }
   }
 </script>

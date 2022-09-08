@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col">
     <div class="flex items-center mb-3">
-      <check-icon/>
-      <div class="font-bold flex-1 capitalize">
+      <check-icon />
+      <div class="font-bold flex-1 uppercase">
         {{ accountNumber }} - {{ selectedAccount }}
       </div>
       <div
@@ -20,7 +20,7 @@
       class="w-full capitalize"
       label="Change Billing Account"
       @selected="update"
-      v-model="account"
+      :modelValue="account"
     />
   </div>
 </template>
@@ -71,7 +71,7 @@
 
     async getAccounts() {
       // if(!this.patientId)
-      const id = this.id || this.patientId[0]?.patientId;
+      const id = this.patientId[0].patient.id;
       const url = `/api/v1/patient/payment-account/patient/${id}`;
       try {
         const response = await cornieClient().get(url);
@@ -90,18 +90,20 @@
       nextTick(() => {
         console.log("payment id", paymentId);
         this.accountNumber = this.allAccounts.find(
-          (x) => x.id == paymentId
+          (x) => x.id == paymentId.code
         )?.accountNo;
         this.selectedAccount = this.allAccounts.find(
-          (x) => x.id == paymentId
+          (x) => x.id == paymentId.code
         )?.type;
         // this.$emit("update:modelValue", paymentId);
-        this.account = paymentId;
+        this.account = paymentId.code;
       });
+      this.$emit('modelvalues',  this.modelValue)
     }
 
     async mounted() {
       console.log("patient", this.patientId);
+      console.log("paymentId", this.id);
       await this.getAccounts();
     }
   }

@@ -123,8 +123,8 @@
               <div class="col-span-2 grid grid-cols-2">
                 <phone-input
                   label="Phone Number"
-                  v-model:code="dialCode"
-                  v-model="phoneNumber"
+                  v-model:code="other.dialCode"
+                  v-model="other.phoneNumber"
                   :rules="requiredString"
                   :readonly="readonly"
                 />
@@ -237,7 +237,8 @@ export default class MedicationSubscriptionModal extends Vue {
     email: "",
     dob: "",
     tob: "",
-    
+    phoneNumber: "",
+    dialCode: "",
   };
   conditionsList: any = [
     "Hypertension (High Blood Pressure)",

@@ -1,5 +1,5 @@
 <template>
-  <clinical-dialog v-model="show" :title="'Create New'" class="">
+  <clinical-dialog v-model="show" :title="'Create New'">
     <v-form class="flex-grow flex flex-col">
       <accordion-component
         class="rounded-none border-none text-primary"

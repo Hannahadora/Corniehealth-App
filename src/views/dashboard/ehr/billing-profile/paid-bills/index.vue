@@ -33,7 +33,7 @@
         New Bill
       </button>
     </div>
-    <cornie-table @filter="showFDialog" :columns="headers" v-model="items">
+    <cornie-table :columns="headers" v-model="items">
       <template #status="{ item: { status } }">
         <span
           :class="{

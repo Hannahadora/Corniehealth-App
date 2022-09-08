@@ -314,7 +314,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/family-members/:id?",
         name: "Family Members",
-        props:true,
+        props: true,
         component: () => import("@/views/dashboardPatients/patients/account/association/familytype/exisitngState.vue"),
       },
       {
@@ -342,14 +342,24 @@ const routes: Array<RouteRecordRaw> = [
         name: "Health Records",
         component: () => import("@/views/dashboardPatients/patients/account/health-records/index.vue"),
       },
-      {        
+      {
+        path: "bills-account",
+        name: "Patient Billing Account",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/billingAccount/index.vue"),
+      },
+      {
         path: "specialist-refferal",
         name: "Specialist Referrals",
         component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
       },
+      {        
+        path: "one-time-access",
+        name: "One Time Access",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/onetimeaccess/index.vue"),
+      },
       {
         path: "visits-patients",
-        name: "Visits",
+        name: "Visits Patients",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/index.vue"),
       },
       {

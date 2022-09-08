@@ -42,8 +42,8 @@
                                 class="cursor-pointer mb-3 flex space-x-4 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
                                 <cornie-radio name="search"   @click="selected(item,item.id)"/>
                                 <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative" v-for="(value, index) in item?.contactInfo" :key="index">
-                                    {{ item?.firstname +' '+ item?.lastname   || item }}
-                                    <p class="text-xs text-gray-400 italic">{{ value?.email +' | '+ item?.accountType }}</p>
+                                    {{ item.firstname +' '+ item.lastname  }}
+                                    <p class="text-xs text-gray-400 italic">{{ item?.email +' | '+ item?.accountType }}</p>
                                 </div>
                             </div>
                         </div>

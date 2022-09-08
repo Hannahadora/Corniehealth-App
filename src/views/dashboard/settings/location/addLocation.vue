@@ -98,6 +98,15 @@
                     placeholder="--Select--"
                     class="w-full"
                   />
+
+                  <auto-complete
+                    :rules="required"
+                    v-model="physicalType"
+                    required
+                    label="Physical Type"
+                    :items="physicalTypeOptions"
+                    class="w-full"
+                  />
                   <fhir-input
                     reference="http://hl7.org/fhir/ValueSet/v3-ServiceDeliveryLocationRoleType"
                     class="required w-full"
@@ -337,13 +346,30 @@
     availabilityExceptions = "";
     careOptions = [];
     openTo = "";
+
+    physicalTypeOptions = [
+      "Site",
+      "Building",
+      "Wing",
+      "Ward",
+      "Level",
+      "Corridor",
+      "Room",
+      "Bed",
+      "Vehicle",
+      "House",
+      "Cabinet",
+      "Road",
+      "Area",
+      "Jurisdiction",
+    ];
     hoursOfOperation: HoursOfOperation[] = [];
 
     operationalStatusDropdown = {} as IndexableObject;
 
     dropdowns = {} as IIndexableObject;
 
-    required = string().required();
+    required = string().required().nullable();
     requiredEmail = string().required().email();
 
     visitType = [
@@ -404,7 +430,7 @@
       this.description = location.description;
       this.alias = location.alias;
       this.mode = location.mode;
-
+      this.physicalType = location.physicalType;
       this.type = location.type;
       this.phoneNumber = location.phone.number;
       this.dialCode = location.phone.dialCode;
@@ -413,7 +439,7 @@
       this.country = location.country;
       this.state = location.state;
       this.city = location.city;
-      this.physicalType = location.physicalType;
+      this.physicalType = location.physicalType || "";
 
       this.managingOrg = location.managingOrg;
       this.partOf = location.partOf;

@@ -29,11 +29,11 @@
             class="mr-6 pb-4 cursor-pointer flex items-center"
             @click="selectTab('doctors')"
           >
-            <img
+            <!-- <img
               class="mr-2"
               src="@/assets/img/book-appointment/icon-doctor-black.png"
               alt=""
-            />
+            /> -->
             <span class="text-lg text-grey-eth font-bold">Doctors</span>
           </div>
           <div
@@ -88,271 +88,277 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import search from "@/plugins/search";
+  import { cornieClient } from "@/plugins/http";
+  import search from "@/plugins/search";
+  import { Options, Vue } from "vue-class-component";
+  import { Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
 
-import CornieCard from "@/components/cornie-card";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
-import ArrowLeft from "@/components/icons/arrowleft.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
-import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-import Doctors from "./Doctors.vue";
-import Hospitals from "./Hospitals.vue";
-import SelectGroup from "./SelectGroup.vue";
-import SearchFilter from "./SearchFilter.vue";
-import DoctorsProfileModal from "./DoctorsProfileModal.vue";
-import HospitalInfoModal from "./HospitalInfoModal.vue"
-// import LinearLoader from "~/components/LinearLoader.vue"
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import {
+    default as ArrowLeft,
+    default as ArrowLeftIcon,
+  } from "@/components/icons/arrowleft.vue";
+  import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
+  import Doctors from "./Doctors.vue";
+  import DoctorsProfileModal from "./DoctorsProfileModal.vue";
+  import HospitalInfoModal from "./HospitalInfoModal.vue";
+  import Hospitals from "./Hospitals.vue";
+  import SearchFilter from "./SearchFilter.vue";
+  import SelectGroup from "./SelectGroup.vue";
+  // import LinearLoader from "~/components/LinearLoader.vue"
 
-const user = namespace("user");
+  const user = namespace("user");
 
-type Sorter = (a: any, b: any) => number;
-function defaultFilter(item: any, query: string) {
-  return search.searchObject(item, query);
-}
-
-@Options({
-  name: "BookAppointmentModal",
-  components: {
-    ...CornieCard,
-    ArrowLeftIcon,
-    CancelIcon,
-    CornieDialog,
-    CornieInput,
-    CornieRadio,
-    CornieBtn,
-    CancelRedBg,
-    CornieSelect,
-    ArrowLeft,
-    CornieCheckbox,
-    ChevronRightIcon,
-    ChevronLeftIcon,
-    SelectGroup,
-    SearchFilter,
-    Doctors,
-    Hospitals,
-    DoctorsProfileModal,
-    HospitalInfoModal,
-  },
-})
-export default class BookAppointmentModal extends Vue {
-  selectedTab: String = "doctors";
-  search: any = {};
-  loading: Boolean = false;
-  showAppointmentModal: Boolean = false;
-  showDoctorsprofile: Boolean = false;
-  showHospitalsprofile: Boolean = false;
-  show = false;
-  shownLocations: any = [];
-  doctors: any = [];
-  hospitals: any = [];
-  valueType: String = "specialty";
-  selectedPractitioner: any = {};
-  selectedProvider: any = {};
-  selectedData: any = {};
-  providerPractitioners: any = [];
-
-  @Watch("selectedTab")
-  onChange() {
-    this.fetchData();
+  type Sorter = (a: any, b: any) => number;
+  function defaultFilter(item: any, query: string) {
+    return search.searchObject(item, query);
   }
 
-  @Watch("valueType")
-  async onUpdate() {
-    if (this.valueType === "practitioner") {
-      this.showDoctorsprofile = true;
-      await this.findPractitioner();
+  @Options({
+    name: "BookAppointmentModal",
+    components: {
+      ...CornieCard,
+      ArrowLeftIcon,
+      CancelIcon,
+      CornieDialog,
+      CornieInput,
+      CornieRadio,
+      CornieBtn,
+      CancelRedBg,
+      CornieSelect,
+      ArrowLeft,
+      CornieCheckbox,
+      ChevronRightIcon,
+      ChevronLeftIcon,
+      SelectGroup,
+      SearchFilter,
+      Doctors,
+      Hospitals,
+      DoctorsProfileModal,
+      HospitalInfoModal,
+    },
+  })
+  export default class BookAppointmentModal extends Vue {
+    selectedTab: String = "doctors";
+    search: any = {};
+    loading: Boolean = false;
+    showAppointmentModal: Boolean = false;
+    showDoctorsprofile: Boolean = false;
+    showHospitalsprofile: Boolean = false;
+    show = false;
+    shownLocations: any = [];
+    doctors: any = [];
+    hospitals: any = [];
+    valueType: String = "specialty";
+    selectedPractitioner: any = {};
+    selectedProvider: any = {};
+    selectedData: any = {};
+    providerPractitioners: any = [];
+
+    @Watch("selectedTab")
+    onChange() {
+      this.fetchData();
     }
-    if (this.valueType === "provider") {
-      this.showHospitalsprofile = true;
-      await this.findProvider();
-      await this.fetchProviderPractitioners();
+
+    @Watch("valueType")
+    async onUpdate() {
+      if (this.valueType === "practitioner") {
+        await this.findPractitioner();
+        this.showDoctorsprofile = true;
+      }
+      if (this.valueType === "provider") {
+        await this.findProvider();
+        await this.fetchProviderPractitioners();
+        this.showHospitalsprofile = true;
+      }
+    }
+
+    closeDosctorsProfile() {
+      this.showDoctorsprofile = false;
+      this.valueType = "specialty";
+    }
+
+    closeHospitalsProfile() {
+      this.showHospitalsprofile = false;
+      this.valueType = "specialty";
+    }
+
+    async findPractitioner() {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/booking-website/get-profile/${this.selectedData.id}`
+        );
+        this.selectedPractitioner = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching data",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    async findProvider() {
+      let locationId;
+      const xlocationId =
+        (this.selectedData?.locations?.length &&
+          this.selectedData?.locations[0]?.id) ||
+        "";
+      if (xlocationId) {
+        locationId = `locationId=${xlocationId}`;
+      }
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/booking-website/practice/${this.selectedData.id}?${locationId}`
+        );
+        this.selectedProvider = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching provider data",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    async fetchProviderPractitioners() {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/booking-website/search/practitioners?hospital=${this.selectedProvider.id}`
+        );
+        this.providerPractitioners = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching practitioners for this organization",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    openAppointmentModal() {
+      this.showAppointmentModal = true;
+    }
+
+    getSelectedInput(value: any, vType: any) {
+      this.valueType = vType;
+      this.selectedData = value;
+      this.shownLocations = value.locations;
+      this.search.specialty = value.name;
+      this.search.location =
+        value.locations.length > 0 && value.locations[0].name;
+      this.fetchData();
+    }
+
+    getSearchQuery(values: any) {
+      this.search = values;
+    }
+
+    getLoadingState(value: Boolean) {
+      this.loading = value;
+    }
+
+    selectTab(tab: string) {
+      this.selectedTab = tab;
+    }
+
+    get payload() {
+      return {
+        ...this.search,
+      };
+    }
+
+    get queryString() {
+      return Object.keys(this.payload)
+        .map((filter) => {
+          if (this.payload[filter] || Number.isInteger(this.payload[filter])) {
+            return `${filter}=${this.payload[filter]}`;
+          }
+          return null;
+        })
+        .filter((item) => item)
+        .join("&");
+    }
+
+    async fetchPractitioners() {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/booking-website/search/practitioners?${this.queryString}`
+        );
+        this.doctors = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching doctors",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    async fetchHospitals() {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/booking-website/practice/search?${this.queryString}`
+        );
+        this.hospitals = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching hospitals",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    async fetchData() {
+      if (this.selectedTab === "doctors") {
+        await this.fetchPractitioners();
+      } else if (this.selectedTab === "hospitals") {
+        await this.fetchHospitals();
+      }
+    }
+
+    created() {
+      this.fetchData();
     }
   }
-
-  closeDosctorsProfile() {
-    this.showDoctorsprofile = false
-    this.valueType = 'specialty'
-  }
-
-  closeHospitalsProfile() {
-    this.showHospitalsprofile = false
-    this.valueType = 'specialty'
-  }
-
-  async findPractitioner() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        `/api/v1/booking-website/get-profile/${this.selectedData.id}`
-      );
-      this.selectedPractitioner = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching data",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async findProvider() {
-    let locationId
-    const xlocationId =
-      (this.selectedData?.locations?.length &&
-        this.selectedData?.locations[0]?.id) ||
-      "";
-    if (xlocationId) {
-      locationId = `locationId=${xlocationId}`;
-    }
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        `/api/v1/booking-website/practice/${this.selectedData.id}?${locationId}`
-      );
-      this.selectedProvider = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching provider data",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async fetchProviderPractitioners() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        `/api/v1/booking-website/search/practitioners?hospital=${this.selectedProvider.id}`
-      );
-      this.providerPractitioners = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching practitioners for this organization",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  openAppointmentModal() {
-    this.showAppointmentModal = true;
-  }
-
-  getSelectedInput(value: any, vType: any) {
-    this.valueType = vType;
-    this.selectedData = value;
-    this.shownLocations = value.locations;
-    this.search.specialty = value.name;
-    this.search.location =
-      value.locations.length > 0 && value.locations[0].name;
-    this.fetchData();
-  }
-
-  getSearchQuery(values: any, doctors: any, hospitals: any) {
-    this.search = values;
-  }
-
-  selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
-
-  get payload() {
-    return {
-      ...this.search,
-    };
-  }
-
-  get queryString() {
-    return Object.keys(this.payload)
-      .map((filter) => {
-        if (this.payload[filter] || this.payload[filter] !== 0 || Number.isInteger(this.payload[filter])) {
-          return `${filter}=${this.payload[filter]}`;
-        }
-        return null;
-      })
-      .filter((item) => item)
-      .join("&");
-  }
-
-  async fetchPractitioners() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        `/api/v1/booking-website/search/practitioners?${this.queryString}`
-      );
-      this.doctors = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching doctors",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async fetchHospitals() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        `/api/v1/booking-website/practice/search?${this.queryString}`
-      );
-      this.hospitals = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching hospitals",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async fetchData() {
-    if (this.selectedTab === "doctors") {
-      await this.fetchPractitioners();
-    } else if (this.selectedTab === "hospitals") {
-      await this.fetchHospitals();
-    }
-  }
-
-  created() {
-    this.fetchData();
-  }
-}
 </script>
 
 <style scoped>
-img {
-  filter: brightness(8.5);
-}
-.activetab {
-  border-bottom: 3px solid #fe4d3c;
-}
-.activetab span {
-  color: #14171f !important;
-}
-.activetab img {
-  filter: brightness(1);
-}
+  img {
+    filter: brightness(8.5);
+  }
+  .activetab {
+    border-bottom: 3px solid #fe4d3c;
+  }
+  .activetab span {
+    color: #14171f !important;
+  }
+  .activetab img {
+    filter: brightness(1);
+  }
 
-.text-grey-eth {
-  color: #c2c7d6;
-}
+  .text-grey-eth {
+    color: #c2c7d6;
+  }
 </style>

@@ -71,10 +71,22 @@
           </div>
 
           <div class="grid grid-cols-2 gap-4 mt-5">
-            <time-picker :label="'Time'" v-model="startTime" />
-            <date-picker :label="'Date'" v-model="date" />
+            <!-- <time-picker :label="'Time'" v-model="startTime" /> -->
+            <div>
+                <label class="text-sm font-semibold">Time</label>
+              <input
+                  type="time"
+                  label="Time"
+                  placeholder="00:00"
+                  class="w-full border-1 border-gray-300 rounded-lg px-2 py-2"
+                  v-model="startTime"
+                />
+            </div>
+            <div class="mt-2">
+              <date-picker :label="'Date'"  v-model="date" />
+            </div>
           </div>
-          <div class="border-b-2 -mt-9 border-dashed border-gray-200">
+          <div class="border-b-2 mt-6 border-dashed border-gray-200">
              <cornie-input
              v-if="Object.keys(practitionerData).length > 0"
               :label="'Physician'"
@@ -152,14 +164,13 @@
             Cancel
           </cornie-btn>
           <cornie-btn
-            v-if="BillStatus.length > 0"
             :loading="loading"
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
             Submit
           </cornie-btn>
-          <split-button v-else :showup="true">
+          <!-- <split-button v-else :showup="true">
             <template #main>
               <span>Check-In</span>
             </template>
@@ -180,7 +191,7 @@
                 <span class="ml-3 text-xs">Check-In</span>
               </div>
             </template>
-          </split-button>
+          </split-button> -->
         </div>
       </cornie-card-text>
 
