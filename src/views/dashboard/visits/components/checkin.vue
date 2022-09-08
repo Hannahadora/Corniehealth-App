@@ -236,7 +236,7 @@ import IAppointment from "@/types/IAppointment";
 
 import PatientSection from "./visitor.vue";
 
-
+const visitsStore = namespace("visits");
 const appointment = namespace("appointment");
 const location = namespace("location");
 const user = namespace("user");
@@ -282,7 +282,7 @@ export default class checkinModal extends Vue {
   patientId!: string;
 
   @Prop({ type: Array, default: [] })
-  patients!: object;
+  patients!: any;
 
   @Prop({ type: Array, default: [] })
   appoitmentData!: any;
@@ -295,6 +295,12 @@ export default class checkinModal extends Vue {
 
   @practitioner.Action
   fetchPractitioners!: () => Promise<void>;
+
+  @visitsStore.State
+  visits!: any[];
+
+  @visitsStore.Action
+  getVisits!: () => Promise<void>;
 
   
   @appointment.State
@@ -349,6 +355,10 @@ export default class checkinModal extends Vue {
       locationId: this.authCurrentLocation,
       patientId: this.patientId || this.patientIdAppoitment.toString(),
     };
+  }
+
+  get findPatientDetails(){
+    return this.visits.find((visit:any) => visit?.patient?.id === this.patientId )
   }
 
   get allPractitioner() {
@@ -473,6 +483,7 @@ export default class checkinModal extends Vue {
 
   async created() {
     if (this.appiontmentid) await this.fetchBill();
+    await this.getVisits();
     this.fetchPatientAppointment();
     await this.fetchPractitioners();
     await this.fetchLocations();

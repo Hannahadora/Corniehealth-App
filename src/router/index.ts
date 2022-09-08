@@ -323,6 +323,21 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
       },
       {
+        path: "specialistrefferal",
+        name: "Specialist Referrals",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
+      },
+      {        
+        path: "refferalinivite",
+        name: "Refferal Invite",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/refferals/index.vue"),
+      },
+      {   
+        path: "one-time-access",
+        name: "One Time Access",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/onetimeaccess/index.vue"),
+      },
+      {
         path: "access-control",
         name: "Access Control & Priviledges",
         component: () => import("@/views/dashboardPatients/patients/account/security/access-control.vue"),
@@ -348,17 +363,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/dashboard/billingAccount/index.vue"),
       },
       {
-        path: "specialist-refferal",
-        name: "Specialist Referrals",
-        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
-      },
-      {        
-        path: "one-time-access",
-        name: "One Time Access",
-        component: () => import("@/views/dashboardPatients/patients/dashboard/onetimeaccess/index.vue"),
-      },
-      {
-        path: "visits-patients",
+        path: "visitspatients",
         name: "Visits Patients",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/index.vue"),
       },

@@ -109,13 +109,13 @@
 
     <div class="p-2" v-if="activeTab === 1">
       <cornie-table
-        v-model="activeVisits"
-        :columns="headers"
+        v-model="itemsActiveVisits"
+        :columns="headers2"
         @filter="filterAdvanced = true"
       >
         <template #name="{ item }">
           <div class="flex items-center">
-            <avatar class="w-5 h-5" :src="item.profilePhoto" />
+            <avatar class="w-5 h-5" :src="item.patient.profilePhoto" />
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
@@ -304,6 +304,13 @@ export default class ExistingState extends Vue {
   @visitsStore.State
   visits!: any;
 
+  @visitsStore.State
+  practitionervisits!: any[];
+
+  @visitsStore.Action
+  fetchPractitonerVisits!: (practitonerId: string) => Promise<void>;
+
+
   @userStore.State
   user!: User;
 
@@ -372,6 +379,38 @@ export default class ExistingState extends Vue {
     },
   ];
 
+  headers2 = [
+    {
+      title: "Name",
+      key: "name",
+      show: true,
+    },
+    {
+      title: "MRN",
+      key: "mrn",
+      show: true,
+    },
+    {
+      title: "GENDER",
+      key: "gender",
+      show: true,
+    },
+    {
+      title: "D.O.B",
+      key: "dateOfBirth",
+      show: true,
+    },
+    {
+      title: "EMAIL",
+      key: "email",
+      show: true,
+    },
+    {
+      title: "PHONE NUMBER",
+      key: "phone",
+      show: true,
+    },
+  ];
   get items() {
     return this.patients.map((patient) => {
       // ;
@@ -383,6 +422,24 @@ export default class ExistingState extends Vue {
         name: `${patient.firstname} ${patient.lastname}`,
         phone: `${contact?.phone?.dialCode}${contact?.phone?.number}`,
         email: contact?.email,
+      };
+    });
+  }
+
+  get itemsActiveVisits() {
+    return this.practitionervisits.map((patient:any) => {
+      // ;
+      const contact = patient?.contactInfo?.find(
+        (contact:any) => contact.phone?.number
+      );
+      return {
+        ...patient,
+        name: `${patient.patient.firstname} ${patient.patient.lastname}`,
+        phone: `${patient.checkedInBy?.phone?.dialCode}${patient.checkedInBy?.phone?.number}`,
+        email: patient.patient?.email || '',
+        mrn:patient.patient.mrn,
+        gender:patient.patient.gender || '',
+        dateOfBirth:patient.patient.dateOfBirth || '',
       };
     });
   }
@@ -505,6 +562,7 @@ export default class ExistingState extends Vue {
 
   async created() {
     if (!this.practitionerAuthenticated) this.showAuthModal = true;
+    await this.fetchPractitonerVisits(this.authPractitioner?.id);
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     this.visits?.map((visit: any) => {

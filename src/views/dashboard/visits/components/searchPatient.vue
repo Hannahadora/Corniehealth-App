@@ -34,8 +34,8 @@
                     </template>
                     </icon-input>
                  </span>
-                  <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-auto']" 
-                 class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-auto mt-2 svelte-5uyqqj" style="width:96%">
+                  <div :class="[!showDatalist ? 'hidden' : 'o', filteredItems.length === 0 ? 'h-20' : 'h-72']" 
+                 class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded  overflow-y-auto mt-2 svelte-5uyqqj" style="width:96%">
                         <div class="flex flex-col w-full p-3">
                             <div v-for="(item, i) in filteredItems"
                                 :key="i"
