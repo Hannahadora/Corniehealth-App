@@ -25,7 +25,12 @@
             title="Subscription"
             :opened="false"
           >
-            <div class="grid grid-cols-2 gap-3 mt-6">
+            <div class="p-2 text-sm" style="background: #f0f4fe">
+              Source your regular medications and care for yourself and your
+              loved ones. You can save upto 59% off regular retail prices each
+              time you receive your medications from our virtual pharmacy.
+            </div>
+            <div class="flex gap-5 mt-6">
               <cornie-radio
                 name="subscriberModel"
                 v-model="subscriberModel"
@@ -42,7 +47,10 @@
               />
             </div>
 
-            <div v-if="subscriberModel === 'self'" class="grid grid-cols-2 gap-3 mt-6">
+            <div
+              v-if="subscriberModel === 'self'"
+              class="grid grid-cols-2 gap-6 mt-6"
+            >
               <cornie-select
                 class="w-full"
                 label="Medical Condition"
@@ -50,317 +58,77 @@
                 v-model="form.condition"
                 :items="conditionsList"
               />
+              <div class="relative">
+                <span
+                  class="absolute top-0 right-0 text-red-500 text-sm font-semibold"
+                  >Add Physician</span
+                >
+                <cornie-input
+                  class="w-full"
+                  label="Attending Physician"
+                  placeholder="Search"
+                  v-model="form.physician"
+                />
+              </div>
+              <div class="w-full cursor-pointer">
+                <cornie-input
+                  v-bind="$attrs"
+                  label="Allergies (Specify if known)"
+                  placeholder="--Select--"
+                  v-model="form.allergy"
+                >
+                  <template #append-inner>
+                    <plus-icon class="fill-current text-danger" />
+                  </template>
+                </cornie-input>
+              </div>
+              <cornie-input
+                class="w-full"
+                label="Other Medical Condition (Specify if known)"
+                placeholder="--Enter--"
+                v-model="form.otherCondition"
+              />
             </div>
-          </accordion-component>
 
-          <accordion-component
-            class="text-primary"
-            title="Effective"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <date-picker
+            <div
+              v-if="subscriberModel === 'others'"
+              class="grid grid-cols-2 gap-6 mt-6"
+            >
+              <cornie-input
                 class="w-full"
-                label="Start Date/Time"
-                v-model:date="effective.period.startDate"
-                v-model:time="effective.period.startTime"
-                v-if="effectiveType == 'period'"
+                label="Full Name"
+                placeholder="--Enter--"
+                v-model="other.fullname"
               />
               <date-picker
                 class="w-full"
-                label="End Date/Time"
-                v-model:date="effective.period.endDate"
-                v-model:time="effective.period.endTime"
-                v-if="effectiveType == 'period'"
-              />
-              <date-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="effective.instant.date"
-                v-model:time="effective.instant.time"
-                v-if="effectiveType == 'instant'"
-              />
-              <date-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="effective.date"
-                v-model:time="effective.time"
-                v-if="effectiveType == 'date-time'"
+                label="Date of Birth"
+                v-model:date="other.dob"
+                v-model:time="other.tob"
               />
               <cornie-select
                 class="w-full"
-                label="Timezone"
-                placeholder="Select"
-                v-model="effective.instant.timeZone"
-                :items="['a', 'b']"
-                v-if="effectiveType == 'instant'"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Issue Info"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <date-picker
-                class="w-full"
-                label="Date/Time"
-                v-model:date="issued.date"
-                v-model:time="issued.time"
-              />
-              <practitioner-select
-                :rules="required"
-                class="w-full"
-                label="Performer"
-                placeholder="Select"
-                v-model="issueInfo.performer"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Value"
-            :opened="false"
-          >
-            <div>
-              <value-form @get-value="setValue" />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Reason Info"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-input
-                class="w-full"
-                label="Date Absent Reason"
-                placeholder="Enter"
-                v-model="reasonInfo.dateAbsentReason"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/observation-interpretation"
-                class="w-full"
-                label="Interpretation"
-                placeholder="Interpretation"
-                v-model="reasonInfo.interpretation"
-              />
-
-              <cornie-input
-                class="w-full"
-                label="Note"
-                placeholder="Note"
-                v-model="reasonInfo.note"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/body-site"
-                class="w-full"
-                label="Body Site"
-                placeholder="Select"
-                v-model="reasonInfo.bodysite"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/observation-methods"
-                class="w-full"
-                label="Method"
-                placeholder="Select"
-                v-model="reasonInfo.method"
+                label="Gender"
+                placeholder="--Select--"
+                v-model="other.gender"
+                :items="['Male', 'Female']"
               />
               <cornie-input
                 class="w-full"
-                label="Specimen"
-                placeholder="Autoloaded"
-                v-model="reasonInfo.specimen"
-                disabled
+                label="Email"
+                placeholder="--Enter--"
+                v-model="other.email"
               />
-              <!-- <cornie-select
-                  class="w-full"
-                  label="Device"
-                  placeholder="Device"
-                  v-model="reasonInfo.device"
-                  :items="['a', 'b']"
-                /> -->
-              <div
-                class="w-full cursor-pointer"
-                @click="openReferenceModal('device', ['Device'])"
-              >
-                <cornie-input
-                  v-bind="$attrs"
-                  label="Device"
-                  placeholder="Device"
-                  v-model="reasonInfo.device"
-                >
-                  <template #append-inner>
-                    <plus-icon class="fill-current text-danger" />
-                  </template>
-                </cornie-input>
+              
+              <div class="col-span-2 grid grid-cols-2">
+                <phone-input
+                  label="Phone Number"
+                  v-model:code="dialCode"
+                  v-model="phoneNumber"
+                  :rules="requiredString"
+                  :readonly="readonly"
+                />
               </div>
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Reference Range"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-input
-                class="w-full"
-                label="Low"
-                placeholder="Select"
-                v-model="referenceRange.low"
-              />
-              <cornie-input
-                class="w-full"
-                label="high"
-                placeholder="High"
-                v-model="referenceRange.high"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/observation-methods"
-                class="w-full"
-                label="Type"
-                placeholder="Select"
-                v-model="referenceRange.type"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/referencerange-appliesto"
-                class="w-full"
-                label="Applies To"
-                placeholder="Select"
-                v-model="referenceRange.appliesTo"
-              />
-              <cornie-input
-                class="w-full"
-                label="Age"
-                placeholder="Enter"
-                v-model="referenceRange.age"
-              />
-              <cornie-input
-                class="w-full"
-                label="Text"
-                placeholder="Enter"
-                v-model="referenceRange.text"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Member"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <div
-                class="w-full cursor-pointer"
-                @click="
-                  openReferenceModal('hasMember', [
-                    'Observation',
-                    'QuestionnaireResponse',
-                    'MolecularSequence',
-                  ])
-                "
-              >
-                <cornie-input
-                  v-bind="$attrs"
-                  label="Has Member"
-                  placeholder="Select"
-                  v-model="member.hasMemer"
-                >
-                  <template #append-inner>
-                    <plus-icon class="fill-current text-danger" />
-                  </template>
-                </cornie-input>
-              </div>
-              <div
-                class="w-full cursor-pointer"
-                @click="
-                  openReferenceModal('derivedFrom', [
-                    'DocumentReference',
-                    'ImagingStudy',
-                    'Media',
-                    'QuestionnaireResponse',
-                    'Observation',
-                    'MolecularSequence',
-                  ])
-                "
-              >
-                <cornie-input
-                  v-bind="$attrs"
-                  label="Derived From"
-                  placeholder="Select"
-                  v-model="member.derivedFrom"
-                >
-                  <template #append-inner>
-                    <plus-icon class="fill-current text-danger" />
-                  </template>
-                </cornie-input>
-              </div>
-            </div>
-          </accordion-component>
-          <accordion-component
-            class="text-primary"
-            title="Component"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/observation-codes"
-                class="w-full"
-                label="Code"
-                placeholder="Select"
-                v-model="component.code"
-              />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Value"
-            :opened="false"
-          >
-            <div>
-              <value-form :value="value" />
-            </div>
-          </accordion-component>
-
-          <accordion-component
-            class="text-primary"
-            title="Reason Info"
-            :opened="false"
-          >
-            <div class="grid grid-cols-2 gap-6 py-6">
-              <cornie-input
-                class="w-full"
-                label="Date Absent Reason"
-                placeholder="Enter"
-                v-model="reasonInfo.dateAbsentReason"
-              />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/observation-interpretation"
-                class="w-full"
-                label="Interpretation"
-                placeholder="Interpretation"
-                v-model="reasonInfo.interpretation"
-              />
-              <cornie-input
-                class="w-full"
-                label="Range(min)"
-                placeholder="0"
-                v-model="rangeMin"
-                :rules="required"
-              />
-              <cornie-input
-                class="w-full"
-                label="Range(max)"
-                placeholder="0"
-                v-model="rangeMax"
-                :rules="required"
-              />
             </div>
           </accordion-component>
         </v-form>
@@ -456,6 +224,41 @@ export default class MedicationSubscriptionModal extends Vue {
   loading = false;
   opened = true;
   subscriberModel = "self";
+
+  form: any = {
+    condition: "",
+    otherCondition: "",
+    allergy: "",
+    physician: "",
+  };
+  other: any = {
+    fullname: "",
+    gender: "",
+    email: "",
+    dob: "",
+    tob: "",
+    
+  };
+  conditionsList: any = [
+    "Hypertension (High Blood Pressure)",
+    "Coronary Heart Disease & Stroke",
+    "Prostate",
+    "High Cholesterol",
+    "Arthristis",
+    "Diabetes",
+    "Cancer",
+    "Chronic Kidney Disease and Other",
+    "Alzheimer’s Disease and Other",
+    "ALS (Lou Gehrig’s Disease)",
+    "Osteoporosis",
+    "Chronic Obstructive Pulmonary",
+    "Crohn’s Disease, Ulcerative Colitis",
+    "Obesity",
+    "Asthma",
+    "Cystic Fibrosis",
+    "Reflex Sympathetic Dystrophy (RSD)",
+    "Oral Health",
+  ];
 
   @Watch("id")
   idChanged() {}

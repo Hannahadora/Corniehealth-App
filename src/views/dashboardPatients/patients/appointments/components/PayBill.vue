@@ -26,7 +26,14 @@
           <div>
             <div class="flex justify-between">
               <p class="font-semibold text-sm">Amount Due (NGN)</p>
-              <p>{{ totalAmount }} <span @click="$emit('viewAppointment')" class="underline text-blue-400 text-xs">View Details</span> </p>
+              <p>
+                {{ totalAmount }}
+                <span
+                  @click="$emit('viewAppointment')"
+                  class="underline text-blue-400 text-xs"
+                  >View Details</span
+                >
+              </p>
             </div>
 
             <cornie-input
@@ -50,13 +57,14 @@
                 'Instant Pay',
               ]"
             />
-
-            <textarea
-              label="Note"
-              v-model="note"
-              placeholder="Type here..."
-              class="mt-4"
-            />
+            <div class="w-full">
+              <textarea
+                label="Note"
+                v-model="note"
+                placeholder="Type here..."
+                class="w-full mt-4 border p-3"
+              />
+            </div>
           </div>
         </v-form>
 
@@ -136,7 +144,7 @@ export default class PayBillModal extends Vue {
   search: any = {};
   loading: Boolean = false;
   note = "";
-  paymentType = ""
+  paymentType = "";
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -149,17 +157,18 @@ export default class PayBillModal extends Vue {
   }
 
   async submit() {
-    const data = {
-      
-    };
+    const data = {};
     try {
       this.loading = true;
-      await cornieClient().post("/api/v1/patient-portal/appointment/reschedule", {
-        ...data,
-      });
+      await cornieClient().post(
+        "/api/v1/patient-portal/appointment/reschedule",
+        {
+          ...data,
+        }
+      );
       this.$emit("bill-payed");
       window.notify({
-        msg: "Bill has been peyed",
+        msg: "Bill has been payed",
         status: "success",
       });
     } catch (error: any) {
@@ -171,8 +180,25 @@ export default class PayBillModal extends Vue {
       this.loading = false;
     }
   }
+  async generateBillId() {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        `/api/v1/patient-portal/pay-bill/get-appointment-bill/${this.appointment?.id}`
+      );
+    } catch (error: any) {
+      window.notify({
+        msg: "There was error generating bill id",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
 
-  created() {}
+  async created() {
+    // await this.generateBillId();
+  }
 }
 </script>
 

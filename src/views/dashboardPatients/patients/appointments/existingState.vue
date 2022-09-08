@@ -236,6 +236,7 @@ export default class AppointmentExistingState extends Vue {
   showAppointmentDetail = false;
   showRescheduleModal = false;
   showPayBill = false;
+  bill: any;
 
   @patients.State
   patients!: IPatient[];
@@ -322,6 +323,7 @@ export default class AppointmentExistingState extends Vue {
   payBill(item: any) {
     this.showPayBill = true;
     this.selectedAppointment = item;
+    this.generateBillId(item.id)
   }
 
   get patientId() {
@@ -348,6 +350,23 @@ export default class AppointmentExistingState extends Vue {
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
+  }
+
+  async generateBillId(appointmentId: string) {
+    try {
+      this.loading = true;
+     const { data } =  await cornieClient().get(
+        `/api/v1/patient-portal/pay-bill/get-appointment-bill/${appointmentId}`
+      );
+      this.bill = data
+    } catch (error: any) {
+      window.notify({
+        msg: "There was error generating bill id",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   async fetchAppointments() {
