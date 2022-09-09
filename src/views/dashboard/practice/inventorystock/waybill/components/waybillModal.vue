@@ -604,8 +604,8 @@ export default class waybillModal extends Vue {
       issuerCategory: this.issuerCategory,
       issuerId: this.authPractitioner.id,
       items: this.item.map(this.buildPayload),
-      materialRequestId: this.requestId || null,
-      materialReturnId: this.returnId || null
+      materialRequestId: this.requestId || undefined,
+      materialReturnId: this.returnId || undefined
     };
   }
 
@@ -680,7 +680,7 @@ export default class waybillModal extends Vue {
         this.done();
       }
     } catch (error: any) {
-      window.notify({ msg: error.response.data.message, status: "error" });
+      window.notify({ msg: "Waybill not Updated", status: "error" });
     }
   }
   async completeDraft() {
@@ -704,15 +704,16 @@ export default class waybillModal extends Vue {
   }
 
   async removeItem(index: number) {
-    try {
-      const confirmed = await window.confirmAction({
-        message: "Are you sure you want to delete this item?",
-        title: "Delete Item",
-      });
-      if (confirmed) {
-        this.item.splice(index, 1);
-      }
-    } catch (error) {}
+    this.item.splice(index, 1);
+    // try {
+    //   const confirmed = await window.confirmAction({
+    //     message: "Are you sure you want to delete this item?",
+    //     title: "Delete Item",
+    //   });
+    //   if (confirmed) {
+    //     this.item.splice(index, 1);
+    //   }
+    // } catch (error) {}
   }
 
   get allLocations() {

@@ -31,7 +31,7 @@ const settings: ISetting = {
   "Users & Security": [
     {
       name: "Account Security",
-      to: "account-security",
+      to: "account-security-users",
       icon: "security-icon",
     },
     { name: "Domains", to: "domains", icon: "domain-icon" },

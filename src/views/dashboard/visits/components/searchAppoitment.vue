@@ -117,7 +117,7 @@ function defaultFilter(item: any, query: string) {
 
 
 @Options({
-  name: "searchPatient",
+  name: "searchPatientAppointment",
   components: {
     ...CornieCard,
     CornieIconBtn,
@@ -131,7 +131,7 @@ function defaultFilter(item: any, query: string) {
     CornieBtn,
   },
 })
-export default class searchPatient extends Vue {
+export default class searchPatientAppointment extends Vue {
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 

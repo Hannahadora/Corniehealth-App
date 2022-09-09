@@ -25,7 +25,7 @@
           <div class="grid grid-cols-3 gap-4 w-full mt-5">
             <div>
               <p class="text-gray-400 italic text-sm">Allergy Intolerance ID</p>
-              <span class="text-sm">{{ allergy.id }}</span>
+              <span class="text-sm">{{ allergy.identifier }}</span>
             </div>
             <div>
               <p class="text-gray-400 italic text-sm">Clinical Status</p>

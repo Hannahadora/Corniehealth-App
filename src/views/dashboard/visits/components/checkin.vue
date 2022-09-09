@@ -79,19 +79,19 @@
                   label="Time"
                   placeholder="00:00"
                   class="w-full border-1 border-gray-300 rounded-lg px-2 py-2"
-                  v-model="startTime"
+                  v-model="findPatientDetails.checkInTime"
                 />
             </div>
             <div class="mt-2">
-              <date-picker :label="'Date'"  v-model="date" />
+              <date-picker :label="'Date'"    v-model="findPatientDetails.createdAt" :disabled="true"/>
             </div>
           </div>
           <div class="border-b-2 mt-6 border-dashed border-gray-200">
              <cornie-input
-             v-if="Object.keys(practitionerData).length > 0"
+             v-if="Object.keys(findPatientDetails).length > 0"
               :label="'Physician'"
               placeholder="--Select--"
-              :modelValue="practitionerData.firstName +' '+ practitionerData.lastName"
+              :modelValue="findPatientDetails.checkedInBy.firstName +' '+ findPatientDetails.checkedInBy.lastName"
               class="w-full mt-4"
               :disabled="true"
             />
@@ -104,6 +104,16 @@
               class="w-full mt-4"
             />
             <cornie-select
+            v-if="Object.keys(findPatientDetails).length > 0"
+              :label="'Room'"
+              placeholder="--Select--"
+              v-model="findPatientDetails.room.id"
+              :items="rooms"
+              class="w-full mt-4"
+              :readonly="true"
+            />
+            <cornie-select
+            v-else
               :label="'Room'"
               placeholder="--Select--"
               v-model="roomId"
@@ -345,11 +355,15 @@ export default class checkinModal extends Vue {
     }));
   }
 
+  get timeSet(){
+    return this.findPatientDetails.checkInTime.toLocaleTimeString('en-US')
+  }
+
 
   get payload() {
     this.practitioner = this.practitionerData.id
     return {
-      roomId: this.roomId,
+      roomId: this.roomId || this.findPatientDetails.room.id,
       notes: this.notes,
       // startTime: this.startTime,
       locationId: this.authCurrentLocation,

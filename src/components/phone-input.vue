@@ -20,7 +20,7 @@
       v-model="valueSync"
     >
       <span class="flex w-full">
-        <span class="w-full flex">
+        <span class="w-full flex" :class="{'bg-gray-100 border-gray-100': disabled}">
           <field
             :name="`${inputName}-code`"
             v-slot="{ meta: codeMeta, handleChange, errorMessage: codeError }"
@@ -31,9 +31,11 @@
               class="w-full h-full rounded-r-none"
               :items="codes"
               v-model="codeSync"
+              :readonly="disabled"
               :class="{
                 'border-red-500': Boolean(codeError),
                 'border-green-400': codeMeta.valid && codeMeta.touched,
+                'bg-gray-100 border-gray-100': disabled,
               }"
               @update:modelValue="handleChange"
             >
@@ -67,6 +69,7 @@
             :class="{
               'border-red-500': Boolean(errorMessage),
               'border-green-400': meta.valid && meta.touched,
+              'bg-gray-100 border-gray-100': disabled,
             }"
             class="rounded-r-lg border-1 border-gray-300 p-2 flex-grow w-full focus:outline-none"
             type="tel"
@@ -75,6 +78,7 @@
             maxlength="11"
             placeholder=""
             style="line-height: 10px"
+            :readonly="disabled"
           />
         </span>
       </span>
@@ -130,6 +134,9 @@
 
     @PropSync("code", { default: "+234" })
     codeSync!: string;
+
+    @Prop({ type: Boolean, default: false })
+  disabled!: boolean;
 
     @Prop({ type: String, default: "" })
     label!: string;

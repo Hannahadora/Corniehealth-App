@@ -319,7 +319,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "account-security",
-        name: "Account Security",
+        name: "Account Security Patient Portal",
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
       },
       {
@@ -344,7 +344,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "appointments",
-        name: "Appointments",
+        name: "Appointments Patients Portal",
         component: () => import("@/views/dashboardPatients/patients/appointments/index.vue"),
       },
       {
