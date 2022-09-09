@@ -17,254 +17,262 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable">
-          <div
-            class="w-full pb-2 mb-7 border-gray-300"
-          >
-            <span class="text-dark text-sm font-medium">Add providers and select a default.</span>
-            <div class="">
-              <span
-                class="mb-2 w-full rounded-full"
-                @click="showDatalist = !showDatalist"
-              >
-                <icon-input
-                  autocomplete="off"
-                  class="border border-gray-400 py-2 rounded-full focus:outline-none"
-                  type="search"
-                  placeholder="Search by name or email"
-                  v-model="query"
+        <v-form ref="form">
+
+            <div
+              class="w-full pb-2 mb-7 border-gray-300"
+            >
+              <span class="text-dark text-sm font-medium">Add providers and select a default.</span>
+              <div class="">
+                <span
+                  class="mb-2 w-full rounded-full"
+                  @click="showDatalist = !showDatalist"
                 >
-                  <template v-slot:prepend>
-                    <search-icon />
-                  </template>
-                </icon-input>
-              </span>
-              <div
-                :class="[
-                  !showDatalist ? 'hidden' : 'o',
-                  searchResults.length === 0 ? 'h-20' : 'h-auto',
-                ]"
-                class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-                style="width: 96%"
-                
-              >
-                <div class="flex flex-col w-full p-2">
-                  <div
-                    v-for="(item, i) in searchResults"
-                    :key="i"
-                    @click="selected(item)"
-                    class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+                  <icon-input
+                    autocomplete="off"
+                    class="border border-gray-400 py-2 rounded-full focus:outline-none"
+                    type="search"
+                    placeholder="Search by name or email"
+                    v-model="query"
                   >
+                    <template v-slot:prepend>
+                      <search-icon />
+                    </template>
+                  </icon-input>
+                </span>
+                <div
+                  :class="[
+                    !showDatalist ? 'hidden' : 'o',
+                    searchResults.length === 0 ? 'h-20' : 'h-auto',
+                  ]"
+                  class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
+                  style="width: 96%"
+                  
+                >
+                  <div class="flex flex-col w-full p-2">
                     <div
-                      class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+                      v-for="(item, i) in searchResults"
+                      :key="i"
+                      @click="selected(item)"
+                      class="cursor-pointer w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
                     >
-                      {{ item.name }}
+                      <div
+                        class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
+                      >
+                        {{ item.name }}
+                      </div>
                     </div>
+                    <!-- <div v-if="searchResults.length === 0">
+                      <span
+                        class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                        >No result found!</span
+                      >
+                    </div> -->
                   </div>
-                  <!-- <div v-if="searchResults.length === 0">
-                    <span
-                      class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
-                      >No result found!</span
-                    >
-                  </div> -->
                 </div>
               </div>
             </div>
-          </div>
-           <cornie-select
-                 v-model="type"
-                :items="['pharmacy', 'lab', 'clinic']"
-                label="Type"
-                class="w-full"
-                placeholder="--Select--"
-              
+            <cornie-select
+                  v-model="type"
+                  :items="['pharmacy', 'lab', 'clinic']"
+                  label="Type"
+                  class="w-full"
+                  placeholder="--Select--"
+                :rules="required"
+                :required="true"
+              />
+            <cornie-input
+              label="Practice Name"
+              class="w-full mb-8"
+              placeholder="--Enter--"
+              v-model="name"
+            :disabled="true"
             />
-          <cornie-input
-            label="Practice Name"
-            class="w-full mb-8"
-            placeholder="--Enter--"
-            v-model="name"
-          :disabled="true"
-          />
-          <cornie-input
-            label="Email Address"
-            class="w-full mb-8"
-            placeholder="--Enter--/--Autoloaded--"
-            v-model="email"
-           :disabled="true"
-          />
-          <div class="mb-8">
-              <phone-input
-                   v-model="phone.number"
-                   v-model:code="phone.dialCode"
-                   :rules="requiredRule"
-                   label="Phone Number"
-                   class="w-full"
-               />
-          </div>
-            <div class="w-full flex justify-end border-b border-gray-200 pb-5">
-                <button
-                    @click="pushProviders"
-                    type="button"
-                    class="border-primary border-2 py-2  px-8 mr-3 rounded-lg text-primary"
-                >
-                    Add
-                </button>
+            <cornie-input
+              label="Email Address"
+              class="w-full mb-8"
+              placeholder="--Enter--/--Autoloaded--"
+              v-model="email"
+            :disabled="true"
+            :rules="emailRule"
+            />
+            <div class="mb-8">
+                <phone-input
+                    v-model="phone.number"
+                    v-model:code="phone.dialCode"
+                    :rules="requiredRule"
+                    label="Phone Number"
+                    class="w-full"
+                    :disabled="true"
+                    :readonly="true"
+                :required="true"
+                />
             </div>
-            <div class="mt-5">
-                <span class="uppercase text-black font-bold text-sm">Select default Provider</span>
+              <div class="w-full flex justify-end border-b border-gray-200 pb-5">
+                  <button
+                      @click="pushProviders"
+                      type="button"
+                      class="border-primary border-2 py-2  px-8 mr-3 rounded-lg text-primary"
+                  >
+                      Add
+                  </button>
+              </div>
+              <div class="mt-5">
+                  <span class="uppercase text-black font-bold text-sm">Select default Provider</span>
 
-                <div v-if="patientproviders.length > 0 && id">
-                  <div v-if="PharmarcyProviders2.length > 0">
-                    <accordion-component :title="'Pharmacy'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in PharmarcyProviders2" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                    <cornie-radio
-                                    v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
-                                    </div>
-                                </div>
-                                <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
-                                    <delete-icon />
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
+                  <div v-if="patientproviders.length > 0 && id">
+                    <div v-if="PharmarcyProviders2.length > 0">
+                      <accordion-component :title="'Pharmacy'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in PharmarcyProviders2" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
+                                      <delete-icon />
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
+                    <div v-if="LabProviders2.length > 0">
+                      <accordion-component :title="'Lab'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in LabProviders2" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
+                                      <delete-icon />
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
+                    <div v-if="ClinicProviders2.length > 0">
+                      <accordion-component :title="'Clinic'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in ClinicProviders2" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
+                                      <delete-icon />
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
                   </div>
-                  <div v-if="LabProviders2.length > 0">
-                    <accordion-component :title="'Lab'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in LabProviders2" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                     <cornie-radio
-                                     v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
-                                    </div>
-                                </div>
-                                <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
-                                    <delete-icon />
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
-                  </div>
-                  <div v-if="ClinicProviders2.length > 0">
-                    <accordion-component :title="'Clinic'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in ClinicProviders2" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                     <cornie-radio
-                                     v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.provider.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.provider.email }}</p>
-                                    </div>
-                                </div>
-                                <div class="cursor-pointer" @click="deleteProviderWithId(pharmacy.provider.id)">
-                                    <delete-icon />
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
-                  </div>
-                </div>
 
 
-                <div v-else>
-                  <div v-if="PharmarcyProviders.length > 0">
-                    <accordion-component :title="'Pharmacy'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in PharmarcyProviders" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                    <cornie-radio
-                                    v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <delete-icon @click="deleteProviderWithoutId(index)"/>
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
+                  <div v-else>
+                    <div v-if="PharmarcyProviders.length > 0">
+                      <accordion-component :title="'Pharmacy'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in PharmarcyProviders" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <delete-icon @click="deleteProviderWithoutId(index)"/>
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
+                    <div v-if="LabProviders.length > 0">
+                      <accordion-component :title="'Lab'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in LabProviders" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <delete-icon @click="deleteProviderWithoutId(index)"/>
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
+                    <div v-if="ClinicProviders.length > 0">
+                      <accordion-component :title="'Clinic'" :opened="true">
+                          <template v-slot:default>
+                              <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in ClinicProviders" :key="index">
+                                  <div class="flex space-x-2 items-center">
+                                      <cornie-radio
+                                      v-model="pharmacy.default"
+                                      :name="pharmacy"
+                                      @update:modelValue="setDefault"
+                                      :value="pharmacy.id"
+                                      />
+                                      <div>
+                                          <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
+                                          <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <delete-icon @click="deleteProviderWithoutId(index)"/>
+                                  </div>
+                              </div>
+                            
+                          </template>
+                      </accordion-component>
+                    </div>
                   </div>
-                  <div v-if="LabProviders.length > 0">
-                    <accordion-component :title="'Lab'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in LabProviders" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                     <cornie-radio
-                                     v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <delete-icon @click="deleteProviderWithoutId(index)"/>
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
-                  </div>
-                  <div v-if="ClinicProviders.length > 0">
-                    <accordion-component :title="'Clinic'" :opened="true">
-                        <template v-slot:default>
-                            <div class="w-full flex justify-between mt-5" v-for="(pharmacy,index) in ClinicProviders" :key="index">
-                                <div class="flex space-x-2 items-center">
-                                     <cornie-radio
-                                     v-model="pharmacy.default"
-                                    :name="pharmacy"
-                                    @update:modelValue="setDefault"
-                                    :value="pharmacy.id"
-                                    />
-                                    <div>
-                                        <span class="text-black text-sm font-bold mb-0 capitalize">{{ pharmacy.name }}</span>
-                                        <p class="text-xs text-gray-300">{{ pharmacy.email }}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <delete-icon @click="deleteProviderWithoutId(index)"/>
-                                </div>
-                            </div>
-                          
-                        </template>
-                    </accordion-component>
-                  </div>
-                </div>
 
-            </div>
+              </div>
+        </v-form>
 
      
       </cornie-card-text>
@@ -372,6 +380,8 @@ export default class OtherDoctorModal extends Vue {
   @patientprovider.Action
   deletePatientProvider!: (id: string) => Promise<boolean>;
 
+  required = string().required();
+
 
   query = "";
   showDatalist = false;
@@ -400,7 +410,7 @@ export default class OtherDoctorModal extends Vue {
     "Director must be at least 16yrs."
   );
   //Email Valitdaiton
-  emailRule = string().email("A valid email is required").required();
+  emailRule = string().email("A valid email is required");
   orderBy: Sorter = () => 1;
 
   @Watch("query")
@@ -455,7 +465,7 @@ export default class OtherDoctorModal extends Vue {
       // await this.fetchPatientProvider()
       this.reset();
     } catch (error:any) {
-      window.notify({ msg: "Primary Doctor Not Added", status: "error" });
+     // window.notify({ msg: "Primary Doctor Not Added", status: "error" });
     }
   }
 
@@ -544,8 +554,8 @@ get PharmarcyProviders2(){
 
 
  async createProvider() {
-    // const { valid } = await (this.$refs.form as any).validate();
-    // if (!valid) return;
+    const { valid } = await (this.$refs.form as any).validate();
+    if (!valid) return;
      this.done();
      this.resetForm();
    

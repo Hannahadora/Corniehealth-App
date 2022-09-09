@@ -496,12 +496,12 @@ export default class visitExistingState extends Vue {
       show: true,
       noOrder: true,
     },
-    {
-      title: "Patient",
-      key: "patientName",
-      show: true,
-      noOrder: true,
-    },
+    // {
+    //   title: "Patient",
+    //   key: "patientName",
+    //   show: true,
+    //   noOrder: true,
+    // },
     {
       title: "patient",
       key: "patient",
@@ -559,19 +559,14 @@ export default class visitExistingState extends Vue {
 
   get items() {
     const visits = this.visits.map((visit) => {
-      const checkInTime = new Date(visit.checkInTime).toLocaleDateString(
-        "en-US"
-      );
-
-      const patient = visit.patient;
-      const patientName = `${patient.firstname} ${patient.lastname}` ?? "";
-      const checkOutTime = Boolean(visit.checkOutTime)
-        ? new Date(visit.checkOutTime).toLocaleDateString("en-US")
-        : "--";
+      (visit as any).checkInTime = new Date(
+        (visit as any).checkInTime
+      ).toLocaleTimeString('en-US');
+      (visit as any).checkOutTime = new Date(
+        (visit as any).checkOutTime
+      ).toLocaleTimeString('en-US');
       return {
         ...visit,
-        checkInTime,
-        checkOutTime,
         action: visit.id,
         type: 'xxxxxx',
         period: visit.checkInTime +'-'+ visit.checkOutTime,

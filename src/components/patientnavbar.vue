@@ -105,7 +105,7 @@
                   </span>
                 </li>             
                 <li class="flex w-full border-b border-gray-200  mb-5 pb-5">
-                      <span class="text-sm text-black font-bold">MRN - #{{ mrn }}</span>
+                      <span class="text-sm text-black font-bold">MRN - {{ mrn }}</span>
                 </li>
                 <li class="w-full mb-4">
                   <div class="flex w-full justify-between">
