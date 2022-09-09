@@ -330,6 +330,8 @@
       }
     }
 
+  
+
     async fetchData() {
       if (this.selectedTab === "doctors") {
         await this.fetchPractitioners();

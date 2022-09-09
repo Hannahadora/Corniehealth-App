@@ -19,7 +19,7 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showCheckinPane(item.id)"
+          @click="viewItem(item)"
         >
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
@@ -134,11 +134,13 @@
       @appointment-rescheduled="appointmentRescheduled"
       v-model="showRescheduleModal"
       :appointment="selectedAppointment"
+      :locations="practitionerLocations"
     />
     <pay-bill-modal
       @bill-payed="billPayed"
       v-model="showPayBill"
       :appointment="selectedAppointment"
+      :bill="bill"
       @viewAppointment="
         showPayBill = false;
         showAppointmentDetail = true;
@@ -236,7 +238,8 @@ export default class AppointmentExistingState extends Vue {
   showAppointmentDetail = false;
   showRescheduleModal = false;
   showPayBill = false;
-  bill: any;
+  bill: any = {};
+  practitionerLocations: any = []
 
   @patients.State
   patients!: IPatient[];
@@ -316,14 +319,15 @@ export default class AppointmentExistingState extends Vue {
     this.showAppointmentDetail = true;
     this.selectedAppointment = item;
   }
-  rescheduleAppointment(item: any) {
+  async rescheduleAppointment(item: any) {
     this.showRescheduleModal = true;
     this.selectedAppointment = item;
+    await this.fetchPractitionerLocations(item.practitioner.id)
   }
-  payBill(item: any) {
+  async payBill(item: any) {
     this.showPayBill = true;
     this.selectedAppointment = item;
-    this.generateBillId(item.id)
+    await this.generateBillId(item.id)
   }
 
   get patientId() {
@@ -356,7 +360,7 @@ export default class AppointmentExistingState extends Vue {
     try {
       this.loading = true;
      const { data } =  await cornieClient().get(
-        `/api/v1/patient-portal/pay-bill/get-appointment-bill/${appointmentId}`
+        `/api/v1/patient-portal/appointment/pay-bill/get-appointment-bill/${appointmentId}`
       );
       this.bill = data
     } catch (error: any) {
@@ -397,6 +401,24 @@ export default class AppointmentExistingState extends Vue {
       hour12: true,
     });
   }
+
+  
+  async fetchPractitionerLocations(practitionerId: any) {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/general/get-practitioner-location/${practitionerId}`
+        );
+        this.practitionerLocations = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching practitioner locations",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
 
   async created() {
     await this.fetchAppointments();

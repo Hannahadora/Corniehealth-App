@@ -44,19 +44,20 @@
               disabled
             />
 
+            <!-- <label class="text-left block text-xs mb-1 font-bold" for=""
+              >Payment Type</label
+            > -->
             <cornie-select
               label="Payment Type"
               v-model="paymentType"
-              placeholder="--Select--"
+              placeholder="Select a payment account type"
+              :readonly="false"
+              :items="paymentAccounts"
+              required
               class="mt-4"
-              :items="[
-                'Charge Wallet',
-                'Charge Card',
-                'Chardge HMO',
-                'Charge Corporate Account',
-                'Instant Pay',
-              ]"
-            />
+            >
+            </cornie-select>
+
             <div class="w-full">
               <textarea
                 label="Note"
@@ -145,6 +146,10 @@ export default class PayBillModal extends Vue {
   loading: Boolean = false;
   note = "";
   paymentType = "";
+  accTypes: any = [];
+  paymentAccountId = "";
+  locations = [];
+  paymentAccounts: any = [];
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -152,16 +157,31 @@ export default class PayBillModal extends Vue {
   @Prop({ type: Object, default: {} })
   appointment!: any;
 
+  @Prop({ type: Object, default: {} })
+  bill!: any;
+
+  @Watch("paymentType")
+  handler() {
+    const n = this.paymentType.split("-");
+    const x = n[n.length - 1];
+    const el = this.accTypes.find((el: any) => el.accountNo === x);
+    this.paymentAccountId =
+      el?.patient_accounts?.PatientPaymentAccountId || undefined;
+  }
+
   get totalAmount() {
-    return;
+    return this.bill?.total;
   }
 
   async submit() {
-    const data = {};
+    const data = {
+      accountId: this.paymentAccountId,
+      billId: this.bill.id,
+    };
     try {
       this.loading = true;
       await cornieClient().post(
-        "/api/v1/patient-portal/appointment/reschedule",
+        "/api/v1/patient-portal/billing",
         {
           ...data,
         }
@@ -180,15 +200,20 @@ export default class PayBillModal extends Vue {
       this.loading = false;
     }
   }
-  async generateBillId() {
+
+  async fetchPaymentAccount() {
     try {
       this.loading = true;
       const { data } = await cornieClient().get(
-        `/api/v1/patient-portal/pay-bill/get-appointment-bill/${this.appointment?.id}`
+        "/api/v1/patient-portal/payment"
+      );
+      this.accTypes = data;
+      this.paymentAccounts = this.accTypes.map(
+        (el: any) => `${el.type}-${el.accountNo}`
       );
     } catch (error: any) {
       window.notify({
-        msg: "There was error generating bill id",
+        msg: error.message,
         status: "error",
       });
     } finally {
@@ -196,8 +221,8 @@ export default class PayBillModal extends Vue {
     }
   }
 
-  async created() {
-    // await this.generateBillId();
+  created() {
+    this.fetchPaymentAccount();
   }
 }
 </script>
