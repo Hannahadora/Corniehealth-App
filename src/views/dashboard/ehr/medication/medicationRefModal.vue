@@ -93,44 +93,58 @@
                     </div>
                 </div>
                 <div class="overflow-y-auto h-96">
-                  <div>
-                      <div v-if="refType == 'condition'">
-                        <div v-for="(input, index) in conditions" :key="index">
-                        <div
-                            class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                            :class="{ 'bg-gray-100': isSelected(input) }"
-                            @click="pushValue(input)"
-                        >
-                            <div class="w-full">
-                            <div class="w-full">
-                                <p class="text-sm text-dark mb-1 font-medium">
-                                {{ medicationMapper(input.type) }}
-                                </p>
-                                <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                      </div>
-                  </div>
-                   <div v-if="refType == 'observation'">
-                      <div v-for="(input, index) in observations" :key="index">
-                      <div
-                          class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
-                          
-                          @click="pushValue(input)"
-                      >
-                          <div class="w-full">
-                          <div class="w-full">
-                              <p class="text-sm text-dark mb-1 font-medium">
-                              {{ input?.basicInfo?.subject }}
-                              </p>
-                              <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                  <div> 
+                    <div>
+                        <div v-if="refType == 'condition'">
+                          <div v-for="(input, index) in conditions" :key="index">
+                          <div
+                              class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                              :class="{ 'bg-gray-100': isSelected(input) }"
+                              @click="pushValue(input)"
+                          >
+                              <div class="w-full">
+                              <div class="w-full">
+                                  <p class="text-sm text-dark mb-1 font-medium">
+                                  {{ medicationMapper(input.type) }}
+                                  </p>
+                                  <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                              </div>
+                              </div>
                           </div>
                           </div>
-                      </div>
-                      </div>
+                        </div>
                     </div>
+                    <!-- <div v-else class="flex justify-center w-full">
+                      <h2 class="font-bold text-center">No Conditions Added!!!</h2>
+                      <p>Navigate to conditions to add a new condition.</p>
+                    </div> -->
+                  </div>
+                  <div>
+                    <div>
+                      <div v-if="refType == 'observation'">
+                         <div v-for="(input, index) in observations" :key="index">
+                         <div
+                             class="w-full mt-2 p-3 hover:bg-gray-100 cursor-pointer"
+                             
+                             @click="pushValue(input)"
+                         >
+                             <div class="w-full">
+                             <div class="w-full">
+                                 <p class="text-sm text-dark mb-1 font-medium">
+                                 {{ input?.basicInfo?.subject }}
+                                 </p>
+                                 <p class="text-xs text-gray-300">{{new Date(input.createdAt).toLocaleDateString()}}, {{new Date(input.createdAt).toLocaleTimeString()}}</p>
+                             </div>
+                             </div>
+                         </div>
+                         </div>
+                       </div>
+                    </div>
+                    <!-- <div v-else class="flex justify-center w-full">
+                      <h2 class="font-bold text-center">No Observations Added!!</h2>
+                      <p>Naviagte to observation to add a new observation.</p>
+                    </div> -->
+                  </div>
                 </div>
                </div>
             </div>

@@ -92,7 +92,7 @@ export default {
         "Are you sure you want to do this? This action cannot be undone.",
       title: "Confirm this action",
       show: false,
-      submessage: "Terms and conditions apply",
+      submessage: "",
     };
   },
   methods: {
@@ -112,7 +112,7 @@ export default {
       this.message =
         "Are you sure you want to do this? This action cannot be undone.";
       this.title = "Confirm this action";
-      this.submessage = "Terms and conditions apply";
+      this.submessage = "";
     },
     confirm(setup = {}) {
       this.message = setup.message || this.message;

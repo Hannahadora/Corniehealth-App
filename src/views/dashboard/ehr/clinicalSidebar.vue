@@ -10,12 +10,12 @@
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
           <span class="text-sm text-black font-bold mb-2">{{
-            items.fullname
+            items.fullname || patient?.firstname +' '+ patient?.lastname
           }}</span>
-          | {{ items.email }} <br />
-          <p class="my-2">MRN-{{ items.mrn }}</p>
+          | {{ items.email || patient?.email }} <br />
+          <p class="my-2">MRN-{{ items.mrn || patient?.mrn }}</p>
           <p class="mb-2">
-            {{ items.dob }}
+            {{ items.dob || patient?.dateOfBirth }}
           </p>
           <p>
             Blood Type:
@@ -254,8 +254,10 @@ export default class Settings extends Vue {
   expand = false;
   query = "";
   open = 0;
+
   @Prop({ type: Object, required: true })
-  patient!: IPatient;
+  patient!: any;
+
   get profilePhoto() {
     return this.patient.profilePhoto || "";
   }
@@ -370,7 +372,7 @@ export default class Settings extends Vue {
   }
   printPhone(patient: IPatient) {
     if (!patient?.contactInfo) return "N/A";
-    const phone = patient?.contactInfo[0].phone;
+    const phone = patient?.contactInfo[0]?.phone;
     return phone?.number || "N/A";
   }
   printGender(gender: string) {
@@ -379,11 +381,11 @@ export default class Settings extends Vue {
   }
   printEmail(patient: IPatient) {
     if (!patient?.contactInfo) return "N/A";
-    return patient?.contactInfo[0].email || "N/A";
+    return patient?.contactInfo[0]?.email || "N/A";
   }
   printAddress(patient: IPatient) {
     if (!patient?.contactInfo) return "N/A";
-    return patient?.contactInfo[0].primaryAddress || "N/A";
+    return patient?.contactInfo[0]?.primaryAddress || "N/A";
   }
   printDOB(dateOfBirth?: string) {
     if (!dateOfBirth) return "N/A";

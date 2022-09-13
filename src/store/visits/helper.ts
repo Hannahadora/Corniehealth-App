@@ -27,6 +27,7 @@ export async function getPatientVisits(patientId: string) {
   return {};
 }
 
+
 export async function fetchPractitonerVisits(practitionerId: string) {
   try {
     const response = await cornieClient().get(

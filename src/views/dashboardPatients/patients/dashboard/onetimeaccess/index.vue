@@ -12,8 +12,9 @@
         </div>
   
       <div>
-        <!-- <onetime-access-empty-state  /> -->
+        <onetime-access-empty-state  v-if="empty"/>
          <onetime-access-existing-state
+         v-else
           />
       </div>
       </div>
@@ -28,9 +29,9 @@
   import { namespace } from "vuex-class";
   import OnetimeAccessEmptyState from "./emptyState.vue";
   import OnetimeAccessExistingState from "./existingState.vue";
-  import  ISpecialistrefferal  from "@/types/ISpecialistrefferal";
+  import IOnetimeaccess from "@/types/IOnetimeaccess";
   
-  const specialistrefferal = namespace("specialistrefferal");
+  const onetimeaccess = namespace("onetimeaccess");
   
   @Options({
     name: "onetimeAccessIndex",
@@ -41,18 +42,18 @@
   })
   export default class onetimeAccessIndex extends Vue {
     get empty() {
-      return this.specialistrefferals.length < 1;
+      return this.onetimeaccesses.length < 1;
     }
   
-    @specialistrefferal.State
-    specialistrefferals!: ISpecialistrefferal[];
+    @onetimeaccess.State
+    onetimeaccesses!: IOnetimeaccess[];
   
-    @specialistrefferal.Action
-    fetchSpecialistRefferal!: () => Promise<void>;
+    @onetimeaccess.Action
+    fetchOnetimeaccess!: () => Promise<void>;
   
    
     created() {
-      this.fetchSpecialistRefferal();
+      this.fetchOnetimeaccess();
     }
   }
   </script>

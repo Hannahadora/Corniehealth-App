@@ -17,14 +17,16 @@
         </button>
       </span>
     </div>
-    <access-modal v-model="showAccessModal"/>
+    <access-modal v-model="showAccessModal" @accesssaved="accesssaved"/>
   </template>
   <script lang="ts">
   import { Options, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
 
   import AccessModal from "./temporaryaccessModal.vue";
+  import IOnetimeaccess from "@/types/IOnetimeaccess";
   
+  const onetimeaccess = namespace("onetimeaccess");
   
   
   @Options({
@@ -32,8 +34,15 @@
         AccessModal
     },
   })
-  export default class orgmptyState extends Vue {
+  export default class onetimeaccessemptyState extends Vue {
     showAccessModal = false;
+
+    @onetimeaccess.Action
+    fetchOnetimeaccess!: () => Promise<void>;
+
+    async accesssaved(){
+      await this.fetchOnetimeaccess();
+    }
   }
   </script>
   

@@ -117,6 +117,10 @@ export default class viewBill extends Vue {
 
   @Prop({ type: String, default: "" })
   id!: string;
+  
+
+  @Prop({ type: String, default: {} })
+  patientvisitbill!: any;
 
   @patientprovider.State
   primarydoctors!: any;

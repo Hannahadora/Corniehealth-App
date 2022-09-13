@@ -22,7 +22,7 @@ export default {
   },
   mutations: {
     setPractitioners(state, practitioners: IPractitioner[]) {
-      state.practitioners = [...practitioners];
+      state.practitioners = practitioners;
     },
     updatePractitioners(state, practitioners: IPractitioner[]) {
       const practitionerSet = new ObjectSet(
