@@ -31,7 +31,7 @@
           >
             <!-- <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-doctor-black.png"
+              src="@/assets/img/book-appointment/icon-doctor-black.png"
               alt=""
             /> -->
             <span class="text-lg text-grey-eth font-bold">Doctors</span>
@@ -42,10 +42,10 @@
             @click="selectTab('hospitals')"
           >
             <img
-              class="mr-2"
-              src="@/assets/book-appointment/icon-hospital-black.png"
-              alt=""
-            />
+            class="mr-2"
+            src="@/assets/img/book-appointment/icon-hospital-black.png"
+            alt=""
+          />
             <span class="text-lg text-grey-eth font-bold">Hospital/Clinic</span>
           </div>
         </div>
@@ -58,7 +58,6 @@
           :selectedSpecialty="search.specialty"
           :selectedLocation="search.location"
           @searchQuery="getSearchQuery"
-          @loadingState="getLoadingState"
         />
 
         <div>
@@ -330,6 +329,8 @@
         this.loading = false;
       }
     }
+
+  
 
     async fetchData() {
       if (this.selectedTab === "doctors") {

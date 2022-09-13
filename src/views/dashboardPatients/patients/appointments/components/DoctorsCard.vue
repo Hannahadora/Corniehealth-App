@@ -26,7 +26,7 @@
           <div class="flex items-start">
             <!-- <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-doctor-white.png"
+              src="@/assets/img/book-appointment/icon-doctor-white.png"
               alt=""
             /> -->
             <div>
@@ -37,7 +37,7 @@
           <div class="flex items-start">
             <!-- <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-doctor-white.png"
+              src="@/assets/img/book-appointment/icon-doctor-white.png"
               alt=""
             /> -->
             <div>
@@ -48,7 +48,7 @@
           <div class="flex items-start">
             <!-- <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-lang-white.png"
+              src="@/assets/img/book-appointment/icon-lang-white.png"
               alt=""
             /> -->
             <div>
@@ -59,7 +59,7 @@
           <div class="flex items-start">
             <!-- <img
               class="mr-2"
-              src="@/assets/book-appointment/icon-fee-white.png"
+              src="@/assets/img/book-appointment/icon-fee-white.png"
               alt=""
             /> -->
             <div>

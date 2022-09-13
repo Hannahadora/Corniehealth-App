@@ -61,7 +61,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-doctor-white.png"
+                    src="@/assets/img/book-appointment/icon-doctor-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -79,7 +79,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-date-white.png"
+                    src="@/assets/img/book-appointment/icon-date-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -96,7 +96,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-fee-white.png"
+                    src="@/assets/img/book-appointment/icon-fee-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -111,7 +111,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-date-white.png"
+                    src="@/assets/img/book-appointment/icon-date-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -128,7 +128,7 @@
                 <!-- <div class="flex items-start xl:mb-0 mb-6">
 						<img
 							class="mr-2"
-							src="@/assets/book-appointment/icon (3).png"
+							src="@/assets/img/book-appointment/icon (3).png"
 							alt=""
 						/>
 						<div>
@@ -144,7 +144,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-phone-white.png"
+                    src="@/assets/img/book-appointment/icon-phone-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -158,7 +158,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-mail-white.png"
+                    src="@/assets/img/book-appointment/icon-mail-white.png"
                     alt=""
                   /> -->
                   <div>
@@ -172,7 +172,7 @@
                 <div class="flex items-start xl:mb-0 mb-6">
                   <!-- <img
                     class="mr-2"
-                    src="@/assets/book-appointment/icon-location-white.png"
+                    src="@/assets/img/book-appointment/icon-location-white.png"
                     alt=""
                   /> -->
                   <div>
