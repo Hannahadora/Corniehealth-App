@@ -310,6 +310,7 @@ import { Options, Vue } from "vue-class-component";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
+import { cornieClient } from "@/plugins/http";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -628,9 +629,21 @@ export default class visitExistingState extends Vue {
   }
 
   async start(id: string) {
-    await this.startEncounter(id).then((res: any) => {
-      window.notify({ msg: "Visit Started", status: "success" });
-    });
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/visit/start-encounter",
+        {
+          visitId:id,
+          encounterId: null
+        }
+      );
+      if (response.success) {
+        // this.setPatientRequests([response.data]);
+        window.notify({ msg: "Visit Started", status: "success" });
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Visit Not Started", status: "error" });
+    }
   }
 
   async destroy(id: string) {

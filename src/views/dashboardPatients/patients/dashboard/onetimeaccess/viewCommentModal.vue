@@ -85,7 +85,7 @@
   
   
   @Options({
-    name: "TempoaryaccessModal",
+    name: "ViewCommentsModal",
     components: {
       ...CornieCard,
       CornieIconBtn,
@@ -102,12 +102,15 @@
       TextArea,
     },
   })
-  export default class TempoaryaccessModal extends Vue {
+  export default class ViewCommentsModal extends Vue {
    @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
   
     @Prop({ type: String, default: "" })
     id!: string;
+
+    @Prop({ type: String, default: [] })
+    accessComments!: any[];
 
     loading = false;
    

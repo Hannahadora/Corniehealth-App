@@ -15,7 +15,10 @@
   
         <cornie-card-text class="flex-grow scrollable">
           <v-form ref="form">
-           <div class="mt-4">
+            <div class="mt-4 py-4 px-8" v-if="accessHistory.length === 0">
+              <h3 class="text-center font-bold"> No Access History !!</h3>
+            </div>
+           <div class="mt-4" v-else>
             <cornie-table
                 :columns="rawHeaders"
                 v-model="items"
@@ -74,19 +77,14 @@
   import ReplyIcon from "@/components/icons/reply.vue"
   import TextArea from "@/components/textarea.vue";
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
-
-  import ILocation from "@/types/ILocation";
-  import IPractitioner from "@/types/IPractitioner";
   import DateTimePicker from "@/components/date-time-picker.vue";
-  
-  const appointment = namespace("appointment");
-  const location = namespace("location");
-  const user = namespace("user");
-  const practitioner = namespace("practitioner");
-  
+
+  import IOnetimeaccess from "@/types/IOnetimeaccess";
+
+  const onetimeaccess = namespace("onetimeaccess");
   
   @Options({
-    name: "TempoaryaccessModal",
+    name: "ViewAccessHistoryModal",
     components: {
       ...CornieCard,
       CornieIconBtn,
@@ -104,12 +102,21 @@
       CornieTable
     },
   })
-  export default class TempoaryaccessModal extends Vue {
+  export default class ViewAccessHistoryModal extends Vue {
    @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
   
     @Prop({ type: String, default: "" })
     id!: string;
+
+    @Prop({ type: String, default: [] })
+    accessHistory!: any[];
+
+    @onetimeaccess.State
+    onetimeacesshistory!: IOnetimeaccess[];
+  
+    @onetimeaccess.Action
+    fetchOnetimeaccessHistory!: (accessId : string) => Promise<void>;
 
     loading = false;
 
@@ -133,17 +140,32 @@
     
       this.loading = false;
     }
+    // get items() {
+    //   return [{
+    //       date: "21/01/21",
+    //       time: "09:00AM",
+    //       duration: "30 Mins"
+    //   }]
+    // }
+    
     get items() {
-      return [{
-          date: "21/01/21",
-          time: "09:00AM",
-          duration: "30 Mins"
-      }]
+      const accessHistory = this.accessHistory.map((history:any) => {
+           (history as any).createdAt = new Date(
+          (history as any).createdAt
+        ).toLocaleDateString("en-US");
+        return {
+          ...history,
+        };
+      });
+      return accessHistory
+    }
+    get accessId(){
+      return this.id
     }
 
   
     async created() {
-   
+      //this.fetchOnetimeaccessHistory(this.accessId);
     }
   }
   </script>

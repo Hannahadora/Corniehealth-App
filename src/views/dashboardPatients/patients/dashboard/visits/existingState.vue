@@ -32,17 +32,17 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showShareModal = true"
+          @click="shareVisitModal(item.encounterId)"
         >
           <diagnostic-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Diagnostics</span>
+          <span class="ml-3 text-xs">Share Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showPaybill = true"
+          @click="showBillVisitModal(item.encounterId)"
         >
           <prescibe-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Prescription</span>
+          <span class="ml-3 text-xs">Pay Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -59,14 +59,14 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showBillModal = true"
+          @click="showVisitBillModal(item.encounterId)"
         >
           <bill-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showValidateModal = true"
+          @click="showVisitValidateClaim(item.encounterId)"
         >
           <check-icon class="text-green-600 fill-current" />
           <span class="ml-3 text-xs">Validate Claim</span>
@@ -187,7 +187,7 @@
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
-  <pay-modal v-model="showPaybill"/>
+  <pay-modal v-model="showPaybill" :patientvisitbill="patientvisitbill"/>
   <time-line v-model="showTimeLineModal" :timeline="selectedItem"/>
 </template>
 <script lang="ts">
@@ -316,6 +316,12 @@ export default class PatientVisit extends Vue {
   @patientvisit.Action
   fetchPatientvisits!: () => Promise<void>;
 
+    @patientvisit.State
+    patientvisitbill!: IPatientvisit;
+
+  @patientvisit.Action
+  getPatientVisitsBill!: (encounterId: string) => Promise<void>;
+
   @practitioner.State
   practitioners!: any[];
 
@@ -416,6 +422,25 @@ export default class PatientVisit extends Vue {
   showVisit(value:any){
     this.showViewModal = true;
     this.selectedItem = value;
+  }
+  async showBillVisitModal(encounterId:string){
+    this.showPaybill = true;
+    await this.getPatientVisitsBill(encounterId);
+
+  }
+  async shareVisitModal(encounterId:string){
+    this.showShareModal = true;
+    await this.getPatientVisitsBill(encounterId);
+  }
+
+  async showVisitValidateClaim(encounterId:string){
+    this.showValidateModal = true;
+    await this.getPatientVisitsBill(encounterId);
+  }
+
+  async showVisitBillModal(encounterId: string){
+    this.showBillModal = true;
+    await this.getPatientVisitsBill(encounterId);
   }
   getTimecheckedOut(time:string){
     const newtime = new Date(time).toISOString();

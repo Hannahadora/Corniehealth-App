@@ -1,69 +1,104 @@
 <template>
     <div class="w-full pb-7">
+      <span class="flex justify-end w-full">
+      <button
+        class="bg-danger rounded-lg text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
+        @click="showAccessModal = true"
+      >
+      Generate a Temporary Access Link
+      </button>
+    </span>
       <cornie-table
         :columns="rawHeaders"
-        v-model="items"
+        v-model="sortAccess"
         :check="false"
         :fixeHeight="true"
         class="hidden md:block"
       >
-        <template #actions>
+        <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="viewHistoryModal = true"
+            @click="showViewhistory(item.id)"
           >
             <eye-icon class="text-yellow-400 fill-current" />
             <span class="ml-3 text-xs">View Access History</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showComment = true"
+            @click="showComments(item.id)"
           >
             <eye-icon class="text-green-600 fill-current" />
             <span class="ml-3 text-xs">View Comments</span>
           </div>
-          <div
+          <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="Shownewmodal = true"
+            @click="showAccess(item.id)"
           >
             <plus-icon  class="text-primary fill-current"/>
             <span class="ml-3 text-xs">New Access </span>
-          </div>
+          </div> -->
           <div
+          v-if="item.status == 'active'"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem"
+            @click="deleteItem(item.id)"
           >
             <cancel-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Revoke Access</span>
           </div>
+          <div
+            v-else
+            class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+            @click="activateAccess(item.id)"
+          >
+            <plus-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Activate Access</span>
+          </div>
         </template>
-         <template #status>
-            <span
-              class="bg-green-200 text-green-500 text-center rounded-md p-1 bg-opacity-20"
-            >
-              Active
-            </span>
-          </template>
-        <!-- <template #status="{item}">
+        <template #status="{item}">
             <span
               :class="{
-                'bg-green-200 text-green-800': item.status == 'Active',
-                ' bg-red-500 text-red-400': item.status == 'Inactive',
+                'bg-green-200 text-green-600': item.status == 'active',
+                ' bg-red-500 text-red-400': item.status == 'inactive',
               }"
               class="text-center rounded-md p-1 bg-opacity-20"
             >
               {{ item.status }}
             </span>
-          </template> -->
-          <template #access>
+        </template>
+        <template #start="{item}">
+          <div class="block w-full">
+            <p class="">
+               {{ new Date(item.startDate).toLocaleDateString('en-US')}}
+            </p>
+            <span class="">
+               {{ item.startTime}}
+            </span>
+          </div>
+        </template>
+        <template #end="{item}">
+          <div class="block w-full">
+            <p class="">
+               {{ new Date(item.endDate).toLocaleDateString('en-US')}}
+            </p>
+            <span class="">
+               {{ item.endTime }}
+            </span>
+          </div>
+        </template>
+        <template #email="{ item }">
+           <span class="">
+            {{ item.invitees.join(' ,')}}
+           </span>
+        </template>
+        <template #access>
            <span class="">
             5
             <span class="text-blue-500 underline">View</span>
            </span>
-          </template>
-           <template #patientName="{item}">
+        </template>
+        <template #patientName="{item}">
            <span class="text-blue-500">{{ item.patientName}}</span>
-          </template>
+        </template>
       </cornie-table>
       <div class="block md:hidden">
           <div class="mb-5">
@@ -113,8 +148,9 @@
       </div>
     </div>
     <new-modal v-model="Shownewmodal"/>
-    <comment-modal v-model="showComment"/>
-    <access-history v-model="viewHistoryModal"/>
+    <comment-modal v-model="showComment" :accessComments="onetimeaccesscomments"/>
+    <access-history v-model="viewHistoryModal" :id="accessId"/>
+    <access-modal v-model="showAccessModal" @accesssaved="accesssaved" :accessHistory="onetimeacesshistory"/>
   </template>
   <script lang="ts">
   import { Options, Vue } from "vue-class-component";
@@ -152,10 +188,11 @@
   import NewModal from "./newAccessModal.vue";
   import CommentModal from "./viewCommentModal.vue";
   import AccessHistory from "./historyModal.vue";
-  
-  const location = namespace("location");
-  const dropdown = namespace("dropdown");
-  const specialistrefferal = namespace("specialistrefferal");
+  import AccessModal from "./temporaryaccessModal.vue";
+
+  import IOnetimeaccess from "@/types/IOnetimeaccess";
+
+  const onetimeaccess = namespace("onetimeaccess");
   
   @Options({
     components: {
@@ -180,48 +217,60 @@
       DotsHorizontalIcon,
       NewModal,
       CommentModal,
-      AccessHistory
+      AccessHistory,
+      AccessModal
     },
   })
   export default class OnetimeAccessExistingState extends Vue {
-    showColumnFilter = false;
+    showAccessModal = false;
     showComment = false;
     viewHistoryModal = false;
     query = "";
     selectedItem = {};
   
-    @dropdown.Action
-    getDropdowns!: (a: string) => Promise<IIndexableObject>;
-  
-    getKeyValue = getTableKeyValue;
-  
+
     refreshing = false;
     Shownewmodal = false;
     showMember = false;
     familyId = "";
+    accessId = "";
   
     dropdowns = {} as IIndexableObject;
     Specilaitems: Codeable[] = [];
   
      
-    @specialistrefferal.State
-    specialistrefferals!: ISpecialistrefferal[];
+    @onetimeaccess.State
+    onetimeaccesses!: IOnetimeaccess[];
   
-    @specialistrefferal.Action
-    fetchSpecialistRefferal!: () => Promise<void>;
+    @onetimeaccess.Action
+    fetchOnetimeaccess!: () => Promise<void>;
+
+    @onetimeaccess.State
+    onetimeacesshistory!: IOnetimeaccess[];
+  
+    @onetimeaccess.Action
+    fetchOnetimeaccessHistory!: (accessId : string) => Promise<void>;
+
+    
+    @onetimeaccess.State
+    onetimeaccesscomments!: IOnetimeaccess[];
+  
+    @onetimeaccess.Action
+    fetchOnetimeaccessComments!: (accessId : string) => Promise<void>;
+  
   
     rawHeaders = [
-      { title: "date", key: "date", show: true, noOrder:true },
+      { title: "date", key: "createdAt", show: true, noOrder:true },
       { title: "email", key: "email", show: true , noOrder:true},
       {
         title: "start datetime",
-        key: "startdate",
+        key: "start",
         show: true,
          noOrder:true
       },
       {
         title: "End Datetime",
-        key: "endate",
+        key: "end",
         show: true,
          noOrder:true
       },
@@ -246,32 +295,29 @@
     }
   
   
-   get items() {
-      return [{
-          date: "22/01/20",
-          email: "james@reddington.com",
-          startdate: "22/01/19 09:00AM",
-          endate: "22/01/19 10:00AM",
-          requester: "XXXXXX",
-          performer: "XXXXXX",
-      }]
-    }
+  //  get items() {
+  //     return [{
+  //         date: "22/01/20",
+  //         email: "james@reddington.com",
+  //         startdate: "22/01/19 09:00AM",
+  //         endate: "22/01/19 10:00AM",
+  //         requester: "XXXXXX",
+  //         performer: "XXXXXX",
+  //     }]
+  //   }
   
-    // get items() {
-    //   const specialistrefferals = this.specialistrefferals.map((specialistrefferal:any) => {
-    //        (specialistrefferal as any).createdAt = new Date(
-    //       (specialistrefferal as any).createdAt
-    //     ).toLocaleDateString("en-US");
-    //     return {
-    //       ...specialistrefferal,
-    //       specialty: this.getspecialtyname(specialistrefferal.specialty),
-    //       performer: specialistrefferal.performer.name,
-    //       requester: 'XXXXXX'
-    //     };
-    //   });
-    //   if (!this.query) return specialistrefferals;
-    //   return search.searchObjectArray(specialistrefferals, this.query);
-    // }
+    get items() {
+      const onetimeaccesses = this.onetimeaccesses.map((onetimeaccesse:any) => {
+           (onetimeaccesse as any).createdAt = new Date(
+          (onetimeaccesse as any).createdAt
+        ).toLocaleDateString("en-US");
+        return {
+          ...onetimeaccesse,
+        };
+      });
+      if (!this.query) return onetimeaccesses;
+      return search.searchObjectArray(onetimeaccesses, this.query);
+    }
     async setRefs() {
       const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
       const ref = reference.trim();
@@ -290,16 +336,40 @@
       const pt = this.Specilaitems.find((i: any) => i.code === id);
       return pt ? `${pt.display}` : "";
     }
-    
-    // get sortAssocaitons() {
-    //   return this.items.slice().sort(function (a, b) {
-    //     return a.createdAt < b.createdAt ? 1 : -1;
-    //   });
-    // }
+
+    showAccess(value:string){
+      this.accessId = value;
+      this.showAccessModal = true;
+    }
+
+    async showViewhistory(value:string){
+      this.viewHistoryModal = true;
+      this.accessId = value;
+
+      await this.fetchOnetimeaccessHistory(value);
+
+    }
+
+    async showComments(value:string){
+      this.accessId = value;
+      this.showComment = true;
+
+      await this.fetchOnetimeaccessComments(value)
+
+
+    }    
+    get sortAccess() {
+      return this.items.slice().sort(function (a, b) {
+        return a.createdAt < b.createdAt ? 1 : -1;
+      });
+    }
   
     showMemberModal(value:string){
       this.showMember = true;
       this.familyId = value;
+    }
+    async accesssaved(){
+      await this.fetchOnetimeaccess();
     }
 
     async deleteItem(id: string) {
@@ -312,23 +382,45 @@
     } else {
       try {
         const response = await cornieClient().patch(
-          `/api/v1/patient-portal/visit/cancel/${id}/`,
+          `/api/v1/patient-portal/one-time-access/revoke/${id}/`,
           {}
         );
         if (response.success) {
-          window.notify({ msg: "Accepted Successfully", status: "success" });
-          //await this.fetchPatientvisits();
+          window.notify({ msg: "Onetime Access Activated Successfully", status: "success" });
+          await this.fetchOnetimeaccess();
         }
       } catch (error) {
-        window.notify({ msg: "Not Accepted", status: "error" });
+        window.notify({ msg: "Onetime Access not Activated", status: "error" });
       }
     }
   }
   
+
+  async activateAccess(id: string) {
+    const confirmed = await window.confirmAction({
+      message: "This access link is still Inactive. Do you want to proceed and activate it?",
+      title: "Activate Access",
+    });
+    if (!confirmed) {
+      return;
+    } else {
+      try {
+        const response = await cornieClient().patch(
+          `/api/v1/patient-portal/one-time-access/activate/${id}/`,
+          {}
+        );
+        if (response.success) {
+          window.notify({ msg: "Onetime Access Revoked Successfully", status: "success" });
+          await this.fetchOnetimeaccess();
+        }
+      } catch (error) {
+        window.notify({ msg: "Onetime Access not Revoked", status: "error" });
+      }
+    }
+  }
   
     async created() {
-      this.setRefs();
-      await this.fetchSpecialistRefferal();
+      await this.fetchOnetimeaccess();
     }
   }
   </script>

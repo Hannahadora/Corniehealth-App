@@ -35,7 +35,7 @@ export default {
       state.requests = [...requests];
     },
     setPatientRequests(state, requests: any) {
-      state.patientrequests = [...requests];
+      state.patientrequests = requests;
     },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [...pts];

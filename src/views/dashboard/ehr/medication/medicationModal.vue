@@ -801,10 +801,12 @@ export default class MedicationModal extends Vue {
     this.emptyMedicationDetails.genericCode = this.emptyMedicationDetails?.genericCode?.toString();
     this.emptyMedicationDetails.code = this.emptyMedicationDetails?.genericCode?.toString();
 
-
     const med = this.emptyMedicationDetails as any;
-    this.medications.push(med);
-    this.emptyMedicationDetails.refills.push(this.emptyRefill);
+    this.medications?.push(med);
+    this.emptyMedicationDetails?.refills?.push(this.emptyRefill);
+    
+    //this.emptyMedicationDetails = {} as any
+    
   }
   removemedication(index: number) {
     this.medications.splice(index, 1);
@@ -1082,7 +1084,7 @@ export default class MedicationModal extends Vue {
   }
 
   async created() {
-    await this.setRequest();
+    if(this.id) await this.setRequest();
     await this.getRoles();
     await this.createMapper();
     await this.fetchPatients();
