@@ -212,14 +212,24 @@ export default class DoctorsPage extends Vue {
       };
       try {
         this.loading = true;
-        await cornieClient().post("/api/v1/patient-portal/appointment", {
-          ...data,
-        });
-        this.$emit("close");
-        window.notify({
-          msg: "Appointment has been booked, proceed to make payment",
-          status: "success",
-        });
+        const res = await cornieClient().post(
+          "/api/v1/patient-portal/appointment",
+          {
+            ...data,
+          }
+        );
+        if (res.success) {
+          this.$emit("close");
+          window.notify({
+            msg: "Appointment has been booked, proceed to make payment",
+            status: "success",
+          });
+        } else {
+          window.notify({
+            msg: res.message,
+            status: "error",
+          });
+        }
       } catch (error: any) {
         window.notify({
           msg: error.message,

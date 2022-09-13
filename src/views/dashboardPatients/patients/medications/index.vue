@@ -29,7 +29,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import Tabs from "@/components/tabs.vue";
 
 import PrescriptionSection from './prescription/index.vue'
-import MediicationSubscriptionSection from './medication-subscription/index.vue'
+import MedicationSubscriptionSection from './medication-subscription/index.vue'
 import MedicationOrderSection from './medication-order/index.vue'
 
 @Options({
@@ -39,7 +39,7 @@ import MedicationOrderSection from './medication-order/index.vue'
     ChevronRightIcon,
     ChevronLeftIcon,
     PrescriptionSection,
-    MediicationSubscriptionSection,
+    MedicationSubscriptionSection,
     MedicationOrderSection
   },
 })

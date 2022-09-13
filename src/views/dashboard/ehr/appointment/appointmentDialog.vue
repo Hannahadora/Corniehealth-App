@@ -331,7 +331,6 @@ const patients = namespace("patients");
     CornieInput,
     CornieSelect,
     CornieBtn,
-
     SelectOption
   },
 })

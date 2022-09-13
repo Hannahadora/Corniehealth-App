@@ -51,7 +51,7 @@
           <div class="border-sect p-4 mb-6">
             <div class="flex justify-between">
               <p class="text-grey-blue">Appointment Date:</p>
-              <p class="text-right">
+              <p class="text-right" :class="{'line-through': appointmentHasBeenRescheduled}">
                 {{ formatDate(appointment?.date) }},
                 {{ formatTime(appointment?.startTime) }}
               </p>
@@ -77,7 +77,10 @@
           <div class="border-sect p-4 mb-6 flex justify-between">
             <p class="text-grey-blue">Location:</p>
             <div>
-              <p class="text-right">{{ appointment?.locationId }}</p>
+              <p>{{findLocation(appointment.locationId)}}</p>
+              <p class="text-right">{{ pLocation?.name }}</p>
+              <p class="text-right">{{ pLocation?.city }}</p>
+              <p class="text-right">{{ pLocation?.state }}</p>
               <p class="text-right">{{ appointment?.practitioner?.email }}</p>
               <p class="text-right">
                 {{ appointment?.practitioner?.phone.dialCode }}
@@ -214,17 +217,26 @@ function defaultFilter(item: any, query: string) {
 export default class RescheduleAppointment extends Vue {
   search: any = {};
   loading: Boolean = false;
-  locations = [];
-  showAppointmentModal = true;
+  showAppointmentModal = false;
   newAppointmentDate = "";
   newAppointmentTime = "";
   appointmentHasBeenRescheduled = false;
+  pLocation: any = {};
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
   @Prop({ type: Object, default: {} })
   appointment!: any;
+
+  @Prop({ type: Object, default: [] })
+  locations!: any;
+
+  findLocation(locationId: string) {
+    this.pLocation = this.locations.find((location: any) => {
+      location.id === locationId
+    })
+  }
 
   getNewDate(date: any, time: any) {
     this.appointmentHasBeenRescheduled = true;
@@ -252,12 +264,8 @@ export default class RescheduleAppointment extends Vue {
     return s.length < 2 ? "0" + s : s;
   }
 
-  get startTime() {
-    const t = this.newAppointmentTime.split(".");
-    return `${this.doubleDigit(t[0])}:${t[1]}`;
-  }
   get endTime() {
-    const t = this.newAppointmentTime.split(".");
+    const t = this.newAppointmentTime.split(":");
     const et = Number(t[0]) + 1;
     return `${this.doubleDigit(et)}:${t[1]}`;
   }
@@ -266,7 +274,7 @@ export default class RescheduleAppointment extends Vue {
     const data = {
       appointmentId: this.appointment.id,
       date: this.newAppointmentDate,
-      startTime: this.startTime,
+      startTime: this.newAppointmentTime,
       endTime: this.endTime,
     };
     try {
@@ -290,7 +298,9 @@ export default class RescheduleAppointment extends Vue {
     }
   }
 
-  created() {}
+
+  async created() {
+  }
 }
 </script>
 

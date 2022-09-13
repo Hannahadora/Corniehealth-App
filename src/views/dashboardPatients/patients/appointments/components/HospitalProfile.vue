@@ -4,7 +4,7 @@
       <div class="flex items-start mb-8">
         <img
           class="mr-4 hospital-icon"
-          src="assets/book-appointment/unsplash_gkZ-k3xf25w.png"
+          src="@/assets/img/book-appointment/unsplash_gkZ-k3xf25w.png"
           alt=""
         />
         <div class="w-3/5">
@@ -12,7 +12,7 @@
             <span class="font-bold text-lg mr-2">{{
               hospital && hospital.name
             }}</span>
-            <img src="assets/book-appointment/ratings.png" alt="" />
+            <img src="@/assets/img/book-appointment/ratings.png" alt="" />
           </div>
           <div class="mb-2">
             {{ hospital && hospital.website }} |
@@ -24,15 +24,15 @@
           <div class="lg:mb-2 mb-4 flex items-start">
             <img
               class="mr-3"
-              src="assets/book-appointment/icon-date-white.png"
+              src="@/assets/img/book-appointment/icon-date-white.png"
               alt=""
             />
-            <span class="">Active Since{{ hospital && hospital.activeSince }}</span>
+            <span class="">Active Since; {{ formatDate(hospital && hospital.activeSince) }}</span>
           </div>
           <div class="lg:mb-2 mb-4 flex items-center">
             <img
               class="mr-3"
-              src="assets/book-appointment/icon-sethos-grey.png"
+              src="@/assets/img/book-appointment/icon-sethos-grey.png"
               alt=""
             />
             <span class="">{{ hospital && hospital.practitionerCount }}</span>
@@ -40,7 +40,7 @@
           <div class="lg:mb-2 mb-4 flex items-center">
             <img
               class="mr-3"
-              src="assets/book-appointment/icon-patients-grey.png"
+              src="@/assets/img/book-appointment/icon-patients-grey.png"
               alt=""
             />
             <span class="">{{ hospital && hospital.patientCount }}</span>
@@ -51,7 +51,7 @@
       <div class="mb-8 flex items-start col-span-2">
         <img
           class="mr-3"
-          src="assets/book-appointment/icon-doctor-grey.png"
+          src="@/assets/img/book-appointment/icon-doctor-grey.png"
           alt=""
         />
         <div class="">
@@ -70,20 +70,25 @@
         </div>
       </div>
 
-      <div v-if="!hospital.id" class="mt-10">
-        <c-button
-          type="button"
-          secondary
-          small
-          @click="
-            $router.push({
-              path: `/patients/appointment/hospital/${hospital.id}/info`,
-            })
-          "
-          >View Profile</c-button
+      <div
+          class="flex xl:flex-row flex-col items-center xl:justify-between justify-center xl:mt-6 mt-8"
         >
-      </div>
+          <cornie-btn
+            class="bg-red-500 text-white rounded-xl py-1 px-6 text-xs"
+            @click="showHospitalsprofile = true"
+          >
+          View profile
+          </cornie-btn>
+        </div>
     </div>
+
+    <hospital-info-modal
+      :hospital="hospital"
+      :locations="hospital.locations"
+      :practitioners="hospital.practitioners"
+      v-model="showHospitalsprofile"
+      @close="showHospitalsprofile = false"
+    />
   </div>
 </template>
 
@@ -93,17 +98,29 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
+import HospitalInfoModal from "./HospitalInfoModal.vue"
+import CornieBtn from "@/components/CornieBtn.vue";
 
 @Options({
 	name: 'HospitalsProfile',
-  components: {},
+  components: { HospitalInfoModal, CornieBtn },
 })
 export default class HospitalsProfile extends Vue {
   @Prop({ type: Object })
   hospital!: any;
 
+  showHospitalsprofile: any = false;
+
   get specialties() {
     return this.hospital && this.hospital.specialties;
+  }
+
+  formatDate(date: any) {
+    return new Date(date).toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   }
 }
 </script>

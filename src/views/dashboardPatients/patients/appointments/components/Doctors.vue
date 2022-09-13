@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div ref="mainboard">
-			<div v-if="!loading && practitioners.length === 0" class="mt-24">
+			<div v-if="practitioners.length === 0" class="mt-24">
 				<div class="text-center flex flex-col items-center justify-center">
 					<img class="mb-8" src="@/assets/img/doctor-bro.svg" alt="" />
 					<p class="text-2xl font-bold">Select a specialty and location to continue</p>
@@ -10,19 +10,6 @@
 
 			<div>
 				<div
-					v-if="loading"
-					class="w-full lg:grid grid-cols-2 block gap-8 items-start mb-12"
-				>
-					<div
-						v-for="(i, idx) in 2"
-						:key="idx"
-						class="info-container xl:p-6 p-4 xl:mb-0 mb-8"
-					>
-						<DoctorsResultSkeleton />
-					</div>
-				</div>
-				<div
-					v-if="!loading"
 					class="w-full lg:grid grid-cols-2 block gap-8 items-start mb-12"
 				>
 					<div
@@ -78,10 +65,6 @@ import CornieDialog from "@/components/CornieDialog.vue"
 import AppointmentModal from "./AppointmentModal.vue"
 import DoctorsCard from "./DoctorsCard.vue"
 
-// const appointment = namespace("appointment")
-// const practitioners = namespace("practitioners")
-// const misc = namespace("misc")
-
 @Options({
   components: {
     CornieDialog,
@@ -106,18 +89,6 @@ export default class DoctorsPage extends Vue {
   @Prop({ type: Array })
     practitioners!: any[]
 
-  // @appointment.Mutation
-  //   SET_SELECTEDDATE!: (data: any) => void
-
-  // @misc.Mutation
-  //   SET_MODALSTATE!: (data: any) => void
-
-  // @appointment.Mutation
-  //   SET_SELECTEDTIME!: (data: any) => void
-
-  // @practitioners.Mutation
-  //   SET_INITPRACTITIONERDATA!: (data: any) => void
-
   setTotalPage() {
     const x: number = this.practitioners && this.practitioners.length / 10
     this.pages = Number(x.toFixed())
@@ -129,19 +100,13 @@ export default class DoctorsPage extends Vue {
 
   handleDate(val: any) {
     this.selectedDate = val.date
-    // this.SET_SELECTEDDATE(val.date)
   }
 
   handleTime(val: any) {
     this.selectedTime = val
-    // this.SET_SELECTEDTIME(val)
   }
 
   viewProfile(practitioner: any) {
-  //   this.$router.push(
-  //     `/patients/appointment//doctor/${practitioner.id}/profile`
-  //   )
-  //   // this.SET_INITPRACTITIONERDATA(practitioner)
   }
 
   setFilteredPractitioners() {
