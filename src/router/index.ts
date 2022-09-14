@@ -367,6 +367,29 @@ const routes: Array<RouteRecordRaw> = [
         name: "Validate Claim",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/validateclaim.vue"),
       },
+      {
+        path: "shopping",
+        name: "Shopping",
+        component: () => import("@/views/dashboardPatients/patients/shopping/medications/index.vue"),
+      },
+      {
+        path: "shopping/details/:id",
+        name: "Shopping Details",
+        component: () => import("@/views/dashboardPatients/patients/shopping/medications/product-details.vue"),
+        props: true,
+      },
+      {
+        path: "shopping/cart",
+        name: "Shopping Cart",
+        component: () => import("@/views/dashboardPatients/patients/shopping/cart.vue"),
+        props: true,
+      },
+      {
+        path: "shopping/checkout",
+        name: "Checkout",
+        component: () => import("@/views/dashboardPatients/patients/shopping/checkout.vue"),
+        props: true,
+      },
     ],
   },
 

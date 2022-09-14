@@ -173,13 +173,13 @@
     @Watch("valueType")
     async onUpdate() {
       if (this.valueType === "practitioner") {
-        await this.findPractitioner();
         this.showDoctorsprofile = true;
+        await this.findPractitioner();
       }
       if (this.valueType === "provider") {
+        this.showHospitalsprofile = true;
         await this.findProvider();
         await this.fetchProviderPractitioners();
-        this.showHospitalsprofile = true;
       }
     }
 
