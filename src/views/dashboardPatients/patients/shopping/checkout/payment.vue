@@ -1,0 +1,159 @@
+<template>
+    <div class="bg-white mb-auto shadow-lg p-3 mt-2 rounded-lg w-full">
+      <div class="w-full px-16">
+        <span
+          class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
+        >
+          Cart
+        </span>
+      </div>
+  
+      <div
+        class="my-10 px-16 flex items-center cursor-pointer"
+        @click="$router.push('/dashboard/patient/shopping')"
+      >
+        <chevronleft-blue class="mr-2" />
+        <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
+      </div>
+  
+      <div class="px-16 grid grid-cols-3 gap-6">
+        <div class="col-span-2 p-3">
+          <p class="font-bold text-xl mb-11">Items</p>
+  
+          <div class="shipping-info-container px-6 py-4">
+            <div class="flex items-center">
+              <delivery-van class="mr-2" />
+              <p class="font-bold text=primary">Shipping (2)</p>
+            </div>
+            <p class="mt-2 text-sm text=primary">
+              You qualify for free shipping.
+              <span class="text-danger cursor-pointer"> See shipping terms</span>
+            </p>
+          </div>
+  
+          <div class="mt-5">
+            <div class="px-4 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <img src="" class="w-12 h-12 mr-5" alt="item-photo" />
+                  <div class="">
+                    <p class="text-sm">
+                      Panadol
+                      <span class="text-xs text-gray-600">Tablet (10mg)</span>
+                    </p>
+                    <p class="text-xs">30 Tablets</p>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <input
+                    type="number"
+                    class="w-max border px-8 py-2 bg-transparent focus:outline-none mr-5"
+                  />
+                  <p class="font-bold text-sm mr-5">N9,000.00</p>
+                  <small-delete-red class="cursor-pointer" />
+                </div>
+              </div>
+  
+              <p class="cursor-pointer flex items-center text-danger mt-5 text-xs">
+                Save on more
+                <QuestionCircleRed class="ml-1" />
+              </p>
+            </div>
+            <div class="bg-cotton-ball p-3 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-semibold">
+                  Ship to Home or Store
+                  <span class="text-accent-blue cursor-pointer underline">Change</span>
+                </p>
+                <p class="text-sm">Arrives in 3-7 business days</p>
+              </div>
+  
+              <div>
+                <CornieCheckbox label="Subscribe and save up to 20%" />
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="ml-20 px-3">
+          <order-summary />
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script lang="ts">
+  import { Vue, Options } from "vue-class-component";
+  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+  import { namespace } from "vuex-class";
+  import { cornieClient } from "@/plugins/http";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import Search from "@/components/icons/search.vue";
+  import FiveStar from "@/components/icons/five-star.vue";
+  import Cancel from "@/components/icons/cancel-red-stroke.vue";
+  import Check from "@/components/icons/check-green-stroke.vue";
+  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
+  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
+  import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import DeliveryVan from "@/components/icons/delivery-van.vue";
+  import SmallDeleteRed from "@/components/icons/small-delete-red.vue";
+  import QuestionCircleRed from "@/components/icons/question-circle-red.vue";
+  
+  import AddToCartConfirmation from "./components/add-to-cart-confirmation.vue";
+  import OrderSummary from "./components/order-summary.vue";
+  
+  @Options({
+    name: "ShoppingCart",
+    components: {
+      ChevronRightIcon,
+      ChevronLeftIcon,
+      CornieBtn,
+      Search,
+      FiveStar,
+      Cancel,
+      Check,
+      ChevronWhiteDown,
+      ChevronWhiteUp,
+      ChevronleftBlue,
+      CornieCheckbox,
+      IconInput,
+      SearchIcon,
+      AddToCartConfirmation,
+      OrderSummary,
+      DeliveryVan,
+      SmallDeleteRed,
+      QuestionCircleRed,
+    },
+  })
+  export default class ShoppingCart extends Vue {
+    loading: Boolean = true;
+    item: any = {};
+  
+    async created() {}
+  }
+  </script>
+  
+  <style scoped>
+  .sample-img {
+    height: 110px;
+    width: 200px;
+  }
+  
+  .text-accent-blue {
+    color: #114ff5;
+  }
+  
+  .shipping-info-container {
+    background: rgba(194, 199, 214, 0.3);
+  }
+  
+  .bg-cotton-ball {
+    background: #f0f4fe;
+  }
+  </style>
+  

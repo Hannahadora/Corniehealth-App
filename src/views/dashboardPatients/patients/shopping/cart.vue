@@ -54,7 +54,7 @@
               </div>
             </div>
 
-            <p class="flex items-center text-danger mt-5 text-xs">
+            <p class="cursor-pointer flex items-center text-danger mt-5 text-xs">
               Save on more
               <QuestionCircleRed class="ml-1" />
             </p>
@@ -63,7 +63,7 @@
             <div>
               <p class="text-sm font-semibold">
                 Ship to Home or Store
-                <span class="text-accent-blue">Change</span>
+                <span class="text-accent-blue cursor-pointer underline">Change</span>
               </p>
               <p class="text-sm">Arrives in 3-7 business days</p>
             </div>

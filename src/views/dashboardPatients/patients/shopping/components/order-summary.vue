@@ -46,7 +46,7 @@
         >
           <cornie-btn
             class="w-full mb-5 bg-red-500 px-6 py-1 text-white rounded-xl"
-            @click="$router.push('/dashboard/patient/shopping/checout')"
+            @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')"
           >
             Continue to Checkout
           </cornie-btn>
