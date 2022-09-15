@@ -70,7 +70,7 @@
               v-model="paymentAccountType"
               placeholder="Select a payment account type"
               :readonly="false"
-              :items="paymentAccounts"
+              :items="[...paymentAccounts, 'Instant pay']"
               required
             >
             </cornie-select>
@@ -196,7 +196,7 @@ export default class ReviewPaymentModal extends Vue {
   paymentAccounts: any = [];
   bookingConfirmed = false;
   showAppointmentModal = false;
-  paymentAccountType ="";
+  paymentAccountType = "";
   accTypes: any = [];
   paymentAccountId = "";
 
@@ -204,21 +204,26 @@ export default class ReviewPaymentModal extends Vue {
   practitioner!: any;
 
   @Prop({ type: Object, default: {} })
-  appointment!: any; 
+  appointment!: any;
 
   @account.Getter
   cornieUser!: CornieUser;
 
-  @Watch('paymentAccountType')
+  @Watch("paymentAccountType")
   handler() {
-    const n = this.paymentAccountType.split('-')
-    const x = n[n.length - 1]
-    const el = this.accTypes.find((el: any) =>  el.accountNo === x)
-    this.paymentAccountId = el?.patient_accounts?.PatientPaymentAccountId || undefined
+    if (this.paymentAccountType === "Instant pay") {
+      return;
+    } else {
+      const n = this.paymentAccountType.split("-");
+      const x = n[n.length - 1];
+      const el = this.accTypes.find((el: any) => el.accountNo === x);
+      this.paymentAccountId =
+        el?.patient_accounts?.PatientPaymentAccountId || undefined;
+    }
   }
 
   get patientId() {
-    return this.cornieUser.id
+    return this.cornieUser.id;
   }
 
   get selectedDate() {
@@ -246,43 +251,67 @@ export default class ReviewPaymentModal extends Vue {
     } else return this.practitioner.phone;
   }
 
-
   async submit() {
-    const data = {
-      appointmentId: this.appointment.id,
-      paymentAccountId: this.paymentAccountId,
-    };
-    try {
-      this.loading = true;
-      await cornieClient().post(
-        "/api/v1/patient-portal/appointment/confirm",
-        {
-          ...data,
-        }
-      );
-      this.bookingConfirmed = true;;
-      window.notify({
-        msg: "Appointment has been confirmed",
-        status: "success",
-      });
-    } catch (error: any) {
-      window.notify({
-        msg: error.message,
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
+    if (this.paymentAccountType === "Instant pay") {
+      try {
+        this.loading = true;
+        const res = await cornieClient().post(
+          `/api/v1/bill/generate-link/${this.appointment.id}`,
+          {}
+        );
+        // this.bookingConfirmed = true;
+        // window.notify({
+        //   msg: "Appointment has been confirmed",
+        //   status: "success",
+        // });
+        console.log('res', res)
+      } catch (error: any) {
+        window.notify({
+          msg: error.message,
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      const data = {
+        appointmentId: this.appointment.id,
+        paymentAccountId: this.paymentAccountId,
+      };
+      try {
+        this.loading = true;
+        await cornieClient().post(
+          "/api/v1/patient-portal/appointment/confirm",
+          {
+            ...data,
+          }
+        );
+        this.bookingConfirmed = true;
+        window.notify({
+          msg: "Appointment has been confirmed",
+          status: "success",
+        });
+      } catch (error: any) {
+        window.notify({
+          msg: error.message,
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
     }
   }
 
   async fetchPaymentAccount() {
     try {
       this.loading = true;
-     const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/payment",
+      const { data } = await cornieClient().get(
+        "/api/v1/patient-portal/payment"
       );
-      this.accTypes = data
-      this.paymentAccounts = this.accTypes.map((el: any) => `${el.type}-${el.accountNo}`);;
+      this.accTypes = data;
+      this.paymentAccounts = this.accTypes.map(
+        (el: any) => `${el.type}-${el.accountNo}`
+      );
     } catch (error: any) {
       window.notify({
         msg: error.message,
@@ -294,7 +323,7 @@ export default class ReviewPaymentModal extends Vue {
   }
 
   created() {
-    this.fetchPaymentAccount()
+    this.fetchPaymentAccount();
   }
 }
 </script>

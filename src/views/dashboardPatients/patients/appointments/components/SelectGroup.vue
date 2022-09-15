@@ -52,13 +52,13 @@
 						placeholder="Insurance"
 						:items="insurances"
 					/> -->
-        <multiselectsearch
+        <!-- <multiselectsearch
           v-if="tab === 'hospitals'"
           v-model="search.rating"
           :icon="require('@/assets/img/book-appointment/icon-insurance-grey.png')"
           placeholder="Rating"
           :items="ratings"
-        />
+        /> -->
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="search.language"

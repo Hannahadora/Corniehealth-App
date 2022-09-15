@@ -109,7 +109,7 @@ export default class HospitalsProfile extends Vue {
   @Prop({ type: Object })
   hospital!: any;
 
-  showHospitalsprofile: any = false;
+  showHospitalsprofile: Boolean = false;
 
   get specialties() {
     return this.hospital && this.hospital.specialties;

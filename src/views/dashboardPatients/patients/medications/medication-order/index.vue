@@ -2,12 +2,11 @@
     <div class="pb-40">
   
       <div>
-        <empty-state v-if="noMedicationOrder" @openModal="openModal"/>
-        <existing-state v-else  @openModal="openModal"/>
+        <empty-state v-if="noMedicationOrder"/>
+        <existing-state v-else />
       </div>
       </div>
-  
-      <!-- <book-prescription-modal v-model="medicationOrderModal" @close="prescriptionModal = false" /> -->
+
   </template>
   
   <script lang="ts">
@@ -18,7 +17,6 @@
   import { Prop, PropSync, Watch } from "vue-property-decorator";
   import EmptyState from './emptyState.vue';
   import ExistingState from './existingState.vue';
-//   import BookprescriptionModal from './components/bookprescriptionModal.vue';
   
   @Options({
     name: "prescriptionPage",
@@ -27,7 +25,6 @@
       ChevronLeftIcon,
       EmptyState,
       ExistingState,
-    //   BookprescriptionModal
     },
   })
   export default class prescriptionPage extends Vue {
@@ -40,10 +37,6 @@
   
     get noMedicationOrder() {
       return this.medicationOrders.length === 0
-    }
-  
-    openModal() {
-      this.medicationOrderModal = true
     }
   
     async created() {}
