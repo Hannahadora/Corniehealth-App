@@ -139,7 +139,7 @@
                   class="mb-6"
                 />
                 <cornie-input
-                  v-model="shipping.appartment"
+                  v-model="shipping.apartment"
                   label="Apartment/Suite/Others (Optional)"
                   class="mb-6"
                 />
