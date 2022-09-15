@@ -16,7 +16,7 @@
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
     </div>
 
-    <div class="px-16 grid grid-cols-3 gap-6">
+    <div class="px-16 grid grid-cols-3">
       <div class="col-span-2 p-3">
         <p class="font-bold text-xl mb-11">Items</p>
 
@@ -54,7 +54,9 @@
               </div>
             </div>
 
-            <p class="cursor-pointer flex items-center text-danger mt-5 text-xs">
+            <p
+              class="cursor-pointer flex items-center text-danger mt-5 text-xs"
+            >
               Save on more
               <QuestionCircleRed class="ml-1" />
             </p>
@@ -63,7 +65,9 @@
             <div>
               <p class="text-sm font-semibold">
                 Ship to Home or Store
-                <span class="text-accent-blue cursor-pointer underline">Change</span>
+                <span class="text-accent-blue cursor-pointer underline"
+                  >Change</span
+                >
               </p>
               <p class="text-sm">Arrives in 3-7 business days</p>
             </div>
@@ -76,7 +80,43 @@
       </div>
 
       <div class="ml-20 px-3">
-        <order-summary />
+        <order-summary @checkout="$router.push('/dashboard/patient/shopping/checkout/delivery-info')" />
+      </div>
+    </div>
+
+    <div class="mt-9 px-16">
+      <div class="grid grid-cols-3 gap-6">
+        <div class="bg-l-blue col-span-2 flex items-center">
+          <div class="px-9 py-5">
+            <p class="font-bold mb-2">TAKE CHARGE OF YOUR HEALTH, TODAY.</p>
+            <p class="text-xs mb-2">
+              Sign Up to the Cornie Health and enjoy better healthcare outcomes.
+              Engage with doctors, shop medicines, book diagnostic tests, etc.
+              available 24/7, from anywhere.
+            </p>
+            <button class="text-sm bg-danger text-white rounded-3xl py-2 px-12">
+              SignUp
+            </button>
+          </div>
+          <div>
+            <cart-health-frame />
+          </div>
+        </div>
+
+        <div class="ml-20 flex items-center">
+          <div class="pt-7 pb-6 px-5">
+            <p class="text-xs mb-2">
+              Have your personal and family health information at your
+              fingertips with Cornie Health. You can message your doctors, book
+              & manage appointments, and be more involved in managing your
+              health.
+            </p>
+            <p class="text-xs text-danger underline cursor-pointer">Learn More</p>
+          </div>
+          <div>
+            <cart-health-frame-two />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -103,6 +143,8 @@ import SearchIcon from "@/components/icons/search.vue";
 import DeliveryVan from "@/components/icons/delivery-van.vue";
 import SmallDeleteRed from "@/components/icons/small-delete-red.vue";
 import QuestionCircleRed from "@/components/icons/question-circle-red.vue";
+import CartHealthFrame from "@/components/icons/cart-health-frame.vue";
+import CartHealthFrameTwo from "@/components/icons/cart-health-frame-two.vue";
 
 import AddToCartConfirmation from "./components/add-to-cart-confirmation.vue";
 import OrderSummary from "./components/order-summary.vue";
@@ -128,6 +170,8 @@ import OrderSummary from "./components/order-summary.vue";
     DeliveryVan,
     SmallDeleteRed,
     QuestionCircleRed,
+    CartHealthFrame,
+    CartHealthFrameTwo,
   },
 })
 export default class ShoppingCart extends Vue {
@@ -154,5 +198,9 @@ export default class ShoppingCart extends Vue {
 
 .bg-cotton-ball {
   background: #f0f4fe;
+}
+
+.bg-l-blue {
+  background: #eef9ff;
 }
 </style>

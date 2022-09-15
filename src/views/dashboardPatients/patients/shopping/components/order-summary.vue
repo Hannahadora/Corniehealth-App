@@ -30,7 +30,7 @@
           placeholder="Enter code"
           class="mr-2"
         />
-        <cornie-btn class="w-full bg-primary px-6 py-1 text-white rounded-xl">
+        <cornie-btn class="bg-primary px-6 text-white rounded-xl">
           Apply
         </cornie-btn>
       </div>
@@ -46,7 +46,7 @@
         >
           <cornie-btn
             class="w-full mb-5 bg-red-500 px-6 py-1 text-white rounded-xl"
-            @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')"
+            @click="$emit('checkout')"
           >
             Continue to Checkout
           </cornie-btn>

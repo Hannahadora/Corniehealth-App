@@ -104,8 +104,8 @@
   import SmallDeleteRed from "@/components/icons/small-delete-red.vue";
   import QuestionCircleRed from "@/components/icons/question-circle-red.vue";
   
-  import AddToCartConfirmation from "./components/add-to-cart-confirmation.vue";
-  import OrderSummary from "./components/order-summary.vue";
+  import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
+  import OrderSummary from "../components/order-summary.vue";
   
   @Options({
     name: "ShoppingCart",
