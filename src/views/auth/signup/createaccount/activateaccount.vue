@@ -185,10 +185,18 @@ export default class ActivateAccount extends Vue {
       password: this.password,
     };
   }
+  get referrer() {
+    const referrer = this.$route.query.ref;
+    return referrer || undefined;
+  }
   async saveCornieData() {
     const payload = this.cornieData;
+
     try {
-      await cornieClient().post("/api/v1/account/set-type", payload);
+      await cornieClient().post("/api/v1/account/set-type", {
+        ...payload,
+        referrer: this.referrer,
+      });
     } catch (error) {}
   }
 
@@ -205,14 +213,14 @@ export default class ActivateAccount extends Vue {
 
       if (!data.success) {
         this.showText = true;
-        this.loading= false
+        this.loading = false;
         return window.notify({ msg: errMsg });
       }
       store.commit("user/setLoginInfo", data);
       await this.saveCornieData();
-    if(this.$route.query.practitioner) {
-      location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/appointment/doctor/${this.$route.query.practitioner}/confirm-payment?token=${store.state.user.authToken}`
-    } else this.$router.replace("/dashboard");
+      if (this.$route.query.practitioner) {
+        location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/appointment/doctor/${this.$route.query.practitioner}/confirm-payment?token=${store.state.user.authToken}`;
+      } else this.$router.replace("/dashboard");
     } catch (error) {
       if (error instanceof ErrorResponse) {
         const msg = error.response.data.message;
