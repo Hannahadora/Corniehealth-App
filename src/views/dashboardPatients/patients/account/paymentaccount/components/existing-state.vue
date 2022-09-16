@@ -30,26 +30,11 @@
             </span>
           </div>
         </template>
-        <template #billing="{ item: { billing } }">
-          <span
-            :class="{
-              // 'bg-success text-success': status == 'active',
-              // ' bg-danger text-danger': status == 'inactive',
-              ' bg-warning text-warning': billing == 'pending',
-              // ' bg-blue-yonder text-blue-yonder': status == 'relapse',
-              // ' bg-blue-800 text-blue-800': status == 'remission',
-              // ' bg-gray-800 text-gray-800': status == 'resolved',
-            }"
-            class="px-1 text-center rounded-md p-1 bg-opacity-20"
-          >
-            {{ billing }}
-          </span>
-        </template>
         <template #status="{ item: { status } }">
           <span
             :class="{
-              'bg-success text-success': status == 'active',
-              ' bg-danger text-danger': status == 'inactive',
+              'bg-success text-success': status == 'Active',
+              ' bg-danger text-danger': status == 'Inactive',
               ' bg-warning text-warning': status == 'recurrence',
               ' bg-blue-yonder text-blue-yonder': status == 'relapse',
               ' bg-blue-800 text-blue-800': status == 'preparation',
@@ -61,29 +46,30 @@
           </span>
         </template>
         <template #actions="{ item }">
-          <!-- <div
+          <div
+            v-if="item.paymentType !== 'Card'"
             @click="viewPayment(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
-          </div> -->
+          </div>
 
-          <!-- <div
+          <div
             v-if="item.paymentType !== 'Card'"
-            @click="editAccount(item)"
+            @click="editPayment(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs"> Edit </span>
-          </div> -->
-          <!-- <div
+          </div>
+          <div
             @click="deleteAccount(item.id)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <delete-icon class="text-danger fill-current cursor-pointer" />
             <span class="ml-3 text-xs">Delete</span>
-          </div> -->
+          </div>
         </template>
       </cornie-table>
     </div>
@@ -100,20 +86,11 @@
   import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
-  import { namespace } from "vuex-class";
-
-  const encounter = namespace("encounter");
 
   @Options({
-    name: "EncounterExistingState",
+    name: "PaymentAccountExistingState",
     components: {
       CornieTable,
-      // AddNotes,
-      // ViewCondition,
-      // RecordAbatement,
-      // AddCondition,
-      // StatusUpdate,
-      // AddOccurence,
       EditIcon,
       NewViewIcon,
       UpdateIcon,
@@ -121,9 +98,14 @@
       HistoryIcon,
       DeleteIcon,
     },
-    emits: ["newpaymentaccount", "reloadPayment"],
+    emits: [
+      "newpaymentaccount",
+      "reloadPayment",
+      "viewPaymentAccount",
+      "editPaymentAccount",
+    ],
   })
-  export default class EncounterExistingState extends Vue {
+  export default class PaymentAccountExistingState extends Vue {
     @Prop()
     patientAccounts!: any[];
 
@@ -164,7 +146,6 @@
     //insure-emp, insure-pri, flerxi, wallet, cash, dc, cc, corp-bill-acct
 
     get items() {
-      console.log("vcvcvc", this.patientAccounts);
       const items =
         this.patientAccounts.length > 0
           ? this.patientAccounts.map((p) => {
@@ -206,24 +187,19 @@
           expiryDate: `${insurance?.policyExpiry}`,
         };
       } else if (paymentType == "Wallet") {
+        const { wallet } = p;
         return {
-          accountName: `XXXXXX`,
-          accountId: `XXXXXX`,
-          expiryDate: `XXXXXX`,
+          accountName: `${wallet.walletName}`,
+          accountId: `${wallet.walletId}`,
+          expiryDate: `Not Applicable`,
         };
       }
     }
 
     getpaymentType(type: string) {
       let t = "";
-      if (type == "cc" || type == "dc") return "Card";
-      if (
-        type == "insure-emp" ||
-        type == "insure-pri" ||
-        type == "flerxi" ||
-        type == "corp-bill-acct"
-      )
-        return "Insurance";
+      if (type == "card") return "Card";
+      if (type == "insurance") return "Insurance";
 
       if (type == "wallet") return "Wallet";
       return "Card";
@@ -235,13 +211,13 @@
           `/api/v1/patient-portal/payment/${id}`
         );
         window.notify({
-          msg: "Payment account added successfully",
+          msg: "Payment account deactivated successfully",
           status: "success",
         });
         this.$emit("reloadPayment");
       } catch (error) {
         window.notify({
-          msg: "Error updating payment account",
+          msg: "Error deactivating payment account",
           status: "error",
         });
       }
@@ -253,6 +229,26 @@
     }
     newPaymentAccount() {
       this.$emit("newpaymentaccount");
+    }
+
+    viewPayment(item: any) {
+      const { paymentType, id, insurance, wallet } = item;
+      this.$emit("viewPaymentAccount", {
+        paymentType,
+        accountId: id,
+        insurance,
+        wallet,
+      });
+    }
+
+    editPayment(item: any) {
+      const { paymentType, id, insurance, wallet } = item;
+      this.$emit("editPaymentAccount", {
+        paymentType,
+        accountId: id,
+        insurance,
+        wallet,
+      });
     }
   }
 </script>

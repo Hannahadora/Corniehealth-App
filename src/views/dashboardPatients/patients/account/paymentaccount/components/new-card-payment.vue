@@ -75,7 +75,7 @@
     get payload() {
       return {
         accountType: this.corniePatient?.accountType,
-        type: "dc",
+        type: "card",
         ownerId: this.corniePatient?.id,
         card: {
           email: this.corniePatient?.email,

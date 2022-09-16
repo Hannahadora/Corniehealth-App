@@ -9,10 +9,13 @@
         <p class="font-bold text-lg">{{ profileDetails.name }}</p>
         <p class="text-sm font-light">Provider ID #: {{ profileDetails.id }}</p>
       </div>
+
       <div class="border p-3 flex flex-col space-y-2">
         <div class="flex">
           <div class="flex-1">Address</div>
-          <div class="flex-none">{{ profileDetails.contact.address }}</div>
+          <div class="flex truncate">
+            {{ profileDetails.contact.address }}
+          </div>
         </div>
         <div class="flex">
           <div class="flex-1">Phone</div>
@@ -51,11 +54,14 @@
     @Prop({ type: String })
     id!: string;
 
+    @Prop({ type: Object })
+    profile!: any;
+
     profileDetails = {
       name: "Reddingthon Hospital",
       id: 253543,
       contact: {
-        address: "Trenches avenue, Sapa Bustop",
+        address: "No 16.Trenches avenue, Sapa Bustop",
         phone: "+234LMAO",
         email: "xyz@gmail.com",
         bookingSite: "xyz.corniehealth.com",
@@ -64,5 +70,11 @@
       specialities: [],
       doctors: 18,
     };
+
+    mounted() {
+      if (this.profile?.name) {
+        this.profileDetails = this.profile;
+      }
+    }
   }
 </script>

@@ -20,13 +20,13 @@
           :items="healthRecords"
         />
       </div>
-      <div>
+      <!-- <div>
         <cornie-radio
           v-model="createNew"
           value="true"
           label="Create a new Health Record for this practice"
         />
-      </div>
+      </div> -->
     </div>
     <div class="absolute bottom-0 w-full">
       <div class="flex justify-end space-x-1 px-6 py-2 bg-white">
@@ -36,7 +36,11 @@
         >
           Cancel
         </cornie-btn>
-        <cornie-btn @click="send" class="text-white bg-danger px-6 rounded-xl">
+        <cornie-btn
+          @click="send"
+          :loading="loading"
+          class="text-white bg-danger px-6 rounded-xl"
+        >
           Send Invite
         </cornie-btn>
       </div>
@@ -64,6 +68,7 @@
   export default class addPractice extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
+
     emailRule = string().email();
 
     email = "";
@@ -76,10 +81,11 @@
       const items =
         this.allHealthRecords.length > 0
           ? this.allHealthRecords.map((r: any) => ({
-              display: r?.practiceName,
+              display: r?.organization?.name,
               code: r.id,
             }))
           : [];
+      console.log("itessm", items);
       return items;
     }
 
@@ -91,26 +97,29 @@
       this.allHealthRecords = response.data;
     }
 
+    async mounted(): Promise<void> {
+      await this.fetchHealthRecords();
+    }
     async send() {
       if (!this.email) return;
       this.loading = true;
       try {
         const response = await cornieClient().post(
-          `/api/v1/patient-portal/provider-permission/add-practice`,
+          `/api/v1/patient-portal/provider-permission/invite-practice`,
           {
             recordId: this.selectedHealthRecord || undefined,
-            organizationId: this.email,
+            email: this.email,
           }
         );
         console.log("Added practice", response.data);
-        window.notify({ msg: "successful", status: "success" });
+        window.notify({ msg: "Successful", status: "success" });
         this.loading = false;
         this.show = false;
       } catch (error) {
         this.loading = false;
         console.log("error adding practice", error);
         // window.notify({ msg: "Error adding practice", status: "error" });
-        window.notify({ msg: "successful", status: "success" });
+        window.notify({ msg: "Error inviting practice", status: "error" });
       }
     }
   }

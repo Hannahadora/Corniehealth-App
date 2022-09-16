@@ -255,6 +255,7 @@ export default class Settings extends Vue {
   query = "";
   open = 0;
 
+
   @Prop({ type: Object, required: true })
   patient!: any;
 

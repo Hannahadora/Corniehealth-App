@@ -1,24 +1,29 @@
 <template>
   <div class="w-full">
     <div>
-      <div class="text-3xl font-bold text-primary border-b-2 py-4 px-4">
+      <div class="text-xl font-bold text-primary border-b-2 py-4 px-4">
         Health Records
       </div>
       <div class="flex justify-end w-full mb-8 space-x-5">
         <button
-          @click="newPaymentAccount"
+          @click="addInvite"
           class="border-primary border rounded-xl font-bold text-primary mt-5 py-4 px-8 mb-5 focus:outline-none hover:opacity-90"
         >
           Manage Privileges
         </button>
         <button
-          @click="newPaymentAccount"
+          @click="addInvite"
           class="bg-danger rounded-xl text-white mt-5 py-4 px-8 mb-5 font-semibold focus:outline-none hover:opacity-90"
         >
           Add/Invite a Provider
         </button>
       </div>
-      <cornie-table :columns="headers" v-model="items">
+      <cornie-table
+        class="hidden md:block"
+        :columns="headers"
+        v-model="items"
+        :fixeHeight="true"
+      >
         <template #code="{ item }">
           <div class="flex flex-col text-sm">
             <span class="">
@@ -78,7 +83,7 @@
             <span class="ml-3 text-xs">View Chart</span>
           </div>
           <div
-            @click="showProviderProfile = true"
+            @click="viewProfile(item)"
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           >
             <new-view-icon class="text-primary-500 fill-current" />
@@ -149,8 +154,82 @@
           </div>
         </template>
       </cornie-table>
+      <div class="block md:hidden">
+        <div class="mb-5">
+          <search-section :placeholder="'Search Table'" />
+        </div>
+        <div
+          v-for="(record, i) in items"
+          :key="i"
+          class="bg-white shadow-lg py-2 px-8 w-full rounded-lg rounded-b-none h-full"
+        >
+          <div
+            class="justify-between flex mb-5 border-b-2 py-2 border-gray-200"
+          >
+            <p class="text-primary">#</p>
+            <p>{{ i + 1 }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">record id</p>
+            <p class="flex truncate">{{ record.id }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">record mode</p>
+            <p>{{ record.mode }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">Practice</p>
+            <p>{{ record.practiceName }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">type</p>
+            <p>{{ record.practiceType }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">Date Created</p>
+            <p>{{ record.createdAt }}</p>
+          </div>
+
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">Last updated</p>
+            <p>{{ record.updatedAt }}</p>
+          </div>
+          <div
+            class="justify-between flex mb-5 py-2 border-b-2 border-gray-200"
+          >
+            <p class="text-primary uppercase font-bold text-sm">
+              Registered By
+            </p>
+            <p>{{ record.addedBy }}</p>
+          </div>
+          <div class="justify-between flex mb-5 border-b-2 border-gray-200">
+            <p class="text-primary">status</p>
+            <p class="bg-yellow-100 text-yellow-500 rounded py-1 text-sm px-2">
+              {{ record.status }}
+            </p>
+          </div>
+          <div class="flex w-full justify-center py-2">
+            <DotsHorizontalIcon />
+          </div>
+        </div>
+      </div>
     </div>
-    <provider-profile v-model="showProviderProfile" />
+    <provider-profile
+      :profile="providerProfile"
+      v-model="showProviderProfile"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -164,6 +243,7 @@
   import UpdateIcon from "@/components/icons/newupdate.vue";
   import NewViewIcon from "@/components/icons/newview.vue";
   import PlusIcon from "@/components/icons/plus.vue";
+  import SearchSection from "@/components/search-input.vue";
   import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
   import { Prop } from "vue-property-decorator";
@@ -176,12 +256,7 @@
     name: "EncounterExistingState",
     components: {
       CornieTable,
-      // AddNotes,
-      // ViewCondition,
-      // RecordAbatement,
-      // AddCondition,
-      // StatusUpdate,
-      // AddOccurence,
+      SearchSection,
       EditIcon,
       NewViewIcon,
       UpdateIcon,
@@ -193,13 +268,14 @@
       GroupIcon,
       ProviderProfile,
     },
-    emits: ["newpaymentaccount", "reloadPayment"],
+    emits: ["addInvite", "reloadPayment"],
   })
   export default class EncounterExistingState extends Vue {
     @Prop()
     healthRecords!: any[];
 
     showProviderProfile = false;
+    providerProfile!: any;
     headers = [
       {
         title: "Record ID",
@@ -256,7 +332,7 @@
                 mode: p.mode,
                 practiceName: p.organization.name,
                 practiceType: p.organization.practiceType,
-                createdAt: this.printDate(p.createdAt),
+                createdAt: new Date(p.createdAt),
                 updatedAt: this.printDate(p.updatedAt),
                 addedBy: p.addedBy,
                 status: p.status,
@@ -269,7 +345,12 @@
     }
 
     printDate(date: string) {
-      return new Date(date).toLocaleDateString();
+      return new Date(date).toLocaleDateString("en-US");
+    }
+
+    viewProfile(item: any) {
+      this.providerProfile = item;
+      this.showProviderProfile = true;
     }
     async acceptP(id: string) {
       const confirmed = await window.confirmAction({
@@ -360,8 +441,8 @@
       const date = new Date(dateString);
       return date.toLocaleDateString();
     }
-    newPaymentAccount() {
-      this.$emit("newpaymentaccount");
+    addInvite() {
+      this.$emit("addInvite");
     }
   }
 </script>

@@ -53,25 +53,47 @@
           {{ status }}
         </span>
       </template>
+      <template #actions="{ item }">
+        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+          <eye-icon class="text-yellow-400 fill-current" />
+          <span class="ml-3 text-xs">view</span>
+        </div>
+        <div
+          @click="setbillPayload(item)"
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+        >
+          <bill-icon class="text-yellow-400 fill-current" />
+          <span class="ml-3 text-xs">Pay</span>
+        </div>
+      </template>
     </cornie-table>
+    <PayBill :paybillPayload="paybillPayload" v-model="showPayBillDialog" />
   </div>
 </template>
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
+  import BillIcon from "@/components/icons/billpayment.vue";
+  import EyeIcon from "@/components/icons/newview.vue";
   import { cornieClient } from "@/plugins/http";
   import pendingBills from "@/types/IPendingBills";
   import { Options, Vue } from "vue-class-component";
   import EmptyState from "../empty-state.vue";
+  import PayBill from "./components/pay-bill.vue";
 
   @Options({
     name: "Pending Bills",
     components: {
       CornieTable,
       EmptyState,
+      EyeIcon,
+      BillIcon,
+      PayBill,
       // transactionFilterDialog,
     },
   })
   export default class PendingBills extends Vue {
+    showPayBillDialog = false;
+
     headers = [
       {
         title: "Bill date",
@@ -128,21 +150,25 @@
     printRecorded(date: Date) {
       return new Date(date).toLocaleDateString();
     }
+
+    paybillPayload:any = {
+    };
+
+    setbillPayload(item: any) {
+      console.log("item", item);
+      this.paybillPayload.billId = item.idD;
+      this.paybillPayload.billAmount = item.totalD;
+      this.paybillPayload.billDisplay = item.idn
+      this.showPayBillDialog = true;
+    }
+
     get items() {
-      // return new Array(6).fill({
-      //   date: new Date().toLocaleDateString(),
-      //   id: "CRH353434",
-      //   biller: "Dr John Adeniyi",
-      //   // patient: "XXXXXX",
-      //   account: "3209320932",
-      //   payor: "James Daniel",
-      //   total: "₦ 40,000",
-      //   status: "Pending",
-      // });
       return this.pendingBills.length == 0
         ? this.pendingBills
         : this.pendingBills.map((x) => {
             return {
+              totalD: x.total,
+              idD: x.id,
               date: this.printRecorded(x.createdAt),
               //@ts-ignore
               idn: x.idn,
