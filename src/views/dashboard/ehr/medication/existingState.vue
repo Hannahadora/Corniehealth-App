@@ -127,7 +127,7 @@
     </cornie-table>
 
     <medication-request-modal v-model="showMedicationRequest" :selectedItem="selectedItem" :id="requestId" @medication-added="medicationadded"/>
-
+    <editmedication-modal v-model="showEditMedicationModal" :selectedItem="selectedItem" :id="requestId"/>
     <view-modal v-model="showDetails" :selectedItem="selectedItem" :id="requestId" :medicationid="medicationId"/>
     <refill-modal v-model="showRefill" :id="requestId"/>
     <print-modal v-model="showPrint" :selectedItem="selectedItem" />
@@ -204,6 +204,7 @@ import ViewModal from "./viewDetails.vue";
 import MedicationRequestModal from "./medicationModal.vue";
 import StatusModal from "./status.vue";
 import RefillModal from "./refill.vue";
+import EditmedicationModal from "./editMedicationModal.vue";
 
 // import MedicationModal from "./medication.vue";
 // import EditMedicationModal from "./updateMedication.vue";
@@ -219,18 +220,13 @@ const request = namespace("request");
 
 @Options({
   components: {
-    //Close,
     SortIcon,
     ThreeDotIcon,
     MedicationRequestModal,
     ViewModal,
     StatusModal,
-    // OtherNotesAdd,
     SearchIcon,
-    // NotesAdd,
     PrintIcon,
-    // StatusModal,
-    // OtherStatusModal,
     PlusIcon,
     TableRefreshIcon,
     FilterIcon,
@@ -241,8 +237,6 @@ const request = namespace("request");
     EyeIcon,
     ColumnFilter,
     MedicationDrug,
-    // MedicationModal,
-    // EditMedicationModal,
     CancelIcon,
     DangerIcon,
     TableOptions,
@@ -263,6 +257,7 @@ const request = namespace("request");
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
+    EditmedicationModal,
   },
 })
 export default class RequestExistingState extends Vue {
@@ -519,7 +514,7 @@ export default class RequestExistingState extends Vue {
      this.selectedItem = item;
   }
   showModal(item:any){
-    this.showMedicationRequest = true;
+    this.showEditMedicationModal = true;
     this.requestId = item.id;
      this.selectedItem = item;
   }

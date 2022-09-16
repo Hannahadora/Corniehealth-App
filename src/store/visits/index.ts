@@ -38,7 +38,7 @@ export default {
       if (visits && visits.length > 0) state.patientVisits = [...visits];
     },
     setPractitionerVisit(state, practitionervisits) {
-      state.practitionervisits = [...practitionervisits];
+      state.practitionervisits = practitionervisits;
     },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [...pts];

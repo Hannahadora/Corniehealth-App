@@ -23,33 +23,33 @@
           <eye-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">View Visit</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
          
         >
           <vital-icon />
           <span class="ml-3 text-xs">Vitals</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="shareVisitModal(item.encounterId)"
         >
-          <diagnostic-icon class="text-blue-600 fill-current" />
+          <bill-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Share Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showBillVisitModal(item.encounterId)"
         >
-          <prescibe-icon class="text-blue-600 fill-current" />
+          <bill-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Pay Bill</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <refferal-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Referral</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showTimeline(item)"
@@ -79,6 +79,7 @@
           <span class="ml-3 text-xs">Cancel Visit</span>
         </div>
         <div
+        v-if="item?.appointmentId"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showCheckOut(item)"
         >

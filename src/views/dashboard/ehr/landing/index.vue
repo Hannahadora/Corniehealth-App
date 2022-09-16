@@ -63,10 +63,10 @@
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View patient details</span>
           </table-action>
-          <table-action @click="encounterPatient(item)">
+          <!-- <table-action @click="encounterPatient(item)">
             <plus-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Start Encounter</span>
-          </table-action>
+          </table-action> -->
           <table-action
             @click="
               $router.push(
@@ -112,6 +112,7 @@
         v-model="itemsActiveVisits"
         :columns="headers2"
         @filter="filterAdvanced = true"
+        :listmenu="true"
       >
         <template #name="{ item }">
           <div class="flex items-center">
@@ -137,6 +138,10 @@
           >
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Edit</span>
+          </table-action>
+          <table-action @click="encounterPatient(item)">
+            <plus-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
           <table-action @click="removePatient(item.id)">
             <cancel-icon class="text-red-500 fill-current" />
@@ -427,7 +432,7 @@ export default class ExistingState extends Vue {
   }
 
   get itemsActiveVisits() {
-    return this.practitionervisits.map((patient:any) => {
+    return this.practitionervisits?.map((patient:any) => {
       // ;
       const contact = patient?.contactInfo?.find(
         (contact:any) => contact.phone?.number
@@ -453,6 +458,8 @@ export default class ExistingState extends Vue {
     });
   }
 
+
+
   goToEHR(patientId: string) {
     if (!this.practitionerAuthenticated) {
       this.patientId = patientId;
@@ -461,9 +468,10 @@ export default class ExistingState extends Vue {
       this.$router.push({ name: "Health Trend", params: { id: patientId } });
     }
   }
-  async encounterPatient(patient: IPatient) {
+  async encounterPatient(patient: any) {
+    console.log({patient})
     const body = {
-      patientId: patient.id,
+      patientId: patient.patientId,
       practitionerId: this.authPractitioner.id,
       locationId: this.authCurrentLocation,
       status: "active",
@@ -473,10 +481,31 @@ export default class ExistingState extends Vue {
     try {
       const response = await cornieClient().post("/api/v1/encounter", body);
       if (response.success) {
-        this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+        console.log({response})
+        this.start(patient.id, response.data.id)
+        //this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+
       }
     } catch (error: any) {
       window.notify({ msg: "Encounter error", status: "error" });
+    }
+  }
+
+  async start(id: string, encounterId: string) {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/visit/start-encounter",
+        {
+          visitId:id,
+          encounterId: encounterId
+        }
+      );
+      if (response.success) {
+        // this.setPatientRequests([response.data]);
+        window.notify({ msg: "Visit Started", status: "success" });
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Visit Not Started", status: "error" });
     }
   }
 
