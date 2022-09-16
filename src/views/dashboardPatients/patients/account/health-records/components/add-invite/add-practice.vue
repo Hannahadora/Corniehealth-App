@@ -85,7 +85,7 @@
       const items =
         this.allHealthRecords.length > 0
           ? this.allHealthRecords.map((r: any) => ({
-              display: r?.practiceName,
+              display: r?.organization?.name,
               code: r.id,
             }))
           : [];
@@ -103,8 +103,8 @@
     }
     get results() {
       return this.searchResults.map((r: any) => ({
-        display: r?.organization?.name,
         code: r.id,
+        display: r.name,
       }));
     }
     async fetchPractice(practice: string) {
