@@ -286,7 +286,7 @@ export default class checkoutModal extends Vue {
          this.done();
         }
       } catch (error:any) {
-        window.notify({ msg: error.response.data.message, status: "error" });
+        window.notify({ msg: "Patient not checked-out", status: "error" });
       }
   
   }
@@ -323,7 +323,7 @@ export default class checkoutModal extends Vue {
          this.bill = response.data;
       }
     } catch (error:any) {
-     window.notify({ msg: error.response.data.message, status: "error" });
+     window.notify({ msg: "Visit not Checked out", status: "error" });
     }
   }
 

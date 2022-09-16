@@ -1,6 +1,6 @@
 <template>
-  <cornie-dialog :modelValue="show" center class="w-1/2 h-auto">
-    <div class="xl:w-full w-11/12 mx-auto p-10 xl:mt-0 mt-8 info-container">
+  <cornie-dialog v-model="show" center class="md:w-1/2 w-2/2 h-auto">
+    <div class="xl:w-full md:w-11/12 w-12/12 mx-auto p-10 xl:mt-0 mt-8 info-container">
       <div
         class="w-full flex xl:flex-row flex-col xl:items-center items-right justify-between"
       >
@@ -72,7 +72,7 @@
       >
         <cornie-btn
           class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
-          @click="$emit('close')"
+          @click="show = false"
         >
           Close
         </cornie-btn>
@@ -120,7 +120,8 @@ export default class DoctorsPage extends Vue {
   locationId = "";
   date = moment().format("YYYY-MM-DD");
   availableHour: any = {};
-  show: Boolean = false;
+  @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
   loading: Boolean = false;
 
   @account.Getter
@@ -212,14 +213,17 @@ export default class DoctorsPage extends Vue {
       };
       try {
         this.loading = true;
-        await cornieClient().post("/api/v1/patient-portal/appointment", {
-          ...data,
-        });
-        this.$emit("close");
-        window.notify({
-          msg: "Appointment has been booked, proceed to make payment",
-          status: "success",
-        });
+        const response = await cornieClient().post(
+          "/api/v1/patient-portal/appointment",
+          {
+            ...data,
+          }
+        );
+          this.$emit("close");
+          window.notify({
+            msg: "Appointment has been booked, proceed to make payment",
+            status: "success",
+          });
       } catch (error: any) {
         window.notify({
           msg: error.message,

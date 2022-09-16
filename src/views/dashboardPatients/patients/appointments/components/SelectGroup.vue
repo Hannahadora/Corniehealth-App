@@ -4,15 +4,17 @@
       <div class="h-full xl:grid grid-cols-7 flex flex-wrap gap-4">
         <multiselectsearch
           v-model="search.specialty"
-          :icon="require('@/assets/book-appointment/icon-doctor-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-doctor-grey.png')"
           :placeholder="specialtyPlaceholder"
           :items="specialties"
           :active="specialtyActive"
-          @query="findSpecialtys"
+          @query="findSpecialtys"  
+          item-label-prop="name"
+          item-value-prop="id"
         />
         <multiselectsearch
           v-model="search.location"
-          :icon="require('@/assets/book-appointment/icon-location-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-location-grey.png')"
           :placeholder="locationPlaceholder"
           :items="locations"
           :active="locationActive"
@@ -21,7 +23,7 @@
         />
         <multiselectsearch
           v-model="search.hospital"
-          :icon="require('@/assets/book-appointment/icon-hospital-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-hospital-grey.png')"
           :placeholder="hospitalPlaceholder"
           item-label-prop="name"
           item-value-prop="id"
@@ -32,7 +34,7 @@
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="experience"
-          :icon="require('@/assets/book-appointment/icon-experience-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-experience-grey.png')"
           placeholder="Experience"
           :items="experiences"
           :active="experienceActive"
@@ -40,27 +42,27 @@
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="search.visitType"
-          :icon="require('@/assets/book-appointment/icon-visit-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-visit-grey.png')"
           placeholder="Visit Type"
           :items="visitTypes"
         />
         <!-- <multiselectsearch
 						v-model="search.insurance"
-						:icon="require('@/assets/book-appointment/icon-insurance-grey.png')"
+						:icon="require('@/assets/img/book-appointment/icon-insurance-grey.png')"
 						placeholder="Insurance"
 						:items="insurances"
 					/> -->
-        <multiselectsearch
+        <!-- <multiselectsearch
           v-if="tab === 'hospitals'"
           v-model="search.rating"
-          :icon="require('@/assets/book-appointment/icon-insurance-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-insurance-grey.png')"
           placeholder="Rating"
           :items="ratings"
-        />
+        /> -->
         <multiselectsearch
           v-if="tab === 'doctors'"
           v-model="search.language"
-          :icon="require('@/assets/book-appointment/icon-lang-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-lang-grey.png')"
           placeholder="Language"
           :items="languages"
         />
@@ -68,7 +70,7 @@
           v-if="tab === 'doctors'"
           id="lcd"
           v-model="search.gender"
-          :icon="require('@/assets/book-appointment/icon-gender-grey.png')"
+          :icon="require('@/assets/img/book-appointment/icon-gender-grey.png')"
           placeholder="Gender"
           :items="genders"
         />
@@ -105,8 +107,8 @@ export default class addMedications extends Vue {
   @Watch('experience')
   onChange() {
     if(this.experience === 'All' || this.experience === ''){
-      this.search.min = undefined;
-       this.search.max = undefined
+      this.search.min = 0;
+       this.search.max = 0
     } else {
       const fminmax = this.experience.split(' ')
       console.log(fminmax, 'fminmax')
@@ -118,17 +120,17 @@ export default class addMedications extends Vue {
   }
 
   loading = false;
-  search = {
+  search: any = {
     specialty: "",
     location: "",
-    hospital: undefined,
-    min: 0 || undefined,
-    max: 0 || undefined,
-    insurance: undefined,
-    language: undefined,
-    gender: undefined,
-    rating: undefined,
-    visitType: undefined,
+    hospital: "",
+    min: 0,
+    max: 0,
+    insurance: "",
+    language: "",
+    gender: "",
+    rating: "",
+    visitType: "",
   };
   specialties: any = [];
 
@@ -186,9 +188,7 @@ export default class addMedications extends Vue {
 
   @Watch("search", { deep: true })
   handler() {
-    console.log(this.search)
     this.$emit("searchQuery", this.search);
-    this.$emit("loadingState", this.loading);
     this.$router.push(
       `${
         this.$route.path
@@ -252,8 +252,7 @@ export default class addMedications extends Vue {
       const { data } = await cornieClient().get(
         `/api/v1/booking-website/search?query=${query}`
       );
-      const xspecialties = data.specialties;
-      this.specialties = xspecialties.specialties.map((el: any) => el.name);
+      this.specialties = data.specialties || [];
     } catch (error) {
       window.notify({
         msg: "There was an error fetching specialties",

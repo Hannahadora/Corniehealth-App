@@ -10,3 +10,19 @@ export async function fetchPatientvisits() {
   }
   return {};
 }
+
+export async function getPatientVisitsBill(encounterId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/patient-portal/visit/encounter/${encounterId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    notify({
+      msg: "There was an error fetching patient's visits",
+      status: "error",
+    });
+  }
+  return {};
+}

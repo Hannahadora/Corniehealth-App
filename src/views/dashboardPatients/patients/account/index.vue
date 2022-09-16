@@ -5,7 +5,7 @@
       <span
         class="flex flex-col w-full justify-center border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-       Private Profile & Settings
+     Profile Settings
       </span>
       <span class="w-full">
         <tabs :items="tabLinks" v-model="currentTab">

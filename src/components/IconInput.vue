@@ -1,23 +1,43 @@
 <template>
-  <div :class="[width]" class="relative text-gray-600 py-2 focus-within:text-gray-400">
-    <span class="absolute inset-y-0 left-0 flex items-center pl-2" v-if="prepend">
+  <div
+    :class="[width]"
+    class="relative text-gray-600 py-2 focus-within:text-gray-400"
+  >
+    <span
+      class="absolute inset-y-0 left-0 flex items-center pl-2"
+      v-if="prepend"
+    >
       <div class="p-1 focus:outline-none focus:shadow-outline">
         <slot name="prepend" />
       </div>
     </span>
-    <field :name="inputName" v-slot="{ errorMessage, meta, field }" :rules="rules" v-model="valueSync">
-      <input v-bind="{ ...$attrs, ...field }" v-model="valueSync" @blur="$emit('blur')" :type="$attrs.type || 'text'"
+    <field
+      :name="inputName"
+      v-slot="{ errorMessage, meta, field }"
+      :rules="rules"
+      v-model="valueSync"
+    >
+      <input
+        v-bind="{ ...$attrs, ...field }"
+        v-model="valueSync"
+        @blur="$emit('blur')"
+        :type="$attrs.type || 'search'"
         :autocomplete="$attrs.autocomplete || 'off'"
-        class="py-1 text-sm text-black rounded-md w-full focus:outline-none" :class="{
+        class="py-1 text-sm text-black rounded-md w-full focus:outline-none"
+        :class="{
           'pl-10': prepend,
           'pr-10': append,
           'pl-2': !prepend,
           'pr-2': !append,
           'border-red-500': Boolean(errorMessage),
           'border-green-400': meta.valid && meta.touched,
-        }" />
+        }"
+      />
     </field>
-    <span class="absolute inset-y-0 right-0 flex items-center pr-2" v-if="append">
+    <span
+      class="absolute inset-y-0 right-0 flex items-center pr-2"
+      v-if="append"
+    >
       <div class="p-1 focus:outline-none focus:shadow-outline">
         <slot name="append" />
       </div>

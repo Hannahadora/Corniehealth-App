@@ -18,7 +18,7 @@
         class="hover:bg-light-blue-600 hover:opacity-50 pa-2 w-full cursor-pointer flex items-center"
         :class="{
           'justify-center': !hovered,
-          'rounded-full py-1 bg-danger': active && hasChild && !expand,
+          'rounded-full py-1 bg-blue-50': active && hasChild && !expand,
           'px-2': hovered && !hasChild,
           'uppercase': hasChild
         }"

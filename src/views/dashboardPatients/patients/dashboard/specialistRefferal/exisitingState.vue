@@ -17,35 +17,36 @@
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showAppointmentModal = true"
         >
           <appointment-icon />
           <span class="ml-3 text-xs">Book Appointment</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <check-in class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Check-In</span>
-        </div>
+        </div> -->
       </template>
-       <template #status>
+       <!-- <template #status>
           <span
             class="bg-green-200 text-green-800 text-center rounded-md p-1 bg-opacity-20"
           >
             Active
           </span>
-        </template>
-      <!-- <template #status="{item}">
+        </template> -->
+      <template #status="{item}">
           <span
             :class="{
-              'bg-green-200 text-green-800': item.status == 'Active',
-              ' bg-red-500 text-red-400': item.status == 'Inactive',
+              'bg-green-200 text-green-800': item.status == 'active',
+              ' bg-red-500 text-red-400': item.status == 'inactive',
             }"
             class="text-center rounded-md p-1 bg-opacity-20"
           >
             {{ item.status }}
           </span>
-        </template> -->
+        </template>
         <template #familyId="{item}">
          <span class="text-blue-500">{{ item.familyId}}</span>
         </template>
@@ -53,47 +54,75 @@
          <span class="text-blue-500">{{ item.patientName}}</span>
         </template>
     </cornie-table>
-    <div class="block md:hidden">
+    <div class="block md:hidden" v-for="(item, index) in items" :key="index">
         <div class="mb-5">
             <search-section :placeholder="'Search Table'"/>
         </div>
         <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full">
             <div class="justify-between flex mb-5 border-b-2 py-2 border-gray-200">
                 <p class="text-primary">#</p>
-                <p>1</p>
+                <p>{{ index }}</p>
             </div>
             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">request date</p>
-                <p>22/01/20</p>
+                <p>{{ item.createdAt }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">referral id</p>
-                <p>A1XCD45</p>
+                <p>{{ item.identifier }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">category</p>
-                <p>Counselling</p>
+                <p>{{ item.category }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">specialty</p>
-                <p>XXXXXX</p>
+                <p>{{ item.specialty }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">requester</p>
-                <p>XXXXXX</p>
+                <p>{{ item?.patient?.firstname +' '+  item?.patient?.lastname}}</p>
             </div>
 
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">performer</p>
-                <p>XXXXXX</p>
+                <p>{{ item.performer }}</p>
             </div>
             <div class="justify-between flex mb-5 border-b-2 border-gray-200">
                 <p class="text-primary">status</p>
-                <p class="bg-yellow-100 text-yellow-500 rounded py-1 text-sm px-2">On-Hold</p>
+                <p class="text-center rounded-md p-1 bg-opacity-20 px-2"
+                :class="{
+                  'bg-green-200 text-green-800': item.status == 'active',
+                  ' bg-red-500 text-red-400': item.status == 'inactive',
+                }"
+                
+                >{{ item.status }}</p>
             </div>
             <div class="flex w-full justify-center py-2">
-                    <DotsHorizontalIcon/>
-            </div>
+                  <DotsHorizontalIcon @click="showMenulist = !showMenulist"/>
+                    <div v-if="showMenulist" class="w-full border-2 border-gray-200 shadow-sm rounded-lg py-3 px-4 bg-white">
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showView(item)"
+                      >
+                        <eye-icon class="text-yellow-400 fill-current" />
+                        <span class="ml-3 text-xs">View</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showAppointmentModal = true"
+                      >
+                        <appointment-icon />
+                        <span class="ml-3 text-xs">Book Appointment</span>
+                      </div>
+                      <!-- <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                      >
+                        <check-in class="text-blue-600 fill-current" />
+                        <span class="ml-3 text-xs">Check-In</span>
+                      </div> -->
+                    </div>
+          </div>
 
 
         </div>
@@ -101,6 +130,9 @@
     </div>
   </div>
   <refferal-modal v-model="showViewModal" :selectedItem="selectedItem"/>
+  <appointment-modal
+      v-model="showAppointmentModal"
+    />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -109,6 +141,9 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { Codeable } from "@/types/misc";
+import { getDropdown } from "@/plugins/definitions";
+
 import  ISpecialistrefferal  from "@/types/ISpecialistrefferal";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
@@ -130,12 +165,12 @@ import EditIcon from "@/components/icons/edit.vue";
 import CheckIn from "@/components/icons/checkin.vue";
 import SearchSection from "@/components/search-input.vue";
 import DotsHorizontalIcon from "@/components/icons/DotsHorizontalIcon.vue";
-
 import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+
 import AppointmentIcon from "./icon/appointment.vue";
 import RefferalModal from "./viewModal.vue";
-import { Codeable } from "@/types/misc";
-import { getDropdown } from "@/plugins/definitions";
+import AppointmentModal from "../../appointments/components/AppointmentModal.vue";
+
 
 const location = namespace("location");
 const dropdown = namespace("dropdown");
@@ -163,13 +198,16 @@ const specialistrefferal = namespace("specialistrefferal");
     AppointmentIcon,
     RefferalModal,
     SearchSection,
-    DotsHorizontalIcon
+    DotsHorizontalIcon,
+    AppointmentModal
   },
 })
 export default class FamilyAsscoation extends Vue {
   showColumnFilter = false;
   showMemeberList = false;
   showViewModal = false;
+  showMenulist = false;
+  showAppointmentModal = false;
   query = "";
   selectedItem = {};
 
@@ -247,7 +285,7 @@ export default class FamilyAsscoation extends Vue {
 //   }
 
   get items() {
-    const specialistrefferals = this.specialistrefferals.map((specialistrefferal:any) => {
+    const specialistrefferals = this.specialistrefferals?.map((specialistrefferal:any) => {
          (specialistrefferal as any).createdAt = new Date(
         (specialistrefferal as any).createdAt
       ).toLocaleDateString("en-US");
@@ -255,7 +293,7 @@ export default class FamilyAsscoation extends Vue {
         ...specialistrefferal,
         specialty: this.getspecialtyname(specialistrefferal.specialty),
         performer: specialistrefferal.performer.name,
-        requester: 'XXXXXX'
+        requester: specialistrefferal?.patient?.firstname +' '+  specialistrefferal?.patient?.lastname
       };
     });
     if (!this.query) return specialistrefferals;

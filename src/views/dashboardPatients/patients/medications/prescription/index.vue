@@ -30,10 +30,7 @@
       PrescriptionModal
     },
   })
-  export default class prescriptionPage extends Vue {
-    @Prop({ type: String, default: "" })
-    id!: string;
-  
+  export default class prescriptionPage extends Vue {  
     currentTab = 0;
     prescriptions: any = [];
     showPrescriptionModal: Boolean = false;

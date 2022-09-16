@@ -207,7 +207,9 @@ export default class appointmentPatient extends Vue {
   }
 
    async fetchAppointpentPatient() {
-    const AllPractitioners = cornieClient().get(`/api/v1/appointment/for-date`,{date: "2022-03-15"});
+    const [splitDate] = new Date().toISOString().split('T');
+   const date = splitDate;
+    const AllPractitioners = cornieClient().get(`/api/v1/appointment/for-date`,{date: date});
     const response = await Promise.all([AllPractitioners]);
     this.patientAppointment = response[0].data;
     

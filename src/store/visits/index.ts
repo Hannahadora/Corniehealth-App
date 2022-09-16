@@ -11,12 +11,14 @@ import {
   noShow,
   getPatientVisits,
   updateStatus,
+  fetchPractitonerVisits
 } from "./helper";
 
 interface SchedulesStore {
   visits: any[];
   patients: any[];
   patientVisits: any[];
+  practitionervisits: any[];
 }
 
 export default {
@@ -25,6 +27,7 @@ export default {
     visits: [],
     patients: [],
     patientVisits: [],
+    practitionervisits: []
   },
   mutations: {
     setVisits(state, visits) {
@@ -34,7 +37,9 @@ export default {
     setPatientVisits(state, visits) {
       if (visits && visits.length > 0) state.patientVisits = [...visits];
     },
-
+    setPractitionerVisit(state, practitionervisits) {
+      state.practitionervisits = practitionervisits;
+    },
     setPatients(state, pts) {
       if (pts && pts.length > 0) state.patients = [...pts];
     },
@@ -65,6 +70,11 @@ export default {
     async getPatientVisits(ctx, id: string) {
       const visits = await getPatientVisits(id);
       ctx.commit("setPatientVisits", visits);
+    },
+
+    async fetchPractitonerVisits(ctx, id: string) {
+      const practitionervisits = await fetchPractitonerVisits(id);
+      ctx.commit("setPractitionerVisit", practitionervisits);
     },
 
     async getPatients(ctx) {

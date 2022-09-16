@@ -55,6 +55,7 @@
                    label="Phone Number"
                    class="w-full"
                    :disabled="true"
+                    :readonly="true"
                />
           </div>
              <cornie-input

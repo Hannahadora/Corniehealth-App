@@ -1,10 +1,11 @@
 import { StoreOptions } from "vuex";
 import  IPatientvisit  from "@/types/IPatientvisit";
 // import ObjectSet from "@/lib/objectset";
-import { fetchPatientvisits } from "./helper";
+import { fetchPatientvisits, getPatientVisitsBill } from "./helper";
 
 interface PatientvisitStore {
   patientvisits: IPatientvisit[];
+  patientvisitbill : any
 
 }
 
@@ -12,6 +13,7 @@ export default {
   namespaced: true,
   state: {
     patientvisits: [],
+    patientvisitbill: {}
 
   },
   mutations: {
@@ -19,6 +21,9 @@ export default {
       // const patientvisitSet = new ObjectSet([...state.patientvisits, ...patientvisits], "id");
       // state.patientvisits = [...patientvisitSet];
       state.patientvisits = patientvisits;
+    },
+    setPatientvisitbill(state, patientvisitbill: any) {
+      state.patientvisitbill = patientvisitbill;
     },
   },
 
@@ -32,6 +37,10 @@ export default {
       return ctx.state.patientvisits.find(
         patientvisit => patientvisit.id == id
       );
+    },
+    async getPatientVisitsBill(ctx, encounterId: string) {
+      const patientvisitbill = await getPatientVisitsBill(encounterId);
+      ctx.commit("setPatientvisitbill", patientvisitbill);
     },
 
   },

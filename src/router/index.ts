@@ -319,8 +319,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "account-security",
-        name: "Account Security",
+        name: "Account Security Patient Portal",
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
+      },
+      {
+        path: "specialistrefferal",
+        name: "Specialist Referrals",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
+      },
+      {        
+        path: "refferalinivite",
+        name: "Refferal Invite",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/refferals/index.vue"),
+      },
+      {   
+        path: "one-time-access",
+        name: "One Time Access",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/onetimeaccess/index.vue"),
       },
       {
         path: "access-control",
@@ -329,7 +344,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "appointments",
-        name: "Appointments",
+        name: "Appointments Patients Portal",
         component: () => import("@/views/dashboardPatients/patients/appointments/index.vue"),
       },
       {
@@ -348,6 +363,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/dashboard/billingAccount/index.vue"),
       },
       {
+
         path: "labs",
         name: "labs and imaging",
         component: () => import("@/views/dashboardPatients/patients/dashboard/labsAndImaging/index.vue"),
@@ -358,7 +374,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
       },
       {
-        path: "visits-patients",
+        path: "visitspatients",
         name: "Visits Patients",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/index.vue"),
       },
@@ -366,6 +382,38 @@ const routes: Array<RouteRecordRaw> = [
         path: "/validate-claim",
         name: "Validate Claim",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/validateclaim.vue"),
+      },
+      {
+        path: "shopping",
+        name: "Shopping",
+        component: () => import("@/views/dashboardPatients/patients/shopping/medications/index.vue"),
+      },
+      {
+        path: "shopping/details/:id",
+        name: "Shopping Details",
+        component: () => import("@/views/dashboardPatients/patients/shopping/medications/product-details.vue"),
+        props: true,
+      },
+      {
+        path: "shopping/cart",
+        name: "Shopping Cart",
+        component: () => import("@/views/dashboardPatients/patients/shopping/cart.vue"),
+        props: true,
+      },
+      {
+        path: "shopping/checkout/delivery-info",
+        name: "Delivery Info",
+        component: () => import("@/views/dashboardPatients/patients/shopping/checkout/delivery-info.vue"),
+      },
+      {
+        path: "shopping/checkout/review",
+        name: "Review",
+        component: () => import("@/views/dashboardPatients/patients/shopping/checkout/review.vue"),
+      },
+      {
+        path: "shopping/checkout/payment",
+        name: "Payment",
+        component: () => import("@/views/dashboardPatients/patients/shopping/checkout/payment.vue"),
       },
     ],
   },

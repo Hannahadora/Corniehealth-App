@@ -27,15 +27,16 @@
                 <component  :is="link.icon"></component>
             </keep-alive>
             </sidebar-link>
+
+            <sidebar-link
+              to="/dashboard/patient/refferalinivite"
+              :hovered="hovered"
+              text="Referrals"
+              class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+            >
+              <reffer-icon class="text-primary fill-current" />
+            </sidebar-link>
         </div>
-      <sidebar-link
-        to="support"
-        :hovered="hovered"
-        text="Referrals"
-        class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
-      >
-        <reffer-icon class="text-primary fill-current" />
-      </sidebar-link>
     </div>
   </div>
 </template>
@@ -58,15 +59,17 @@
   import ScheduleIcon from "./icons/schedule.vue";
   import SupportIcon from "./icons/support.vue";
   import WalletIcon from "./icons/wallet.vue";
-  import CalendarIcon from "./icons/appointment.vue";
-  import BillIcon from "./icons/billpayment.vue";
-  import HealthIcon from "./icons/healthrecord.vue";
-  import LabIcon from "./icons/labs.vue";
-  import MedicationIcon from "./icons/medication.vue";
-  import MessageIcon from "./icons/messagechat.vue";
-  import RefferIcon from "./icons/reffer.vue";
-  import SpecialistIcon from "./icons/specialist.vue";
-  import VisitIcon from "./icons/visits.vue";
+ 
+ import CalendarIcon from "./icons/calendar2.vue";
+ import SpecialistIcon from "./icons/specialist.vue";
+ import VisitIcon from "./icons/visits.vue";
+ import HealthIcon from "./icons/healthrecord.vue";
+ import LabIcon from "./icons/labs.vue";
+ import MedicationIcon from "./icons/medication.vue";
+ import BillIcon from "./icons/billpayment.vue";
+ import MessageIcon from "./icons/messagechat.vue";
+ import RefferIcon from "./icons/reffer.vue";
+
 
   import SidebarLink from "./sidebarlinkpatient.vue";
 
@@ -147,13 +150,13 @@
       },
       {
         name: "Specialist Referrals",
-        to: "specialist-refferal",
+        to: "specialistrefferal",
         icon: "specialist-icon",
         hasSubsection: false,
       },
       {
         name: "Visits",
-        to: "visits-patients",
+        to: "visitspatients",
         icon: "visit-icon",
         hasSubsection: false,
       },
@@ -200,9 +203,9 @@
             hasSubsection: false,
           },
           {
-            name: "One-Time Access",
-            to: "/dashboard/provider/settings/virtual-lab-orders",
-            icon: "onetime-icon",
+            name: "One Time Access",
+            to: "one-time-access",
+              icon: "onetime-icon",
             hasSubsection: false,
           },
           {

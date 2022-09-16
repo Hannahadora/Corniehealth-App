@@ -27,6 +27,22 @@ export async function getPatientVisits(patientId: string) {
   return {};
 }
 
+
+export async function fetchPractitonerVisits(practitionerId: string) {
+  try {
+    const response = await cornieClient().get(
+      `/api/v1/visit/practitioner/${practitionerId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    notify({
+      msg: "There was an error fetching practitioner active visits",
+      status: "error",
+    });
+  }
+  return {};
+}
 export async function schedulesByPractitioner(id: string) {
   try {
     const response = await cornieClient().get(

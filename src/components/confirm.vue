@@ -77,13 +77,13 @@
   import CloseIcon from "@/components/icons/CloseIcon.vue";
   import Modal from "@/components/modal.vue";
 
-  export default {
-    name: "Confirm",
-    components: {
-      Modal,
-      ArrowLeftIcon,
-      CloseIcon,
-    },
+export default {
+  name: "Confirm",
+  components: {
+    Modal,
+    ArrowLeftIcon,
+    CloseIcon,
+  },
     data() {
       return {
         loading: false,
@@ -127,7 +127,7 @@
           this.resolve = resolve;
         });
       },
-    },
+}
     created() {
       window.confirmAction = this.confirm;
     },

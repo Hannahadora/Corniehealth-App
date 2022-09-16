@@ -18,55 +18,55 @@
       <template #actions="{item}">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-           @click="showViewModal = true"
+           @click="showVisit(item)"
         >
           <eye-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">View Visit</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
          
         >
           <vital-icon />
           <span class="ml-3 text-xs">Vitals</span>
+        </div> -->
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="shareVisitModal(item.encounterId)"
+        >
+          <bill-icon class="text-blue-600 fill-current" />
+          <span class="ml-3 text-xs">Share Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showShareModal = true"
+          @click="showBillVisitModal(item.encounterId)"
         >
-          <diagnostic-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Diagnostics</span>
+          <bill-icon class="text-blue-600 fill-current" />
+          <span class="ml-3 text-xs">Pay Bill</span>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showPaybill = true"
-        >
-          <prescibe-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Prescription</span>
-        </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <refferal-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Referral</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showTimeLineModal = true"
+          @click="showTimeline(item)"
         >
           <timeline-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Timeline</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showBillModal = true"
+          @click="showVisitBillModal(item.encounterId)"
         >
           <bill-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View Bill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showValidateModal = true"
+          @click="showVisitValidateClaim(item.encounterId)"
         >
           <check-icon class="text-green-600 fill-current" />
           <span class="ml-3 text-xs">Validate Claim</span>
@@ -79,6 +79,7 @@
           <span class="ml-3 text-xs">Cancel Visit</span>
         </div>
         <div
+        v-if="item?.appointmentId"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showCheckOut(item)"
         >
@@ -88,7 +89,7 @@
       </template>
        <template #period="{item }">
           <span>
-            {{ new Date(item?.checkInTime).toLocaleTimeString('en-US') +'-'+ new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}
+            {{ item?.checkInTime +' - ' + new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}
           </span>
         </template>
          <template #status="{item}">
@@ -104,6 +105,8 @@
               || item.status == 'diagnosticsCompleted'
               || item.status == 'nedicationDispensed'
               || item.status == 'discharged'
+              || item.status == 'checked-in'
+              || item.status == 'completed'
               ,
               ' bg-yellow-100 text-yellow-400': item.status == 'in-Progress',
              ' bg-red-100 text-red-400': item.status == 'visitEnded' || item.status == 'cancelled',
@@ -180,13 +183,13 @@
 
     </div>
   </div>
-  <view-modal  v-model="showViewModal"/>
+  <view-modal  v-model="showViewModal" :selectedItem="selectedItem"/>
   <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem"/>
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
-  <pay-modal v-model="showPaybill"/>
-  <time-line v-model="showTimeLineModal"/>
+  <pay-modal v-model="showPaybill" :patientvisitbill="patientvisitbill"/>
+  <time-line v-model="showTimeLineModal" :timeline="selectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -195,7 +198,7 @@ import search from "@/plugins/search";
 import { getTableKeyValue } from "@/plugins/utils";
 import { Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-
+import moment from "moment";
 
 import  IPatientvisit  from "@/types/IPatientvisit";
 
@@ -314,6 +317,12 @@ export default class PatientVisit extends Vue {
   @patientvisit.Action
   fetchPatientvisits!: () => Promise<void>;
 
+    @patientvisit.State
+    patientvisitbill!: IPatientvisit;
+
+  @patientvisit.Action
+  getPatientVisitsBill!: (encounterId: string) => Promise<void>;
+
   @practitioner.State
   practitioners!: any[];
 
@@ -403,10 +412,44 @@ export default class PatientVisit extends Vue {
     this.showMember = true;
     this.familyId = value;
   }
-
+  showTimeline(value:any){
+    this.showTimeLineModal = true;
+    this.selectedItem = value.timelines;
+  }
   showCheckOut(value:any){
     this.selectedItem = value;
     this.showCheckOutModal = true
+  }
+  showVisit(value:any){
+    this.showViewModal = true;
+    this.selectedItem = value;
+  }
+  async showBillVisitModal(encounterId:string){
+    this.showPaybill = true;
+    await this.getPatientVisitsBill(encounterId);
+
+  }
+  async shareVisitModal(encounterId:string){
+    this.showShareModal = true;
+    await this.getPatientVisitsBill(encounterId);
+  }
+
+  async showVisitValidateClaim(encounterId:string){
+    this.showValidateModal = true;
+    await this.getPatientVisitsBill(encounterId);
+  }
+
+  async showVisitBillModal(encounterId: string){
+    this.showBillModal = true;
+    await this.getPatientVisitsBill(encounterId);
+  }
+  getTimecheckedOut(time:string){
+    const newtime = new Date(time).toISOString();
+   return moment(newtime).format('LTS');
+  }
+  getTimecheckedIn(time:Date){
+    const newtime2 = new Date(time).toLocaleTimeString('en-US');
+    return newtime2;
   }
 
 async deleteItem(id: string) {
@@ -419,16 +462,16 @@ async deleteItem(id: string) {
       return;
     } else {
       try {
-        const response = await cornieClient().patch(
+        const response = await cornieClient().post(
           `/api/v1/patient-portal/visit/cancel/${id}/`,
           {}
         );
         if (response.success) {
-          window.notify({ msg: "Accepted Successfully", status: "success" });
+          window.notify({ msg: "Cancelled Successfully", status: "success" });
           await this.fetchPatientvisits();
         }
       } catch (error) {
-        window.notify({ msg: "Not Accepted", status: "error" });
+        window.notify({ msg: "Not Cancelled", status: "error" });
       }
     }
   }

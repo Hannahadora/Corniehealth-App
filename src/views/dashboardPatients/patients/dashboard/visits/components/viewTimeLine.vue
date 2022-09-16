@@ -43,22 +43,22 @@
             
                     
             <ol class="relative">
-                <li class="mb-10 ml-4 flex">
+              <li class="mb-10 ml-4 flex" v-for="(item, index) in timeline"  :key="index">
                     <div class="absolute w-12  m-12 h-12 bg-gray-100 rounded-full mt-3 -left-3 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
                     <div class="absolute border-l-4 left-14 top-3.5  border-gray-100 dark:border-gray-700 w-32 h-full" style=""></div>
                     <cornie-card width="70%" height="100%" class="flex-col p-3 rounded-lg ml-32">
                         <cornie-card-text>   
                             <div class="flex space-x-4 w-full">
                             
-                                <checkin-icon/>
-                                <!-- <encounter-icon v-if="item.action == 'Encounter'"/>
+                                <checkin-icon v-if="item.action == 'Checked in' || item.action == 'Checked out'"/>
+                                <encounter-icon v-if="item.action == 'Encounter'"/>
                                 <lab-icon v-if="item.action == 'Lab'"/>
                                 <medication-icon v-if="item.action == 'Medication'"/>
                                 <payment-icon v-if="item.action == 'Payment'"/>
-                                <visit-icon v-if="item.action == 'Visit'" /> -->
+                                <visit-icon v-if="item.action == 'Visit'" />
                                 <div>
-                                    <h5 class="text-lg font-bold text-primary upp">Checked-In</h5>
-                                    <span class="text-sm">08:00AM</span>
+                                    <h5 class="text-lg font-bold text-primary upp">{{ item.action }}</h5>
+                                    <span class="text-sm">{{ new Date(item.createdAt).toLocaleTimeString("en-US", {hour: 'numeric', minute: 'numeric',hour12: true}) }}</span>
                                     <p class="text-sm text-blue-400 cursor-pointer">View Details</p>
                                 </div>
                             
@@ -176,6 +176,9 @@ export default class timelineModal extends Vue {
 
   @Prop({ type: Object, default: {} })
   patient!: any;
+
+  @Prop({ type: Object, default: {} })
+  selectedItem!: any;
 
  
    @user.State

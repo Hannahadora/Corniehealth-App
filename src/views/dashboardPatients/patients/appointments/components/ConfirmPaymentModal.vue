@@ -67,10 +67,10 @@
               >Payment Type</label
             >
             <cornie-select
-              v-model="paymentAccountId"
+              v-model="paymentAccountType"
               placeholder="Select a payment account type"
               :readonly="false"
-              :items="paymentAccounts"
+              :items="[...paymentAccounts, 'Instant pay']"
               required
             >
             </cornie-select>
@@ -126,13 +126,14 @@
     />
 
     <booking-confirmed
-        :id="practitioner.id"
-        :practitioner="practitioner"
-        :practitionerLocations="locations"
-        v-model="bookingConfirmed"
-        @close="$emit('confirmed')"
-      />
-    </cornie-dialog>
+      :id="practitioner.id"
+      :appointment="appointment"
+      :practitioner="practitioner"
+      :practitionerLocations="locations"
+      v-model="bookingConfirmed"
+      @close="$emit('confirmed')"
+    />
+  </cornie-dialog>
 </template>
 
 <script lang="ts">
@@ -141,6 +142,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import search from "@/plugins/search";
+import User, { CornieUser } from "@/types/user";
 
 import CornieCard from "@/components/cornie-card";
 import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
@@ -157,8 +159,9 @@ import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
 import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
 
 import AppointmentModal from "./AppointmentModal.vue";
+import BookingConfirmed from "./BookingConfirmed.vue";
 
-const user = namespace("user");
+const account = namespace("user");
 
 type Sorter = (a: any, b: any) => number;
 function defaultFilter(item: any, query: string) {
@@ -182,6 +185,7 @@ function defaultFilter(item: any, query: string) {
     ChevronRightIcon,
     ChevronLeftIcon,
     AppointmentModal,
+    BookingConfirmed,
   },
 })
 export default class ReviewPaymentModal extends Vue {
@@ -191,12 +195,36 @@ export default class ReviewPaymentModal extends Vue {
   locations = [];
   paymentAccounts: any = [];
   bookingConfirmed = false;
+  showAppointmentModal = false;
+  paymentAccountType = "";
+  accTypes: any = [];
+  paymentAccountId = "";
 
   @Prop({ type: Object, default: {} })
   practitioner!: any;
 
   @Prop({ type: Object, default: {} })
   appointment!: any;
+
+  @account.Getter
+  cornieUser!: CornieUser;
+
+  @Watch("paymentAccountType")
+  handler() {
+    if (this.paymentAccountType === "Instant pay") {
+      return;
+    } else {
+      const n = this.paymentAccountType.split("-");
+      const x = n[n.length - 1];
+      const el = this.accTypes.find((el: any) => el.accountNo === x);
+      this.paymentAccountId =
+        el?.patient_accounts?.PatientPaymentAccountId || undefined;
+    }
+  }
+
+  get patientId() {
+    return this.cornieUser.id;
+  }
 
   get selectedDate() {
     return this.appointment.date;
@@ -223,28 +251,67 @@ export default class ReviewPaymentModal extends Vue {
     } else return this.practitioner.phone;
   }
 
-  get paymentAccountId() {
-    return undefined
+  async submit() {
+    if (this.paymentAccountType === "Instant pay") {
+      try {
+        this.loading = true;
+        const res = await cornieClient().post(
+          `/api/v1/bill/generate-link/${this.appointment.id}`,
+          {}
+        );
+        // this.bookingConfirmed = true;
+        // window.notify({
+        //   msg: "Appointment has been confirmed",
+        //   status: "success",
+        // });
+        console.log('res', res)
+      } catch (error: any) {
+        window.notify({
+          msg: error.message,
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    } else {
+      const data = {
+        appointmentId: this.appointment.id,
+        paymentAccountId: this.paymentAccountId,
+      };
+      try {
+        this.loading = true;
+        await cornieClient().post(
+          "/api/v1/patient-portal/appointment/confirm",
+          {
+            ...data,
+          }
+        );
+        this.bookingConfirmed = true;
+        window.notify({
+          msg: "Appointment has been confirmed",
+          status: "success",
+        });
+      } catch (error: any) {
+        window.notify({
+          msg: error.message,
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
   }
 
-  async submit() {
-    const data = {
-      appointmentId: this.appointment.id,
-      paymentAccountId: this.paymentAccountId,
-    };
+  async fetchPaymentAccount() {
     try {
       this.loading = true;
-      await cornieClient().post(
-        "/api/v1/patient-portal/appointment/confirm",
-        {
-          ...data,
-        }
+      const { data } = await cornieClient().get(
+        "/api/v1/patient-portal/payment"
       );
-      this.bookingConfirmed = true;;
-      window.notify({
-        msg: "Appointment has been confirmed",
-        status: "success",
-      });
+      this.accTypes = data;
+      this.paymentAccounts = this.accTypes.map(
+        (el: any) => `${el.type}-${el.accountNo}`
+      );
     } catch (error: any) {
       window.notify({
         msg: error.message,
@@ -255,7 +322,9 @@ export default class ReviewPaymentModal extends Vue {
     }
   }
 
-  created() {}
+  created() {
+    this.fetchPaymentAccount();
+  }
 }
 </script>
 

@@ -30,9 +30,6 @@
                 <td>Date & Time</td>
                 <td class="flex justify-between">
                   <span>{{ selectedDate }} | {{ selectedTime }}</span>
-                  <div @click="showAppointmentModal = true">
-                    <edit class="cursor-pointer" />
-                  </div>
                 </td>
               </tr>
               <tr>
@@ -75,7 +72,7 @@
 
         </cornie-card-text>
       </cornie-card>
-  
+  </cornie-dialog>
   </template>
   
   <script lang="ts">

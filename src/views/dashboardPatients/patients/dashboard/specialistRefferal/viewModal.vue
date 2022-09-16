@@ -1,5 +1,5 @@
 <template>
-<cornie-dialog v-model="show" right class="w-6/12 h-full">
+<cornie-dialog v-model="show" right class="md:w-6/12 w-12/12 h-full">
    <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
         <cornie-icon-btn @click="show = false" class="">
@@ -27,7 +27,7 @@
                             </div>
                             <div class="">
                                 <div class="flex space-x-8">
-                                      <avatar class="mr-2 w-16 h-16" v-if="authPractitioner.image" :src="authPractitioner.image" />
+                                      <avatar class="mr-2 w-16 h-16" v-if="authPractitioner?.image" :src="authPractitioner?.image" />
                                     <avatar class="mr-2 w-16 h-16" v-else :src="localSrc" />
                                     <div class="float-right w-full flex justify-end">
                                         <div>
@@ -47,8 +47,8 @@
                             <p class="float-right flex justify-end w-full text-white">Appointment Date: <span class="font-semibold">Appointment not booked.</span></p>
                         </div>
 
-                         <div class="grid grid-cols-3 gap-4 mt-8">
-                            <div class="bg-blue-50 rounded-lg shadow-md p-3">
+                         <div class="md:grid md:grid-cols-3 block gap-4 mt-8">
+                            <div class="bg-blue-50 rounded-lg mb-4 shadow-md p-3">
                                 <p class="text-lg font-bold">Request Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Date Requested</p>
@@ -75,7 +75,7 @@
                                     <p class="text-sm text-right w-full">Dr. {{ selectedItem?.patient?.firstname +''+ selectedItem?.patient?.lastname  || 'N/A' }}</p>
                                 </div>
                             </div>
-                             <div class="bg-white rounded-lg shadow-md p-3">
+                             <div class="bg-white rounded-lg mb-4 shadow-md p-3">
                                 <p class="text-lg font-bold">Performer Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Practitioner Name</p>
@@ -102,7 +102,7 @@
                                     <p class="text-sm text-right w-full">{{ selectedItem?.performerLocation?.name || 'N/A' }}</p>
                                 </div>
                             </div>
-                             <div class="bg-blue-50 rounded-lg shadow-md p-3">
+                             <div class="bg-blue-50 rounded-lg mb-4 shadow-md p-3">
                                 <p class="text-lg font-bold">Patient Information</p>
                                 <div class="flex space-x-4 mt-5 w-full">
                                     <p class="text-sm text-gray-400 font-light w-full">Patient Name</p>
@@ -255,7 +255,7 @@ const userStore = namespace("user");
 
 
 @Options({
-  name: "printSection",
+  name: "viewReferal",
   components: {
     ...CornieCard,
     AccordionComponent,
@@ -279,7 +279,7 @@ const userStore = namespace("user");
     CornieTable
   },
 })
-export default class printSection extends Vue {
+export default class viewReferal extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 

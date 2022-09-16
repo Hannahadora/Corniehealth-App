@@ -10,13 +10,16 @@
     </span>
     <cornie-table :columns="rawHeaders" v-model="items">
       <template #actions="{ item }">
-        <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="viewItem(item)">
+        <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="viewItem(item)"
+        >
           <eye-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showCheckinPane(item.id)"
+          @click="viewItem(item)"
         >
           <checkin-icon />
           <span class="ml-3 text-xs">Check-In</span>
@@ -36,7 +39,7 @@
           <span class="ml-3 text-xs">Confirm Payment</span>
         </div>
         <div
-          @click="showStatus(item.id)"
+          @click="payBill(item)"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
           <bill-payment class="text-danger fill-current" />
@@ -116,7 +119,7 @@
       :practitioner="selectedPractitioner"
       :appointment="selectedAppointment"
       v-model="showPaymentModal"
-      @close="showPaymentModal = false"
+      @close="appointmentConfirmed"
     />
     <appointment-modal
       @appointment-added="appointmentAdded"
@@ -131,6 +134,17 @@
       @appointment-rescheduled="appointmentRescheduled"
       v-model="showRescheduleModal"
       :appointment="selectedAppointment"
+      :locations="practitionerLocations"
+    />
+    <pay-bill-modal
+      @bill-payed="billPayed"
+      v-model="showPayBill"
+      :appointment="selectedAppointment"
+      :bill="bill"
+      @viewAppointment="
+        showPayBill = false;
+        showAppointmentDetail = true;
+      "
     />
   </div>
 </template>
@@ -173,6 +187,7 @@ import RescheduleAppointmentModal from "./components/RescheduleAppointment.vue";
 import AppointmentModal from "./components/AppointmentModal.vue";
 import CancelAppointmentModal from "./components/CancelAppointment.vue";
 import ReviewPaymentModal from "./components/ReviewPaymentModal.vue";
+import PayBillModal from "./components/PayBill.vue";
 
 const appointment = namespace("appointment");
 const patients = namespace("patients");
@@ -205,7 +220,8 @@ const patients = namespace("patients");
     CornieDialog,
     ReviewPaymentModal,
     ViewAppointmentModal,
-    RescheduleAppointmentModal
+    RescheduleAppointmentModal,
+    PayBillModal,
   },
 })
 export default class AppointmentExistingState extends Vue {
@@ -221,6 +237,9 @@ export default class AppointmentExistingState extends Vue {
   showCancelApppointment = false;
   showAppointmentDetail = false;
   showRescheduleModal = false;
+  showPayBill = false;
+  bill: any = {};
+  practitionerLocations: any = []
 
   @patients.State
   patients!: IPatient[];
@@ -276,8 +295,16 @@ export default class AppointmentExistingState extends Vue {
     this.showCancelApppointment = false;
     this.fetchAppointments();
   }
+  appointmentConfirmed() {
+    this.showPaymentModal = false;
+    this.fetchAppointments();
+  }
   appointmentRescheduled() {
     this.showRescheduleModal = false;
+    this.fetchAppointments();
+  }
+  billPayed() {
+    this.showPayBill = false;
     this.fetchAppointments();
   }
 
@@ -288,13 +315,19 @@ export default class AppointmentExistingState extends Vue {
     this.showPaymentModal = true;
   }
 
-  viewItem (item: any) {
+  viewItem(item: any) {
     this.showAppointmentDetail = true;
-    this.selectedAppointment = item
+    this.selectedAppointment = item;
   }
-  rescheduleAppointment (item: any) {
+  async rescheduleAppointment(item: any) {
     this.showRescheduleModal = true;
-    this.selectedAppointment = item
+    this.selectedAppointment = item;
+    await this.fetchPractitionerLocations(item.practitioner.id)
+  }
+  async payBill(item: any) {
+    this.showPayBill = true;
+    this.selectedAppointment = item;
+    await this.generateBillId(item.id)
   }
 
   get patientId() {
@@ -321,6 +354,23 @@ export default class AppointmentExistingState extends Vue {
     });
     if (!this.query) return appointments;
     return search.searchObjectArray(appointments, this.query);
+  }
+
+  async generateBillId(appointmentId: string) {
+    try {
+      this.loading = true;
+     const { data } =  await cornieClient().get(
+        `/api/v1/patient-portal/appointment/pay-bill/get-appointment-bill/${appointmentId}`
+      );
+      this.bill = data
+    } catch (error: any) {
+      window.notify({
+        msg: "There was error generating bill id",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   async fetchAppointments() {
@@ -351,6 +401,24 @@ export default class AppointmentExistingState extends Vue {
       hour12: true,
     });
   }
+
+  
+  async fetchPractitionerLocations(practitionerId: any) {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          `/api/v1/general/get-practitioner-location/${practitionerId}`
+        );
+        this.practitionerLocations = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching practitioner locations",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
 
   async created() {
     await this.fetchAppointments();

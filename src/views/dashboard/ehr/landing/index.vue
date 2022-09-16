@@ -20,8 +20,9 @@
             'text-gray-500': activeTab !== 0,
           }"
           @click="() => (activeTab = 0)"
-          >All Patients</a
         >
+          All Patients
+        </a>
         <a
           class="px-4 py-2 text-sm active-tab cursor-pointer"
           :class="{
@@ -29,8 +30,9 @@
             'text-gray-500': activeTab !== 1,
           }"
           @click="() => (activeTab = 1)"
-          >Active Visits</a
         >
+          Active Visits
+        </a>
       </div>
     </div>
 
@@ -61,10 +63,10 @@
             <newview-icon class="text-yellow-500 fill-current" />
             <span class="ml-3 text-xs">View patient details</span>
           </table-action>
-          <table-action @click="encounterPatient(item)">
+          <!-- <table-action @click="encounterPatient(item)">
             <plus-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Start Encounter</span>
-          </table-action>
+          </table-action> -->
           <table-action
             @click="
               $router.push(
@@ -107,13 +109,14 @@
 
     <div class="p-2" v-if="activeTab === 1">
       <cornie-table
-        v-model="activeVisits"
-        :columns="headers"
+        v-model="itemsActiveVisits"
+        :columns="headers2"
         @filter="filterAdvanced = true"
+        :listmenu="true"
       >
         <template #name="{ item }">
           <div class="flex items-center">
-            <avatar class="w-5 h-5" :src="item.profilePhoto" />
+            <avatar class="w-5 h-5" :src="item.patient.profilePhoto" />
             <span class="text-xs ml-2 font-semibold">{{ item.name }}</span>
           </div>
         </template>
@@ -135,6 +138,10 @@
           >
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Edit</span>
+          </table-action>
+          <table-action @click="encounterPatient(item)">
+            <plus-icon class="text-danger fill-current" />
+            <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
           <table-action @click="removePatient(item.id)">
             <cancel-icon class="text-red-500 fill-current" />
@@ -158,7 +165,6 @@
       v-model="filterAdvanced"
       :patients="patients"
     />
-
 
     <modal :visible="showSearchModal">
       <template #title>
@@ -265,7 +271,6 @@ const userStore = namespace("user");
 const patients = namespace("patients");
 const visitsStore = namespace("visits");
 
-
 @Options({
   name: "EHRPatients",
   components: {
@@ -304,13 +309,18 @@ export default class ExistingState extends Vue {
   @visitsStore.State
   visits!: any;
 
+  @visitsStore.State
+  practitionervisits!: any[];
+
+  @visitsStore.Action
+  fetchPractitonerVisits!: (practitonerId: string) => Promise<void>;
+
+
   @userStore.State
   user!: User;
 
   @userStore.Getter
   authCurrentLocation!: string;
-
-
 
   @userStore.Getter
   authPractitioner!: IPractitioner;
@@ -340,8 +350,6 @@ export default class ExistingState extends Vue {
   activeVisits: IPatient[] = [];
   patientId = "";
   time: any;
-
-  
 
   headers = [
     {
@@ -376,6 +384,38 @@ export default class ExistingState extends Vue {
     },
   ];
 
+  headers2 = [
+    {
+      title: "Name",
+      key: "name",
+      show: true,
+    },
+    {
+      title: "MRN",
+      key: "mrn",
+      show: true,
+    },
+    {
+      title: "GENDER",
+      key: "gender",
+      show: true,
+    },
+    {
+      title: "D.O.B",
+      key: "dateOfBirth",
+      show: true,
+    },
+    {
+      title: "EMAIL",
+      key: "email",
+      show: true,
+    },
+    {
+      title: "PHONE NUMBER",
+      key: "phone",
+      show: true,
+    },
+  ];
   get items() {
     return this.patients.map((patient) => {
       // ;
@@ -391,6 +431,24 @@ export default class ExistingState extends Vue {
     });
   }
 
+  get itemsActiveVisits() {
+    return this.practitionervisits?.map((patient:any) => {
+      // ;
+      const contact = patient?.contactInfo?.find(
+        (contact:any) => contact.phone?.number
+      );
+      return {
+        ...patient,
+        name: `${patient.patient.firstname} ${patient.patient.lastname}`,
+        phone: `${patient.checkedInBy?.phone?.dialCode}${patient.checkedInBy?.phone?.number}`,
+        email: patient.patient?.email || '',
+        mrn:patient.patient.mrn,
+        gender:patient.patient.gender || '',
+        dateOfBirth:patient.patient.dateOfBirth || '',
+      };
+    });
+  }
+
   get searchList() {
     return this.searchResults.map((patient: any) => {
       return {
@@ -400,6 +458,8 @@ export default class ExistingState extends Vue {
     });
   }
 
+
+
   goToEHR(patientId: string) {
     if (!this.practitionerAuthenticated) {
       this.patientId = patientId;
@@ -408,25 +468,44 @@ export default class ExistingState extends Vue {
       this.$router.push({ name: "Health Trend", params: { id: patientId } });
     }
   }
-  async encounterPatient(patient: IPatient) {
-    const body ={
-      patientId: patient.id,
+  async encounterPatient(patient: any) {
+    console.log({patient})
+    const body = {
+      patientId: patient.patientId,
       practitionerId: this.authPractitioner.id,
       locationId: this.authCurrentLocation,
-      status: 'active',
-      class: 'consultation',
-      serviceType: 'consultation'
-    }
-     try {
-      const response = await cornieClient().post(
-        "/api/v1/encounter",
-       body
-      );
+      status: "active",
+      class: "consultation",
+      serviceType: "consultation",
+    };
+    try {
+      const response = await cornieClient().post("/api/v1/encounter", body);
       if (response.success) {
-       this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+        console.log({response})
+        this.start(patient.id, response.data.id)
+        //this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+
       }
     } catch (error: any) {
       window.notify({ msg: "Encounter error", status: "error" });
+    }
+  }
+
+  async start(id: string, encounterId: string) {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/visit/start-encounter",
+        {
+          visitId:id,
+          encounterId: encounterId
+        }
+      );
+      if (response.success) {
+        // this.setPatientRequests([response.data]);
+        window.notify({ msg: "Visit Started", status: "success" });
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Visit Not Started", status: "error" });
     }
   }
 
@@ -476,7 +555,6 @@ export default class ExistingState extends Vue {
     else window.notify({ msg: "Patient not deleted", status: "error" });
   }
 
-
   async searchForPatient() {
     try {
       this.loading = true;
@@ -513,6 +591,7 @@ export default class ExistingState extends Vue {
 
   async created() {
     if (!this.practitionerAuthenticated) this.showAuthModal = true;
+    await this.fetchPractitonerVisits(this.authPractitioner?.id);
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     this.visits?.map((visit: any) => {
