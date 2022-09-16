@@ -147,7 +147,7 @@
                   <div class="w-full flex items-center justify-between">
                     <div class="w-full">
                       <p class="capitalize text-sm text-dark mb-1 font-meduim">
-                        {{ codeMapper(input.code) }} {{ input.category }}
+                        {{ input.category }}
                       </p>
                       
                       <p class="capitalize text-xs text-gray-300">
@@ -160,11 +160,11 @@
                     </div>
 
                     <div>
-                      <p class="capitalize text-sm text-dark mb-1 font-medium">
-                        {{ input.criticality }}
+                      <p class="capitalize text-right text-sm text-dark mb-1 font-medium">
+                        {{ codeMapper(input.code) }}
                       </p>
-                      <p class="capitalize text-xs text-gray-300">
-                        {{ input.type }}
+                      <p class="capitalize text-right text-xs text-gray-300">
+                        {{ input.status }}
                       </p>
                     </div>
 
@@ -270,6 +270,8 @@ export default class ProblemDialog extends Vue {
 
   severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
+  allergySeverityMapper = (code: string) => "";
+  allergyCodeMapper = (code: string) => "";
 
   orderBy: Sorter = () => 1;
   loading = false;
@@ -292,6 +294,12 @@ export default class ProblemDialog extends Vue {
     );
     this.codeMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+    this.allergySeverityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
+    );
+    this.allergyCodeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/allergyintolerance-code"
     );
   }
 
@@ -321,7 +329,7 @@ export default class ProblemDialog extends Vue {
         value?.practitionerId
       );
       this.checkProblem.description =
-        this.codeMapper(value.code) + "-" + value.category;
+        this.allergyCodeMapper(value.code) + "-" + value.category;
       this.checkProblem.details = value.criticality;
     }
   }

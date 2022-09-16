@@ -129,13 +129,13 @@
             </div>
 
 
-             <main-cornie-select
+             <!-- <main-cornie-select
               class="w-full"
               :items="previousImpressions"
                v-model="impressionModel.recorded.previous"
               label="previous"
             >
-            </main-cornie-select>
+            </main-cornie-select> -->
 
             <div class="w-full cursor-pointer" @click="showProblemModal = true">
               <cornie-input
