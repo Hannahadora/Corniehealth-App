@@ -15,12 +15,12 @@
 
       <div class="col-span-3">
         <div class="bg-white shadow-lg px-4 py-6 mt-2 rounded w-full mb-10">
-          <div class="w-full grid grid-cols-4">
+          <div class="w-full grid grid-cols-4 items-center">
             <div class="col-span-3 flex mr-2">
               <span class="w-full rounded">
                 <icon-input
                   autocomplete="off"
-                  class="border border-gray-600 rounded py-4 focus:outline-none"
+                  class="border border-gray-200 rounded py-4 focus:outline-none"
                   type="search"
                   placeholder="Search"
                   v-model="searchQuery"
@@ -106,10 +106,10 @@
           </div>
 
           <div class="grid grid-cols-3 gap-5">
-            <div @click.stop="$router.push(`/dashboard/patient/shopping/details/${item.id}`)"
+            <div @click="$router.push(`/dashboard/patient/shopping/details/${item.id}`)"
               v-for="(item, idx) in items"
               :key="idx"
-              class="shadow w-full px-6 py-8"
+              class="shadow w-full px-6 py-8 cursor-pointer"
             >
               <div>
                 <div class="flex">
@@ -173,7 +173,7 @@
                       </div>
                     </div>
                     <div class="w-11/12 py-2 flex items-center justify-center">
-                      <button class="text-white font-bold text-center" @click="openCartConfirmation">
+                      <button class="text-white font-bold text-center" @click.stop="openCartConfirmation">
                         Add to cart
                       </button>
                     </div>

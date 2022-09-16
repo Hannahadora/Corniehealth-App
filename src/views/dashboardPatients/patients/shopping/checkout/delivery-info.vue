@@ -16,6 +16,25 @@
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
     </div>
 
+    <div class="flex items-center justify-center mt-9 mb-2">
+      <circle-red />
+      <hr class="w-36" />
+      <circle-gray />
+      <hr class="w-36" />
+      <circle-gray />
+    </div>
+    <div class="flex items-center justify-center mb-11">
+      <div class="mr-28">
+        <p class="text-danger text-center text-xs font-medium">Delivery Info</p>
+      </div>
+      <div class="mr-28">
+        <p class="text-eth-gray text-center text-xs font-medium">Review</p>
+      </div>
+      <div class="">
+        <p class="text-eth-gray text-center text-xs font-medium">Payment</p>
+      </div>
+    </div>
+
     <div class="px-16 grid grid-cols-3 gap-6">
       <div class="col-span-2 p-3">
         <p class="font-bold text-xl mb-11">Delivery Information</p>
@@ -26,10 +45,11 @@
               <div class="flex items-center mb-6">
                 <p class="font-semibold text-sm">Contact Information</p>
                 <div
-                  class="cursor-pointer ml-5"
+                  class="cursor-pointer ml-5 flex items-center"
                   @click="contactInfoForm = true"
                 >
-                  <p class="font-semibold text-danger text-sm">Edit</p>
+                  <p class="font-semibold text-danger text-sm mr-2">Edit</p>
+                  <edit-pen-red />
                 </div>
               </div>
               <div class="">
@@ -76,10 +96,11 @@
               <div class="flex items-center mb-6">
                 <p class="font-semibold text-sm">Shipping Information</p>
                 <div
-                  class="cursor-pointer ml-5"
+                  class="cursor-pointer ml-5 flex items-center"
                   @click="shippingInfoForm = true"
                 >
-                  <p class="font-semibold text-danger text-sm">Edit</p>
+                  <p class="font-semibold text-danger text-sm mr-2">Edit</p>
+                  <edit-pen-red />
                 </div>
               </div>
               <div class="mb-5">
@@ -92,9 +113,9 @@
                 />
               </div>
               <div class="mb-5">
-                <p>{{shipping.fullName}}</p>
-                <p>{{shipping.address}}</p>
-                <p>{{shipping.apartment}}</p>
+                <p>{{ shipping.fullName }}</p>
+                <p>{{ shipping.address }}</p>
+                <p>{{ shipping.apartment }}</p>
               </div>
               <div class="bg-cotton-ball px-3 py-2">
                 <CornieCheckbox label="Save as preferred address" />
@@ -116,7 +137,7 @@
                   v-model="shipToMe"
                   value="yes"
                   name="shipping-method"
-                  class=" bg-danger float-right focus-within:bg-danger px-6 shadow"
+                  class="bg-danger float-right focus-within:bg-danger px-6 shadow"
                   label="Ship to me"
                 />
                 <cornie-radio
@@ -151,13 +172,25 @@
           </div>
 
           <div class="pt-5">
-            <div v-if="!contactInfoForm">
+            <div>
               <div class="flex items-center mb-6">
                 <p class="font-semibold text-sm">Shipping Method</p>
               </div>
               <div class="">
-                <p class="text-sm font-medium">Standard Shipping <span class="cursor-pointer underline text-accent-blue">Change</span></p>
-                <p class="text-danger text-sm underline font-medium cursor-pointer mt-1">See Shipping Policy</p>
+                <p class="text-sm font-medium">
+                  Standard Shipping
+                  <span class="cursor-pointer underline text-accent-blue"
+                    >Change</span
+                  >
+                </p>
+                <div class="flex items-center">
+                  <p
+                    class="text-danger text-sm underline font-medium cursor-pointer mt-1 mr-2"
+                  >
+                    See Shipping Policy
+                  </p>
+                  <external-link-red />
+                </div>
               </div>
             </div>
           </div>
@@ -191,6 +224,12 @@ import PhoneInput from "@/components/phone-input.vue";
 import { date, string } from "yup";
 
 import OrderSummary from "../components/order-summary.vue";
+import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
+import EditPenRed from "@/components/icons/edit-pen-red.vue";
+import ExternalLinkRed from "@/components/icons/external-link-red.vue";
+import CircleRed from "@/components/icons/circle-red.vue";
+import CircleGray from "@/components/icons/circle-gray.vue";
+import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 
 @Options({
   name: "ShoppingCart",
@@ -203,7 +242,13 @@ import OrderSummary from "../components/order-summary.vue";
     OrderSummary,
     CornieRadio,
     CornieInput,
+    ChevronleftBlue,
     PhoneInput,
+    EditPenRed,
+    ExternalLinkRed,
+    CircleRed,
+    CircleGray,
+    CircleRedBg
   },
 })
 export default class ShoppingCart extends Vue {
@@ -211,7 +256,7 @@ export default class ShoppingCart extends Vue {
 
   loading: Boolean = true;
   item: any = {};
-  shipToMe = "";
+  shipToMe = "yes";
   contactInfoForm = false;
   shippingInfoForm = false;
 
@@ -262,5 +307,8 @@ export default class ShoppingCart extends Vue {
 
 .bg-cotton-ball {
   background: #f0f4fe;
+}
+.text-eth-gray {
+  color: #c2c7d6;
 }
 </style>

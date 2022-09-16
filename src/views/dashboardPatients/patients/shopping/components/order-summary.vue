@@ -24,21 +24,20 @@
       </div>
       <p class="text-sm">Promo code</p>
 
-      <div class="mb-8 flex">
-        <cornie-input
-          v-model="promoCode"
-          placeholder="Enter code"
-          class="mr-2"
-        />
-        <cornie-btn class="bg-primary px-6 text-white rounded-xl">
-          Apply
-        </cornie-btn>
+      <div class="w-full mb-8 flex space-x-3">
+        <cornie-input v-model="promoCode" placeholder="Enter code" class="w-2/3" />
+        <div class="w-1/3">
+          <button class="bg-primary px-12 py-3 text-white rounded-xl">Apply</button>
+        </div>
       </div>
 
+      <div class="flex items-center">
+        <CheckPurpleBg class="mr-2" />
       <p class="text-xs">
         You’ve saved N3,000 on your order.
         <span class="text-danger cursor-pointer">See Details</span>
       </p>
+      </div>
 
       <div class=",mt-8">
         <div
@@ -76,6 +75,7 @@ import ChevrondownRed from "@/components/icons/chevrondown-red.vue";
 import ChevronrightRed from "@/components/icons/chevronright-red.vue";
 import Plus from "@/components/icons/plus-icon-red.vue";
 import Minus from "@/components/icons/minus-black.vue";
+import CheckPurpleBg from "@/components/icons/check-purple-bg.vue";
 import CornieInput from "@/components/cornieinput.vue";
 
 @Options({
@@ -90,6 +90,7 @@ import CornieInput from "@/components/cornieinput.vue";
     Plus,
     Minus,
     CornieInput,
+    CheckPurpleBg,
   },
 })
 export default class OrderSummary extends Vue {
