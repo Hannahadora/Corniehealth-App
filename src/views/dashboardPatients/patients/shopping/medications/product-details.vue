@@ -20,7 +20,7 @@
               <span class="w-full rounded">
                 <icon-input
                   autocomplete="off"
-                  class="border border-gray-600 rounded py-4 focus:outline-none"
+                  class="border border-gray-200 rounded py-4 focus:outline-none"
                   type="search"
                   placeholder="Search"
                   v-model="searchQuery"
@@ -180,7 +180,10 @@
                       </div>
                     </div>
                     <div class="w-11/12 py-3 flex items-center justify-center">
-                      <button class="text-white font-bold text-center" @click="openCartConfirmation">
+                      <button
+                        class="text-white font-bold text-center"
+                        @click="openCartConfirmation"
+                      >
                         Add to cart
                       </button>
                     </div>
@@ -231,7 +234,9 @@
                   </div>
                 </div>
                 <div>
-                  <p class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold">
+                  <p
+                    class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold"
+                  >
                     Subscribe
                   </p>
                 </div>
@@ -245,15 +250,15 @@
           <FilterAccordion
             showText
             class="border-t"
-            title="Use our Medication Subscription Service"
+            title="Fill a 90-Day Supply to Save"
           >
             <div class="my-2">
               <p class="text-blue-400 text-sm mb-10">
-                we source directly from manufacturers & distributors and pass
-                the savings to you.
+                Chances are that you may get lower prices with volume.
               </p>
               <p class="mb-6 text-sm">
-                Signup for CornieHealth Medication Subscription
+                You may get lower prices by filling a 90-day supply. And you get
+                to save time and money on trips to the pharmacy or delivery.
               </p>
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
@@ -263,41 +268,41 @@
                   <div>
                     <div>
                       <p class="text-xl font-bold mb-2">{{ item.name }}</p>
-                      <p class="text-xs">
-                        Subscription Price:
-                        <span class="text-blue-400">N3,000</span><br /><br />
-                        Standard Shipping:
-                        <span class="text-blue-400">Free</span><br /><br />
-                        Delivery Time:
-                        <span class="text-blue-400">3 - 7 business days</span>
+                      <p class="text-xs w-1/2">
+                        Applicable for prescription only medications. You will
+                        need a new prescription from your doctor to switch to a
+                        90-day fill.
                       </p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <p class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold">
-                    Subscribe
+                  <p
+                    class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold"
+                  >
+                    See 90 Day Prices
                   </p>
                 </div>
               </div>
-              <p class="mt-6 text-sm">
-                Cornie Health offers quality, affordable medications delivered
-                to your home at your convenience on preset times.
-              </p>
             </div>
           </FilterAccordion>
           <FilterAccordion
             showText
             class="border-t"
-            title="Use our Medication Subscription Service"
+            title="Lower Cost Alternatives"
           >
             <div class="my-2">
               <p class="text-blue-400 text-sm mb-10">
-                we source directly from manufacturers & distributors and pass
-                the savings to you.
+                Find less expensive drugs that deliver the same treatment
               </p>
               <p class="mb-6 text-sm">
-                Signup for CornieHealth Medication Subscription
+                There may be other medications in the same class that provide
+                the same treatment as well as your current prescription at lower
+                costs.<br /><br />
+
+                If you consider your medication expensive, you may ask your
+                doctor for other less expensive, generic, or over-the-counter
+                substitutes that might work for you.
               </p>
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
@@ -308,33 +313,69 @@
                     <div>
                       <p class="text-xl font-bold mb-2">{{ item.name }}</p>
                       <p class="text-xs">
-                        Subscription Price:
-                        <span class="text-blue-400">N3,000</span><br /><br />
-                        Standard Shipping:
-                        <span class="text-blue-400">Free</span><br /><br />
-                        Delivery Time:
-                        <span class="text-blue-400">3 - 7 business days</span>
+                        Average retail price:
+                        <span class="text-blue-500">N3,000</span>
                       </p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <p class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold">
-                    Subscribe
+                  <p
+                    class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold"
+                  >
+                    See Alternatives
                   </p>
                 </div>
               </div>
-              <p class="mt-6 text-sm">
-                Cornie Health offers quality, affordable medications delivered
-                to your home at your convenience on preset times.
+            </div>
+          </FilterAccordion>
+
+          <FilterAccordion
+            showText
+            class="border-t"
+            title="Deals & Promotions"
+          >
+            <div class="my-2">
+              <p class="text-blue-400 text-sm mb-10">
+                Check if there are available promotions for this item
               </p>
+              <p class="mb-6 text-sm">
+                Cornie Health and her pharmacy partners offer deals and promotions from time to time for your well-being. Check our promo page for more information.
+              </p>
+              <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
+                <div class="flex">
+                  <div class="mr-2">
+                    <img class="sample-img" :src="item.photo" alt="" />
+                  </div>
+                  <div>
+                    <div>
+                      <p class="text-xl font-bold mb-2">{{ item.name }}</p>
+                      <p class="text-xs">
+                        Average retail price:
+                        <span class="text-blue-500">N3,000</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p
+                    class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold"
+                  >
+                  See Promotions
+                  </p>
+                </div>
+              </div>
             </div>
           </FilterAccordion>
         </div>
       </div>
     </div>
-    
-    <add-to-cart-confirmation v-model="addToCartModal" :item="item" :id="item.id" />
+
+    <add-to-cart-confirmation
+      v-model="addToCartModal"
+      :item="item"
+      :id="item.id"
+    />
   </div>
 </template>
 
@@ -396,7 +437,7 @@ export default class ShopDetailsPage extends Vue {
   addToCartModal: Boolean = false;
 
   item: any = {
-    id: '657gfhjcgtdfghbvcfghjgfyytytyutyu',
+    id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
     logo: require("@/assets/img/item-logo.svg"),
     location: "23, Admiralty Way, Lekki, Lagos",
     shopName: "MedPlus",
@@ -435,9 +476,8 @@ export default class ShopDetailsPage extends Vue {
 
   openCartConfirmation(item: any) {
     this.item = item;
-    this.addToCartModal = true
+    this.addToCartModal = true;
   }
-
 
   async created() {
     await this.fetchAppointments();
@@ -451,7 +491,7 @@ export default class ShopDetailsPage extends Vue {
   width: 175px;
 }
 .bg-s-blue {
-  background: #F0F4FE
+  background: #f0f4fe;
 }
 .related-tag {
   background: #f6f8f9;

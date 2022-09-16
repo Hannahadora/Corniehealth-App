@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex items-center justify-between p-3">
-      <p class="text-sm">{{ title }}</p>
+      <p class="text-sm font-semibold">{{ title }}</p>
       <div v-if="!type2">
         <div v-if="showAccordionContent" class="flex">
           <p class="mr-3 text-xs text-danger" v-if="showText">See Less</p>

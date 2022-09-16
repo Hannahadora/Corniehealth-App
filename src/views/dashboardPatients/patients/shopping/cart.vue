@@ -61,7 +61,7 @@
               <QuestionCircleRed class="ml-1" />
             </p>
           </div>
-          <div class="bg-cotton-ball p-3 flex items-center justify-between">
+          <div class="bg-cotton-ball px-3 py-3 flex items-center justify-between">
             <div>
               <p class="text-sm font-semibold">
                 Ship to Home or Store

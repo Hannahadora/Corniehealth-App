@@ -1,159 +1,198 @@
 <template>
-    <div class="bg-white mb-auto shadow-lg p-3 mt-2 rounded-lg w-full">
-      <div class="w-full px-16">
-        <span
-          class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
-        >
-          Cart
-        </span>
-      </div>
-  
-      <div
-        class="my-10 px-16 flex items-center cursor-pointer"
-        @click="$router.push('/dashboard/patient/shopping')"
+  <div class="bg-white mb-auto shadow-lg p-3 mt-2 rounded-lg w-full">
+    <div class="w-full xl:px-16">
+      <span
+        class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        <chevronleft-blue class="mr-2" />
-        <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
+        Cart
+      </span>
+    </div>
+
+    <div
+      class="my-10 xl:px-16 flex items-center cursor-pointer"
+      @click="$router.push('/dashboard/patient/shopping')"
+    >
+      <chevronleft-blue class="mr-2" />
+      <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
+    </div>
+
+    <div class="flex items-center justify-center mt-9 mb-2">
+      <circle-red-bg class="cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')"/>
+      <hr class="w-36 border-danger" />
+      <circle-red-bg  class="cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/review')"/>
+      <hr class="w-36 border-danger" />
+      <circle-red />
+    </div>
+    <div class="flex items-center justify-center mb-11">
+      <div class="mr-28 cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')">
+        <p class="text-center text-xs font-medium">Delivery Info</p>
       </div>
-  
-      <div class="px-16 grid grid-cols-3 gap-6">
-        <div class="col-span-2 p-3">
-          <p class="font-bold text-xl mb-11">Items</p>
-  
-          <div class="shipping-info-container px-6 py-4">
-            <div class="flex items-center">
-              <delivery-van class="mr-2" />
-              <p class="font-bold text=primary">Shipping (2)</p>
+      <div class="mr-28 cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/review')">
+        <p class="text-center text-xs font-medium">Review</p>
+      </div>
+      <div class="">
+        <p class="text-danger text-center text-xs font-medium">Payment</p>
+      </div>
+    </div>
+
+    <div class="xl:w-1/3 lg:w-2/3 w-11/12 mx-auto">
+      <div class="">
+        <p class="font-bold text-xl mb-11 text-center">Order Summary</p>
+        <div class="delivery-info-container w-full xl:px-24">
+          <div class="flex justify-between mb-8">
+            <p>Item Total</p>
+            <p class="text-right">₦ 27,000.00</p>
+          </div>
+          <div class="flex justify-between mb-8">
+            <p>Shipping</p>
+            <p class="text-right">₦ 27,000.00</p>
+          </div>
+          <div class="flex justify-between mb-8">
+            <p>Discounts</p>
+            <p class="text-right">₦ 27,000.00</p>
+          </div>
+          <div class="flex justify-between mb-6">
+            <p>Sales Tax</p>
+            <p class="text-right">₦ 27,000.00</p>
+          </div>
+          <div class="flex justify-between py-6 border-t">
+            <p class="font-bold">Total</p>
+            <p class="font-bold text-right">₦ 27,000.00</p>
+          </div>
+          <p class="text-sm">Promo code</p>
+
+          <div class="w-full mb-8 flex space-x-3">
+            <cornie-input
+              v-model="promoCode"
+              placeholder="Enter code"
+              class=""
+            />
+            <div>
+              <button class="bg-primary px-12 py-3 text-white rounded-xl">
+                Apply
+              </button>
             </div>
-            <p class="mt-2 text-sm text=primary">
-              You qualify for free shipping.
-              <span class="text-danger cursor-pointer"> See shipping terms</span>
+          </div>
+
+          <div class="flex items-center">
+            <CheckPurpleBg class="mr-2" />
+            <p class="text-xs">
+              You’ve saved N3,000 on your order.
+              <span class="text-danger cursor-pointer">See Details</span>
             </p>
           </div>
-  
-          <div class="mt-5">
-            <div class="px-4 py-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                  <img src="" class="w-12 h-12 mr-5" alt="item-photo" />
-                  <div class="">
-                    <p class="text-sm">
-                      Panadol
-                      <span class="text-xs text-gray-600">Tablet (10mg)</span>
-                    </p>
-                    <p class="text-xs">30 Tablets</p>
-                  </div>
-                </div>
-                <div class="flex items-center">
-                  <input
-                    type="number"
-                    class="w-max border px-8 py-2 bg-transparent focus:outline-none mr-5"
-                  />
-                  <p class="font-bold text-sm mr-5">N9,000.00</p>
-                  <small-delete-red class="cursor-pointer" />
-                </div>
-              </div>
-  
-              <p class="cursor-pointer flex items-center text-danger mt-5 text-xs">
-                Save on more
-                <QuestionCircleRed class="ml-1" />
-              </p>
+
+          <div class="my-8">
+            <p class="font-semibold text-sm">Checkout with:</p>
+
+            <div
+              @click="selectPaymentMethod('HMO')"
+              class="mt-6 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
+              :class="{'border-danger': selectedPaymentMethod === 'HMO'}"
+            >
+              HMO
             </div>
-            <div class="bg-cotton-ball p-3 flex items-center justify-between">
-              <div>
-                <p class="text-sm font-semibold">
-                  Ship to Home or Store
-                  <span class="text-accent-blue cursor-pointer underline">Change</span>
-                </p>
-                <p class="text-sm">Arrives in 3-7 business days</p>
-              </div>
-  
-              <div>
-                <CornieCheckbox label="Subscribe and save up to 20%" />
-              </div>
+            <div
+              @click="selectPaymentMethod(paymentMethod)"
+              v-for="(paymentMethod, idx) in paymentMethods"
+              :key="idx"
+              class="mt-5 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
+              :class="{'border-danger': selectedPaymentMethod === paymentMethod}"
+            >
+              {{ paymentMethod }}
             </div>
           </div>
-        </div>
-  
-        <div class="ml-20 px-3">
-          <order-summary />
         </div>
       </div>
     </div>
-  </template>
-  
-  <script lang="ts">
-  import { Vue, Options } from "vue-class-component";
-  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
-  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-  import { namespace } from "vuex-class";
-  import { cornieClient } from "@/plugins/http";
-  import { Prop, PropSync, Watch } from "vue-property-decorator";
-  import CornieBtn from "@/components/CornieBtn.vue";
-  import Search from "@/components/icons/search.vue";
-  import FiveStar from "@/components/icons/five-star.vue";
-  import Cancel from "@/components/icons/cancel-red-stroke.vue";
-  import Check from "@/components/icons/check-green-stroke.vue";
-  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
-  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
-  import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
-  import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import IconInput from "@/components/IconInput.vue";
-  import SearchIcon from "@/components/icons/search.vue";
-  import DeliveryVan from "@/components/icons/delivery-van.vue";
-  import SmallDeleteRed from "@/components/icons/small-delete-red.vue";
-  import QuestionCircleRed from "@/components/icons/question-circle-red.vue";
-  
-  import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
-  import OrderSummary from "../components/order-summary.vue";
-  
-  @Options({
-    name: "ShoppingCart",
-    components: {
-      ChevronRightIcon,
-      ChevronLeftIcon,
-      CornieBtn,
-      Search,
-      FiveStar,
-      Cancel,
-      Check,
-      ChevronWhiteDown,
-      ChevronWhiteUp,
-      ChevronleftBlue,
-      CornieCheckbox,
-      IconInput,
-      SearchIcon,
-      AddToCartConfirmation,
-      OrderSummary,
-      DeliveryVan,
-      SmallDeleteRed,
-      QuestionCircleRed,
-    },
-  })
-  export default class ShoppingCart extends Vue {
-    loading: Boolean = true;
-    item: any = {};
-  
-    async created() {}
+  </div>
+</template>
+
+<script lang="ts">
+import { Vue, Options } from "vue-class-component";
+import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import CornieBtn from "@/components/CornieBtn.vue";
+import Search from "@/components/icons/search.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CheckPurpleBg from "@/components/icons/check-purple-bg.vue";
+import { date, string } from "yup";
+
+import CircleRed from "@/components/icons/circle-red.vue";
+import CircleRedBg from "@/components/icons/circle-red-bg.vue";
+import CircleGray from "@/components/icons/circle-gray.vue";
+import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
+
+@Options({
+  name: "Review",
+  components: {
+    ChevronRightIcon,
+    ChevronLeftIcon,
+    CornieBtn,
+    Search,
+    CornieCheckbox,
+    CornieRadio,
+    CornieInput,
+    CheckPurpleBg,
+    CircleRedBg,
+    CircleRed,
+    CircleGray,
+    ChevronleftBlue,
+  },
+})
+export default class Review extends Vue {
+  required = string().required();
+
+  loading: Boolean = true;
+  item: any = {};
+  promoCode = "";
+  selectedPaymentMethod: any = "";
+  paymentMethods: any = [
+    "Health Wallet",
+    "Flutterwave",
+    "Paystack",
+    "Card (on file)",
+  ];
+
+  selectPaymentMethod(value: any) {
+    this.selectedPaymentMethod = value;
   }
-  </script>
-  
-  <style scoped>
-  .sample-img {
-    height: 110px;
-    width: 200px;
-  }
-  
-  .text-accent-blue {
-    color: #114ff5;
-  }
-  
-  .shipping-info-container {
-    background: rgba(194, 199, 214, 0.3);
-  }
-  
-  .bg-cotton-ball {
-    background: #f0f4fe;
-  }
-  </style>
-  
+
+  async created() {}
+}
+</script>
+
+<style scoped>
+.sample-img {
+  height: 110px;
+  width: 200px;
+}
+
+.text-accent-blue {
+  color: #114ff5;
+}
+
+.delivery-info-container {
+  background: #ffffff;
+  /* Greys/Etherium */
+
+  border: 0.5px solid #c2c7d6;
+  /* Modals & Pickers */
+
+  box-shadow: 0px 1px 4px rgba(46, 41, 78, 0.02),
+    0px 8px 12px rgba(46, 41, 78, 0.08);
+  border-radius: 5px;
+}
+
+.bg-cotton-ball {
+  background: #f0f4fe;
+}
+.text-eth-gray {
+  color: #c2c7d6;
+}
+</style>
