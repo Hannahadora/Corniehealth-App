@@ -8,7 +8,11 @@
         @addPractice="addPractice"
         @bookAppointments="bookAppointment"
       />
-      <existing-state :healthRecords="allHealthRecords" v-else />
+      <existing-state
+        @addInvite="addPractice"
+        :healthRecords="allHealthRecords"
+        v-else
+      />
       <add-invite @continueProcess="continueProcess" v-model="showAddInvite" />
       <add-practice v-model="showAddModal" />
       <invite-practice v-model="showInviteModal" />

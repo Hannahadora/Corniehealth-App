@@ -349,9 +349,9 @@
           msg: "Profile updated successfully",
           status: "success",
         });
-        this.updatePractitioner(this.authPractitioner as any);
-        this.setDetails(this.cornieUser);
-        this.setPatientDetails(this.corniePatient);
+        // this.updatePractitioner(this.authPractitioner as any);
+        // this.setDetails(this.cornieUser);
+        // this.setPatientDetails(this.corniePatient);
       } catch (error) {
         window.notify({
           msg: "Error updating account profile",

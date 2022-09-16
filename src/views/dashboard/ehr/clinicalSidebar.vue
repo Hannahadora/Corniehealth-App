@@ -9,7 +9,9 @@
           <avatar class="mr-2 h-24 w-24 m-5" :src="items.photo" />
         </div>
         <div class="text-gray-400 -mb-6 text-center text-xs p-8">
-          <span class="text-sm text-black font-bold mb-2">{{ items.fullname }}</span>
+          <span class="text-sm text-black font-bold mb-2">{{
+            items.fullname
+          }}</span>
           | {{ items.email }} <br />
           <p class="my-2">MRN-{{ items.mrn }}</p>
           <p class="mb-2">
@@ -194,13 +196,13 @@
   import FormIcon from "@/components/icons/ehrforms.vue";
   import ImpressionIcon from "@/components/icons/ehrimpression.vue";
   import MedicalIcon from "@/components/icons/ehrmedical.vue";
-  import MergeRecordIcon from "@/components/icons/merge-record.vue";
   import MedicationIcon from "@/components/icons/ehrmedication.vue";
   import ProceedIcon from "@/components/icons/ehrprocedure.vue";
   import RefferIcon from "@/components/icons/ehrreffer.vue";
   import TrendIcon from "@/components/icons/ehrtrend.vue";
   import VisitIcon from "@/components/icons/ehrvisits.vue";
   import VitalIcon from "@/components/icons/ehrvital.vue";
+  import MergeRecordIcon from "@/components/icons/merge-record.vue";
   import PartnersIcon from "@/components/icons/partners.vue";
   import PlanIcon from "@/components/icons/plan.vue";
   import SearchIcon from "@/components/icons/search.vue";
@@ -365,6 +367,7 @@
       // const name =  `${this.patient.firstname} ${this.patient.lastname}`
       // return name;
       const current_patient = this.patient;
+      console.log("curren patient", this.patient);
       return {
         code: current_patient?.id,
         fullname: `${current_patient?.firstname} ${current_patient?.lastname}`,
@@ -380,8 +383,9 @@
       };
     }
     printPhone(patient: IPatient) {
-      if (!patient?.contactInfo) return "N/A";
-      const phone = patient?.contactInfo[0].phone;
+      if (!patient?.contactInfo || patient.contactInfo.length == 0)
+        return "N/A";
+      const phone = patient?.contactInfo[0]?.phone;
       return phone?.number || "N/A";
     }
     printGender(gender: string) {
@@ -389,21 +393,25 @@
       return gender || "N/A";
     }
     printEmail(patient: IPatient) {
-      if (!patient?.contactInfo) return "N/A";
-      return patient?.contactInfo[0].email || "N/A";
+      if (!patient?.contactInfo || patient.contactInfo.length == 0)
+        return "N/A";
+      //@ts-ignore
+      return patient?.email || "N/A";
     }
     printAddress(patient: IPatient) {
-      if (!patient?.contactInfo) return "N/A";
-      return patient?.contactInfo[0].primaryAddress || "N/A";
+      if (!patient?.contactInfo || patient.contactInfo.length == 0)
+        return "N/A";
+
+      return patient?.contactInfo[0]?.primaryAddress || "N/A";
     }
     printDOB(dateOfBirth?: string) {
       if (!dateOfBirth) return "N/A";
       const date = new Date(dateOfBirth);
-      const yearOfBirth = new Date(dateOfBirth).getFullYear()          
-      const thisYear = new Date().getFullYear()
-      const age = thisYear - yearOfBirth    
-      const yr =  age < 2 ? 'yr' : 'yrs ' 
-      return `${date.toLocaleDateString('en-US')} (${age} ${yr})` ;
+      const yearOfBirth = new Date(dateOfBirth).getFullYear();
+      const thisYear = new Date().getFullYear();
+      const age = thisYear - yearOfBirth;
+      const yr = age < 2 ? "yr" : "yrs ";
+      return `${date.toLocaleDateString("en-US")} (${age} ${yr})`;
     }
     printLastVisited(updatedAt?: string) {
       if (!updatedAt) return "N/A";
