@@ -129,13 +129,13 @@
             </div>
 
 
-             <!-- <main-cornie-select
+             <main-cornie-select
               class="w-full"
               :items="previousImpressions"
-               v-model="impressionModel.recorded.previous"
+               v-model="recordedPrevious"
               label="previous"
             >
-            </main-cornie-select> -->
+            </main-cornie-select>
 
             <div class="w-full cursor-pointer" @click="showProblemModal = true">
               <cornie-input
@@ -533,7 +533,7 @@ export default class Impression extends Vue {
     status: "Completed",
     statusReason: "",
     updatedAt: "",
-    basicInfo: <any>{
+    basicInfo: {
       code: "",
       description: undefined,
     },
@@ -556,7 +556,7 @@ export default class Impression extends Vue {
       recordDate: undefined,
       previous: undefined,
       asserterId: undefined,
-      problem: <any>[],
+      problem: [] as any[],
     },
     protocol: {
       protocol: undefined,
@@ -565,11 +565,50 @@ export default class Impression extends Vue {
   };
 
   effectiveType = "date-time";
+  recordedPrevious = "";
 
+
+  data: any = {
+    date: undefined,
+    dateTime: undefined,
+    startDate: undefined,
+    startTime: undefined,
+    endDate: undefined,
+    endTime: undefined,
+  };
+  assertRecord = true;
+  assessorItems: any = [];
+  conditionItems: any = [];
+  problemItems: any = [];
+  investigationItems: any = [];
+  loading = false;
+  status = false;
+  showAssessorModal = false;
+  showProblemModal = false;
+  showItemModal = false;
+  practitioner = [];
+  role = [];
+  conditions = [];
+  setType = "";
+  observations: any = [];
+  familyHistories: any = [];
+  questions = [];
+  diagnosticReports: any = [];
+  setFindingType = "";
+  showFindingModal = false;
+  findingItems: any = [];
+
+  
   @Watch("id")
   idChanged() {
     if (this.id) {
       this.setImpression();
+    }
+  }
+  @Watch("id")
+  dataChanged() {
+    if (this.recordedPrevious) {
+      (this.impressionModel.recorded.previous as any) = this.recordedPrevious;
     }
   }
 
@@ -585,36 +624,6 @@ export default class Impression extends Vue {
       this.data.dateTime = undefined;
     }
   }
-
-  data: any = {
-    date: undefined,
-    dateTime: undefined,
-    startDate: undefined,
-    startTime: undefined,
-    endDate: undefined,
-    endTime: undefined,
-  };
-  assertRecord = true;
-  assessorItems = <any>[];
-  conditionItems = <any>[];
-  problemItems = <any>[];
-  investigationItems = <any>[];
-  loading = false;
-  status = false;
-  showAssessorModal = false;
-  showProblemModal = false;
-  showItemModal = false;
-  practitioner = [];
-  role = [];
-  conditions = [];
-  setType = "";
-  observations = <any>[];
-  familyHistories = <any>[];
-  questions = [];
-  diagnosticReports = <any>[];
-  setFindingType = "";
-  showFindingModal = false;
-  findingItems = <any>[];
 
   get activePatientId() {
     const id = this.$route?.params?.id as string;
@@ -684,9 +693,8 @@ export default class Impression extends Vue {
   }
 
   get previousImpressions() {
-    return this.allImpressions?.map((el: any) => {
-      return el.basicInfo && el.basicInfo.code;
-    });
+    const x = this.allImpressions?.map((el: any) => el.id);
+    return x || []
   }
 
   get newaction() {
