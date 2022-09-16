@@ -71,6 +71,25 @@
                   {{ item.status }}
                 </span>
               </template>
+              <template #specialty="{item}">
+                <div v-if="item.provider.specialties.length > 1">
+                  <div v-for="(input, index) in item.provider.specialties.slice(0, 1)" :key="index">
+                    <span>
+                      {{ input.name}}
+                    </span>
+                    <p class="text-green-400 text-sm font-bold">+ {{item.provider.specialties.length}} </p>
+
+                  </div>
+                </div>
+                <div v-else>
+                  <div v-for="(input, index) in item.provider.specialties" :key="index">
+                    <span>
+                      {{ input.name}}
+                    </span>
+
+                  </div>
+                </div>
+              </template>
               <template #contactnumber="{item}">
                   <div>
                     <p>{{ item.email }}</p>
@@ -206,7 +225,6 @@ export default class ProviderExistingState extends Vue {
         email:  patientprovider.provider.email,
         name:  patientprovider.provider.name,
         address:  patientprovider?.provider?.organizationDetails?.address,
-        specialty: 'XXXXXX'
 
       };
     });

@@ -71,6 +71,7 @@
           <span class="ml-3 text-xs" @click="showTimeline(item.id,item.timelines,item.patient)"
             >View timeline</span >
         </div>
+       
         <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
               <ArrowRight />
               <span class="ml-3 text-xs" @click="showCheckinPane(item.id)">Check-in</span>
@@ -273,6 +274,7 @@ import { Options, Vue } from "vue-class-component";
 import { first, getTableKeyValue } from "@/plugins/utils";
 import { namespace } from "vuex-class";
 import search from "@/plugins/search";
+import { cornieClient } from "@/plugins/http";
 
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
@@ -508,12 +510,7 @@ export default class PractitionerExistingState extends Vue {
 
   get items() {
     const visits = this.patientVisits.map((visit) => {
-      visit.checkInTime = new Date(
-          visit.checkInTime
-        ).toLocaleDateString("en-US");
-         visit.checkOutTime = new Date(
-          visit.checkOutTime
-        ).toLocaleDateString("en-US");
+    
       return {
         ...visit,
         action: visit.id,
@@ -527,6 +524,24 @@ export default class PractitionerExistingState extends Vue {
    get activePatientId() {
     const id = this.$route?.params?.id.toString();
     return id;
+  }
+
+  async start(id: string) {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/visit/start-encounter",
+        {
+          visitId:id,
+          encounterId: null
+        }
+      );
+      if (response.success) {
+        // this.setPatientRequests([response.data]);
+        window.notify({ msg: "Visit Started", status: "success" });
+      }
+    } catch (error: any) {
+      window.notify({ msg: "Visit Not Started", status: "error" });
+    }
   }
   // get items() {
   //   if (!this.visits || this.visits.length === 0) return [];
@@ -625,11 +640,11 @@ export default class PractitionerExistingState extends Vue {
     return pt ? pt : {};
   }
 
-  async start(id: string) {
-    await this.startEncounter(id).then((res: any) => {
-      window.notify({ msg: "Visit Started", status: "success" });
-    });
-  }
+  // async start(id: string) {
+  //   await this.startEncounter(id).then((res: any) => {
+  //     window.notify({ msg: "Visit Started", status: "success" });
+  //   });
+  // }
 
   async destroy(id: string) {
     const cancelled = await this.cancel(id);

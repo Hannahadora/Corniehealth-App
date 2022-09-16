@@ -154,6 +154,7 @@
           <span class="ml-3 text-xs">No Show</span>
         </div>
         <div
+        v-if="item?.appointmentId"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="
             showCheckoutPane(item.id, item.checkedInBy, item.patient, item)

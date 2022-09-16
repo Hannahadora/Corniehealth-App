@@ -7,7 +7,7 @@
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">
           <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-          {{ newaction }} Medication Request
+          Create Medication Request
           </h2>
           <cancel-icon class="float-right cursor-pointer" @click="show = false" />
         </div>
@@ -758,34 +758,6 @@ export default class MedicationModal extends Vue {
   };
 
 
-  @Watch("id")
-  idChanged() {
-    this.setRequest();
-  }
-   async setRequest() {
-    const request = this.getRequestById(this.id);
-    if (!request) return;
-    this.basedOn = request.basedOn;
-    this.intent = request.intent;
-    this.priority = request.priority;
-    this.category = request.category;
-    this.requesterId = request.requesterId;
-    this.patientId = request.patientId;
-    this.dispenserId = request.dispenserId;
-    this.supportingInformation = request.supportingInformation;
-    this.medications = request.medications as any;
-    this.status = request.status;
-    this.reasonCode = request.reasonCode;
-    this.reasonReference = request.reasonReference;
-    this.note = request.note;
-    this.allergies = request.allergies;
-    this.aconditions = request.conditions;
-    this.identifier = request.identifier;
-    this.safetyCapRequest = request.safetyCapRequest;
-    this.deliveryLocation = request.deliveryLocation;
-    this.priorPrescription = request.priorPrescription;
-    this.detectedIssues = request.detectedIssues;
-  }
 
 
    refvalue(value:any, type:string){
@@ -1084,7 +1056,6 @@ export default class MedicationModal extends Vue {
   }
 
   async created() {
-    if(this.id) await this.setRequest();
     await this.getRoles();
     await this.createMapper();
     await this.fetchPatients();
