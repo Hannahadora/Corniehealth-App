@@ -103,8 +103,8 @@
     }
     get results() {
       return this.searchResults.map((r: any) => ({
+        display: r?.organization?.name,
         code: r.id,
-        display: r.name,
       }));
     }
     async fetchPractice(practice: string) {
@@ -151,7 +151,7 @@
         console.log("Added practice", response.data);
         window.notify({ msg: "successful", status: "success" });
         this.loading = false;
-        this.show = false
+        this.show = false;
       } catch (error) {
         this.loading = false;
         console.log("error adding practice", error);
