@@ -161,7 +161,7 @@
 
                     <div>
                       <p class="capitalize text-right text-sm text-dark mb-1 font-medium">
-                        {{ codeMapper(input.code) }}
+                        {{ allergyCodeMapper(input.code) }}
                       </p>
                       <p class="capitalize text-right text-xs text-gray-300">
                         {{ input.status }}
