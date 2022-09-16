@@ -18,21 +18,7 @@
           @click="showView(item)"
         >
           <newview-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">View Details</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showModal(item.id)"
-        >
-          <edit-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Edit</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showPrintModal(item)"
-        >
-          <print-icon />
-          <span class="ml-3 text-xs">Print View</span>
+          <span class="ml-3 text-xs">View Result</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -50,17 +36,12 @@
           <plus-icon-black class="text-danger fill-current" />
           <span class="ml-3 text-xs">Add Appointment</span>
         </div>
-        <div
+       <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+          @click="showModal(item.id)"
         >
-          <arrow-right />
-          <span class="ml-3 text-xs">Check In</span>
-        </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <checkout-icon />
-          <span class="ml-3 text-xs">Check Out</span>
+          <update-report-green class="text-yellow-500 fill-current" />
+          <span class="ml-3 text-xs">Update Report</span>
         </div>
       </template>
 
@@ -164,10 +145,12 @@ import NewviewIcon from "@/components/icons/newview.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import Modal from "@/components/modal.vue";
 import PlusIcon from "@/components/icons/plus.vue";
+import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
 import DangerIcon from "@/components/icons/danger.vue";
 import ArrowRight from "@/components/icons/arrow-right.vue";
 import EncounterIcon from "@/components/icons/encounter.vue";
 import CheckoutIcon from "@/components/icons/checkout.vue";
+import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 
 import DiagnosticModal from "./DiagnosticModal.vue";
 import ViewModal from "./view.vue";
@@ -218,6 +201,8 @@ const request = namespace("request");
     ArrowRight,
     EncounterIcon,
     CheckoutIcon,
+    PlusIconBlack,
+    UpdateReportGreen,
   },
 })
 export default class DiagnosticExistingState extends Vue {
