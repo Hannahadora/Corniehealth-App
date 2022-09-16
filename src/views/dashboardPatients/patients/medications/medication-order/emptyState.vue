@@ -10,7 +10,7 @@
       </p>
       <span class="flex justify-center w-full">
         <button
-          @click="$emit('openModal')"
+          @click="$router.push('/dashboard/patient/shopping')"
           class="bg-danger rounded-lg text-white mt-8 py-3 px-6 pl-12 pr-12 font-semibold focus:outline-none hover:opacity-90"
         >
           Buy Medicines
