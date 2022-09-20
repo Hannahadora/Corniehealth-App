@@ -6,7 +6,7 @@
         <div class="flex justify-between mb-8 w-full">
             <div>
                 <span class="font-bold text-gray-400">Available Credits</span>
-                <h2 class="text-2xl text-purple-600 font-bold">N1,500</h2>
+                <h2 class="text-2xl text-purple-600 font-bold">NGN {{ userrefferals.availableCredits }}</h2>
             </div>
             <div>
                 <cornie-btn
@@ -24,7 +24,7 @@
                         <pending-icon/>
                         <div class="">
                             <span class="text-gray-500 font-bold">Pending Credits</span>
-                            <h2 class="text-2xl text-purple-600 font-bold">0</h2>
+                            <h2 class="text-2xl text-purple-600 font-bold">{{ userrefferals.pendingCredits }}</h2>
                         </div>
                     </div>
                     <div>
@@ -38,7 +38,7 @@
                         <success-icon/>
                         <div class="">
                             <span class="text-gray-500 font-bold">Successful Referrals</span>
-                            <h2 class="text-2xl text-purple-600 font-bold">6</h2>
+                            <h2 class="text-2xl text-purple-600 font-bold">{{ userrefferals.successfulReferrals }}</h2>
                         </div>
                     </div>
                     <div>
@@ -54,7 +54,7 @@
                         <pending-icon/>
                         <div class="">
                             <span class="text-gray-500 font-bold">Pending Credits</span>
-                            <h2 class="text-2xl text-purple-600 font-bold">0</h2>
+                            <h2 class="text-2xl text-purple-600 font-bold">{{ userrefferals.pendingCredits }}</h2>
                         </div>
                     </div>
                     <div>
@@ -68,7 +68,7 @@
                         <success-icon/>
                         <div class="">
                             <span class="text-gray-500 font-bold">Successful Referrals</span>
-                            <h2 class="text-2xl text-purple-600 font-bold">6</h2>
+                            <h2 class="text-2xl text-purple-600 font-bold">{{ userrefferals.successfulReferrals }}</h2>
                         </div>
                     </div>
                     <div>
@@ -78,13 +78,9 @@
 
             </div>
         </div>
-   
-      <div class="block md:hidden">
-       
-      </div>
     </div>
     <!-- <refferal-mobile-modal v-model="showRefferalModal" class="block md:hidden"/> -->
-    <refferal-modal v-model="showRefferalModal" />
+    <refferal-modal v-model="showRefferalModal" @inviteAdded="inviteAdded"/>
   </template>
   <script lang="ts">
   import { Options, Vue } from "vue-class-component";
@@ -96,7 +92,9 @@
   import PendingIcon from "./icons/pending.vue";
   import RefferalModal from "./refferalModal.vue";
   import RefferalMobileModal from "./refferalModalMobile.vue";
-  
+  import  IUserrefferal  from "@/types/IUserrefferal";
+
+  const userreferal = namespace("userreferal");
   @Options({
     components: {
         SuccessIcon,
@@ -109,9 +107,18 @@
   export default class RefferalInviteExistingState extends Vue {
     showRefferalModal = false;
   
+    @userreferal.State
+    userrefferals!: IUserrefferal;
   
+    @userreferal.Action
+    fetchUserrefferral!: () => Promise<void>;
+
+    async inviteAdded(){
+      await this.fetchUserrefferral();
+     }
+   
     async created() {
-    
+    await this.fetchUserrefferral();
     }
   }
   </script>

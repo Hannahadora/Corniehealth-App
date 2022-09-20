@@ -10,8 +10,9 @@
         </div>
   
         <div>
-            <!-- <invite-empty-state  /> -->
+            <invite-empty-state  v-if="empty"/>
             <invite-existing-state
+            v-else
             />
         </div>
       </div>
@@ -26,9 +27,9 @@
   import { namespace } from "vuex-class";
   import InviteEmptyState from "./emptyState.vue";
   import InviteExistingState from "./existingState.vue";
-  import  ISpecialistrefferal  from "@/types/ISpecialistrefferal";
+  import  IUserrefferal  from "@/types/IUserrefferal";
   
-  const specialistrefferal = namespace("specialistrefferal");
+  const userreferal = namespace("userreferal");
   
   @Options({
     name: "InviteIndex",
@@ -39,18 +40,18 @@
   })
   export default class InviteIndex extends Vue {
     get empty() {
-      return this.specialistrefferals.length < 1;
+      return Object.keys(this.userrefferals).length  < 1;
     }
   
-    @specialistrefferal.State
-    specialistrefferals!: ISpecialistrefferal[];
+    @userreferal.State
+    userrefferals!: IUserrefferal;
   
-    @specialistrefferal.Action
-    fetchSpecialistRefferal!: () => Promise<void>;
+    @userreferal.Action
+    fetchUserrefferral!: () => Promise<void>;
   
    
-    created() {
-      this.fetchSpecialistRefferal();
+   async created() {
+      await this.fetchUserrefferral();
     }
   }
   </script>

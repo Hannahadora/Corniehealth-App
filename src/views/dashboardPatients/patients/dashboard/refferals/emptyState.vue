@@ -16,15 +16,16 @@
         </button>
       </span>
     </div>
-    <refferal-modal v-model="showRefferalModal"/>
+    <refferal-modal v-model="showRefferalModal" @inviteAdded="inviteAdded"/>
   </template>
   <script lang="ts">
   import { Options, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
 
   import RefferalModal from "./refferalModal.vue";
-  
-  
+
+  import  IUserrefferal  from "@/types/IUserrefferal";
+   const userreferal = namespace("userreferal");
   
   @Options({
     components: {
@@ -33,6 +34,19 @@
   })
   export default class refferalemptyState extends Vue {
     showRefferalModal = false;
+
+    @userreferal.State
+    userrefferals!: IUserrefferal[];
+  
+    @userreferal.Action
+    fetchUserrefferral!: () => Promise<void>;
+
+     async inviteAdded(){
+      await this.fetchUserrefferral();
+     }
+     async created() {
+      await this.fetchUserrefferral();
+    }
   }
   </script>
   
