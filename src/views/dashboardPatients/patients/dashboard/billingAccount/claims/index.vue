@@ -74,7 +74,7 @@
   import EmptyState from "../empty-state.vue";
 
   @Options({
-    name: "Pending Bills",
+    name: "Claims Bills",
     components: {
       CornieTable,
       EmptyState,
@@ -181,7 +181,7 @@
       );
       const response = await Promise.all([pending]);
       console.log("paid bills", response[0].data);
-      this.paidBills = response[0].data;
+      this.paidBills = response[0]?.data?._claims?.data || [];
     }
 
     async mounted() {

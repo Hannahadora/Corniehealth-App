@@ -2,7 +2,7 @@
   <div class="">
     <modal v-model:visible="show">
       <div
-        class="fixed z-10 inset-0 overflow-y-auto"
+        class="fixed z-50 inset-0 overflow-y-auto"
         aria-labelledby="modal-title"
         role="dialog"
         aria-modal="true"
@@ -37,7 +37,9 @@
                     <p class="text-sm leading-2 font-semibold">
                       {{ message }}
                     </p>
-                     <p class="text-xs mt-4 text-gray-300 italic leading-2 font-semibold">
+                    <p
+                      class="text-xs mt-4 text-gray-300 italic leading-2 font-semibold"
+                    >
                       {{ submessage }}
                     </p>
                   </div>
@@ -71,63 +73,63 @@
   </div>
 </template>
 <script>
-import Modal from "@/components/modal.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CloseIcon from "@/components/icons/CloseIcon.vue";
+  import Modal from "@/components/modal.vue";
 
-export default {
-  name: "Confirm",
-  components: {
-    Modal,
-    ArrowLeftIcon,
-    CloseIcon,
-  },
-  data() {
-    return {
-      loading: false,
-      resolve: (value) => null,
-      yes: "Proceed",
-      no: "Cancel",
-      message:
-        "Are you sure you want to do this? This action cannot be undone.",
-      title: "Confirm this action",
-      show: false,
-      submessage: "",
-    };
-  },
-  methods: {
-    approved() {
-      this.show = false;
-      this.resolve(true);
-      this.reset();
+  export default {
+    name: "Confirm",
+    components: {
+      Modal,
+      ArrowLeftIcon,
+      CloseIcon,
     },
-    cancelled() {
-      this.show = false;
-      this.resolve(false);
-      this.reset();
+    data() {
+      return {
+        loading: false,
+        resolve: (value) => null,
+        yes: "Proceed",
+        no: "Cancel",
+        message:
+          "Are you sure you want to do this? This action cannot be undone.",
+        title: "Confirm this action",
+        show: false,
+        submessage: "Terms and conditions apply",
+      };
     },
-    reset() {
-      this.yes = "Proceed";
-      this.no = "Cancel";
-      this.message =
-        "Are you sure you want to do this? This action cannot be undone.";
-      this.title = "Confirm this action";
-      this.submessage = "";
+    methods: {
+      approved() {
+        this.show = false;
+        this.resolve(true);
+        this.reset();
+      },
+      cancelled() {
+        this.show = false;
+        this.resolve(false);
+        this.reset();
+      },
+      reset() {
+        this.yes = "Proceed";
+        this.no = "Cancel";
+        this.message =
+          "Are you sure you want to do this? This action cannot be undone.";
+        this.title = "Confirm this action";
+        this.submessage = "Terms and conditions apply";
+      },
+      confirm(setup = {}) {
+        this.message = setup.message || this.message;
+        this.submessage = setup.submessage || this.submessage;
+        this.yes = setup.yes || this.yes;
+        this.no = setup.no || this.no;
+        this.title = setup.title || this.title;
+        this.show = true;
+        return new Promise((resolve, reject) => {
+          this.resolve = resolve;
+        });
+      },
     },
-    confirm(setup = {}) {
-      this.message = setup.message || this.message;
-      this.submessage = setup.submessage || this.submessage;
-      this.yes = setup.yes || this.yes;
-      this.no = setup.no || this.no;
-      this.title = setup.title || this.title;
-      this.show = true;
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-      });
+    created() {
+      window.confirmAction = this.confirm;
     },
-  },
-  created() {
-    window.confirmAction = this.confirm;
-  },
-};
+  };
 </script>

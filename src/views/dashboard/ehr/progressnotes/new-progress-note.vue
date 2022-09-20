@@ -587,7 +587,7 @@
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
-    investigationItems = <any>[];
+    investigationItems: any = [];
     findingsItems: any = [];
     showProblemModal = false;
     showItemsModal = false;
@@ -625,9 +625,9 @@
       this.findingsItems.push(value);
     }
     observations = [];
-    familyHistories = <any>[];
+    familyHistories = [];
     questions = [];
-    diagnosticReports = <any>[];
+    diagnosticReports = [];
     role: any = [];
 
     removeInvestigation(index: number) {

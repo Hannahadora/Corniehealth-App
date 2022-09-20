@@ -30,31 +30,60 @@
               />
             </div>
 
-             <div class="col-span-12">
-              <span class="text-primary text-sm font-semibold mb-5"> Available Days </span>
+            <div class="col-span-12">
+              <span class="text-primary text-sm font-semibold mb-5">
+                Available Days
+              </span>
               <div class="grid grid-cols-7 gap-4 w-full mt-4">
-                <div :class="{'active' : isActiveMon}" @click="setActive('mon')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveMon }"
+                  @click="setActive('mon')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Mon
                 </div>
-                <div :class="{'active' : isActiveTue}" @click="setActive('tue')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveTue }"
+                  @click="setActive('tue')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Tue
                 </div>
-                <div :class="{'active' : isActiveWed}" @click="setActive('wed')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveWed }"
+                  @click="setActive('wed')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Wed
                 </div>
-                <div :class="{'active' : isActiveThu}" @click="setActive('thu')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveThu }"
+                  @click="setActive('thu')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Thu
                 </div>
-                <div :class="{'active' : isActiveFir}" @click="setActive('fri')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveFir }"
+                  @click="setActive('fri')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Fri
                 </div>
-                <div :class="{'active' : isActiveSat}" @click="setActive('sat')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
-                 Sat
+                <div
+                  :class="{ active: isActiveSat }"
+                  @click="setActive('sat')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
+                  Sat
                 </div>
-                 <div :class="{'active' : isActiveSun}" @click="setActive('sun')" class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs">
+                <div
+                  :class="{ active: isActiveSun }"
+                  @click="setActive('sun')"
+                  class="cursor-pointer border font-medium border-gray-300 rounded py-2 px-6 text-center justify-center flex text-xs"
+                >
                   Sun
                 </div>
-
               </div>
             </div>
             <div
@@ -67,28 +96,39 @@
                 <span class="text-lg">+</span> Add
               </span>
             </div>
-            <div class="bg-white shadow-md p-1 w-full col-span-full mt-5 rounded-lg"  v-for="(item, index) in locationDays" :key="index">
+            <div
+              class="bg-white shadow-md p-1 w-full col-span-full mt-5 rounded-lg"
+              v-for="(item, index) in locationDays"
+              :key="index"
+            >
               <div class="flex space-x-4 w-full">
                 <span class="flex items-center">
-                    <avatar :src="localSrc" class="mr-1" />
-                  </span>
+                  <avatar :src="localSrc" class="mr-1" />
+                </span>
                 <div class="w-full">
-                  <p class="font-bold text-sm">{{ getLocationName(item.location) }}</p>
-                   <span class="text-gray-400 text-xs font-light">
-                        {{ isActiveMon ? item?.days?.mon : '' }} {{isActiveTue ? item?.days?.tue : ''}}  {{isActiveWed ? item?.days?.wed : ''}}
-                        {{isActiveThu ? item?.days?.thu : ''}}  {{isActiveFir ? item?.days?.fri : ''}}  {{isActiveSat ? item?.days?.sat : ''}}
-                        {{isActiveSun ? item?.days?.sun : ''}}
-                    </span>
+                  <p class="font-bold text-sm">
+                    {{ getLocationName(item.location) }}
+                  </p>
+                  <span class="text-gray-400 text-xs font-light">
+                    {{ isActiveMon ? item?.days?.mon : "" }}
+                    {{ isActiveTue ? item?.days?.tue : "" }}
+                    {{ isActiveWed ? item?.days?.wed : "" }}
+                    {{ isActiveThu ? item?.days?.thu : "" }}
+                    {{ isActiveFir ? item?.days?.fri : "" }}
+                    {{ isActiveSat ? item?.days?.sat : "" }}
+                    {{ isActiveSun ? item?.days?.sun : "" }}
+                  </span>
                 </div>
                 <div class="float-right flex justify-end w-full">
                   <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
-                    <delete-red class="mt-1" @click="deleteLocationDays(index)"/>
+                    <delete-red
+                      class="mt-1"
+                      @click="deleteLocationDays(index)"
+                    />
                   </div>
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
       </cornie-card-text>
@@ -112,198 +152,197 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-import { string } from "yup";
+  import { Options, Vue } from "vue-class-component";
+  import { PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { string } from "yup";
 
+  import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
 
-import IPractitioner, { PractitionerLocationRole } from "@/types/IPractitioner";
-import { cornieClient } from "@/plugins/http";
+  import CornieSelect from "@/components/autocomplete.vue";
+  import Avatar from "@/components/avatar.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import MainCornieSelect from "@/components/cornieselect.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import CDelete from "@/components/icons/adelete.vue";
+  import DEdit from "@/components/icons/aedit.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CheckIcon from "@/components/icons/authcheck.vue";
+  import BluecheckIcon from "@/components/icons/bluecheck.vue";
+  import UpdateIcon from "@/components/icons/blueupdate.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
+  import DeleteRed from "@/components/icons/delete-red.vue";
+  import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import InfoIcon from "@/components/icons/info.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import CorniePhoneInput from "@/components/phone-input.vue";
+  import Textarea from "@/components/textarea.vue";
 
-import CornieCard from "@/components/cornie-card";
-import Textarea from "@/components/textarea.vue";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import InfoIcon from "@/components/icons/info.vue";
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/autocomplete.vue";
-import MainCornieSelect from "@/components/cornieselect.vue";
-import UpdateIcon from "@/components/icons/blueupdate.vue";
-import CorniePhoneInput from "@/components/phone-input.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import CheckIcon from "@/components/icons/authcheck.vue";
-import DEdit from "@/components/icons/aedit.vue";
-import DeleteorangeIcon from "@/components/icons/deleteorange.vue";
-import CDelete from "@/components/icons/adelete.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import BluecheckIcon from "@/components/icons/bluecheck.vue";
-import IconInput from "@/components/IconInput.vue";
-import DeleteRed from "@/components/icons/delete-red.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import Avatar from "@/components/avatar.vue";
+  const dropdown = namespace("dropdown");
+  const roles = namespace("roles");
+  const practitioner = namespace("practitioner");
 
-const dropdown = namespace("dropdown");
-const roles = namespace("roles");
-const practitioner = namespace("practitioner");
+  @Options({
+    name: "LocationDays",
+    components: {
+      ...CornieCard,
+      CornieIconBtn,
+      ArrowLeftIcon,
+      Avatar,
+      CDelete,
+      UpdateIcon,
+      DeleteorangeIcon,
+      CheckIcon,
+      BluecheckIcon,
+      DEdit,
+      CancelIcon,
+      InfoIcon,
+      CornieDialog,
+      SearchIcon,
+      IconInput,
+      Textarea,
+      CornieInput,
+      CornieSelect,
+      CorniePhoneInput,
+      CornieRadio,
+      CornieBtn,
+      MainCornieSelect,
+      DeleteRed,
+      EditIcon,
+    },
+  })
+  export default class LocationDays extends Vue {
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-@Options({
-  name: "LocationDays",
-  components: {
-    ...CornieCard,
-    CornieIconBtn,
-    ArrowLeftIcon,
-    Avatar,
-    CDelete,
-    UpdateIcon,
-    DeleteorangeIcon,
-    CheckIcon,
-    BluecheckIcon,
-    DEdit,
-    CancelIcon,
-    InfoIcon,
-    CornieDialog,
-    SearchIcon,
-    IconInput,
-    Textarea,
-    CornieInput,
-    CornieSelect,
-    CorniePhoneInput,
-    CornieRadio,
-    CornieBtn,
-    MainCornieSelect,
-    DeleteRed,
-    EditIcon,
-  },
-})
-export default class LocationDays extends Vue {
- @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+    required = string().required();
 
-  required = string().required();
+    isActiveMon = false;
+    isActiveTue = false;
+    isActiveWed = false;
+    isActiveThu = false;
+    isActiveFir = false;
+    isActiveSat = false;
+    isActiveSun = false;
 
-  isActiveMon = false;
-  isActiveTue = false;
-  isActiveWed = false;
-  isActiveThu = false;
-  isActiveFir = false;
-  isActiveSat = false;
-  isActiveSun = false;
+    locations = [] as any;
+    locationsId = [] as any;
+    location = "";
+    loading = false;
+    localSrc = require("../../../../../assets/img/placeholder.png");
 
-  locations = [] as any;
-   locationsId = [] as any;
-  location = "";
-  loading = false;
-  localSrc = require("../../../../../assets/img/placeholder.png");
+    locationDays = [] as any;
 
-  locationDays = [] as any;
+    data = {} as any;
 
-  data = {} as any;
+    @dropdown.Action
+    getDropdowns!: (a: string) => Promise<IIndexableObject>;
 
+    @roles.State
+    roles!: { id: string; name: string }[];
 
+    @roles.Action
+    getRoles!: () => Promise<void>;
 
-  
-  @dropdown.Action
-  getDropdowns!: (a: string) => Promise<IIndexableObject>;
+    @practitioner.Action
+    getPractitionerById!: (id: string) => Promise<IPractitioner>;
 
-  @roles.State
-  roles!: { id: string; name: string }[];
+    get allLocation() {
+      if (!this.locations || this.locations.length === 0) return [];
+      return this.locations.map((i: any) => {
+        return {
+          code: i.id,
+          display: i.name,
+        };
+      });
+    }
+    getLocationName(id: string) {
+      const pt = this.locations.find((i: any) => i.id === id);
+      return pt ? `${pt.name}` : "";
+    }
 
-  @roles.Action
-  getRoles!: () => Promise<void>;
+    setActive(item: string) {
+      if (item == "mon") {
+        this.isActiveMon = !this.isActiveMon;
+        this.data.mon = "mon .";
+      } else if (item == "tue") {
+        this.data.tue = "tue .";
+        this.isActiveTue = !this.isActiveTue;
+      } else if (item == "wed") {
+        this.data.wed = "wed .";
+        this.isActiveWed = !this.isActiveWed;
+      } else if (item == "thu") {
+        this.data.thu = "thu .";
+        this.isActiveThu = !this.isActiveThu;
+      } else if (item == "fri") {
+        this.data.fri = "fri .";
+        this.isActiveFir = !this.isActiveFir;
+      } else if (item == "sat") {
+        this.data.sat = "sat .";
+        this.isActiveSat = !this.isActiveSat;
+      } else {
+        this.data.sun = "sun .";
+        this.isActiveSun = !this.isActiveSun;
+      }
+    }
 
-  @practitioner.Action
-  getPractitionerById!: (id: string) => Promise<IPractitioner>;
+    async add() {
+      this.locationDays.push({
+        location: this.location,
+        days: this.data,
+      });
+      this.locationsId.push(this.location);
+      this.data = {};
+    }
 
-  get allLocation() {
-    if (!this.locations || this.locations.length === 0) return [];
-    return this.locations.map((i: any) => {
-      return {
-        code: i.id,
-        display: i.name,
-      };
-    });
-  }
-  getLocationName(id: string) {
-    const pt = this.locations.find((i: any) => i.id === id);
-    return pt ? `${pt.name}` : "";
-  }
+    async deleteLocationDays(index: number) {
+      this.locationDays.splice(index, 1);
+    }
 
-  setActive(item: string) {
-    if (item == "mon") {
-      this.isActiveMon = !this.isActiveMon;
-      this.data.mon = "mon .";
-    } else if (item == "tue") {
-      this.data.tue = "tue .";
-      this.isActiveTue = !this.isActiveTue;
-    } else if (item == "wed") {
-      this.data.wed = "wed .";
-      this.isActiveWed = !this.isActiveWed;
-    } else if (item == "thu") {
-      this.data.thu = "thu .";
-      this.isActiveThu = !this.isActiveThu;
-    } else if (item == "fri") {
-      this.data.fri = "fri .";
-      this.isActiveFir = !this.isActiveFir;
-    } else if (item == "sat") {
-      this.data.sat = "sat .";
-      this.isActiveSat = !this.isActiveSat;
-    } else {
-      this.data.sun = "sun .";
-      this.isActiveSun = !this.isActiveSun;
+    async submit() {
+      this.loading = true;
+      console.log("idd", this.locationsId);
+      if (
+        !this.locationDays ||
+        this.locationDays.length == 0 ||
+        !this.locationsId
+      )
+        return;
+      this.$emit("location-days", this.locationDays, this.locationsId);
+
+      this.loading = false;
+      this.done();
+    }
+
+    done() {
+      this.show = false;
+    }
+
+    async fetchLocation() {
+      const AllLocation = cornieClient().get(
+        "/api/v1/location/myOrg/getMyOrgLocations"
+      );
+      const response = await Promise.all([AllLocation]);
+      this.locations = response[0].data;
+    }
+
+    async created() {
+      await this.fetchLocation();
+      await this.getRoles();
     }
   }
-
-  async add(){
-    this.locationDays.push({
-        location: this.location,
-        days: this.data
-    })
-    this.locationsId.push(this.location);
-    this.data = {};
-  }
-  
-  async deleteLocationDays(index:number){
-    this.locationDays.splice(index, 1);
-  }
-
-
-  async submit(){
-    this.loading = true;
-
-     this.$emit("location-days", this.locationDays, this.locationsId);
-
-     this.loading = false;
-     this.done();
-  }
-
-  done(){
-     this.show = false;
-  }
-
-  
-  async fetchLocation() {
-    const AllLocation = cornieClient().get(
-      "/api/v1/location/myOrg/getMyOrgLocations"
-    );
-    const response = await Promise.all([AllLocation]);
-    this.locations = response[0].data;
-  }
-
-   async created() {
-    await this.fetchLocation();
-    await this.getRoles();
-  }
-
-}
 </script>
 <style scoped>
-.active {
-  background: #080056;
-  border: 1px solid #080056;
-  color: #fff;
-}
+  .active {
+    background: #080056;
+    border: 1px solid #080056;
+    color: #fff;
+  }
 </style>

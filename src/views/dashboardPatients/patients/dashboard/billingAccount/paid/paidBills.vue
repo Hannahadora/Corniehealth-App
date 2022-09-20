@@ -1,5 +1,5 @@
 <template>
-  <div v-if="paidBills.length == 0">
+  <div v-if="paidBills._bills.data.length == 0">
     <empty-state />
   </div>
   <div v-else>
@@ -9,7 +9,9 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Bill Count</div>
-              <div class="font-bold text-xl">{{ paidBills.length }}</div>
+              <div class="font-bold text-xl">
+                {{ paidBills._billCounts }}
+              </div>
             </div>
           </div>
           <div class="flex-none">
@@ -22,7 +24,9 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Total Bills Value</div>
-              <div class="font-bold text-xl">₦ 0</div>
+              <div class="font-bold text-xl">
+                ₦ {{ paidBills._totalBillValues }}
+              </div>
             </div>
           </div>
           <div class="flex-none">
@@ -31,11 +35,11 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end w-full pb-5">
+    <!-- <div class="flex justify-end w-full pb-5">
       <button class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold">
         New Bill
       </button>
-    </div>
+    </div> -->
     <cornie-table :columns="headers" v-model="items">
       <template #status="{ item: { status } }">
         <span
@@ -59,7 +63,6 @@
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import { cornieClient } from "@/plugins/http";
-  import paidBills from "@/types/IPaidBills";
   import { Options, Vue } from "vue-class-component";
   import EmptyState from "../empty-state.vue";
 
@@ -135,7 +138,11 @@
       },
     ];
 
-    paidBills = [] as paidBills[];
+    paidBills = {
+      _bills: {
+        data: [],
+      },
+    } as any; //paidBills[];
 
     printRecorded(date: Date) {
       return new Date(date).toLocaleDateString();
@@ -154,9 +161,9 @@
       //   paymentDate: "18/07/2022",
       //   status: "Pending",
       // });
-      return this.paidBills.length == 0
-        ? this.paidBills
-        : this.paidBills.map((x) => {
+      return this.paidBills._bills.data.length == 0
+        ? this.paidBills._bills.data
+        : this.paidBills?._bills.data.map((x: any) => {
             return {
               date: this.printRecorded(x.createdAt),
               id: x.idn,

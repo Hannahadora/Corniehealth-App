@@ -85,7 +85,7 @@
       const items =
         this.allHealthRecords.length > 0
           ? this.allHealthRecords.map((r: any) => ({
-              display: r?.practiceName,
+              display: r?.organization?.name,
               code: r.id,
             }))
           : [];
@@ -151,7 +151,7 @@
         console.log("Added practice", response.data);
         window.notify({ msg: "successful", status: "success" });
         this.loading = false;
-        this.show = false
+        this.show = false;
       } catch (error) {
         this.loading = false;
         console.log("error adding practice", error);

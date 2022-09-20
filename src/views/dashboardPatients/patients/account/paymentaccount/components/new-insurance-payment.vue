@@ -64,6 +64,7 @@
         v-model="excess"
         label="Excess"
         placeholder="Enter"
+        type="number"
       />
       <cornie-input
         class="w-full"
@@ -108,7 +109,7 @@
   import IPractitioner from "@/types/IPractitioner";
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import { Options, Vue } from "vue-class-component";
-  import { PropSync } from "vue-property-decorator";
+  import { Prop, PropSync } from "vue-property-decorator";
   import { namespace } from "vuex-class";
 
   const account = namespace("user");
@@ -127,6 +128,12 @@
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
+    @Prop({ default: null })
+    insuranceD!: any;
+
+    @Prop()
+    accountId!: string;
+
     owner = "";
     groupPolicyId = "";
     payor = "";
@@ -135,7 +142,7 @@
     plan = "";
     policy = "";
     coverage = "";
-    excess = "";
+    excess = 0;
     detuctable = "";
     period = {
       end: "",
@@ -155,13 +162,28 @@
 
     async mounted() {
       await this.updatePractitioner(this.authPractitioner as any);
+      if (this.insuranceD) this.setDetails(this.insuranceD);
+    }
+
+    setDetails(insuranceDetails: any) {
+      this.priority = insuranceDetails?.priority;
+      this.payor = insuranceDetails?.payor;
+      this.plan = insuranceDetails?.plan;
+      this.policy = insuranceDetails?.policyNo;
+      this.period.end = insuranceDetails?.policyExpiry;
+      this.detuctable = insuranceDetails?.detuctable;
+      this.owner = insuranceDetails?.mainPolicyHolder;
+      this.groupPolicyId = insuranceDetails?.groupPolicyId;
+      this.description = insuranceDetails?.description;
+      this.coverage = insuranceDetails?.coverage;
+      this.period.start = insuranceDetails?.policyStartDate;
     }
 
     get payload() {
       return {
-        // id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        id: this.accountId || undefined,
         accountType: this.corniePatient?.accountType,
-        type: "insure-pri",
+        type: "insurance",
         ownerId: this.corniePatient?.id,
         insurance: {
           patientId: this.corniePatient?.id,
@@ -193,11 +215,26 @@
         });
         return;
       }
+      if (isNaN(this.excess)) {
+        window.notify({
+          msg: "Excess field must be a number",
+          status: "error",
+        });
+        return;
+      }
       try {
-        const response = await cornieClient().post(
-          `/api/v1/patient-portal/payment`,
-          this.payload
-        );
+        if (this.accountId) {
+          await cornieClient().put(
+            `/api/v1/patient-portal/payment/${this.accountId}`,
+            this.payload
+          );
+        } else {
+          await cornieClient().post(
+            `/api/v1/patient-portal/payment`,
+            this.payload
+          );
+        }
+
         window.notify({
           msg: "Payment account added successfully",
           status: "success",

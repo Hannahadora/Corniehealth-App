@@ -363,6 +363,17 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/dashboard/billingAccount/index.vue"),
       },
       {
+
+        path: "labs",
+        name: "labs and imaging",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/labsAndImaging/index.vue"),
+      },
+      {
+        path: "specialist-refferal",
+        name: "Specialist Referrals",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
+      },
+      {
         path: "visitspatients",
         name: "Visits Patients",
         component: () => import("@/views/dashboardPatients/patients/dashboard/visits/index.vue"),

@@ -5,7 +5,7 @@
         <div class="py-2" v-for="w in walletTypes" :key="w.text">
           <cornie-radio
             v-model="currentComponent"
-            :value="w.component"
+            :value="w.value"
             :label="w.text"
           />
         </div>
@@ -19,10 +19,17 @@
         />
         <cornie-input
           class="w-full"
-          v-model="walletID"
+          :modelValue="walletDetails.walletId"
           label="Wallet ID"
           placeholder="Enter"
-        />
+          readonly
+        >
+          <template v-slot:labelicon>
+            <div class="flex text-red-500 cursor-pointer">
+              <img src="@/assets/topup-wallet.svg" /> <span>Top up</span>
+            </div>
+          </template>
+        </cornie-input>
         <div class="flex w-full pt-8">
           <cornie-select
             :items="['NGN']"
@@ -32,10 +39,10 @@
           />
           <cornie-input
             placeholder="0.00"
-            class="grow w-full rounded-l-none"
+            class="grow w-full rounded-none"
             :setfull="true"
-            v-model="walletBalance"
-            :disabled="true"
+            :modelValue="walletDetails.walletBalance"
+            readonly
           />
         </div>
       </div>
@@ -49,9 +56,10 @@
           </cornie-btn>
           <cornie-btn
             @click="save"
+            :loading="loading"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+            {{ buttonText }}
           </cornie-btn>
         </div>
       </div>
@@ -62,9 +70,13 @@
   import CornieInput from "@/components/cornieinput.vue";
   import CornieRadio from "@/components/cornieradio.vue";
   import CornieSelect from "@/components/cornieselect.vue";
+  import { cornieClient } from "@/plugins/http";
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
   import { Options, Vue } from "vue-class-component";
-  import { PropSync } from "vue-property-decorator";
+  import { Prop, PropSync, Watch } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+
+  const account = namespace("user");
 
   @Options({
     components: {
@@ -73,26 +85,108 @@
       CornieInput,
       CornieSelect,
     },
+    emits: ["reloadPayment"],
   })
   export default class NewWalletPayment extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 
-    currentComponent = "";
+    @Prop({ type: Object })
+    walletD!: any;
+
+    @Prop()
+    accountId!: string;
+
+    @account.Getter
+    corniePatient!: any;
+
+    currentComponent = "createNew";
     name: string = "";
     walletID: string = "";
     walletCurrency: string = "NGN";
     walletBalance: string = "";
+    loading = false;
     walletTypes = [
       {
         text: "Create New",
-        component: "new-wallet",
+        value: "createNew",
       },
       {
         text: "Add Existing",
-        component: "existing-wallet",
+        value: "existingWallet",
       },
     ];
-    save() {}
+
+    walletDetails: any = {};
+    get payload() {
+      return {
+        accountType: this.corniePatient?.accountType,
+        type: "wallet",
+        ownerId: this.corniePatient?.id,
+        wallet: {
+          walletName: this.name,
+        },
+      };
+    }
+    get buttonText() {
+      if (this.walletDetails?.walletId && !this.walletD) {
+        return "Close";
+      }
+      return "Save";
+    }
+
+    @Watch("walletD", { deep: true, immediate: true })
+    setW() {
+      this.setWallet();
+    }
+    setWallet() {
+      console.log("wallet", this.walletD);
+      if (!this.walletD) return;
+      this.name = this.walletDetails?.walletName;
+      this.walletDetails = { ...this.walletD };
+    }
+    async save() {
+      if (!this.name) return;
+      if (this.walletDetails?.walletId && !this.walletD) {
+        this.show = false;
+        return;
+      }
+      try {
+        this.loading = true;
+        let response;
+        if (this.accountId) {
+          response = await cornieClient().put(
+            `/api/v1/patient-portal/payment/${this.accountId}`,
+            this.payload
+          );
+        } else {
+          response = await cornieClient().post(
+            `/api/v1/patient-portal/payment`,
+            this.payload
+          );
+        }
+        console.log("response:", response.data);
+        const { account } = response.data;
+        this.walletDetails = account.wallet;
+        window.notify({
+          msg: "Payment account added successfully",
+          status: "success",
+        });
+        this.loading = false;
+        // this.show = false;
+        this.$emit("reloadPayment");
+      } catch (error) {
+        this.loading = false;
+        window.notify({
+          msg: "Error updating payment account",
+          status: "error",
+        });
+      }
+    }
+
+    mounted(): void {
+      console.log("wallet", this.walletD);
+      this.setWallet();
+    }
   }
 </script>

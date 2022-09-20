@@ -11,17 +11,32 @@
         @reloadPayment="fetchPaymentAccounts"
         @newpaymentaccount="() => (showNewPaymentAccount = true)"
         :patientAccounts="allPatientAccount"
+        @viewPaymentAccount="viewPaymentAccount"
+        @editPaymentAccount="editPaymentAccount"
         v-else
       />
       <new-payment-account
         @continueProcess="continueProcess"
         v-model="showNewPaymentAccount"
       />
-      <new-card-payment v-model="showCardPayment" />
-      <new-wallet-payment v-model="showWalletPayment" />
+      <new-card-payment :accountId="accountId" v-model="showCardPayment" />
+      <new-wallet-payment
+        :walletD="walletD"
+        :accountId="accountId"
+        v-model="showWalletPayment"
+        @reloadPayment="fetchPaymentAccounts"
+      />
       <new-insurance-payment
         @reloadPayment="fetchPaymentAccounts"
         v-model="showInsurancePayment"
+        :accountId="accountId"
+        :insuranceD="insuranceD"
+      />
+      <view-wallet
+        @reloadPayment="fetchPaymentAccounts"
+        :walletId="walletId"
+        :accountId="accountId"
+        v-model="showViewWallet"
       />
     </div>
   </div>
@@ -39,6 +54,7 @@
   import NewInsurancePayment from "./components/new-insurance-payment.vue";
   import newPaymentAccount from "./components/new-payment-account.vue";
   import NewWalletPayment from "./components/new-wallet-payment.vue";
+  import ViewWallet from "./components/view-wallet.vue";
 
   const account = namespace("user");
 
@@ -53,6 +69,7 @@
       NewWalletPayment,
       NewCardPayment,
       NewInsurancePayment,
+      ViewWallet,
     },
   })
   export default class PaymentAccount extends Vue {
@@ -61,6 +78,11 @@
     allPatientAccount = [];
     showNewPaymentAccount = false;
     showInsurancePayment = false;
+    showViewWallet = false;
+    accountId = "";
+    insuranceD = "";
+    walletId = "";
+    walletD = "";
     @account.Getter
     cornieUser!: CornieUser;
 
@@ -93,6 +115,27 @@
       await this.updatePractitioner(this.authPractitioner as any);
       await this.fetchPaymentAccounts();
       console.log("payment accounts", this.allPatientAccount);
+    }
+
+    viewPaymentAccount(data: any) {
+      const { paymentType, accountId, insurance, wallet } = data;
+      this.accountId = accountId;
+      this.insuranceD = insurance;
+      this.walletId = wallet?.id;
+      if (paymentType == "Card") this.showCardPayment = true;
+      if (paymentType == "Wallet") this.showViewWallet = true;
+      if (paymentType == "Insurance") this.showInsurancePayment = true;
+    }
+
+    editPaymentAccount(data: any) {
+      const { paymentType, accountId, insurance, wallet } = data;
+      this.accountId = accountId;
+      this.insuranceD = insurance;
+      this.walletId = wallet?.id;
+      this.walletD = wallet;
+      if (paymentType == "Card") this.showCardPayment = true;
+      if (paymentType == "Wallet") this.showWalletPayment = true;
+      if (paymentType == "Insurance") this.showInsurancePayment = true;
     }
   }
 </script>

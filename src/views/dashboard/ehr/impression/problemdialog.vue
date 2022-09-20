@@ -64,7 +64,7 @@
             <div
               :class="[
                 !showDatalist ? 'hidden' : 'o',
-                filteredItems.length === 0 ? 'h-20' : 'h-auto',
+                filteredItems.length === 0 ? 'h-20' : 'h-full',
               ]"
               class="absolute shadow bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
               style="width: 96%"
@@ -93,7 +93,7 @@
               </div>
             </div>
           </div>
-          <div class="overflow-y-auto h-96">
+          <div class="h-full">
             <div>
               <div v-if="type === 'condition'">
                 <div v-for="(input, index) in conditions" :key="index">
@@ -147,7 +147,7 @@
                   <div class="w-full flex items-center justify-between">
                     <div class="w-full">
                       <p class="capitalize text-sm text-dark mb-1 font-meduim">
-                        {{ codeMapper(input.code) }} {{ input.category }}
+                        {{ input.category }}
                       </p>
                       
                       <p class="capitalize text-xs text-gray-300">
@@ -160,11 +160,11 @@
                     </div>
 
                     <div>
-                      <p class="capitalize text-sm text-dark mb-1 font-medium">
-                        {{ input.criticality }}
+                      <p class="capitalize text-right text-sm text-dark mb-1 font-medium">
+                        {{ allergyCodeMapper(input.code) }}
                       </p>
-                      <p class="capitalize text-xs text-gray-300">
-                        {{ input.type }}
+                      <p class="capitalize text-right text-xs text-gray-300">
+                        {{ input.clinicalStatus }}
                       </p>
                     </div>
 
@@ -270,6 +270,8 @@ export default class ProblemDialog extends Vue {
 
   severityMapper = (code: string) => "";
   codeMapper = (code: string) => "";
+  allergySeverityMapper = (code: string) => "";
+  allergyCodeMapper = (code: string) => "";
 
   orderBy: Sorter = () => 1;
   loading = false;
@@ -292,6 +294,12 @@ export default class ProblemDialog extends Vue {
     );
     this.codeMapper = await mapDisplay(
       "http://hl7.org/fhir/ValueSet/condition-code"
+    );
+    this.allergySeverityMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/allergy-intolerance-criticality"
+    );
+    this.allergyCodeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/allergyintolerance-code"
     );
   }
 
@@ -321,8 +329,8 @@ export default class ProblemDialog extends Vue {
         value?.practitionerId
       );
       this.checkProblem.description =
-        this.codeMapper(value.code) + "-" + value.category;
-      this.checkProblem.details = value.criticality;
+        this.allergyCodeMapper(value.code) + "-" + value.category;
+      this.checkProblem.details = value.clinicalStatus;
     }
   }
 
