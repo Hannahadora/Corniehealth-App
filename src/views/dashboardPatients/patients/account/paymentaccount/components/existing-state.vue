@@ -148,20 +148,27 @@
     get items() {
       const items =
         this.patientAccounts.length > 0
-          ? this.patientAccounts.map((p) => {
-              return {
-                accountType: p?.accountType,
-                paymentType: this.getpaymentType(p?.type) || "",
-                //@ts-ignore
-                accountName: this.getAccountName(p)?.accountName,
-                //@ts-ignore
-                accountId: this.getAccountName(p)?.accountId,
-                //@ts-ignore
-                expiryDate: this.getAccountName(p)?.expiryDate,
-                status: p?.status || "XXXXXX",
-                ...p,
-              };
-            })
+          ? this.patientAccounts
+              .filter(
+                (x: any) =>
+                  x?.type == "card" ||
+                  x?.type == "insurance" ||
+                  x?.type == "wallet"
+              )
+              .map((p) => {
+                return {
+                  accountType: p?.accountType,
+                  paymentType: this.getpaymentType(p?.type) || "",
+                  //@ts-ignore
+                  accountName: this.getAccountName(p)?.accountName,
+                  //@ts-ignore
+                  accountId: this.getAccountName(p)?.accountId,
+                  //@ts-ignore
+                  expiryDate: this.getAccountName(p)?.expiryDate,
+                  status: p?.status || "XXXXXX",
+                  ...p,
+                };
+              })
           : [];
 
       return items;
@@ -174,8 +181,8 @@
         console.log("card account name", card);
         if (!card) return "XXXXXXX";
         return {
-          accountName: card?.name,
-          accountId: `**** **** **${card?.lastFourDigits}`,
+          accountName: `**** **** **${card?.lastFourDigits}`,
+          accountId: card.accountId,
           expiryDate: `${card?.expiryMonth}-${card?.expiryYear}`,
         };
       } else if (paymentType == "Insurance") {
@@ -190,7 +197,7 @@
         const { wallet } = p;
         return {
           accountName: `${wallet.walletName}`,
-          accountId: `${wallet.walletId}`,
+          accountId: `${wallet.accountId}`,
           expiryDate: `Not Applicable`,
         };
       }
