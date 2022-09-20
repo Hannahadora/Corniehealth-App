@@ -42,9 +42,9 @@
                         />
                         <span class="text-xs text-danger font-semibold italic cursor-pointer" @click="addEmail">Add Email</span>
                     </div>
-                    <div class="border-r-2 border-dashed pb-5 mb-5 px-2">
-                      <div class="grid grid-cols-2 gap-4" v-for="(item, index) in allemail" :key="index">
-                       <div class="w-full justify-between flex">
+                    <div class=" pb-5 mb-5 px-2">
+                      <div class="grid grid-cols-2 gap-4" >
+                       <div class="w-full justify-between flex" v-for="(item, index) in allemail" :key="index">
                         <span class="float-left">{{ item }}</span>
                         <delete-icon class="float-right fill-current text-danger cursor-pointer" @click="removeEmail(index)"/>
                        </div>
@@ -214,6 +214,9 @@
   done(){
     this.show= false;
     this.$emit('inviteAdded')
+
+    this.allemail = [];
+    this.email = "";
   }
   
   

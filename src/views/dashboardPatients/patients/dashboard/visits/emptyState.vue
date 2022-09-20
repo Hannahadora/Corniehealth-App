@@ -6,7 +6,7 @@
     </h1>
     <p class="text-gray-400 text-center">
       To schedule a visit explore and  instantly book  with your preferred provider.<br/>
-Want to book for a family member? Go to Profiles.
+      Want to book for a family member? Go to Profiles.
 
     </p>
   </div>
