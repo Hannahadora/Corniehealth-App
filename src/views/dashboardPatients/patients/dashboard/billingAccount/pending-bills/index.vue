@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pendingBills.length == 0">
+  <div v-if="pendingBills?._bills.data.length == 0">
     <empty-state />
   </div>
   <div v-else>
@@ -9,7 +9,9 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Bill Count</div>
-              <div class="font-bold text-xl">{{ pendingBills.length }}</div>
+              <div class="font-bold text-xl">
+                {{ pendingBills._billCounts }}
+              </div>
             </div>
           </div>
           <div class="flex-none">
@@ -22,7 +24,9 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Total Bills Value</div>
-              <div class="font-bold text-xl">₦ 0</div>
+              <div class="font-bold text-xl">
+                ₦ {{ pendingBills._totalBillValues }}
+              </div>
             </div>
           </div>
           <div class="flex-none">
@@ -31,11 +35,11 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end w-full pb-5">
+    <!-- <div class="flex justify-end w-full pb-5">
       <button class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold">
         New Bill
       </button>
-    </div>
+    </div> -->
     <cornie-table :columns="headers" v-model="items">
       <template #status="{ item: { status } }">
         <span
@@ -75,7 +79,6 @@
   import BillIcon from "@/components/icons/billpayment.vue";
   import EyeIcon from "@/components/icons/newview.vue";
   import { cornieClient } from "@/plugins/http";
-  import pendingBills from "@/types/IPendingBills";
   import { Options, Vue } from "vue-class-component";
   import EmptyState from "../empty-state.vue";
   import PayBill from "./components/pay-bill.vue";
@@ -145,27 +148,30 @@
       },
     ];
 
-    pendingBills = [] as pendingBills[];
+    pendingBills = {
+      _bills: {
+        data: [],
+      },
+    } as any;
 
     printRecorded(date: Date) {
       return new Date(date).toLocaleDateString();
     }
 
-    paybillPayload:any = {
-    };
+    paybillPayload: any = {};
 
     setbillPayload(item: any) {
       console.log("item", item);
       this.paybillPayload.billId = item.idD;
       this.paybillPayload.billAmount = item.totalD;
-      this.paybillPayload.billDisplay = item.idn
+      this.paybillPayload.billDisplay = item.idn;
       this.showPayBillDialog = true;
     }
 
     get items() {
-      return this.pendingBills.length == 0
+      return this.pendingBills?._bills.data.length == 0
         ? this.pendingBills
-        : this.pendingBills.map((x) => {
+        : this.pendingBills?._bills.data.map((x: any) => {
             return {
               totalD: x.total,
               idD: x.id,
