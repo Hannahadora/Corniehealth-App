@@ -43,8 +43,8 @@
                         <span class="text-xs text-danger font-semibold italic cursor-pointer" @click="addEmail">Add Email</span>
                     </div>
                     <div class=" pb-5 mb-5 px-2">
-                      <div class="grid grid-cols-2 gap-4" >
-                       <div class="w-full justify-between flex" v-for="(item, index) in allemail" :key="index">
+                      <div class="grid grid-cols-2 gap-4 mb-2 items-center" v-for="(item, index) in allemail" :key="index" >
+                       <div class="w-full justify-between flex" >
                         <span class="float-left">{{ item }}</span>
                         <delete-icon class="float-right fill-current text-danger cursor-pointer" @click="removeEmail(index)"/>
                        </div>
@@ -67,7 +67,7 @@
                     <div class="flex w-full space-x-3">
                             <a :href="`https://www.facebook.com/sharer.php?u=https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`" target="_blank"><fb-icon class="text-2xl"/></a>
                           <a :href="`https://twitter.com/intent/tweet?url=https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`" target="_blank"><tw-icon/></a> 
-                         <!-- <a :href="`https://plus.google.com/share?url=https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`" target="_blank"><gb-icon/></a>  -->
+                         <a :href="`whatsapp://send?text=https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`" target="_blank" data-action="share/whatsapp/share"><wa-icon/></a> 
                        <a :href="`https://www.linkedin.com/shareArticle?mini=true&url=https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`" target="_blank"> <lk-icon/></a>
                         <link-icon class="cursor-pointer" @click="copyMe(`https://corniehealth-frontend.s3-website.eu-west-2.amazonaws.com/signup&ref=${userrefferals.referralToken}`)"/>
 
@@ -117,9 +117,9 @@
 
   import FbIcon from './icons/fb.vue';
   import TwIcon from './icons/tw.vue';
-  import GbIcon from './icons/gb.vue';
   import LkIcon from './icons/lk.vue';
   import LinkIcon from './icons/link.vue';
+  import WaIcon from "./icons/wa.vue";
 
   import DateTimePicker from "@/components/date-time-picker.vue";
   import  IUserrefferal  from "@/types/IUserrefferal";
@@ -144,7 +144,7 @@
       CancelIcon,
       FbIcon,
       TwIcon,
-      GbIcon,
+      WaIcon,
       LkIcon,
       LinkIcon
     },

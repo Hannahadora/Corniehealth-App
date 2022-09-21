@@ -54,11 +54,11 @@
          <span class="text-blue-500">{{ item.patientName}}</span>
         </template>
     </cornie-table>
-    <div class="block md:hidden" v-for="(item, index) in items" :key="index">
+    <div class="block md:hidden">
         <div class="mb-5">
-            <search-section :placeholder="'Search Table'"/>
+            <search-section :placeholder="'Search Table'" v-model="query"/>
         </div>
-        <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full">
+        <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full mb-4" v-for="(item, index) in items" :key="index">
             <div class="justify-between flex mb-5 border-b-2 py-2 border-gray-200">
                 <p class="text-primary">#</p>
                 <p>{{ index }}</p>
@@ -89,7 +89,7 @@
                 <p>{{ item.performer }}</p>
             </div>
             <div class="justify-between flex mb-5 border-b-2 border-gray-200">
-                <p class="text-primary">status</p>
+                <p class="text-primary uppercase font-bold text-sm">status</p>
                 <p class="text-center rounded-md p-1 bg-opacity-20 px-2"
                 :class="{
                   'bg-green-200 text-green-800': item.status == 'active',
@@ -230,6 +230,12 @@ export default class FamilyAsscoation extends Vue {
 
   @specialistrefferal.Action
   fetchSpecialistRefferal!: () => Promise<void>;
+
+    @Watch("query")
+  typed(query: string) {
+    search.searchObjectArray(this.specialistrefferals, this.query)
+  }
+
 
   rawHeaders = [
     { title: "request date", key: "createdAt", show: true, noOrder:true },
