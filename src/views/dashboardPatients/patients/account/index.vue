@@ -14,7 +14,7 @@
             <payment-section/>
             <provider-section/>
             <security-section/>
-            <notification-section />
+            <!-- <notification-section /> -->
             <association-section :id="id"/>
         </tabs>
       </span>
@@ -69,7 +69,6 @@ export default class AccountSettings extends Vue {
     "Payment Accounts",
     "Providers",
     "Security",
-    "Notifications",
     "Linked Accounts",
   ];
   currentTab = 0;

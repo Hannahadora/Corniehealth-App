@@ -15,7 +15,10 @@
   
         <cornie-card-text class="flex-grow scrollable">
           <v-form ref="form">
-            <div class="mt-4">
+            <div>
+              <p class="text-ceter text-black font-bold text-lg">No Comments Yet !!!</p>
+            </div>
+            <div class="mt-4 hidden">
                 <span class="text-gray-500 uppercase font-bold mb-5">Dr. EBUBE OGE . <span class="font-light">8-Sep-2021 8:00PM</span> </span>
                 <p class="text-justify w-full items-center mb-5 text-sm text-gray-500 mt-5">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc, venenatis massa, elementum rhoncus scelerisque augue quis auctor. Sodales in ante venenatis tortor viverra turpis sed nulla mus.
