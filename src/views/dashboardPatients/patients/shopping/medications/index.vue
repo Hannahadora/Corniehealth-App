@@ -249,8 +249,6 @@ import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
   },
 })
 export default class ShoppingPage extends Vue {
-  appointments: any = [];
-  appointmentModal: Boolean = false;
   loading: Boolean = true;
   searchQuery: any = "";
   addToCartModal: Boolean = false;
@@ -318,25 +316,24 @@ export default class ShoppingPage extends Vue {
     this.addToCartModal = true
   }
 
-  async fetchAppointments() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/appointment/get-all-user-appointment"
-      );
-      this.appointments = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching appointments",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
-    }
-  }
+  // async fetchAppointments() {
+  //   try {
+  //     this.loading = true;
+  //     const { data } = await cornieClient().get(
+  //       "/api/v1/patient-portal/appointment/get-all-user-appointment"
+  //     );
+  //     this.appointments = data;
+  //   } catch (error) {
+  //     window.notify({
+  //       msg: "There was an error fetching appointments",
+  //       status: "error",
+  //     });
+  //   } finally {
+  //     this.loading = false;
+  //   }
+  // }
 
   async created() {
-    await this.fetchAppointments();
   }
 }
 </script>

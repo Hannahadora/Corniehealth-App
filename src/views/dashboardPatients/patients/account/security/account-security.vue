@@ -1,19 +1,17 @@
 <template>
   <div
-    class="bg-white mb-32 h-full overflow-x-hidden overflow-y-scroll shadow-lg p-6 mt-2 rounded-lg w-full"
+    class="bg-white mb-32 h-full overflow-x-hidden shadow-lg p-6 mt-2 rounded-lg w-full"
   >
     <div class="flex font-semibold text-xl py-2">
       <icon-btn @click="$router.go(-1)" class="border-r px-2 mr-4">
-          <arrow-left stroke="#ffffff" />
-        </icon-btn>
+        <arrow-left stroke="#ffffff" />
+      </icon-btn>
       <h2>Account Security</h2>
     </div>
 
     <div class="w-full my-5">
       <div class="w-full curved py-2">
-        <div
-          class="w-full py-2 flex justify-between items-center"
-        >
+        <div class="w-full py-2 flex justify-between items-center">
           <div class="w-8/12">
             <h2 class="mb-2 font-semibold text-lg">Password</h2>
             <p>
@@ -21,7 +19,9 @@
                 >The same password strength are enforced for all users across
                 the app.</span
               >
-              <a class="text-blue-500 uppercase font-semibold text-xs ml-3"
+              <a
+                @click="showPolicyModal = true"
+                class="cursor-pointer text-blue-500 uppercase font-semibold text-xs ml-3"
                 >View Policy</a
               >
             </p>
@@ -63,12 +63,12 @@
               <div class="w-6/12">
                 <div class="w-full">
                   <div class="w-11/12">
-                    <CornieInput
+                    <password-input
                       label="Current Password"
                       :rules="required"
-                      type="password"
                       v-model="data.previousPassword"
                       placeholder="Enter Password"
+                      class="border rounded w-full"
                     />
                   </div>
                 </div>
@@ -78,52 +78,52 @@
               <div class="w-6/12 my-3">
                 <div class="w-full">
                   <div class="w-11/12">
-                    <CornieInput
+                    <password-input
                       label="New Password"
                       :rules="password"
-                      type="password"
                       name="newPassword"
-                      v-model="newPassword"
+                      v-model="data.newPassword"
                       placeholder="New Password"
+                      class="border rounded w-full"
                     />
                     <div
-                      class="w-full flex justify-between"
-                      style="width: 90%"
+                      class="mt-4 w-full flex justify-between"
+                      style="width: 100%"
                       v-if="checkPassword"
                     >
                       <p
                         class="underbar w-2/12 border"
                         :class="{
                           'underbar-green':
-                            data.newPassword && data.newPassword.length >= 6,
-                        }"
-                      ></p>
-                      <p
-                        class="underbar bg-red-500 w-2/12 border"
-                        :class="{
-                          'underbar-green':
-                            data.newPassword && data.newPassword.length >= 6,
+                            data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
                         class="underbar bg-green-500 w-2/12 border"
                         :class="{
                           'underbar-green':
-                            data.newPassword && data.newPassword.length >= 6,
+                            data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
                         class="underbar bg-green-500 w-2/12 border"
                         :class="{
                           'underbar-green':
-                            data.newPassword && data.newPassword.length >= 6,
+                            data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
                         class="underbar bg-green-500 w-2/12 border"
                         :class="{
                           'underbar-green':
-                            data.newPassword && data.newPassword.length >= 6,
+                            data.newPassword && data.newPassword.length >= 8,
+                        }"
+                      ></p>
+                      <p
+                        class="underbar bg-green-500 w-2/12 border"
+                        :class="{
+                          'underbar-green':
+                            data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                     </div>
@@ -131,12 +131,12 @@
                 </div>
               </div>
               <div class="w-6/12 my-3">
-                <CornieInput
+                <password-input
                   label="Confirm Password"
                   :rules="required"
-                  type="password"
                   v-model="data.confirmPassword"
                   placeholder="Confirm Password"
+                  class="border rounded w-full"
                 />
                 <span
                   class="text-xs text-danger"
@@ -182,9 +182,11 @@
               Two factor authentication enforced for all users within your
               domain.
               <span class="ml-3">
-                <!-- <Tooltip :text="'This is a test'"> -->
-                <Icon :type="2" />
-                <!-- </Tooltip> -->
+                <Tooltip class=""
+                  :text="'Admin can enable security question and 2FA for the rest of the users in any account.  When enabled users MUST set-up their security questions and 2FA in their next login.'"
+                >
+                  <Icon :type="2" />
+                </Tooltip>
               </span>
             </p>
           </div>
@@ -195,7 +197,7 @@
               @click="toggle2faSection"
               v-if="!willUpdate2fa"
             >
-             <span
+              <span
                 class="curved border-primary text-primary border cursor-pointer focus:outline-none font-bold py-3 px-14 rounded-full"
               >
                 Configure
@@ -222,8 +224,11 @@
             <h2 class="mb-2 font-semibold text-lg">Deactivate Account</h2>
             <div class="w-full flex justify-between">
               <span>Deactivate your account</span>
-              <accordion-right class="cursor-pointer" @click="toggleDeactivateAccountSection"
-              v-if="!deactivateAccountsection"/>
+              <accordion-right
+                class="cursor-pointer"
+                @click="toggleDeactivateAccountSection"
+                v-if="!deactivateAccountsection"
+              />
             </div>
           </div>
         </div>
@@ -231,13 +236,18 @@
 
       <div
         class="w-full mt-3 password-section"
-        :class="{ 'deactivate-account-section border-b-2 pb-6': deactivateAccountsection }"
+        :class="{
+          'deactivate-account-section border-b-2 pb-6':
+            deactivateAccountsection,
+        }"
       >
         <deactivate-account @closesection="closeSection" />
       </div>
     </div>
 
     <div class="w-full" style="height: 100px"></div>
+
+    <password-policy v-model="showPolicyModal" />
   </div>
 </template>
 
@@ -248,12 +258,14 @@ import CornieInput from "@/components/cornieinput.vue";
 import TwoFA from "./components/two-fa.vue";
 import AccordionRight from "@/components/icons/accordion-right.vue";
 import DeactivateAccount from "./components/deactivate-account.vue";
+import PasswordPolicy from "./components/PasswordPolicy.vue";
 import Tooltip from "@/components/tooltip.vue";
 import { namespace } from "vuex-class";
 import User from "@/types/user";
 import Button from "@/components/globals/corniebtn.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
+import PasswordInput from "@/components/PasswordInput.vue";
 import { string } from "yup";
 
 const userSettingsStore = namespace("usersettings");
@@ -269,13 +281,16 @@ const userStore = namespace("user");
     Button,
     AccordionRight,
     ArrowLeft,
-    IconBtn
+    IconBtn,
+    PasswordPolicy,
+    PasswordInput,
   },
 })
 export default class UserSecurity extends Vue {
   willUpdatePassword = false;
   willUpdate2fa = false;
   deactivateAccountsection = false;
+  showPolicyModal = false;
 
   loading = false;
 
@@ -294,9 +309,9 @@ export default class UserSecurity extends Vue {
 
   get validPassword() {
     const inputValid =
-      Boolean(this.oldPassword) &&
-      Boolean(this.newPassword) &&
-      Boolean(this.newPasswordConfirmation);
+      Boolean(this.data.oldPassword) &&
+      Boolean(this.data.newPassword) &&
+      Boolean(this.data.confirmPassword);
 
     return this.checkPassword && inputValid;
   }
@@ -401,13 +416,16 @@ export default class UserSecurity extends Vue {
 
 .underbar {
   border: 1px solid red !important;
+  border-radius: 16px;
 }
 
 .underbar-green {
-  border: 1px solid green !important;
+  border: 2px solid #35ba83 !important;
+  border-radius: 100%;
 }
 
 button:disabled {
   opacity: 0.5 !important;
 }
+
 </style>
