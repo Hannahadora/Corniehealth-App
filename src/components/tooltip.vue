@@ -40,7 +40,7 @@
     text-align: center;
     padding: 9px;
     border-radius: 4px;
-    width: 150px;
+    width: 250px;
     bottom: 100%;
     opacity: 0;
     transition: opacity 1s;

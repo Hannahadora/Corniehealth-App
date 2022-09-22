@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-5/12 h-full">
+  <cornie-dialog v-model="show" right class="lg:w-5/12 w-full h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white overflow-y-scroll"
@@ -91,7 +91,7 @@
             </div>
             <div
               v-if="deliveryOption === 'pick-up'"
-              class="mt-7 w-full grid grid-cols-2 space-x-4"
+              class="mt-7 w-full grid lg:grid-cols-2 space-x-4"
             >
               <cornie-select
                 label="Select Location"
