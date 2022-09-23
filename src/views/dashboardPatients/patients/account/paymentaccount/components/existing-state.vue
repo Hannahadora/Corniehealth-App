@@ -213,10 +213,15 @@
     }
 
     async deleteAccount(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to delete this account?",
+        submessage:
+          "*Note: You will not be able to make payments for your healthcare services with this account once deleted.",
+        title: "Delete Account",
+      });
+      if (!confirmed) return;
       try {
-        const response = await cornieClient().delete(
-          `/api/v1/patient-portal/payment/${id}`
-        );
+        await cornieClient().delete(`/api/v1/patient-portal/payment/${id}`);
         window.notify({
           msg: "Payment account deactivated successfully",
           status: "success",

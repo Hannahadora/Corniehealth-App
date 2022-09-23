@@ -32,7 +32,9 @@
         >
           <img src="@/assets/img/wallet-account-profile.svg" />
           <div class="flex flex-col">
-            <p class="text-gray-400 uppercase">Account Name</p>
+            <p class="text-gray-400 uppercase font-bold text-sm">
+              Account Name
+            </p>
             <p class="font-bold">{{ walletOverView.accountName }}</p>
           </div>
         </div>
@@ -41,7 +43,7 @@
         >
           <img src="@/assets/img/topup-wallet-blue.svg" />
           <div class="flex flex-col">
-            <p class="text-gray-400 uppercase">Wallet ID</p>
+            <p class="text-gray-400 uppercase font-bold text-sm">Wallet ID</p>
             <p class="font-bold">{{ walletOverView.walletId }}</p>
           </div>
         </div>
@@ -50,7 +52,9 @@
         >
           <img src="@/assets/img/wallet-account-unsettled.svg" />
           <div class="flex flex-col">
-            <p class="text-gray-400 uppercase">Unsettled bal. (NGN)</p>
+            <p class="text-gray-400 uppercase font-bold text-sm">
+              Unsettled bal. (NGN)
+            </p>
             <p class="font-bold">₦ {{ walletOverView.unsettledBalance }}</p>
           </div>
         </div>
@@ -59,7 +63,9 @@
         >
           <img src="@/assets/img/wallet-account-availableB.svg" />
           <div class="flex flex-col">
-            <p class="text-gray-400 uppercase">Available bal. (NGN)</p>
+            <p class="text-gray-400 uppercase font-bold text-sm">
+              Available bal. (NGN)
+            </p>
             <p class="font-bold">₦ {{ walletOverView.availableBalance }}</p>
           </div>
         </div>

@@ -119,12 +119,6 @@
         noOrder: true,
       },
       {
-        title: "Bank",
-        key: "bank",
-        show: true,
-        noOrder: true,
-      },
-      {
         title: "Payment Date",
         key: "paymentDate",
         show: false,
@@ -172,7 +166,7 @@
               account: "XXXXXX",
               payor: x.subject,
               total: `₦ ${x.total}`,
-              bank: "XXXXXX",
+              practitioner: "XXXXXX",
               paymentDate: this.printRecorded(x.paidAt),
               status: x.status,
             };
