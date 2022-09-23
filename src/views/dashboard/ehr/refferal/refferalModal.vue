@@ -156,24 +156,37 @@
                         >
                         </cornie-select> -->
                         <cornie-select
+                            class="required w-full"
+                            :items="allOrganizations"
+                            required
+                            :rules="required"
+                            label="Performing Oganizations"
+                            placeholder="--Select--"
+                            v-model="orgId"
+                          
+                          >
+                        </cornie-select>
+                        <auto-complete
                             class="required"
                             :rules="required"
                             :items="allPerformerDispenser"
                             label="Performer"
                             v-model="performerId"
                             placeholder="Select"
+                            @input="fetchOrganisationPractitioner"
                         >
-                        </cornie-select>
-                        <cornie-select
+                        </auto-complete>
+                        <auto-complete
                             class="required"
                             :rules="required"
                             :items="allPractionersLocations"
                             label="Location"
                             v-model="performerLocationId"
                             placeholder="Select performer’s address"
+                            @input="fetchPracticeLocation"
                            
                         >
-                        </cornie-select>
+                        </auto-complete>
                     </div>
                 </template>
             </accordion-component>
@@ -543,6 +556,9 @@ export default class RefferalModal extends Vue {
     reasonReference = null;
     note = null;
     performer = "";
+    organisations = [] as any;
+    organisationspractioners = [] as any;
+    orgId = "";
 
     orderDetail = "";
     requestDescription = "";
@@ -565,16 +581,23 @@ export default class RefferalModal extends Vue {
     requestDescriptions = "";
     Specilaitems: Codeable[] = [];
 
+    getPractitonerLocation = [] as any;
+
   
   
    refvalue(value:any, type:any){
     //this.references.push(value);
     this.reasonReference = type;
-  }
+  } 
+
     @Watch("id")
     idChanged() {
       this.setRequest();
     }
+    // @Watch("orgId")
+    // getOrganizationPractitioner() {
+    //   this.fetchOrganisationPractitioner();
+    // }
 
      async setRequest() {
         const diagnostic = await this.getOneRefferalById(this.id);
@@ -643,18 +666,18 @@ export default class RefferalModal extends Vue {
     }
 
   
-   get getPractitonerLocation() {
-    if(this.performerId){
-      const pt = this.practitioners.find((i: any) => i.id == this.performerId);
-      return pt?.locationRoles;
-    }
-  }
+  //  get getPractitonerLocation() {
+  //   if(this.performerId){
+  //     const pt = this.practitioners.find((i: any) => i.id == this.performerId);
+  //     return pt?.locationRoles;
+  //   }
+  // }
   get allPractionersLocations () {
         if (!this.getPractitonerLocation || this.getPractitonerLocation.length === 0) return [];
           return this.getPractitonerLocation.map((i: any) => {
           return {
-              code: i.locationId,
-              display: i.location.name,
+              code: i.id,
+              display: i.name,
           };
         });
   }
@@ -668,6 +691,17 @@ export default class RefferalModal extends Vue {
         };
         });
     }
+    get allOrganizations() {
+    if (!this.organisations || this.organisations.length === 0) return [];
+    return this.organisations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+
+  }
+
 
     get allPerformer() {
         if (!this.practitioners || this.practitioners.length === 0) return [];
@@ -678,9 +712,19 @@ export default class RefferalModal extends Vue {
         };
         });
     }
+
+    // get allPerformer() {
+    //     if (!this.practitioners || this.practitioners.length === 0) return [];
+    //     return this.practitioners.map((i: any) => {
+    //     return {
+    //         code: i.id,
+    //         display: i.firstName + " " + i.lastName,
+    //     };
+    //     });
+    // }
     get allPerformerDispenser() {
-        if (!this.practitioners || this.practitioners.length === 0) return [];
-        return this.practitioners.map((i: any) => {
+        if (!this.organisationspractioners || this.organisationspractioners.length === 0) return [];
+        return this.organisationspractioners.map((i: any) => {
         return {
             code: i.id,
             display: i.firstName + " " + i.lastName,
@@ -791,6 +835,29 @@ export default class RefferalModal extends Vue {
       }
     })
   }
+  async fetchOrganisation() {
+      const url = "/api/v1/organization";
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.organisations = response.data;
+      }
+    }
+
+    async fetchOrganisationPractitioner(event:any) {
+      const url = `/api/v1/organization/find-practitioner?name=${event.target.value}&organizationId=${this.orgId}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.organisationspractioners = response.data;
+      }
+    }
+
+    async fetchPracticeLocation(event:any) {
+      const url = `/api/v1/location/lean/?category=${event.target.value}&organizationId=${this.orgId}`;
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.getPractitonerLocation = response.data;
+      }
+    }
 
   async setRefs() {
     const reference = "http://hl7.org/fhir/ValueSet/c80-practice-codes";
@@ -807,7 +874,9 @@ export default class RefferalModal extends Vue {
   }
 
   async created() {
+      //if (this.orgId) await this.fetchOrganisationPractitioner();
       await this.setRefs();
+      await this.fetchOrganisation();
       await this.fetchPatients();
       await this.fetchRefferalById(this.aPatientId);
       await this.fetchPractitioners();

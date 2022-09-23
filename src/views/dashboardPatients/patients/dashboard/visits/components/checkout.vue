@@ -36,14 +36,15 @@
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4 mt-5">
-                <date-picker :label="'Date'" v-model="date"/>
+                <date-picker :label="'Date'" v-model="selectedItem.createdAt" :disabled="true"/>
                 <div>
                     <p class="text-sm font-semibold">Time</p>
                     <input
                        type="time"
                        placeholder="00:00"
                        class="w-full border-1 border-gray-300 rounded-lg px-2 py-2"
-                       v-model="startTime"
+                       v-model="selectedItem.checkInTime"
+                       readonly
                      />
                 </div>
             </div>
@@ -71,7 +72,7 @@
                     
             </div>
 
-            <div class="mb-8">
+            <div class="mb-8 hidden">
              <cornie-input class="" :label="'Total bill'" :innerlabel="'Paid'" :labelText="true" >
                 <template #append>
                     <eye-icon />
@@ -253,7 +254,7 @@ export default class checkoutModal extends Vue {
 
     get payload(){
       return {
-       followUpId: this.selectedItem.appointmentId || null
+       followUpId: this.selectedItem.appointmentId || undefined
       }
     }
 
@@ -278,7 +279,7 @@ export default class checkoutModal extends Vue {
     
       try {
         const response = await cornieClient().post(
-          `/api/v1/patient-portal/visit/check-out/${this.id}`,
+          `/api/v1/patient-portal/visit/check-out/${this.selectedItem.id}`,
           this.payload
         );
         if (response.success) {

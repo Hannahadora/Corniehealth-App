@@ -23,9 +23,7 @@
                 <template v-slot:default>
                     <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                         <cornie-select
-                        required
                             class="required w-full"
-                            :rules="required"
                           :items="[
                               'CarePlan',
                               'MedicationRequest',
@@ -82,6 +80,7 @@
                             placeholder="--Select--"
                         >
                         </cornie-select>
+                       
                         <cornie-select
                             class="required w-full"
                             required
@@ -331,7 +330,6 @@
                         <fhir-input
                           reference="http://hl7.org/fhir/ValueSet/condition-code"
                           class="required w-full"
-                          :rules="required"
                           v-model="reasonCode"
                           label="Reason Code"
                           placeholder="--Select--"
@@ -366,11 +364,11 @@
 
             <div class="border-b-2 border-gray-200 border-dashed mt-5 pb-3 w-full">
               <span class="w-full font-semibold text-gray-600">Medication Allergies & Existing Conditions</span>
-              <div class="w-full grid grid-cols-2 gap-5 mt-2 pb-5">
-                <div class="mb-5">
+              <div class="w-full grid grid-cols-1 gap-5 mt-2 pb-5">
+                <div class="mb-3">
                   <span class="text-sm font-semibold mb-1">Medication Allergies</span>
                   <Multiselect v-model="allergies" mode="tags" :hide-selected="false" id="field-id"
-                    :options="allAllegies" value-prop="code" trackBy="display" label="display" placeholder="--Select--"
+                    :options="allAllegies" value-prop="display" trackBy="display" label="display" placeholder="--Select--"
                     class="w-full">
                     <template v-slot:tag="{ option, handleTagRemove, disabled }">
                       <div class="multiselect-tag is-user">
@@ -386,10 +384,10 @@
                     </template>
                   </Multiselect>
                 </div>
-                <div class="mb-5">
+                <div class="mb-3">
                   <span class="text-sm font-semibold mb-1">Existing Conditions</span>
                   <Multiselect v-model="aconditions" mode="tags" :hide-selected="false" id="field-id"
-                    :options="allAllegies" value-prop="code" trackBy="display" label="display" placeholder="--Select--"
+                    :options="allConditions" value-prop="display" trackBy="display" label="display" placeholder="--Select--"
                     class="w-full">
                     <template v-slot:tag="{ option, handleTagRemove, disabled }">
                       <div class="multiselect-tag is-user">
@@ -572,6 +570,7 @@ import ReferenceModal from "./referenceModal.vue";
 import plusIcon from "@/components/icons/plus.vue";
 import MedicationRef from "./medicationRefModal.vue";
 import { ImageResolutionProperty } from "csstype";
+import { categories, codes, severities } from "../conditions/drop-downs";
 
 const practitioner = namespace("practitioner");
 const request = namespace("request");
@@ -666,8 +665,7 @@ export default class MedicationModal extends Vue {
   @issues.Action
   fetchIssues!: (patientId: string) => Promise<void>
 
-  @condition.Action
-  fetchPatientConditions!: (patientId: string) => Promise<void>;
+ 
 
   @request.State
   patientrequests!: IRequest[];
@@ -675,8 +673,12 @@ export default class MedicationModal extends Vue {
   @request.Action
   fetchrequestsById!: (patientId: string) => Promise<void>;
 
+    @condition.Action
+  fetchPatientConditions!: (patientId: string) => Promise<void>;
+
+  
   @condition.State
-  conditions!: { [state: string]: ICondition[] };
+  conditions!: ICondition[];
 
   @roles.Action
   getRoles!: () => Promise<any>;
@@ -687,6 +689,7 @@ export default class MedicationModal extends Vue {
 
 
   medicationMapper = (code: string) => "";
+  typeMapper = (code: string) => "";
 
   loading = false;
   localSrc = require("../../../../assets/img/placeholder.png");
@@ -699,6 +702,8 @@ export default class MedicationModal extends Vue {
   showRefModal = false;
   showMedRefModal = false;
 
+  organisations = [];
+
   dataForm = "";
   pack = "";
   strength = "";
@@ -710,6 +715,7 @@ export default class MedicationModal extends Vue {
   days = "";
   days2 = "";
   basedOn = "";
+  orgId = "";
   intent = null;
   priority = "";
   category = "";
@@ -800,9 +806,21 @@ export default class MedicationModal extends Vue {
 
   }
 
+  get allOrganizations() {
+    if (!this.organisations || this.organisations.length === 0) return [];
+    return this.organisations.map((i: any) => {
+      return {
+        code: i.id,
+        display: i.name,
+      };
+    });
+
+  }
+
+
     get allPerformer() {
         if (!this.practitioners || this.practitioners.length === 0) return [];
-        return this.practitioners.map((i: any) => {
+        return this.practitioners.filter((practitoner) => practitoner.organizationId === this.orgId).map((i: any) => {
         return {
             code: i.id,
             display: i.firstName + " " + i.lastName,
@@ -823,7 +841,7 @@ export default class MedicationModal extends Vue {
         return this.allergys.map((i: any) => {
         return {
             code: i.id,
-            display: i.category,
+            display: this.medicationMapper(i.code),
         };
         });
     }
@@ -895,15 +913,15 @@ export default class MedicationModal extends Vue {
       };
     });
   }
-    // get allConditions() {
-    //     if (!this.conditions || this.conditions.length === 0) return [];
-    //     return this.conditions.map((i: any) => {
-    //     return {
-    //         code: i.id,
-    //         display: i.name,
-    //     };
-    //     });
-    // }
+    get allConditions() {
+        if (!this.conditions || this.conditions.length === 0) return [];
+        return this.conditions.map((i: any) => {
+        return {
+            code: i.id,
+            display: this.printCode(i.code),
+        };
+        });
+    }
      get allIssues() {
         if (!this.issues || this.issues.length === 0) return [];
         return this.issues.map((i: any) => {
@@ -997,8 +1015,15 @@ export default class MedicationModal extends Vue {
 
   async createMapper() {
     this.medicationMapper = await mapDisplay(
-      "http://hl7.org/fhir/ValueSet/medication-codes"
+      "http://hl7.org/fhir/ValueSet/substance-code"
     );
+    this.typeMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/condition-stage-type"
+    );
+  }
+
+  printCode(code: string) {
+    return codes.find((c) => c.code == code)?.display;
   }
 
    async searchData(event: any) {
@@ -1050,16 +1075,25 @@ export default class MedicationModal extends Vue {
   //   }
 
   // }
+  async fetchOrganisation() {
+      const url = "/api/v1/organization";
+      const response = await cornieClient().get(url);
+      if (response.success) {
+        this.organisations = response.data;
+      }
+    }
   done() {
     this.$emit("medication-added");
     this.show = false;
   }
 
   async created() {
-    await this.getRoles();
     await this.createMapper();
+    await this.fetchPatientConditions(this.onepatientId)
+    await this.getRoles();
     await this.fetchPatients();
     await this.fetchPractitioners();
+    await this.fetchOrganisation();
   }
 }
 </script>
