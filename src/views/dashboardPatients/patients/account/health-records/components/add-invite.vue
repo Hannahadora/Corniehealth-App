@@ -26,7 +26,7 @@
           v-model="actionType"
         />
       </cornie-card-text>
-      <div class="flex justify-end mx-4 mt-auto mb-4 pt-5">
+      <div class="flex w-full justify-end px-5 mt-auto mb-4 pt-5">
         <cornie-btn
           @click="show = false"
           class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
@@ -35,7 +35,7 @@
         </cornie-btn>
         <cornie-btn
           @click="continueProcess"
-          class="text-white bg-danger px-6 rounded-xl"
+          class="text-white bg-danger px-4 rounded-xl w-28"
         >
           Proceed
         </cornie-btn>

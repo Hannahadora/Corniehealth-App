@@ -22,13 +22,13 @@
       >
         <div
           @click="addPractice"
-          class="border-primary border p-2 rounded-xl text-primary font-bold px-8 py-3 mx-2 cursor-pointer"
+          class="border-primary border p-2 rounded-xl text-primary font-bold px-5 py-1 mx-2 cursor-pointer"
         >
           Add/Invite a Practice
         </div>
         <div
           @click="bookAppointment"
-          class="bg-danger p-2 rounded-xl text-white font-bold px-8 py-3 mx-2 cursor-pointer"
+          class="bg-danger p-2 rounded-xl text-white font-bold px-5 py-1 mx-2 cursor-pointer"
         >
           Book an appointment
         </div>
