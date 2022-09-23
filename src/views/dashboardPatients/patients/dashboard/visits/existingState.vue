@@ -66,7 +66,7 @@
           <span class="ml-3 text-xs">Cancel Visit</span>
         </div>
         <div
-        v-if="item?.appointmentId"
+        v-if="item.status !== 'completed'"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showCheckOut(item)"
         >
@@ -236,7 +236,7 @@
                         <span class="ml-3 text-xs">Cancel Visit</span>
                       </div>
                       <div
-                      v-if="item?.appointmentId"
+                      v-if="item.status !== 'completed'"
                         class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
                         @click="showCheckOut(item)"
                       >
@@ -251,7 +251,7 @@
   </div>
   <appointment-modal  v-model="showAppointment"/>
   <view-modal  v-model="showViewModal" :selectedItem="selectedItem"/>
-  <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem"/>
+  <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem" @checkout-added="checkoutadded"/>
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
@@ -548,6 +548,9 @@ async deleteItem(id: string) {
         window.notify({ msg: "Not Cancelled", status: "error" });
       }
     }
+  }
+  async checkoutadded(){
+    await this.fetchPatientvisits();
   }
   async created() {
     await this.fetchPatientvisits();

@@ -74,7 +74,7 @@
             </div>
             <cornie-select
                   v-model="type"
-                  :items="['pharmacy', 'lab', 'clinic']"
+                  :items="['Pharmacy', 'Lab', 'Clinic']"
                   label="Type"
                   class="w-full"
                   placeholder="--Select--"
@@ -456,7 +456,7 @@ export default class OtherDoctorModal extends Vue {
       phone: this.phone,
       referenceOrganization: this.referenceOrganization,
       organizationId: this.organizationId,
-      type : this.type
+      type : this.type.toLowerCase()
     }
     this.allProviders.push(body)
      try {
@@ -564,6 +564,8 @@ get PharmarcyProviders2(){
   async updateProvider() {
     // const { valid } = await (this.$refs.form as any).validate();
     // if (!valid) return;
+
+   
 
     const id = this.selectedItem.provider.id;
     const url = `/api/v1/patient-portal/provider/default/${id}`;

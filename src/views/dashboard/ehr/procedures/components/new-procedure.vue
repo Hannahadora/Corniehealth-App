@@ -897,7 +897,6 @@
       const response = await cornieClient().get(url);
       if (response.success) {
         this.organisation = response.data;
-        console.log("organisation", this.organisation);
       }
     }
     async fetchDevices() {

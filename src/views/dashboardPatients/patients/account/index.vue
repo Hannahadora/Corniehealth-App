@@ -12,7 +12,7 @@
             <profile-section/>
             <contact-section/>
             <payment-section/>
-            <provider-section/>
+            <provider-section  />
             <security-section/>
             <!-- <notification-section /> -->
             <association-section :id="id"/>

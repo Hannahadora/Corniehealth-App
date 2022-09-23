@@ -299,7 +299,7 @@ export default class FamilyAsscoation extends Vue {
         ...specialistrefferal,
         specialty: this.getspecialtyname(specialistrefferal.specialty),
         performer: specialistrefferal.performer.name,
-        requester: specialistrefferal?.patient?.firstname +' '+  specialistrefferal?.patient?.lastname
+        requester: specialistrefferal.performer.name
       };
     });
     if (!this.query) return specialistrefferals;

@@ -340,7 +340,7 @@ export default class AlergyModal extends Vue {
   onsetmesurable = { ...measurable };
 
   clinicalStatus = "active";
-  verificationStatus = "pending";
+  verificationStatus = "unconfirmed";
   type = "";
   category = "";
   criticality = "";
@@ -564,7 +564,7 @@ isEmptyObject(object:any){
   }
 
   async created() {
-    this.setAllergy()
+    if(this.id) this.setAllergy()
 
   }
 }
