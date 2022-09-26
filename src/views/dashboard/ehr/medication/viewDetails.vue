@@ -65,7 +65,7 @@
                 </div>
                  <div>
                     <span class="block capitalize text-sm text-gray-400">Requester</span>
-                    <span class="py-3 rounded-md"> {{ getPractitionerName(selectedItem.requesterId) }} </span>
+                    <span class="py-3 rounded-md"> Dr. {{ authPractitioner.firstName +' '+ authPractitioner.lastName}} </span>
                 </div>
                 <div>
                     <span class="block capitalize text-sm text-gray-400">Patient</span>

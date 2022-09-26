@@ -92,7 +92,7 @@
         </template>
         <template #access>
            <span class="">
-            5
+            0
             <span class="text-blue-500 underline">View</span>
            </span>
         </template>

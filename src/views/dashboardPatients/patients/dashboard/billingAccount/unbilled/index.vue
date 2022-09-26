@@ -9,7 +9,9 @@
           <div class="flex-1">
             <div class="flex flex-col">
               <div class="text-gray-400">Encounters</div>
-              <div class="font-bold text-xl">{{ unbilled.length }}</div>
+              <div class="font-bold text-xl">
+                {{ unbilled._countEncounters }}
+              </div>
             </div>
           </div>
           <div class="flex-none">
@@ -18,11 +20,11 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end w-full pb-5">
+    <!-- <div class="flex justify-end w-full pb-5">
       <button class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold">
         New Bill
       </button>
-    </div>
+    </div> -->
     <cornie-table :columns="headers" v-model="items">
       <template #status="{ item: { status } }">
         <span
@@ -46,7 +48,6 @@
 <script lang="ts">
   import CornieTable from "@/components/cornie-table/CornieTable.vue";
   import { cornieClient } from "@/plugins/http";
-  import unbilledEncounter from "@/types/IUnbilledEncounter";
   import { Options, Vue } from "vue-class-component";
   import EmptyState from "../empty-state.vue";
 
@@ -117,7 +118,7 @@
       // });
       return this.unbilled.length == 0
         ? this.unbilled
-        : this.unbilled.map((x) => ({
+        : this.unbilled?._encounters?.data.map((x: any) => ({
             date: new Date(x.createdAt).toLocaleDateString(),
             id: x.identifier,
             biller: x.practitionerId,
@@ -130,7 +131,7 @@
           }));
     }
 
-    unbilled = [] as unbilledEncounter[];
+    unbilled = [] as any; //unbilledEncounter[];
     get patientId() {
       return this.$route.params.id;
     }

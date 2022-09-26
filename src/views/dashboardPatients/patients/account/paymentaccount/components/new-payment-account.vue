@@ -2,7 +2,7 @@
   <cornie-dialog
     v-model="show"
     center
-    class="md:w-1/4 md:h-2/4 h-2/3 w-full p-2"
+    class="md:w-1/3 md:h-2/4 h-2/3 w-full p-2"
   >
     <cornie-card height="100%" class="flex flex-col bg-white">
       <cornie-card-title>
@@ -34,7 +34,7 @@
           v-model="paymentType"
         />
       </cornie-card-text>
-      <div class="flex justify-end mx-4 mt-auto mb-4 pt-5">
+      <div class="flex justify-end px-4 pb-4 pt-5">
         <cornie-btn
           @click="show = false"
           class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"

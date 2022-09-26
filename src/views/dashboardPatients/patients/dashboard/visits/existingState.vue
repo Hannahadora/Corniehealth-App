@@ -2,7 +2,7 @@
   <div class="w-full pb-7">
       <span class="justify-end w-full mb-3 hidden md:flex">
         <button
-            @click="showMember = true"
+            @click="showAppointment = true"
             class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         >
             Book Appointment
@@ -23,13 +23,6 @@
           <eye-icon class="text-danger fill-current" />
           <span class="ml-3 text-xs">View Visit</span>
         </div>
-        <!-- <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-         
-        >
-          <vital-icon />
-          <span class="ml-3 text-xs">Vitals</span>
-        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="shareVisitModal(item.encounterId)"
@@ -44,12 +37,6 @@
           <bill-icon class="text-blue-600 fill-current" />
           <span class="ml-3 text-xs">Pay Bill</span>
         </div>
-        <!-- <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-        >
-          <refferal-icon class="text-blue-600 fill-current" />
-          <span class="ml-3 text-xs">Referral</span>
-        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showTimeline(item)"
@@ -79,7 +66,7 @@
           <span class="ml-3 text-xs">Cancel Visit</span>
         </div>
         <div
-        v-if="item?.appointmentId"
+        v-if="item.status !== 'completed'"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showCheckOut(item)"
         >
@@ -129,29 +116,30 @@
         </template>
     </cornie-table>
     <div class="block md:hidden">
-          <span class="flex justify-end w-full mb-3">
+
+        <div class="mb-5">
+            <search-section :placeholder="'Search Table'" v-model="query"/>
+        </div>
+        <span class="justify-center w-full mb-3 block md:hidden">
         <button
-            @click="showMember = true"
+            @click="showAppointment = true"
             class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         >
             Book Appointment
         </button>
         </span>
-        <div class="mb-5">
-            <search-section :placeholder="'Search Table'"/>
-        </div>
-        <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full">
+        <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full mb-4" v-for="(item, index) in items" :key="index">
             <div class="justify-between flex mb-5 border-b-2 py-2 border-gray-200">
                 <p class="text-primary">#</p>
-                <p>1</p>
+                <p>{{ index }}</p>
             </div>
             <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">check-in time</p>
-                <p>08:30AM</p>
+                <p>{{ item?.checkInTime }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">visit id</p>
-                <p>A1XCD45</p>
+                <p>{{ item?.id }}</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">visit type</p>
@@ -162,29 +150,108 @@
                 <p>XXXXXX</p>
             </div>
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
-                <p class="text-primary uppercase font-bold text-sm">participant(s)</p>
-                <p>XXXXXX</p>
+                <p class="text-primary uppercase font-bold text-sm">PRACTITIONER(S)</p>
+                <p>{{ item.requester }}</p>
             </div>
 
              <div class="justify-between flex mb-5 py-2 border-b-2 border-gray-200">
                 <p class="text-primary uppercase font-bold text-sm">period</p>
-                <p>09:00 - 09:50 AM</p>
+                <p>{{ item?.checkInTime +' - ' + new Date(item?.checkOutTime).toLocaleTimeString('en-US')}}</p>
             </div>
             <div class="justify-between flex mb-5 border-b-2 border-gray-200">
-                <p class="text-primary">status</p>
-                <p class="bg-green-100 text-green-500 rounded py-1 text-sm px-2">Waitlisted</p>
+              <p class="text-primary uppercase font-bold text-sm">status</p>
+                <p class="rounded py-1 text-sm px-2"
+                :class="{
+              'bg-yellow-100 text-yellow-400': item.status == 'On-time-late',
+              'bg-purple-300 text-purple-600': item.status == 'queued'||
+              item.status == 'vitalAcquired'
+              ||
+              item.status == 'referred',
+              'bg-green-100 text-green-400': item.status == 'waitlisted' 
+              || item.status == 'consultationCompleted'
+              || item.status == 'diagnosticsCompleted'
+              || item.status == 'nedicationDispensed'
+              || item.status == 'discharged'
+              || item.status == 'checked-in'
+              || item.status == 'completed'
+              ,
+              ' bg-yellow-100 text-yellow-400': item.status == 'in-Progress',
+             ' bg-red-100 text-red-400': item.status == 'visitEnded' || item.status == 'cancelled',
+             ' bg-gray-100 text-gray-400': item.status == 'checked-out',
+             ' bg-blue-100 text-blue-600': item.status == 'billProcessing',
+
+             
+            }">{{ item.status }}</p>
             </div>
             <div class="flex w-full justify-center py-2">
-                    <DotsHorizontalIcon/>
-            </div>
-
-
-        </div>
+                  <DotsHorizontalIcon @click="showMenulist = !showMenulist"/>
+                    <div v-if="showMenulist" class="w-full border-2 border-gray-200 shadow-sm rounded-lg py-3 px-4 bg-white">
+                      <div
+          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+           @click="showVisit(item)"
+        >
+          <eye-icon class="text-danger fill-current" />
+          <span class="ml-3 text-xs">View Visit</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="shareVisitModal(item.encounterId)"
+                      >
+                        <bill-icon class="text-blue-600 fill-current" />
+                        <span class="ml-3 text-xs">Share Bill</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showBillVisitModal(item.encounterId)"
+                      >
+                        <bill-icon class="text-blue-600 fill-current" />
+                        <span class="ml-3 text-xs">Pay Bill</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showTimeline(item)"
+                      >
+                        <timeline-icon class="text-blue-600 fill-current" />
+                        <span class="ml-3 text-xs">Timeline</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showVisitBillModal(item.encounterId)"
+                      >
+                        <bill-icon class="text-blue-300 fill-current" />
+                        <span class="ml-3 text-xs">View Bill</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showVisitValidateClaim(item.encounterId)"
+                      >
+                        <check-icon class="text-green-600 fill-current" />
+                        <span class="ml-3 text-xs">Validate Claim</span>
+                      </div>
+                      <div
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="deleteItem(item.id)"
+                      >
+                        <cancel-icon class="text-primary fill-current" />
+                        <span class="ml-3 text-xs">Cancel Visit</span>
+                      </div>
+                      <div
+                      v-if="item.status !== 'completed'"
+                        class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
+                        @click="showCheckOut(item)"
+                      >
+                        <check-out class="text-purple-800 fill-current" />
+                        <span class="ml-3 text-xs">Check Out</span>
+                      </div>
+                    </div>
+                  </div>
+             </div>
 
     </div>
   </div>
+  <appointment-modal  v-model="showAppointment"/>
   <view-modal  v-model="showViewModal" :selectedItem="selectedItem"/>
-  <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem"/>
+  <checkout-modal v-model="showCheckOutModal" :selectedItem="selectedItem" @checkout-added="checkoutadded"/>
   <viewbill-modal v-model="showBillModal"/>
   <validate-modal v-model="showValidateModal" />
   <share-modal v-model="showShareModal"/>
@@ -235,12 +302,12 @@ import BillIcon from "./icons/bill.vue";
 import ViewModal from "./components/viewVisit.vue";
 import CheckoutModal from "./components/checkout.vue";
 import ViewbillModal from "./components/viewBill.vue";
-import ValidateModal from "./components/validateClaim.vue";
-import ShareModal from "./components/shareBill.vue";
-import PayModal from "./components/payBill.vue";
+import ValidateModal from "../billingAccount/TableComponent/validate-claim.vue";
+import ShareModal from "../billingAccount/TableComponent/share-bill.vue";
+import PayModal from "../billingAccount/TableComponent/pay-bill.vue";
 
 import TimeLine from "./components/viewTimeLine.vue";
-
+import AppointmentModal from "../../appointments/components/AppointmentModal.vue";
 
 const practitioner = namespace("practitioner");
 const location = namespace("location");
@@ -282,7 +349,8 @@ const patientvisit = namespace("patientvisit");
     ValidateModal,
     ShareModal,
     PayModal,
-    TimeLine
+    TimeLine,
+    AppointmentModal
   },
 
 })
@@ -295,6 +363,7 @@ export default class PatientVisit extends Vue {
   showShareModal = false;
   showPaybill = false;
   showTimeLineModal = false;
+  showMenulist = false;
   query = "";
   selectedItem = {};
 
@@ -306,6 +375,7 @@ export default class PatientVisit extends Vue {
   refreshing = false;
   showViewProvider = false;
   showMember = false;
+  showAppointment = false;
   familyId = "";
 
   dropdowns = {} as IIndexableObject;
@@ -330,6 +400,10 @@ export default class PatientVisit extends Vue {
   @practitioner.Action
   getPractitioners!: () => Promise<void>;
 
+    @Watch("query")
+  typed(query: string) {
+    search.searchObjectArray(this.patientvisits, this.query)
+  }
 
 
 
@@ -474,6 +548,9 @@ async deleteItem(id: string) {
         window.notify({ msg: "Not Cancelled", status: "error" });
       }
     }
+  }
+  async checkoutadded(){
+    await this.fetchPatientvisits();
   }
   async created() {
     await this.fetchPatientvisits();

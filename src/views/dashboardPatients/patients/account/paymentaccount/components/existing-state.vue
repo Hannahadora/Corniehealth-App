@@ -148,20 +148,27 @@
     get items() {
       const items =
         this.patientAccounts.length > 0
-          ? this.patientAccounts.map((p) => {
-              return {
-                accountType: p?.accountType,
-                paymentType: this.getpaymentType(p?.type) || "",
-                //@ts-ignore
-                accountName: this.getAccountName(p)?.accountName,
-                //@ts-ignore
-                accountId: this.getAccountName(p)?.accountId,
-                //@ts-ignore
-                expiryDate: this.getAccountName(p)?.expiryDate,
-                status: p?.status || "XXXXXX",
-                ...p,
-              };
-            })
+          ? this.patientAccounts
+              .filter(
+                (x: any) =>
+                  x?.type == "card" ||
+                  x?.type == "insurance" ||
+                  x?.type == "wallet"
+              )
+              .map((p) => {
+                return {
+                  accountType: p?.accountType,
+                  paymentType: this.getpaymentType(p?.type) || "",
+                  //@ts-ignore
+                  accountName: this.getAccountName(p)?.accountName,
+                  //@ts-ignore
+                  accountId: this.getAccountName(p)?.accountId,
+                  //@ts-ignore
+                  expiryDate: this.getAccountName(p)?.expiryDate,
+                  status: p?.status || "XXXXXX",
+                  ...p,
+                };
+              })
           : [];
 
       return items;
@@ -174,8 +181,8 @@
         console.log("card account name", card);
         if (!card) return "XXXXXXX";
         return {
-          accountName: card?.name,
-          accountId: `**** **** **${card?.lastFourDigits}`,
+          accountName: `**** **** **${card?.lastFourDigits}`,
+          accountId: card.accountId,
           expiryDate: `${card?.expiryMonth}-${card?.expiryYear}`,
         };
       } else if (paymentType == "Insurance") {
@@ -190,7 +197,7 @@
         const { wallet } = p;
         return {
           accountName: `${wallet.walletName}`,
-          accountId: `${wallet.walletId}`,
+          accountId: `${wallet.accountId}`,
           expiryDate: `Not Applicable`,
         };
       }
@@ -206,10 +213,15 @@
     }
 
     async deleteAccount(id: string) {
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to delete this account?",
+        submessage:
+          "*Note: You will not be able to make payments for your healthcare services with this account once deleted.",
+        title: "Delete Account",
+      });
+      if (!confirmed) return;
       try {
-        const response = await cornieClient().delete(
-          `/api/v1/patient-portal/payment/${id}`
-        );
+        await cornieClient().delete(`/api/v1/patient-portal/payment/${id}`);
         window.notify({
           msg: "Payment account deactivated successfully",
           status: "success",

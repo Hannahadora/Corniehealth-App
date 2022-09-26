@@ -122,7 +122,7 @@ export default class Providers extends Vue {
           name: "Primary Doctor",
           icon: "doctor-icon",
           click: () => (this.showPrimaryDoctor = true),
-          number: this.primarydoctors !== {} ? 1 : 0,
+          number: Object.keys(this.primarydoctors).length > 0 ? 1 : 0,
         },
         {
           name: "Other Providers",

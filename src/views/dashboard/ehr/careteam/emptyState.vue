@@ -14,16 +14,27 @@
       Create a Care Team
     </button>
   </div>
-  <careteam-modal v-model="showCareTeam"/>
+  <careteam-modal v-model="showCareTeam" @careteam-added="careteamadded"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import CareteamModal from "./teamDialog.vue";
+import { namespace } from "vuex-class";
 
+import ICareteam from "@/types/ICareteam";
+
+const careteam = namespace("careteam");
 @Options({
   components: { CareteamModal },
 })
 export default class CareTeamEmptyState extends Vue {
   showCareTeam = false;
+
+  @careteam.Action
+  fetchCareteams!: () => Promise<void>;
+
+  async careteamadded(){
+    await this.fetchCareteams();
+  }
 }
 </script>

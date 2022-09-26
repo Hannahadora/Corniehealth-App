@@ -550,7 +550,7 @@
             >
               <p class="flex flex-col">
                 <span class="sales-label">Sales Markup (%)</span>
-                <span class="sales-value">{{ PercentageMarkup }}</span>
+                <span class="sales-value">{{ oneSalesMarkUp }}</span>
               </p>
             </div>
             <div
@@ -1157,6 +1157,15 @@ export default class NewProuct extends Vue {
     let total = 0;
     for (let i = 0; i < this.suppliers.length; i++) {
       total += (+this.discountedMarginNGN / +this.ItemCostDiscounted) * 100;
+    }
+
+    return total.toFixed(2);
+  }
+
+  get oneSalesMarkUp(){
+    let total = 0;
+    for (let i = 0; i < this.salesUOMs.length; i++) {
+      total = +this.salesUOMs[i].markup;
     }
 
     return total.toFixed(2);

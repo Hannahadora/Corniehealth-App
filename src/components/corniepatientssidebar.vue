@@ -12,7 +12,7 @@
             </h2>
         </div>
         <div
-            class="mt-5 flex h-full gap-y-6 items-center w-full flex-col text-primary text-lg overflow-x-hidden overflow-y-auto"
+            class="mt-5 flex h-full gap-y-6 w-full flex-col text-primary text-lg overflow-x-hidden overflow-y-auto"
         >
             <sidebar-link
             v-for="(link, i) in links"
@@ -32,7 +32,7 @@
               to="/dashboard/patient/refferalinivite"
               :hovered="hovered"
               text="Referrals"
-              class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-3"
+              class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-4"
             >
               <reffer-icon class="text-primary fill-current" />
             </sidebar-link>
@@ -150,7 +150,7 @@
       },
       {
         name: "Specialist Referrals",
-        to: "specialistrefferal",
+        to: "specialist-refferal",
         icon: "specialist-icon",
         hasSubsection: false,
       },

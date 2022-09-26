@@ -74,6 +74,7 @@ import VisitsStore from "./visits";
 import VitalsStore from "./vitals";
 import WaybillStore from "./waybill";
 import OnetimeaccessStore from "./onetimeaccess";
+import UserRefferalStore from "./userrefferal";
 
 export default createStore({
   modules: {
@@ -159,5 +160,6 @@ export default createStore({
     patientvisit: PatientvisitStore,
     specialistrefferal: SpecialistRefferalStore,
     onetimeaccess: OnetimeaccessStore,
+    userreferal: UserRefferalStore,
   },
 } as StoreOptions<any>);

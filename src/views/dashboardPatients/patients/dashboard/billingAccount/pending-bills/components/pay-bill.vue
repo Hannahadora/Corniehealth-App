@@ -89,29 +89,50 @@
     }
 
     async getBill() {
-      this.loading = true;
-      if (!this.paymentMethod || !this.paybillPayload?.billId) return;
-      const response = await cornieClient().post(
-        `/api/v1/patient-portal/payment`,
-        this.payload
-      );
-      console.log("response:", response.data);
+      try {
+        this.loading = true;
+        if (!this.paymentMethod || !this.paybillPayload?.billId) return;
+        const response = await cornieClient().post(
+          `/api/v1/patient-portal/billing`,
+          this.payload
+        );
+        console.log("response:", response.data);
+        this.loading = false;
+        window.notify({
+          msg: "Successful",
+          status: "success",
+        });
+        this.show = false;
+      } catch (error) {
+        this.loading = false;
+        window.notify({
+          msg: "There was an error getting your payment",
+          status: "error",
+        });
+      }
     }
 
     get allPaymentMethods() {
       const items =
         this.allPatientAccount.length > 0
-          ? this.allPatientAccount.map((p: any) => {
-              return {
-                paymentType: this.getpaymentType(p?.type) || "",
-                //@ts-ignore
-                display: `${this.getAccountName(p)?.accountName} - ${
-                  this.getpaymentType(p?.type) || ""
-                }`,
-                //@ts-ignore
-                code: this.getAccountName(p)?.id,
-              };
-            })
+          ? this.allPatientAccount
+              .filter(
+                (x: any) =>
+                  x?.type == "card" ||
+                  x?.type == "insurance" ||
+                  x?.type == "wallet"
+              )
+              .map((p: any) => {
+                return {
+                  paymentType: this.getpaymentType(p?.type) || "",
+                  //@ts-ignore
+                  display: `${this.getAccountName(p)?.accountName} - ${
+                    this.getpaymentType(p?.type) || ""
+                  }`,
+                  //@ts-ignore
+                  code: this.getAccountName(p)?.id,
+                };
+              })
           : [];
 
       return items;
@@ -146,11 +167,11 @@
           id: p.id,
         };
       } else if (paymentType == "Wallet") {
+        const { wallet } = p;
         return {
-          accountName: `XXXXXX`,
-          accountId: `XXXXXX`,
-          expiryDate: `XXXXXX`,
-          id: p.id,
+          accountName: `${wallet.walletName}`,
+          accountId: `${wallet.accountId}`,
+          expiryDate: `Not Applicable`,
         };
       }
     }
@@ -162,7 +183,8 @@
         type == "insure-emp" ||
         type == "insure-pri" ||
         type == "flerxi" ||
-        type == "corp-bill-acct"
+        type == "corp-bill-acct" ||
+        type == "insurance"
       )
         return "Insurance";
 

@@ -3,7 +3,7 @@
     :id="id"
     class="flex flex-col"
     :class="{
-      'w-5/6': hovered,
+      'w-6/6 items-end': hovered,
       'w-3/4 ': !hovered,
       'bg-white': expand,
       'border-t-2  border-gray-200 py-4': hovered && hasChild

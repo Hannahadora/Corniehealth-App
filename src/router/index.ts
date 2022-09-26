@@ -322,11 +322,6 @@ const routes: Array<RouteRecordRaw> = [
         name: "Account Security Patient Portal",
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
       },
-      {
-        path: "specialistrefferal",
-        name: "Specialist Referrals",
-        component: () => import("@/views/dashboardPatients/patients/dashboard/specialistRefferal/index.vue"),
-      },
       {        
         path: "refferalinivite",
         name: "Refferal Invite",

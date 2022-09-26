@@ -29,7 +29,10 @@
       </div>
     </div>
     <div class="flex justify-end w-full pb-5">
-      <button class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold">
+      <button
+        @click="showNewBill"
+        class="py-4 px-7 w-60 bg-danger text-white rounded-2xl font-bold"
+      >
         New Bill
       </button>
     </div>
@@ -157,6 +160,9 @@
       this.pendingBills = response[0].data;
     }
 
+    showNewBill() {
+      this.$emit("newBill");
+    }
     async mounted() {
       await this.fetchPendingBills();
     }
