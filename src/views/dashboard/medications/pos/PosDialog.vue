@@ -55,8 +55,8 @@
                   :disabled="salesData && checkSales"
                 >
                   <template #alt>
-                    <div v-if="!item" class="w-full flex items-center my-1">
-                      <div class="ml-4 flex flex-col my-2">
+                    <div class="w-full flex items-center my-1">
+                      <div class="ml-4 flex flex-col my-2" @click="customerId = 'Walk-In Customer'">
                         <span class="text-sm">Walk-In Customer</span>
                       </div>
                     </div>
@@ -365,7 +365,7 @@ export default class PosDialog extends Vue {
 
   loading = false;
   activeTab = "Full Payment";
-  customerDetails = <any>[];
+  customerDetails: any = [];
 
   status = "";
   type = "";
@@ -412,6 +412,12 @@ export default class PosDialog extends Vue {
       show: true,
     },
   ];
+
+  get anonymous () {
+    return [
+      { name: 'Walk-In Customer', mrn: "", id: undefined }
+    ]
+  }
 
   get checkSales() {
     if (Object.entries(this.sales).length > 0) {

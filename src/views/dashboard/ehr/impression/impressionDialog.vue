@@ -693,7 +693,7 @@ export default class Impression extends Vue {
   }
 
   get previousImpressions() {
-    const x = this.allImpressions?.map((el: any) => el.id);
+    const x = this.allImpressions?.map((el: any) => el.basicInfo?.code);
     return x || []
   }
 

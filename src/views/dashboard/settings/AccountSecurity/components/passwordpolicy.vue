@@ -1,66 +1,104 @@
 <template>
-  <modal :visible="show">
-    <div class="p-4 w-full">
-      <span class="flex justify-between w-full">
-        <h2 class="text-primary text-xl font-bold">Password strength</h2>
-        <span
+  <cornie-dialog v-model="show" center class="md:w-1/4 w-2/2 h-auto">
+    <cornie-card
+      height="100%"
+      class="flex flex-col h-full bg-white px-6 overflow-y-scroll py-6"
+    >
+      <cornie-card-title class="flex items-center">
+        <icon-btn @click="show = false">
+          <arrow-left stroke="#ffffff" />
+        </icon-btn>
+        <div class="w-full">
+          <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
+            Password Strength
+          </h2>
+          <cancel-red-bg
+            class="float-right cursor-pointer"
+            @click="show = false"
+          />
+        </div>
+      </cornie-card-title>
+
+      <cornie-card-text class="mt-4">
+        <p class="pb-4 text-sm">All passwords must satisfy these requirements. Passwords Must have:</p>
+
+        <ul class="py-4 px-2 border-b border-t border-gray-200 list-disc">
+          <li class="mb-4">Must have at least 1 upper case</li>
+          <li class="mb-4">Must have at least 1 lower case</li>
+          <li class="mb-4">Must have at least 1 number</li>
+          <li class="mb-4">Must have at least 1 special character or symbol</li>
+          <li class="mb-4">Must have at least 8 characters</li>
+        </ul>
+        
+        <div class="mt-4 flex items-center justify-end">
+          <cornie-btn
+          class="xl:w-auto w-full bg-red-500 px-6 py-1 text-white rounded-xl"
           @click="show = false"
-          class="cursor-pointer flex items-center justify-center"
-        >
-          <close-icon />
-        </span>
-      </span>
-      <span class="mt-3 pb-4 text-sm border-b-2 flex flex-col">
-        All passwords must satisfy these requirements. <br />
-        Passwords Must have:
-      </span>
-      <ul class="text-sm mt-3 list-disc mx-8 my-4 mb-3">
-        <li class="pb-3">Must have at least 1 upper case</li>
-        <li class="pb-3">Must have at least 1 lower case</li>
-        <li class="pb-3">Must have at least 1 number</li>
-        <li class="pb-3">Must have at least 1 special character or symbol</li>
-        <li class="pb-3">Must be at least 8 characters</li>
-      </ul>
-      <div class="px-4 py-3 sm:px-6 border-t-2 sm:flex sm:flex-row-reverse">
-        <button
-          @click="show = false"
-          class="rounded-full border border-transparent shadow-sm pl-8 pr-8 px-4 py-2 bg-danger text-base font-medium text-white focus:outline-none sm:ml-3 sm:w-autosm:text-sm"
-          type="button"
         >
           Ok
-        </button>
-      </div>
-    </div>
-  </modal>
+        </cornie-btn>
+        </div>
+    </cornie-card-text>
+    </cornie-card>
+  </cornie-dialog>
 </template>
-<script>
-import Modal from "@/components/modal.vue";
-import CloseIcon from "@/components/icons/CloseIcon.vue";
 
-export default {
-  name: "PasswordPolicy",
+<script lang="ts">
+import { Options, Vue, setup } from "vue-class-component";
+import { Prop, PropSync, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
+import { CornieUser } from "@/types/user";
+
+import moment from "moment";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CornieDialog from "@/components/CornieDialog.vue";
+import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+import ArrowLeft from "@/components/icons/arrowleft.vue";
+import IconBtn from "@/components/CornieIconBtn.vue";
+
+const account = namespace("user");
+
+@Options({
   components: {
-    Modal,
-    CloseIcon,
+    CornieDialog,
+    CornieSelect,
+    CornieBtn,
+    CancelRedBg,
+    ArrowLeft,
+    IconBtn,
   },
-  props: {
-    visible: {
-      required: true,
-      type: Boolean,
-    },
-  },
-  watch: {
-    show(value) {},
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(value) {
-        this.$emit("update:visible", value);
-      },
-    },
-  },
-};
+})
+export default class DoctorsPage extends Vue {
+  @PropSync("modelValue", { type: Boolean, default: false })
+  show!: boolean;
+  loading: Boolean = false;
+
+  async created() {}
+}
 </script>
+
+<style scoped>
+img {
+  filter: brightness(8.5);
+}
+
+.text-grey-blue {
+  color: #667499;
+}
+.info-container {
+  background: #ffffff;
+  border: 0.2px solid #c2c7d6;
+  box-sizing: border-box;
+  box-shadow: 0px 15px 40px rgba(20, 23, 31, 0.08);
+  border-radius: 16px;
+}
+
+.text-grey-eth {
+  color: #c2c7d6;
+}
+
+
+</style>
