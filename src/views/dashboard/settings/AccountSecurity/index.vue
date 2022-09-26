@@ -1,10 +1,11 @@
 <template>
-  <main class="px-6 w-full">
+  <div class="px-6 w-full">
     <h2 class="font-semibold text-lg pb-2 border-b border-primary text-primary">
       Account Security
     </h2>
     <div class="w-full flex flex-col mt-8">
-      <div class="w-full py-2 flex justify-between items-center">
+      <div class="w-full curved py-2">
+        <div class="w-full py-2 flex justify-between items-center">
           <div class="w-8/12">
             <h2 class="mb-2 font-semibold text-lg">Password</h2>
             <p>
@@ -27,7 +28,7 @@
               v-if="!willUpdatePassword"
             >
               <span
-                class="curved border-primary text-primary border cursor-pointer focus:outline-none font-bold py-3 px-8 rounded-full"
+                class="curved border-primary text-primary border cursor-pointer focus:outline-none font-bold py-3 px-8 rounded-xl"
               >
                 Update Password
               </span>
@@ -80,40 +81,40 @@
                       class="border rounded w-full"
                     />
                     <div
-                      class="mt-4 w-full flex justify-between"
+                      class="mt-4 w-full grid grid-cols-5 space-x-4"
                       style="width: 100%"
                       v-if="checkPassword"
                     >
                       <p
-                        class="underbar w-2/12 border"
+                        class="underbar border"
                         :class="{
                           'underbar-green':
                             data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
-                        class="underbar bg-green-500 w-2/12 border"
+                        class="underbar bg-green-500 border"
                         :class="{
                           'underbar-green':
                             data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
-                        class="underbar bg-green-500 w-2/12 border"
+                        class="underbar bg-green-500 border"
                         :class="{
                           'underbar-green':
                             data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
-                        class="underbar bg-green-500 w-2/12 border"
+                        class="underbar bg-green-500 border"
                         :class="{
                           'underbar-green':
                             data.newPassword && data.newPassword.length >= 8,
                         }"
                       ></p>
                       <p
-                        class="underbar bg-green-500 w-2/12 border"
+                        class="underbar bg-green-500 border"
                         :class="{
                           'underbar-green':
                             data.newPassword && data.newPassword.length >= 8,
@@ -151,7 +152,7 @@
               >
                 <span
                   style="background: #fe4d3c"
-                  class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-lg"
+                  class="text-white-500 curved border cursor-pointer focus:outline-none text-white font-bold py-3 px-8 rounded-xl"
                 >
                   Save
                 </span>
@@ -159,11 +160,13 @@
             </div>
           </div>
         </v-form>
+      </div>
+    </div>
 
+    <div class="w-full my-5">
       <security-action
         title="Two Factor Authentication"
-        text="You can further secure your account by setting a madatory 2FA policy
-            for all your users."
+        text=" Setup 2FA to further secure your account."
         tooltip="Admin can enable security question and 2FA for the rest of the
               users in any account. When enabled users MUST set-up their
               security questions and 2FA in their next login."
@@ -172,7 +175,7 @@
       </security-action>
     </div>
     <password-policy v-model="showPolicyModal" />
-  </main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -184,7 +187,6 @@ import SecBtn from "./components/sec-button.vue";
 import SecurityAction from "./components/action.vue";
 import TwoFactorSettings from "./components/twofactor.vue";
 
-
 import CornieInput from "@/components/cornieinput.vue";
 import AccordionRight from "@/components/icons/accordion-right.vue";
 import DeactivateAccount from "./components/deactivate-account.vue";
@@ -194,6 +196,7 @@ import Button from "@/components/globals/corniebtn.vue";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import PasswordInput from "@/components/PasswordInput.vue";
+  import BreadCrumbs from "@/components/breadcrumbs.vue";
 import { string } from "yup";
 
 const userSettingsStore = namespace("usersettings");
@@ -210,6 +213,9 @@ const userStore = namespace("user");
     CornieBtn,
     PasswordInput,
     CornieInput,
+    Button,
+    IconBtn,
+    BreadCrumbs,
   },
 })
 export default class extends Vue {
@@ -347,11 +353,10 @@ export default class extends Vue {
 
 .underbar-green {
   border: 2px solid #35ba83 !important;
-  border-radius: 100%;
+  border-radius: 50px;
 }
 
 button:disabled {
   opacity: 0.5 !important;
 }
-
 </style>

@@ -25,7 +25,7 @@
         </span>
         <span v-else>
           <h2 class="cursor-default text-xs font-semibold mt-4">
-            Enter password to get token
+            Enter password to confirm
           </h2>
           <password-input
             placeholder="enter password"
