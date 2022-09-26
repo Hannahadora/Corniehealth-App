@@ -309,7 +309,7 @@ export default class UserSecurity extends Vue {
 
   get validPassword() {
     const inputValid =
-      Boolean(this.data.oldPassword) &&
+      Boolean(this.data.previousPassword) &&
       Boolean(this.data.newPassword) &&
       Boolean(this.data.confirmPassword);
 
@@ -421,7 +421,7 @@ export default class UserSecurity extends Vue {
 
 .underbar-green {
   border: 2px solid #35ba83 !important;
-  border-radius: 100%;
+  border-radius: 50px;
 }
 
 button:disabled {

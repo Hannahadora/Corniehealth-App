@@ -298,7 +298,12 @@ export default class NavBar extends Vue {
   showFullHeight = false;
 
   get routeName() {
-    return this.$route.fullPath === '/dashboard/provider/clinical/' ? 'EHR' : this.$route.name;
+    if(this.$route.fullPath.includes('settings')) {
+      return 'Settings'
+    } else if (this.$route.fullPath === '/dashboard/provider/clinical/') {
+      return 'EHR'
+    }
+    else return this.$route.name;
   }
 
   @routerStore.State("recents")
