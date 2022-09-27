@@ -19,7 +19,11 @@
           v-model="selectedHealthRecord"
           :label="'Select Health Record to apply'"
           :items="healthRecords"
+          v-if="healthRecords.length > 0"
         />
+        <div v-else class="font-bold border-t border-b py-2">
+          No Health Record to apply
+        </div>
       </div>
       <div>
         <cornie-radio

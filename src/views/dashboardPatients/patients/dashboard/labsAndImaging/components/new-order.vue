@@ -1,301 +1,214 @@
 <template>
-  <cornie-dialog v-model="show" class="h-full w-3/4" right>
-    <cornie-card height="100%" class="flex flex-col bg-white">
-      <cornie-card-title>
-        <div class="w-full flex items-center justify-between">
-          <div class="w-full flex items-center">
-            <h2 class="font-bold text-lg text-primary ml-3 -mt-0.5">
-              Order Lab and Imaging
-            </h2>
-          </div>
-          <delete-icon
-            class="text-danger fill-current cursor-pointer"
-            @click="show = false"
-          />
-        </div>
-      </cornie-card-title>
-      <cornie-card-text class="overflow-y-auto h-full">
-        <div class="flex space-x-4">
-          <div class="flex flex-col w-1/3 shadow-lg space-y-5 h-full">
-            <accordion-component
-              class="rounded-none border-none text-primary shadow-none"
-              title="Category"
-              :opened="false"
-            >
-              <!-- <icon-input
-                autocomplete="off"
-                type="search"
-                v-model="query"
-                placeholder="Search"
-                class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input> -->
-              <!-- {{ query }} -->
-              <div class="flex flex-col pt-4 space-y-3">
-                <cornie-checkbox label="Laboratory" v-model="queryData.lab" />
-                <cornie-checkbox label="Imaging" v-model="queryData.imaging" />
-              </div>
-            </accordion-component>
+  <div class="bg-white mb-auto shadow-lg p-3 mt-2 rounded-lg w-full">
+    <shopping-page-component
+      :title="title"
+      :items="items"
+      :detailsUrl="detailsUrl"
+      :cartQuantity="false"
+    >
+      <template v-slot:sidebar>
+        <diagnostic-sidebar />
+      </template>
+    </shopping-page-component>
 
-            <accordion-component
-              class="rounded-none border-none text-primary shadow-none"
-              title="Location"
-              :opened="false"
-            >
-              <icon-input
-                autocomplete="off"
-                type="search"
-                v-model="locationQuery"
-                placeholder="Search"
-                class="rounded-full w-full border-2 py-2 mt-4 px-8 focus:outline-none"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
-              <!-- {{ query }} -->
-              <div class="flex flex-col pt-4 space-y-2">
-                <label
-                  v-for="(l, i) in displayLocations"
-                  :key="i"
-                  class="flex items-center"
-                >
-                  <input
-                    @change="locationChanged"
-                    v-model="l.value"
-                    type="checkbox"
-                    class="mr-3 cursor-pointer"
-                  />
-                  {{ l.display }}:
-                </label>
-                <!-- Locations - {{ pickedLocations }} -->
-              </div>
-            </accordion-component>
-
-            <accordion-component
-              class="rounded-none border-none text-primary shadow-none"
-              title="Diagnostics Service"
-              :opened="false"
-            >
-              <icon-input
-                autocomplete="off"
-                type="search"
-                v-model="diagnosticsQuery"
-                placeholder="Search"
-                class="rounded-full w-full border-2 py-2 mt-4 px-8 focus:outline-none"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
-              <!-- {{ query }} -->
-              <div class="flex flex-col">
-                <div class="flex flex-col pt-4 space-y-2">
-                  <label
-                    v-for="(l, i) in displayProviders"
-                    :key="i"
-                    class="flex items-center"
-                  >
-                    <input
-                      @change="locationChanged"
-                      v-model="l.value"
-                      type="checkbox"
-                      class="mr-3 cursor-pointer"
-                    />
-                    {{ l.display }}:
-                  </label>
-                  <!-- Providers - {{ pickedD }} -->
-                </div>
-              </div>
-            </accordion-component>
-          </div>
-          <div class="flex flex-col w-full px-5 h-full">
-            <div class="shadow-md px-3 py-2">
-              <icon-input
-                autocomplete="off"
-                type="search"
-                v-model="searchServices"
-                placeholder="Search diagnostics services by Name"
-                class="rounded-full w-full border-2 py-2 px-8 focus:outline-none"
-              >
-                <template v-slot:prepend>
-                  <search-icon />
-                </template>
-              </icon-input>
-            </div>
-            <div v-if="allServices.length == 0">
-              <div
-                class="flex h-full font-bold items-center h-100 justify-center text-center p-10"
-              >
-                No services available
-              </div>
-            </div>
-          </div>
-        </div>
-      </cornie-card-text>
-      <div class="flex justify-end mx-4 mt-auto mb-4 pt-5">
-        <cornie-btn
-          @click="show = false"
-          class="border-primary border-2 px-1 mr-3 rounded-xl text-primary"
-        >
-          Cancel
-        </cornie-btn>
-        <cornie-btn
-          @click="continueProcess"
-          class="text-white bg-danger px-6 rounded-xl"
-        >
-          Proceed
-        </cornie-btn>
-      </div>
-    </cornie-card>
-  </cornie-dialog>
+    <add-to-cart-confirmation
+      v-model="addToCartModal"
+      :item="selectedItem"
+      :id="selectedItem.id"
+    />
+  </div>
 </template>
+
 <script lang="ts">
-  import CornieCard from "@/components/cornie-card";
-  import CornieDialog from "@/components/CornieDialog.vue";
-  import CornieIconBtn from "@/components/CornieIconBtn.vue";
-  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieBtn from "@/components/CornieBtn.vue";
   import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import AccordionComponent from "@/components/form-accordion.vue";
   import IconInput from "@/components/IconInput.vue";
-  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-  import DeleteIcon from "@/components/icons/cancel.vue";
-  import { cornieClient } from "@/plugins/http";
+  import ArrowLeftWhite from "@/components/icons/arrow-left-white.vue";
+  import ArrowRightWhite from "@/components/icons/arrow-right-white.vue";
+  import CalendarWhite from "@/components/icons/calendar-white.vue";
+  import Cancel from "@/components/icons/cancel-red-stroke.vue";
+  import Check from "@/components/icons/check-green-stroke.vue";
+  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
+  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
+  import DeliveryBadge from "@/components/icons/delivery-badge.vue";
+  import DoctorWhite from "@/components/icons/doctor-white.vue";
+  import DrugWhite from "@/components/icons/drug-white.vue";
+  import FiveStar from "@/components/icons/five-star.vue";
+  import NoteWhite from "@/components/icons/note-white.vue";
+  import QualityBadge from "@/components/icons/quality-badge.vue";
+  import SavingsBadge from "@/components/icons/savings-badge.vue";
+  import {
+    default as Search,
+    default as SearchIcon,
+  } from "@/components/icons/search.vue";
   import { Options, Vue } from "vue-class-component";
-  import { Prop, PropSync, Watch } from "vue-property-decorator";
 
+  import ShoppingPageComponent from "@/components/shopping/index.vue";
+  import DiagnosticSidebar from "./diagnostic-shopping-sidebar.vue";
   @Options({
-    name: "ClinicalDialog",
+    name: "ShoppingPage",
     components: {
-      ...CornieCard,
-      CornieIconBtn,
-      CornieDialog,
-      ArrowLeftIcon,
-      DeleteIcon,
-      CornieSelect,
-      AccordionComponent,
-      IconInput,
+      ChevronRightIcon,
+      ChevronLeftIcon,
+      CornieBtn,
+      Search,
+      QualityBadge,
+      DeliveryBadge,
+      SavingsBadge,
+      CalendarWhite,
+      DoctorWhite,
+      DrugWhite,
+      NoteWhite,
+      FiveStar,
+      Cancel,
+      Check,
+      ArrowLeftWhite,
+      ArrowRightWhite,
+      ChevronWhiteDown,
+      ChevronWhiteUp,
       CornieCheckbox,
+      IconInput,
+      SearchIcon,
+      ShoppingPageComponent,
+      DiagnosticSidebar,
     },
-    emits: ["continueProcess"],
   })
-  export default class AddCondition extends Vue {
-    @Prop({ type: Boolean, default: false })
-    modelValue!: boolean;
+  export default class ShoppingPage extends Vue {
+    loading: Boolean = true;
+    searchQuery: any = "";
+    addToCartModal: Boolean = false;
+    selectedItem: any = {};
+    detailsUrl = "/dashboard/patient/diagnostics-shopping/details";
+    title = "Shop Diagnostics";
+    items = [
+      {
+        id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+        logo: require("@/assets/img/item-logo.svg"),
+        location: "23, Admiralty Way, Lekki, Lagos",
+        shopName: "Crestview Diagnostics",
+        name: "Prostate Test",
+        form: "Tablet 10mg (30 Tabs Per pack)",
+        oldPrice: "N7, 000.00",
+        newPrice: "N4, 850.00",
+        deliveryType: [
+          { type: "Visit Provider Location", mode: true },
+          { type: "Home Sample Collection", mode: false },
+        ],
+        noOfReviews: "14",
+        photo: require("@/assets/img/prostate-test.png"),
+        quantity: 0,
+        description:
+          "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
+      },
+      {
+        id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+        logo: require("@/assets/img/item-logo.svg"),
+        location: "23, Admiralty Way, Lekki, Lagos",
+        shopName: "Crestview Diagnostics",
+        name: "Prostate Test",
+        form: "Tablet 10mg (30 Tabs Per pack)",
+        oldPrice: "N7, 000.00",
+        newPrice: "N4, 850.00",
+        deliveryType: [
+          { type: "Visit Provider Location", mode: true },
+          { type: "Home Sample Collection", mode: false },
+        ],
+        noOfReviews: "14",
+        photo: require("@/assets/img/prostate-test.png"),
+        quantity: 0,
+        description:
+          "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
+      },
+      {
+        id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+        logo: require("@/assets/img/item-logo.svg"),
+        location: "23, Admiralty Way, Lekki, Lagos",
+        shopName: "Crestview Diagnostics",
+        name: "Prostate Test",
+        form: "Tablet 10mg (30 Tabs Per pack)",
+        oldPrice: "N7, 000.00",
+        newPrice: "N4, 850.00",
+        deliveryType: [
+          { type: "Visit Provider Location", mode: true },
+          { type: "Home Sample Collection", mode: false },
+        ],
+        noOfReviews: "14",
+        photo: require("@/assets/img/prostate-test.png"),
+        quantity: 0,
+        description:
+          "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
+      },
+      {
+        id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+        logo: require("@/assets/img/item-logo.svg"),
+        location: "23, Admiralty Way, Lekki, Lagos",
+        shopName: "Crestview Diagnostics",
+        name: "Prostate Test",
+        form: "Tablet 10mg (30 Tabs Per pack)",
+        oldPrice: "N7, 000.00",
+        newPrice: "N4, 850.00",
+        deliveryType: [
+          { type: "Visit Provider Location", mode: true },
+          { type: "Home Sample Collection", mode: false },
+        ],
+        noOfReviews: "14",
+        photo: require("@/assets/img/prostate-test.png"),
+        quantity: 0,
+        description:
+          "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
+      },
+      {
+        id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+        logo: require("@/assets/img/item-logo.svg"),
+        location: "23, Admiralty Way, Lekki, Lagos",
+        shopName: "Crestview Diagnostics",
+        name: "Prostate Test",
+        form: "Tablet 10mg (30 Tabs Per pack)",
+        oldPrice: "N7, 000.00",
+        newPrice: "N4, 850.00",
+        deliveryType: [
+          { type: "Visit Provider Location", mode: true },
+          { type: "Home Sample Collection", mode: false },
+        ],
+        noOfReviews: "14",
+        photo: require("@/assets/img/prostate-test.png"),
+        quantity: 0,
+        description:
+          "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
+      },
+    ];
 
-    @PropSync("modelValue")
-    show!: boolean;
-
-    queryData = {
-      lab: false,
-      imaging: false,
-    };
-
-    locationQuery = "";
-    locations = [];
-
-    async locationChanged() {
-      this.pickedLocations = this.displayLocations
-        .filter((x) => x.value == true)
-        .map((x) => x.display);
-      await this.fetchServices();
+    openCartConfirmation(item: any) {
+      this.selectedItem = item;
+      this.addToCartModal = true;
     }
 
-    async diagnosticsC() {
-      this.pickedD = this.displayProviders
-        .filter((x) => x.value == true)
-        .map((x) => x.id);
-      await this.fetchServices();
-    }
-    pickedLocations: any[] = [];
-    pickedD: any[] = [];
-    diagnosticsQuery = "";
-    diagnostics = [];
-    categoryOptions = ["Laboratory", "Imaging"];
-    searchServices = "";
-    accountType = "";
-    paymentType = "";
-    allServices = [];
-    query = "";
+    // async fetchAppointments() {
+    //   try {
+    //     this.loading = true;
+    //     const { data } = await cornieClient().get(
+    //       "/api/v1/patient-portal/appointment/get-all-user-appointment"
+    //     );
+    //     this.appointments = data;
+    //   } catch (error) {
+    //     window.notify({
+    //       msg: "There was an error fetching appointments",
+    //       status: "error",
+    //     });
+    //   } finally {
+    //     this.loading = false;
+    //   }
+    // }
 
-    @Watch("locationQuery")
-    fetchL() {
-      if (!this.locationQuery) return;
-      this.fetchLocations();
-    }
-
-    @Watch("diagnosticsQuery")
-    fetchD() {
-      if (!this.diagnosticsQuery) return;
-      this.fetchProviders();
-    }
-
-    get displayLocations() {
-      return this.locations.map((x) => {
-        return {
-          display: x,
-          value: false,
-        };
-      });
-    }
-
-    get displayProviders() {
-      return this.diagnostics.map((x: any) => {
-        return {
-          display: x.name,
-          value: false,
-          id: x.id,
-        };
-      });
-    }
-
-    async fetchLocations() {
-      const pending = cornieClient().get(
-        `/api/v1/patient-portal/diagnostics/locations/?query=${this.locationQuery}`
-      );
-      const response = await Promise.all([pending]);
-      console.log("locations", response[0].data);
-      this.locations = response[0].data;
-    }
-
-    async fetchProviders() {
-      const pending = cornieClient().get(
-        `/api/v1/patient-portal/diagnostics/providers/?query=${this.diagnosticsQuery}`
-      );
-      const response = await Promise.all([pending]);
-      console.log("diagnostics", response[0].data);
-      this.diagnostics = response[0].data;
-    }
-
-    async fetchServices() {
-      const pending = cornieClient().get(
-        `/api/v1/patient-portal/diagnostics/services/${this.generateQ()}`
-      );
-      const response = await Promise.all([pending]);
-      console.log("services", response[0].data);
-      this.diagnostics = response[0].data;
-    }
-
-    generateQ() {
-      let qString = "?";
-      let categoryQ = `category=${
-        this.queryData.lab == true ? "laboratory," : ""
-      }${this.queryData.imaging == true ? "imaging" : ""}`;
-      let locationQ = `&locations=${this.pickedLocations.join(",")}`;
-      let providerQ = `&providers=${this.pickedD.join(",")}`;
-
-      return qString + categoryQ + locationQ + providerQ;
-    }
-
-    continueProcess() {
-      this.$emit("continueProcess", {
-        paymentType: this.paymentType,
-        accountType: this.accountType,
-      });
-      this.show = false;
-    }
+    async created() {}
   }
 </script>
+
+<style scoped>
+  .sample-img {
+    height: 110px;
+    width: 200px;
+  }
+</style>

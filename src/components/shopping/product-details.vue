@@ -4,7 +4,7 @@
       <span
         class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        Shop Medications
+        {{ title }}
       </span>
     </div>
 
@@ -398,6 +398,7 @@
   } from "@/components/icons/search.vue";
   import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
   import FilterAccordion from "../components/filter-accordion.vue";
 
   import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
@@ -433,6 +434,8 @@
     loading: Boolean = true;
     searchQuery: any = "";
     addToCartModal: Boolean = false;
+    @Prop()
+    title!: string;
 
     item: any = {
       id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
