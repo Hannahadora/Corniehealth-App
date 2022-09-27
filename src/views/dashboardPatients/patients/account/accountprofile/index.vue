@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pt-10">
+  <div class="flex flex-col pt-10 h-full">
     <div class="flex w-full justify-start">
       <cornie-avatar-field v-model="img.url" />
     </div>
@@ -10,35 +10,9 @@
           placeholder="Enter"
           :rules="requiredRule"
           v-model="fullname"
-          :readonly="viewOnly"
+          :disabled="true"
         />
       </div>
-      <!-- <div class="col-span-1">
-        <cornie-input
-          label="First Name"
-          placeholder="Enter"
-          :rules="requiredRule"
-          v-model="firstName"
-          :readonly="viewOnly"
-        />
-      </div>
-      <div class="col-span-1">
-        <cornie-input
-          label="Middle Name"
-          placeholder="Enter"
-          v-model="middleName"
-          :readonly="viewOnly"
-        />
-      </div>
-      <div class="col-span-1">
-        <cornie-input
-          label="Last Name"
-          placeholder="Enter"
-          v-model="lastName"
-          :rules="requiredRule"
-          :readonly="viewOnly"
-        />
-      </div> -->
       <div class="col-span-1">
         <cornie-input
           :rules="emailRule"
@@ -106,30 +80,33 @@
         </cornie-select>
       </div>
 
-      <div class="col-span-3">
-        <div class="w-full flex space-x-9 flex-wrap items-center py-5">
-          <div class="mb-1 font-bold">Do you have any child</div>
-          <div class="mr-4 -mb-2">
-            <cornie-radio
-              :label="'Yes'"
-              :value="'yes'"
-              v-model="hasChild"
-              name="hasChild"
-            />
-          </div>
-          <div class="mr-4 -mb-2">
-            <cornie-radio
-              :label="'No'"
-              :value="'no'"
-              v-model="hasChild"
-              name="hasChild"
-            />
+      <div class="lg:col-span-3 col-span-1">
+        <div
+          class="w-full flex flex-col space-y-3 md:space-y-0 md:flex-row space-x-6 md:items-center py-5"
+        >
+          <div class="mb-1 font-bold self-start">Do you have any child</div>
+          <div class="flex w-full space-x-5 items-center justify-start">
+            <div class="md:mr-4 -ml-7 md:-mb-2">
+              <cornie-radio
+                :label="'Yes'"
+                :value="'yes'"
+                v-model="hasChild"
+                name="hasChild"
+              />
+            </div>
+            <div class="md:mr-4 md:-mb-2">
+              <cornie-radio
+                :label="'No'"
+                :value="'no'"
+                v-model="hasChild"
+                name="hasChild"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       <cornie-input
-        v-if="hasChild == 'yes'"
         label="Number of Children"
         placeholder="Enter"
         v-model="numberOfChildren"
@@ -145,6 +122,7 @@
         v-model="multipleBirth"
         :readonly="viewOnly"
       />
+
       <cornie-input
         v-if="multipleBirth == 'yes' && hasChild == 'yes'"
         placeholder="Enter"
@@ -218,7 +196,7 @@
     maritalStatus = "";
     hasChild = "";
     numberOfChildren = "";
-    multipleBirth = "";
+    multipleBirth = "yes";
     multipleBirthInteger = 0;
     multipleBirthRule = number().min(0).max(10);
     emailRule = string().email().required();
@@ -279,11 +257,11 @@
       this.lastName = details?.lastName;
       this.middleName = details?.middleName as any;
       this.email = details?.email;
-      this.img.url = details?.image as any;
 
       this.fullname = `${this.firstName} ${this.middleName} ${this.lastName}`;
     }
     setPatientDetails(details: any) {
+      this.img.url = details?.profilePhoto || "";
       this.bloodGroup = details?.bloodGroup;
       this.genotype = details?.genotype || "";
       this.gender = details?.gender || "";
@@ -295,18 +273,18 @@
         details?.numberOfChildren && details?.numberOfChildren > 0
           ? "yes"
           : "no";
-      this.multipleBirth = details?.multipleBirth == true ? "yes" : "no";
+      this.multipleBirth = details?.multipleBirths == true ? "yes" : "no";
     }
 
     get getUpdatePayload() {
-      const [firstName, middleName, lastName] = this.fullname.split(" ");
+      // const [firstName, middleName, lastName] = this.fullname.split(" ");
       return {
         // id: this.cornieUser?.id,
         // mrn: this.corniePatient.mrn,
 
-        firstname: firstName,
-        middlename: middleName,
-        lastname: lastName,
+        // firstname: firstName,
+        // middlename: middleName,
+        // lastname: lastName,
         email: this.email,
         profilePhoto: this.img.url || undefined,
         dateOfBirth: this.dateOfBirth || undefined,

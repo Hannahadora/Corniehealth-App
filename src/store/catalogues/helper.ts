@@ -4,28 +4,28 @@ import ICatalogueService, { ICatalogueProduct } from "@/types/ICatalogue";
 export const getServices = async (page = 1, limit?: number) => {
   limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/catalogue-service/", {page, limit});
-    const { currentPage, nextPage, numberOfPages, previousPage} = response;
-    const pageInfo = {currentPage, nextPage, numberOfPages, previousPage }
+    const response = await cornieClient().get("/api/v1/catalogue-service/", { page, limit });
+    const { currentPage, nextPage, numberOfPages, previousPage } = response;
+    const pageInfo = { currentPage, nextPage, numberOfPages, previousPage }
     if (response.success) {
-      return {data: response.data, pageInfo};
+      return { data: response.data, pageInfo };
     }
-  } catch (error) {}
-  return {data:[], pageInfo:{}};
+  } catch (error) { }
+  return { data: [], pageInfo: {} };
 };
 
 export const getProducts = async (page = 1, limit?: number) => {
   limit = limit ?? 10;
   try {
-    const response = await cornieClient().get("/api/v1/catalogue-product/", {page, limit});
+    const response = await cornieClient().get("/api/v1/catalogue-product/", { page, limit });
 
-    const { currentPage, nextPage, numberOfPages, previousPage} = response;
-    const pageInfo = {currentPage, nextPage, numberOfPages, previousPage }
+    const { currentPage, nextPage, numberOfPages, previousPage } = response;
+    const pageInfo = { currentPage, nextPage, numberOfPages, previousPage }
     if (response.success) {
-      return {data: response.data, pageInfo};
+      return { data: response.data, pageInfo };
     }
-  } catch (error) {}
-  return {data:[], pageInfo:{}};
+  } catch (error) { }
+  return { data: [], pageInfo: {} };
 };
 
 export const createService = async (body: ICatalogueService) => {
@@ -36,7 +36,7 @@ export const createService = async (body: ICatalogueService) => {
     );
 
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const createProduct = async (body: ICatalogueProduct) => {
@@ -47,7 +47,7 @@ export const createProduct = async (body: ICatalogueProduct) => {
     );
 
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const updateService = async (data: ICatalogueService) => {
@@ -63,7 +63,7 @@ export const updateService = async (data: ICatalogueService) => {
       body
     );
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const deleteService = async (id: string) => {
@@ -73,7 +73,7 @@ export const deleteService = async (id: string) => {
     );
 
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 

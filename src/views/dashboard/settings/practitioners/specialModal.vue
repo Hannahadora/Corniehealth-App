@@ -349,8 +349,8 @@
       return pt ? `${pt.name}` : "";
     }
 
-    getSpecialityName(id: string) {
-      const pt = this.specials.find((i: any) => i.id === id);
+    getSpecialityName(data: any) {
+      const pt = this.specials.find((i: any) => i.id == data.id);
       return pt ? `${pt.name}` : "";
     }
 
@@ -367,16 +367,22 @@
 
     async saveSpecial() {
       this.$emit("send-speicality", this.specialties);
+      window.notify({
+        msg: "Specialties added successfully",
+        status: "success",
+      });
       this.show = false;
     }
 
     get allSpecials() {
-      return this.specials.map((i: any) => {
+      let s = this.specials.map((i: any) => {
         return {
           id: i.id,
           display: i.name,
         };
       });
+      console.log("speciality", s);
+      return s;
     }
 
     done() {

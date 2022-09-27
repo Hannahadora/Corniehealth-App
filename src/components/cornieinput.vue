@@ -10,7 +10,7 @@
   >
     <div v-bind="$attrs" class="w-full">
       <label
-        class="flex capitalize items-center mb-1 text-black text-sm font-semibold"
+        class="flex capitalize w-full items-center mb-1 text-black text-sm font-semibold"
       >
         <slot name="label">
           <span class="w-full">
@@ -74,6 +74,7 @@
             'bg-gray-50 border-gray-50': disabled,
             'bg-primary border-primary': setPrimary,
           }"
+          :type="$attrs.type || 'text'"
           v-model="valueSync"
           @update:modelValue="handleChange"
         />

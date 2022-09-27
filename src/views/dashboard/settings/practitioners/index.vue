@@ -15,39 +15,40 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import IPractitioner from "@/types/IPractitioner";
-import { namespace } from "vuex-class";
-import AddPractitioner from "./addPractitioner.vue";
-import PractitionerEmptyState from "./emptyState.vue";
-import PractitionerExistingState from "./existingState.vue";
+  import IPractitioner from "@/types/IPractitioner";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import AddPractitioner from "./addPractitioner.vue";
+  import PractitionerEmptyState from "./emptyState.vue";
+  import PractitionerExistingState from "./existingState.vue";
 
-const practitioner = namespace("practitioner");
+  const practitioner = namespace("practitioner");
 
-@Options({
-  name: "PractitionerIndex",
-  components: {
-    PractitionerExistingState,
-    PractitionerEmptyState,
-    AddPractitioner,
-  },
-})
-export default class PractitionerIndex extends Vue {
-  addPractitioner = false;
-  practitionerToUpdate = {} as IPractitioner;
+  @Options({
+    name: "PractitionerIndex",
+    components: {
+      PractitionerExistingState,
+      PractitionerEmptyState,
+      AddPractitioner,
+    },
+  })
+  export default class PractitionerIndex extends Vue {
+    addPractitioner = false;
+    practitionerToUpdate = {} as IPractitioner;
 
-  get empty() {
-    return this.practitioners.length < 1;
+    get empty() {
+      return this.practitioners.length < 1;
+      // return true;
+    }
+
+    @practitioner.State
+    practitioners!: IPractitioner[];
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    created() {
+      this.fetchPractitioners();
+    }
   }
-
-  @practitioner.State
-  practitioners!: IPractitioner[];
-
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  created() {
-    this.fetchPractitioners();
-  }
-}
 </script>

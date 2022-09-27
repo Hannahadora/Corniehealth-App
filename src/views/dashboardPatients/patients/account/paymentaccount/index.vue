@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col justify-center bg-white p-3 mt-2 mb-2 rounded w-full min-h-screen"
+    class="flex-col justify-center bg-white p-3 mt-2 mb-2 rounded w-full h-full"
   >
     <div class="w-full">
       <empty-state
