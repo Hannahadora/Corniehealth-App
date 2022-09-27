@@ -17,34 +17,33 @@
     </button>
   </div>
   <div>
-    <cornie-avatar-field v-model="properties.img.url" />
+    <cornie-avatar-field text="Edit Image" v-model="properties.img.url" />
     <div class="flex justify-between items-baseline mt-5 mb-10">
       <h1 class="font-bold">{{ properties.type }}</h1>
       <cornie-checkbox
         v-model="properties.available"
-        :disabled="true"
-        :label="'Make Available For Online Booking'"
+        :label="'Available For Online Booking'"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Prop } from "vue-property-decorator";
-import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-import EditIcon from "@/components/icons/edit-prac.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import EditIcon from "@/components/icons/edit-prac.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
 
-@Options({
-  name: "ScreenHeader",
-  components: {
-    CornieAvatarField,
-    CornieCheckbox,
-    EditIcon,
-  },
-})
-export default class ScreenHeader extends Vue {
-  @Prop({ default: {} })
-  properties!: any;
-}
+  @Options({
+    name: "ScreenHeader",
+    components: {
+      CornieAvatarField,
+      CornieCheckbox,
+      EditIcon,
+    },
+  })
+  export default class ScreenHeader extends Vue {
+    @Prop({ default: {} })
+    properties!: any;
+  }
 </script>

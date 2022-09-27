@@ -22,7 +22,7 @@
         />
       </div>
       <div>
-        <cornie-radio
+        <cornie-checkbox
           v-model="createNew"
           value="true"
           label="Create a new Health Record for this practice"
@@ -51,8 +51,8 @@
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
-  import CornieRadio from "@/components/cornieradio.vue";
   import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
   import SearchInput from "@/components/search-input.vue";
   import { cornieClient } from "@/plugins/http";
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
@@ -64,7 +64,7 @@
     components: {
       ClinicalDialog,
       SearchInput,
-      CornieRadio,
+      CornieCheckbox,
       CornieSelect,
       AutoComplete,
     },
