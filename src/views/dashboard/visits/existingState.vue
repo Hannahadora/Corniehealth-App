@@ -84,20 +84,19 @@
           </p>
         </div>
       </template>
-      <template #checkedInBy="{ item }">
+      <template #practitioner="{ item }">
         <div class="w-full flex space-x-4 mb-3">
           <div class="w-10 h-10">
             <avatar
               class="mr-2"
-              v-if="item.practitioner?.image"
-              :src="item.practitioner?.image"
+              v-if="item.practitionerImage"
+              :src="item.practitionerImage"
             />
             <avatar class="mr-2" v-else :src="localSrc" />
           </div>
           <div class="w-full mt-2">
             <p class="text-sm text-dark font-semibold">
-              {{ item.practitioner?.firstName }}
-              {{ item.practitioner?.lastName }}
+              {{ item.practitionerName }}
             </p>
           </div>
         </div>
@@ -580,6 +579,10 @@ export default class visitExistingState extends Vue {
         type: "xxxxxx",
         period: visit.checkInTime + " - " + visit.checkOutTime,
         patient: visit.patient.firstname + " " + visit.patient.lastname,
+        practitionerName: `${visit.practitioner?.firstName || ""} ${
+          visit.practitioner?.lastName || ""
+        }`,
+        practitionerImage: visit.practitioner?.image,
         specialty: "xxxxxx",
       };
     });
