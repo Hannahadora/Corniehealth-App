@@ -16,12 +16,11 @@
           </div>
         </div>
       </cornie-card-title>
-      <cornie-card-text class="overflow-y-auto">
-        <div class="mb-5 w-full h-full pb-32">
+      <cornie-card-text class="h-full">
+        <div class="mb-5 w-full h-full">
           <div class="grid grid-cols-12">
             <div class="col-span-12">
               <cornie-select
-                :rules="required"
                 :items="practitionerRoles"
                 v-model="role"
                 label="Role"
@@ -31,7 +30,6 @@
             </div>
             <div class="col-span-12">
               <cornie-select
-                :rules="required"
                 :items="allLocation"
                 v-model="location"
                 label="Location"
@@ -78,12 +76,12 @@
                       </div>
                     </div>
                     <div class="flex justify-center items-center">
-                      <button class="border-0 mr-5">
+                      <!-- <button class="border-0 mr-5">
                         <edit-icon
                           class="fill-current text-primary"
                           @click="editRole(access.roleId, access.locationId)"
                         />
-                      </button>
+                      </button> -->
                       <button
                         class="border-0"
                         @click="deleteItem(access.id, index)"
@@ -312,13 +310,16 @@
 
     async setnewRoles() {
       const newrole = this.setRoles;
-      this.accessRoles = newrole;
+      // this.accessRoles
+      this.locationSync = newrole;
     }
 
     async setAccessroles() {
       const practitioner = await this.getPractitionerById(this.id);
       if (!practitioner) return;
-      this.accessRoles = practitioner.locationRoles;
+      // this.accessRoles
+      //@ts-ignore
+      this.locationSync = practitioner.locationRoles;
     }
     get allaction() {
       return this.roleId ? "Edit" : "Add";
@@ -328,8 +329,15 @@
     deleteRole() {
       if (this.deletedRole === {}) return;
 
-      this.accessRoles = [
-        ...this.accessRoles.filter(
+      // this.accessRoles = [
+      //   ...this.accessRoles.filter(
+      //     (item: any) =>
+      //       item.roleId !== this.deletedRole.roleId &&
+      //       item.locationId !== this.deletedRole.locationId
+      //   ),
+      // ];
+      this.locationSync = [
+        ...this.locationSync.filter(
           (item: any) =>
             item.roleId !== this.deletedRole.roleId &&
             item.locationId !== this.deletedRole.locationId
@@ -340,7 +348,8 @@
     }
     get payload() {
       return {
-        ...this.accessRoles,
+        // ...this.accessRoles,
+        ...this.locationSync,
       };
     }
 
@@ -399,7 +408,7 @@
             msg: "Practitioner role created",
             status: "success",
           });
-          if (!this.accessRoles.length) return;
+          // if (!this.accessRoles.length) return;
           this.$emit("add-access-roles", this.accessRoles);
           this.$emit("close-access-diag");
           this.loading = false;
@@ -435,7 +444,8 @@
         title: "Delete location role",
       });
       if (!confirmed) return;
-      this.accessRoles.splice(index, 1);
+      // this.accessRoles.splice(index, 1);
+      this.locationSync.splice(index, 1);
     }
 
     async deleteItem(roleId: string, index: number) {
@@ -454,7 +464,7 @@
           window.notify({ msg: "Location role not deleted", status: "error" });
         }
       } else {
-        this.accessRoles.splice(index, 1);
+        this.locationSync.splice(index, 1);
       }
     }
 
@@ -499,6 +509,10 @@
       // if (!this.accessRoles.length) return;
       // this.$emit("update:locationRoles", this.accessRoles);
       this.showSync = false;
+      window.notify({
+        msg: "Locations added successfully",
+        status: "success",
+      });
     }
 
     async fetchLocation() {

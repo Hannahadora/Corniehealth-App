@@ -40,8 +40,8 @@
       this.paymentResponse = this.$route.query.success;
       // console.log(this.paymentResponse);
       setTimeout(() => {
-        this.$router.push("/dashboard/patient/home");
-      }, 3000);
+        this.$router.push("/dashboard/patient/account-settings");
+      }, 2000);
     }
   }
 </script>

@@ -14,7 +14,7 @@
       />
 
       <div>
-        <cornie-select
+        <cornie-checkbox
           v-model="selectedHealthRecord"
           :label="'Select Health Record to apply'"
           :items="healthRecords"
@@ -49,7 +49,8 @@
 </template>
 <script lang="ts">
   import CornieInput from "@/components/cornieinput.vue";
-  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+
   import CornieSelect from "@/components/cornieselect.vue";
   import { cornieClient } from "@/plugins/http";
   import ClinicalDialog from "@/views/dashboard/ehr/conditions/clinical-dialog.vue";
@@ -61,7 +62,7 @@
     components: {
       ClinicalDialog,
       CornieInput,
-      CornieRadio,
+      CornieCheckbox,
       CornieSelect,
     },
   })

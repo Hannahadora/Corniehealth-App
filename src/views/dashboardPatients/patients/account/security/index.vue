@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid h-screen topest">
+  <div class="container-fluid">
     <div class="w-full my-9">
       <div class="flex items-center justify-between py-2">
         <span class="font-semibold"
@@ -53,44 +53,44 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { namespace } from "vuex-class";
-import Button from "@/components/globals/corniebtn.vue";
-import AccordionRight from "@/components/icons/accordion-right.vue";
-import LeaveFamilyAccount from "./components/leavefamilyaccount.vue";
+  import Button from "@/components/globals/corniebtn.vue";
+  import AccordionRight from "@/components/icons/accordion-right.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import LeaveFamilyAccount from "./components/leavefamilyaccount.vue";
 
-const userSettingsStore = namespace("usersettings");
-const userStore = namespace("user");
+  const userSettingsStore = namespace("usersettings");
+  const userStore = namespace("user");
 
-@Options({
-  components: {
-    Button,
-    AccordionRight,
-    LeaveFamilyAccount,
-  },
-})
-export default class PatientSecurity extends Vue {
-  leaveFamilyAccountModal = false;
-}
+  @Options({
+    components: {
+      Button,
+      AccordionRight,
+      LeaveFamilyAccount,
+    },
+  })
+  export default class PatientSecurity extends Vue {
+    leaveFamilyAccountModal = false;
+  }
 </script>
 
 <style scoped>
-.topest {
-  overflow-x: scroll;
-  height: 100vh;
-}
-/* Hide scrollbar for Chrome, Safari and Opera */
-.topest::-webkit-scrollbar {
-  display: none;
-}
+  .topest {
+    overflow-x: scroll;
+    height: 100vh;
+  }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .topest::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.topest {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .topest {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 
-button:disabled {
-  opacity: 0.5 !important;
-}
+  button:disabled {
+    opacity: 0.5 !important;
+  }
 </style>
