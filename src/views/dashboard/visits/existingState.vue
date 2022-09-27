@@ -89,15 +89,15 @@
           <div class="w-10 h-10">
             <avatar
               class="mr-2"
-              v-if="item.checkedInBy?.image"
-              :src="item.checkedInBy?.image"
+              v-if="item.practitioner?.image"
+              :src="item.practitioner?.image"
             />
             <avatar class="mr-2" v-else :src="localSrc" />
           </div>
           <div class="w-full mt-2">
             <p class="text-sm text-dark font-semibold">
-              {{ item.checkedInBy.firstName }}
-              {{ item.checkedInBy.lastName }}
+              {{ item.practitioner?.firstName }}
+              {{ item.practitioner?.lastName }}
             </p>
           </div>
         </div>
@@ -511,12 +511,6 @@ export default class visitExistingState extends Vue {
       show: true,
       noOrder: true,
     },
-    // {
-    //   title: "Patient",
-    //   key: "patientName",
-    //   show: true,
-    //   noOrder: true,
-    // },
     {
       title: "patient",
       key: "patient",
@@ -537,7 +531,7 @@ export default class visitExistingState extends Vue {
     },
     {
       title: "practitioner",
-      key: "checkedInBy",
+      key: "practitioner",
       show: true,
       noOrder: true,
     },
@@ -576,16 +570,16 @@ export default class visitExistingState extends Vue {
     const visits = this.visits.map((visit) => {
       (visit as any).checkInTime = new Date(
         (visit as any).checkInTime
-      ).toLocaleTimeString('en-US');
+      ).toLocaleTimeString("en-US");
       (visit as any).checkOutTime = new Date(
         (visit as any).checkOutTime
-      ).toLocaleTimeString('en-US');
+      ).toLocaleTimeString("en-US");
       return {
         ...visit,
         action: visit.id,
         type: "xxxxxx",
         period: visit.checkInTime + " - " + visit.checkOutTime,
-        patient: visit.patient.firstname +' '+ visit.patient.lastname,
+        patient: visit.patient.firstname + " " + visit.patient.lastname,
         specialty: "xxxxxx",
       };
     });
@@ -633,8 +627,8 @@ export default class visitExistingState extends Vue {
       const response = await cornieClient().post(
         "/api/v1/visit/start-encounter",
         {
-          visitId:id,
-          encounterId: null
+          visitId: id,
+          encounterId: null,
         }
       );
       if (response.success) {
