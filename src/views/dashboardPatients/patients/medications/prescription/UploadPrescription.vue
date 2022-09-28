@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-5/12 h-full">
+  <cornie-dialog v-model="show" right class="lg:w-5/12 w-full h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white overflow-y-scroll"
@@ -21,18 +21,18 @@
       <cornie-card-text class="flex-grow scrollable">
         <div>Upload your document for approval.</div>
         <v-form class="flex-grow flex flex-col" @submit="save">
-          <uploader v-model="file" v-model:meta="fileInfo" />
+          <uploader v-model="form.file" v-model:meta="form.fileInfo" />
 
           <div class="mt-6 w-full grid grid-cols-2 space-x-4">
             <cornie-input
               label="Prescriber Name"
-              v-model="prescriberName"
+              v-model="form.prescriberName"
               placeholder="--Enter--"
               class=""
             />
             <cornie-input
               label="Email"
-              v-model="email"
+              v-model="form.email"
               placeholder="--Enter--"
             />
           </div>
@@ -46,7 +46,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click="save('')"
+          @click="save"
           :loading="loading"
           type="submit"
           class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -108,12 +108,17 @@ export default class UploadPrescription extends Vue {
   observation!: any;
 
   loading = false;
-  file = "";
-  email = "";
-  prescriberName = "";
-  fileInfo = "";
+  form = {
+    file: "",
+    email: "",
+    prescriberName: "",
+    fileInfo: "",
+  };
 
-  async save() {}
+  save() {
+    this.show = false;
+    this.$emit('getFormData', this.form)
+  }
 
   async created() {}
 }

@@ -91,7 +91,7 @@
             </div>
             <div
               v-if="deliveryOption === 'pick-up'"
-              class="mt-7 w-full grid lg:grid-cols-2 space-x-4"
+              class="mt-7 w-full grid lg:grid-cols-2 lg:space-x-4"
             >
               <cornie-select
                 label="Select Location"
@@ -126,7 +126,7 @@
           Add to Cart
         </cornie-btn>
         <cornie-btn
-          @click="save('')"
+          @click="save"
           :loading="loading"
           type="submit"
           class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -136,7 +136,7 @@
       </div>
     </cornie-card>
 
-    <upload-prescription v-model="uploadPrescriptionModal" />
+    <upload-prescription v-model="uploadPrescriptionModal" @getFormData="getFormData" />
   </cornie-dialog>
 </template>
 <script lang="ts">
@@ -222,6 +222,20 @@ export default class AddPrescriptionDialog extends Vue {
   pharmacy = "";
   uploadPrescriptionModal = false;
 
+  prescription: any = {
+    deliveryPreferencesId: "",
+    prescriptionImageUrl: "",
+    prescriber_name: "",
+    prescriber_email: "",
+    prescribedMedications: {
+      medicationId: "",
+      quantity: "",
+      cost: "",
+      locationId: "",
+      organizationId: "",
+    },
+  };
+
   get addresses() {
     return [];
   }
@@ -230,6 +244,12 @@ export default class AddPrescriptionDialog extends Vue {
   }
   get pharmacys() {
     return [];
+  }
+
+  getFormData (data: any) {
+    this.prescription.prescriptionImageUrl = data.file,
+    this.prescription.prescriber_name = data.prescriberName,
+    this.prescription.prescriber_email = data.email
   }
 
   async save() {}

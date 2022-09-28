@@ -141,7 +141,7 @@
             Cancel
           </button>
           <button
-            @click="apply()"
+            @click="apply"
             class="bg-danger rounded-full text-white mt-5 py-2 px-3 focus:outline-none hover:opacity-90 w-1/3"
           >
             Add
@@ -219,7 +219,7 @@ export default class ReferenceDialog extends Vue {
   loading = false;
 
   selectedRef = {
-    itemType: <any>{},
+    itemReference: {} as any,
     basis: ""
   };
   type = "condition";
@@ -242,17 +242,18 @@ export default class ReferenceDialog extends Vue {
 
   getValue(value: any) {
     if (this.type === "condition") {
-      this.selectedRef.itemType.referenceType = this.type;
-      this.selectedRef.itemType.referenceId = value.id;
-      this.selectedRef.itemType.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
-      this.selectedRef.itemType.practitionerSpecialty =
+      this.selectedRef.itemReference.itemType = this.type;
+      this.selectedRef.itemReference.referenceId = value.id;
+      this.selectedRef.itemReference.practitioner = `${value.practitioner?.firstName} ${value.practitioner?.lastName}`;
+      this.selectedRef.itemReference.practitionerSpecialty =
         value.practitioner?.jobDesignation;
-      this.selectedRef.itemType.description = this.codeMapper(value.code);
-      this.selectedRef.itemType.details = this.severityMapper(value.severity);
+      this.selectedRef.itemReference.description = this.codeMapper(value.code);
+      this.selectedRef.itemReference.details = this.severityMapper(value.severity);
       this.selectedRef.basis = value.code
     } else if (this.type === "observation") {
     }
   }
+
 
   apply() {
     this.$emit("update", this.selectedRef, this.type);
