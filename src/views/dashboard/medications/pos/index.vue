@@ -347,11 +347,11 @@ export default class POSSALES extends Vue {
 
   get totalSalesVolume() {
     const sv = this.allPosSales.map(
-      (sale: any) => Number(sale.medications.unitPrice) * Number(sale.medications.quantity)
+      (sale: any) => Number(sale.payments[0].total)
     );
-
+    
     const tsv = sv.reduce((a: any, b: any) => a + b, 0);
-    return tsv || 0;
+    return tsv.toFixed(2) || 0;
   }
 
   showItem(value: string) {
