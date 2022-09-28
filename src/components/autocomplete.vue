@@ -71,7 +71,12 @@
                   <search-icon />
                 </template>
               </icon-input>
-              <slot name="alt" @click="selected"></slot>
+              <div
+                @click="selected(altItem)"
+                class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative"
+              >
+                {{ altItem }}
+              </div>
               <div
                 v-for="(item, i) in processedItems"
                 :key="i"
@@ -139,6 +144,9 @@ export default class AutoComplete extends Vue {
   @Prop({ type: String })
   label!: string;
 
+  @Prop({ type: String })
+  altItem!: string;
+
   @Prop({ type: Function })
   filter!: (item: any, query: string) => boolean;
 
@@ -179,7 +187,7 @@ export default class AutoComplete extends Vue {
     const selected = this.items.find(
       (item) => item.code == this.modelValue || item == this.modelValue
     );
-    return selected;
+    return selected || this.modelValueSync;
   }
 
   toggle() {

@@ -322,7 +322,7 @@ export default class POSSALES extends Vue {
         keydisplay: sale.id,
         referenceNo: sale.identifier,
         date: new Date(sale.createdAt).toLocaleDateString("en-US"),
-        customer: sale.customer,
+        customer: sale.customer || 'Anonymous',
         type: sale.type,
         salesTotal: sale.payments[0].total,
         paymentStatus: sale.payments[0].status,
