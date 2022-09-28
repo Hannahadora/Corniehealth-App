@@ -294,10 +294,10 @@ export default class ImpressionExistingState extends Vue {
         action: impression.id,
         keydisplay: "XXXXXXX",
         cid: "XXXXXXX",
-        prognosis: impression?.prognosis[0]?.itemCode || "Nil",
-        findings: impression.findings[0].itemType || "Nil",
+        prognosis: impression.prognosis?.length > 0 ? impression.prognosis[0]?.itemCode : "N/A",
+        findings: impression.findings?.length > 0 ? impression.findings[0]?.basis : "N/A",
         assessor:
-          this.findPractitioner(impression?.recorded?.asserterId) || "Nil",
+          this.findPractitioner(impression?.recorded?.asserterId) || "N/A",
         status: impression.status,
       };
     });

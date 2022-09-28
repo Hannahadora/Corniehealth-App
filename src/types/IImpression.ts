@@ -34,8 +34,15 @@ export interface Investigation {
   };
 }
 interface Findings {
-  itemType: Problem[];
-  basis: string;
+  itemReference: {
+    itemType: string;
+    referenceId: string;
+    practitioner: string;
+    practitionerSpecialty: string;
+    description: string;
+    details: string
+  };
+  basis: string
 }
 interface Prognosis {
   itemCode: string;

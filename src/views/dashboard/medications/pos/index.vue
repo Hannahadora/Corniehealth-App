@@ -322,7 +322,7 @@ export default class POSSALES extends Vue {
         keydisplay: sale.id,
         referenceNo: sale.identifier,
         date: new Date(sale.createdAt).toLocaleDateString("en-US"),
-        customer: sale.customer,
+        customer: sale.customer || 'Anonymous',
         type: sale.type,
         salesTotal: sale.payments[0].total,
         paymentStatus: sale.payments[0].status,
@@ -347,11 +347,11 @@ export default class POSSALES extends Vue {
 
   get totalSalesVolume() {
     const sv = this.allPosSales.map(
-      (sale: any) => Number(sale.medications.unitPrice) * Number(sale.medications.quantity)
+      (sale: any) => Number(sale.payments[0].total)
     );
-
+    
     const tsv = sv.reduce((a: any, b: any) => a + b, 0);
-    return tsv || 0;
+    return tsv.toFixed(2) || 0;
   }
 
   showItem(value: string) {
