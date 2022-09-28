@@ -40,7 +40,7 @@
   })
   export default class InviteIndex extends Vue {
     get empty() {
-      return Object.keys(this.userrefferals).length  < 1;
+      return this.refferedaccounts.length  < 1;
     }
   
     @userreferal.State
@@ -48,10 +48,18 @@
   
     @userreferal.Action
     fetchUserrefferral!: () => Promise<void>;
+
+    @userreferal.State
+    refferedaccounts!: IUserrefferal[];
+  
+    @userreferal.Action
+    fetchRefferredAccounts!: () => Promise<void>;
   
    
    async created() {
-      await this.fetchUserrefferral();
+     await this.fetchRefferredAccounts(); 
+    await this.fetchUserrefferral();
+
     }
   }
   </script>

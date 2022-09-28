@@ -43,7 +43,7 @@
                         <span class="text-xs text-danger font-semibold italic cursor-pointer" @click="addEmail">Add Email</span>
                     </div>
                     <div class=" pb-5 mb-5 px-2">
-                      <div class="grid grid-cols-2 gap-4 mb-2 items-center" v-for="(item, index) in allemail" :key="index" >
+                      <div class="w-full items-center" v-for="(item, index) in allemail" :key="index" >
                        <div class="w-full justify-between flex" >
                         <span class="float-left">{{ item }}</span>
                         <delete-icon class="float-right fill-current text-danger cursor-pointer" @click="removeEmail(index)"/>
