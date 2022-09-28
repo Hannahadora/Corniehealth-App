@@ -366,34 +366,30 @@
                   placeholder="Select"
                 />
 
-                <!-- <cornie-input
-                  :rules="required"
-                  v-model="jobDesignation"
-                  placeholder="--Enter--"
-                  class="grow w-full"
-                  
-                /> -->
+                <div class="w-full -mt-1">
+                  <span class="text-sm font-semibold mb-4"
+                    >Years in Practice
+                    <span class="text-red-500">*</span>
+                  </span>
+                  <div class="flex space-x-2 w-full">
+                    <cornie-input
+                      :rules="requiredNumber"
+                      v-model="practiceDurationvalue"
+                      placeholder="--Enter--"
+                      class="w-full"
+                    />
+                    <cornie-select
+                      :items="['Year', 'Month']"
+                      placeholder="years"
+                      class="w-32 mt-0.5 flex-none"
+                      v-model="practiceDurationunit"
+                      :setPrimary="true"
+                    />
+                  </div>
+                </div>
 
-                <auto-complete
-                  label="Communication"
-                  placeholder="--Select--"
-                  class="w-full"
-                  :rules="required"
-                  :items="dropdown.CommunicationLanguage"
-                  v-model="communicationLanguage"
-                  :required="true"
-                />
-
-                <!-- <cornie-select
-                  :rules="required"
-                  v-model="consultationChannel"
-                  label="Visit Type"
-                  :items="dropdown.ConsultationChannel"
-                  placeholder="--Select--"
-                  :required="true"
-                /> -->
                 <div class="flex flex-col space-y-0.5">
-                  <div class="text-sm font-semibold mb-1">Visit Type</div>
+                  <div class="text-sm font-semibold mb-1">Visit Type(s)</div>
 
                   <Multiselect
                     label="Visit Type"
@@ -424,55 +420,22 @@
                   </Multiselect>
                 </div>
 
-                <div class="w-full -mt-1">
-                  <span class="text-sm font-semibold mb-3"
-                    >Consultation Rate
-                    <span class="text-red-500">*</span>
-                  </span>
-                  <div class="flex space-x-2 w-full">
-                    <cornie-input
-                      :rules="required"
-                      v-model="consultationRatevalue"
-                      placeholder="--Enter--"
-                      class="grow w-full"
-                    />
-                    <cornie-select
-                      :items="['Hour']"
-                      placeholder="/ Hour"
-                      class="w-32 mt-0.5 flex-none"
-                      v-model="consultationRateunit"
-                      :setPrimary="true"
-                    />
-                  </div>
-                </div>
-                <div class="w-full -mt-1">
-                  <span class="text-sm font-semibold mb-4"
-                    >Years in Practice
-                    <span class="text-red-500">*</span>
-                  </span>
-                  <div class="flex space-x-2">
-                    <cornie-input
-                      :rules="required"
-                      v-model="practiceDurationvalue"
-                      placeholder="--Enter--"
-                      class="grow"
-                    />
-                    <cornie-select
-                      :items="['Year', 'Month']"
-                      placeholder="years"
-                      class="w-32 mt-0.5 flex-none"
-                      v-model="practiceDurationunit"
-                      :setPrimary="true"
-                    />
-                  </div>
-                </div>
+                <auto-complete
+                  label="Communication"
+                  placeholder="--Select--"
+                  class="w-full"
+                  :rules="required"
+                  :items="dropdown.CommunicationLanguage"
+                  v-model="communicationLanguage"
+                  :required="true"
+                />
               </div>
             </template>
             <template v-slot:misc>
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
-          <accordion-component title="Locations & privileges" :opened="false">
+          <accordion-component title="Location(s) & privileges" :opened="false">
             <template v-slot:default>
               <div class="w-full mt-5">
                 <div
@@ -828,7 +791,7 @@
   import { Options, setup, Vue } from "vue-class-component";
   import { Watch } from "vue-property-decorator";
   import { namespace } from "vuex-class";
-  import { date, string } from "yup";
+  import { date, number, string } from "yup";
 
   const dropdown = namespace("dropdown");
   const practitioner = namespace("practitioner");
@@ -1032,6 +995,10 @@
     showSpecial = false;
     visitType = [
       {
+        label: "Out-Patient",
+        value: "out-patient",
+      },
+      {
         label: "In-person",
         value: "in-person",
       },
@@ -1040,8 +1007,8 @@
         value: "virtual",
       },
       {
-        label: "At home",
-        value: "at home",
+        label: "Home care",
+        value: "home care",
       },
     ];
     qualificationIdentifier = "1122";
@@ -1060,6 +1027,11 @@
     dropdown = {} as IIndexableObject;
     period = {} as Period;
     required = string().required();
+    requiredNumber = number()
+      .typeError("Years must be a number")
+      .required("Please provide the years of practice")
+      .nullable();
+
     emailRule = string().email().required();
     location = [];
     // locations = [];

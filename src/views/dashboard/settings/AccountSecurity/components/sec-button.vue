@@ -1,7 +1,7 @@
 <template>
   <cornie-btn
     @click="$emit('click')"
-    class="text-primary font-semibold border rounded-full border-primary"
+    class="text-primary font-semibold border rounded-xl border-primary"
   >
     <slot />
   </cornie-btn>

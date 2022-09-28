@@ -155,12 +155,12 @@ export default class ImpressionExistingState extends Vue {
   showImpressionModal = false;
   showStatusModal = false;
   impressionId = "";
-  tasknotes = [];
+  tasknotes: any = [];
   updatedBy = "";
   currentStatus = "";
   update = "";
-  practitioners = <any>[];
-  selectedImpression = {};
+  practitioners: any = [];
+  selectedImpression: any = {};
 
   impressions: IImpression[] = [];
 
@@ -294,8 +294,8 @@ export default class ImpressionExistingState extends Vue {
         action: impression.id,
         keydisplay: "XXXXXXX",
         cid: "XXXXXXX",
-        prognosis: impression?.prognosis?.itemCode || "Nil",
-        findings: "XXXXXXX",
+        prognosis: impression?.prognosis[0]?.itemCode || "Nil",
+        findings: impression.findings[0].itemType || "Nil",
         assessor:
           this.findPractitioner(impression?.recorded?.asserterId) || "Nil",
         status: impression.status,

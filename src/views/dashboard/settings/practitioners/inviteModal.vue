@@ -34,6 +34,7 @@
                   label="Email Address"
                   placeholder="Enter email address"
                   v-model="email"
+                  :rules="requiredEmailRule"
                 />
               </div>
             </div>
@@ -96,203 +97,206 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieCard from "@/components/cornie-card";
-import CornieIconBtn from "@/components/CornieIconBtn.vue";
-import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
-import CornieDialog from "@/components/CornieDialog.vue";
-import CornieBtn from "@/components/CornieBtn.vue";
-import { cornieClient } from "@/plugins/http";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import CancelIcon from "@/components/icons/CloseIcon.vue";
-import CloseIcon from "@/components/icons/whitecancel.vue";
-import { namespace } from "vuex-class";
-import Multiselect from "@vueform/multiselect";
-import CornieSelect from "@/components/cornieselect.vue";
-import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-import DeleteIcon from "@/components/icons/delete.vue";
-import CornieInput from "@/components/cornieinput.vue";
+  import CornieCard from "@/components/cornie-card";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieDialog from "@/components/CornieDialog.vue";
+  import CornieIconBtn from "@/components/CornieIconBtn.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import ArrowLeftIcon from "@/components/icons/arrowleft.vue";
+  import CancelIcon from "@/components/icons/CloseIcon.vue";
+  import DeleteIcon from "@/components/icons/delete.vue";
+  import SearchIcon from "@/components/icons/search.vue";
+  import CloseIcon from "@/components/icons/whitecancel.vue";
+  import { cornieClient } from "@/plugins/http";
+  import IPractitioner from "@/types/IPractitioner";
+  import Multiselect from "@vueform/multiselect";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop, PropSync } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  import { string } from "yup";
 
-const practitioner = namespace("practitioner");
-const roles = namespace("roles");
+  const practitioner = namespace("practitioner");
+  const roles = namespace("roles");
 
-@Options({
-  name: "spcialModal",
-  components: {
-    ...CornieCard,
-    CornieIconBtn,
-    ArrowLeftIcon,
-    Multiselect,
-    CancelIcon,
-    CornieDialog,
-    SearchIcon,
-    IconInput,
-    CornieBtn,
-    CornieSelect,
-    CloseIcon,
-    DeleteIcon,
-    CornieInput,
-  },
-})
-export default class SpecialModal extends Vue {
-  @PropSync("modelValue", { type: Boolean, default: false })
-  show!: boolean;
+  @Options({
+    name: "spcialModal",
+    components: {
+      ...CornieCard,
+      CornieIconBtn,
+      ArrowLeftIcon,
+      Multiselect,
+      CancelIcon,
+      CornieDialog,
+      SearchIcon,
+      IconInput,
+      CornieBtn,
+      CornieSelect,
+      CloseIcon,
+      DeleteIcon,
+      CornieInput,
+    },
+  })
+  export default class SpecialModal extends Vue {
+    requiredEmailRule = string().email().required();
 
-  @Prop({ type: String, default: "" })
-  id!: string;
+    @PropSync("modelValue", { type: Boolean, default: false })
+    show!: boolean;
 
-  loading = false;
-  specialarray = [] as any;
-  special = "";
+    @Prop({ type: String, default: "" })
+    id!: string;
 
-  @roles.State
-  roles!: { id: string; name: string }[];
+    loading = false;
+    specialarray = [] as any;
+    special = "";
 
-  @roles.Action
-  getRoles!: () => Promise<void>;
+    @roles.State
+    roles!: { id: string; name: string }[];
 
-  @practitioner.State
-  practitioners!: IPractitioner[];
+    @roles.Action
+    getRoles!: () => Promise<void>;
 
-  @practitioner.Action
-  deletePractitioner!: (id: string) => Promise<boolean>;
+    @practitioner.State
+    practitioners!: IPractitioner[];
 
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
+    @practitioner.Action
+    deletePractitioner!: (id: string) => Promise<boolean>;
 
-  get accessRoles() {
-    return this.roles.map((role) => ({ code: role.id, display: role.name }));
-  }
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
 
-  name = "";
-  email = "";
-  accessRole = "" as any;
-  practitionerList = [] as {
-    id: number;
-    accessRole: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-  }[];
-  invalid = false;
+    get accessRoles() {
+      return this.roles.map((role) => ({ code: role.id, display: role.name }));
+    }
 
-  addPractioner() {
-    if (!this.name || !this.email) return;
+    name = "";
+    email = "";
+    accessRole = "" as any;
+    practitionerList = [] as {
+      id: number;
+      accessRole: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+    }[];
+    invalid = false;
 
-    const [firstName, lastName] = this.name.split(" ");
-    this.practitionerList = [
-      {
-        id: Math.random() * 1999 + Math.random() * 2999,
-        accessRole: this.accessRole,
-        firstName,
-        lastName,
-        email: this.email,
-      },
-      ...this.practitionerList,
-    ];
+    addPractioner() {
+      if (!this.name || !this.email) return;
 
-    this.name = "";
-    this.email = "";
-    this.email = "";
-  }
+      const [firstName, lastName] = this.name.split(" ");
+      this.practitionerList = [
+        {
+          id: Math.random() * 1999 + Math.random() * 2999,
+          accessRole: this.accessRole,
+          firstName,
+          lastName,
+          email: this.email,
+        },
+        ...this.practitionerList,
+      ];
 
-  del(id: any) {
-    this.practitionerList = this.practitionerList.filter(
-      (item: any) => item.id !== id
-    );
-  }
+      this.name = "";
+      this.email = "";
+      this.email = "";
+    }
 
-  get payload() {
-    return this.practitionerList.map(({ id, ...rest }) => rest);
-  }
-  async submit() {
-    if (!this.practitionerList.length) return;
-    this.loading = true;
-    try {
-      const response = await cornieClient().post(
-        `/api/v1/practitioner/invite`,
-        this.payload
+    del(id: any) {
+      this.practitionerList = this.practitionerList.filter(
+        (item: any) => item.id !== id
       );
-      if (response.success) {
-        this.show = false;
+    }
+
+    get payload() {
+      return this.practitionerList.map(({ id, ...rest }) => rest);
+    }
+    async submit() {
+      if (!this.practitionerList.length) return;
+      this.loading = true;
+      try {
+        const response = await cornieClient().post(
+          `/api/v1/practitioner/invite`,
+          this.payload
+        );
+        if (response.success) {
+          this.show = false;
+          window.notify({
+            msg: "Invitation sent successfully.",
+            status: "success",
+          });
+          this.loading = false;
+        }
+      } catch (error) {
         window.notify({
-          msg: "Invitation sent successfully.",
-          status: "success",
+          msg: "Invitation not sent. Email already exist.",
+          status: "error",
         });
         this.loading = false;
       }
-    } catch (error) {
-      window.notify({
-        msg: "Invitation not sent. Email already exist.",
-        status: "error",
-      });
-      this.loading = false;
+    }
+
+    created() {
+      if (!this.roles.length) this.getRoles();
     }
   }
-
-  created() {
-    if (!this.roles.length) this.getRoles();
-  }
-}
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>
-.multiselect-option.is-selected {
-  background: #fe4d3c;
-  color: var(--ms-option-color-selected, #fff);
-}
-.multiselect-option.is-selected.is-pointed {
-  background: var(--ms-option-bg-selected-pointed, #fe4d3c);
-  color: var(--ms-option-color-selected-pointed, #fff);
-}
-.multiselect-option.is-selected {
-  background: var(--ms-option-bg-selected, #fe4d3c);
-  color: var(--ms-option-color-selected, #fff);
-}
+  .multiselect-option.is-selected {
+    background: #fe4d3c;
+    color: var(--ms-option-color-selected, #fff);
+  }
+  .multiselect-option.is-selected.is-pointed {
+    background: var(--ms-option-bg-selected-pointed, #fe4d3c);
+    color: var(--ms-option-color-selected-pointed, #fff);
+  }
+  .multiselect-option.is-selected {
+    background: var(--ms-option-bg-selected, #fe4d3c);
+    color: var(--ms-option-color-selected, #fff);
+  }
 
-.multiselect {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  cursor: pointer;
-  outline: none;
-  border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
-  border-radius: var(--ms-radius, 4px);
-  background: var(--ms-bg, #fff);
-  font-size: var(--ms-font-size, 1rem);
-  min-height: calc(
-    var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
-      var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
-  );
-}
+  .multiselect {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    border: var(--ms-border-width, 1px) solid var(--ms-border-color, #d1d5db);
+    border-radius: var(--ms-radius, 4px);
+    background: var(--ms-bg, #fff);
+    font-size: var(--ms-font-size, 1rem);
+    min-height: calc(
+      var(--ms-border-width, 1px) * 2 + var(--ms-font-size, 1rem) *
+        var(--ms-line-height, 1.375) + var(--ms-py, 0.5rem) * 2
+    );
+  }
 
-.multiselect-tags {
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--ms-tag-my, 0.25rem) 0 0;
-  padding-left: var(--ms-py, 0.5rem);
-  align-items: center;
-}
+  .multiselect-tags {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-wrap: wrap;
+    margin: var(--ms-tag-my, 0.25rem) 0 0;
+    padding-left: var(--ms-py, 0.5rem);
+    align-items: center;
+  }
 
-.multiselect-tag.is-user {
-  padding: 5px 12px;
-  border-radius: 22px;
-  background: #080056;
-  margin: 3px 3px 8px;
-  position: relative;
-  left: -10px;
-}
+  .multiselect-tag.is-user {
+    padding: 5px 12px;
+    border-radius: 22px;
+    background: #080056;
+    margin: 3px 3px 8px;
+    position: relative;
+    left: -10px;
+  }
 
-/* .multiselect-clear-icon {
+  /* .multiselect-clear-icon {
       -webkit-mask-image: url("/components/icons/chevrondownprimary.vue");
       mask-image: url("/components/icons/chevrondownprimary.vue");
       background-color: #080056;
@@ -300,49 +304,49 @@ export default class SpecialModal extends Vue {
       transition: .3s;
   } */
 
-.multiselect-placeholder {
-  font-size: 0.8em;
-  font-weight: 400;
-  font-style: italic;
-  color: #667499;
-}
+  .multiselect-placeholder {
+    font-size: 0.8em;
+    font-weight: 400;
+    font-style: italic;
+    color: #667499;
+  }
 
-.multiselect-caret {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-  -webkit-mask-image: url("../../../../assets/img/Chevron.png");
-  mask-image: url("../../../../assets/img/Chevron.png");
-  background-color: #080056;
-  margin: 0 var(--ms-px, 0.875rem) 0 0;
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  flex-grow: 0;
-  pointer-events: none;
-}
+  .multiselect-caret {
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+    -webkit-mask-image: url("../../../../assets/img/Chevron.png");
+    mask-image: url("../../../../assets/img/Chevron.png");
+    background-color: #080056;
+    margin: 0 var(--ms-px, 0.875rem) 0 0;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    flex-grow: 0;
+    pointer-events: none;
+  }
 
-.multiselect-tag.is-user img {
-  width: 18px;
-  border-radius: 50%;
-  height: 18px;
-  margin-right: 8px;
-  border: 2px solid #ffffffbf;
-}
+  .multiselect-tag.is-user img {
+    width: 18px;
+    border-radius: 50%;
+    height: 18px;
+    margin-right: 8px;
+    border: 2px solid #ffffffbf;
+  }
 
-.multiselect-tag.is-user i:before {
-  color: #ffffff;
-  border-radius: 50%;
-}
+  .multiselect-tag.is-user i:before {
+    color: #ffffff;
+    border-radius: 50%;
+  }
 
-.multiselect-tag-remove {
-  display: flex;
-  align-items: center;
-  /* border: 1px solid #fff;
+  .multiselect-tag-remove {
+    display: flex;
+    align-items: center;
+    /* border: 1px solid #fff;
     background: #fff; */
-  border-radius: 50%;
-  color: #fff;
-  justify-content: center;
-  padding: 0.77px;
-  margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
-}
+    border-radius: 50%;
+    color: #fff;
+    justify-content: center;
+    padding: 0.77px;
+    margin: var(--ms-tag-remove-my, 0) var(--ms-tag-remove-mx, 0.5rem);
+  }
 </style>

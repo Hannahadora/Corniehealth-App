@@ -3,163 +3,58 @@
     <cornie-card height="100%" class="flex flex-col animated fadeInUp">
       <cornie-card-title class="w-full p-3">
         <div class="w-full">
-          <h2 class="font-extrabold float-left text-xl text-black ml-3 -mt-1">
+          <!-- <h2 class="font-extrabold float-left text-xl text-black ml-3 -mt-1">
             Nav
-          </h2>
-          <close-icon
-            class="float-right cursor-pointer"
-            @click="show = false"
-          />
+          </h2> -->
+          <div
+            class="flex flex-row border-b-2 pb-1 items-center border-gray-300"
+          >
+            <div class="flex flex-1 items-center">
+              <img src="@/assets/img/logo.svg" />
+              <h2
+                class="text-primary text-xl font-semibold ml-1"
+                v-if="hovered"
+              >
+                CornieHealth
+              </h2>
+            </div>
+
+            <close-icon
+              class="float-right cursor-pointer"
+              @click="show = false"
+            />
+          </div>
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <ul class="w-full p-3">
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <home-icon />
-              <span>Home</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <calendar-icon class="text-blue-600 fill-current" />
-              <span>Appointments</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <specialist-icon class="text-danger fill-current" />
-              <span>Specialist Referrals</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <visit-icon class="text-blue-600 fill-current" />
-              <span>Visits</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <health-icon class="text-yellow-400 fill-current" />
-              <span>Health Records</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <lab-icon class="text-green-400 fill-current" />
-              <span>Labs & Imaging</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <medication-icon class="text-purple-800 fill-current" />
-              <span>Medications</span>
-            </router-link>
-          </li>
+        <div
+          class="mt-5 flex h-full gap-y-6 w-full flex-col text-primary text-lg overflow-x-hidden overflow-y-auto"
+        >
+          <sidebar-link
+            v-for="(link, i) in links"
+            @click="show = false"
+            :key="i"
+            :to="link.to"
+            :text="link.name"
+            :children="link.children"
+            :hovered="hovered"
+            :hasSubsection="link.hasSubsection"
+          >
+            <keep-alive>
+              <component :is="link.icon"></component>
+            </keep-alive>
+          </sidebar-link>
 
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <bill-icon class="text-blue-400 fill-current" />
-              <span>Bills & Payments</span>
-            </router-link>
-          </li>
-          <li class="w-full mb-5">
-            <router-link
-              to="/"
-              class="flex space-x-4 items-center text-black font-medium"
-            >
-              <message-icon class="text-green-400 fill-current" />
-              <span>Messages</span>
-            </router-link>
-          </li>
-
-          <li class="w-full mb-7">
-            <div class="flex w-full justify-between">
-              <div>
-                <span
-                  class="font-bold text-black cursor-pointer"
-                  @click="showOthers = !showOthers"
-                  >Others</span
-                >
-              </div>
-              <div>
-                <chevron-down-icon
-                  v-if="showOthers"
-                  @click="showOthers = false"
-                  class="cursor-pointer stroke-current text-primary"
-                />
-                <chevron-right-icon
-                  @click="showOthers = !showOthers"
-                  v-else
-                  class="cursor-pointer stroke-current text-primary"
-                />
-              </div>
-            </div>
-            <div v-if="showOthers" class="w-full">
-              <div class="flex space-x-4 items-center py-3">
-                <router-link
-                  to="/"
-                  class="flex space-x-4 items-center text-black font-medium"
-                >
-                  <question-icon class="text-danger fill-current" />
-                  <span>Questionnaires</span>
-                </router-link>
-              </div>
-              <div class="flex space-x-4 items-center py-3">
-                <router-link
-                  to="/"
-                  class="flex space-x-4 items-center text-black font-medium"
-                >
-                  <onetime-icon class="text-purple-800 fill-current" />
-                  <span>One-Time Access</span>
-                </router-link>
-              </div>
-              <div class="flex space-x-4 items-center py-3">
-                <router-link
-                  to="/"
-                  class="flex space-x-4 items-center text-black font-medium"
-                >
-                  <healthaccess-icon class="text-primary fill-current" />
-
-                  <span>Health Insurance</span>
-                </router-link>
-              </div>
-              <div class="flex space-x-4 items-center py-3">
-                <router-link
-                  to="/"
-                  class="flex space-x-4 items-center text-black font-medium"
-                >
-                  <reffer-icon class="text-yellow-400 fill-current" />
-                  <span>Referrals</span>
-                </router-link>
-              </div>
-            </div>
-          </li>
-        </ul>
+          <sidebar-link
+            @click="show = false"
+            to="/dashboard/patient/refferalinivite"
+            :hovered="hovered"
+            text="Referrals"
+            class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-4"
+          >
+            <reffer-icon class="text-primary fill-current" />
+          </sidebar-link>
+        </div>
       </cornie-card-text>
     </cornie-card>
   </cornie-dialog>
@@ -238,6 +133,8 @@
     },
   })
   export default class Settings extends Vue {
+    hovered = true;
+
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
 

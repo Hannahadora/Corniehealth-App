@@ -13,7 +13,7 @@
     <div class="h-full flex flex-col overflow-y-auto w-auto">
       <nav-bar class="" />
       <div
-        class="md:pr-6 md:pl-6 px-1 pt-2 flex flex-col body-content bg-gray-100"
+        class="md:pr-6 md:pl-6 px-1 pt-2 flex flex-col h-full body-content bg-gray-100"
       >
         <!-- <bread-crumbs class="" /> -->
         <router-view class="flex-grow" />
