@@ -81,7 +81,9 @@
     default as SearchIcon,
   } from "@/components/icons/search.vue";
   import FilterAccordion from "@/components/shopping/components/filter-accordion.vue";
+  import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
+  import { Watch } from "vue-property-decorator";
 
   @Options({
     name: "DiagnosticsShoppingSideBar",
@@ -134,6 +136,21 @@
       "Nuclear Medicine",
       "Obstetric/Gynaecological  Ultrasound",
     ];
+
+    @Watch("providerQuery")
+    fetchD() {
+      if (!this.providerQuery) return;
+      this.fetchProviders();
+    }
+
+    async fetchProviders() {
+      const pending = cornieClient().get(
+        `/api/v1/patient-portal/diagnostics/providers/?query=${this.providerQuery}`
+      );
+      const response = await Promise.all([pending]);
+      console.log("diagnostics", response[0].data);
+      // this.diagnostics = response[0].data;
+    }
   }
 </script>
 
