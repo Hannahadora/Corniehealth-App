@@ -41,10 +41,12 @@
                                 :key="i"
                                 class="cursor-pointer mb-3 flex space-x-4 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball">
                                 <cornie-radio name="search"   @click="selected(item,item.id)"/>
-                                <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative" v-for="(value, index) in item?.contactInfo" :key="index">
-                                    {{ item.firstname +' '+ item.lastname  }}
-                                    <p class="text-xs text-gray-400 italic">{{ item?.email +' | '+ item?.accountType }}</p>
-                                </div>
+
+                                  <div  class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative">
+                                      {{ item.firstname +' '+ item.lastname  }}
+                                      <p class="text-xs text-gray-400 italic">{{ item?.email +' | '+ item?.accountType }}</p>
+                                  </div>
+                                
                             </div>
                         </div>
                         <div v-if="filteredItems.length === 0">
@@ -184,9 +186,7 @@ export default class searchPatient extends Vue {
   orderBy: Sorter = () => 1;
 
   get filteredItems() {
-    return this.patients
-      .filter((item: any) => this.filter(item, this.query))
-      .sort(this.orderBy);
+    return this.patients.filter((item: any) => this.filter(item, this.query)).sort(this.orderBy);
   }
 
  done() {

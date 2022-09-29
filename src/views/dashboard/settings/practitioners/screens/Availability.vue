@@ -25,39 +25,36 @@
 </template>
 
 <script lang="ts">
-import utilservice from "./helper/util";
-import dateHelper from "./helper/date-helper";
 import AddIcon from "@/components/icons/add.vue";
+import dateHelper from "./helper/date-helper";
 // import Actors from "./actors.vue";
+import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
-import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import slotService from "./helper/slot-service";
 import AdvancedFilter from "./sections/advanced-filter.vue";
 // import SideModal from "../components/side-modal.vue";
 import CornieSelect from "@/components/cornieselect.vue";
-import { namespace } from "vuex-class";
-import { Practitioner } from "@/types/IPatient";
-import SelectedPractitioner from "./sections/selected-practitioner.vue";
-import SelectedLocation, { IItem } from "./sections/selected-location.vue";
-import ILocation from "@/types/ILocation";
-import IDevice from "@/types/IDevice";
-import ISchedule from "@/types/ISchedule";
 import CalendarIcon from "@/components/icons/bcalendar.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import CopyIcon from "@/components/icons/copy.vue";
 import CancelIcon from "@/components/icons/cancel.vue";
+import CopyIcon from "@/components/icons/copy.vue";
+import EditIcon from "@/components/icons/edit.vue";
 import ShareIcon from "@/components/icons/share.vue";
-import { getWeekStart, printWeekday, addDays } from "@/plugins/utils";
-import group from "@/store/group";
-import IPractitioner from "@/types/IPractitioner";
-import actorsSection from "./sections/newActors.vue";
-import search from "@/plugins/search";
 import Tabs from "@/components/smalltab.vue";
-import WeekSection from "@/views/dashboard/patientexp/calendar/availability/week.vue";
+import search from "@/plugins/search";
+import { addDays, getWeekStart, printWeekday } from "@/plugins/utils";
+import ILocation from "@/types/ILocation";
+import { Practitioner } from "@/types/IPatient";
+import IPractitioner from "@/types/IPractitioner";
+import ISchedule from "@/types/ISchedule";
 import DaySection from "@/views/dashboard/patientexp/calendar/availability/day.vue";
-import MonthSection from "@/views/dashboard/patientexp/calendar/availability/month.vue"
+import MonthSection from "@/views/dashboard/patientexp/calendar/availability/month.vue";
+import WeekSection from "@/views/dashboard/patientexp/calendar/availability/week.vue";
+import { namespace } from "vuex-class";
 import ScreenHeader from "./Header.vue";
+import actorsSection from "./sections/newActors.vue";
+import SelectedLocation from "./sections/selected-location.vue";
+import SelectedPractitioner from "./sections/selected-practitioner.vue";
 
 const practitionersStore = namespace("practitioner");
 const locationsStore = namespace("location");

@@ -21,9 +21,12 @@
 </template>
 <script lang="ts">
   import { Options, Vue } from "vue-class-component";
+  import InvitationModal from "./inviteModal.vue";
 
   @Options({
-    components: {},
+    components: {
+      InvitationModal,
+    },
   })
   export default class PractitionerEmptyState extends Vue {
     showInviteModal = false;

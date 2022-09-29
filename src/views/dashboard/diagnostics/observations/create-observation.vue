@@ -464,7 +464,7 @@ export default class ObservationDialog extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, default: <any>{} })
+  @Prop({ type: Object, default: {} })
   observation!: IObservation;
 
   @patients.State
@@ -475,14 +475,14 @@ export default class ObservationDialog extends Vue {
 
   required = string().required();
 
-  customers = <any>[];
+  customers: any = [];
 
   loading = false;
   activeTab = "Full Payment";
   opened = true;
   effectiveType = "date-time";
   showReferenceModal = false;
-  referenceOptions = <any>[];
+  referenceOptions: any = [];
   refSubject = "";
 
   statusHistory = [
@@ -508,7 +508,7 @@ export default class ObservationDialog extends Vue {
     code: "",
     focus: "",
   };
-  effective = {
+  effective: any = {
     date: "",
     time: "",
     period: {
@@ -523,10 +523,10 @@ export default class ObservationDialog extends Vue {
       time: "",
     },
   };
-  issueInfo = <any>{};
-  value = <any>{};
-  reasonInfo = <any>{};
-  referenceRange = <any>{};
+  issueInfo: any = {};
+  value: any = {};
+  reasonInfo: any = {};
+  referenceRange: any = {};
   member = {
     hasMemer: undefined,
     derivedFrom: undefined,
@@ -683,7 +683,7 @@ export default class ObservationDialog extends Vue {
         subject: this.getPatientName(this.basicInfo.subject),
         encounter: undefined,
       },
-      effective: <any>{},
+      effective: {} as any,
       issueInfo: {
         dateTime: this.buildDateTime(this.issued.date, this.issued.time),
         performer: this.issueInfo.performer,

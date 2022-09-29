@@ -1,13 +1,13 @@
 <template>
     <div class="w-full pb-7">
       <span class="flex justify-end w-full">
-      <button
-        class="bg-danger rounded-lg text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
-        @click="showAccessModal = true"
-      >
-      Generate a Temporary Access Link
-      </button>
-    </span>
+        <button
+          class="bg-danger rounded-lg text-white mt-5 mb-5 py-3 px-5 text-sm font-semibold focus:outline-none hover:opacity-90"
+          @click="showAccessModal = true"
+        >
+        Generate a Temporary Access Link
+        </button>
+      </span>
       <cornie-table
         :columns="rawHeaders"
         v-model="sortAccess"
@@ -372,7 +372,7 @@
       await this.fetchOnetimeaccess();
     }
 
-    async deleteItem(id: string) {
+  async deleteItem(id: string) {
     const confirmed = await window.confirmAction({
       message: "This access link is still active. Do you want to proceed and revoke it?",
       title: "Revoke Access",

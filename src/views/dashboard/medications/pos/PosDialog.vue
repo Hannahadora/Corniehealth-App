@@ -50,17 +50,11 @@
                   placeholder="Select one"
                   v-model="customerId"
                   :rules="required"
-                  :items="customers"
+                  :items="[...customers, 'Walk-In Customer']"
                   @query="fetchCustomers"
                   :disabled="salesData && checkSales"
+                  altItem="Walk-In-Customer"
                 >
-                  <template #alt>
-                    <div v-if="!item" class="w-full flex items-center my-1">
-                      <div class="ml-4 flex flex-col my-2">
-                        <span class="text-sm">Walk-In Customer</span>
-                      </div>
-                    </div>
-                  </template>
                   <template #item="{ item }">
                     <div class="w-full flex items-center my-1">
                       <!-- <avatar :src="item.image" /> -->
@@ -365,7 +359,7 @@ export default class PosDialog extends Vue {
 
   loading = false;
   activeTab = "Full Payment";
-  customerDetails = <any>[];
+  customerDetails: any = [];
 
   status = "";
   type = "";
@@ -412,6 +406,12 @@ export default class PosDialog extends Vue {
       show: true,
     },
   ];
+
+  get anonymous () {
+    return [
+      { name: 'Walk-In Customer', mrn: "", id: undefined }
+    ]
+  }
 
   get checkSales() {
     if (Object.entries(this.sales).length > 0) {
@@ -525,7 +525,7 @@ export default class PosDialog extends Vue {
       this.status = "completed";
     }
 
-    const newSales = {
+    const newSales: any = {
       patientId: this.customerId,
       type: this.type,
       status: this.status,

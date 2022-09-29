@@ -41,7 +41,7 @@
             @click="submit"
             class="text-white bg-danger px-6 rounded-xl"
           >
-            Save
+            Add
           </cornie-btn>
         </cornie-card-text>
       </cornie-card>

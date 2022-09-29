@@ -30,19 +30,19 @@
           <edit-icon class="text-primary fill-current" />
           <span class="ml-3 text-xs">Edit</span>
         </div>
-        <div
+        <!-- <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
           @click="showModal(item.id)"
         >
           <update-icon class="text-yellow-500 fill-current" />
           <span class="ml-3 text-xs">Update Work</span>
-        </div>
+        </div> -->
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showModal(item.id)"
+          @click="showModal(item)"
         >
           <update-icon class="text-yellow-500 fill-current" />
-          <span class="ml-3 text-xs">Update Location & Previleges</span>
+          <span class="ml-3 text-xs">Update Location & Privileges</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
@@ -61,9 +61,10 @@
       </template>
     </cornie-table>
   </div>
-  <location-modal
-    v-model="showLocationModal"
-    @location-update="updateLocation"
+
+  <location-role
+    v-model:locationRoles="selectedLocation"
+    v-model:show="showLocationModal"
     :id="locationId"
   />
   <invitation-modal v-model="showInviteModal" />
@@ -87,9 +88,10 @@
   import { mapDisplay } from "@/plugins/definitions";
   import search from "@/plugins/search";
   import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+  import locationRole from "@/views/dashboard/settings/practitioners/LocationRoles.vue";
   import { Options, Vue } from "vue-class-component";
   import { namespace } from "vuex-class";
-  import LocationModal from "./AccessRoles.vue";
+
   import InvitationModal from "./inviteModal.vue";
 
   const practitioner = namespace("practitioner");
@@ -111,12 +113,13 @@
       ColumnFilter,
       TableOptions,
       EditIcon,
-      LocationModal,
+      locationRole,
       UpdateIcon,
     },
   })
   export default class PractitionerExistingState extends Vue {
     showColumnFilter = false;
+    selectedLocation = null;
     query = "";
     showLocationModal = false;
     showInviteModal = false;
@@ -142,6 +145,7 @@
         key: "name",
         show: true,
       },
+      { title: "department", key: "department", show: true },
       { title: "Job Designation", key: "jobDesignation", show: true },
       {
         title: "Status",
@@ -231,9 +235,10 @@
       await this.fetchPractitioners();
     }
 
-    showModal(value: string) {
+    showModal(value: any) {
       this.showLocationModal = true;
-      this.locationId = value;
+      this.locationId = value?.id;
+      this.selectedLocation = value?.locationRoles;
     }
 
     async created() {

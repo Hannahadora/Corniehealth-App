@@ -139,7 +139,7 @@
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </table-action>
-          <table-action @click="encounterPatient(item)">
+          <table-action @click.once="encounterPatient(item)">
             <plus-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
@@ -483,7 +483,7 @@ export default class ExistingState extends Vue {
       if (response.success) {
         console.log({response})
         this.start(patient.id, response.data.id)
-        //this.$router.push({ name: "Health Trend", params: { id: patient.id } });
+        this.$router.push({ name: "Health Trend", params: { id: patient.id } });
 
       }
     } catch (error: any) {

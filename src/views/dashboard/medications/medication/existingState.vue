@@ -24,13 +24,6 @@
           <dispense-icon />
           <span class="ml-3 text-xs">Dispense</span>
         </div>
-        <div
-          class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="showStatus(item)"
-        >
-          <update-icon />
-          <span class="ml-3 text-xs">Update Status</span>
-        </div>
       </template>
       <template #prescription="{ item }">
         <p>{{ item.identifier }}</p>

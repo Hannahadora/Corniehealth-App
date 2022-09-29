@@ -41,8 +41,14 @@
     @userreferal.Action
     fetchUserrefferral!: () => Promise<void>;
 
+    @userreferal.State
+    refferedaccounts!: IUserrefferal[];
+  
+    @userreferal.Action
+    fetchRefferredAccounts!: () => Promise<void>;
+
      async inviteAdded(){
-      await this.fetchUserrefferral();
+      await this.fetchRefferredAccounts();
      }
      async created() {
       await this.fetchUserrefferral();

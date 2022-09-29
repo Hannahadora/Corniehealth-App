@@ -116,7 +116,7 @@
   
   
             <div class="border-b-2 pb-5 border-dashed border-gray-200">
-              <accordion-component title="Medication" :opened="false">
+              <accordion-component title="Medication" :opened="medications.length > 0">
                 <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
                       <auto-complete :label="'Generic Name'" @click="resultData(emptyMedicationDetails.genericCode)"  :items="allDrug" @input="searchData"  v-model="emptyMedicationDetails.genericCode" :placeholder="'Search generic name'"/>
                       <cornie-select :label="'Brand Name'"  @click="resultBrand(emptyMedicationDetails.genericName)"  :items="allBrand"  v-model="emptyMedicationDetails.genericName" :placeholder="'Select'"/>
@@ -222,9 +222,9 @@
                       <div class="grid grid-cols-2 gap-4 mt-5 w-full">
                         <div class="w-full -mt-1">
                           <span class="text-sm font-semibold mb-3">Duration</span>
-                          <div class="flex space-x-2 w-full">
+                          <div class="flex space-x-2 w-full" v-for="(input, index) in medications" :key="`-${index}`">
                             <cornie-input :rules="required" placeholder="--Enter--" class="grow w-full" :setfull="true"
-                              v-model="emptyMedicationDetails.durationInDays" />
+                              v-model="input.durationInDays" />
                             <cornie-select :items="['Days']" placeholder="Days" class="w-32 mt-0.5 flex-none"
                               :setPrimary="true" v-model="days" />
                           </div>
@@ -238,82 +238,86 @@
                     title="Refill"
                     :opened="false"
                     :grayCaption="true"
-                    :check="true"
+                    :check="medications.length > 0"
                     >
-                    <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5">
-                          <div class="w-full -mt-1">
-                                <span class="text-sm font-semibold mb-3">Dosage Interval</span>
-                            <div class="flex space-x-2 w-full">
-                                    <cornie-input
-                                        placeholder="--Enter--"
-                                        class="grow w-full"
-                                        :setfull="true"
-                                        v-model="emptyRefill.interval"
-                                    />
-                                    <cornie-select
-                                    :items="['Days','Week','Month']"
-                                    placeholder="/ Days"
-                                    class="w-32 mt-0.5 flex-none"
-                                    :setPrimary="true"
-                                      v-model="emptyRefill.intervalUnit"
-                                />
+                    <div class="w-full grid grid-cols-2 gap-5 mt-5 pb-5" v-for="(input, index) in medications" :key="`-${index}`">
+                      <div v-for="(item, index) in input.refills" :key="`-${index}`">
+                          <div class="w-full -mt-1" >
+                                  <span class="text-sm font-semibold mb-3">Dosage Interval</span>
+                              <div class="flex space-x-2 w-full" >
+                                      <cornie-input
+                                          placeholder="--Enter--"
+                                          class="grow w-full"
+                                          :setfull="true"
+                                          v-model="item.interval"
+                                      />
+                                      <cornie-select
+                                      :items="['Days','Week','Month']"
+                                      placeholder="/ Days"
+                                      class="w-32 mt-0.5 flex-none"
+                                      :setPrimary="true"
+                                        v-model="item.intervalUnit"
+                                  />
+                              </div>
                             </div>
-                          </div>
-                            <DRangePicker :label="'Validity Period'" v-model="emptyRefill.startDate" class="w-full"/>
-                            <cornie-input
-                                class="w-full"
-                                label="Quantity"
-                                placeholder="Enter"
-                                v-model="emptyRefill.quantity"
-                            >
-                            </cornie-input>
-                            <div class="w-full -mt-1">
-                                <span class="text-sm font-semibold mb-3">Supply Duration</span>
-                                <div class="flex space-x-2 w-full">
-                                    <cornie-input
-                                        placeholder="--Enter--"
-                                        class="grow w-full"
-                                        :setfull="true"
-                                        v-model="emptyRefill.supplyDuration"
-                                    />
-                                    <cornie-select
-                                    :items="['Day']"
-                                    placeholder="/ Day"
-                                    class="w-32 mt-0.5 flex-none"
-                                    :setPrimary="true"
-                                    v-model="emptyRefill.supplyDurationUnit"
-                                    />
-                                </div>
-                            </div>
+                              <DRangePicker :label="'Validity Period'" v-model="item.startDate" class="w-full"/>
+                              <cornie-input
+                                  class="w-full"
+                                  label="Quantity"
+                                  placeholder="Enter"
+                                  v-model="item.quantity"
+                              >
+                              </cornie-input>
+                              <div class="w-full -mt-1">
+                                  <span class="text-sm font-semibold mb-3">Supply Duration</span>
+                                  <div class="flex space-x-2 w-full">
+                                      <cornie-input
+                                          placeholder="--Enter--"
+                                          class="grow w-full"
+                                          :setfull="true"
+                                          v-model="item.supplyDuration"
+                                      />
+                                      <cornie-select
+                                      :items="['Day']"
+                                      placeholder="/ Day"
+                                      class="w-32 mt-0.5 flex-none"
+                                      :setPrimary="true"
+                                      v-model="item.supplyDurationUnit"
+                                      />
+                                  </div>
+                              </div>
+                        </div>  
                     </div>
                 </accordion-component>
                 <accordion-component title="Substitution Allowed?" :opened="false">
-                  <div class="flex space-x-4 w-full mt-5">
-                    <cornie-radio :label="'Yes'" :value="true" v-model="emptyMedicationDetails.substitutionAllowed"
-                      name="allowed" />
-                    <cornie-radio :label="'No'" :value="false" v-model="emptyMedicationDetails.substitutionAllowed"
-                      name="allowed" />
-                  </div>
-                  <div class="w-full grid grid-cols-2 gap-4 mt-5 pb-5">
-                    <fhir-input
-                            reference="http://hl7.org/fhir/ValueSet/medication-codes"
-                            class="required w-full"
-                            :rules="required"
-                            v-model="emptyMedicationDetails.substitutionCode"
-                            label="Medication Substitution Code"
-                            placeholder="--Select--"
-                          />
-                    <!-- <cornie-select class="required w-full" :rules="required" :items="['reason']"
-                      label="Medication Substitution Code" placeholder="Select"
-                      v-model="emptyMedicationDetails.substitutionCode">
-                    </cornie-select> -->
-                    <cornie-input v-if="emptyMedicationDetails.substitutionAllowed == true" class="w-full"
-                      label="Reason for Substitution" placeholder="Enter"
-                      v-model="emptyMedicationDetails.reasonForSubstitution">
-                    </cornie-input>
-                    <cornie-input v-else class="w-full" label="Reason Against Substitution" placeholder="Enter"
-                      v-model="emptyMedicationDetails.reasonAgainstSubstitution">
-                    </cornie-input>
+                  <div v-for="(input, index) in medications" :key="`-${index}`">
+                    <div class="flex space-x-4 w-full mt-5">
+                      <cornie-radio :label="'Yes'" :value="true" v-model="input.substitutionAllowed"
+                        name="allowed" />
+                      <cornie-radio :label="'No'" :value="false" v-model="input.substitutionAllowed"
+                        name="allowed" />
+                    </div>
+                    <div class="w-full grid grid-cols-2 gap-4 mt-5 pb-5">
+                      <fhir-input
+                              reference="http://hl7.org/fhir/ValueSet/medication-codes"
+                              class="required w-full"
+                              :rules="required"
+                              v-model="input.substitutionCode"
+                              label="Medication Substitution Code"
+                              placeholder="--Select--"
+                            />
+                      <!-- <cornie-select class="required w-full" :rules="required" :items="['reason']"
+                        label="Medication Substitution Code" placeholder="Select"
+                        v-model="emptyMedicationDetails.substitutionCode">
+                      </cornie-select> -->
+                      <cornie-input v-if="input.substitutionAllowed == true" class="w-full"
+                        label="Reason for Substitution" placeholder="Enter"
+                        v-model="input.reasonForSubstitution">
+                      </cornie-input>
+                      <cornie-input v-else class="w-full" label="Reason Against Substitution" placeholder="Enter"
+                        v-model="input.reasonAgainstSubstitution">
+                      </cornie-input>
+                    </div>
                   </div>
                 </accordion-component>
   
@@ -323,7 +327,7 @@
   
             <accordion-component title="Optional Section"
               :spanText="'(This fields aren’t mandatory for creating a medication request)'" :spanCaption="true"
-              :opened="false">
+              :opened="reasonCode !== ''">
   
               <div class="border-b-2 border-gray-200 mt-5 border-dashed pb-3">
                 <span class="w-full font-semibold text-gray-600">Reason</span>
@@ -763,27 +767,28 @@
       this.setRequest();
     }
      async setRequest() {
-      if (!this.selectedItem) return;
-      this.basedOn = this.selectedItem.basedOn;
-      this.intent = this.selectedItem.intent;
-      this.priority = this.selectedItem.priority;
-      this.category = this.selectedItem.category;
-      this.requesterId = this.selectedItem.requesterId;
-      this.patientId = this.selectedItem.patientId;
-      this.dispenserId = this.selectedItem.dispenserId;
-      this.supportingInformation = this.selectedItem.supportingInformation;
-      this.medications = this.selectedItem.medications as any;
-      this.status = this.selectedItem.status;
-      this.reasonCode = this.selectedItem.reasonCode;
-      this.reasonReference = this.selectedItem.reasonReference;
-      this.note = this.selectedItem.note;
-      this.allergies = this.selectedItem.allergies;
-      this.aconditions = this.selectedItem.conditions;
-      this.identifier = this.selectedItem.identifier;
-      this.safetyCapRequest = this.selectedItem.safetyCapRequest;
-      this.deliveryLocation = this.selectedItem.deliveryLocation;
-      this.priorPrescription = this.selectedItem.priorPrescription;
-      this.detectedIssues = this.selectedItem.detectedIssues;
+      const request = await this.getRequestById(this.id);
+        if (!request) return;
+      this.basedOn = request.basedOn;
+      this.intent = request.intent;
+      this.priority = request.priority;
+      this.category = request.category;
+      this.requesterId = request.requesterId;
+      this.patientId = request.patientId;
+      this.dispenserId = request.dispenserId;
+      this.supportingInformation = request.supportingInformation;
+      this.medications =request.medications as any;
+      this.status = request.status;
+      this.reasonCode = request.reasonCode;
+      this.reasonReference = request.reasonReference;
+      this.note = request.note;
+      this.allergies = request.allergies;
+      this.aconditions = request.conditions;
+      this.identifier = request.identifier;
+      this.safetyCapRequest = request.safetyCapRequest;
+      this.deliveryLocation = request.deliveryLocation;
+      this.priorPrescription = request.priorPrescription;
+      this.detectedIssues = request.detectedIssues;
     }
   
   
@@ -965,7 +970,7 @@
         patientId: this.onepatientId,
         dispenserId: this.dispenserId,
         supportingInformation: this.supportingInformation || undefined,
-        medications: this.medications,
+        //medications: this.medications,
         status: this.status,
         reasonCode: this.reasonCode,
         reasonReference: this.reasonReference,
@@ -1065,7 +1070,7 @@
     }
   
     async created() {
-       this.setRequest();
+       await this.setRequest();
       await this.getRoles();
       await this.createMapper();
       await this.fetchPatients();
