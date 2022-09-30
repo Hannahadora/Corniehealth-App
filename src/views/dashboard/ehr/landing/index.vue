@@ -139,7 +139,7 @@
             <edit-icon class="text-primary fill-current" />
             <span class="ml-3 text-xs">Edit</span>
           </table-action>
-          <table-action @click.once="encounterPatient(item)">
+          <table-action @click.capture="encounterPatient(item)">
             <plus-icon class="text-danger fill-current" />
             <span class="ml-3 text-xs">Start Encounter</span>
           </table-action>
@@ -469,7 +469,6 @@ export default class ExistingState extends Vue {
     }
   }
   async encounterPatient(patient: any) {
-    console.log({patient})
     const body = {
       patientId: patient.patientId,
       practitionerId: this.authPractitioner.id,
@@ -481,7 +480,6 @@ export default class ExistingState extends Vue {
     try {
       const response = await cornieClient().post("/api/v1/encounter", body);
       if (response.success) {
-        console.log({response})
         this.start(patient.id, response.data.id)
         this.$router.push({ name: "Health Trend", params: { id: patient.id } });
 
@@ -590,8 +588,8 @@ export default class ExistingState extends Vue {
   }
 
   async created() {
-    if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPractitonerVisits(this.authPractitioner?.id);
+    if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();
     this.visits?.map((visit: any) => {

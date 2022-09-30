@@ -76,14 +76,14 @@
                     </div>
                   </div>
 
-                   <!-- <fhir-input
-                    reference="http://hl7.org/fhir/ValueSet/allergy-intolerance-type"
+                   <fhir-input
+                    reference="http://hl7.org/fhir/ValueSet/care-plan-category"
                     class="required w-full"
                     v-model="category"
                     label="Category"
                     placeholder="--Select--"
                     required
-                  /> -->
+                  />
 
 
                   <cornie-select

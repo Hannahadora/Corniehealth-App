@@ -1,13 +1,13 @@
 <template>
   <div class="w-full pb-7">
-      <span class="justify-end w-full mb-3 hidden md:flex">
+      <!-- <span class="justify-end w-full mb-3 hidden md:flex">
         <button
             @click="showAppointment = true"
             class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         >
             Book Appointment
         </button>
-        </span>
+        </span> -->
     <cornie-table
       :columns="rawHeaders"
       v-model="items"
@@ -120,14 +120,14 @@
         <div class="mb-5">
             <search-section :placeholder="'Search Table'" v-model="query"/>
         </div>
-        <span class="justify-center w-full mb-3 block md:hidden">
+        <!-- <span class="justify-center w-full mb-3 block md:hidden">
         <button
             @click="showAppointment = true"
             class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
         >
             Book Appointment
         </button>
-        </span>
+        </span> -->
         <div class="bg-white shadow-lg py-2 px-8 w-full rounded-lg h-full mb-4" v-for="(item, index) in items" :key="index">
             <div class="justify-between flex mb-5 border-b-2 py-2 border-gray-200">
                 <p class="text-primary">#</p>

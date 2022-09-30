@@ -436,7 +436,6 @@ export default class OtherDoctorModal extends Vue {
     }
 
     async selected(provider: any) {
-      console.log({provider})
       this.showDatalist = false;
     this.name = provider.name;
     this.email = provider.email;

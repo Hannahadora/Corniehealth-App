@@ -158,17 +158,17 @@
 
           <div class="w-full my-2 flex items-center">
             <div class="w-6/12">
-              <cornie-select
+              <!-- <cornie-select
                 v-model="reqBody.category"
                 label="Category"
                 :items="['Category 1', 'Category 2']"
                 reference="http://hl7.org/fhir/ValueSet/care-plan-category"
+              /> -->
+              <fhir-input
+                v-model="reqBody.category"
+                label="Category"
+                  reference="http://hl7.org/fhir/ValueSet/care-plan-category"
               />
-              <!-- <fhir-input
-                                v-model="reqBody.status"
-                                label="Category"
-                                reference="http://hl7.org/fhir/ValueSet/care-plan-category"
-                            /> -->
             </div>
             <div class="w-6/12 -mt-5">
               <cornie-input v-model="reqBody.title" :label="'Title'" />

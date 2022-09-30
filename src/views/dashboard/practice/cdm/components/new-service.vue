@@ -10,7 +10,7 @@
       </div> -->
 
       <accordion-component
-        title="New Service"
+        :title="id ? 'Edit Service' : 'New Service'"
         class="text-primary capitalize"
         :opened="true"
       >
@@ -477,11 +477,19 @@
                 </span>
                 <div class="w-full">
                   <p class="font-bold text-sm">
-                    {{ item.locationName }}
+                    {{ item.locationName ? item.locationName : getLocationName(item?.locationId) }}
                   </p>
-                  <!-- <span class="text-gray-400 text-xs font-light">
-                    {{ item?.days?.join(' ') }}
-                  </span> -->
+                  <span class="text-gray-400 text-xs font-light" v-if="checkArray(item?.days)">
+                    {{
+                     item?.days?.join(' ')
+                    }}
+                  </span>
+                  <span class="text-gray-400 text-xs font-light" v-else>
+                    {{ item?.days?.mon  }} {{ item?.days?.tue }}
+                    {{ item?.days?.wed }} {{ item?.days?.thu }}
+                    {{ item?.days?.fri }} {{ item?.days?.sat }}
+                    {{ item?.days?.sun }}
+                  </span>
                 </div>
                 <div class="float-right flex justify-end w-full">
                   <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
@@ -949,9 +957,13 @@ export default class NewService extends Vue {
   idChanged() {
     this.setServices();
   }
+  
+  checkArray(days:any){
+    return Array.isArray(days)
+  }
 
   addLocations(value: any, newvalue:any, locationValue: any) {
-    this.locations = value;
+    this.locations.push(...value);
     this.newlocations = newvalue;
     this.locationsId = locationValue;
   }
