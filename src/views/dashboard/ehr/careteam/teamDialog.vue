@@ -159,12 +159,26 @@
                   label="Reason Code"
                   placeholder="Select"
                 />
-                <cornie-input
+                <div>
+                    <p class="text-sm text-black font-semibold mb-1">
+                      Reason Reference
+                    </p>
+                    <div
+                      class="flex w-full border-2 border-gray-200 bg-gray-100 rounded-lg py-2 px-4 cursor-pointer"
+                      @click="showRefModal = true"
+                    >
+                      <span class="w-full">{{ reasonReference }}</span>
+                      <span class="flex justify-end w-full">
+                        <plusIcon class="fill-current text-danger mt-1" />
+                      </span>
+                    </div>
+                  </div>
+                <!-- <cornie-input
                   :label="'Reason Reference'"
                   v-model="reasonReference"
                   placeholder="Enter"
                 >
-                </cornie-input>
+                </cornie-input> -->
                 <cornie-input
                   :rules="emailRule"
                   :label="'Email Address'"
@@ -214,6 +228,7 @@
       </cornie-card>
     </cornie-card>
   </cornie-dialog>
+  <reference-modal v-model="showRefModal" @ref-value="refvalue"/>
 </template>
 
 <script lang="ts">
@@ -253,8 +268,9 @@ import Multiselect from "@vueform/multiselect";
 import FhirInput from "@/components/fhir-input.vue";
 import AutoComplete from "@/components/autocomplete.vue";
 import InfoBlueBg from "@/components/icons/info-blue-bg.vue";
+import plusIcon from "@/components/icons/plus.vue";
 
-
+import ReferenceModal from "./components/referenceModal.vue";
 import AddActor from "./actors.vue";
 
 const careteam = namespace("careteam");
@@ -289,6 +305,8 @@ const dropdown = namespace("dropdown");
     CornieSelect,
     CloseIcon,
     DeleteorangeIcon,
+    ReferenceModal,
+    plusIcon
   },
 })
 export default class careTeamModal extends Vue {
@@ -304,6 +322,7 @@ export default class careTeamModal extends Vue {
   requiredRule = string().required();
 
   loading = false;
+  showRefModal = false;
   DialCode = "+234";
   PhoneNumber = "";
 
@@ -392,6 +411,11 @@ export default class careTeamModal extends Vue {
   get activePatientId() {
     const id = this.$route?.params?.id as string;
     return id;
+  }
+
+  refvalue(value:any, type:string){
+    //this.references.push(value);
+    this.reasonReference = type;
   }
 
   actorslist(value: any) {

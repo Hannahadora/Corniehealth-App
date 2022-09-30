@@ -2,7 +2,7 @@
   <cornie-dialog v-model="show" right class="w-4/12 h-full">
     <cornie-card height="100%" class="flex flex-col">
       <cornie-card-title class="w-full">
-        <cornie-icon-btn @click="show = false" class="">
+        <cornie-icon-btn @click="cancel(), show = false" class="">
           <arrow-left-icon />
         </cornie-icon-btn>
         <div class="w-full border-l-2 border-gray-100">

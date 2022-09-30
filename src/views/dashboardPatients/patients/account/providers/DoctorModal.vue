@@ -263,12 +263,12 @@ export default class DoctorModal extends Vue {
     console.log(this.payload)
     try {
       const { data } = await cornieClient().put(`/api/v1/patient-portal/practitioner/default-doctor/${this.referenceOrganization}`,{});
-      window.notify({ msg: "Primary Doctor Added" , status: "success" });
+      window.notify({ msg: "Provider Added" , status: "success" });
       this.done();
       this.resetForm();
       //this.reset();
     } catch (error:any) {
-      window.notify({ msg: "Primary Doctor Not Added", status: "error" });
+      window.notify({ msg: "Provider Not Added", status: "error" });
     }
   }
 
