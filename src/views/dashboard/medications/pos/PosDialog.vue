@@ -50,17 +50,11 @@
                   placeholder="Select one"
                   v-model="customerId"
                   :rules="required"
-                  :items="customers"
+                  :items="[...customers, 'Walk-In Customer']"
                   @query="fetchCustomers"
                   :disabled="salesData && checkSales"
+                  altItem="Walk-In-Customer"
                 >
-                  <template #alt>
-                    <div class="w-full flex items-center my-1">
-                      <div class="ml-4 flex flex-col my-2" @click="customerId = 'Walk-In Customer'">
-                        <span class="text-sm">Walk-In Customer</span>
-                      </div>
-                    </div>
-                  </template>
                   <template #item="{ item }">
                     <div class="w-full flex items-center my-1">
                       <!-- <avatar :src="item.image" /> -->
@@ -531,7 +525,7 @@ export default class PosDialog extends Vue {
       this.status = "completed";
     }
 
-    const newSales = {
+    const newSales: any = {
       patientId: this.customerId,
       type: this.type,
       status: this.status,
