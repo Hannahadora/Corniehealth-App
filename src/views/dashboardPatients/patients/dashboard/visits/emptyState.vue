@@ -9,14 +9,14 @@
       Want to book for a family member? Go to Profiles.
 
     </p>
-    <span class="flex justify-center w-full">
+    <!-- <span class="flex justify-center w-full">
       <button
               @click="showAppointment = true"
               class="bg-danger items-center flex space-x-4 justify-between rounded-md text-white font-semibold text-sm mt-5 py-3 px-8 focus:outline-none hover:opacity-90"
           >
               Book Appointment
           </button>
-    </span>
+    </span> -->
 
   </div>
   <appointment-modal  v-model="showAppointment"/>
