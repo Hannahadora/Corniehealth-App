@@ -45,18 +45,18 @@
                 class="w-full"
                 v-model="specialtyId"
                 label="Medical Specialty"
-                :items="allSpeciality"
+                :items="specialities"
                 placeholder="--Select--"
                 :rules="required"
               />
-              <fhir-input
-                reference="http://hl7.org/fhir/ValueSet/service-type"
+
+              <auto-complete
                 class="w-full"
                 v-model="type"
                 label="Type"
+                :items="subSpecialities"
                 placeholder="--Select--"
                 :rules="required"
-                required
               />
               <cornie-input
                 :label="'Service Name'"
@@ -766,6 +766,7 @@
     dropdown = {} as IIndexableObject;
     location = [] as any;
     locationsId = [] as any;
+    allSpecialities = [] as any;
     apply = "yes";
     reqBody = {
       quantity: 1,
@@ -937,6 +938,19 @@
       ];
     }
 
+    get specialities() {
+      return Object.keys(this.allSpecialities);
+    }
+
+    get subSpecialities() {
+      return this.allSpecialities[this.specialtyId] || [];
+    }
+    async fetchallSpeciality() {
+      const response = await fetch("/service-types.json");
+      const result = await response.json();
+      this.allSpecialities = result;
+      return;
+    }
     options = [
       { value: "holidays", label: "Holidays" },
       { value: "weekends", label: "Weekends" },
@@ -1006,6 +1020,7 @@
         applyVat: this.applyVat,
         status: this.status,
         // organizationId: this.organizationId,
+        subSpecialty: this.type,
         type: this.type,
         coverageArea: this.coverageArea,
         providedBy: this.providedBy,
@@ -1017,7 +1032,7 @@
         requiresAppointment: this.requiresAppointment,
         locationAvailabilities: this.newlocations,
         availableTimes: this.availableTimes,
-        specialtyId: this.specialtyId,
+        specialty: this.specialtyId,
       };
     }
 
@@ -1134,69 +1149,6 @@
         };
       });
     }
-    get allSpeciality() {
-      // if (!this.specials || this.specials.length === 0) return [];
-      // return this?.specials?.map((i: any) => {
-      //   return {
-      //     code: i.id,
-      //     display: i.name,
-      //   };
-      // });
-      return [
-        {
-          display: "Obstetrics and gynecology (ObGyn) Types",
-          code: "obstetrics",
-        },
-        {
-          display: "Pediatric Medicine Types",
-          code: "pediatric",
-        },
-        {
-          display: "Geriatric Medicine Types",
-          code: "geriatric",
-        },
-        {
-          display: "Surgery Types",
-          code: "surgery",
-        },
-        {
-          display: "Therapy Types",
-          code: "therapy",
-        },
-        {
-          display: "Councelling Types",
-          code: "councelling",
-        },
-        {
-          display: "Dental Types",
-          code: "dental",
-        },
-        {
-          display: "Mental Health Types",
-          code: "mentalHealth",
-        },
-        {
-          display: "Substance Abuse & Addiction Service Types",
-          code: "abuse&Addiction",
-        },
-        {
-          display: "Pathology & Radiology Types",
-          code: "pathology",
-        },
-        {
-          display: "Pharmacy Types",
-          code: "pharmacy",
-        },
-        {
-          display: "Medical Transport Types",
-          code: "medical",
-        },
-        {
-          display: "Chronic Disease Management Types",
-          code: "chronic",
-        },
-      ];
-    }
 
     get SubSpecialities() {
       return [];
@@ -1235,6 +1187,7 @@
       await this.fetchSpecials();
       await this.setDropdown();
       await this.fetchLocation();
+      await this.fetchallSpeciality();
       this.discountLimit = this.markupData?.maxAllowedDiscount;
       this.markup = this.markupData?.markupPercentage;
     }

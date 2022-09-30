@@ -19,6 +19,23 @@
                 <search-icon />
               </template>
             </icon-input>
+
+            <div class="flex flex-col pt-4 space-y-2">
+              <label
+                v-for="(l, i) in displayLocations"
+                :key="i"
+                class="flex items-center"
+              >
+                <input
+                  @change="locationChanged"
+                  v-model="l.value"
+                  type="checkbox"
+                  class="mr-3 cursor-pointer"
+                />
+                {{ l.display }}:
+              </label>
+              <!-- Locations - {{ pickedLocations }} -->
+            </div>
           </span>
         </div>
       </FilterAccordion>
@@ -39,26 +56,58 @@
           </span>
         </div>
         <div class="my-4">
-          <Corniecheckbox
+          <!-- <Corniecheckbox
             class="mb-3"
             v-for="(option, idx) in providerOptions"
             :key="idx"
             :label="option"
             :value="option"
             v-model="providerOption"
-          />
+          /> -->
+          <div class="flex flex-col pt-4 space-y-2">
+            <label
+              v-for="(l, i) in displayProviders"
+              :key="i"
+              class="flex items-center"
+            >
+              <input
+                @change="providerChanged"
+                v-model="l.value"
+                type="checkbox"
+                class="mr-3 cursor-pointer"
+              />
+              {{ l.display }}:
+            </label>
+            <!-- Locations - {{ pickedLocations }} -->
+          </div>
         </div>
       </FilterAccordion>
       <FilterAccordion class="border-t" title="Diagnostics Category">
         <div class="my-4">
-          <Corniecheckbox
+          <!-- <Corniecheckbox
             class="mb-3"
             v-for="(option, idx) in pharmacyLists"
             :key="idx"
             :label="option"
             :value="option"
             v-model="selectedPharmacies"
-          />
+          /> -->
+          <div class="flex flex-col pt-4 space-y-2">
+            <label
+              v-for="(l, i) in displayCategories"
+              :key="i"
+              class="flex items-center text-sm"
+            >
+              <input
+                @change="categoryChanged"
+                v-model="l.value"
+                type="checkbox"
+                class="mr-3 cursor-pointer"
+              />
+              {{ l.display }}:
+            </label>
+            <!-- Locations - {{ pickedLocations }} -->
+          </div>
         </div>
       </FilterAccordion>
     </div>
@@ -82,6 +131,7 @@
   } from "@/components/icons/search.vue";
   import FilterAccordion from "@/components/shopping/components/filter-accordion.vue";
   import { cornieClient } from "@/plugins/http";
+  import { buildUrl } from "build-url-ts";
   import { Options, Vue } from "vue-class-component";
   import { Watch } from "vue-property-decorator";
 
@@ -113,6 +163,10 @@
     selectedClassifications: any = "";
     selectedCategories: any = "";
     selectedPromoOption: any = "";
+    locations = [];
+    pickedLocations = [] as any;
+    providers = [];
+    pickedProviders = [] as any;
 
     providerOptions: any = [
       "All",
@@ -137,19 +191,110 @@
       "Obstetric/Gynaecological  Ultrasound",
     ];
 
+    pickedPharmacyLists: any = [];
+
+    get displayLocations() {
+      return this.locations.map((x) => {
+        return {
+          display: x,
+          value: false,
+        };
+      });
+    }
+
+    get displayProviders() {
+      return this.providers.map((x: any) => {
+        return {
+          display: x?.name,
+          value: false,
+        };
+      });
+    }
+
+    get displayCategories() {
+      return this.pharmacyLists.map((x: any) => {
+        return {
+          display: x,
+          value: false,
+        };
+      });
+    }
+
+    async locationChanged() {
+      this.pickedLocations = this.displayLocations
+        .filter((x) => x.value == true)
+        .map((x) => x.display);
+      await this.fetchServices();
+    }
+
+    async providerChanged() {
+      this.pickedProviders = this.displayProviders
+        .filter((x) => x.value == true)
+        .map((x) => x.display);
+      await this.fetchServices();
+    }
+
+    async categoryChanged() {
+      this.pickedPharmacyLists = this.displayCategories
+        .filter((x: any) => x.value == true)
+        .map((x: any) => x.display);
+      await this.fetchServices();
+    }
+
     @Watch("providerQuery")
     fetchD() {
-      if (!this.providerQuery) return;
+      if (!this.providerQuery) {
+        this.providers = [];
+        return;
+      }
       this.fetchProviders();
+    }
+
+    @Watch("locationQuery")
+    fetchL() {
+      if (!this.locationQuery) {
+        this.locations = [];
+        return;
+      }
+
+      this.fetchLocations();
+    }
+
+    get queryString() {
+      return buildUrl({
+        queryParams: {
+          subSpecialties: this.pickedPharmacyLists,
+          locations: this.pickedLocations,
+          providers: this.pickedProviders,
+        },
+      });
+    }
+
+    async fetchServices() {
+      const pending = cornieClient().get(
+        `/api/v1/patient-portal/diagnostics/services${this.queryString}`
+      );
+      const response = await Promise.all([pending]);
+      console.log("services", response[0].data);
+      // this.diagnostics = response[0].data;
     }
 
     async fetchProviders() {
       const pending = cornieClient().get(
-        `/api/v1/patient-portal/diagnostics/providers/?query=${this.providerQuery}`
+        `/api/v1/patient-portal/diagnostics/providers?query=${this.providerQuery}`
       );
       const response = await Promise.all([pending]);
       console.log("diagnostics", response[0].data);
       // this.diagnostics = response[0].data;
+    }
+
+    async fetchLocations() {
+      const pending = cornieClient().get(
+        `/api/v1/patient-portal/diagnostics/locations?query=${this.locationQuery}`
+      );
+      const response = await Promise.all([pending]);
+      console.log("locations", response[0].data);
+      this.locations = response[0].data;
     }
   }
 </script>
