@@ -10,7 +10,7 @@
       </div> -->
 
       <accordion-component
-        title="New Service"
+        :title="id ? 'Edit Service' : 'New Service'"
         class="text-primary capitalize"
         :opened="true"
       >
@@ -32,7 +32,7 @@
                 :rules="required"
                 required
               />
-              <!-- <cornie-select
+              <cornie-select
                 :items="allSpeciality"
                 class="w-full"
                 v-model="specialtyId"
@@ -40,23 +40,15 @@
                 placeholder="--Select--"
                 :rules="required"
                 required
-              /> -->
-              <auto-complete
-                class="w-full"
-                v-model="specialtyId"
-                label="Medical Specialty"
-                :items="specialities"
-                placeholder="--Select--"
-                :rules="required"
               />
-
-              <auto-complete
+              <fhir-input
+                reference="http://hl7.org/fhir/ValueSet/service-type"
                 class="w-full"
                 v-model="type"
                 label="Type"
-                :items="subSpecialities"
                 placeholder="--Select--"
                 :rules="required"
+                required
               />
               <cornie-input
                 :label="'Service Name'"
@@ -482,11 +474,24 @@
                 </span>
                 <div class="w-full">
                   <p class="font-bold text-sm">
-                    {{ item.locationName }}
+                    {{
+                      item.locationName
+                        ? item.locationName
+                        : getLocationName(item?.locationId)
+                    }}
                   </p>
-                  <!-- <span class="text-gray-400 text-xs font-light">
-                    {{ item?.days?.join(' ') }}
-                  </span> -->
+                  <span
+                    class="text-gray-400 text-xs font-light"
+                    v-if="checkArray(item?.days)"
+                  >
+                    {{ item?.days?.join(" ") }}
+                  </span>
+                  <span class="text-gray-400 text-xs font-light" v-else>
+                    {{ item?.days?.mon }} {{ item?.days?.tue }}
+                    {{ item?.days?.wed }} {{ item?.days?.thu }}
+                    {{ item?.days?.fri }} {{ item?.days?.sat }}
+                    {{ item?.days?.sun }}
+                  </span>
                 </div>
                 <div class="float-right flex justify-end w-full">
                   <div class="bg-blue-50 p-3 -m-1 rounded-r-lg">
@@ -622,7 +627,6 @@
   import { Options, setup, Vue } from "vue-class-component";
   import { string } from "yup";
 
-  import AutoComplete from "@/components/autocomplete.vue";
   import Avatar from "@/components/avatar.vue";
   import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
   import CornieCheckbox from "@/components/corniecheckbox.vue";
@@ -661,7 +665,6 @@
   @Options({
     components: {
       LocationModal,
-      AutoComplete,
       CornieAvatarField,
       CornieSelect,
       AccordionComponent,
@@ -766,7 +769,6 @@
     dropdown = {} as IIndexableObject;
     location = [] as any;
     locationsId = [] as any;
-    allSpecialities = [] as any;
     apply = "yes";
     reqBody = {
       quantity: 1,
@@ -938,19 +940,6 @@
       ];
     }
 
-    get specialities() {
-      return Object.keys(this.allSpecialities);
-    }
-
-    get subSpecialities() {
-      return this.allSpecialities[this.specialtyId] || [];
-    }
-    async fetchallSpeciality() {
-      const response = await fetch("/service-types.json");
-      const result = await response.json();
-      this.allSpecialities = result;
-      return;
-    }
     options = [
       { value: "holidays", label: "Holidays" },
       { value: "weekends", label: "Weekends" },
@@ -969,8 +958,12 @@
       this.setServices();
     }
 
+    checkArray(days: any) {
+      return Array.isArray(days);
+    }
+
     addLocations(value: any, newvalue: any, locationValue: any) {
-      this.locations = value;
+      this.locations.push(...value);
       this.newlocations = newvalue;
       this.locationsId = locationValue;
     }
@@ -1020,7 +1013,6 @@
         applyVat: this.applyVat,
         status: this.status,
         // organizationId: this.organizationId,
-        subSpecialty: this.type,
         type: this.type,
         coverageArea: this.coverageArea,
         providedBy: this.providedBy,
@@ -1032,7 +1024,7 @@
         requiresAppointment: this.requiresAppointment,
         locationAvailabilities: this.newlocations,
         availableTimes: this.availableTimes,
-        specialty: this.specialtyId,
+        specialtyId: this.specialtyId,
       };
     }
 
@@ -1149,9 +1141,14 @@
         };
       });
     }
-
-    get SubSpecialities() {
-      return [];
+    get allSpeciality() {
+      if (!this.specials || this.specials.length === 0) return [];
+      return this?.specials?.map((i: any) => {
+        return {
+          code: i.id,
+          display: i.name,
+        };
+      });
     }
 
     async deleteLocationDays(index: number) {
@@ -1187,7 +1184,6 @@
       await this.fetchSpecials();
       await this.setDropdown();
       await this.fetchLocation();
-      await this.fetchallSpeciality();
       this.discountLimit = this.markupData?.maxAllowedDiscount;
       this.markup = this.markupData?.markupPercentage;
     }
