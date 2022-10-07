@@ -4,9 +4,9 @@
     <h3 class="text-center mt-5">
         No Inventories on Record<br />
     </h3>
-    <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
+    <!-- <button class="bg-danger rounded text-white mt-5 py-3 px-6 text-sm font-semibold focus:outline-none hover:opacity-90" @click="showMedication = true">
       Add New
-    </button>
+    </button> -->
   </div>
 </template>
 <script lang="ts">

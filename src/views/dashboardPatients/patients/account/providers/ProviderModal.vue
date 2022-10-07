@@ -460,7 +460,7 @@ export default class OtherDoctorModal extends Vue {
     this.allProviders.push(body)
      try {
       const { data } = await cornieClient().post("/api/v1/patient-portal/provider",body);
-      window.notify({ msg: "Primary Doctor Added" , status: "success" });
+      window.notify({ msg: "Provider Added" , status: "success" });
       // await this.fetchPatientProvider()
       this.reset();
     } catch (error:any) {
