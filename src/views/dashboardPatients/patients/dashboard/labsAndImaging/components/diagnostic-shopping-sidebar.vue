@@ -131,7 +131,7 @@
   } from "@/components/icons/search.vue";
   import FilterAccordion from "@/components/shopping/components/filter-accordion.vue";
   import { cornieClient } from "@/plugins/http";
-  import { buildUrl } from "build-url-ts";
+  // import { buildUrl } from "build-url-ts";
   import { Options, Vue } from "vue-class-component";
   import { Watch } from "vue-property-decorator";
 
@@ -261,13 +261,14 @@
     }
 
     get queryString() {
-      return buildUrl({
-        queryParams: {
-          subSpecialties: this.pickedPharmacyLists,
-          locations: this.pickedLocations,
-          providers: this.pickedProviders,
-        },
-      });
+      // return buildUrl({
+      //   queryParams: {
+      //     subSpecialties: this.pickedPharmacyLists,
+      //     locations: this.pickedLocations,
+      //     providers: this.pickedProviders,
+      //   },
+      // });
+      return "";
     }
 
     async fetchServices() {
