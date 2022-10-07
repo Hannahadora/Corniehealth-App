@@ -6,7 +6,7 @@
       <span
         class="flex space-x-4 w-full border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-      <cornie-icon-btn @click="$router.push({ name: 'Private Profile & Settings' })" class="">
+      <cornie-icon-btn @click="$router.push({ name: 'Private Profile & Settings', params: { tabnumber: 3 } }) " class="">
          <arrow-left-icon />
        </cornie-icon-btn>
        <span class="border-l-2 border-gray-100 pl-3">

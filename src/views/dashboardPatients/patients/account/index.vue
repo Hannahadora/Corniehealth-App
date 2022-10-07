@@ -15,7 +15,6 @@
           <payment-section />
           <provider-section />
           <security-section />
-          <!-- <notification-section /> -->
           <association-section :id="id" />
         </tabs>
       </span>
@@ -28,7 +27,7 @@
   import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
   import Tabs from "@/components/tabs.vue";
   import { Options, Vue } from "vue-class-component";
-  import { Prop } from "vue-property-decorator";
+  import { Prop, Watch } from "vue-property-decorator";
 
   import ProfileSection from "./accountprofile/index.vue";
   import AssociationSection from "./association/index.vue";
@@ -58,6 +57,9 @@
     @Prop({ type: String, default: "" })
     id!: string;
 
+    @Prop({ type: Number, default: 0 })
+    tabnumber!: number;
+
     tabLinks = [
       "Account Profile",
       "Contact",
@@ -68,7 +70,17 @@
     ];
     currentTab = 0;
 
-    async created() {}
+  @Watch("tabnumber")
+  idChanged() {
+    this.currentTab = this.tabnumber
+  }
+
+
+    async created() {
+      if(this.tabnumber == 3){
+        this.currentTab = this.tabnumber
+      }
+    }
   }
 </script>
 

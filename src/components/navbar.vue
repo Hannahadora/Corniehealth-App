@@ -367,13 +367,13 @@ export default class NavBar extends Vue {
       no: "No",
     });
     if (!confirmed) return;
-
     try {
       this.switchCurrentLocation(value);
       window.notify({
         msg: "Authorized Locations Swtiched",
         status: "success",
       });
+      location.reload();
     } catch (error) {
       window.notify({
         msg: "Authorized Locations not Swtiched",

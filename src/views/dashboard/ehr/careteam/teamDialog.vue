@@ -68,6 +68,22 @@
                   placeholder="--Enter--"
                 >
                 </cornie-select>
+                <cornie-select
+                  v-if="basedOn == 'Patient'"
+                  :items="allPatients"
+                  v-model="subjectpatient"
+                  label="Patient"
+                  placeholder="--Select Patient--"
+                >
+                </cornie-select>
+                <cornie-select
+                v-else-if="basedOn == 'Group'"
+                  :items="allGroups"
+                  v-model="subjectgroup"
+                  label="Group"
+                  placeholder="--Select group--"
+                >
+                </cornie-select>
                 <d-range-picker
                   :rules="required"
                   v-model="period"
@@ -241,7 +257,8 @@ import { namespace } from "vuex-class";
 import { mapDisplay } from "@/plugins/definitions";
 
 import ICareteam, { Participants } from "@/types/ICareteam";
-import IRequest, { Medications, RefillSection } from "@/types/IRequest";
+import IGroup from "@/types/IGroup";
+import { IPatient } from "@/types/IPatient";
 
 import AccordionComponent from "@/components/form-accordion.vue";
 import CornieCard from "@/components/cornie-card";
@@ -275,6 +292,8 @@ import AddActor from "./actors.vue";
 
 const careteam = namespace("careteam");
 const dropdown = namespace("dropdown");
+const patients = namespace("patients");
+const group = namespace("group");
 
 @Options({
   name: "careTeamModal",
@@ -319,6 +338,18 @@ export default class careTeamModal extends Vue {
   @careteam.Action
   getCareteamById!: (id: string) => ICareteam;
 
+  @patients.State
+  patients!: IPatient[];
+
+  @patients.Action
+  fetchPatients!: () => Promise<void>;
+
+  @group.State
+  groups!: IGroup[];
+
+  @group.Action
+  fetchGroups!: () => Promise<void>;
+
   requiredRule = string().required();
 
   loading = false;
@@ -326,8 +357,11 @@ export default class careTeamModal extends Vue {
   DialCode = "+234";
   PhoneNumber = "";
 
+  subjectpatient = "";
+  subjectgroup = "";
+
   identifier = "";
-  basedOn = "";
+  basedOn = "Patient";
   replaces = "";
   startDateTime = "";
   endDateTime = "";
@@ -515,6 +549,26 @@ export default class careTeamModal extends Vue {
     }
   }
 
+  get allPatients() {
+    if (!this.patients || this.patients.length === 0) return [];
+    return this.patients.map((i: any) => {
+      return {
+        code: i.id,
+        display: `${i.firstname} ${i.lastname}`,
+      };
+    });
+  }
+
+  get allGroups() {
+    if (!this.groups || this.groups.length === 0) return [];
+    return this.groups.map((i: any) => {
+      return {
+        code: i.id,
+        display: `${i.name}`,
+      };
+    });
+  }
+
   async fetchOrgInfo() {
     try {
       const response = await cornieClient().get(
@@ -532,6 +586,8 @@ export default class careTeamModal extends Vue {
 
   async created() {
     await this.setCareteam();
+    await this.fetchPatients();
+    await this.fetchGroups();
     this.fetchOrgInfo();
     const data = await this.getDropdowns("careTeam");
     this.dropdowns = data;

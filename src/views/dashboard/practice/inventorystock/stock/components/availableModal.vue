@@ -165,7 +165,7 @@ export default class availableModal extends Vue {
 
   async fetchAvailability() {
     const AllLocation = cornieClient().get(
-      `/api/v1/inventory/stock/availability/${this.id}`
+      `/api/v1/inventory/stock/availability/${this.item.productId}`
     );
     const response = await Promise.all([AllLocation]);
     this.stockAvaialbilty = response[0].data;
