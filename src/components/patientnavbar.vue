@@ -59,7 +59,7 @@
           <ul
             class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-2 absolute -mt-2 z-10 shadow-lg hidden"
           >
-            <li class="flex w-full justify-between mb-3">
+            <li class="flex w-full justify-between mb-3 p-3 border-b-2 border-gray-100">
               <div class="flex space-x-3 items-center">
                 <span class="w-10 h-10 relative justify-center">
                   <div
@@ -96,24 +96,27 @@
                     </span>
                   </div>
                 </span>
-                <p class="text-sm text-blue-600 font-extrabold">
-                  {{ name }}
-                </p>
+                <div>
+                  <p class="text-lg text-blue-600 mb-0 font-extrabold">
+                    {{ name }}
+                  </p>
+                  <p class="text-sm text-black mb-1">MRN - {{ mrn }}</p>
+                  <div>
+                    <span class="bg-green-100 text-green-500 text-sm py-1 rounded-md px-4">{{  cornieData?.patient?.accountType }}</span>
+                  </div>
+                </div>
               </div>
               <span>
                 <close-icon />
               </span>
             </li>
-            <li class="flex w-full border-b border-gray-200 mb-5 pb-5">
-              <span class="text-sm text-black font-bold">MRN - {{ mrn }}</span>
-            </li>
             <li class="w-full mb-4">
               <div class="flex w-full justify-between">
                 <div>
                   <span
-                    class="text-sm font-semibold text-black cursor-pointer"
+                    class="text-sm font-medium text-black cursor-pointer"
                     @click="showPatient = !showPatient"
-                    >Profiles</span
+                    >Dependent Accounts</span
                   >
                 </div>
                 <div>
@@ -130,72 +133,69 @@
                 </div>
               </div>
               <div v-if="showPatient" class="w-full">
-                <div class="flex space-x-4 items-center py-3 px-3">
-                  <span class="w-7 h-7">
+                <div class="flex space-x-4 items-center py-3 px-3" v-for="(item, index) in patientdependants" :key="index">
+                  <span class="w-7 h-7 cursor-pointer" @click="switchDependants(item.id)">
                     <img
+                    :src="item.image"
+                    v-if="item.image"
+                      class="object-cover object-center w-fullh-full visible group-hover:hidden"
+                      alt="profile"
+                    />
+                    <img
+                    v-else
                       src="@/assets/img/placeholder.png"
                       class="object-cover object-center w-fullh-full visible group-hover:hidden"
                       alt="profile"
                     />
                   </span>
-                  <span>Kamara Claire</span>
-                </div>
-                <div class="flex space-x-4 items-center py-3 px-3">
-                  <span class="w-7 h-7">
-                    <img
-                      src="@/assets/img/placeholder.png"
-                      class="object-cover object-center w-fullh-full visible group-hover:hidden"
-                      alt="profile"
-                    />
-                  </span>
-                  <span>Alfred Claire</span>
+                  <span class="cursor-pointer" @click="switchDependants(item.id)">{{ item.name}}</span>
                 </div>
               </div>
             </li>
-            <li class="w-full mb-4">
+            <li class="w-full mb-4 border-t-2 border-dashed pt-5 border-gray-100">
               <div>
                 <router-link
                   to="/dashboard/patient/account-settings"
-                  class="text-sm font-semibold text-black cursor-pointer"
+                  class="text-sm font-medium text-black cursor-pointer"
                   >Account Settings</router-link
                 >
               </div>
             </li>
             <li class="w-full mb-4">
               <div>
-                <span class="text-sm font-semibold text-black cursor-pointer"
+                <span class="text-sm font-medium text-black cursor-pointer"
                   >Support</span
                 >
               </div>
             </li>
             <li class="w-full mb-4">
               <div>
-                <span class="text-sm font-semibold text-black cursor-pointer"
+                <span class="text-sm font-medium text-black cursor-pointer"
                   >Feedback</span
-                >
-              </div>
-            </li>
-            <li class="w-full mb-4 border-b border-gray-200 pb-5">
-              <div>
-                <span class="text-sm font-semibold text-black cursor-pointer"
-                  >Terms of Service</span
                 >
               </div>
             </li>
             <li class="w-full mb-4">
               <div>
+                <span class="text-sm font-medium text-black cursor-pointer"
+                  >Terms of Service</span
+                >
+              </div>
+            </li>
+            <li class="w-full mb-4 border-b-2 border-gray-100 pb-5">
+              <div>
                 <span
-                  class="text-sm font-bold text-danger cursor-pointer"
+                  class="text-sm font-medium text-danger cursor-pointer"
                   @click="logout"
                   >Sign Out</span
                 >
               </div>
             </li>
-            <li class="w-full mb-4">
-              <cornie-btn
-                class="text-white bg-danger px-10 py-1 font-semibold rounded-xl"
-                >Switch to a provider account</cornie-btn
-              >
+            <li class="w-full mb-4 flex justify-center">
+              <cornie-btn class="text-white bg-danger px-16 py-1 font-semibold rounded-xl"  @click="$router.push('/signup')">Add a New Account</cornie-btn>
+            </li>
+            <li class="w-full mb-4 flex justify-center">
+              <cornie-btn  class="border-primary border-2 px-6 py-0.5 font-semibold rounded-xl text-primary" @click="$router.push($route.query.practitioner ? `/signin?practitioner=${$route.query.practitioner}`: '/signin')">Sign In to an Existing Account</cornie-btn>
             </li>
           </ul>
         </span>
@@ -255,25 +255,31 @@
   <profile-mobile v-model="showProfileMobile" />
 </template>
 <script lang="ts">
+  import { Options, Vue } from "vue-class-component";
+  import { namespace } from "vuex-class";
+  import { cornieClient } from "@/plugins/http";
+  import { logout } from "@/plugins/auth";
+  import localstore from "@/plugins/localstore";
+
+  import { AuthorizedLocation } from "@/types/ILocation";
+  import IPractitioner from "@/types/IPractitioner";
+  import  IPatientSwtich  from "@/types/IPatientSwtich";
+  import User, { CornieUser } from "@/types/user";
+
   import Avatar from "@/components/avatar.vue";
   import ApprovalIcon from "@/components/icons/approval.vue";
   import BankIcon from "@/components/icons/bank.vue";
   import ChevronDownIcon from "@/components/icons/chevrondown.vue";
   import ContactIcon from "@/components/icons/contactinfo.vue";
-  import ChevronRightIcon from "@/components/icons/dialogchevronright.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
   import HierarchyIcon from "@/components/icons/hierarchy.vue";
   import LocationIcon from "@/components/icons/location.vue";
   import NewLocationIcon from "@/components/icons/newlocation.vue";
   import OrgIcon from "@/components/icons/org.vue";
   import PractitionerIcon from "@/components/icons/practitioner.vue";
   import FormIcon from "@/components/icons/questionnaire.vue";
-  import { logout } from "@/plugins/auth";
-  import { AuthorizedLocation } from "@/types/ILocation";
-  import IPractitioner from "@/types/IPractitioner";
-  import User, { CornieUser } from "@/types/user";
   import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
-  import { Options, Vue } from "vue-class-component";
-  import { namespace } from "vuex-class";
+
   import ArrowLeftIcon from "./icons/arrowleft.vue";
   import BellIcon from "./icons/bell.vue";
   import ChevronDown from "./icons/chevrondownprimary.vue";
@@ -291,6 +297,7 @@
 
   const account = namespace("user");
   const routerStore = namespace("routerStore");
+  const patientswtich = namespace("patientswtich");
 
   @Options({
     components: {
@@ -363,6 +370,13 @@
     @account.Mutation
     updatePractitioner!: (practitioners: IPractitioner[]) => void;
 
+    @patientswtich.State
+    patientdependants!: IPatientSwtich[];
+
+    @patientswtich.Action
+    fetchDependaantsAccount!: () => Promise<void>;
+
+
     defaultLocation = "";
     showPatient = false;
     showProfileModal = false;
@@ -420,6 +434,24 @@
       }
     }
 
+    async switchDependants(id:string) {
+    try {
+      const response = await cornieClient().post(
+        "/api/v1/patient-portal/security/switch-accounts/",
+        {dependentPatientId: id}
+      );
+      if(response.data){
+        window.notify({ msg: "Dependant account swtiched", status: "success" });
+        localstore.put("dependatAuthToken", response.data.token);
+        location.reload();
+
+      }
+      //this.reset();
+    } catch (error: any) {
+      window.notify({ msg: "Dependant account not swtiched", status: "error" });
+    }
+  }
+
     get locationDefault() {
       const pt = this.authorizedLocations?.find(
         (i: any) => i.id === this.authCurrentLocation
@@ -445,6 +477,7 @@
     async created() {
       this.authCurrentLocation;
       this.updatePractitioner(this.authPractitioner as any);
+      await this.fetchDependaantsAccount();
     }
   }
 </script>
