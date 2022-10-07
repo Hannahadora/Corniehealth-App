@@ -59,7 +59,9 @@
           <ul
             class="dropdown-menu p-2 bg-white rounded-md w-96 h-auto right-2 absolute -mt-2 z-10 shadow-lg hidden"
           >
-            <li class="flex w-full justify-between mb-3 p-3 border-b-2 border-gray-100">
+            <li
+              class="flex w-full justify-between mb-3 p-3 border-b-2 border-gray-100"
+            >
               <div class="flex space-x-3 items-center">
                 <span class="w-10 h-10 relative justify-center">
                   <div
@@ -102,7 +104,10 @@
                   </p>
                   <p class="text-sm text-black mb-1">MRN - {{ mrn }}</p>
                   <div>
-                    <span class="bg-green-100 text-green-500 text-sm py-1 rounded-md px-4">{{  cornieData?.patient?.accountType }}</span>
+                    <span
+                      class="bg-green-100 text-green-500 text-sm py-1 rounded-md px-4"
+                      >{{ cornieData?.patient?.accountType }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -133,26 +138,39 @@
                 </div>
               </div>
               <div v-if="showPatient" class="w-full">
-                <div class="flex space-x-4 items-center py-3 px-3" v-for="(item, index) in patientdependants" :key="index">
-                  <span class="w-7 h-7 cursor-pointer" @click="switchDependants(item.id)">
+                <div
+                  class="flex space-x-4 items-center py-3 px-3"
+                  v-for="(item, index) in patientdependants"
+                  :key="index"
+                >
+                  <span
+                    class="w-7 h-7 cursor-pointer"
+                    @click="switchDependants(item.id)"
+                  >
                     <img
-                    :src="item.image"
-                    v-if="item.image"
+                      :src="item.image"
+                      v-if="item.image"
                       class="object-cover object-center w-fullh-full visible group-hover:hidden"
                       alt="profile"
                     />
                     <img
-                    v-else
+                      v-else
                       src="@/assets/img/placeholder.png"
                       class="object-cover object-center w-fullh-full visible group-hover:hidden"
                       alt="profile"
                     />
                   </span>
-                  <span class="cursor-pointer" @click="switchDependants(item.id)">{{ item.name}}</span>
+                  <span
+                    class="cursor-pointer"
+                    @click="switchDependants(item.id)"
+                    >{{ item.name }}</span
+                  >
                 </div>
               </div>
             </li>
-            <li class="w-full mb-4 border-t-2 border-dashed pt-5 border-gray-100">
+            <li
+              class="w-full mb-4 border-t-2 border-dashed pt-5 border-gray-100"
+            >
               <div>
                 <router-link
                   to="/dashboard/patient/account-settings"
@@ -192,10 +210,24 @@
               </div>
             </li>
             <li class="w-full mb-4 flex justify-center">
-              <cornie-btn class="text-white bg-danger px-16 py-1 font-semibold rounded-xl"  @click="$router.push('/signup')">Add a New Account</cornie-btn>
+              <cornie-btn
+                class="text-white bg-danger px-16 py-1 font-semibold rounded-xl"
+                @click="$router.push('/signup')"
+                >Add a New Account</cornie-btn
+              >
             </li>
             <li class="w-full mb-4 flex justify-center">
-              <cornie-btn  class="border-primary border-2 px-6 py-0.5 font-semibold rounded-xl text-primary" @click="$router.push($route.query.practitioner ? `/signin?practitioner=${$route.query.practitioner}`: '/signin')">Sign In to an Existing Account</cornie-btn>
+              <cornie-btn
+                class="border-primary border-2 px-6 py-0.5 font-semibold rounded-xl text-primary"
+                @click="
+                  $router.push(
+                    $route.query.practitioner
+                      ? `/signin?practitioner=${$route.query.practitioner}`
+                      : '/signin'
+                  )
+                "
+                >Sign In to an Existing Account</cornie-btn
+              >
             </li>
           </ul>
         </span>
@@ -255,196 +287,198 @@
   <profile-mobile v-model="showProfileMobile" />
 </template>
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
-  import { namespace } from "vuex-class";
-  import { cornieClient } from "@/plugins/http";
-  import { logout } from "@/plugins/auth";
-  import localstore from "@/plugins/localstore";
+import { Options, Vue } from "vue-class-component";
+import { namespace } from "vuex-class";
+import { cornieClient } from "@/plugins/http";
+import { logout } from "@/plugins/auth";
+import localstore from "@/plugins/localstore";
 
-  import { AuthorizedLocation } from "@/types/ILocation";
-  import IPractitioner from "@/types/IPractitioner";
-  import  IPatientSwtich  from "@/types/IPatientSwtich";
-  import User, { CornieUser } from "@/types/user";
+import { AuthorizedLocation } from "@/types/ILocation";
+import IPractitioner from "@/types/IPractitioner";
+import IPatientSwtich from "@/types/IPatientSwtich";
+import User, { CornieUser } from "@/types/user";
 
-  import Avatar from "@/components/avatar.vue";
-  import ApprovalIcon from "@/components/icons/approval.vue";
-  import BankIcon from "@/components/icons/bank.vue";
-  import ChevronDownIcon from "@/components/icons/chevrondown.vue";
-  import ContactIcon from "@/components/icons/contactinfo.vue";
-  import ChevronRightIcon from "@/components/icons/chevronright.vue";
-  import HierarchyIcon from "@/components/icons/hierarchy.vue";
-  import LocationIcon from "@/components/icons/location.vue";
-  import NewLocationIcon from "@/components/icons/newlocation.vue";
-  import OrgIcon from "@/components/icons/org.vue";
-  import PractitionerIcon from "@/components/icons/practitioner.vue";
-  import FormIcon from "@/components/icons/questionnaire.vue";
-  import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
+import Avatar from "@/components/avatar.vue";
+import ApprovalIcon from "@/components/icons/approval.vue";
+import BankIcon from "@/components/icons/bank.vue";
+import ChevronDownIcon from "@/components/icons/chevrondown.vue";
+import ContactIcon from "@/components/icons/contactinfo.vue";
+import ChevronRightIcon from "@/components/icons/chevronright.vue";
+import HierarchyIcon from "@/components/icons/hierarchy.vue";
+import LocationIcon from "@/components/icons/location.vue";
+import NewLocationIcon from "@/components/icons/newlocation.vue";
+import OrgIcon from "@/components/icons/org.vue";
+import PractitionerIcon from "@/components/icons/practitioner.vue";
+import FormIcon from "@/components/icons/questionnaire.vue";
+import SettingsModal from "@/views/dashboard/settings/SettingsSidebar.vue";
 
-  import ArrowLeftIcon from "./icons/arrowleft.vue";
-  import BellIcon from "./icons/bell.vue";
-  import ChevronDown from "./icons/chevrondownprimary.vue";
-  import SettingsIcon from "./icons/settings.vue";
-  import SettingsWhiteIcon from "./icons/settingswhite.vue";
+import ArrowLeftIcon from "./icons/arrowleft.vue";
+import BellIcon from "./icons/bell.vue";
+import ChevronDown from "./icons/chevrondownprimary.vue";
+import SettingsIcon from "./icons/settings.vue";
+import SettingsWhiteIcon from "./icons/settingswhite.vue";
 
-  import CartIcon from "./icons/cart.vue";
-  import CloseIcon from "./icons/close.vue";
-  import MenuIcon from "./icons/menu.vue";
-  import NotifyIcon from "./icons/notify.vue";
+import CartIcon from "./icons/cart.vue";
+import CloseIcon from "./icons/close.vue";
+import MenuIcon from "./icons/menu.vue";
+import NotifyIcon from "./icons/notify.vue";
 
-  import ProfileMobile from "./mobileprofilemodal.vue";
-  import MobileMenu from "./mobilesidebar.vue";
-  import ProfileSection from "./profileModal.vue";
+import ProfileMobile from "./mobileprofilemodal.vue";
+import MobileMenu from "./mobilesidebar.vue";
+import ProfileSection from "./profileModal.vue";
 
-  const account = namespace("user");
-  const routerStore = namespace("routerStore");
-  const patientswtich = namespace("patientswtich");
+const account = namespace("user");
+const routerStore = namespace("routerStore");
+const patientswtich = namespace("patientswtich");
 
-  @Options({
-    components: {
-      ArrowLeftIcon,
-      ChevronDown,
-      BankIcon,
-      SettingsIcon,
-      SettingsWhiteIcon,
-      FormIcon,
-      BellIcon,
-      OrgIcon,
-      ContactIcon,
-      HierarchyIcon,
-      PractitionerIcon,
-      ApprovalIcon,
-      SettingsModal,
-      Avatar,
-      LocationIcon,
-      ChevronDownIcon,
-      NewLocationIcon,
-      CartIcon,
-      NotifyIcon,
-      CloseIcon,
-      ChevronRightIcon,
-      ProfileSection,
-      MenuIcon,
-      MobileMenu,
-      ProfileMobile,
-    },
-  })
-  export default class NavBar extends Vue {
-    showSettingsModal = false;
-    localSrc = require("../assets/img/locationIcon.png");
-    expand = false;
-    showFullHeight = false;
+@Options({
+  components: {
+    ArrowLeftIcon,
+    ChevronDown,
+    BankIcon,
+    SettingsIcon,
+    SettingsWhiteIcon,
+    FormIcon,
+    BellIcon,
+    OrgIcon,
+    ContactIcon,
+    HierarchyIcon,
+    PractitionerIcon,
+    ApprovalIcon,
+    SettingsModal,
+    Avatar,
+    LocationIcon,
+    ChevronDownIcon,
+    NewLocationIcon,
+    CartIcon,
+    NotifyIcon,
+    CloseIcon,
+    ChevronRightIcon,
+    ProfileSection,
+    MenuIcon,
+    MobileMenu,
+    ProfileMobile,
+  },
+})
+export default class NavBar extends Vue {
+  showSettingsModal = false;
+  localSrc = require("../assets/img/locationIcon.png");
+  expand = false;
+  showFullHeight = false;
 
-    get routeName() {
-      return this.$route.fullPath === "/dashboard/provider/clinical/"
-        ? "EHR"
-        : this.$route.name;
-    }
+  get routeName() {
+    return this.$route.fullPath === "/dashboard/provider/clinical/"
+      ? "EHR"
+      : this.$route.name;
+  }
 
-    @routerStore.State("recents")
-    recentRoutes!: { path: string; name: string }[];
+  @routerStore.State("recents")
+  recentRoutes!: { path: string; name: string }[];
 
-    @account.State
-    user!: User;
+  @account.State
+  user!: User;
 
-    @account.Getter
-    authPractitioner!: IPractitioner;
+  @account.Getter
+  authPractitioner!: IPractitioner;
 
-    @account.Getter
-    authorizedLocations!: AuthorizedLocation[];
+  @account.Getter
+  authorizedLocations!: AuthorizedLocation[];
 
-    @account.State
-    currentLocation!: string;
+  @account.State
+  currentLocation!: string;
 
-    @account.Getter
-    authCurrentLocation!: string;
+  @account.Getter
+  authCurrentLocation!: string;
 
-    @account.Getter
-    cornieUser!: CornieUser;
+  @account.Getter
+  cornieUser!: CornieUser;
 
-    @account.State
-    cornieData!: any;
+  @account.State
+  cornieData!: any;
 
-    @account.Mutation
-    switchCurrentLocation!: (locationId: any) => void;
+  @account.Mutation
+  switchCurrentLocation!: (locationId: any) => void;
 
-    @account.Mutation
-    updatePractitioner!: (practitioners: IPractitioner[]) => void;
+  @account.Mutation
+  updatePractitioner!: (practitioners: IPractitioner[]) => void;
 
-    @patientswtich.State
-    patientdependants!: IPatientSwtich[];
+  @patientswtich.State
+  patientdependants!: IPatientSwtich[];
 
-    @patientswtich.Action
-    fetchDependaantsAccount!: () => Promise<void>;
+  @patientswtich.Action
+  fetchDependaantsAccount!: () => Promise<void>;
 
+  defaultLocation = "";
+  showPatient = false;
+  showProfileModal = false;
+  showMobileMenu = false;
+  showProfileMobile = false;
 
-    defaultLocation = "";
-    showPatient = false;
-    showProfileModal = false;
-    showMobileMenu = false;
-    showProfileMobile = false;
+  get profilePhoto() {
+    return this.cornieData?.patient?.profilePhoto;
+  }
 
-    get profilePhoto() {
-      return this.cornieData?.patient?.profilePhoto;
-    }
+  showSettings() {
+    this.showSettingsModal = true;
+  }
+  get designation() {
+    if (!this.authPractitioner) return "Root";
+    return this.authPractitioner.jobDesignation || this.authPractitioner.type;
+  }
 
-    showSettings() {
-      this.showSettingsModal = true;
-    }
-    get designation() {
-      if (!this.authPractitioner) return "Root";
-      return this.authPractitioner.jobDesignation || this.authPractitioner.type;
-    }
+  get email() {
+    return this.cornieUser?.email || "";
+  }
 
-    get email() {
-      return this.cornieUser?.email || "";
-    }
+  get mrn() {
+    return this.cornieData?.patient?.mrn || "";
+  }
 
-    get mrn() {
-      return this.cornieData?.patient?.mrn || "";
-    }
+  get name() {
+    const patient = this.cornieData?.patient;
+    if (!patient) return "";
+    const firstname = patient.firstname || "";
+    const middlename = patient.middlename || "";
+    const lastname = patient.lastname || "";
 
-    get name() {
-      if (!this.cornieUser?.id) return "";
-      const lastName = this.cornieUser.lastName;
-      const firstInitials = this.cornieUser.firstName.charAt(0).toUpperCase();
-      let middleInitials =
-        this.cornieUser.lastName?.charAt(0)?.toUpperCase() || "";
-      middleInitials = middleInitials ? `${middleInitials}.` : "";
-      return `${lastName} ${firstInitials}. ${middleInitials}`;
-    }
-    async setDefault(value: string) {
-      const confirmed = await window.confirmAction({
-        message: "Do you want to switch this location?",
-        yes: "Yes",
-        no: "No",
+    const firstInitials = firstname.charAt(0).toUpperCase();
+    let middleInitials = middlename.charAt(0).toUpperCase();
+    middleInitials = middleInitials ? `${middleInitials}.` : "";
+    return `${lastname} ${firstInitials}. ${middleInitials}`;
+  }
+
+  async setDefault(value: string) {
+    const confirmed = await window.confirmAction({
+      message: "Do you want to switch this location?",
+      yes: "Yes",
+      no: "No",
+    });
+    if (!confirmed) return;
+
+    try {
+      this.switchCurrentLocation(value);
+      window.notify({
+        msg: "Authorized Locations Swtiched",
+        status: "success",
       });
-      if (!confirmed) return;
-
-      try {
-        this.switchCurrentLocation(value);
-        window.notify({
-          msg: "Authorized Locations Swtiched",
-          status: "success",
-        });
-      } catch (error) {
-        window.notify({
-          msg: "Authorized Locations not Swtiched",
-          status: "error",
-        });
-      }
+    } catch (error) {
+      window.notify({
+        msg: "Authorized Locations not Swtiched",
+        status: "error",
+      });
     }
+  }
 
-    async switchDependants(id:string) {
+  async switchDependants(id: string) {
     try {
       const response = await cornieClient().post(
         "/api/v1/patient-portal/security/switch-accounts/",
-        {dependentPatientId: id}
+        { dependentPatientId: id }
       );
-      if(response.data){
+      if (response.data) {
         window.notify({ msg: "Dependant account swtiched", status: "success" });
         localstore.put("dependatAuthToken", response.data.token);
         location.reload();
-
       }
       //this.reset();
     } catch (error: any) {
@@ -452,54 +486,54 @@
     }
   }
 
-    get locationDefault() {
-      const pt = this.authorizedLocations?.find(
-        (i: any) => i.id === this.authCurrentLocation
-      );
-      return pt ? `${pt.name}` : "Switch default location";
-    }
-    get sortLocations() {
-      const sorted = this.authorizedLocations?.sort((a, b) => {
-        if (a.currentLocation) return -1;
-        if (b.currentLocation) return 1;
-
-        return 0;
-      });
-      return sorted;
-    }
-    async logout() {
-      await logout();
-      this.$router.push("/login");
-    }
-    mounted() {
-      this.updatePractitioner(this.authPractitioner as any);
-    }
-    async created() {
-      this.authCurrentLocation;
-      this.updatePractitioner(this.authPractitioner as any);
-      await this.fetchDependaantsAccount();
-    }
+  get locationDefault() {
+    const pt = this.authorizedLocations?.find(
+      (i: any) => i.id === this.authCurrentLocation
+    );
+    return pt ? `${pt.name}` : "Switch default location";
   }
+  get sortLocations() {
+    const sorted = this.authorizedLocations?.sort((a, b) => {
+      if (a.currentLocation) return -1;
+      if (b.currentLocation) return 1;
+
+      return 0;
+    });
+    return sorted;
+  }
+  async logout() {
+    await logout();
+    this.$router.push("/login");
+  }
+  mounted() {
+    this.updatePractitioner(this.authPractitioner as any);
+  }
+  async created() {
+    this.authCurrentLocation;
+    this.updatePractitioner(this.authPractitioner as any);
+    await this.fetchDependaantsAccount();
+  }
+}
 </script>
 <style scoped>
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-  .experience-links-con-max {
-    height: auto;
-    overflow: hidden;
-    transition: all 0.5s ease-in-out;
-  }
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.experience-links-con-max {
+  height: auto;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
 
-  .experience-links-con-min {
-    height: 190px;
-    overflow: hidden;
-    transition: all 0.5s ease-in-out;
-  }
+.experience-links-con-min {
+  height: 190px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
 
-  .more {
-    font-size: 14px;
-    color: #0a0870;
-    font-weight: bold;
-  }
+.more {
+  font-size: 14px;
+  color: #0a0870;
+  font-weight: bold;
+}
 </style>
