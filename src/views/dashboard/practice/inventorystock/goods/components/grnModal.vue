@@ -116,7 +116,7 @@
                 <div class="mt-5 grid grid-cols-2 gap-4 w-full">
                   <list-select label="Recorder" v-model="supplierType" :items="['Internal Supplier','External Supplier']"  :placeholder="'--Select--'" @setValue="setValue"/>
                     <cornie-input
-                   v-if="valueType != 'category'"
+                   v-if="valueType !== 'category'"
                     label="Supplier Name"
                     class="w-full mb-4"
                     placeholder="--Enter--"

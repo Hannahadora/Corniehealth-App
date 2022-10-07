@@ -81,16 +81,14 @@
                         >
                         </cornie-select>
                        
-                        <cornie-select
+                        <cornie-input
                             class="required w-full"
-                            required
-                            :rules="required"
-                            :items="allPerformer"
                             label="requester"
                             placeholder="--Select--"
-                            v-model="requesterId"
+                            :disabled="true"
+                            :modelValue="authPractitioner.firstName +' '+  authPractitioner.lastName"
                             >
-                        </cornie-select>
+                        </cornie-input>
                   
                         <cornie-select
                             class="required cursor-pointer"
@@ -579,6 +577,7 @@ const allergy = namespace("allergy");
 const issues = namespace("issues");
 const condition = namespace("condition");
 const roles = namespace("roles");
+const userStore = namespace("user");
 
 type Sorter = (a: any, b: any) => number;
 
@@ -664,6 +663,9 @@ export default class MedicationModal extends Vue {
 
   @issues.Action
   fetchIssues!: (patientId: string) => Promise<void>
+
+  @userStore.Getter
+  authPractitioner!: IPractitioner;
 
  
 
@@ -952,7 +954,7 @@ export default class MedicationModal extends Vue {
       intent: this.intent,
       priority: this.priority,
       category: this.category,
-      requesterId: this.requesterId,
+      requesterId: this.authPractitioner.id,
       patientId: this.onepatientId,
       dispenserId: this.dispenserId,
       supportingInformation: this.supportingInformation || undefined,

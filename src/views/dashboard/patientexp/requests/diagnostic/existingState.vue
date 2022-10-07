@@ -1,12 +1,12 @@
 <template>
   <div class="w-full pb-80">
-     <span class="flex justify-end w-full mb-8">
+     <!-- <span class="flex justify-end w-full mb-8">
         <button
           class="bg-danger rounded-lg text-white mt-5 py-2 px-6 mb-5 font-semibold focus:outline-none hover:opacity-90"
           @click="showModalDiagnostic = true">
           New Request
         </button>
-      </span>
+      </span> -->
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
