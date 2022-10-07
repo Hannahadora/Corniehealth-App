@@ -21,6 +21,7 @@ export const cornieClient = () =>
   new JSONClient(
     {
       "Content-Type": "application/json",
+      "X-Active-Patient": localstore.get("dependatAuthToken"),
       Authorization: authToken(),
     },
     cornieUrl
