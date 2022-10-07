@@ -4,7 +4,7 @@
     title="Diagnostics"
     :count="diagnostics?.length"
     more="View all"
-    @add="$router.push('diagnostics')"
+    @add="$router.push('')"
   >
     <template #empty>
       <div
