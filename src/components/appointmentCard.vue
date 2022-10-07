@@ -6,7 +6,7 @@
     :showTotal="true"
     :count="total"
     @view:all="
-      $router.push(`/dashboard/provider/clinical/${patientId}/appointments`)
+      $router.push(viewAllLink)
     "
     title="Appointments"
   >
@@ -91,6 +91,9 @@
   export default class AppointmentCard extends Vue {
     @Prop({ type: Array, default: () => [] })
     appointments!: any[];
+
+    @Prop({ type: String, default: () => "" })
+    viewAllLink!: string;
 
     get patientId() {
       return this.$route.params.id as string;

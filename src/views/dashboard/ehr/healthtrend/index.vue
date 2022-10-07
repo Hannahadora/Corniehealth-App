@@ -16,9 +16,13 @@
           <diagnostic-card :diagnostics="diagnostics" />
           <medication-card :medications="medications" />
           <allergy-card :allergys="allergies" />
-          <referral-card :referrals="referrals"/>
+          <referral-card :referrals="referrals" />
           <!-- <note-card /> -->
-          <appointment-card :appointments="appointments"/>
+          <appointment-card
+            @showAppointment="showAppointmentModal = true"
+            :appointments="appointments"
+            :viewAllLink="viewAllAppointment"
+          />
         </div>
 
         <div class="w-full grid gap-8 mt-8">
@@ -27,93 +31,87 @@
         </div>
       </div>
     </div>
+    <appointment-modal v-model="showAppointmentModal" />
   </main>
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+  import AppointmentModal from "@/views/dashboard/ehr/appointment/appointmentDialog.vue";
+  import { Options, Vue } from "vue-class-component";
 
-import MedicationCard from "./medicationCard.vue";
+  import MedicationCard from "@/components/medicationCard.vue";
 
-import conditionCard from "./conditionCard.vue";
-import AllergyCard from "./allergyCard.vue";
-import DiagnosticCard from "./diagnosticCard.vue";
-import ReferralCard from "./referralCard.vue";
-import NoteCard from "./noteCard.vue";
-import AppointmentCard from "./appointmentCard.vue";
-import HistoryCard from "./historyCard.vue";
-import { cornieClient } from "@/plugins/http";
+  import AppointmentCard from "@/components/appointmentCard.vue";
+  import { cornieClient } from "@/plugins/http";
+  import AllergyCard from "./allergyCard.vue";
+  import conditionCard from "./conditionCard.vue";
+  import DiagnosticCard from "./diagnosticCard.vue";
+  import HistoryCard from "./historyCard.vue";
+  import NoteCard from "./noteCard.vue";
+  import ReferralCard from "./referralCard.vue";
 
-import RegistrationChart from "./registration-chart.vue";
-import ChartCard from "./chart-card.vue";
-import AppointmentChart from "./appointment-chart.vue";
-import VisitsChart from "./visits-chart.vue";
-import BillingsChart from "./billings-chart.vue";
-import MedicationChart from "./medication-chart.vue";
-import ReferralChart from "./referral-chart.vue";
-// import ResourceChart from "./resource-chart.vue";
-import MessagesChart from "./messages-chart.vue";
-import InpatientChart from "./inpatient-chart.vue";
-import QuestionnaireChart from "./questionnaire-chart.vue";
+  // import ResourceChart from "./resource-chart.vue";
 
-import { namespace } from "vuex-class";
-import { Demographics, Guarantor, IPatient } from "@/types/IPatient";
-import { Prop, Ref } from "vue-property-decorator";
-import EmptyState from "./empty-state.vue";
-import ExistingState from "./existing-state.vue";
+  import { namespace } from "vuex-class";
+  import BloodChart from "./bloodChart.vue";
+  import WeightChart from "./weight-chart.vue";
 
-const patients = namespace("patients");
-import BloodChart from "./bloodChart.vue";
-import WeightChart from "./weight-chart.vue";
+  const patients = namespace("patients");
 
-@Options({
-  name: "HealthTrendIndex",
-  components: {
-    MedicationCard,
-    WeightChart,
-    conditionCard,
-    BloodChart,
-    AllergyCard,
-    DiagnosticCard,
-    ReferralCard,
-    NoteCard,
-    AppointmentCard,
-    HistoryCard,
-  },
-})
-export default class HelthTrends extends Vue {
-  diagnostics = <any>[];
-  medications = <any>[];
-  allergies = <any>[];
-  appointments = <any>[];
-  referrals = <any>[];
-  conditions = <any>[];
+  @Options({
+    name: "HealthTrendIndex",
+    components: {
+      MedicationCard,
+      WeightChart,
+      conditionCard,
+      BloodChart,
+      AllergyCard,
+      DiagnosticCard,
+      ReferralCard,
+      NoteCard,
+      AppointmentCard,
+      HistoryCard,
+      AppointmentModal,
+    },
+  })
+  export default class HelthTrends extends Vue {
+    diagnostics: any = [];
+    medications: any = [];
+    allergies: any = [];
+    appointments: any = [];
+    referrals: any = [];
+    conditions: any = [];
+    showAppointmentModal = false;
 
-  get patientId() {
-    return this.$route.params.id as string;
-  }
+    get patientId() {
+      return this.$route.params.id as string;
+    }
 
-  async fetchHealthTrend() {
-    const url = `/api/v1/health-trends/all/${this.patientId}`;
-    try {
-      const response: any = await cornieClient().get(url);
-      if (response.success) {
-        this.diagnostics = response.data.diagnostics;
-        this.medications = response.data.medication;
-        this.allergies = response.data.allergies;
-        this.appointments = response.data.appointments;
-        this.referrals = response.data.referrals;
-        this.conditions = response.data.conditions;
+    get viewAllAppointment() {
+      return `/dashboard/provider/clinical/${this.patientId}/appointments`;
+    }
+
+    async fetchHealthTrend() {
+      const url = `/api/v1/health-trends/all/${this.patientId}`;
+      try {
+        const response: any = await cornieClient().get(url);
+        if (response.success) {
+          this.diagnostics = response.data.diagnostics;
+          this.medications = response.data.medication;
+          this.allergies = response.data.allergies;
+          this.appointments = response.data.appointments;
+          this.referrals = response.data.referrals;
+          this.conditions = response.data.conditions;
+        }
+      } catch (e: any) {
+        window.notify({
+          msg: "There was an error when fetching health trends",
+          status: "error",
+        });
       }
-    } catch (e: any) {
-      window.notify({
-        msg: "There was an error when fetching health trends",
-        status: "error",
-      });
+    }
+
+    async created() {
+      await this.fetchHealthTrend();
     }
   }
-
-  async created() {
-    await this.fetchHealthTrend();
-  }
-}
 </script>
