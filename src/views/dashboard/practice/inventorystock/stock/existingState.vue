@@ -32,12 +32,13 @@
       </div>
     </div>
     <div class="">
-        <new-tab :items="tabLinks" v-model="currentTab" :width="'w-2/3'" class="mt-12">
+        <new-tab :items="tabLinks" v-model="currentTab" :width="'w-9/12'" class="mt-12">
             <total-section/>
             <holding-section />
             <pharmacy-section />
             <diagnostic-section/>
             <inpateint-section />
+            <inactive-section/>
         </new-tab>
     </div>
    
@@ -78,6 +79,7 @@ import HoldingSection from "./sections/holdingExsiting.vue";
 import PharmacySection from "./sections/PharmacyExisiting.vue";
 import DiagnosticSection from "./sections/DiagnosticExisting.vue";
 import InpateintSection from "./sections/inPatientExsiting.vue";
+import InactiveSection from "./sections/InactiveSection.vue";
 
 const location = namespace("location");
 const inventorystock = namespace("inventorystock");
@@ -110,6 +112,7 @@ const user = namespace("user");
     PharmacySection,
     DiagnosticSection,
     InpateintSection,
+    InactiveSection,
   },
 })
 
@@ -142,7 +145,8 @@ export default class InventoryExistingState extends Vue {
     "Holding",
     "Pharmacy",
     "Diagnostics",
-    "InPatient"
+    "InPatient",
+    "Inactive"
   ];
 
   currentTab = 0;

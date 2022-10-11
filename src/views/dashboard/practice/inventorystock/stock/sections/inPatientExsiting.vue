@@ -19,13 +19,13 @@
             </div>
         </template>
         <template #actions="{ item }">
-            <div
+            <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             >
             <edit-icon class="text-purple-700 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
-            </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            </div> -->
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showView(item)">
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
@@ -92,6 +92,8 @@
         <availability-modal v-model="showAvailable" :id="stockId" :item="selectItem"/>
         <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
+        <viewstock-modal v-model="showViewStockbalance" :id="stockId" :item="selectItem"/>
+        <batchinfo-modal v-model="showBatch" :id="stockId" :item="selectItem" :bactchitem="BulkSelectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -131,7 +133,7 @@ import DeactivateModal from "../components/Deactivate.vue";
 import AvailabilityModal from "../components/availableModal.vue";
 import WithdrawnInstructionModal from "../components/withdrawalInstrcution.vue";
 import WithdrawItemModal from "../components/withdrawItemModal.vue";
-
+import ViewstockModal from "../components/viewStockBalance.vue";
 
 const location = namespace("location");
 const inventorystock = namespace("inventorystock");
@@ -166,7 +168,8 @@ const user = namespace("user");
     AllocateBulkModal,
     WithdrawnInstructionModal,
     WithdrawItemModal,
-    WithdrawIcon
+    WithdrawIcon,
+    ViewstockModal
   },
   
 })
@@ -199,7 +202,9 @@ export default class totalExistingState extends Vue {
   showAvailable = false;
   showAllocateBulk = false;
   withdrawInstruction = false;
+  showViewStockbalance = false;
   withdrawItemOnly = false;
+  showBatch = false;
   singleAllocateItem = [];
   BulkSelectedItem = [] as any;
 
@@ -301,6 +306,18 @@ export default class totalExistingState extends Vue {
     if (!this.query) return inventorystocks;
     return search.searchObjectArray(inventorystocks, this.query);
   }
+
+  showView(value:any){
+    this.showViewStockbalance = true;
+    this.selectItem = value;
+  }
+
+  showBatchInfo(value:any){
+    this.showBatch = true;
+    this.selectItem = value;
+    this.BulkSelectedItem = [...value];
+  }
+
 
   getsales(value: any, id: string) {
     const pt = value.find((i: any) => value.length > 0);
