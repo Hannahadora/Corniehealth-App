@@ -64,7 +64,7 @@
             </div>
           </accordion-component>
 
-          <accordion-component
+          <!-- <accordion-component
             class="text-primary shadow-none border-none"
             title="Fulfillment Option"
             :opened="false"
@@ -107,14 +107,31 @@
                 :items="productPharmacies"
               />
             </div>
-          </accordion-component>
+          </accordion-component> -->
 
           <div
-            class="mt-6 text-red-500 text-sm cursor-pointer"
+            v-if="!fileInfo"
+            class="mt-6 flex items-center text-green-500 text-sm cursor-pointer"
             @click="uploadPrescriptionModal = true"
           >
+            <upload-green class="mr-4" />
             Upload Prescription
           </div>
+          <div v-else class="flex items-center">
+            <img
+              class="h-6 w-6"
+              :src="prescription.prescriptionImageUrl"
+              alt="uploaded-image"
+            />
+            <div>
+              <p class="font-bold text-sm">{{ fileInfo.fileExt }}</p>
+              <p class="text-gray-300 text-xs">{{ fileInfo.fileSize }}</p>
+            </div>
+          </div>
+
+          <p class="mt-7" v-if="medications.length > 0">
+            View cart to review your items.
+          </p>
         </v-form>
       </cornie-card-text>
 
@@ -122,16 +139,16 @@
         <cornie-btn
           class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
         >
-          <img class="mr-2" src="@/assets/img/cart.svg" alt="" />
-          Add to Cart
+          Cancel
         </cornie-btn>
         <cornie-btn
           @click="save"
           :loading="loading"
+          :disabled="medications.length === 0"
           type="submit"
           class="text-white bg-danger px-3 py-1 rounded-lg"
         >
-          Pay
+          View Cart
         </cornie-btn>
       </div>
     </cornie-card>
@@ -149,6 +166,7 @@ import CornieCard from "@/components/cornie-card";
 import ArrowLeft from "@/components/icons/arrowleft.vue";
 import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 import PlusIcon from "@/components/icons/plus.vue";
+import UploadGreen from "@/components/icons/upload-green.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CornieSelect from "@/components/cornieselect.vue";
@@ -200,6 +218,7 @@ const patients = namespace("patients");
     FhirInput,
     AddMedications,
     UploadPrescription,
+    UploadGreen,
   },
 })
 export default class AddPrescriptionDialog extends Vue {
@@ -241,6 +260,8 @@ export default class AddPrescriptionDialog extends Vue {
     },
   };
 
+  fileInfo: any = {};
+
   get addresses() {
     return [];
   }
@@ -277,13 +298,14 @@ export default class AddPrescriptionDialog extends Vue {
     (this.prescription.prescriptionImageUrl = data.file),
       (this.prescription.prescriber_name = data.prescriberName),
       (this.prescription.prescriber_email = data.email);
+    this.fileInfo = data.fileInfo;
   }
 
   async save() {}
 
   async created() {
-    await this.fetchProductPharmacies()
-    await this.fetchProductLocations()
+    await this.fetchProductPharmacies();
+    await this.fetchProductLocations();
   }
 }
 </script>

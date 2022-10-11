@@ -62,7 +62,7 @@
                 @click="submit"
                 class="text-white bg-danger font-semibold px-6 rounded-xl"
               >
-                Add
+                Add to Cart
               </cornie-btn>
             </div>
           </div>
@@ -70,6 +70,10 @@
       </div>
     </v-form>
 
+    <add-to-cart-confirmation
+      v-model="addToCartModal"
+      :item="choosenMoedication"
+    />
     <!-- <cornie-card> -->
   </div>
 </template>
@@ -126,6 +130,7 @@ export default class addMedications extends Vue {
   @user.Getter
   authCurrentLocation!: any;
 
+  addToCartModal= false;
   medicationId = "";
   // chosenMedications = [] as any;
   chosenMedication = {} as any;
@@ -159,6 +164,7 @@ export default class addMedications extends Vue {
     this.$emit("addMedication", this.chosenMedication);
     // this.chosenMedications = [];
     this.show = false;
+    this.addToCartModal= true
   }
 
   orderBy: Sorter = () => 1;
