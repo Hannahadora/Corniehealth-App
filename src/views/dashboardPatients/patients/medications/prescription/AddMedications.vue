@@ -177,7 +177,7 @@ export default class addMedications extends Vue {
   ) {
     try {
       const { data } = await cornieClient().get(
-        `/patient-portal/catalogue-product/search-catalogue?query=${query}&pharmacies=${pharmacies}&classifications=${classifications}&subClassifications=${subClassifications}&locations=${locations}`
+        `/api/v1/patient-portal/catalogue-product/search-catalogue?query=${query}&pharmacies=${pharmacies}&classifications=${classifications}&subClassifications=${subClassifications}&locations=${locations}`
       );
       this.medicationDetails = data || [];
     } catch (error) {

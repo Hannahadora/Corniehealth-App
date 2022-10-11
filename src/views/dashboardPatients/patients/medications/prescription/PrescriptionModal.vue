@@ -248,7 +248,7 @@ export default class AddPrescriptionDialog extends Vue {
   async fetchProductLocations() {
     try {
       const { data } = await cornieClient().get(
-        `/patient-portal/catalogue-product/get-locations`
+        `/api/v1/patient-portal/catalogue-product/get-locations`
       );
       this.productLocations = data || [];
     } catch (error) {
@@ -262,7 +262,7 @@ export default class AddPrescriptionDialog extends Vue {
   async fetchProductPharmacies() {
     try {
       const { data } = await cornieClient().get(
-        `/patient-portal/catalogue-product/get-pharmacies`
+        `/api/v1/patient-portal/catalogue-product/get-pharmacies`
       );
       this.productPharmacies = data || [];
     } catch (error) {
