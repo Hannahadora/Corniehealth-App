@@ -21,9 +21,11 @@ const links: ISidebarLink[] = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", 
-        to: "/dashboard/experience/patients" ,
-        hasSubsection: false },
+      {
+        name: "Patients",
+        to: "/dashboard/experience/patients",
+        hasSubsection: false,
+      },
       {
         name: "Calendar",
         to: "/dashboard/experience/calendar",
@@ -200,16 +202,6 @@ const links: ISidebarLink[] = [
         to: "/dashboard/provider/practice/inventory",
         hasSubsection: false,
       },
-      // {
-      //   name: "Loyalty",
-      //   to: "inventory",
-      //   hasSubsection: false,
-      // },
-      // {
-      //   name: "Promotions",
-      //   to: "pricebook",
-      //   hasSubsection: false,
-      // },
       {
         name: "Practitoner Directory",
         to: "practitioners",
@@ -237,40 +229,6 @@ const links: ISidebarLink[] = [
       },
     ],
   },
-
-  // {
-  //   name: "In-Patient",
-  //   to: "in-patient",
-  //   icon: "clinic-icon",
-  //   hasSubsection: false,
-  // },
-
-  // {
-  //   name: "Accounting",
-  //   to: "accounting",
-  //   icon: "wallet-icon",
-  //   hasSubsection: false,
-  // },
-
-  // { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
-  // {
-  //   name: "Categories",
-  //   to: "categories",
-  //   icon: "categories-icon",
-  //   hasSubsection: true,
-  //   children: [
-  //     {
-  //       name: "Locations",
-  //       to: "/dashboard/provider/settings/locations",
-  //       hasSubsection: false,
-  //     },
-  //     {
-  //       name: "Group",
-  //       to: "/dashboard/provider/settings/group",
-  //       hasSubsection: false,
-  //     },
-  //   ]
-  // },
 ];
 const patientLinks: ISidebarLink[] = [
   {
@@ -279,7 +237,6 @@ const patientLinks: ISidebarLink[] = [
     icon: "dashboard-icon",
     hasSubsection: false,
   },
-
 ];
 
 const soloLinks = [
@@ -289,7 +246,11 @@ const soloLinks = [
     icon: "patient-icon",
     hasSubsection: true,
     children: [
-      { name: "Patients", to: { name: "Patients Experience Management" }, hasSubsection: false },
+      {
+        name: "Patients",
+        to: { name: "Patients Experience Management" },
+        hasSubsection: false,
+      },
       {
         name: "Schedules",
         to: "/dashboard/experience/schedules",
@@ -330,15 +291,9 @@ const soloLinks = [
     icon: "book-icon",
     hasSubsection: false,
   },
-  // {
-  //   name: "Billing & Payments",
-  //   to: "bills",
-  //   icon: "debit-card-icon",
-  //   hasSubsection: false,
-  // },
   { name: "Referrals", to: "refs", icon: "refer-icon", hasSubsection: false },
   {
-    name: "CAtegories",
+    name: "Categories",
     to: "categories",
     icon: "categories-icon",
     hasSubsection: true,
