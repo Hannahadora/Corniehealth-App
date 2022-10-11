@@ -279,10 +279,10 @@ export default class ProblemDialog extends Vue {
   isVisible = "";
   showDatalist = false;
   clickedBg = false;
-  selected = <any>{};
+  selected: any = {};
 
   query = "";
-  checkProblem = <any>{};
+  checkProblem: any = {};
   problemCode = "";
   type = "condition";
 

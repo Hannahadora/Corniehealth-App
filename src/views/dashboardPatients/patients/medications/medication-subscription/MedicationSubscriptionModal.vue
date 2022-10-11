@@ -19,7 +19,7 @@
         </div>
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable">
-        <v-form class="flex-grow flex flex-col" @submit="save">
+        <v-form class="flex-grow flex flex-col">
           <accordion-component
             class="text-primary"
             title="Subscription"
@@ -33,32 +33,32 @@
             <div class="flex gap-5 mt-6">
               <cornie-radio
                 name="subscriberModel"
-                v-model="subscriberModel"
+                v-model="subscriptionModel.subscribeFor"
                 label="Subscribe for self"
                 value="self"
-                @change="subscriberModel = 'self'"
+                @change="subscriptionModel.subscribeFor = 'self'"
               />
               <cornie-radio
                 name="subscriberModel"
-                v-model="subscriberModel"
+                v-model="subscriptionModel.subscribeFor"
                 value="others"
                 label="Subscribe for others"
-                @change="subscriberModel = 'others'"
+                @change="subscriptionModel.subscribeFor = 'others'"
               />
             </div>
 
             <div
-              v-if="subscriberModel === 'self'"
+              v-if="subscriptionModel.subscribeFor === 'self'"
               class="grid grid-cols-2 gap-6 mt-6"
             >
               <cornie-select
                 class="w-full"
                 label="Medical Condition"
                 placeholder="--Select--"
-                v-model="form.condition"
+                v-model="subscriptionModel.medicalCondition"
                 :items="conditionsList"
               />
-              <div class="relative">
+              <!-- <div class="relative">
                 <span
                   class="absolute top-0 right-0 text-red-500 text-sm font-semibold"
                   >Add Physician</span
@@ -67,15 +67,25 @@
                   class="w-full"
                   label="Attending Physician"
                   placeholder="Search"
-                  v-model="form.physician"
+                  v-model="subscriptionModel.practitionerId"
                 />
-              </div>
-              <div class="w-full cursor-pointer">
+              </div> -->
+              <cornie-input
+                class="w-full"
+                v-model="subscriptionModel.practitionerId"
+                label="Practitioner Email"
+                :rules="requiredEmail"
+                placeholder="Enter"
+              />
+              <div
+                class="w-full cursor-pointer"
+                @click="showProblemModal = true"
+              >
                 <cornie-input
                   v-bind="$attrs"
                   label="Allergies (Specify if known)"
                   placeholder="--Select--"
-                  v-model="form.allergy"
+                  v-model="subscriptionModel.allergies"
                 >
                   <template #append-inner>
                     <plus-icon class="fill-current text-danger" />
@@ -86,47 +96,63 @@
                 class="w-full"
                 label="Other Medical Condition (Specify if known)"
                 placeholder="--Enter--"
-                v-model="form.otherCondition"
+                v-model="subscriptionModel.otherMedicalConditions[0]"
               />
+
+              <div v-if="allergyItems.length > 0">
+                <div class="w-full flex items-center py-5">
+                  <div
+                    class="w-4/12 flex"
+                    v-for="(record, index) in allergyItems"
+                    :key="index"
+                  >
+                    <p class="capitalize text-primary text-sm font-medium">
+                      {{ record }}
+                    </p>
+                    <span class="mx-2 cursor-pointer"
+                      ><delete-icon @click="removeItem(index, allergyItems)"
+                    /></span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div
-              v-if="subscriberModel === 'others'"
+              v-if="subscriptionModel.subscribeFor === 'others'"
               class="grid grid-cols-2 gap-6 mt-6"
             >
               <cornie-input
                 class="w-full"
                 label="Full Name"
                 placeholder="--Enter--"
-                v-model="other.fullname"
+                v-model="subscriptionModel.fullname"
               />
               <date-picker
                 class="w-full"
                 label="Date of Birth"
-                v-model:date="other.dob"
-                v-model:time="other.tob"
+                v-model:date="subscriptionModel.dob"
+                v-model:time="subscriptionModel.tob"
               />
               <cornie-select
                 class="w-full"
                 label="Gender"
                 placeholder="--Select--"
-                v-model="other.gender"
-                :items="['Male', 'Female']"
+                v-model="subscriptionModel.gender"
+                :items="['male', 'female']"
               />
               <cornie-input
                 class="w-full"
                 label="Email"
                 placeholder="--Enter--"
-                v-model="other.email"
+                v-model="subscriptionModel.email"
               />
 
               <div class="col-span-2 grid grid-cols-2 gap-6">
                 <phone-input
                   label="Phone Number"
-                  v-model:code="other.dialCode"
-                  v-model="other.phoneNumber"
-                  :rules="requiredString"
-                  :readonly="readonly"
+                  v-model:code="subscriptionModel.dialCode"
+                  v-model="subscriptionModel.phoneNumber"
+                  :rules="required"
                 />
               </div>
               <auto-complete
@@ -134,34 +160,30 @@
                 v-model="country"
                 label="Country"
                 placeholder="Enter"
-                :rules="requiredString"
-                :readonly="readonly"
+                :rules="required"
                 :items="countries"
               />
               <auto-complete
                 class="w-full"
-                v-model="state"
+                v-model="subscriptionModel.state"
                 label="State"
                 :items="states"
                 placeholder="Enter"
-                :rules="requiredString"
-                :readonly="readonly"
+                :rules="required"
               />
               <cornie-input
                 class="w-full"
-                v-model="city"
+                v-model="subscriptionModel.city"
                 label="City"
                 placeholder="Enter"
-                :rules="requiredString"
-                :readonly="readonly"
+                :rules="required"
               />
               <cornie-input
                 class="w-full"
-                v-model="postCode"
+                v-model="subscriptionModel.zip"
                 label="ZIP"
                 placeholder="Enter"
-                :rules="requiredString"
-                :readonly="readonly"
+                :rules="required"
               />
             </div>
           </accordion-component>
@@ -191,7 +213,7 @@
                 <template #actions="{ index }">
                   <div
                     class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-                    @click="deleteItem(index)"
+                    @click="removeItem(index, items)"
                   >
                     <delete-icon class="text-danger fill-current" />
                     <span class="ml-3 text-xs">Delete</span>
@@ -224,7 +246,7 @@
                         <td>Sub Total</td>
                         <td>{{ subTotal || 0.0 }}</td>
                       </tr>
-                      <tr v-if="type === 'delivery'">
+                      <tr>
                         <td class="font-bold">Shipping Cost</td>
                         <td>{{ shippingCost || 0.0 }}</td>
                       </tr>
@@ -249,7 +271,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click="save('')"
+          @click="save"
           :loading="loading"
           type="submit"
           class="text-white bg-danger px-3 py-1 rounded-lg"
@@ -259,6 +281,10 @@
       </div>
     </cornie-card>
     <add-medications v-model="medicationModal" @addMedication="addMedication" />
+    <problem-modal
+      @getProblem="showProblem"
+      v-model="showProblemModal"
+    />
   </cornie-dialog>
 </template>
 <script lang="ts">
@@ -275,7 +301,7 @@ import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
 import CornieBtn from "@/components/CornieBtn.vue";
 import { namespace } from "vuex-class";
-import { CornieUser } from "@/types/user";
+import User from "@/types/user";
 import { string } from "yup";
 import AutoComplete from "@/components/autocomplete.vue";
 import { cornieClient } from "@/plugins/http";
@@ -291,14 +317,21 @@ import PhoneInput from "@/components/phone-input.vue";
 import AddMedications from "./AddMedications.vue";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
+import ProblemModal from "./problemdialog.vue";
+import DeleteIcon from "@/components/icons/deleteorange.vue";
 
 // import AccordionComponent from "@/components/dialog-accordion.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import { getCountries, getStates } from "@/plugins/nation-states";
 import ObjectSet from "@/lib/objectset";
+import IPractitioner from "@/types/IPractitioner";
+import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
 
 const user = namespace("user");
 const patients = namespace("patients");
+const account = namespace("user");
+const userStore = namespace("user");
+const allergy = namespace("allergy");
 
 const countries = getCountries();
 @Options({
@@ -324,6 +357,8 @@ const countries = getCountries();
     AddMedications,
     CornieTable,
     TableOptions,
+    ProblemModal,
+    DeleteIcon,
   },
 })
 export default class MedicationSubscriptionModal extends Vue {
@@ -333,37 +368,29 @@ export default class MedicationSubscriptionModal extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, default: <any>{} })
+  @Prop({ type: Object, default: {} })
   observation!: IObservation;
 
+  @user.Getter
+  authPractitioner!: IPractitioner;
+
   required = string().required();
+  requiredEmail = string().email().required();
 
-  customers = <any>[];
+  @userStore.State
+  user!: User;
 
+  @allergy.State
+  allergys!: IAllergy[];
+
+  customers: any = [];
+  allergyItems: any = [];
+  showProblemModal = false;
   loading = false;
   opened = true;
-  subscriberModel = "self";
   medicationModal = false;
+  discount = false;
 
-  form: any = {
-    condition: "",
-    otherCondition: "",
-    allergy: "",
-    physician: "",
-  };
-  other: any = {
-    fullname: "",
-    gender: "",
-    email: "",
-    dob: "",
-    tob: "",
-    phoneNumber: "",
-    dialCode: "",
-  };
-  country = "";
-  state = "";
-  city = "";
-  postCode = "";
   conditionsList: any = [
     "Hypertension (High Blood Pressure)",
     "Coronary Heart Disease & Stroke",
@@ -388,9 +415,36 @@ export default class MedicationSubscriptionModal extends Vue {
   states = [] as any;
   countries = countries;
   medications: any = [];
+  country = "";
+
+  subscriptionModel: any = {
+    subscribeFor: "self",
+    patientId: "",
+    medicalCondition: "",
+    practitionerId: "",
+    allergies: [] as any,
+    otherMedicalConditions: [] as any,
+    fullname: "",
+    dob: "",
+    gender: "",
+    email: "",
+    phoneNumber: "",
+    country: "",
+    state: "",
+    city: "",
+    zip: "",
+    subscribedMedications: [] as {
+      productId: "";
+      quantity: "";
+      cost: "";
+      locationId: "";
+      organizationId: "";
+    }[],
+  };
 
   @Watch("country")
   async countryPicked(country: string) {
+    this.subscriptionModel.country = country;
     const states = await getStates(country);
     this.states = states;
   }
@@ -433,6 +487,16 @@ export default class MedicationSubscriptionModal extends Vue {
     },
   ];
 
+  get items() {
+    return [];
+  }
+
+  changeQuantity(itemId: string, quantity: number) {
+    const medication = this.medications.find(({ id }: any) => id == itemId);
+    if (!medication) return;
+    medication.quantity = quantity;
+  }
+
   addMedication(chosenMedication: any) {
     const medications = new ObjectSet(
       [...this.medications, { ...chosenMedication, quantity: 1 }],
@@ -441,7 +505,81 @@ export default class MedicationSubscriptionModal extends Vue {
     this.medications = [...medications];
   }
 
-  async created() {}
+  removeItem(index: number, items: any) {
+    items.splice(index, 1);
+  }
+
+  showProblem(value: any) {
+    this.subscriptionModel.allergies = value;
+    this.allergyItems = value;
+  }
+
+  get totalDiscount() {
+    return 0;
+  }
+
+  get grandTotal() {
+    return 0;
+  }
+
+  get subTotal() {
+    return 0;
+  }
+
+  get shippingCost() {
+    return 0;
+  }
+
+  get payload() {
+    const data: any = {
+      ...this.subscriptionModel,
+      patientId: this.user.id,
+    };
+    if (data.subscribeFor === "self") {
+      data.fullname = undefined;
+      data.dob = undefined;
+      data.gender = undefined;
+      data.email = undefined;
+      data.phoneNumber = undefined;
+      data.country = undefined;
+      data.state = undefined;
+      data.city = undefined;
+      data.zip = undefined;
+    } else if (data.subscribeFor === "others") {
+      data.medicalCondition = undefined;
+      data.practitionerId = undefined;
+      data.allergies = undefined;
+      data.otherMedicalConditions = undefined;
+    }
+    return data;
+  }
+
+  async save() {
+    this.loading = true;
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/medication-subscription/create",
+        { ...this.payload }
+      );
+      if (data.success) {
+        this.loading = false;
+        window.notify({
+          msg: "Subscription Added",
+          status: "success",
+        });
+        this.$emit("subscription-added");
+      }
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+  }
 }
 </script>
 

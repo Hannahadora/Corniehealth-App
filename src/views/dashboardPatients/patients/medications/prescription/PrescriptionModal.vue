@@ -97,14 +97,14 @@
                 label="Select Location"
                 v-model="location"
                 placeholder="--Select--"
-                :items="locations"
+                :items="productLocations"
                 class=""
               />
               <cornie-select
                 label="Select Pharmacy"
                 v-model="pharmacy"
                 placeholder="--Select--"
-                :items="pharmacys"
+                :items="productPharmacies"
               />
             </div>
           </accordion-component>
@@ -136,7 +136,10 @@
       </div>
     </cornie-card>
 
-    <upload-prescription v-model="uploadPrescriptionModal" @getFormData="getFormData" />
+    <upload-prescription
+      v-model="uploadPrescriptionModal"
+      @getFormData="getFormData"
+    />
   </cornie-dialog>
 </template>
 <script lang="ts">
@@ -221,6 +224,8 @@ export default class AddPrescriptionDialog extends Vue {
   location = "";
   pharmacy = "";
   uploadPrescriptionModal = false;
+  productLocations = [] as any;
+  productPharmacies = [] as any;
 
   prescription: any = {
     deliveryPreferencesId: "",
@@ -239,22 +244,47 @@ export default class AddPrescriptionDialog extends Vue {
   get addresses() {
     return [];
   }
-  get locations() {
-    return [];
-  }
-  get pharmacys() {
-    return [];
+
+  async fetchProductLocations() {
+    try {
+      const { data } = await cornieClient().get(
+        `/patient-portal/catalogue-product/get-locations`
+      );
+      this.productLocations = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching catalogue product locations",
+        status: "error",
+      });
+    }
   }
 
-  getFormData (data: any) {
-    this.prescription.prescriptionImageUrl = data.file,
-    this.prescription.prescriber_name = data.prescriberName,
-    this.prescription.prescriber_email = data.email
+  async fetchProductPharmacies() {
+    try {
+      const { data } = await cornieClient().get(
+        `/patient-portal/catalogue-product/get-pharmacies`
+      );
+      this.productPharmacies = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching catalogue product pharmacies",
+        status: "error",
+      });
+    }
+  }
+
+  getFormData(data: any) {
+    (this.prescription.prescriptionImageUrl = data.file),
+      (this.prescription.prescriber_name = data.prescriberName),
+      (this.prescription.prescriber_email = data.email);
   }
 
   async save() {}
 
-  async created() {}
+  async created() {
+    await this.fetchProductPharmacies()
+    await this.fetchProductLocations()
+  }
 }
 </script>
 

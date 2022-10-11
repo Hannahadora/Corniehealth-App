@@ -168,10 +168,16 @@ export default class addMedications extends Vue {
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
-  async fetchMedications(query: string) {
+  async fetchMedications(
+    query?: string,
+    pharmacies?: string,
+    classifications?: string,
+    subClassifications?: string,
+    locations?: string
+  ) {
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
+        `/patient-portal/catalogue-product/search-catalogue?query=${query}&pharmacies=${pharmacies}&classifications=${classifications}&subClassifications=${subClassifications}&locations=${locations}`
       );
       this.medicationDetails = data || [];
     } catch (error) {

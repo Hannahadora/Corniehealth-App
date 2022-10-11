@@ -157,7 +157,7 @@ import search from "@/plugins/search";
   },
 })
 export default class BasicInfo extends Vue {
-  @Prop({ type: Object, default: <any>{} })
+  @Prop({ type: Object, default: {} })
   basicInfo!: IObservationBasicInfo;
 
   required = string().required();
