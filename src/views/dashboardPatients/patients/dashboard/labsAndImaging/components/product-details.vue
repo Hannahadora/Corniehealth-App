@@ -4,13 +4,13 @@
       <span
         class="flex flex-row w-full justify-between border-b-2 font-bold mb-10 text-xl text-primary py-2"
       >
-        Shop Medications
+        Shop Diagnostics
       </span>
     </div>
 
     <div class="grid grid-cols-4 gap-6">
       <div class="bg-white mb-auto h-full shadow-lg p-3 mt-2 rounded-lg w-full">
-        <medication-shopping-sidebar />
+        <diagnostic-sidebar />
       </div>
 
       <div class="col-span-3">
@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <div class="bg-white mb-auto shadow-lg px-4 pt-3 rounded w-full">
+        <div class="bg-white mb-auto shadow-lg px-4 py-3 rounded w-full">
           <div class="flex">
             <div class="mr-2">
               <img class="sample-img" :src="item.photo" alt="" />
@@ -52,28 +52,6 @@
               <div>
                 <p class="text-xl font-bold mb-7">{{ item.name }}</p>
                 <p>{{ item.description }}</p>
-              </div>
-              <div class="mt-6 flex">
-                <cornie-select
-                  v-model="item.brand"
-                  :items="['Meijer', 'Kirkland', 'Her', 'Generic']"
-                  class="w-24 mr-1"
-                />
-                <cornie-select
-                  v-model="item.brand"
-                  :items="['Tablet', 'Syrup', 'Gel', 'Capsule']"
-                  class="w-24 mr-1"
-                />
-                <cornie-select
-                  v-model="item.strength"
-                  :items="['Tablet', 'Syrup', 'Gel', 'Capsule']"
-                  class="w-24 mr-1"
-                />
-                <cornie-select
-                  v-model="item.quantity"
-                  :items="['Tablet', 'Syrup', 'Gel', 'Capsule']"
-                  class="w-24 mr-1"
-                />
               </div>
             </div>
           </div>
@@ -101,7 +79,7 @@
               <availability-tag />
               <div class="ml-5">
                 <p class="text-grey-blue mb-2 text-xs">Availability</p>
-                <p class="font-bold">Generic & Brand</p>
+                <p class="font-bold">Single & Preset</p>
               </div>
             </div>
           </div>
@@ -110,11 +88,9 @@
         <div class="mt-10 bg-white mb-auto shadow-lg p-4 rounded w-full flex">
           <p class="text-sm mr-4">Related Tags:</p>
           <div class="flex">
-            <span class="related-tag mr-4">Pain</span>
+            <span class="related-tag mr-4">Pathology</span>
+            <span class="related-tag mr-4">Microbiology</span>
             <span class="related-tag mr-4">Lekki, Lagos</span>
-            <span class="related-tag mr-4"
-              >Over-the-counter medication (OTC)</span
-            >
           </div>
         </div>
 
@@ -127,7 +103,7 @@
                 <th>Price</th>
                 <th></th>
               </tr>
-              <tr>
+              <tr v-for="n in 5" :key="n">
                 <td>
                   <div class="flex">
                     <img :src="item.logo" alt="shop-logo" class="mr-3" />
@@ -164,21 +140,6 @@
                 </td>
                 <td>
                   <div class="w-full flex bg-danger rounded-xl mt-4 px-3">
-                    <div
-                      class="flex items-center justify-center text-white font-bold border-r border-white pr-3 py-3"
-                    >
-                      <p class="mr-2 font-bold text-xs">{{ item.quantity }}</p>
-                      <div class="flex flex-col items-center justify-center">
-                        <chevron-white-up
-                          class="cursor-pointer"
-                          @click="item.quantity++"
-                        />
-                        <chevron-white-down
-                          class="cursor-pointer"
-                          @click="item.quantity--"
-                        />
-                      </div>
-                    </div>
                     <div class="w-11/12 py-3 flex items-center justify-center">
                       <button
                         class="text-white font-bold text-center"
@@ -396,12 +357,12 @@
     default as Search,
     default as SearchIcon,
   } from "@/components/icons/search.vue";
+  import FilterAccordion from "@/components/shopping/components/filter-accordion.vue";
   import { cornieClient } from "@/plugins/http";
   import { Options, Vue } from "vue-class-component";
-  import FilterAccordion from "../components/filter-accordion.vue";
 
-  import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
-  import MedicationShoppingSidebar from "../components/medication-shoppings-sidebar.vue";
+  import AddToCartConfirmation from "@/components/shopping/components/add-to-cart-confirmation.vue";
+  import DiagnosticSidebar from "./diagnostic-shopping-sidebar.vue";
 
   @Options({
     name: "ShopDetailsPage",
@@ -415,7 +376,6 @@
       Check,
       ChevronWhiteDown,
       ChevronWhiteUp,
-      MedicationShoppingSidebar,
       CornieCheckbox,
       IconInput,
       SearchIcon,
@@ -425,6 +385,7 @@
       AvailabilityTag,
       FilterAccordion,
       AddToCartConfirmation,
+      DiagnosticSidebar,
     },
   })
   export default class ShopDetailsPage extends Vue {
@@ -438,21 +399,20 @@
       id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
       logo: require("@/assets/img/item-logo.svg"),
       location: "23, Admiralty Way, Lekki, Lagos",
-      shopName: "MedPlus",
-      name: "Anti-malaria  bundle",
+      shopName: "Crestview Diagnostics",
+      name: "Prostate Test",
       form: "Tablet 10mg (30 Tabs Per pack)",
-      oldPrice: "N13, 950.00",
-      newPrice: "N13, 950.00",
+      oldPrice: "N7, 000.00",
+      newPrice: "N4, 850.00",
       deliveryType: [
-        { type: "Pickup", mode: false },
-        { type: "Same Day Delivery", mode: true },
-        { type: "Standard Shipping", mode: false },
+        { type: "Visit Provider Location", mode: true },
+        { type: "Home Sample Collection", mode: false },
       ],
       noOfReviews: "14",
-      photo: require("@/assets/img/panadol-item.svg"),
+      photo: require("@/assets/img/prostate-test.png"),
       quantity: 0,
       description:
-        "Ibuprofen is used to reduce fever and to relieve minor aches and pain from headaches, muscle aches, arthristis, menstrual periods, and the common cold. See more",
+        "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
     };
 
     async fetchAppointments() {

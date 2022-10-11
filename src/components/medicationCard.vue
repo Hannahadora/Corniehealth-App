@@ -31,7 +31,7 @@
             <drug-icon />
             <div class="text-xs flex flex-col">
               <span class="font-semibold text-sm mb-2 text-primary">
-                {{ input.medication || "N/A" }}
+                {{ input.medication || input.name || "N/A" }}
               </span>
               <span class="">
                 <span class="text-gray-500">
@@ -140,6 +140,7 @@
             year: "numeric",
           }
         ),
+        name: medication?.name,
       }));
       return newmedicationrequest;
     }

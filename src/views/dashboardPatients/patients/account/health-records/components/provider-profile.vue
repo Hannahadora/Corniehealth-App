@@ -61,8 +61,8 @@
       name: "Reddingthon Hospital",
       id: 253543,
       contact: {
-        address: "No 16.Trenches avenue, Sapa Bustop",
-        phone: "+234LMAO",
+        address: "Somewhere on earth",
+        phone: "+234SOMEWHERE",
         email: "xyz@gmail.com",
         bookingSite: "xyz.corniehealth.com",
         website: "xyz.com",

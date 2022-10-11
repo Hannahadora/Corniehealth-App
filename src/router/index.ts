@@ -322,12 +322,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "Account Security Patient Portal",
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
       },
-      {        
+      {
         path: "refferalinivite",
         name: "Refferal Invite",
         component: () => import("@/views/dashboardPatients/patients/dashboard/refferals/index.vue"),
       },
-      {   
+      {
         path: "one-time-access",
         name: "One Time Access",
         component: () => import("@/views/dashboardPatients/patients/dashboard/onetimeaccess/index.vue"),
@@ -390,6 +390,18 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
       {
+        path: "diagnostics-shopping",
+        name: "Diagnostics Shopping",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/labsAndImaging/components/new-order.vue"),
+      },
+      {
+        path: "diagnostics-shopping/details/:id",
+        name: "Diagnostics Details",
+        component: () => import("@/views/dashboardPatients/patients/dashboard/labsAndImaging/components/product-details.vue"),
+        props: true,
+      },
+
+      {
         path: "shopping/cart",
         name: "Shopping Cart",
         component: () => import("@/views/dashboardPatients/patients/shopping/cart.vue"),
@@ -423,4 +435,3 @@ const router = createRouter({
   },
 });
 export default router;
- 
