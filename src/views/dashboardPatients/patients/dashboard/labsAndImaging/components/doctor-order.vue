@@ -148,7 +148,7 @@
     }
     newLabTests() {
       // this.$emit("newLabTests");
-      this.$router.push("/patient/appointments/");
+      this.$router.push("/dashboard/patient/appointments/");
     }
   }
 </script>

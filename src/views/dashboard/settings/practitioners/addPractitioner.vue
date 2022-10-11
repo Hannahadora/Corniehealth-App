@@ -1416,9 +1416,7 @@
       await this.fetchDesignation();
       if (!this.roles.length) await this.getRoles();
     }
-   
   }
- 
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 

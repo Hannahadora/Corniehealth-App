@@ -53,6 +53,23 @@
                 <search-icon />
               </template>
             </icon-input>
+
+            <div class="flex flex-col pt-4 space-y-2">
+              <label
+                v-for="(l, i) in displayProviders"
+                :key="i"
+                class="flex items-center"
+              >
+                <input
+                  @change="providerChanged"
+                  v-model="l.value"
+                  type="checkbox"
+                  class="mr-3 cursor-pointer"
+                />
+                {{ l.display }}:
+              </label>
+              <!-- Locations - {{ pickedLocations }} -->
+            </div>
           </span>
         </div>
         <div class="my-4">
@@ -64,22 +81,6 @@
             :value="option"
             v-model="providerOption"
           /> -->
-          <div class="flex flex-col pt-4 space-y-2">
-            <label
-              v-for="(l, i) in displayProviders"
-              :key="i"
-              class="flex items-center"
-            >
-              <input
-                @change="providerChanged"
-                v-model="l.value"
-                type="checkbox"
-                class="mr-3 cursor-pointer"
-              />
-              {{ l.display }}:
-            </label>
-            <!-- Locations - {{ pickedLocations }} -->
-          </div>
         </div>
       </FilterAccordion>
       <FilterAccordion class="border-t" title="Diagnostics Category">
@@ -261,14 +262,13 @@
     }
 
     get queryString() {
-      // return buildUrl({
-      //   queryParams: {
-      //     subSpecialties: this.pickedPharmacyLists,
-      //     locations: this.pickedLocations,
-      //     providers: this.pickedProviders,
-      //   },
-      // });
-      return "";
+      return buildUrl({
+        queryParams: {
+          subSpecialties: this.pickedPharmacyLists,
+          locations: this.pickedLocations,
+          providers: this.pickedProviders,
+        },
+      });
     }
 
     async fetchServices() {
@@ -286,7 +286,7 @@
       );
       const response = await Promise.all([pending]);
       console.log("diagnostics", response[0].data);
-      // this.diagnostics = response[0].data;
+      this.providers = response[0].data;
     }
 
     async fetchLocations() {
