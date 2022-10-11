@@ -4,7 +4,9 @@
           Withdrawal Instruction
         </span>
   </div> -->
-    <cornie-table v-model="items" :columns="headers" :checked="checked"  @selectedItem="selectedItem">
+    <cornie-table v-model="items" :columns="headers"
+    :showPagination="true"
+  :checked="checked"  @selectedItem="selectedItem">
         <template #status="{ item }">
           <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
              Active
@@ -19,27 +21,27 @@
             </div>
         </template>
         <template #actions="{ item }">
-            <div
+            <!-- <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
             >
             <edit-icon class="text-purple-700 fill-current" />
             <span class="ml-3 text-xs">Edit</span>
-            </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            </div> -->
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showView(item)">
                 <new-view-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">View</span>
             </div>
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showAvailableModal(item.id,item)">
-            <check-icon class="text-purple-700 fill-current" />
-            <span class="ml-3 text-xs">Check Availability</span>
+              <check-icon class="text-purple-700 fill-current" />
+              <span class="ml-3 text-xs">Check Availability</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
-            <check-icon class="text-green-700 fill-current" />
-            <span class="ml-3 text-xs">Batch Info</span>
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showBatchInfo(item)">
+              <check-icon class="text-green-700 fill-current" />
+              <span class="ml-3 text-xs">Batch Info</span>
             </div>
             <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
-            <check-icon class="text-blue-700 fill-current" />
-            <span class="ml-3 text-xs">Supplier info</span>
+              <check-icon class="text-blue-700 fill-current" />
+              <span class="ml-3 text-xs">Supplier info</span>
             </div>
             <div  class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStorageModal(item)">
                 <update-icon class="text-blue-200 fill-current" />
@@ -104,6 +106,8 @@
         <availability-modal v-model="showAvailable" :id="stockId" :item="selectItem"/>
         <withdrawn-instruction-modal v-model="withdrawInstruction" @stockAdded="stockAdded" :item="withdrawItem"/>
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
+        <viewstock-modal v-model="showViewStockbalance" :id="stockId" :item="selectItem"/>
+        <batchinfo-modal v-model="showBatch" :id="stockId" :item="selectItem" :bactchitem="BulkSelectedItem"/>
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -145,6 +149,9 @@ import AvailabilityModal from "../components/availableModal.vue";
 import WithdrawnInstructionModal from "../components/withdrawalInstrcution.vue";
 import WithdrawItemModal from "../components/withdrawItemModal.vue";
 
+import ViewstockModal from "../components/viewStockBalance.vue";
+import BatchinfoModal from "../components/batchModal.vue";
+
 
 const location = namespace("location");
 const inventorystock = namespace("inventorystock");
@@ -179,7 +186,9 @@ const user = namespace("user");
     AllocateBulkModal,
     WithdrawnInstructionModal,
     WithdrawItemModal,
-    WithdrawIcon
+    WithdrawIcon,
+    ViewstockModal,
+    BatchinfoModal,
   },
   
 })
@@ -213,6 +222,8 @@ export default class totalExistingState extends Vue {
   showAllocateBulk = false;
   withdrawInstruction = false;
   withdrawItemOnly = false;
+  showViewStockbalance = false;
+  showBatch = false;
   singleAllocateItem = [];
   BulkSelectedItem = [] as any;
 
@@ -345,6 +356,17 @@ export default class totalExistingState extends Vue {
   showStorageModal(value:any){
     this.showStorage= true;
     this.storageItem = value;
+  }
+
+  showView(value:any){
+    this.showViewStockbalance = true;
+    this.selectItem = value;
+  }
+
+  showBatchInfo(value:any){
+    this.showBatch = true;
+    this.selectItem = value;
+    this.BulkSelectedItem = [...value];
   }
 
   showAvailableModal(id:string,value:any){

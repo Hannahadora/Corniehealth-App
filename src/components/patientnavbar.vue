@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="flex w-full justify-end items-center pt-3 pb-3 cursor-pointer">
+    <div class="flex w-full justify-end items-center pt-1 pb-5 cursor-pointer">
       <span class="ml-8">
         <cart-icon />
       </span>
@@ -44,12 +44,18 @@
           </div>
         </span>
         <div>
-          <span class="mb-2">
-            <p class="3xl text-black font-extrabold">
+          <div class="mb-4">
+            <p class="3xl text-blue-600 font-extrabold">
               {{ name }}
             </p>
-            <p class="text-sm text-gray-400 font-light">MRN - {{ mrn }}</p>
-          </span>
+            <p class="text-xs text-black">MRN-{{ mrn }}</p>
+            <div>
+              <span
+                class="bg-green-100 text-green-500 text-xs py-0.5 rounded-md px-4"
+                >{{ cornieData?.patient?.accountType }}</span
+              >
+            </div>
+          </div>
         </div>
       </span>
 
