@@ -220,6 +220,14 @@
                   </div>
                 </template>
                 <template #quantity="{ item }">
+                  <!-- <cornie-select
+                      primary
+                      class="w-full"
+                      label="Every"
+                      placeholder="--Select--"
+                      v-model="item.form"
+                      :items="['tablet']"
+                    /> -->
                   <input
                     class="border p-1"
                     type="number"
@@ -234,8 +242,55 @@
                 </template>
               </cornie-table>
 
-              <div class="mt-8 grid grid-cols-2 gap-6 border-t border-dash">
-                <div class="w-1/3">
+              <div
+                class="py-8 mt-8 flex items-start justify-between gap-6 border-t border-dash"
+              >
+                <div>
+                  <p class="mb-7">
+                    How often do you want your medications delivered?
+                  </p>
+                  <div class="flex items-center space-x-3">
+                    <cornie-select
+                      class="w-full"
+                      label="Frequently"
+                      placeholder="--Select--"
+                      v-model="deliveryOption"
+                      :items="['weekly', 'monthly', 'quarterly']"
+                    />
+
+                    <cornie-select
+                      v-if="deliveryOption === 'weekly'"
+                      class="w-full"
+                      label="Every"
+                      placeholder="--Select--"
+                      v-model="deliveryPeriod"
+                      :items="[
+                        'monday',
+                        'tuesday',
+                        'wednesday',
+                        'thursday',
+                        'friday',
+                      ]"
+                    />
+                    <cornie-select
+                      v-if="deliveryOption === 'monthly'"
+                      class="w-full"
+                      label="Every"
+                      placeholder="--Select--"
+                      v-model="deliveryPeriod"
+                      :items="['15th Day Of The Month']"
+                    />
+                    <cornie-select
+                      v-if="deliveryOption === 'quarterly'"
+                      class="w-full"
+                      label="Every"
+                      placeholder="--Select--"
+                      v-model="deliveryPeriod"
+                      :items="['15th of Every Third month']"
+                    />
+                  </div>
+                </div>
+                <div class="w-1/3 flex items-start justify-end">
                   <table class="w-full">
                     <tbody>
                       <tr v-if="discount">
@@ -281,10 +336,7 @@
       </div>
     </cornie-card>
     <add-medications v-model="medicationModal" @addMedication="addMedication" />
-    <problem-modal
-      @getProblem="showProblem"
-      v-model="showProblemModal"
-    />
+    <problem-modal @getProblem="showProblem" v-model="showProblemModal" />
   </cornie-dialog>
 </template>
 <script lang="ts">
@@ -323,6 +375,8 @@ import DeleteIcon from "@/components/icons/deleteorange.vue";
 // import AccordionComponent from "@/components/dialog-accordion.vue";
 import AccordionComponent from "@/components/form-accordion.vue";
 import { getCountries, getStates } from "@/plugins/nation-states";
+
+import search from "@/plugins/search";
 import ObjectSet from "@/lib/objectset";
 import IPractitioner from "@/types/IPractitioner";
 import IAllergy, { OnSet, Reaction } from "@/types/IAllergy";
@@ -390,6 +444,8 @@ export default class MedicationSubscriptionModal extends Vue {
   opened = true;
   medicationModal = false;
   discount = false;
+  deliveryPeriod = "";
+  deliveryOption = "weekly";
 
   conditionsList: any = [
     "Hypertension (High Blood Pressure)",
@@ -416,6 +472,7 @@ export default class MedicationSubscriptionModal extends Vue {
   countries = countries;
   medications: any = [];
   country = "";
+  query = "";
 
   subscriptionModel: any = {
     subscribeFor: "self",
@@ -488,7 +545,18 @@ export default class MedicationSubscriptionModal extends Vue {
   ];
 
   get items() {
-    return [];
+    const dMed = this.medications?.map((medication: any) => {
+      return {
+        ...medication,
+        action: medication.id,
+        medication: `${medication.genericName} (${medication.size})`,
+        form: medication.form,
+        unitPrice: medication.unitPrice,
+        quantity: medication.quantity,
+      };
+    });
+    if (!this.query) return dMed;
+    return search.searchObjectArray(dMed, this.query);
   }
 
   changeQuantity(itemId: string, quantity: number) {
@@ -534,6 +602,16 @@ export default class MedicationSubscriptionModal extends Vue {
     const data: any = {
       ...this.subscriptionModel,
       patientId: this.user.id,
+      subscribedMedications: this.medications.map((el: any) => {
+        return {
+          // ...el,
+          productId: el?.id,
+          quantity: el?.quantity.toString(),
+          cost: el?.cost,
+          locationId: el?.locationId,
+          organizationId: el?.organizationId,
+        };
+      }),
     };
     if (data.subscribeFor === "self") {
       data.fullname = undefined;
@@ -578,8 +656,7 @@ export default class MedicationSubscriptionModal extends Vue {
     }
   }
 
-  async created() {
-  }
+  async created() {}
 }
 </script>
 

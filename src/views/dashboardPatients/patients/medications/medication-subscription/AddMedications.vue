@@ -55,9 +55,9 @@
                   <div
                     class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
                   >
-                    {{ item?.name || item }}
+                    {{ item?.genericName || item }}
                     <p class="text-xs text-gray-400 italic">
-                      {{ item?.brandCode || item?.form }}
+                      {{ item?.form }} {{item?.strength}}
                     </p>
                   </div>
                 </div>
@@ -192,7 +192,7 @@ export default class addMedications extends Vue {
   async fetchMedications(query: string) {
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/pharmacy/find-medication/${this.locationId}/?query=${query}`
+        `/api/v1/patient-portal/catalogue-product/search-catalogue?query=${query}`
       );
       this.medicationDetails = data || [];
     } catch (error) {

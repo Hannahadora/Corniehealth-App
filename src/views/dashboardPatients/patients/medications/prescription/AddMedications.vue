@@ -22,24 +22,70 @@
           <div
             :class="[
               !showDatalist ? 'hidden' : 'o',
-              filteredItems.length === 0 ? 'h-20' : 'h-auto',
+              filteredItems.length === 0 ? 'h-20' : 'h-96 overflow-y-scroll',
             ]"
             class="absolute shadow px-4 mx-4 bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-            style="width: 90%"
+            style="width: 100%"
           >
             <div
               v-for="(item, i) in filteredItems"
               :key="i"
-              class="cursor-pointer mb-3 flex space-x-4 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+              class="cursor-pointer mb-8 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
             >
-              <cornie-radio name="search" @click="selected(item)" />
-              <div
-                class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
-              >
-                {{ item?.name || item }}
-                <p class="text-xs text-gray-400 italic">
-                  {{ item?.brandCode || item?.form }}
-                </p>
+              <div class="flex items-start bg-white shadow px-3 py-4">
+                <img :src="item.image" alt="" class="mr-8 w-32 h-24" />
+                <div>
+                  <p class="mb-8 font-bold">{{ item.genericName }}</p>
+                  <p>{{ item.description }}</p>
+                </div>
+              </div>
+
+              <div class="flex items-start bg-white shadow px-3 py-4 mt-4">
+                <div>
+                  <table class="w-full">
+                    <tr>
+                      <td>
+                        <div class="flex">
+                          <img
+                            :src="item.logo"
+                            alt="shop-logo"
+                            class="mr-3 w-6 h-6 rounded-full"
+                          />
+                          <div>
+                            <p class="text-xs font-medium text-primary">
+                              {{ item.shopName }}
+                            </p>
+                            <p class="" style="font-size: 10px">
+                              {{ item.location }}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div
+                            class="flex mb-2"
+                            v-for="(type, idx) in item.deliveryType"
+                            :key="idx"
+                          >
+                            <check v-if="type.mode" class="mr-3" />
+                            <cancel v-else class="mr-3" />
+                            <p class="text-xs">{{ type.type }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="line-through text-danger text-sm mr-3">
+                          {{ item.oldPrice }}
+                        </p>
+                        <p class="mb-2 font-semibold text-sm">
+                          {{ item.newPrice }}
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <cornie-radio name="search" @click="selected(item)" />
               </div>
             </div>
             <div v-if="filteredItems.length === 0">
@@ -48,23 +94,22 @@
                 >No result found!</span
               >
             </div>
-
-            <div class="flex justify-end">
-              <cornie-btn
-                @click="showDatalist = false"
-                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-              >
-                Cancel
-              </cornie-btn>
-              <cornie-btn
-                v-if="filteredItems.length > 0"
-                :loading="loading"
-                @click="submit"
-                class="text-white bg-danger font-semibold px-6 rounded-xl"
-              >
-                Add to Cart
-              </cornie-btn>
-            </div>
+          </div>
+          <div class="flex justify-end absolute bottom-24 right-6">
+            <cornie-btn
+              @click="showDatalist = false"
+              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
+            >
+              Cancel
+            </cornie-btn>
+            <cornie-btn
+              v-if="filteredItems.length > 0"
+              :loading="loading"
+              @click="submit"
+              class="text-white bg-danger font-semibold px-6 rounded-xl"
+            >
+              Add to Cart
+            </cornie-btn>
           </div>
         </div>
       </div>
@@ -72,7 +117,7 @@
 
     <add-to-cart-confirmation
       v-model="addToCartModal"
-      :item="choosenMoedication"
+      :item="choosenMedication"
     />
     <!-- <cornie-card> -->
   </div>
@@ -130,7 +175,7 @@ export default class addMedications extends Vue {
   @user.Getter
   authCurrentLocation!: any;
 
-  addToCartModal= false;
+  addToCartModal = false;
   medicationId = "";
   // chosenMedications = [] as any;
   chosenMedication = {} as any;
@@ -164,7 +209,7 @@ export default class addMedications extends Vue {
     this.$emit("addMedication", this.chosenMedication);
     // this.chosenMedications = [];
     this.show = false;
-    this.addToCartModal= true
+    this.addToCartModal = true;
   }
 
   orderBy: Sorter = () => 1;
@@ -183,7 +228,7 @@ export default class addMedications extends Vue {
   ) {
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/patient-portal/catalogue-product/search-catalogue?query=${query}&pharmacies=${pharmacies}&classifications=${classifications}&subClassifications=${subClassifications}&locations=${locations}`
+        `/api/v1/patient-portal/catalogue-product/search-catalogue?query=${query}`
       );
       this.medicationDetails = data || [];
     } catch (error) {

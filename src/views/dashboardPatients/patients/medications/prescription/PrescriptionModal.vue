@@ -27,6 +27,11 @@
           >
             <add-medications />
 
+            <div class="mt-6 flex items-center justify-between">
+              <p class="text-xl text-667499 font-bold">{{medications.length}} Items</p>
+              <p class="text-xl text-667499 font-bold">SubTotal: N{{medications.length}}</p>
+            </div>
+
             <div v-for="(medication, idx) in medications" :key="idx">
               <div class="flex items-center">
                 <div>{{ medication.name }}</div>
@@ -55,13 +60,7 @@
               </div>
             </div>
 
-            <div class="mt-6">
-              <cornie-input
-                label="Total Amount"
-                v-model="totalAmount"
-                placeholder=""
-              />
-            </div>
+            
           </accordion-component>
 
           <!-- <accordion-component
@@ -110,7 +109,7 @@
           </accordion-component> -->
 
           <div
-            v-if="!fileInfo"
+            v-if="!fileInfo.fileExt"
             class="mt-6 flex items-center text-green-500 text-sm cursor-pointer"
             @click="uploadPrescriptionModal = true"
           >
@@ -260,7 +259,7 @@ export default class AddPrescriptionDialog extends Vue {
     },
   };
 
-  fileInfo: any = {};
+  fileInfo = {} as any;
 
   get addresses() {
     return [];
@@ -313,5 +312,8 @@ export default class AddPrescriptionDialog extends Vue {
 <style scoped>
 td {
   padding: 16px;
+}
+.text-667499 {
+  color: #667499;
 }
 </style>
