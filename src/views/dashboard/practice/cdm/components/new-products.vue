@@ -7,315 +7,312 @@
         :opened="true"
       >
         <template v-slot:default>
-          <div class="mt-5">
-             <p class="v-xteristics mb-4">Select Product Type</p>
-              <div class="my-2 flex">
-                <span
-                  ><cornieradio
-                    v-model="type"
-                    :label="'Medication Product'"
-                    :value="'medication'"
-                    @click="resetOnClick"
+          <tabs :items="tabLinks" v-model="currentTab">
+            <div>
+              <div class="w-full mb-5">
+                <div class="my-4">
+                  <cornie-checkbox
+                    :label="'Please uncheck if this is not an inventory item'"
+                    v-model="isInventoryItem"
+                    :value="true"
                   />
-                </span>
-                <span class="ml-8"
-                  ><cornieradio
-                    v-model="type"
-                    :label="'Other Health Product'"
-                    :value="'other'"
-                     @click="resetOnClick"
-                  />
-                </span>
-                 <span class="ml-8"
-                  ><cornieradio
-                    v-model="type"
-                    :label="'Substance'"
-                    :value="'substance'"
-                     @click="resetOnClick"
-                  />
-                </span>
-          </div>
-            <div v-if="type == 'medication'">
-                <div class="w-full mb-5">
-                  <div class="my-4">
-                      <cornie-checkbox
-                      :label="'Please uncheck if this is not an inventory item'"
-                      v-model="isInventoryItem"
-                      :value="true"
-                      />
-                  </div>
-
                 </div>
-                <div class="grid grid-cols-3 gap-4">
-                    <auto-complete
-                        class="w-full"
-                        :label="'Generic Name'"
-                        :items="allName"
-                        @click="resultData(dataCode)"
-                        @keyup="searchData"
-                        v-model="dataCode"
-                        :placeholder="'Select'"
-                       
-                    />
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <auto-complete
+                  class="w-full"
+                  :label="'Generic Name'"
+                  :items="allName"
+                  @click="resultData(dataCode)"
+                  @keyup="searchData"
+                  v-model="dataCode"
+                  :placeholder="'Select'"
+                />
 
-                    <cornie-select
-                    class="w-full"
-                    :label="'Brand/Manufacturer'"
-                    :items="allBrand"
-                    @click="resultBrand(dataBrand)"
-                    v-model="dataBrand"
-                    :placeholder="'Select'"
-                    
-                    />
-                    <cornie-select
-                    v-model="dataForm"
-                    :label="'Form'"
-                    :items="allForms"
-                    :placeholder="'Select'"
-                    class="w-full"
-                    @click="resultPack(dataForm)"
-                  
-                    />
-                    <!-- <cornie-input
+                <cornie-select
+                  class="w-full"
+                  :label="'Brand/Manufacturer'"
+                  :items="allBrand"
+                  @click="resultBrand(dataBrand)"
+                  v-model="dataBrand"
+                  :placeholder="'Select'"
+                />
+                <cornie-select
+                  v-model="dataForm"
+                  :label="'Form'"
+                  :items="allForms"
+                  :placeholder="'Select'"
+                  class="w-full"
+                  @click="resultPack(dataForm)"
+                />
+                <!-- <cornie-input
                      v-model="dataForm"
                     :label="'Form'"
                     placeholder="--Autoloaded--"
                     class="w-full"
                     :disabled="true"
                     /> -->
-                    <cornie-input
-                    :label="'Pack'"
-                    v-model="pack"
-                    placeholder="--Autoloaded--"
-                    class="w-full"
-                    :disabled="true"
-                    />
-                    <cornie-input
-                    :label="'Strength'"
-                    v-model="strength"
-                    placeholder="--Autoloaded--"
-                    class="w-full"
-                    :disabled="true"
-                    />
-                    <cornie-input
-                    :label="'NAFDAC Registration No.'"
-                    v-model="Nafdac"
-                    placeholder="--Autoloaded--"
-                    class="w-full"
-                    :disabled="true"
-                    />
-                    <cornie-select
-                    :label="'Classification.'"
-                    placeholder="--Enter--"
-                    :items="[
-                        'General Health',
-                        'Devices',
-                        'Sexual Wellness',
-                        'Personal Care',
-                        'Nutrition, Fitness & Supplements',
-                    ]"
-                    v-model="classification"
-                    />
-                    <cornie-select
-                    :label="'Sub-classification.'"
-                    placeholder="--Enter--"
-                    :items="getSubClassify"
-                    v-model="subClassification"
-                    />
-                    <cornie-select
-                    v-model="category"
-                    :label="'Category'"
-                    placeholder="--Select--"
-                    :items="[
-                        'Over-the-Counter Medicines',
-                        'Prescription Only Medicine',
-                        'Pharmacy Medicine',
-                        'Controlled Drugs',
-                    ]"
-                    />
+                <cornie-input
+                  :label="'Pack'"
+                  v-model="pack"
+                  placeholder="--Autoloaded--"
+                  class="w-full"
+                  :disabled="true"
+                />
+                <cornie-input
+                  :label="'Strength'"
+                  v-model="strength"
+                  placeholder="--Autoloaded--"
+                  class="w-full"
+                  :disabled="true"
+                />
+                <cornie-input
+                  :label="'NAFDAC Registration No.'"
+                  v-model="Nafdac"
+                  placeholder="--Autoloaded--"
+                  class="w-full"
+                  :disabled="true"
+                />
+                <cornie-select
+                  :label="'Classification.'"
+                  placeholder="--Enter--"
+                  :items="[
+                    'General Health',
+                    'Devices',
+                    'Sexual Wellness',
+                    'Personal Care',
+                    'Nutrition, Fitness & Supplements',
+                  ]"
+                  v-model="classification"
+                />
+                <cornie-select
+                  :label="'Sub-classification.'"
+                  placeholder="--Enter--"
+                  :items="getSubClassify"
+                  v-model="subClassification"
+                />
+                <cornie-select
+                  v-model="category"
+                  :label="'Category'"
+                  placeholder="--Select--"
+                  :items="[
+                    'Over-the-Counter Medicines',
+                    'Prescription Only Medicine',
+                    'Pharmacy Medicine',
+                    'Controlled Drugs',
+                  ]"
+                />
 
-                    <div class="">
-                    <span
-                        class="flex capitalize mb-5 text-black text-sm font-semibold"
-                    >
-                        Discount applicable?
-                    </span>
-                    <div class="flex items-end -mb-2">
-                        <span class="mr-14"
-                        ><cornieradio
-                            v-model="applyDiscount"
-                            :label="'Yes'"
-                            :value="true"
-                        />
-                        </span>
-                        <cornieradio
-                        :label="'No'"
+                <div class="">
+                  <span
+                    class="flex capitalize mb-5 text-black text-sm font-semibold"
+                  >
+                    Discount applicable?
+                  </span>
+                  <div class="flex items-end -mb-2">
+                    <span class="mr-14"
+                      ><cornieradio
                         v-model="applyDiscount"
-                        :value="false"
-                        />
-                    </div>
-                    </div>
-                    <cornie-input
-                      v-if="id"
-                        v-model="itemCode"
-                        :label="'Item Code'"
-                        placeholder="Autogenerated"
-                        :disabled="true"
+                        :label="'Yes'"
+                        :value="true"
+                      />
+                    </span>
+                    <cornieradio
+                      :label="'No'"
+                      v-model="applyDiscount"
+                      :value="false"
                     />
+                  </div>
                 </div>
+                <cornie-input
+                  v-if="id"
+                  v-model="itemCode"
+                  :label="'Item Code'"
+                  placeholder="Autogenerated"
+                  :disabled="true"
+                />
+              </div>
             </div>
-
-            <div v-if="type == 'other'">
-                <div class="w-full mb-5">
+            <div>
+              <div class="w-full mb-5">
                 <div class="my-4">
-                    <cornie-checkbox
+                  <cornie-checkbox
                     :label="'This is an inventory item'"
                     v-model="isInventoryItem"
                     :value="'Yes'"
-                    />
+                  />
                 </div>
-                </div>
-                <div class="w-full grid gap-4 grid-cols-3">
+              </div>
+              <div class="w-full grid gap-4 grid-cols-3">
                 <cornie-input
-                    class="w-full"
-                    :label="'Generic Name'"
-                    v-model="genericName"
-                    :placeholder="'--Enter--'"
+                  class="w-full"
+                  :label="'Generic Name'"
+                  v-model="genericName"
+                  :placeholder="'--Enter--'"
                 />
 
                 <cornie-input
-                    class="w-full"
-                    :label="'Brand/Manufacturer'"
-                    v-model="genericCode"
-                    :placeholder="'--Enter--'"
+                  class="w-full"
+                  :label="'Brand/Manufacturer'"
+                  v-model="genericCode"
+                  :placeholder="'--Enter--'"
                 />
-                    <cornie-input
-                    v-model="form"
-                    :label="'Form'"
-                    :placeholder="'--Enter--'"
-                    class="w-full"
-                    />
-                    <cornie-input
-                    :label="'Strength'"
-                    v-model="strength"
-                    placeholder="--Enter--"
-                    class="w-full"
-                    />
-                    <cornie-input
-                    :label="'Pack'"
-                    v-model="pack"
-                    placeholder="--Enter--"
-                    class="w-full"
-                    />
+                <cornie-input
+                  v-model="form"
+                  :label="'Form'"
+                  :placeholder="'--Enter--'"
+                  class="w-full"
+                />
+                <cornie-input
+                  :label="'Strength'"
+                  v-model="strength"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <cornie-input
+                  :label="'Pack'"
+                  v-model="pack"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
 
-                    <cornie-input
-                    :label="'NAFDAC Registration No.'"
-                    v-model="Nafdac"
-                    placeholder="--Enter--"
-                    class="w-full"
-                    />
-                    <cornie-input
-                        v-model="description"
-                        :label="'Description'"
-                        placeholder="--Enter--"
-                        />
-                    <cornie-select
-                    :label="'Classification.'"
-                    placeholder="--Select--"
-                    :items="[
-                        'General Health',
-                        'Devices',
-                        'Sexual Wellness',
-                        'Personal Care',
-                        'Nutrition, Fitness & Supplements',
-                    ]"
-                    v-model="classification"
-                    />
-                    <cornie-select
-                    :label="'Sub-classification.'"
-                    placeholder="--Select--"
-                    :items="getSubClassify"
-                    v-model="subClassification"
-                    />
-                    <div class="">
-                    <span class="flex capitalize mb-5 text-black text-sm font-semibold">
-                        Discount applicable?
-                    </span>
-                    <div class="flex items-end -mb-2">
-                        <span class="mr-14"
-                        ><cornieradio
-                            v-model="applyDiscount"
-                            :label="'Yes'"
-                            :value="true"
-                        />
-                        </span>
-                        <cornieradio
-                        :label="'No'"
+                <cornie-input
+                  :label="'NAFDAC Registration No.'"
+                  v-model="Nafdac"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <cornie-input
+                  v-model="description"
+                  :label="'Description'"
+                  placeholder="--Enter--"
+                />
+                <cornie-select
+                  :label="'Classification.'"
+                  placeholder="--Select--"
+                  :items="[
+                    'General Health',
+                    'Devices',
+                    'Sexual Wellness',
+                    'Personal Care',
+                    'Nutrition, Fitness & Supplements',
+                  ]"
+                  v-model="classification"
+                />
+                <cornie-select
+                  :label="'Sub-classification.'"
+                  placeholder="--Select--"
+                  :items="getSubClassify"
+                  v-model="subClassification"
+                />
+                <div class="">
+                  <span
+                    class="flex capitalize mb-5 text-black text-sm font-semibold"
+                  >
+                    Discount applicable?
+                  </span>
+                  <div class="flex items-end -mb-2">
+                    <span class="mr-14"
+                      ><cornieradio
                         v-model="applyDiscount"
-                        :value="false"
-                        />
-                    </div>
-                    </div>
-
+                        :label="'Yes'"
+                        :value="true"
+                      />
+                    </span>
+                    <cornieradio
+                      :label="'No'"
+                      v-model="applyDiscount"
+                      :value="false"
+                    />
+                  </div>
                 </div>
+              </div>
             </div>
-
-            <div v-if="type == 'substance'">
-                <div class="w-full mb-5">
+            <div>
+              <div class="w-full mb-5">
                 <div class="my-4">
-                    <cornie-checkbox
+                  <cornie-checkbox
                     :label="'This is an inventory item'"
                     v-model="isInventoryItem"
                     :value="'Yes'"
-                    />
+                  />
                 </div>
-                </div>
-                <div class="w-full grid gap-4 grid-cols-3">
-                    <cornie-input
-                    class="w-full"
-                    :label="'Generic Name'"
-                    v-model="genericName"
-                    :placeholder="'--Enter--'"
+              </div>
+              <div class="w-full grid gap-4 grid-cols-3">
+                <cornie-input
+                  class="w-full"
+                  :label="'Generic Name'"
+                  v-model="genericName"
+                  :placeholder="'--Enter--'"
                 />
                 <cornie-input
-                    class="w-full"
-                    :label="'Brand/Manufacturer'"
-                    v-model="genericCode"
-                    :placeholder="'--Enter--'"
+                  class="w-full"
+                  :label="'Brand/Manufacturer'"
+                  v-model="genericCode"
+                  :placeholder="'--Enter--'"
                 />
-                    <cornie-input
-                    v-model="form"
-                    :label="'Form'"
-                    :placeholder="'--Enter--'"
-                    class="w-full"
-                    />
+                <cornie-input
+                  v-model="form"
+                  :label="'Form'"
+                  :placeholder="'--Enter--'"
+                  class="w-full"
+                />
 
-                    <cornie-input
-                        :label="'Pack'"
-                        v-model="pack"
-                        placeholder="--Enter--"
-                        class="w-full"
-                    />
-                    <cornie-input
-                        :label="'Strength'"
-                        v-model="strength"
-                        placeholder="--Enter--"
-                        class="w-full"
-                    />
-                    <cornie-input
-                        :label="'NAFDAC Registration No.'"
-                        v-model="Nafdac"
-                        placeholder="--Enter--"
-                        class="w-full"
-                    />
-                        <cornie-input
-                        v-model="description"
-                        :label="'Description'"
-                        placeholder="--Enter--"
-                        />
-                </div>
+                <cornie-input
+                  :label="'Pack'"
+                  v-model="pack"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <cornie-input
+                  :label="'Strength'"
+                  v-model="strength"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <cornie-input
+                  :label="'NAFDAC Registration No.'"
+                  v-model="Nafdac"
+                  placeholder="--Enter--"
+                  class="w-full"
+                />
+                <cornie-input
+                  v-model="description"
+                  :label="'Description'"
+                  placeholder="--Enter--"
+                />
+              </div>
             </div>
-          </div>
+          </tabs>
+          <!-- <div class="mt-5">
+            <p class="v-xteristics mb-4">Select Product Type</p>
+            <div class="my-2 flex">
+              <span
+                ><cornieradio
+                  v-model="type"
+                  :label="'Medication Product'"
+                  :value="'medication'"
+                  @click="resetOnClick"
+                />
+              </span>
+              <span class="ml-8"
+                ><cornieradio
+                  v-model="type"
+                  :label="'Other Health Product'"
+                  :value="'other'"
+                  @click="resetOnClick"
+                />
+              </span>
+              <span class="ml-8"
+                ><cornieradio
+                  v-model="type"
+                  :label="'Substance'"
+                  :value="'substance'"
+                  @click="resetOnClick"
+                />
+              </span>
+            </div>
+          </div> -->
         </template>
       </accordion-component>
 
@@ -451,26 +448,22 @@
                 <div class="th flex items-center">
                   <span>
                     <cornie-input
-                    v-if="id"
+                      v-if="id"
                       v-model="supplier.unitCost"
                       type="text"
-                  />
-                  <cornie-input
-                  v-else
+                    />
+                    <cornie-input
+                      v-else
                       v-model="suppliers[index].unitCost"
                       type="text"
-                  />
+                    />
                   </span>
                 </div>
                 <div class="th flex items-center">
                   <!-- <span><cornie-input v-model="suppliers[index].costPerItem" /></span> -->
                   <span class="small-text capitalize" v-if="id">
                     ₦
-                    {{
-                      (
-                        supplier.unitCost / stocksUnit?.quantity
-                      ).toFixed(2)
-                    }}
+                    {{ (supplier.unitCost / stocksUnit?.quantity).toFixed(2) }}
                   </span>
                   <span class="small-text capitalize" v-else>
                     ₦
@@ -483,14 +476,16 @@
                 </div>
                 <div class="th flex items-center">
                   <span>
-                    <cornie-input v-model="supplier.quantity" v-if="id"/>
-                    <cornie-input v-model="suppliers[index].quantity" v-else/>
+                    <cornie-input v-model="supplier.quantity" v-if="id" />
+                    <cornie-input v-model="suppliers[index].quantity" v-else />
                   </span>
                 </div>
                 <div class="th flex items-center">
                   <span class="small-text capitalize">
                     {{
-                      ((+supplier.quantity / +totalAvailability) * 100).toFixed(2)
+                      ((+supplier.quantity / +totalAvailability) * 100).toFixed(
+                        2
+                      )
                     }}
                   </span>
                 </div>
@@ -499,16 +494,18 @@
                     ₦
                     {{
                       (
-                        ((supplier.quantity / totalAvailability) * 100) *
+                        (supplier.quantity / totalAvailability) *
+                        100 *
                         (supplier.unitCost / stocksUnit?.quantity)
                       ).toFixed(2)
                     }}
                   </span>
-                   <span class="small-text capitalize" v-else>
+                  <span class="small-text capitalize" v-else>
                     ₦
                     {{
                       (
-                        ((supplier.quantity / totalAvailability) * 100) *
+                        (supplier.quantity / totalAvailability) *
+                        100 *
                         (suppliers[index].unitCost / stocksUnit?.quantity)
                       ).toFixed(2)
                     }}
@@ -601,8 +598,12 @@
                   <span>DISCOUNTED margin(%)</span>
                 </div>
               </div>
-              <div class="w-full flex tbs py-2"  v-for="(sale, index) in salesUOMs"
-                  :key="index" style="min-width: 1330px">
+              <div
+                class="w-full flex tbs py-2"
+                v-for="(sale, index) in salesUOMs"
+                :key="index"
+                style="min-width: 1330px"
+              >
                 <div class="th flex items-center">
                   <span class="small-text">{{ sale.unitName }}</span>
                 </div>
@@ -618,27 +619,13 @@
                   /></span>
                 </div>
                 <div class="th flex items-center">
-                  <span class="small-text"
-                    >₦
-                    {{
-                      ItemPriceNGN
-                    }}</span
-                  >
+                  <span class="small-text">₦ {{ ItemPriceNGN }}</span>
                 </div>
                 <div class="th flex items-center">
-                  <span class="small-text"
-                    >₦
-                    {{
-                     marginNGN
-                    }}</span
-                  >
+                  <span class="small-text">₦ {{ marginNGN }}</span>
                 </div>
                 <div class="th flex items-center">
-                  <span class="small-text"
-                    >{{
-                     marginPercent
-                    }}%</span
-                  >
+                  <span class="small-text">{{ marginPercent }}%</span>
                 </div>
                 <div class="th flex items-center" v-if="applyDiscount == true">
                   <span class="small-text"
@@ -655,7 +642,7 @@
                   </span>
                 </div>
                 <div class="th flex items-center" v-if="applyDiscount == true">
-                  <span class="small-text">{{ discountedMarginPercent}}%</span>
+                  <span class="small-text">{{ discountedMarginPercent }}%</span>
                 </div>
               </div>
             </div>
@@ -688,7 +675,7 @@
         <template v-slot:default>
           <div class="w-full grid gap-4 grid-cols-3 mt-5 mb-3">
             <cornie-input
-            v-if="id"
+              v-if="id"
               v-model="inventory.itemCode"
               :label="'Item Code'"
               placeholder="--Autoloaded--"
@@ -831,530 +818,489 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import { string } from "yup";
+  import { Options, setup, Vue } from "vue-class-component";
+  import { Prop, Watch } from "vue-property-decorator";
+  import { string } from "yup";
 
+  import Avatar from "@/components/avatar.vue";
+  import CornieInput from "@/components/cornieinput.vue";
+  import CornieRadio from "@/components/cornieradio.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import DatePicker from "@/components/datepicker.vue";
+  import AccordionComponent from "@/components/form-accordion.vue";
+  import AddIcon from "@/components/icons/add-orange.vue";
+  import DeleteRed from "@/components/icons/delete-red.vue";
+  import EditIcon from "@/components/icons/edit.vue";
+  import Tabs from "@/components/tabs.vue";
+  import { useHandleImage } from "@/composables/useHandleImage";
+  import Cornieradio from "@/views/dashboard/ehr/progressnotes/cornieradio.vue";
+  import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
 
-import CornieInput from "@/components/cornieinput.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import CornieRadio from "@/components/cornieradio.vue";
-import AccordionComponent from "@/components/form-accordion.vue";
-import DeleteRed from "@/components/icons/delete-red.vue";
-import Cornieradio from "@/views/dashboard/ehr/progressnotes/cornieradio.vue";
-import AddIcon from "@/components/icons/add-orange.vue";
-import EditIcon from "@/components/icons/edit.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import DatePicker from "@/components/datepicker.vue";
-import Avatar from "@/components/avatar.vue";
-import { useHandleImage } from "@/composables/useHandleImage";
-import SideModal from "@/views/dashboard/schedules/components/side-modal.vue";
+  import AutoComplete from "@/components/autocomplete.vue";
+  import { cornieClient } from "@/plugins/http";
+  import {
+    ICatalogueProduct,
+    IInventory,
+    IIStorage,
+    IProductVariant,
+  } from "@/types/ICatalogue";
+  import ILocation from "@/types/ILocation";
+  import IPracticeform from "@/types/IPracticeform";
+  import IPractitioner from "@/types/IPractitioner";
+  import { namespace } from "vuex-class";
+  import CollapseSection from "./dropdown.vue";
+  import NewVariant from "./new-variant.vue";
+  import StockUnit from "./stockUnitMeasurement.vue";
 
-import NewVariant from "./new-variant.vue";
-import StockUnit from "./stockUnitMeasurement.vue";
-import CollapseSection from "./dropdown.vue";
-import {
-  ICatalogueProduct,
-  IInventory,
-  IIStorage,
-  IProductVariant,
-  IProductStock,
-} from "@/types/ICatalogue";
-import { namespace } from "vuex-class";
-import ILocation from "@/types/ILocation";
-import IPractitioner from "@/types/IPractitioner";
-import { cornieClient } from "@/plugins/http";
-import AutoComplete from "@/components/autocomplete.vue";
-import IPracticeform from "@/types/IPracticeform";
-import Tabs from "@/components/tabs.vue";
+  const location = namespace("location");
+  const catalogue = namespace("catalogues");
+  const markup = namespace("markup");
+  const account = namespace("user");
+  const org = namespace("organization");
+  const practitioner = namespace("practitioner");
+  const practiceform = namespace("practiceform");
 
-
-const location = namespace("location");
-const catalogue = namespace("catalogues");
-const markup = namespace("markup");
-const account = namespace("user");
-const org = namespace("organization");
-const practitioner = namespace("practitioner");
-const practiceform = namespace("practiceform");
-
-@Options({
-  components: {
-    CollapseSection,
-    DeleteRed,
-    CornieInput,
-    CornieSelect,
-    CornieRadio,
-    Cornieradio,
-    AccordionComponent,
-    AddIcon,
-    CornieCheckbox,
-    DatePicker,
-    Avatar,
-    SideModal,
-    NewVariant,
-    StockUnit,
-    AutoComplete,
-    EditIcon,
-    Tabs,
-  },
-})
-export default class NewProuct extends Vue {
-  @Prop({ type: String, default: "" })
-  id!: string;
-
-  markups = [] as any;
-
-  @location.State
-  locations!: ILocation[];
-
-  @location.Action
-  fetchLocations!: () => Promise<void>;
-
-  @catalogue.Action
-  createProduct!: (data: ICatalogueProduct) => Promise<boolean>;
-
-  @catalogue.Action
-  getProductsById!: (id: string) => Promise<ICatalogueProduct>;
-
-  @org.State
-  organizationInfo!: any;
-
-  @org.Action
-  fetchOrgInfo!: () => Promise<void>;
-
-  @account.Getter
-  authCurrentLocation!: string;
-
-  @account.Getter
-  cornieUser!: any;
-
-  @practitioner.State
-  practitioners!: IPractitioner[];
-
-  @practitioner.Action
-  fetchPractitioners!: () => Promise<void>;
-
-  @practiceform.State
-  practiceforms!: IPracticeform[];
-
-  @practiceform.Action
-  fetchPracticeforms!: () => Promise<void>;
-
-  isInventoryItem = true;
-  searchresult = [] as any;
-  fullInfo = [] as any;
-  fullBrand = [] as any;
-  fullStrength = [] as any;
-  fullPack = [] as any;
-
-  Nafdac = "";
-  form = "";
-  pack = "";
-  strength = "";
-  type = "medication";
-  genericName = "";
-  brandCode = "";
-  description = "description";
-  genericCode = "";
-  size = "";
-  brand = "";
-  classification = "";
-  subClassification = "";
-  category = "";
-  ingredientStatus = "";
-  ingredient = "";
-  regNo = "";
-  itemCode = "";
-  applyVAT = true;
-  applyDiscount = false;
-  status = "active";
-  anewBrand = [] as any;
-
-  required = string().required();
-
-  dataCode = "";
-  dataBrand = "";
-  dataForm = "";
-
-  storage = {
-    locationId: "",
-    room: "",
-    rack: "",
-    bin: "",
-    condition: "",
-    shelf: "",
-  } as any;
-  inventory = {
-    itemCode: "",
-    valuationMethod: "",
-    openingBalance: 0,
-    reorderLevel: 0,
-    batchNo: "",
-    expiryDate: "",
-    itemVariant: "",
-  } as any;
-
-  inventoryUOM = {
-    unitName: "",
-    itemQuantity: 0,
-  } as any;
-  purchaseUOM = {
-    unitName: "",
-    itemQuantity: 0,
-  } as any;
-
-  stocksUnit = {
-    purchase: "",
-    quantity: "",
-    inventory: "",
-    itemInventory: "",
-    sales: "",
-    itemSales: "",
-  } as any;
-  salesUnit = {
-    purchase: "",
-    quantity: "",
-    inventory: "",
-    itemInventory: "",
-    sales: "",
-    itemSales: "",
-  } as any;
-  purchaseType = "purchase";
-
-  reqBody = {
-    type: "medication",
-    purchaseType: "purchase",
-    variants: [] as IProductVariant[],
-    inventory: {} as IInventory,
-    storage: {} as IIStorage,
-    status: "active",
-    form: "" as any,
-  } as ICatalogueProduct;
-
-  tabLinks = [
-    "Medications",
-    "Other Healthcare Products",
-    "Substance",
-  ];
-  currentTab = 0;
-
-  salesUOMs = [] as any;
-
-
-  suppliers = [] as any;
-
-  sales = [
-    {
-      unitName: "Carton",
-      itemQuantity: 900,
-      markup: 0,
-      discountLimit: 0,
+  @Options({
+    components: {
+      CollapseSection,
+      DeleteRed,
+      CornieInput,
+      CornieSelect,
+      CornieRadio,
+      Cornieradio,
+      AccordionComponent,
+      AddIcon,
+      CornieCheckbox,
+      DatePicker,
+      Avatar,
+      SideModal,
+      NewVariant,
+      StockUnit,
+      AutoComplete,
+      EditIcon,
+      Tabs,
     },
-    {
-      unitName: "Pack",
-      itemQuantity: 90,
-      markup: 0,
-      discountLimit: 0,
-    },
-    {
-      unitName: "Card",
-      itemQuantity: 30,
-      markup: 0,
-      discountLimit: 0,
-    },
-  ] as any[];
-  costInformationType = "";
+  })
+  export default class NewProuct extends Vue {
+    @Prop({ type: String, default: "" })
+    id!: string;
 
-  get reqbodyType() {
-    return this.reqBody.type;
-  }
+    markups = [] as any;
 
-  @Watch("reqbodyType")
-  resetVariants() {
-    if (this.reqBody.type === "other") this.reqBody.variants = [];
-  }
+    @location.State
+    locations!: ILocation[];
 
-  img = setup(() => useHandleImage());
-  showNewVariant = false;
-  showNewStock = false;
-  loading = false;
+    @location.Action
+    fetchLocations!: () => Promise<void>;
 
-  get authLocation() {
-    return this.authCurrentLocation;
-  }
+    @catalogue.Action
+    createProduct!: (data: ICatalogueProduct) => Promise<boolean>;
 
-  get locationsList() {
-    if (this.locations?.length <= 0) return [];
-    return this.locations?.map((location) => {
-      return {
-        code: location.id,
-        display: location.name,
-      };
-    });
-  }
+    @catalogue.Action
+    getProductsById!: (id: string) => Promise<ICatalogueProduct>;
 
-  get currentPurchaseType() {
-    return this.purchaseType;
-  }
+    @org.State
+    organizationInfo!: any;
 
-  deleteItem(id: any) {
-    this.reqBody.variants = this.reqBody.variants.filter(
-      (item: IProductVariant) => item.id !== id
-    );
-  }
+    @org.Action
+    fetchOrgInfo!: () => Promise<void>;
 
-  get totalAvailability() {
-    let total = this.suppliers.reduce(
-      (acc: any, item: any) => (acc += +item.quantity),
-      0
-    );
-    return total;
-  }
+    @account.Getter
+    authCurrentLocation!: string;
 
-  get ItemPriceNGN() {
-    let total = 0;
-    for (let i = 0; i < this.salesUOMs.length; i++) {
-      total += (+this.weightedAverageCost + ((+this.salesUOMs[i].markup * +this.weightedAverageCost) / 100));
+    @account.Getter
+    cornieUser!: any;
+
+    @practitioner.State
+    practitioners!: IPractitioner[];
+
+    @practitioner.Action
+    fetchPractitioners!: () => Promise<void>;
+
+    @practiceform.State
+    practiceforms!: IPracticeform[];
+
+    @practiceform.Action
+    fetchPracticeforms!: () => Promise<void>;
+
+    isInventoryItem = true;
+    searchresult = [] as any;
+    fullInfo = [] as any;
+    fullBrand = [] as any;
+    fullStrength = [] as any;
+    fullPack = [] as any;
+
+    Nafdac = "";
+    form = "";
+    pack = "";
+    strength = "";
+    type = "medication";
+    genericName = "";
+    brandCode = "";
+    description = "description";
+    genericCode = "";
+    size = "";
+    brand = "";
+    classification = "";
+    subClassification = "";
+    category = "";
+    ingredientStatus = "";
+    ingredient = "";
+    regNo = "";
+    itemCode = "";
+    applyVAT = true;
+    applyDiscount = false;
+    status = "active";
+    anewBrand = [] as any;
+
+    required = string().required();
+
+    dataCode = "";
+    dataBrand = "";
+    dataForm = "";
+
+    storage = {
+      locationId: "",
+      room: "",
+      rack: "",
+      bin: "",
+      condition: "",
+      shelf: "",
+    } as any;
+    inventory = {
+      itemCode: "",
+      valuationMethod: "",
+      openingBalance: 0,
+      reorderLevel: 0,
+      batchNo: "",
+      expiryDate: "",
+      itemVariant: "",
+    } as any;
+
+    inventoryUOM = {
+      unitName: "",
+      itemQuantity: 0,
+    } as any;
+    purchaseUOM = {
+      unitName: "",
+      itemQuantity: 0,
+    } as any;
+
+    stocksUnit = {
+      purchase: "",
+      quantity: "",
+      inventory: "",
+      itemInventory: "",
+      sales: "",
+      itemSales: "",
+    } as any;
+    salesUnit = {
+      purchase: "",
+      quantity: "",
+      inventory: "",
+      itemInventory: "",
+      sales: "",
+      itemSales: "",
+    } as any;
+    purchaseType = "purchase";
+
+    reqBody = {
+      type: "medication",
+      purchaseType: "purchase",
+      variants: [] as IProductVariant[],
+      inventory: {} as IInventory,
+      storage: {} as IIStorage,
+      status: "active",
+      form: "" as any,
+    } as ICatalogueProduct;
+
+    tabLinks = ["Medications", "Other Healthcare Products", "Substance"];
+    currentTab = 0;
+
+    salesUOMs = [] as any;
+
+    suppliers = [] as any;
+
+    sales = [
+      {
+        unitName: "Carton",
+        itemQuantity: 900,
+        markup: 0,
+        discountLimit: 0,
+      },
+      {
+        unitName: "Pack",
+        itemQuantity: 90,
+        markup: 0,
+        discountLimit: 0,
+      },
+      {
+        unitName: "Card",
+        itemQuantity: 30,
+        markup: 0,
+        discountLimit: 0,
+      },
+    ] as any[];
+    costInformationType = "";
+
+    get reqbodyType() {
+      return this.reqBody.type;
     }
 
-    return total.toFixed(2);
-  }
-  get marginNGN() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total +=
-        +this.ItemPriceNGN - +this.weightedAverageCost;
+    @Watch("reqbodyType")
+    resetVariants() {
+      if (this.reqBody.type === "other") this.reqBody.variants = [];
     }
 
-    return total.toFixed(2);
-  }
+    img = setup(() => useHandleImage());
+    showNewVariant = false;
+    showNewStock = false;
+    loading = false;
 
-  get marginPercent() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += (+this.marginNGN / +this.ItemPriceNGN) * 100;
+    get authLocation() {
+      return this.authCurrentLocation;
     }
 
-    return total.toFixed(2);
-  }
-   get ItemCostDiscounted() {
-    let total = 0;
-    for (let i = 0; i < this.salesUOMs.length; i++) {
-      total += +this.ItemPriceNGN - ((+this.salesUOMs[i].discountLimit * +this.ItemPriceNGN) / 100);
+    get locationsList() {
+      if (this.locations?.length <= 0) return [];
+      return this.locations?.map((location) => {
+        return {
+          code: location.id,
+          display: location.name,
+        };
+      });
     }
 
-    return total.toFixed(2);
-  }
-  get discountedMarginNGN() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += +this.ItemCostDiscounted - +this.weightedAverageCost;
+    get currentPurchaseType() {
+      return this.purchaseType;
     }
 
-    return total.toFixed(2);
-  }
-  get discountedMarginPercent() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += (+this.discountedMarginNGN / +this.ItemCostDiscounted) * 100;
+    deleteItem(id: any) {
+      this.reqBody.variants = this.reqBody.variants.filter(
+        (item: IProductVariant) => item.id !== id
+      );
     }
 
-    return total.toFixed(2);
-  }
-
-  get oneSalesMarkUp(){
-    let total = 0;
-    for (let i = 0; i < this.salesUOMs.length; i++) {
-      total = +this.salesUOMs[i].markup;
+    get totalAvailability() {
+      let total = this.suppliers.reduce(
+        (acc: any, item: any) => (acc += +item.quantity),
+        0
+      );
+      return total;
     }
 
-    return total.toFixed(2);
-  }
+    get ItemPriceNGN() {
+      let total = 0;
+      for (let i = 0; i < this.salesUOMs.length; i++) {
+        total +=
+          +this.weightedAverageCost +
+          (+this.salesUOMs[i].markup * +this.weightedAverageCost) / 100;
+      }
 
-  get weightedAverageCost() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total +=
-        ((this.suppliers[i].quantity / this.totalAvailability) *
-          100 *
-          (this.suppliers[i].unitCost / this.stocksUnit?.quantity)) /
-        this.suppliers.length;
+      return total.toFixed(2);
+    }
+    get marginNGN() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += +this.ItemPriceNGN - +this.weightedAverageCost;
+      }
+
+      return total.toFixed(2);
     }
 
-    return total.toFixed(2);
-  }
-  get costPerItem() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += (+this.suppliers[i].unitCost / +this.stocksUnit?.quantity)
+    get marginPercent() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += (+this.marginNGN / +this.ItemPriceNGN) * 100;
+      }
+
+      return total.toFixed(2);
+    }
+    get ItemCostDiscounted() {
+      let total = 0;
+      for (let i = 0; i < this.salesUOMs.length; i++) {
+        total +=
+          +this.ItemPriceNGN -
+          (+this.salesUOMs[i].discountLimit * +this.ItemPriceNGN) / 100;
+      }
+
+      return total.toFixed(2);
+    }
+    get discountedMarginNGN() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += +this.ItemCostDiscounted - +this.weightedAverageCost;
+      }
+
+      return total.toFixed(2);
+    }
+    get discountedMarginPercent() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += (+this.discountedMarginNGN / +this.ItemCostDiscounted) * 100;
+      }
+
+      return total.toFixed(2);
     }
 
-    return total.toFixed(2);
-  }  
-  get totalAvailabiltyPercent(){
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += ((+this.suppliers[i].quantity / +this.totalAvailability) * 100)
+    get oneSalesMarkUp() {
+      let total = 0;
+      for (let i = 0; i < this.salesUOMs.length; i++) {
+        total = +this.salesUOMs[i].markup;
+      }
+
+      return total.toFixed(2);
     }
 
-    return total.toFixed(2);
-  }          
-  get singleweightedAverageCost() {
-    let total = 0;
-    for (let i = 0; i < this.suppliers.length; i++) {
-      total += +this.costPerItem * +this.totalAvailabiltyPercent
+    get weightedAverageCost() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total +=
+          ((this.suppliers[i].quantity / this.totalAvailability) *
+            100 *
+            (this.suppliers[i].unitCost / this.stocksUnit?.quantity)) /
+          this.suppliers.length;
+      }
+
+      return total.toFixed(2);
+    }
+    get costPerItem() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += +this.suppliers[i].unitCost / +this.stocksUnit?.quantity;
+      }
+
+      return total.toFixed(2);
+    }
+    get totalAvailabiltyPercent() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += (+this.suppliers[i].quantity / +this.totalAvailability) * 100;
+      }
+
+      return total.toFixed(2);
+    }
+    get singleweightedAverageCost() {
+      let total = 0;
+      for (let i = 0; i < this.suppliers.length; i++) {
+        total += +this.costPerItem * +this.totalAvailabiltyPercent;
+      }
+
+      return total.toFixed(2);
     }
 
-    return total.toFixed(2);
-  }
- 
-
- 
-
-  get getSubClassify() {
-    if (this.classification == "General Health") {
-      return [
-        "Pain Relief",
-        "Cold & Cough",
-        "Malaria Care",
-        "Bone, Joint & Muscular Care",
-        "Eye Care",
-        "Ear Care",
-        "Hypertensive Care",
-        "Respiratory Care",
-        "Diabetic Care",
-        "Digestive Care",
-        "Cholesterol Care",
-        "Prostrate Health",
-        "STDs & Sexual Care",
-        "Piles, Fissures & Fistula",
-        "Mental Health",
-      ];
-    } else if (this.classification == "Devices") {
-      return [
-        "Masks (N95, Surgical and more)",
-        "Face Shield",
-        "Surgical Masks",
-        "N95 Masks",
-        "BP Monitors",
-        "Nebulizers & Vaporizers",
-        "Oximeters & Pedometers",
-        "Vital Signs Monitors & Wearables",
-        "Oxygen Concentrators & Cans",
-        "Weighing Scales",
-        "Thermometers",
-        "IR Thermometers",
-        "Body Massager",
-        " Diabetes Monitors",
-        "Test Strips & Lancets",
-        "Syringes & Pens",
-        "Mobility Equipments",
-        "Exercise Equipments",
-        "Practice",
-        "Stethoscopes",
-        "Tapes & Bandages",
-        "Clinical Diagnostic Equipments",
-        "Dressings & Wound Care",
-        "Supports & Braces",
-        "Neck & Shoulder Support",
-        "Knee & Leg Support",
-        "Back & Abdomen Support",
-        "Ankle & Foot Support",
-        "Hand & Wrist Braces",
-        "Arm & Elbow Support",
-        "Cervical Pillows",
-        "Compression support & sleeves",
-        "Heel support",
-      ];
-    } else if (this.classification == "Sexual Wellness") {
-      return [
-        "Family Planning & Condoms",
-        "Lubricants & Massage Gels",
-        "Men Performance Enhancers",
-        "Erectile Dysfunction",
-        "Fertility Support",
-        "Sex Toys",
-        "Sexual Health Supplements",
-        "Tests & Diagnostics",
-      ];
-    } else if (this.classification == "Personal Care") {
-      return [
-        "Skin Care",
-        "Hair Care",
-        "Oral Care",
-        "Baby Care",
-        "Elderly Care",
-        "Women Care",
-        "Men Care",
-        "Family Care",
-      ];
-    } else if (this.classification == "Nutrition, Fitness & Supplements") {
-      return [
-        "Vitamins & Mineral Supplements",
-        "Protein Supplements",
-        "Omega & Fish Oil",
-        "Pregnancy & Breastfeeding",
-        "Immunity Boosters",
-        "Sleep Aid",
-        "Weight Management",
-        "Specialty Supplements",
-        "Nutritional Drinks",
-        "Other Health Food & Drinks",
-      ];
-    } else {
-      return [
-        "Pain Relief",
-        "Cold & Cough",
-        "Malaria Care",
-        "Bone, Joint & Muscular Care",
-        "Eye Care",
-        "Ear Care",
-        "Hypertensive Care",
-        "Respiratory Care",
-        "Diabetic Care",
-        "Digestive Care",
-        "Cholesterol Care",
-        "Prostrate Health",
-        "STDs & Sexual Care",
-        "Piles, Fissures & Fistula",
-        "Mental Health",
-      ] as any[];
+    get getSubClassify() {
+      if (this.classification == "General Health") {
+        return [
+          "Pain Relief",
+          "Cold & Cough",
+          "Malaria Care",
+          "Bone, Joint & Muscular Care",
+          "Eye Care",
+          "Ear Care",
+          "Hypertensive Care",
+          "Respiratory Care",
+          "Diabetic Care",
+          "Digestive Care",
+          "Cholesterol Care",
+          "Prostrate Health",
+          "STDs & Sexual Care",
+          "Piles, Fissures & Fistula",
+          "Mental Health",
+        ];
+      } else if (this.classification == "Devices") {
+        return [
+          "Masks (N95, Surgical and more)",
+          "Face Shield",
+          "Surgical Masks",
+          "N95 Masks",
+          "BP Monitors",
+          "Nebulizers & Vaporizers",
+          "Oximeters & Pedometers",
+          "Vital Signs Monitors & Wearables",
+          "Oxygen Concentrators & Cans",
+          "Weighing Scales",
+          "Thermometers",
+          "IR Thermometers",
+          "Body Massager",
+          " Diabetes Monitors",
+          "Test Strips & Lancets",
+          "Syringes & Pens",
+          "Mobility Equipments",
+          "Exercise Equipments",
+          "Practice",
+          "Stethoscopes",
+          "Tapes & Bandages",
+          "Clinical Diagnostic Equipments",
+          "Dressings & Wound Care",
+          "Supports & Braces",
+          "Neck & Shoulder Support",
+          "Knee & Leg Support",
+          "Back & Abdomen Support",
+          "Ankle & Foot Support",
+          "Hand & Wrist Braces",
+          "Arm & Elbow Support",
+          "Cervical Pillows",
+          "Compression support & sleeves",
+          "Heel support",
+        ];
+      } else if (this.classification == "Sexual Wellness") {
+        return [
+          "Family Planning & Condoms",
+          "Lubricants & Massage Gels",
+          "Men Performance Enhancers",
+          "Erectile Dysfunction",
+          "Fertility Support",
+          "Sex Toys",
+          "Sexual Health Supplements",
+          "Tests & Diagnostics",
+        ];
+      } else if (this.classification == "Personal Care") {
+        return [
+          "Skin Care",
+          "Hair Care",
+          "Oral Care",
+          "Baby Care",
+          "Elderly Care",
+          "Women Care",
+          "Men Care",
+          "Family Care",
+        ];
+      } else if (this.classification == "Nutrition, Fitness & Supplements") {
+        return [
+          "Vitamins & Mineral Supplements",
+          "Protein Supplements",
+          "Omega & Fish Oil",
+          "Pregnancy & Breastfeeding",
+          "Immunity Boosters",
+          "Sleep Aid",
+          "Weight Management",
+          "Specialty Supplements",
+          "Nutritional Drinks",
+          "Other Health Food & Drinks",
+        ];
+      } else {
+        return [
+          "Pain Relief",
+          "Cold & Cough",
+          "Malaria Care",
+          "Bone, Joint & Muscular Care",
+          "Eye Care",
+          "Ear Care",
+          "Hypertensive Care",
+          "Respiratory Care",
+          "Diabetic Care",
+          "Digestive Care",
+          "Cholesterol Care",
+          "Prostrate Health",
+          "STDs & Sexual Care",
+          "Piles, Fissures & Fistula",
+          "Mental Health",
+        ] as any[];
+      }
     }
-  }
-  addAnotherSupplier() {
-    this.suppliers.push({
-      id: Math.random() * 1999 + Math.random() * 2999,
-      type: this.purchaseType,
-      unitCost: 0,
-      quantity: 0,
-      supplier: "",
-      default: false,
-      costPerItem: 0,
-      locationId: this.authLocation,
-    });
-  }
-
-  variantAdded(variant: IProductVariant) {
-    this.reqBody.variants?.push(variant);
-  }
-
-  stockAdded(stock: any,  salesstock: any) {
-    this.stocksUnit = stock;
-    this.purchaseUOM.unitName = stock.purchase;
-    this.purchaseUOM.itemQuantity = stock.quantity;
-    this.inventoryUOM.unitName = stock.inventory;
-    this.inventoryUOM.itemQuantity = stock.itemInventory;
-
-
-    this.salesUnit = {
-      purchase: this.purchaseUOM.unitName,
-      quantity: this.purchaseUOM.itemQuantity,
-      inventory: this.inventoryUOM.unitName,
-      itemInventory: this.inventoryUOM.itemQuantity,
-      sales: this.stocksUnit.sales,
-      itemSales: this.stocksUnit.itemSales,
-    };
-    if (this.suppliers.length === 0) {
+    addAnotherSupplier() {
       this.suppliers.push({
         id: Math.random() * 1999 + Math.random() * 2999,
         type: this.purchaseType,
@@ -1366,574 +1312,621 @@ export default class NewProuct extends Vue {
         locationId: this.authLocation,
       });
     }
-    this.salesUOMs = salesstock;
-   
-    // this.suppliers.push(
-    //   {
-    //   id: Math.random() * 1999 + Math.random() * 2999,
-    //   type: this.purchaseType,
-    //   unitCost: 0,
-    //   quantity: 0,
-    //   supplier: "",
-    //   default: false,
-    //   costPerItem: 0,
-    //   locationId: this.authLocation,
-    // })
-  }
-  
-  get aBrandName(){
-    const pt = this.allName.find((i: any) => i.code === this.dataCode);
-    return pt ? `${pt.display}` : "";
-  }
-  get aBrandCode(){
-    const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
-    return pt ? `${pt.name}` : "";
-  }
 
-  @Watch("id")
-  idChanged() {
-    this.setProducts();
-  }
-  async setProducts() {
-    const product = await this.getProductsById(this.id);
-    if (!product) return;
-    this.img.url = product.image;
-    this.category = product.category as any;
-    this.dataCode = product.brand;
-    this.dataCode = product.genericName;
-    this.dataForm = product.form;
-    this.dataBrand = product.brandCode;
-    this.brandCode = product.brandCode  as any;
-    this.form = product.form  as any;
-    this.classification = product.classification;
-    this.subClassification = product.subClassification;
-    this.applyDiscount = product.applyDiscount;
-    this.type = product.type;
-    this.genericName = product.genericName  as any;
-    this.status = product.status;
-    this.brand = product.brand  as any;
-    this.ingredient = product.ingredient;
-    this.ingredientStatus = product.ingredientStatus;
-    this.description = product.description;
-    this.size = product.size  as any;
-    this.inventoryUOM = product.inventoryUOM;
-    this.purchaseUOM = product.purchaseUOM;
-    this.suppliers = product.costInformation;
-    this.applyVAT = product.applyVAT;
-    this.inventory = product.inventory;
-    this.storage = product.storage;
-    this.Nafdac = product.regNo;
-    this.salesUOMs = product.salesUOMs;
-   this.strength = product.strength;
-   this.salesUnit.purchase = product.purchaseUOM.unitName;
-    this.salesUnit.quantity = product.purchaseUOM.itemQuantity;
-   this.salesUnit.inventory = product.inventoryUOM.unitName;
-    this.salesUnit.itemInventory = product.inventoryUOM.unitName;
-    this.itemCode = product?.identifier as any;
-   // this.salesUnit.sales = product.purchaseUOM.unitName;
-   //this.salesUnit.purchase = product.purchaseUOM.unitName;
-
-   this.stocksUnit.purchase = product.purchaseUOM.unitName;
-    this.stocksUnit.quantity = product.purchaseUOM.itemQuantity;
-   this.stocksUnit.inventory = product.inventoryUOM.unitName;
-    this.stocksUnit.itemInventory = product.inventoryUOM.unitName;
-  //  this.stocksUnit.sales = product.purchaseUOM.unitName;
-  // this.stocksUnit.purchase = product.purchaseUOM.unitName;
-
-
-   
-  }
-
-  resetOnClick(){
-    this.genericName= "";
-    this.brandCode = "";
-    this.brand = "";
-    this.category = "";
-    this.size = "";
-    this.classification = "";
-    this.subClassification = "";
-    this.form = "";
-    this.description = "";
-
-  }
-
-  get payload() {
-    if(this.type == 'medication'){
-      return {
-      genericCode: this.dataCode,
-      brandCode: this.dataCode,
-      form: this.form,
-      classification: this.classification,
-      subClassification: this.subClassification,
-      applyDiscount: this.applyDiscount,
-      type: this.type,
-      category: this.category || undefined,
-      genericName: this.aBrandName,
-      status: this.status,
-      brand: this.dataBrand,
-      ingredient: this.ingredient,
-      ingredientStatus: this.ingredientStatus,
-      description: this.description || undefined,
-      size: this.size || undefined,
-      inventoryUOM: this.inventoryUOM,
-      purchaseUOM: this.purchaseUOM,
-      salesUOMs: this.salesUOMs,
-      costInformation: this.suppliers,
-      applyVAT: this.applyVAT,
-      inventory: this.inventory,
-      storage: this.storage,
-      regNo: this.Nafdac || 'N/A',
-      strength: this.strength,
-    
-    };
-    }else{
-      return {
-      genericCode: this.dataCode,
-      brandCode: this.dataCode,
-      form: this.form,
-      classification: this.classification || undefined,
-      subClassification: this.subClassification,
-      applyDiscount: this.applyDiscount,
-      type: this.type,
-      category: this.category || undefined,
-      genericName:  this.genericName,
-      status: this.status,
-      brand:  this.genericCode,
-      ingredient: this.ingredient,
-      ingredientStatus: this.ingredientStatus,
-      description: this.description,
-      size: this.size || undefined,
-      inventoryUOM: this.inventoryUOM,
-      purchaseUOM: this.purchaseUOM,
-      salesUOMs: this.salesUOMs,
-      costInformation: this.suppliers,
-      applyVAT: this.applyVAT,
-      inventory: this.inventory,
-      storage: this.storage,
-      regNo: this.Nafdac || 'N/A',
-      strength: this.strength,
-
-
-      
-    };
+    variantAdded(variant: IProductVariant) {
+      this.reqBody.variants?.push(variant);
     }
-  }
-  async apply() {
-    this.loading = true;
-    if (this.id) await this.updateProduct();
-    else await this.createProductInventory();
-    this.loading = false;
-  }
-  async createProductInventory() {
-        this.payload.genericCode = this.dataCode.toString();
-        this.payload.brandCode = this.dataCode.toString();
-    if(this.payload.genericCode && this.payload.brandCode && this.payload.form && this.payload.brand == ''){
-       return window.notify({ msg: "All fields are required", status: "success" });
-    }else{
 
+    stockAdded(stock: any, salesstock: any) {
+      this.stocksUnit = stock;
+      this.purchaseUOM.unitName = stock.purchase;
+      this.purchaseUOM.itemQuantity = stock.quantity;
+      this.inventoryUOM.unitName = stock.inventory;
+      this.inventoryUOM.itemQuantity = stock.itemInventory;
 
+      this.salesUnit = {
+        purchase: this.purchaseUOM.unitName,
+        quantity: this.purchaseUOM.itemQuantity,
+        inventory: this.inventoryUOM.unitName,
+        itemInventory: this.inventoryUOM.itemQuantity,
+        sales: this.stocksUnit.sales,
+        itemSales: this.stocksUnit.itemSales,
+      };
+      if (this.suppliers.length === 0) {
+        this.suppliers.push({
+          id: Math.random() * 1999 + Math.random() * 2999,
+          type: this.purchaseType,
+          unitCost: 0,
+          quantity: 0,
+          supplier: "",
+          default: false,
+          costPerItem: 0,
+          locationId: this.authLocation,
+        });
+      }
+      this.salesUOMs = salesstock;
+
+      // this.suppliers.push(
+      //   {
+      //   id: Math.random() * 1999 + Math.random() * 2999,
+      //   type: this.purchaseType,
+      //   unitCost: 0,
+      //   quantity: 0,
+      //   supplier: "",
+      //   default: false,
+      //   costPerItem: 0,
+      //   locationId: this.authLocation,
+      // })
+    }
+
+    get aBrandName() {
+      const pt = this.allName.find((i: any) => i.code === this.dataCode);
+      return pt ? `${pt.display}` : "";
+    }
+    get aBrandCode() {
+      const pt = this.fullInfo.find((i: any) => i.id === this.dataBrand);
+      return pt ? `${pt.name}` : "";
+    }
+
+    @Watch("id")
+    idChanged() {
+      this.setProducts();
+    }
+    async setProducts() {
+      const product = await this.getProductsById(this.id);
+      if (!product) return;
+      this.img.url = product.image;
+      this.category = product.category as any;
+      this.dataCode = product.brand;
+      this.dataCode = product.genericName;
+      this.dataForm = product.form;
+      this.dataBrand = product.brandCode;
+      this.brandCode = product.brandCode as any;
+      this.form = product.form as any;
+      this.classification = product.classification;
+      this.subClassification = product.subClassification;
+      this.applyDiscount = product.applyDiscount;
+      this.type = product.type;
+      this.genericName = product.genericName as any;
+      this.status = product.status;
+      this.brand = product.brand as any;
+      this.ingredient = product.ingredient;
+      this.ingredientStatus = product.ingredientStatus;
+      this.description = product.description;
+      this.size = product.size as any;
+      this.inventoryUOM = product.inventoryUOM;
+      this.purchaseUOM = product.purchaseUOM;
+      this.suppliers = product.costInformation;
+      this.applyVAT = product.applyVAT;
+      this.inventory = product.inventory;
+      this.storage = product.storage;
+      this.Nafdac = product.regNo;
+      this.salesUOMs = product.salesUOMs;
+      this.strength = product.strength;
+      this.salesUnit.purchase = product.purchaseUOM.unitName;
+      this.salesUnit.quantity = product.purchaseUOM.itemQuantity;
+      this.salesUnit.inventory = product.inventoryUOM.unitName;
+      this.salesUnit.itemInventory = product.inventoryUOM.unitName;
+      this.itemCode = product?.identifier as any;
+      // this.salesUnit.sales = product.purchaseUOM.unitName;
+      //this.salesUnit.purchase = product.purchaseUOM.unitName;
+
+      this.stocksUnit.purchase = product.purchaseUOM.unitName;
+      this.stocksUnit.quantity = product.purchaseUOM.itemQuantity;
+      this.stocksUnit.inventory = product.inventoryUOM.unitName;
+      this.stocksUnit.itemInventory = product.inventoryUOM.unitName;
+      //  this.stocksUnit.sales = product.purchaseUOM.unitName;
+      // this.stocksUnit.purchase = product.purchaseUOM.unitName;
+    }
+
+    resetOnClick() {
+      this.genericName = "";
+      this.brandCode = "";
+      this.brand = "";
+      this.category = "";
+      this.size = "";
+      this.classification = "";
+      this.subClassification = "";
+      this.form = "";
+      this.description = "";
+    }
+
+    get payload() {
+      if (this.type == "medication") {
+        return {
+          genericCode: this.dataCode,
+          brandCode: this.dataCode,
+          form: this.form,
+          classification: this.classification,
+          subClassification: this.subClassification,
+          applyDiscount: this.applyDiscount,
+          type: this.type,
+          category: this.category || undefined,
+          genericName: this.aBrandName,
+          status: this.status,
+          brand: this.dataBrand,
+          ingredient: this.ingredient,
+          ingredientStatus: this.ingredientStatus,
+          description: this.description || undefined,
+          size: this.size || undefined,
+          inventoryUOM: this.inventoryUOM,
+          purchaseUOM: this.purchaseUOM,
+          salesUOMs: this.salesUOMs,
+          costInformation: this.suppliers,
+          applyVAT: this.applyVAT,
+          inventory: this.inventory,
+          storage: this.storage,
+          regNo: this.Nafdac || "N/A",
+          strength: this.strength,
+        };
+      } else {
+        return {
+          genericCode: this.dataCode,
+          brandCode: this.dataCode,
+          form: this.form,
+          classification: this.classification || undefined,
+          subClassification: this.subClassification,
+          applyDiscount: this.applyDiscount,
+          type: this.type,
+          category: this.category || undefined,
+          genericName: this.genericName,
+          status: this.status,
+          brand: this.genericCode,
+          ingredient: this.ingredient,
+          ingredientStatus: this.ingredientStatus,
+          description: this.description,
+          size: this.size || undefined,
+          inventoryUOM: this.inventoryUOM,
+          purchaseUOM: this.purchaseUOM,
+          salesUOMs: this.salesUOMs,
+          costInformation: this.suppliers,
+          applyVAT: this.applyVAT,
+          inventory: this.inventory,
+          storage: this.storage,
+          regNo: this.Nafdac || "N/A",
+          strength: this.strength,
+        };
+      }
+    }
+    async apply() {
+      this.loading = true;
+      if (this.id) await this.updateProduct();
+      else await this.createProductInventory();
+      this.loading = false;
+    }
+    async createProductInventory() {
+      this.payload.genericCode = this.dataCode.toString();
+      this.payload.brandCode = this.dataCode.toString();
+      if (
+        this.payload.genericCode &&
+        this.payload.brandCode &&
+        this.payload.form &&
+        this.payload.brand == ""
+      ) {
+        return window.notify({
+          msg: "All fields are required",
+          status: "success",
+        });
+      } else {
+        try {
+          const response = await cornieClient().post(
+            "/api/v1/catalogue-product",
+            this.payload
+          );
+          if (response.success) {
+            window.notify({
+              msg: "Catalogue product created",
+              status: "success",
+            });
+            this.$router.go(-1);
+          }
+        } catch (error: any) {
+          window.notify({
+            msg: "Catalogue product not created",
+            status: "error",
+          });
+        }
+      }
+    }
+    async updateProduct() {
+      const url = `/api/v1/catalogue-product/${this.id}`;
+      const payload = {
+        ...this.payload,
+      };
       try {
-        const response = await cornieClient().post(
-          "/api/v1/catalogue-product",
-          this.payload
-        );
+        const response = await cornieClient().put(url, payload);
         if (response.success) {
           window.notify({
-            msg: "Catalogue product created",
+            msg: "Catalogue product  updated",
             status: "success",
           });
           this.$router.go(-1);
         }
       } catch (error: any) {
         window.notify({
-          msg: "Catalogue product not created",
+          msg: "Catalogue product not  updated",
           status: "error",
         });
       }
     }
-   
-  }
-  async updateProduct() {
-    const url = `/api/v1/catalogue-product/${this.id}`;
-    const payload = {
-      ...this.payload,
-    };
-    try {
-      const response = await cornieClient().put(url, payload);
-      if (response.success) {
-        window.notify({ msg: "Catalogue product  updated", status: "success" });
-        this.$router.go(-1);
-      }
-    } catch (error: any) {
-      window.notify({ msg: "Catalogue product not  updated", status: "error" });
-    }
-  }
 
-  async onSave() {
-    try {
-      this.loading = true;
-      if (this.img?.url) {
-        this.reqBody.image = this.img.url;
-      }
-      this.reqBody.costInformation = this.suppliers.map((i: any) => {
-        i.type = this.purchaseType;
-        return i;
-      });
-
-      this.reqBody.salesUOMs = this.sales;
-      const created = await this.createProduct(this.reqBody);
-
-      if (created) {
-        window.notify({
-          msg: `Prodcut ${this.reqBody?.id ? "updated" : "saved"} successfully`,
-          status: "success",
+    async onSave() {
+      try {
+        this.loading = true;
+        if (this.img?.url) {
+          this.reqBody.image = this.img.url;
+        }
+        this.reqBody.costInformation = this.suppliers.map((i: any) => {
+          i.type = this.purchaseType;
+          return i;
         });
-        this.$router.go(-1);
-      } else {
+
+        this.reqBody.salesUOMs = this.sales;
+        const created = await this.createProduct(this.reqBody);
+
+        if (created) {
+          window.notify({
+            msg: `Prodcut ${
+              this.reqBody?.id ? "updated" : "saved"
+            } successfully`,
+            status: "success",
+          });
+          this.$router.go(-1);
+        } else {
+          window.notify({
+            msg: "There was an error, please check the form and try again",
+            status: "error",
+          });
+        }
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
         window.notify({
           msg: "There was an error, please check the form and try again",
           status: "error",
         });
       }
-      this.loading = false;
-    } catch (error) {
-      this.loading = false;
-      window.notify({
-        msg: "There was an error, please check the form and try again",
-        status: "error",
+    }
+
+    setDefault(val: any) {
+      this.suppliers.forEach((item: any) => (item.default = false));
+
+      this.suppliers.forEach((item: any) => {
+        if (item.id === val) item.default = true;
       });
     }
-  }
 
-  setDefault(val: any) {
-    this.suppliers.forEach((item: any) => (item.default = false));
+    SUC = 1000;
+    PercentageMarkup = 200;
+    MaxDiscount = 10;
 
-    this.suppliers.forEach((item: any) => {
-      if (item.id === val) item.default = true;
-    });
-  }
-
-  SUC = 1000;
-  PercentageMarkup = 200;
-  MaxDiscount = 10;
-
-  get isRoot() {
-    let isRoot = Boolean(
-      this.organizationInfo?.rootUserId === this.cornieUser?.id
-    );
-
-    return isRoot;
-  }
-  get CDM() {
-    return this.SUC * (this.PercentageMarkup / 100);
-  }
-
-  get minimumPrice() {
-    return Math.abs(this.CDM * (1 - this.MaxDiscount));
-  }
-
-  locationId = null;
-
-  async fetchMarkups() {
-    if (this.isRoot) {
-      const markups = await cornieClient().get("/api/v1/markup-discount");
-      const response = await Promise.all([markups]);
-      this.markups = response[0].data as any;
-
-      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
-      this.PercentageMarkup = this.markups[0]?.markupPercentage;
-    } else {
-      if (!this.locationId) return [];
-      const markups = await cornieClient().get(
-        `/api/v1/markup-discount/location/${this.locationId}`
+    get isRoot() {
+      let isRoot = Boolean(
+        this.organizationInfo?.rootUserId === this.cornieUser?.id
       );
-      const response = await Promise.all([markups]);
 
-      this.markups = response[0].data;
-
-      this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
-      this.PercentageMarkup = this.markups[0]?.markupPercentage;
+      return isRoot;
+    }
+    get CDM() {
+      return this.SUC * (this.PercentageMarkup / 100);
     }
 
-    this.sales.forEach(
-      (item: any) => (item.markup = this.PercentageMarkup || 200)
-    );
-  }
-
-  // get markupItems() {
-  //   const markups = this.locations.map((loc: any) => {
-  //     let cdm = this.SUC * (this.markups?.markupPercentage / 100);
-  //     let margin = Math.abs(cdm - this.SUC);
-  //     let percentageMargin = (margin / cdm) * 100;
-  //     let minimumPrice = Math.abs(cdm * (1 - this.markups?.maxAllowedDiscount));
-  //     let discountMargin = Math.abs(minimumPrice - this.SUC);
-  //     let discountMarginPercentage = Math.floor(
-  //       (discountMargin / minimumPrice) * 100
-  //     );
-
-  //     return {
-  //       location: loc.name,
-  //       sampleUnitCost: this.SUC,
-  //       markupPercentage: this.markups?.markupPercentage,
-  //       cdmPrice: cdm,
-  //       margin: margin,
-  //       marginPercentage: percentageMargin,
-  //       maxAllowedDiscount: this.markups?.maxAllowedDiscount,
-  //       minPrice: minimumPrice,
-  //       discountedMargin: discountMargin,
-  //       discountedMarginPercentage: discountMarginPercentage,
-  //     };
-  //   });
-
-  //   return markups;
-  // }
-
-  async fetchLocation() {
-    const AllLocation = cornieClient().get(
-      "/api/v1/location/myOrg/getMyOrgLocations"
-    );
-
-    const response = await Promise.all([AllLocation]);
-
-    if (!this.isRoot) {
-      if (!this.locationId) return [];
-
-      response[0].data.forEach((item: any) => {
-        if (item.id === this.locationId) {
-          this.locations = [item];
-        }
-      });
-    } else {
-      this.locations = response[0].data;
+    get minimumPrice() {
+      return Math.abs(this.CDM * (1 - this.MaxDiscount));
     }
-  }
 
-  get allName() {
-    if (!this.searchresult || this.searchresult.length === 0) return [];
-    return this.searchresult.map((i: any) => {
-      return {
-        code: i.id,
-        value: i.id,
-        display: i.name,
-      };
-    });
-  }
+    locationId = null;
 
-  get allBrand() {
-    if (!this.fullInfo || this.fullInfo.length === 0) return [];
-    return this.fullInfo.map((i: any) => {
-      return {
-        code: i.label,
-        value: i.label,
-        display: i.label,
-      };
-    });
-  }
+    async fetchMarkups() {
+      if (this.isRoot) {
+        const markups = await cornieClient().get("/api/v1/markup-discount");
+        const response = await Promise.all([markups]);
+        this.markups = response[0].data as any;
 
-  get allForms() {
-    if (!this.anewBrand || this.anewBrand.length === 0) return [];
-    return this.anewBrand.map((i: any) => {
-      return {
-        code: i.id,
-        value: i.id,
-        display: i.form,
-      };
-    });
-  }
-
-  async searchData(event: any) {
-    if(event.target.value.length > 2){
-      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-by-keyword/`, {
-        keyword: event.target.value,
-      });
-      const response = await Promise.all([AllNotes]);
-      if (response[0].data === 0) {
-        this.searchresult = "No medication code found";
+        this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+        this.PercentageMarkup = this.markups[0]?.markupPercentage;
       } else {
-        this.searchresult = response[0].data;
+        if (!this.locationId) return [];
+        const markups = await cornieClient().get(
+          `/api/v1/markup-discount/location/${this.locationId}`
+        );
+        const response = await Promise.all([markups]);
+
+        this.markups = response[0].data;
+
+        this.MaxDiscount = this.markups[0]?.maxAllowedDiscount;
+        this.PercentageMarkup = this.markups[0]?.markupPercentage;
+      }
+
+      this.sales.forEach(
+        (item: any) => (item.markup = this.PercentageMarkup || 200)
+      );
+    }
+
+    // get markupItems() {
+    //   const markups = this.locations.map((loc: any) => {
+    //     let cdm = this.SUC * (this.markups?.markupPercentage / 100);
+    //     let margin = Math.abs(cdm - this.SUC);
+    //     let percentageMargin = (margin / cdm) * 100;
+    //     let minimumPrice = Math.abs(cdm * (1 - this.markups?.maxAllowedDiscount));
+    //     let discountMargin = Math.abs(minimumPrice - this.SUC);
+    //     let discountMarginPercentage = Math.floor(
+    //       (discountMargin / minimumPrice) * 100
+    //     );
+
+    //     return {
+    //       location: loc.name,
+    //       sampleUnitCost: this.SUC,
+    //       markupPercentage: this.markups?.markupPercentage,
+    //       cdmPrice: cdm,
+    //       margin: margin,
+    //       marginPercentage: percentageMargin,
+    //       maxAllowedDiscount: this.markups?.maxAllowedDiscount,
+    //       minPrice: minimumPrice,
+    //       discountedMargin: discountMargin,
+    //       discountedMarginPercentage: discountMarginPercentage,
+    //     };
+    //   });
+
+    //   return markups;
+    // }
+
+    async fetchLocation() {
+      const AllLocation = cornieClient().get(
+        "/api/v1/location/myOrg/getMyOrgLocations"
+      );
+
+      const response = await Promise.all([AllLocation]);
+
+      if (!this.isRoot) {
+        if (!this.locationId) return [];
+
+        response[0].data.forEach((item: any) => {
+          if (item.id === this.locationId) {
+            this.locations = [item];
+          }
+        });
+      } else {
+        this.locations = response[0].data;
       }
     }
-  }
 
-  async resultData(id: any) {
-    if(id){
-      const AllNotes = cornieClient().get(`/api/v1/emdex/generic-brands/${id}`);
-    const response = await Promise.all([AllNotes]);
-    if (response[0].data === 0) {
-      this.fullInfo = "No medication code found";
-    } else {
-      const info = response[0].data;
-     const newData = [...new Set(info.map((d:any) => d.name))].map(label => {
+    get allName() {
+      if (!this.searchresult || this.searchresult.length === 0) return [];
+      return this.searchresult.map((i: any) => {
         return {
-          label,
-          data: info.filter((d:any) => d.name === label).flatMap((d:any) => {
-            return {
-              ...d
-            }
-          })
-        }
-      })
-      this.fullInfo = newData
-    }
-    }
-  }
-
-  get allGenericName() {
-    const pt = this.fullInfo.find((i: any) => i.genericId === this.dataCode);
-    return (this.genericName = pt ? pt.name : "");
-  }
-  get allGenericCode() {
-    const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
-    return (this.genericCode = pt ? pt.name : "");
-  }
-  get allGenericForm() {
-    const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
-    return (this.form = pt ? pt.form : "");
-  }
-
-
-  async resultBrand(id: any) {
-    const pt = this.fullInfo.find((i: any) => i.label === id);
-    this.anewBrand = pt?.data;
-    return pt || [];
-  }
-  async resultPack(id: any) {
-    const pt = this.anewBrand.find((i: any) => i.id === id);
-    //this.resultStrength(id);
-    if(pt){
-      console.log({pt})
-      this.pack = pt.pack;
-      this.strength = pt.strength;
-      this.Nafdac = pt.NAFDAC;
-      this.form = pt.form
-    }
-    return pt;
-  }
-
-  async resultStrength(id: any) {
-    const pt = this.fullInfo.find((i: any) => i.id === id);
-    this.resultNadac(id);
-
-    return (this.strength = pt ? `${pt?.strength}` : "Strength not available");
-  }
-  async resultNadac(id: any) {
-    const pt = this.fullInfo.find((i: any) => i.id === id);
-    return (this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available");
-  }
-
-  async created() {
-    await this.setProducts();
-    if (!this.organizationInfo) await this.fetchOrgInfo();
-
-    await this.fetchMarkups();
-    await this.fetchPracticeforms();
-
-    if (!this.isRoot) {
-      if (!this.practitioners.length) await this.fetchPractitioners();
-      let currentPractiotioner = this.practitioners.find(
-        (item: any) => item?.userId === this.cornieUser?.id
-      );
-
-      currentPractiotioner?.locationRoles?.forEach((item: any) => {
-        if (!item.default) {
-          this.locationId = item.locationId;
-        }
+          code: i.id,
+          value: i.id,
+          display: i.name,
+        };
       });
     }
-    await this.fetchLocation();
 
-    if (this.locations?.length <= 0) await this.fetchLocations();
+    get allBrand() {
+      if (!this.fullInfo || this.fullInfo.length === 0) return [];
+      return this.fullInfo.map((i: any) => {
+        return {
+          code: i.label,
+          value: i.label,
+          display: i.label,
+        };
+      });
+    }
+
+    get allForms() {
+      if (!this.anewBrand || this.anewBrand.length === 0) return [];
+      return this.anewBrand.map((i: any) => {
+        return {
+          code: i.id,
+          value: i.id,
+          display: i.form,
+        };
+      });
+    }
+
+    async searchData(event: any) {
+      if (event.target.value.length > 2) {
+        const AllNotes = cornieClient().get(
+          `/api/v1/emdex/generic-by-keyword/`,
+          {
+            keyword: event.target.value,
+          }
+        );
+        const response = await Promise.all([AllNotes]);
+        if (response[0].data === 0) {
+          this.searchresult = "No medication code found";
+        } else {
+          this.searchresult = response[0].data;
+        }
+      }
+    }
+
+    async resultData(id: any) {
+      if (id) {
+        const AllNotes = cornieClient().get(
+          `/api/v1/emdex/generic-brands/${id}`
+        );
+        const response = await Promise.all([AllNotes]);
+        if (response[0].data === 0) {
+          this.fullInfo = "No medication code found";
+        } else {
+          const info = response[0].data;
+          const newData = [...new Set(info.map((d: any) => d.name))].map(
+            (label) => {
+              return {
+                label,
+                data: info
+                  .filter((d: any) => d.name === label)
+                  .flatMap((d: any) => {
+                    return {
+                      ...d,
+                    };
+                  }),
+              };
+            }
+          );
+          this.fullInfo = newData;
+        }
+      }
+    }
+
+    get allGenericName() {
+      const pt = this.fullInfo.find((i: any) => i.genericId === this.dataCode);
+      return (this.genericName = pt ? pt.name : "");
+    }
+    get allGenericCode() {
+      const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
+      return (this.genericCode = pt ? pt.name : "");
+    }
+    get allGenericForm() {
+      const pt = this.anewBrand.find((i: any) => i.id === this.dataForm);
+      return (this.form = pt ? pt.form : "");
+    }
+
+    async resultBrand(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.label === id);
+      this.anewBrand = pt?.data;
+      return pt || [];
+    }
+    async resultPack(id: any) {
+      const pt = this.anewBrand.find((i: any) => i.id === id);
+      //this.resultStrength(id);
+      if (pt) {
+        console.log({ pt });
+        this.pack = pt.pack;
+        this.strength = pt.strength;
+        this.Nafdac = pt.NAFDAC;
+        this.form = pt.form;
+      }
+      return pt;
+    }
+
+    async resultStrength(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.id === id);
+      this.resultNadac(id);
+
+      return (this.strength = pt
+        ? `${pt?.strength}`
+        : "Strength not available");
+    }
+    async resultNadac(id: any) {
+      const pt = this.fullInfo.find((i: any) => i.id === id);
+      return (this.Nafdac = pt ? `${pt?.NAFDAC}` : "NAFDAC not available");
+    }
+
+    async created() {
+      await this.setProducts();
+      if (!this.organizationInfo) await this.fetchOrgInfo();
+
+      await this.fetchMarkups();
+      await this.fetchPracticeforms();
+
+      if (!this.isRoot) {
+        if (!this.practitioners.length) await this.fetchPractitioners();
+        let currentPractiotioner = this.practitioners.find(
+          (item: any) => item?.userId === this.cornieUser?.id
+        );
+
+        currentPractiotioner?.locationRoles?.forEach((item: any) => {
+          if (!item.default) {
+            this.locationId = item.locationId;
+          }
+        });
+      }
+      await this.fetchLocation();
+
+      if (this.locations?.length <= 0) await this.fetchLocations();
+    }
   }
-}
 </script>
 
 <style scoped>
-.v-xteristics {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 21px;
-  color: #fe4d3c;
-}
+  .v-xteristics {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    color: #fe4d3c;
+  }
 
-.stock {
-  background: #ffffff;
-  /* Buttons & Cards */
-  box-shadow: 0px 1px 2px rgba(46, 41, 78, 0.02),
-    0px 4px 8px rgba(46, 41, 78, 0.08);
-  border-radius: 8px;
-}
+  .stock {
+    background: #ffffff;
+    /* Buttons & Cards */
+    box-shadow: 0px 1px 2px rgba(46, 41, 78, 0.02),
+      0px 4px 8px rgba(46, 41, 78, 0.08);
+    border-radius: 8px;
+  }
 
-.sub-header {
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 22px;
-  color: #14171f;
-}
+  .sub-header {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    color: #14171f;
+  }
 
-.th {
-  font-style: normal;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: #080056;
-  min-width: 120px;
-  width: 16.6%;
-  padding: 0.55rem 0.25rem;
-}
+  .th {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #080056;
+    min-width: 120px;
+    width: 16.6%;
+    padding: 0.55rem 0.25rem;
+  }
 
-.ths {
-  background: #f0f4fe;
-  border-radius: 8px 8px 0px 0px;
-  padding: 0.25rem;
-}
+  .ths {
+    background: #f0f4fe;
+    border-radius: 8px 8px 0px 0px;
+    padding: 0.25rem;
+  }
 
-.tbs {
-  background: #ffffff;
-  border: 1px solid #c2c7d6;
-  box-sizing: border-box;
-  border-radius: 0px 0px 8px 8px;
-}
+  .tbs {
+    background: #ffffff;
+    border: 1px solid #c2c7d6;
+    box-sizing: border-box;
+    border-radius: 0px 0px 8px 8px;
+  }
 
-.small-text {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  color: #14171f;
-}
+  .small-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #14171f;
+  }
 
-.sales-value {
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 27px;
-  color: #141f15;
-}
+  .sales-value {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 27px;
+    color: #141f15;
+  }
 
-.sales-label {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  color: #667499;
-}
+  .sales-label {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #667499;
+  }
 
-.small-text {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  color: #14171f;
-}
+  .small-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    color: #14171f;
+  }
 
-input[type="checkbox"]:after {
-  border: 1px solid #c4bdbd !important;
-}
-input[type="checkbox"]:checked:after {
-  background-color: #ff0000 !important;
-}
+  input[type="checkbox"]:after {
+    border: 1px solid #c4bdbd !important;
+  }
+  input[type="checkbox"]:checked:after {
+    background-color: #ff0000 !important;
+  }
 </style>

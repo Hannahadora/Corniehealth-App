@@ -132,9 +132,9 @@
   } from "@/components/icons/search.vue";
   import FilterAccordion from "@/components/shopping/components/filter-accordion.vue";
   import { cornieClient } from "@/plugins/http";
-  // import { buildUrl } from "build-url-ts";
+  import querystring from "query-string";
   import { Options, Vue } from "vue-class-component";
-  import { Watch } from "vue-property-decorator";
+  import { PropSync, Watch } from "vue-property-decorator";
 
   @Options({
     name: "DiagnosticsShoppingSideBar",
@@ -155,6 +155,9 @@
     },
   })
   export default class DiagnosticsShoppingSideBar extends Vue {
+    @PropSync("modelValue", { type: Array, default: [] })
+    services!: any;
+
     appointments: any = [];
     loading: Boolean = true;
     locationQuery: any = "";
@@ -262,22 +265,27 @@
     }
 
     get queryString() {
-      return buildUrl({
-        queryParams: {
-          subSpecialties: this.pickedPharmacyLists,
-          locations: this.pickedLocations,
-          providers: this.pickedProviders,
-        },
+      const a = querystring.stringify({
+        subSpecialties: this.pickedPharmacyLists,
+        locations: this.pickedLocations,
+        providers: this.pickedProviders,
       });
+      console.log("queryParams", a);
+      return a;
     }
 
     async fetchServices() {
-      const pending = cornieClient().get(
-        `/api/v1/patient-portal/diagnostics/services${this.queryString}`
-      );
-      const response = await Promise.all([pending]);
-      console.log("services", response[0].data);
-      // this.diagnostics = response[0].data;
+      try {
+        const pending = cornieClient().get(
+          `/api/v1/patient-portal/diagnostics/services/?${this.queryString}`
+        );
+        const response = await Promise.all([pending]);
+        console.log("services", response[0].data);
+        // this.diagnostics = response[0].data;
+        this.services = response[0].data;
+      } catch (error) {
+        this.services = ["hello"];
+      }
     }
 
     async fetchProviders() {
