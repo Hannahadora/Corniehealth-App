@@ -70,6 +70,12 @@
               placeholder="--Enter--"
               v-model="supply.packSize"
             />
+            <cornie-input
+              label="Qty Requested"
+              class="w-full mb-5 mt-4"
+              placeholder="--Enter--"
+              v-model="supply.quantity"
+            />
           </v-form>
         </div>
       </cornie-card-text>

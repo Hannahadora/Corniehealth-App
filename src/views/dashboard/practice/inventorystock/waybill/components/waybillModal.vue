@@ -704,16 +704,16 @@ export default class waybillModal extends Vue {
   }
 
   async removeItem(index: number) {
-    this.item.splice(index, 1);
-    // try {
-    //   const confirmed = await window.confirmAction({
-    //     message: "Are you sure you want to delete this item?",
-    //     title: "Delete Item",
-    //   });
-    //   if (confirmed) {
-    //     this.item.splice(index, 1);
-    //   }
-    // } catch (error) {}
+    //this.item.splice(index, 1);
+    try {
+      const confirmed = await window.confirmAction({
+        message: "Are you sure you want to delete this item?",
+        title: "Delete Item",
+      });
+      if (confirmed) {
+        this.item.splice(index, 1);
+      }
+    } catch (error) {}
   }
 
   get allLocations() {

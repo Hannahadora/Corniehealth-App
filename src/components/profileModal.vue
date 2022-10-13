@@ -120,11 +120,8 @@
                     alt="profile"
                   />
                 </span>
-                <span
-                  class="cursor-pointer"
-                  @click="switchDependants(item.id)"
-                  >{{ item.name }}</span
-                >
+                <span class="cursor-pointer" @click="switchDependants(item.id)">{{ item.name }}</span>
+                <span class="flex float-left text-danger text-xs font-bold cursor-pointer" @click="switchBack()">Switch</span>
               </div>
             </div>
           </li>
@@ -277,7 +274,13 @@ export default class Settings extends Vue {
 
   async logout() {
     await logout();
+    localstore.remove("dependatAuthToken");
     this.$router.push("/login");
+  }
+
+  async switchBack(){
+    localstore.remove("dependatAuthToken");
+    location.reload();
   }
 
   async created() {

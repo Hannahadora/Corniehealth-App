@@ -29,7 +29,7 @@
             </sidebar-link>
 
             <sidebar-link
-              to="/dashboard/patient/refferalinivite"
+              to="/dashboard/patient/refferal-inivite"
               :hovered="hovered"
               text="Referrals"
               class="mt-auto text-center justify-center flex bg-opacity-20 bg-blue-200 text-primary py-2 rounded-2xl w-full px-4"

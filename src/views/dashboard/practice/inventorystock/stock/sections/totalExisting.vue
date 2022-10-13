@@ -8,10 +8,10 @@
     :showPagination="true"
   :checked="checked"  @selectedItem="selectedItem">
         <template #status="{ item }">
-          <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
+          <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.active">
              Active
           </span>
-           <span class="bg-red-100 text-red-600 rounded-lg p-2 text-xs" v-if="item.status == 'inactive'">
+           <span class="bg-red-100 text-red-600 rounded-lg p-2 text-xs" v-else>
              Inactive
           </span>
         </template>
@@ -39,9 +39,9 @@
               <check-icon class="text-green-700 fill-current" />
               <span class="ml-3 text-xs">Batch Info</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" >
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showSupplyInfo(item)">
               <check-icon class="text-blue-700 fill-current" />
-              <span class="ml-3 text-xs">Supplier info</span>
+              <span class="ml-3 text-xs">Supply Info</span>
             </div>
             <div  class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showStorageModal(item)">
                 <update-icon class="text-blue-200 fill-current" />
@@ -51,18 +51,18 @@
                 <check-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Allocate Stock</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRequest = true">
                 <request-icon class="text-yellow-400 fill-current" />
                 <span class="ml-3 text-xs">Material Request</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showReturn = true">
                 <return-icon class="text-danger fill-current" />
                 <span class="ml-3 text-xs">Material Return</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <!-- <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
                 <analytics-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Analytics</span>
-            </div>
+            </div> -->
             <div v-if="item.active == true" class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showDeactivateModal(item)">
                 <deactivate-icon class="text-primary fill-current" />
                 <span class="ml-3 text-xs">Deactivate</span>
@@ -85,15 +85,15 @@
                 <check-icon class="text-blue-700 fill-current" />
                 <span class="ml-3 text-xs">Allocate Stock</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showRequest = true">
                 <check-icon class="text-yelllow-700 fill-current" />
                 <span class="ml-3 text-xs">Material Request</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showReturn = true">
                 <check-icon class="text-purple-700 fill-current" />
                 <span class="ml-3 text-xs">Material Return</span>
             </div>
-            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer">
+            <div class="flex items-center hover:bg-gray-100 p-3 cursor-pointer" @click="showWaybill = true">
                 <check-icon class="text-green-700 fill-current" />
                 <span class="ml-3 text-xs">Waybill</span>
             </div>
@@ -108,6 +108,12 @@
         <withdraw-item-modal v-model="withdrawItemOnly"  @stockAdded="stockAdded" :item="withdrawItem"/>
         <viewstock-modal v-model="showViewStockbalance" :id="stockId" :item="selectItem"/>
         <batchinfo-modal v-model="showBatch" :id="stockId" :item="selectItem" :bactchitem="BulkSelectedItem"/>
+        <supplyinfo-modal v-model="showSupply" :id="stockId" :item="selectItem" :bactchitem="BulkSelectedItem"/>
+
+        <request-modal v-model="showRequest" />
+        <return-modal v-model="showReturn"/>
+        <waybill-modal v-model="showWaybill" />
+
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
@@ -151,7 +157,11 @@ import WithdrawItemModal from "../components/withdrawItemModal.vue";
 
 import ViewstockModal from "../components/viewStockBalance.vue";
 import BatchinfoModal from "../components/batchModal.vue";
+import SupplyinfoModal from "../components/supplyModal.vue";
 
+import RequestModal from "../../materialrequest/components/requestModal.vue";
+import ReturnModal from "../../materialreturn/components/returnModal.vue";
+import WaybillModal from "../../waybill/components/waybillModal.vue";
 
 const location = namespace("location");
 const inventorystock = namespace("inventorystock");
@@ -189,6 +199,10 @@ const user = namespace("user");
     WithdrawIcon,
     ViewstockModal,
     BatchinfoModal,
+    SupplyinfoModal,
+    RequestModal,
+    ReturnModal,
+    WaybillModal,
   },
   
 })
@@ -223,7 +237,11 @@ export default class totalExistingState extends Vue {
   withdrawInstruction = false;
   withdrawItemOnly = false;
   showViewStockbalance = false;
+  showSupply = false;
   showBatch = false;
+  showWaybill  = false;
+  showReturn  = false;
+  showRequest  = false;
   singleAllocateItem = [];
   BulkSelectedItem = [] as any;
 
@@ -369,6 +387,12 @@ export default class totalExistingState extends Vue {
     this.BulkSelectedItem = [...value];
   }
 
+  showSupplyInfo(value:any){
+    this.showSupply = true;
+    this.selectItem = value;
+    this.BulkSelectedItem = [...value];
+  }
+
   showAvailableModal(id:string,value:any){
     this.showAvailable = true;
     this.selectItem = value;
@@ -430,7 +454,7 @@ export default class totalExistingState extends Vue {
       const response = await cornieClient().patch(`/api/v1/inventory/stock/activate/${id}`, {});
       if (response.success) {
         window.notify({
-          msg: "Stock deactivated Successfully",
+          msg: "Stock Activated Successfully",
           status: "success",
         });
         this.stockAdded();

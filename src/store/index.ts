@@ -76,6 +76,7 @@ import WaybillStore from "./waybill";
 import OnetimeaccessStore from "./onetimeaccess";
 import UserRefferalStore from "./userrefferal";
 import PatientDependantStore from "./patientswitch";
+import VirtualLabStore from "./virtuallaborder";
 
 export default createStore({
   modules: {
@@ -163,5 +164,6 @@ export default createStore({
     onetimeaccess: OnetimeaccessStore,
     userreferal: UserRefferalStore,
     patientswtich: PatientDependantStore,
+    virtuallab: VirtualLabStore,
   },
 } as StoreOptions<any>);
