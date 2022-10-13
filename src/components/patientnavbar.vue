@@ -166,11 +166,8 @@
                       alt="profile"
                     />
                   </span>
-                  <span
-                    class="cursor-pointer"
-                    @click="switchDependants(item.id)"
-                    >{{ item.name }}</span
-                  >
+                  <span class="cursor-pointer" @click="switchDependants(item.id)">{{ item.name }}</span>
+                  <span class="flex float-left text-danger text-xs font-bold cursor-pointer" @click="switchBack()">Switch</span>
                 </div>
               </div>
             </li>
@@ -492,6 +489,11 @@ export default class NavBar extends Vue {
     }
   }
 
+  async switchBack(){
+    localstore.remove("dependatAuthToken");
+    location.reload();
+  }
+
   get locationDefault() {
     const pt = this.authorizedLocations?.find(
       (i: any) => i.id === this.authCurrentLocation
@@ -509,6 +511,7 @@ export default class NavBar extends Vue {
   }
   async logout() {
     await logout();
+    localstore.remove("dependatAuthToken");
     this.$router.push("/login");
   }
   mounted() {

@@ -9,7 +9,7 @@
           </span>
           <div class="w-full">
             <h2 class="font-bold float-left text-lg text-primary ml-3 -mt-1">
-              Batch Info
+              Supply Info
             </h2>
             <cancel-icon
               class="float-right cursor-pointer"
@@ -19,68 +19,75 @@
         </cornie-card-title>
   
         <cornie-card-text class="flex-grow scrollable">
-          <div class="bg-blue-50 p-2 mb-5">
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Item Code</p>
-                <p class="text-black">{{ item.code }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Item Name</p>
-                <p class="text-black">{{ item.name }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Brand</p>
-                <p class="text-black">{{ item.brand }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Form</p>
-                <p class="text-black">{{ item.form }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Strength</p>
-                <p class="text-black">{{ item.strength }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Unit</p>
-                <p class="text-black">{{ item.uom }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Pack Size</p>
-                <p class="text-black">{{ item.form }}</p>
-            </div>
-            <div class="flex justify-between w-full mb-5">
-                <p class="text-gray-600">Balance to Date</p>
-                <p class="text-black">{{ item.balance }}</p>
-            </div>
-           
-          </div>
           <div>
-            <cornie-table
-            v-model="items"
-            :columns="headers"
-            :search="true"
-            :menushow="true"
-          >
-            <template #qty="{ item }">
-              <div class="w-12">
-                <cornie-input placeholder="6" :rules="isRequired" v-model="quantities[item.id]" />
+            <div class="bg-primary p-5 w-full flex mb-5">
+                <p class="float-left text-white w-full">Inventory Unit Cost: <span class="font-semibold">{{ item.unitPrice }}</span></p>
+                <p class="text-center text-white w-full">Inventory Value: <span class="font-semibold">{{ item.opening }}</span></p>
+                <p class="float-right text-white w-full">Balance to Date: <span class="font-semibold">{{ item.balance }}</span></p>
+            </div>
+            <div class="bg-blue-50 p-2 mb-5">
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Item Code</p>
+                  <p class="text-black">{{ item.code }}</p>
               </div>
-            </template>
-            <template #name="{ item }">
-              <p>{{ item.name }}</p>
-              <span class="text-gray-400 text-xs">{{
-                item.form + " . " + item.balance + item.uom
-              }}</span>
-            </template>
-            <template #status="{ item }">
-          <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
-             Active
-          </span>
-           <span class="bg-red-100 text-red-600 rounded-lg p-2 text-xs" v-if="item.status == 'inactive'">
-             Inactive
-          </span>
-        </template>
-          </cornie-table>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Item Name</p>
+                  <p class="text-black">{{ item.name }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Brand</p>
+                  <p class="text-black">{{ item.brand }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Form</p>
+                  <p class="text-black">{{ item.form }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Strength</p>
+                  <p class="text-black">{{ item.strength }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Unit</p>
+                  <p class="text-black">{{ item.uom }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Pack Size</p>
+                  <p class="text-black">{{ item.form }}</p>
+              </div>
+              <div class="flex justify-between w-full mb-5">
+                  <p class="text-gray-600">Balance to Date</p>
+                  <p class="text-black">{{ item.balance }}</p>
+              </div>
+             
+            </div>
+            <div>
+              <cornie-table
+              v-model="items"
+              :columns="headers"
+              :search="true"
+              :menushow="true"
+            >
+              <template #qty="{ item }">
+                <div class="w-12">
+                  <cornie-input placeholder="6" :rules="isRequired" v-model="quantities[item.id]" />
+                </div>
+              </template>
+              <template #name="{ item }">
+                <p>{{ item.name }}</p>
+                <span class="text-gray-400 text-xs">{{
+                  item.form + " . " + item.balance + item.uom
+                }}</span>
+              </template>
+              <template #status="{ item }">
+            <span class="bg-green-100 text-green-600 rounded-lg p-2 text-xs" v-if="item.status == 'active'">
+               Active
+            </span>
+             <span class="bg-red-100 text-red-600 rounded-lg p-2 text-xs" v-if="item.status == 'inactive'">
+               Inactive
+            </span>
+          </template>
+            </cornie-table>
+            </div>
           </div>
         </cornie-card-text>
   
@@ -144,7 +151,7 @@
   const user = namespace("user");
   
   @Options({
-    name: "BatchInfoModal",
+    name: "SupplyInfoModal",
     components: {
       ...CornieCard,
       CornieIconBtn,
@@ -168,7 +175,7 @@
       CornieBtn,
     },
   })
-  export default class BatchInfoModal extends Vue {
+  export default class SupplyInfoModal extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
   

@@ -323,7 +323,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/dashboardPatients/patients/account/security/account-security.vue"),
       },
       {
-        path: "refferalinivite",
+        path: "refferal-inivite",
         name: "Refferal Invite",
         component: () => import("@/views/dashboardPatients/patients/dashboard/refferals/index.vue"),
       },
