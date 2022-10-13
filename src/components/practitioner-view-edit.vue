@@ -326,7 +326,11 @@
                   >
                     <div class="flex space-x-2 w-full items-center truncate">
                       <div class="flex-1 truncate text-xs">
-                        {{specialties.map((x:any) => getSpecialityName(x) || x?.display).join(', ')}}
+                        {{
+                          specialties
+                            .map((x: any) => getSpecialityName(x) || x?.display)
+                            .join(", ")
+                        }}
                         <!-- <div class="flex">
                           <span
                             class="text-xs"
@@ -435,16 +439,19 @@
               <info-icon class="fill-current text-primary" />
             </template>
           </accordion-component>
-          <accordion-component title="Location(s) & privileges" :opened="false">
+          <accordion-component title="Location(s) & Privileges" :opened="false">
             <template v-slot:default>
               <div class="w-full mt-5">
                 <div
                   @click="addAccessRole = true"
                   class="font-bold text-sm mb-5 flex space-x-4"
                 >
-                  <span class="-mt-1 text-danger font-bold cursor-pointer">
-                    Add Location(s) & privileges</span
+                  <span
+                    class="-mt-1 text-danger font-bold cursor-pointer"
+                    style="text-transform=none"
                   >
+                    Add Locatioxn(s) & Privileges
+                  </span>
                   <plus-icon class="fill-current text-danger font-bold w-3" />
                 </div>
                 <div class="grid grid-cols-4 gap-4">
@@ -1235,7 +1242,7 @@
         communicationLanguage: this.communicationLanguage,
         visitTypes: this.consultationChannel,
         organizationId: this.organizationId,
-        locationRoles: this.accessRoles,
+        locationRoles: this.locationRoles,
         services: this.services,
         nationality: this.nationality,
         country: this.country,
@@ -1245,10 +1252,10 @@
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
         monthsOfPractice: this.practiceDurationvalue,
-        hourlyRate: this.consultationRateunit,
+        // hourlyRate: this.consultationRateunit,
         education: this.educations,
         boardLicenses: this.licenses,
-        location: this.locations,
+        // location: this.locations,
         employmentType: this.employmentType,
       };
     }
@@ -1268,7 +1275,7 @@
         boardLicenses: this.licenses,
         education: this.educations,
         gender: this.gender,
-        locations: this.accessRoles,
+        locationRoles: this.locationRoles,
         phone: {
           number: this.phone,
           dialCode: this.dialCode,
@@ -1292,7 +1299,7 @@
         aptNumber: this.aptNumber,
         specialties: this.specialties.map((x: any) => x.id),
         monthsOfPractice: this.practiceDurationvalue,
-        hourlyRate: this.consultationRateunit,
+        // hourlyRate: this.consultationRateunit,
         graduationYear: this.graduationYear,
         licenseIssuer: this.licenseIssuer,
         licensePeriod: this.licensePeriod,
@@ -1352,6 +1359,11 @@
           this.$router.back();
         }
       } catch (error) {
+        //@ts-ignore
+        if (error && error.message.includes("Resource")) {
+          window.notify({ msg: "Email already in use", status: "error" });
+          return;
+        }
         window.notify({ msg: "Practitioner not created", status: "error" });
       }
     }

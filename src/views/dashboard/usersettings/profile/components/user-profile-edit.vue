@@ -861,43 +861,43 @@
 </template>
 <script lang="ts">
   import AutoComplete from "@/components/autocomplete.vue";
-  import Avatar from "@/components/avatar.vue";
-  import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
-  import CornieInput from "@/components/cornieinput.vue";
-  import CornieRadio from "@/components/cornieradio.vue";
-  import CornieSelect from "@/components/cornieselect.vue";
-  import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import DatePicker from "@/components/datepicker.vue";
-  import PeriodPicker from "@/components/daterangepicker.vue";
-  import FhirInput from "@/components/fhir-input.vue";
-  import AccordionComponent from "@/components/form-accordion.vue";
-  import {
-    default as AddBlueIcon,
-    default as AddIcon,
-  } from "@/components/icons/addblue.vue";
-  import DeleteRed from "@/components/icons/delete-red.vue";
-  import EditIcon from "@/components/icons/edit.vue";
-  import InfoIcon from "@/components/icons/info.vue";
-  import PlusIcon from "@/components/icons/plus.vue";
-  import OperationHours from "@/components/new-operation-hours.vue";
-  import PhoneInput from "@/components/phone-input.vue";
-  import { useCountryStates } from "@/composables/useCountryStates";
-  import { useHandleImage } from "@/composables/useHandleImage";
-  import { cornieClient } from "@/plugins/http";
-  import { createDate } from "@/plugins/utils";
-  import ILocation from "@/types/ILocation";
-  import Period from "@/types/IPeriod";
-  import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
-  import ISpecial from "@/types/ISpecial";
-  import User from "@/types/user";
-  import AccessRole from "@/views/dashboard/settings/practitioners/AccessRoles.vue";
-  import locationRole from "@/views/dashboard/settings/practitioners/LocationRoles.vue";
-  import SpecialityModal from "@/views/dashboard/settings/practitioners/specialModal.vue";
-  import Multiselect from "@vueform/multiselect";
-  import { Options, setup, Vue } from "vue-class-component";
-  import { Prop, Watch } from "vue-property-decorator";
-  import { namespace } from "vuex-class";
-  import { date, string } from "yup";
+import Avatar from "@/components/avatar.vue";
+import CornieAvatarField from "@/components/cornie-avatar-field/CornieAvatarField.vue";
+import CornieInput from "@/components/cornieinput.vue";
+import CornieRadio from "@/components/cornieradio.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import DatePicker from "@/components/datepicker.vue";
+import PeriodPicker from "@/components/daterangepicker.vue";
+import FhirInput from "@/components/fhir-input.vue";
+import AccordionComponent from "@/components/form-accordion.vue";
+import {
+default as AddBlueIcon,
+default as AddIcon
+} from "@/components/icons/addblue.vue";
+import DeleteRed from "@/components/icons/delete-red.vue";
+import EditIcon from "@/components/icons/edit.vue";
+import InfoIcon from "@/components/icons/info.vue";
+import PlusIcon from "@/components/icons/plus.vue";
+import OperationHours from "@/components/new-operation-hours.vue";
+import PhoneInput from "@/components/phone-input.vue";
+import { useCountryStates } from "@/composables/useCountryStates";
+import { useHandleImage } from "@/composables/useHandleImage";
+import { cornieClient } from "@/plugins/http";
+import { createDate } from "@/plugins/utils";
+import ILocation from "@/types/ILocation";
+import Period from "@/types/IPeriod";
+import IPractitioner, { HoursOfOperation } from "@/types/IPractitioner";
+import ISpecial from "@/types/ISpecial";
+import User from "@/types/user";
+import AccessRole from "@/views/dashboard/settings/practitioners/AccessRoles.vue";
+import locationRole from "@/views/dashboard/settings/practitioners/LocationRoles.vue";
+import SpecialityModal from "@/views/dashboard/settings/practitioners/specialModal.vue";
+import Multiselect from "@vueform/multiselect";
+import { Options, setup, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+import { date, string } from "yup";
 
   const dropdown = namespace("dropdown");
   const practitioner = namespace("practitioner");

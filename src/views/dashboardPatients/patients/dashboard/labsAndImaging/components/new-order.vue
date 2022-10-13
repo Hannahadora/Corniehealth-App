@@ -7,7 +7,13 @@
       :cartQuantity="false"
     >
       <template v-slot:sidebar>
-        <diagnostic-sidebar />
+        <diagnostic-sidebar v-model="items" />
+      </template>
+      <template v-slot:default="{ itemprops }">
+        <tabs :items="tabLinks" v-model="currentTab">
+          <preset-test />
+          <popular-test v-bind="itemprops" />
+        </tabs>
       </template>
     </shopping-page-component>
 
@@ -20,59 +26,23 @@
 </template>
 
 <script lang="ts">
-  import CornieBtn from "@/components/CornieBtn.vue";
-  import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import IconInput from "@/components/IconInput.vue";
-  import ArrowLeftWhite from "@/components/icons/arrow-left-white.vue";
-  import ArrowRightWhite from "@/components/icons/arrow-right-white.vue";
-  import CalendarWhite from "@/components/icons/calendar-white.vue";
-  import Cancel from "@/components/icons/cancel-red-stroke.vue";
-  import Check from "@/components/icons/check-green-stroke.vue";
-  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
-  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
-  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
-  import DeliveryBadge from "@/components/icons/delivery-badge.vue";
-  import DoctorWhite from "@/components/icons/doctor-white.vue";
-  import DrugWhite from "@/components/icons/drug-white.vue";
-  import FiveStar from "@/components/icons/five-star.vue";
-  import NoteWhite from "@/components/icons/note-white.vue";
-  import QualityBadge from "@/components/icons/quality-badge.vue";
-  import SavingsBadge from "@/components/icons/savings-badge.vue";
-  import {
-    default as Search,
-    default as SearchIcon,
-  } from "@/components/icons/search.vue";
+  import Tabs from "@/components/tabs.vue";
   import { Options, Vue } from "vue-class-component";
 
   import ShoppingPageComponent from "@/components/shopping/index.vue";
+  import { Watch } from "vue-property-decorator";
   import DiagnosticSidebar from "./diagnostic-shopping-sidebar.vue";
+  import PopularTest from "./popular-test.vue";
+  import PresetTest from "./preset-test.vue";
+
   @Options({
     name: "ShoppingPage",
     components: {
-      ChevronRightIcon,
-      ChevronLeftIcon,
-      CornieBtn,
-      Search,
-      QualityBadge,
-      DeliveryBadge,
-      SavingsBadge,
-      CalendarWhite,
-      DoctorWhite,
-      DrugWhite,
-      NoteWhite,
-      FiveStar,
-      Cancel,
-      Check,
-      ArrowLeftWhite,
-      ArrowRightWhite,
-      ChevronWhiteDown,
-      ChevronWhiteUp,
-      CornieCheckbox,
-      IconInput,
-      SearchIcon,
       ShoppingPageComponent,
       DiagnosticSidebar,
+      Tabs,
+      PresetTest,
+      PopularTest,
     },
   })
   export default class ShoppingPage extends Vue {
@@ -82,7 +52,7 @@
     selectedItem: any = {};
     detailsUrl = "/dashboard/patient/diagnostics-shopping/details";
     title = "Shop Diagnostics";
-    items = [
+    item = [
       {
         id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
         logo: require("@/assets/img/item-logo.svg"),
@@ -179,28 +149,21 @@
           "The PSA test is a blood test that measures the amount of prostate specific antigen (PSA) in your blood. PSA is a protein produced by normal cells in the ... See more",
       },
     ];
-
+    tabLinks = ["Preset Tests", "Popular Tests"];
+    currentTab = 0;
+    items = [];
+    get itemss() {
+      return;
+    }
     openCartConfirmation(item: any) {
       this.selectedItem = item;
       this.addToCartModal = true;
     }
 
-    // async fetchAppointments() {
-    //   try {
-    //     this.loading = true;
-    //     const { data } = await cornieClient().get(
-    //       "/api/v1/patient-portal/appointment/get-all-user-appointment"
-    //     );
-    //     this.appointments = data;
-    //   } catch (error) {
-    //     window.notify({
-    //       msg: "There was an error fetching appointments",
-    //       status: "error",
-    //     });
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // }
+    @Watch("items")
+    s() {
+      console.log("itttem", this.items);
+    }
 
     async created() {}
   }

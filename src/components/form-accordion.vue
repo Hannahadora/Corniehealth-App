@@ -24,7 +24,7 @@
             <edit-icon class="mr-3" /> {{ editabetitle }}
           </div>
           <div
-            class="font-bold text-sm text-black capitalize mb-1"
+            class="font-bold text-sm text-black mb-1"
             v-else
             :class="{ 'text-black': expand }"
           >
