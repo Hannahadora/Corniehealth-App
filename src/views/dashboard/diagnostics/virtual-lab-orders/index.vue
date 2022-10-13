@@ -8,13 +8,7 @@
       v-if="empty"
     >
       <img src="@/assets/rafiki.svg" class="mb-2" />
-      <h4 class="text-black text-center">There is no record.</h4>
-      <cornie-btn
-        class="bg-danger px-3 rounded-full text-white m-5"
-        @click="showRoom = true"
-      >
-        Add New
-      </cornie-btn>
+      <h4 class="text-black text-center">There is no virtual lab order on record.</h4>
     </div>
     <div class="w-full pb-7 mt-28" v-else>
       <cornie-table :columns="rawHeaders" v-model="items">
@@ -42,7 +36,6 @@
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="deleteItem(item.id)"
           >
             <report class="text-danger fill-current" />
             <span class="ml-3 text-xs">Report</span>
@@ -129,12 +122,16 @@
   <view-orders
     v-model="showResult"
     :id="typeId"
-    :organization="organizationInfo"
-    :request="request"
   />
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import ILocation, { HoursOfOperation } from "@/types/ILocation";
+import { first, getTableKeyValue } from "@/plugins/utils";
+import { cornieClient } from "@/plugins/http";
+import search from "@/plugins/search";
+import { namespace } from "vuex-class";
+
 import ThreeDotIcon from "@/components/icons/threedot.vue";
 import SortIcon from "@/components/icons/sort.vue";
 import SearchIcon from "@/components/icons/search.vue";
@@ -144,26 +141,22 @@ import FilterIcon from "@/components/icons/filter.vue";
 import IconInput from "@/components/IconInput.vue";
 import Report from "@/components/icons/report.vue";
 import ColumnFilter from "@/components/columnfilter.vue";
-import { namespace } from "vuex-class";
 import TableOptions from "@/components/table-options.vue";
 import CornieTable from "@/components/cornie-table/CornieTable.vue";
 import CornieBtn from "@/components/CornieBtn.vue";
 import PlusIcon from "@/components/icons/add.vue";
 import GetSpecimen from "@/components/icons/get-specimen.vue";
-import { cornieClient } from "@/plugins/http";
-import search from "@/plugins/search";
 import EyeBlue from "@/components/icons/eye-blue.vue";
 import UpdateStatusYellow from "@/components/icons/update-status-yellow.vue";
 import UpdateReportGreen from "@/components/icons/update-report-green.vue";
 import PlusIconBlack from "@/components/icons/plus-icon-black.vue";
-import ILocation, { HoursOfOperation } from "@/types/ILocation";
-import { first, getTableKeyValue } from "@/plugins/utils";
-import { IOrganization } from "@/types/IOrganization";
+
+import  IVirtuallaborder  from "@/types/IVirtuallaborder";
 
 import ViewOrders from "./ViewOrders.vue";
 
-const location = namespace("location");
-const organization = namespace("organization");
+const virtuallab = namespace("virtuallab");
+const user = namespace("user");
 
 @Options({
   components: {
@@ -204,11 +197,14 @@ export default class VirtualLabOrder extends Vue {
 
   diagnosticsReports = [{}];
 
-  @organization.State
-  organizationInfo!: IOrganization;
+  @virtuallab.State
+  virtuallaborders!: IVirtuallaborder[];
 
-  @organization.Action
-  fetchOrgInfo!: () => Promise<void>;
+  @virtuallab.Action
+  fetchVirtualLabOrder!: (locationId:string) => Promise<void>;
+
+  @user.Getter
+  authCurrentLocation!: any;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -225,7 +221,7 @@ export default class VirtualLabOrder extends Vue {
     },
     {
       title: "SERVICE NAME",
-      key: "serviceName",
+      key: "serviceId",
       show: true,
     },
     {
@@ -251,37 +247,35 @@ export default class VirtualLabOrder extends Vue {
   ];
 
   get items() {
-    const diagnosticsReports = this.diagnosticsReports.map((report) => {
-      (report as any).createdAt = new Date(
-        (report as any).createdAt
+    const virtuallaborders = this.virtuallaborders.map((laborder) => {
+      (laborder as any).createdAt = new Date(
+        (laborder as any).createdAt
       ).toLocaleDateString("en-US");
       return {
-        ...report,
+        ...laborder,
         // action: sale.id,
-        keydisplay: "XXXXXXX",
-        orderId: "-----",
-        category: "-----",
-        serviceName: "-----",
-        subject: "-----",
-        performer: "-----",
-        amountPaid: "-----",
-        status: "Active",
+
       };
     });
-    if (!this.query) return diagnosticsReports;
-    return search.searchObjectArray(diagnosticsReports, this.query);
+    if (!this.query) return virtuallaborders;
+    return search.searchObjectArray(virtuallaborders, this.query);
   }
+
+  get empty() {
+    return this.virtuallaborders.length < 1;
+  }
+
 
   showItem(value: string) {
     this.showRecord = true;
     this.typeId = value;
-    this.fetchOrgInfo();
+  
   }
 
   viewItem(value: string) {
     this.showResult = true;
     this.typeId = value;
-    this.fetchOrgInfo();
+    
   }
 
   closeModal() {
@@ -289,7 +283,7 @@ export default class VirtualLabOrder extends Vue {
   }
 
   async created() {
-    if (!this.organizationInfo) this.fetchOrgInfo();
+    await this.fetchVirtualLabOrder(this.authCurrentLocation);
   }
 }
 </script>

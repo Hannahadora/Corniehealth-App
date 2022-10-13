@@ -294,7 +294,7 @@
       </accordion-component>
 
       <accordion-component
-        title="Other"
+        title="Others"
         class="text-primary capitalize"
         :opened="true"
       >
@@ -312,7 +312,7 @@
               required
             /> -->
             <div>
-              <span class="text-sm font-semibold mb-1">Referral Method</span>
+              <span class="text-sm font-semibold mb-1">Referral Methods</span>
               <Multiselect
                 v-model="referralMethod"
                 mode="multiple"
