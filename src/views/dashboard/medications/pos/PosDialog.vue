@@ -157,6 +157,7 @@
 
           <div class="mt-7" v-if="!salesData || !checkSales">
             <div class="w-full border-gray-300 border-b flex items-center mb-6">
+            
               <span
                 class="cursor-pointer px-4 py-1 text-gray-400"
                 :class="{
@@ -193,9 +194,12 @@
             </div>
           </div>
 
-          <div v-else>
+          <div v-else class="my-6">
+            <div class="flex items-center justify-end text-danger">
+                {{sales.payments[0].status}}
+              </div>
             <div
-              class="grid grid-cols-2 gap-6 mb-6"
+              class="grid grid-cols-2 gap-6"
               v-for="(payment, idx) in sales.payments"
               :key="idx"
             >
@@ -526,7 +530,7 @@ export default class PosDialog extends Vue {
     }
 
     const newSales: any = {
-      patientId: this.customerId,
+      patientId: this.customerId === 'Walk-In Customer' ? undefined : this.customerId,
       type: this.type,
       status: this.status,
       coupon: this.coupon,

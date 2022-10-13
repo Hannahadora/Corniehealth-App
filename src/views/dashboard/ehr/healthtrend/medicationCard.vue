@@ -130,7 +130,8 @@ export default class MedicationCard extends Vue {
   }
 
   get items() {
-    const newmedicationrequest = this.medications?.map((medication: any) => ({
+    const sortedMedication = this.medications?.map((medication: any) => medication.status === 'completed')
+    const newmedicationrequest = sortedMedication?.map((medication: any) => ({
       medication: medication.medication,
       status: medication.status,
       dateRequested: new Date(medication.dateRequested).toLocaleDateString(
