@@ -86,7 +86,7 @@
                   />
 
 
-                  <cornie-select
+                  <!-- <cornie-select
                     class="required"
                     :items="[
                       'Category',
@@ -95,7 +95,7 @@
                     v-model="category"
                     placeholder="--Select--"
                   >
-                  </cornie-select>
+                  </cornie-select> -->
                   <cornie-input
                     v-model="title"
                     :label="'Title'"
@@ -141,7 +141,7 @@
                   <cornie-select
                     class="required"
                     :items="[
-                      'Appoiontment',
+                      'Appointment',
                       'Encounter',
                       'Procedure',
                     ]"

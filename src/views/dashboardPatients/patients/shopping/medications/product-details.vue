@@ -330,17 +330,15 @@
             </div>
           </FilterAccordion>
 
-          <FilterAccordion
-            showText
-            class="border-t"
-            title="Deals & Promotions"
-          >
+          <FilterAccordion showText class="border-t" title="Deals & Promotions">
             <div class="my-2">
               <p class="text-blue-400 text-sm mb-10">
                 Check if there are available promotions for this item
               </p>
               <p class="mb-6 text-sm">
-                Cornie Health and her pharmacy partners offer deals and promotions from time to time for your well-being. Check our promo page for more information.
+                Cornie Health and her pharmacy partners offer deals and
+                promotions from time to time for your well-being. Check our
+                promo page for more information.
               </p>
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
@@ -361,7 +359,7 @@
                   <p
                     class="cursor-pointer text-red-500 underline text-sm mr-1 font-bold"
                   >
-                  See Promotions
+                    See Promotions
                   </p>
                 </div>
               </div>
@@ -380,138 +378,138 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
-import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-import { namespace } from "vuex-class";
-import { cornieClient } from "@/plugins/http";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import CornieBtn from "@/components/CornieBtn.vue";
-import Search from "@/components/icons/search.vue";
-import FiveStar from "@/components/icons/five-star.vue";
-import Cancel from "@/components/icons/cancel-red-stroke.vue";
-import Check from "@/components/icons/check-green-stroke.vue";
-import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
-import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
-import CornieCheckbox from "@/components/custom-checkbox.vue";
-import IconInput from "@/components/IconInput.vue";
-import SearchIcon from "@/components/icons/search.vue";
-import CornieSelect from "@/components/cornieselect.vue";
-import PriceTag from "@/components/icons/price-tag.vue";
-import RetailPrice from "@/components/icons/retail-price.vue";
-import AvailabilityTag from "@/components/icons/availability-tag.vue";
-import FilterAccordion from "../components/filter-accordion.vue";
+  import CornieBtn from "@/components/CornieBtn.vue";
+  import CornieSelect from "@/components/cornieselect.vue";
+  import CornieCheckbox from "@/components/custom-checkbox.vue";
+  import IconInput from "@/components/IconInput.vue";
+  import AvailabilityTag from "@/components/icons/availability-tag.vue";
+  import Cancel from "@/components/icons/cancel-red-stroke.vue";
+  import Check from "@/components/icons/check-green-stroke.vue";
+  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
+  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
+  import FiveStar from "@/components/icons/five-star.vue";
+  import PriceTag from "@/components/icons/price-tag.vue";
+  import RetailPrice from "@/components/icons/retail-price.vue";
+  import {
+    default as Search,
+    default as SearchIcon,
+  } from "@/components/icons/search.vue";
+  import { cornieClient } from "@/plugins/http";
+  import { Options, Vue } from "vue-class-component";
+  import FilterAccordion from "../components/filter-accordion.vue";
 
-import MedicationShoppingSidebar from "../components/medication-shoppings-sidebar.vue";
-import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
+  import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
+  import MedicationShoppingSidebar from "../components/medication-shoppings-sidebar.vue";
 
-@Options({
-  name: "ShopDetailsPage",
-  components: {
-    ChevronRightIcon,
-    ChevronLeftIcon,
-    CornieBtn,
-    Search,
-    FiveStar,
-    Cancel,
-    Check,
-    ChevronWhiteDown,
-    ChevronWhiteUp,
-    MedicationShoppingSidebar,
-    CornieCheckbox,
-    IconInput,
-    SearchIcon,
-    CornieSelect,
-    PriceTag,
-    RetailPrice,
-    AvailabilityTag,
-    FilterAccordion,
-    AddToCartConfirmation,
-  },
-})
-export default class ShopDetailsPage extends Vue {
-  appointments: any = [];
-  appointmentModal: Boolean = false;
-  loading: Boolean = true;
-  searchQuery: any = "";
-  addToCartModal: Boolean = false;
+  @Options({
+    name: "ShopDetailsPage",
+    components: {
+      ChevronRightIcon,
+      ChevronLeftIcon,
+      CornieBtn,
+      Search,
+      FiveStar,
+      Cancel,
+      Check,
+      ChevronWhiteDown,
+      ChevronWhiteUp,
+      MedicationShoppingSidebar,
+      CornieCheckbox,
+      IconInput,
+      SearchIcon,
+      CornieSelect,
+      PriceTag,
+      RetailPrice,
+      AvailabilityTag,
+      FilterAccordion,
+      AddToCartConfirmation,
+    },
+  })
+  export default class ShopDetailsPage extends Vue {
+    appointments: any = [];
+    appointmentModal: Boolean = false;
+    loading: Boolean = true;
+    searchQuery: any = "";
+    addToCartModal: Boolean = false;
 
-  item: any = {
-    id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
-    logo: require("@/assets/img/item-logo.svg"),
-    location: "23, Admiralty Way, Lekki, Lagos",
-    shopName: "MedPlus",
-    name: "Anti-malaria  bundle",
-    form: "Tablet 10mg (30 Tabs Per pack)",
-    oldPrice: "N13, 950.00",
-    newPrice: "N13, 950.00",
-    deliveryType: [
-      { type: "Pickup", mode: false },
-      { type: "Same Day Delivery", mode: true },
-      { type: "Standard Shipping", mode: false },
-    ],
-    noOfReviews: "14",
-    photo: require("@/assets/img/panadol-item.svg"),
-    quantity: 0,
-    description:
-      "Ibuprofen is used to reduce fever and to relieve minor aches and pain from headaches, muscle aches, arthristis, menstrual periods, and the common cold. See more",
-  };
+    item: any = {
+      id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
+      logo: require("@/assets/img/item-logo.svg"),
+      location: "23, Admiralty Way, Lekki, Lagos",
+      shopName: "MedPlus",
+      name: "Anti-malaria  bundle",
+      form: "Tablet 10mg (30 Tabs Per pack)",
+      oldPrice: "N13, 950.00",
+      newPrice: "N13, 950.00",
+      deliveryType: [
+        { type: "Pickup", mode: false },
+        { type: "Same Day Delivery", mode: true },
+        { type: "Standard Shipping", mode: false },
+      ],
+      noOfReviews: "14",
+      photo: require("@/assets/img/panadol-item.svg"),
+      quantity: 0,
+      description:
+        "Ibuprofen is used to reduce fever and to relieve minor aches and pain from headaches, muscle aches, arthristis, menstrual periods, and the common cold. See more",
+    };
 
-  async fetchAppointments() {
-    try {
-      this.loading = true;
-      const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/appointment/get-all-user-appointment"
-      );
-      this.appointments = data;
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching appointments",
-        status: "error",
-      });
-    } finally {
-      this.loading = false;
+    async fetchAppointments() {
+      try {
+        this.loading = true;
+        const { data } = await cornieClient().get(
+          "/api/v1/patient-portal/appointment/get-all-user-appointment"
+        );
+        this.appointments = data;
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching appointments",
+          status: "error",
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+
+    openCartConfirmation(item: any) {
+      this.item = item;
+      this.addToCartModal = true;
+    }
+
+    async created() {
+      await this.fetchAppointments();
     }
   }
-
-  openCartConfirmation(item: any) {
-    this.item = item;
-    this.addToCartModal = true;
-  }
-
-  async created() {
-    await this.fetchAppointments();
-  }
-}
 </script>
 
 <style scoped>
-.sample-img {
-  height: 143px;
-  width: 175px;
-}
-.bg-s-blue {
-  background: #f0f4fe;
-}
-.related-tag {
-  background: #f6f8f9;
-  padding: 4px 16px;
-  border-radius: 100px;
-}
-.text-grey-blue {
-  color: #667499;
-}
+  .sample-img {
+    height: 143px;
+    width: 175px;
+  }
+  .bg-s-blue {
+    background: #f0f4fe;
+  }
+  .related-tag {
+    background: #f6f8f9;
+    padding: 4px 16px;
+    border-radius: 100px;
+  }
+  .text-grey-blue {
+    color: #667499;
+  }
 
-th {
-  background: #f0f4fe;
-  text-align: left;
-  padding: 10px 12px;
-  border-radius: 4px 4px 0px 0px;
-  color: #080056;
-  font-size: 12px;
-}
+  th {
+    background: #f0f4fe;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 4px 4px 0px 0px;
+    color: #080056;
+    font-size: 12px;
+  }
 
-td {
-  padding: 10px 12px;
-}
+  td {
+    padding: 10px 12px;
+  }
 </style>

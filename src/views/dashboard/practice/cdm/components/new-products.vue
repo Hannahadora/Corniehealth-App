@@ -65,6 +65,7 @@
                     @click="resultBrand(dataBrand)"
                     v-model="dataBrand"
                     :placeholder="'Select'"
+                    :required="true"
                     
                     />
                     <cornie-select
@@ -105,7 +106,7 @@
                     :disabled="true"
                     />
                     <cornie-select
-                    :label="'Classification.'"
+                    :label="'Classification'"
                     placeholder="--Enter--"
                     :items="[
                         'General Health',
@@ -115,12 +116,14 @@
                         'Nutrition, Fitness & Supplements',
                     ]"
                     v-model="classification"
+                    :required="true"
                     />
                     <cornie-select
-                    :label="'Sub-classification.'"
+                    :label="'Sub-classification'"
                     placeholder="--Enter--"
                     :items="getSubClassify"
                     v-model="subClassification"
+                    :required="true"
                     />
                     <cornie-select
                     v-model="category"
@@ -669,7 +672,7 @@
                   type="checkbox"
                   v-model="applyVAT"
                   class="form-radio h-3 w-3"
-                  :value="'Apply VAT to this service item'"
+                  :value="'Apply VAT to this product item'"
                 />
                 <span class="ml-2 noraml-text text-sm font-normal"
                   >Apply VAT to this service item</span

@@ -31,7 +31,7 @@
             <drug-icon />
             <div class="text-xs flex flex-col">
               <span class="font-semibold text-sm mb-2 text-primary">
-                {{ input.medication || 'N/A' }}
+                {{ input.medication || "N/A" }}
               </span>
               <span class="">
                 <span class="text-gray-500">
@@ -70,47 +70,47 @@
   <!-- <medication-modal :columns="practitioner" v-model="showMedicationModal" /> -->
 </template>
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { Prop, PropSync, Watch } from "vue-property-decorator";
-import DetailCard from "./detail-card.vue";
-import Avatar from "@/components/avatar.vue";
-import AddIcon from "@/components/icons/add.vue";
-import DrugIcon from "@/components/icons/drug.vue";
-import NodrugIcon from "@/components/icons/nodrug.vue";
-import ChevronRightIcon from "@/components/icons/chevronright.vue";
-import { namespace } from "vuex-class";
-import { mapDisplay } from "@/plugins/definitions";
-import { string } from "yup/lib/locale";
-import MedicationModal from "@/views/dashboard/ehr/medication/medicationModal.vue";
-const request = namespace("request");
+  import Avatar from "@/components/avatar.vue";
+  import DetailCard from "@/components/detail-card.vue";
+  import AddIcon from "@/components/icons/add.vue";
+  import ChevronRightIcon from "@/components/icons/chevronright.vue";
+  import DrugIcon from "@/components/icons/drug.vue";
+  import NodrugIcon from "@/components/icons/nodrug.vue";
+  import { mapDisplay } from "@/plugins/definitions";
+  import MedicationModal from "@/views/dashboard/ehr/medication/medicationModal.vue";
+  import { Options, Vue } from "vue-class-component";
+  import { Prop } from "vue-property-decorator";
+  import { namespace } from "vuex-class";
+  const request = namespace("request");
 
-@Options({
-  name: "MedicationCard",
-  components: {
-    DetailCard,
-    Avatar,
-    MedicationModal,
-    AddIcon,
-    DrugIcon,
-    NodrugIcon,
-    // ArrowRightIcon,
-    ChevronRightIcon,
-  },
-})
-export default class MedicationCard extends Vue {
-  photo = require("@/assets/img/avatar.png");
+  @Options({
+    name: "MedicationCard",
+    components: {
+      DetailCard,
+      Avatar,
+      MedicationModal,
+      AddIcon,
+      DrugIcon,
+      NodrugIcon,
+      // ArrowRightIcon,
+      ChevronRightIcon,
+    },
+  })
+  export default class MedicationCard extends Vue {
+    photo = require("@/assets/img/avatar.png");
 
-  medicationMapper = (code: string) => "";
-  dosageInstructions = "";
+    medicationMapper = (code: string) => "";
+    dosageInstructions = "";
 
-  @Prop({ type: Array, default: () => [] })
-  medications!: any[];
+    @Prop({ type: Array, default: () => [] })
+    medications!: any[];
 
-  showMedicationModal = false;
+    showMedicationModal = false;
 
-  async showMedication() {
-    this.showMedicationModal = true;
-  }
+    showMedication() {
+      this.showMedicationModal = true;
+    }
+
   get patientId() {
     return this.$route.params.id as string;
   }

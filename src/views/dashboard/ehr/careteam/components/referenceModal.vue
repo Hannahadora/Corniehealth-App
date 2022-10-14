@@ -356,10 +356,10 @@
     }
   
     async created() {
-      await this.createMapper();
-      await this.fetchAllergys(this.$route?.params?.id as string);
+      await this.fetchAllergys(this.activepatientId);
       await this.fetchPatientConditions(this.activepatientId);
       await this.fetchPractitioners();
+      await this.createMapper();
     }
   }
   </script>

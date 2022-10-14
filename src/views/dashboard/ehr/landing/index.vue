@@ -588,7 +588,7 @@ export default class ExistingState extends Vue {
   }
 
   async created() {
-    await this.fetchPractitonerVisits(this.authPractitioner?.id);
+    if(this.authPractitioner?.id) this.fetchPractitonerVisits(this.authPractitioner?.id);
     if (!this.practitionerAuthenticated) this.showAuthModal = true;
     await this.fetchPatients();
     if (!this.visits || this.visits.length === 0) await this.getVisits();

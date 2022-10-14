@@ -44,20 +44,8 @@
             </span>
           </div>
         </template>
-        <template #billing="{ item: { billing } }">
-          <span
-            :class="{
-              // 'bg-success text-success': status == 'active',
-              // ' bg-danger text-danger': status == 'inactive',
-              ' bg-warning text-warning': billing == 'pending',
-              // ' bg-blue-yonder text-blue-yonder': status == 'relapse',
-              // ' bg-blue-800 text-blue-800': status == 'remission',
-              // ' bg-gray-800 text-gray-800': status == 'resolved',
-            }"
-            class="px-1 text-center rounded-md p-1 bg-opacity-20"
-          >
-            {{ billing }}
-          </span>
+        <template #mode="{ item: { mode } }">
+          <div class="uppercase">{{ mode }}</div>
         </template>
         <template #status="{ item: { status } }">
           <span
@@ -308,11 +296,11 @@
         key: "updatedAt",
         show: true,
       },
-      {
-        title: "Registered By",
-        key: "addedBy",
-        show: true,
-      },
+      // {
+      //   title: "Registered By",
+      //   key: "addedBy",
+      //   show: true,
+      // },
       {
         title: "status",
         key: "status",
@@ -329,7 +317,7 @@
           ? this.healthRecords.map((p: any) => {
               return {
                 id: p.id,
-                mode: p.mode,
+                mode: p.mode ? p.mode.toUpperCase() : "",
                 practiceName: p.organization.name,
                 practiceType: p.organization.practiceType,
                 createdAt: new Date(p.createdAt),
@@ -345,7 +333,7 @@
     }
 
     printDate(date: string) {
-      return new Date(date).toLocaleDateString("en-US");
+      return new Date(date).toLocaleString();
     }
 
     viewProfile(item: any) {

@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-     
+
       <cornie-table :columns="rawHeaders" v-model="items">
         <template #actions="{ item }">
           <div
@@ -198,15 +198,13 @@
         </div>
       </div>
     </div>
-    
-    
-  <view-orders
-    v-model="showResult"
-    :id="typeId"
-    :organization="organizationInfo"
-    :request="request"
-  />
-   
+
+    <view-orders
+      v-model="showResult"
+      :id="typeId"
+      :organization="organizationInfo"
+      :request="request"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -502,7 +500,7 @@ export default class PHARMACYORDER extends Vue {
     // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/pharmacy/dispense-view/${this.locationId}/${this.typeId}`
+        `/api/v1/lab-order-items/${this.locationId}`
       );
       this.request = data;
     } catch (error) {
@@ -517,8 +515,7 @@ export default class PHARMACYORDER extends Vue {
     this.openDispense = false;
   }
 
-  async created() {
-  }
+  async created() {}
 }
 </script>
 

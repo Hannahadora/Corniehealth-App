@@ -82,7 +82,7 @@
                               placeholder="--Select--"
                           >
                           </cornie-select>
-                          <cornie-select
+                          <!-- <cornie-select
                               class="required w-full"
                               required
                               :rules="required"
@@ -91,7 +91,16 @@
                               placeholder="--Select--"
                               v-model="requesterId"
                               >
-                          </cornie-select>
+                          </cornie-select> -->
+
+                          <cornie-input
+                            class="required w-full"
+                            label="requester"
+                            placeholder="--Select--"
+                            :disabled="true"
+                            :modelValue="authPractitioner.firstName +' '+  authPractitioner.lastName"
+                            >
+                        </cornie-input>
                     
                           <cornie-select
                               class="required cursor-pointer"
@@ -584,7 +593,8 @@
   const issues = namespace("issues");
   const condition = namespace("condition");
   const roles = namespace("roles");
-  
+  const userStore = namespace("user");
+
   type Sorter = (a: any, b: any) => number;
   
   
@@ -687,6 +697,11 @@
   
     @roles.State
     roles!: any[];
+
+    @userStore.Getter
+    authPractitioner!: IPractitioner;
+
+ 
   
   
   
@@ -966,7 +981,7 @@
         intent: this.intent,
         priority: this.priority,
         category: this.category,
-        requesterId: this.requesterId,
+        requesterId: this.authPractitioner.id,
         patientId: this.onepatientId,
         dispenserId: this.dispenserId,
         supportingInformation: this.supportingInformation || undefined,

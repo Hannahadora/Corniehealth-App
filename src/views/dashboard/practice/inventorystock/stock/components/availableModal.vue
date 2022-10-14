@@ -41,6 +41,10 @@
                 <p class="flex justify-end float-right w-full">{{ item.strength }}</p>
             </div>
             <div class="flex space-x-4 w-full mb-4">
+                <p class="text-sm text-gray-400 w-full">Unit</p>
+                <p class="flex justify-end float-right w-full">{{ item.uom }}</p>
+            </div>
+            <div class="flex space-x-4 w-full mb-4">
                 <p class="text-sm text-gray-400 w-full">Pack Size</p>
                 <p class="flex justify-end float-right w-full">{{ item.packSize }}</p>
             </div>
@@ -51,7 +55,7 @@
             </p>
 
             </div>
-            <div class="shadow-lg p-2 mb-4 flex space-x-4 rounded"  v-for="(item, index) in stockAvaialbilty" :key="index">
+            <div class="shadow-lg p-2 mb-4 mt-4 flex space-x-4 rounded"  v-for="(item, index) in stockAvaialbilty" :key="index">
                 <location-icon/>
                 <div>
                     <p class="font-bold">{{ item.location }}</p>

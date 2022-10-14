@@ -15,7 +15,6 @@
         </tabs>
       </span>
     </div>
-    <new-order v-model="showNewOrder" />
   </div>
 </template>
 
@@ -27,7 +26,7 @@
   import { Prop } from "vue-property-decorator";
 
   import DoctorOrder from "./components/doctor-order.vue";
-  import newOrder from "./components/new-order.vue";
+
   import selfOrder from "./components/self-order.vue";
   @Options({
     name: "AccountSettings",
@@ -37,7 +36,6 @@
       ChevronLeftIcon,
       DoctorOrder,
       selfOrder,
-      newOrder,
     },
   })
   export default class AccountSettings extends Vue {

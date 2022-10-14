@@ -84,7 +84,7 @@
             <cornie-checkbox
               @click="select(row, index)"
               @change="updateCheckall()"
-              v-model="selectedOne"
+              :modelValue="index"
               :checked="isSelected(row)"
             />
           </td>

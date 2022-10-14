@@ -105,6 +105,7 @@
         title: "status",
         key: "status",
         show: true,
+        
       },
     ];
 
@@ -147,8 +148,7 @@
       await this.fetchDoctorOrder();
     }
     newLabOrder() {
-      this.$emit("newLabOrder");
-      // this.$router.push("/patient/appointments/");
+      this.$router.push("/dashboard/patient/diagnostics-shopping/");
     }
   }
 </script>

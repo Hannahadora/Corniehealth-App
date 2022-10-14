@@ -18,13 +18,8 @@
 
       <cornie-card-text class="flex-grow scrollable">
         <v-form ref="form">
-          <div
-            class="border-b-2 w-full border-dashed pb-2 mb-5 border-gray-300"
-          >
-            <span class="text-dark text-sm font-medium">Select Specialty</span>
-          </div>
           <div>
-            <span class="text-sm font-semibold mb-1">Specialty</span>
+            <span class="text-sm font-semibold">Select Specialty</span>
             <Multiselect
               v-model="specialties"
               mode="multiple"
@@ -56,6 +51,7 @@
               </template>
             </Multiselect>
           </div>
+          <div class="border-b-2 -mt-9 border-dashed"></div>
           <div v-if="id">
             <div
               class="w-full -mb-12"

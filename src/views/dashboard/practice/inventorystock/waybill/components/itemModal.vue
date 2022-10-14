@@ -64,7 +64,7 @@
               @input="searchBatch"
               @click="resultData(supply.batchNumber)"
               v-model="supply.batchNumber"
-              :placeholder="'Search batch number'"
+              :placeholder="'Search batch number using BN'"
             />
 
             <date-picker
@@ -75,7 +75,7 @@
               :disabled="true"
             />
             <cornie-input
-              label="UoM"
+              label="Unit of Measurement (UoM)"
               class="w-full mt-5"
               placeholder="--Enter--"
               v-model="supply.uofm"
@@ -85,6 +85,12 @@
               class="w-full mb-5 mt-4"
               placeholder="--Enter--"
               v-model="supply.packSize"
+            />
+            <cornie-input
+              label="Qty"
+              class="w-full mt-5"
+              placeholder="--Enter--"
+              v-model="supply.quantity"
             />
           </v-form>
         </div>
