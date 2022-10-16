@@ -98,7 +98,7 @@
             <div class="w-11/12 py-4 flex items-center justify-center pl-3">
               <button
                 class="text-white font-bold text-center"
-                @click="$router.push('/dashboard/patient/shopping/cart')"
+                @click="goToCart"
               >
                 Continue to cart
               </button>
@@ -133,6 +133,7 @@ import StandardShipping from "@/components/icons/standard-shipping.vue";
 import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 
 const account = namespace("user");
+const cartStore = namespace("cart");
 
 @Options({
   components: {
@@ -156,6 +157,9 @@ export default class AddToCartModal extends Vue {
   @account.Getter
   cornieUser!: CornieUser;
 
+  @cartStore.Mutation
+  addToPrescriptionCart!: (item: any) => void;
+
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -167,6 +171,11 @@ export default class AddToCartModal extends Vue {
 
   get userId() {
     return this.cornieUser?.id;
+  }
+
+  goToCart() {
+    this.addToPrescriptionCart(this.item);
+    this.$emit('close')
   }
 
   async created() {}

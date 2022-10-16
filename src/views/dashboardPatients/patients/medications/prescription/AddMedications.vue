@@ -20,52 +20,63 @@
             </icon-input>
           </span>
           <div
+            class=" w-full absolute shadow bg-white px-4 mx-4 bg-white border-gray-400 border top-100 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
             :class="[
               !showDatalist ? 'hidden' : 'o',
-              filteredItems.length === 0 ? 'h-20' : 'h-96 overflow-y-scroll',
+              filteredItems.length === 0 ? 'h-20' : 'h-auto',
             ]"
-            class="absolute shadow px-4 mx-4 bg-white border-gray-400 border top-100 z-40 left-0 m-3 rounded overflow-auto mt-2 svelte-5uyqqj"
-            style="width: 100%"
           >
             <div
-              v-for="(item, i) in filteredItems"
-              :key="i"
-              class="cursor-pointer mb-8 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+              :class="[
+                filteredItems.length === 0 ? 'h-20' : 'h-600 overflow-y-scroll',
+              ]"
+              style="width: 100%"
             >
-              <div class="flex items-start bg-white shadow px-3 py-4">
-                <img :src="item.image" alt="" class="mr-8 w-32 h-24" />
-                <div>
-                  <p class="mb-8 font-bold">{{ item.genericName }}</p>
-                  <p>{{ item.description }}</p>
+              <div
+                v-for="(group, i) in groupedMedications"
+                :key="i"
+                class="cursor-pointer mb-10 w-full border-gray-100 rounded-xl hover:bg-white-cotton-ball"
+              >
+                <div class="flex items-start bg-white shadow px-3 py-4">
+                  <img :src="group.groupImg" alt="" class="mr-8 w-32 h-24" />
+                  <div>
+                    <p class="mb-8 font-bold">{{ group.name }}</p>
+                    <p>{{ group.groupDesc }}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div class="flex items-start bg-white shadow px-3 py-4 mt-4">
-                <div>
-                  <table class="w-full">
-                    <tr>
-                      <td>
-                        <div class="flex">
-                          <img
-                            :src="item.logo"
-                            alt="shop-logo"
-                            class="mr-3 w-6 h-6 rounded-full"
-                          />
-                          <div>
-                            <p class="text-xs font-medium text-primary">
-                              {{ item.shopName }}
-                            </p>
-                            <p class="" style="font-size: 10px">
-                              {{ item.location }}
-                            </p>
-                          </div>
+                <div class="bg-white shadow px-6 py-5 mt-4">
+                  <div
+                    v-for="(item, idx) in group.groupedItems"
+                    :key="idx"
+                    class="py-2 border-b border-b-gray-500 mb-1"
+                    :class="{
+                      'border-b-0': idx === group.groupedItems.length - 1,
+                    }"
+                  >
+                    <div class="w-full flex items-center justify-between">
+                      <div
+                        class="w-6 h-6 rounded-full uppercase font-bold text-xs text-white text-center flex items-center justify-center bg-blue-500 mr-4"
+                      >
+                        {{ getInitial(item.organizationName) }}
+                      </div>
+                      <div class="w-10/12 grid grid-cols-3 space-x-4">
+                        <div>
+                          <p class="font-medium text-primary">
+                            {{ item.organizationName }}
+                          </p>
+                          <p class="" style="font-size: 10px">
+                            {{ item.address }}, {{ item.city }}
+                          </p>
+                          <p class="" style="font-size: 10px">
+                            {{ item.state }}
+                          </p>
                         </div>
-                      </td>
-                      <td>
+
                         <div>
                           <div
                             class="flex mb-2"
-                            v-for="(type, idx) in item.deliveryType"
+                            v-for="(type, idx) in deliveryTypes"
                             :key="idx"
                           >
                             <check v-if="type.mode" class="mr-3" />
@@ -73,43 +84,45 @@
                             <p class="text-xs">{{ type.type }}</p>
                           </div>
                         </div>
-                      </td>
-                      <td>
-                        <p class="line-through text-danger text-sm mr-3">
-                          {{ item.oldPrice }}
-                        </p>
-                        <p class="mb-2 font-semibold text-sm">
-                          {{ item.newPrice }}
-                        </p>
-                      </td>
-                    </tr>
-                  </table>
+
+                        <div>
+                          <p class="line-through text-danger text-sm mr-3">
+                            {{ item.productPrice }}
+                          </p>
+                          <p class="mb-2 font-semibold text-sm">
+                            {{ item.productPrice }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <cornie-radio name="search" @click="selected(item)" />
+                    </div>
+                  </div>
                 </div>
-                <cornie-radio name="search" @click="selected(item)" />
+              </div>
+              <div v-if="filteredItems.length === 0">
+                <span
+                  class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
+                  >No result found!</span
+                >
               </div>
             </div>
-            <div v-if="filteredItems.length === 0">
-              <span
-                class="py-2 px-5 text-sm text-gray-600 text-center flex justify-center"
-                >No result found!</span
+            <div class="bg-white p-6 w-full flex justify-end absolute bottom-0 right-6" v-if="showDatalist">
+              <cornie-btn
+                @click="showDatalist = false"
+                class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
               >
+                Cancel
+              </cornie-btn>
+              <cornie-btn
+                v-if="filteredItems.length > 0"
+                :loading="loading"
+                @click.prevent="handleSubmit"
+                class="text-white bg-danger font-semibold px-6 rounded-xl"
+              >
+                Add to Cart
+              </cornie-btn>
             </div>
-          </div>
-          <div class="flex justify-end absolute bottom-24 right-6">
-            <cornie-btn
-              @click="showDatalist = false"
-              class="border-primary border-2 px-6 mr-3 rounded-xl text-primary"
-            >
-              Cancel
-            </cornie-btn>
-            <cornie-btn
-              v-if="filteredItems.length > 0"
-              :loading="loading"
-              @click="submit"
-              class="text-white bg-danger font-semibold px-6 rounded-xl"
-            >
-              Add to Cart
-            </cornie-btn>
           </div>
         </div>
       </div>
@@ -117,7 +130,8 @@
 
     <add-to-cart-confirmation
       v-model="addToCartModal"
-      :item="choosenMedication"
+      :item="chosenMedication"
+      @close="itemAdded"
     />
     <!-- <cornie-card> -->
   </div>
@@ -140,6 +154,10 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import CancelIcon from "@/components/icons/CloseIcon.vue";
 import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
+import DescInput from "@/views/dashboard/ehr/vitals/components/input-desc-rounded.vue";
+import Cancel from "@/components/icons/cancel-red-stroke.vue";
+import Check from "@/components/icons/check-green-stroke.vue";
+import AddToCartConfirmation from "./add-to-cart-confirmation.vue";
 
 const user = namespace("user");
 
@@ -160,6 +178,9 @@ function defaultFilter(item: any, query: string) {
     CornieRadio,
     CornieBtn,
     CancelRedBg,
+    Cancel,
+    Check,
+    AddToCartConfirmation,
   },
 })
 export default class addMedications extends Vue {
@@ -177,7 +198,6 @@ export default class addMedications extends Vue {
 
   addToCartModal = false;
   medicationId = "";
-  // chosenMedications = [] as any;
   chosenMedication = {} as any;
 
   medicationDetails = [] as any;
@@ -185,29 +205,27 @@ export default class addMedications extends Vue {
   showDatalist = false;
   loading = false;
 
+  deliveryTypes: any = [
+    { type: "Pickup", mode: false },
+    { type: "Same Day Delivery", mode: true },
+    { type: "Standard Shipping", mode: false },
+  ];
+
   selected(value: any) {
-    // this.chosenMedications.length > 0 && this.chosenMedications.find((el: any) => {
-    //   if ((el.id = value.id)) {
-    //     return;
-    //   } else {
-    //     this.chosenMedications.push(value);
-    //   }
-    // });
-    //  this.chosenMedications.push(value);
     this.chosenMedication = value;
   }
-
-  // get locationId() {
-  //   return this.authCurrentLocation;
-  // }
 
   get locationId() {
     return "21b84341-2051-4cad-b6b6-feae04f81215";
   }
 
-  submit() {
+  itemAdded() {
+    this.addToCartModal = false;
+    this.show = false
+  }
+
+  handleSubmit() {
     this.$emit("addMedication", this.chosenMedication);
-    // this.chosenMedications = [];
     this.show = false;
     this.addToCartModal = true;
   }
@@ -219,6 +237,29 @@ export default class addMedications extends Vue {
       .filter((item: any) => this.filter(item, this.query))
       .sort(this.orderBy);
   }
+
+  get groupedMedications() {
+    const groups = this.filteredItems.reduce((item: any, obj: any) => {
+      const key = obj.genericName;
+      if (!item[key]) {
+        item[key] = [];
+      }
+      item[key].push(obj);
+      return item;
+    }, {});
+
+    const groupArrays = Object.keys(groups).map((name) => {
+      return {
+        name,
+        groupedItems: groups[name],
+        groupImg: this.filteredItems[0].image,
+        groupDesc: this.filteredItems[0].description,
+      };
+    });
+
+    return groupArrays || [];
+  }
+
   async fetchMedications(
     query?: string,
     pharmacies?: string,
@@ -239,11 +280,28 @@ export default class addMedications extends Vue {
     }
   }
 
+  getInitial(str?: any) {
+    return str?.charAt(0) || "";
+  }
+
   @Watch("query")
   typed(query: string) {
     this.fetchMedications(query);
   }
 
-  async created() {}
+  @Watch("showDatalist")
+  change() {
+    this.$emit("dropdownState", this.showDatalist);
+  }
+
+  async created() {
+    this.$emit("dropdownState", this.showDatalist);
+  }
 }
 </script>
+
+<style scoped>
+.h-600 {
+  height: 600px;
+}
+</style>

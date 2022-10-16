@@ -4,23 +4,23 @@
     <div class="w-full">
       <div class="flex justify-between mb-8">
         <p>Item Total</p>
-        <p class="text-right">₦ 27,000.00</p>
+        <p class="text-right">₦ {{totalCost}}</p>
       </div>
       <div class="flex justify-between mb-8">
         <p>Shipping</p>
-        <p class="text-right">₦ 27,000.00</p>
+        <p class="text-right">₦ 0</p>
       </div>
       <div class="flex justify-between mb-8">
         <p>Discounts</p>
-        <p class="text-right">₦ 27,000.00</p>
+        <p class="text-right">₦ 0</p>
       </div>
       <div class="flex justify-between mb-6">
         <p>Sales Tax</p>
-        <p class="text-right">₦ 27,000.00</p>
+        <p class="text-right">₦ 0</p>
       </div>
       <div class="flex justify-between py-6 border-t">
         <p class="font-bold">Total</p>
-        <p class="font-bold text-right">₦ 27,000.00</p>
+        <p class="font-bold text-right">₦ {{grandTotal}}</p>
       </div>
       <p class="text-sm">Promo code</p>
 
@@ -94,11 +94,19 @@ import CornieInput from "@/components/cornieinput.vue";
   },
 })
 export default class OrderSummary extends Vue {
-  @Prop({ type: Object, default: {} })
-  item!: any;
+  @Prop({ type: Object, default: [] })
+  items!: any;
 
   loading: Boolean = true;
   promoCode = "";
+
+  get totalCost() {
+    return this.items.reduce((a: any, b: any) => a.productPrice + b.productPrice, 0)
+  }
+
+  get grandTotal() {
+    return this.totalCost
+  }
 }
 </script>
 

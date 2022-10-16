@@ -25,42 +25,37 @@
             title="Add Prescribed Medications"
             :opened="false"
           >
-            <add-medications />
+            <add-medications @dropdownState="handleMedDDstate" />
 
             <div class="mt-6 flex items-center justify-between">
-              <p class="text-xl text-667499 font-bold">{{medications.length}} Items</p>
-              <p class="text-xl text-667499 font-bold">SubTotal: N{{medications.length}}</p>
+              <p class="text-xl text-667499 font-bold">
+                {{ prescriptionCartItems.length }} Items
+              </p>
+              <p class="text-xl text-667499 font-bold">
+                SubTotal: N{{ totalCost }}
+              </p>
             </div>
 
-            <div v-for="(medication, idx) in medications" :key="idx">
-              <div class="flex items-center">
-                <div>{{ medication.name }}</div>
+            <div v-for="(item, idx) in prescriptionCartItems" :key="idx">
+              <div class="flex items-start justify-between">
                 <div class="flex items-center">
-                  <cornie-select
-                    label="Quantity"
-                    primary
-                    v-model="quantityUnit"
-                    items="['Vitals', 'Bottles', 'Blister packs', 'Satchet', 'Syringes', 'Ampoules', 'Tube', 'Container','Strip', 'Box', 'Pieces']"
-                  />
-                  <cornie-input label="..." v-model="quantityValue" />
+                  <img :src="item.image" class="w-12 h-12 rounded-full mr-5" alt="">
+                  <div>
+                    <p>{{ item.genericName }}</p><span class="text-xs text-gray-500">{{item.form}} {{item.strength}}</span>
+                    <p class="mt-1 text-xs">{{item.size}} {{item.form}}</p>
+                  </div>
                 </div>
-                <div class="flex items-center">
-                  <cornie-select
-                    label="Quantity"
-                    primary
-                    v-model="amountUnit"
-                    items="[]"
-                  />
-                  <cornie-input
-                    label="..."
-                    v-model="amountValue"
-                    placeholder=""
-                  />
+                <div>
+                  <p class="line-through text-danger text-sm mt-2">
+                    {{ item.productPrice }}
+                  </p>
+                  <p class="mb-2 font-semibold text-sm">
+                    {{ item.productPrice }}
+                  </p>
+                  <p class="text-blue-500 underline text-xs mt-2 cursor-pointer" @click="removeItem(item)">Remove</p>
                 </div>
               </div>
             </div>
-
-            
           </accordion-component>
 
           <!-- <accordion-component
@@ -134,7 +129,10 @@
         </v-form>
       </cornie-card-text>
 
-      <div class="flex items-center justify-end mt-6 mb-6 px-5">
+      <div
+        class="flex items-center justify-end mt-6 mb-6 px-5"
+        v-if="!medDDState"
+      >
         <cornie-btn
           class="border-primary border-2 px-3 py-1 mr-3 rounded-lg text-primary"
         >
@@ -195,6 +193,7 @@ const hierarchy = namespace("hierarchy");
 const orgFunctions = namespace("OrgFunctions");
 const user = namespace("user");
 const patients = namespace("patients");
+const cartStore = namespace("cart");
 
 @Options({
   name: "AddPrescriptionDialog",
@@ -244,6 +243,7 @@ export default class AddPrescriptionDialog extends Vue {
   uploadPrescriptionModal = false;
   productLocations = [] as any;
   productPharmacies = [] as any;
+  medDDState = false;
 
   prescription: any = {
     deliveryPreferencesId: "",
@@ -261,8 +261,23 @@ export default class AddPrescriptionDialog extends Vue {
 
   fileInfo = {} as any;
 
+  @cartStore.State
+  prescriptionCartItems: any;
+
+  get totalCost() {
+    return this.prescriptionCartItems.reduce((a: any, b: any) => a.productPrice + b.productPrice, 0)
+  }
+
   get addresses() {
     return [];
+  }
+
+  removeItem() {
+
+  }
+
+  handleMedDDstate(value: any) {
+    this.medDDState = value;
   }
 
   async fetchProductLocations() {
@@ -300,7 +315,11 @@ export default class AddPrescriptionDialog extends Vue {
     this.fileInfo = data.fileInfo;
   }
 
-  async save() {}
+  async save() {
+    this.$nextTick(() => {
+      this.$router.push("/dashboard/patient/shopping/cart?type=prescriptions");
+    });
+  }
 
   async created() {
     await this.fetchProductPharmacies();

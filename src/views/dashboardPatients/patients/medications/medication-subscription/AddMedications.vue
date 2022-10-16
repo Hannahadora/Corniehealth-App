@@ -55,7 +55,7 @@
                   <div
                     class="w-full text-sm items-center p-2 pl-2 border-transparent border-l-2 relative"
                   >
-                    {{ item?.genericName || item }}
+                    {{ item?.genericName || item }} - {{ item.location.address }}, {{item.location.state}} - ({{item.productPrice}})
                     <p class="text-xs text-gray-400 italic">
                       {{ item?.form }} {{item?.strength}}
                     </p>

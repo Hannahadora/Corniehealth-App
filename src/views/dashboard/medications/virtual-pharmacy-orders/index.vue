@@ -63,21 +63,21 @@
         <template #actions="{ item }">
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="viewItem(item.id)"
+            @click="viewItem(item)"
           >
             <eye-yellow class="text-blue-500 fill-current" />
             <span class="ml-3 text-xs">View</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="showItem(item)"
           >
             <update-report-green class="text-danger fill-current" />
             <span class="ml-3 text-xs">Dispense</span>
           </div>
           <div
             class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-            @click="showItem(item.id)"
+            @click="showItem(item)"
           >
             <decline class="text-danger fill-current" />
             <span class="ml-3 text-xs">Decline</span>
@@ -203,7 +203,7 @@
       v-model="showResult"
       :id="typeId"
       :organization="organizationInfo"
-      :request="request"
+      :request="selectedOrder"
     />
   </div>
 </template>
@@ -272,6 +272,8 @@ const organization = namespace("organization");
   },
 })
 export default class PHARMACYORDER extends Vue {
+  empty = false;
+  showRoom = false;
   query = "";
   request = "";
   organization = "";
@@ -287,16 +289,13 @@ export default class PHARMACYORDER extends Vue {
   totalRx = 0;
   totalDispensed = 0;
   totalVolume = 0;
+  virtualOrders = [] as any;
+  selectedOrder = {} as any
 
   // get patientId() {
   //   return this.$route.params.id as string
   // }
 
-  @dispense.State
-  medicationRequest!: any[];
-
-  @dispense.Action
-  fetchMedReq!: () => Promise<void>;
 
   @request.State
   patients!: any[];
@@ -446,8 +445,8 @@ export default class PHARMACYORDER extends Vue {
   }
 
   get items() {
-    const combined = this.medicationRequest.map(this.medicationRequests);
-    const medicationRequest = combined.flatMap((value) => value);
+    const combined = this.virtualOrders.map((el: any) => this.medicationRequests(el));
+    const medicationRequest = combined.flatMap((value: any) => value);
 
     if (!this.query) return medicationRequest;
     return search.searchObjectArray(medicationRequest, this.query);
@@ -483,26 +482,26 @@ export default class PHARMACYORDER extends Vue {
     return this.authCurrentLocation;
   }
 
-  showItem(value: string) {
+  showItem(item: any) {
     this.openDispense = true;
-    this.typeId = value;
-    this.setRequest();
+    this.typeId = item.id;
+    this.selectedOrder = item
   }
 
-  viewItem(value: string) {
+  viewItem(item: any) {
     this.showResult = true;
-    this.typeId = value;
-    this.setRequest();
+    this.typeId = item.id;
+    this.selectedOrder = item
     this.fetchOrgInfo();
   }
 
-  async setRequest() {
+  async fetchOrders() {
     // const request = await this.viewDispense(this.id, this.locationId);
     try {
       const { data } = await cornieClient().get(
         `/api/v1/lab-order-items/${this.locationId}`
       );
-      this.request = data;
+      this.virtualOrders = data;
     } catch (error) {
       window.notify({
         msg: "There was an error fetching request details",
@@ -515,7 +514,9 @@ export default class PHARMACYORDER extends Vue {
     this.openDispense = false;
   }
 
-  async created() {}
+  async created() {
+    this.fetchOrders()
+  }
 }
 </script>
 

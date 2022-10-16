@@ -12,6 +12,7 @@ import CanelStore from "./cancel";
 import CarePartnersStore from "./CarePartners";
 import CareplanStore from "./careplan";
 import CareteamStore from "./careteam";
+import CartStore from "./cart";
 import CatalogueStore from "./catalogues";
 import CollectionStore from "./collection";
 import CollectioncenterStore from "./collectioncenters";
@@ -152,6 +153,7 @@ export default createStore({
     practiceimage: PracticeImageStore,
     billingcenter: BillingcenterStore,
     collectioncenter: CollectioncenterStore,
+    cart: CartStore,
 
     encounter: encounter,
     bookingsite: BookingsiteStore,

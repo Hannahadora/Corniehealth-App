@@ -10,7 +10,7 @@
 
     <div
       class="my-10 px-16 flex items-center cursor-pointer"
-      @click="$router.push('/dashboard/patient/shopping')"
+      @click="$router.go(-1)"
     >
       <chevronleft-blue class="mr-2" />
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
@@ -31,25 +31,29 @@
           </p>
         </div>
 
-        <div class="mt-5">
+        <div class="mt-5" v-for="(item, i) in items" :key="i">
           <div class="px-4 py-3">
             <div class="flex items-center justify-between">
               <div class="flex items-center">
                 <img src="" class="w-12 h-12 mr-5" alt="item-photo" />
                 <div class="">
                   <p class="text-sm">
-                    Panadol
-                    <span class="text-xs text-gray-600">Tablet (10mg)</span>
+                    {{item.genericName}}
+                    <span class="text-xs text-gray-600">{{item.form}} ({{item.strength}})</span>
                   </p>
-                  <p class="text-xs">30 Tablets</p>
+                  <p class="text-xs">{{item.size}} {{item.form}}</p>
                 </div>
               </div>
               <div class="flex items-center">
                 <input
                   type="number"
                   class="w-max border px-8 py-2 bg-transparent focus:outline-none mr-5"
+                  :modelValue="item.quantity"
+                    @input="
+                      (evt) => changeQuantity(item.id, Number(evt.data || 1))
+                    "
                 />
-                <p class="font-bold text-sm mr-5">N9,000.00</p>
+                <p class="font-bold text-sm mr-5">N{{item.productPrice}}</p>
                 <small-delete-red class="cursor-pointer" />
               </div>
             </div>
@@ -80,7 +84,7 @@
       </div>
 
       <div class="ml-20 px-3">
-        <order-summary @checkout="$router.push('/dashboard/patient/shopping/checkout/delivery-info')" />
+        <order-summary :items="items" @checkout="$router.push('/dashboard/patient/shopping/checkout/delivery-info')" />
       </div>
     </div>
 
@@ -149,6 +153,8 @@ import CartHealthFrameTwo from "@/components/icons/cart-health-frame-two.vue";
 import AddToCartConfirmation from "./components/add-to-cart-confirmation.vue";
 import OrderSummary from "./components/order-summary.vue";
 
+const cartStore = namespace("cart");
+
 @Options({
   name: "ShoppingCart",
   components: {
@@ -176,7 +182,22 @@ import OrderSummary from "./components/order-summary.vue";
 })
 export default class ShoppingCart extends Vue {
   loading: Boolean = true;
-  item: any = {};
+
+  @cartStore.State
+  prescriptionCartItems: any;
+
+  get items() {
+    let routeQuery = this.$route.query.type
+    if(routeQuery === 'prescriptions') {
+      return this.prescriptionCartItems
+    }
+  }
+
+  changeQuantity(itemId: string, quantity: number) {
+    const medication = this.items.find(({ id }: any) => id == itemId);
+    if (!medication) return;
+    medication.quantity = quantity;
+  }
 
   async created() {}
 }

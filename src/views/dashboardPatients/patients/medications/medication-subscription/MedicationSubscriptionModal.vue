@@ -499,6 +499,12 @@ export default class MedicationSubscriptionModal extends Vue {
     }[],
   };
 
+  deliveryTypes: any = [
+    { type: "Pickup", mode: false },
+    { type: "Same Day Delivery", mode: true },
+    { type: "Standard Shipping", mode: false },
+  ];
+
   @Watch("country")
   async countryPicked(country: string) {
     this.subscriptionModel.country = country;
@@ -551,7 +557,7 @@ export default class MedicationSubscriptionModal extends Vue {
         action: medication.id,
         medication: `${medication.genericName} (${medication.size})`,
         form: medication.form,
-        unitPrice: medication.unitPrice,
+        ourPrice: medication.productPrice,
         quantity: medication.quantity,
       };
     });
@@ -605,9 +611,9 @@ export default class MedicationSubscriptionModal extends Vue {
       subscribedMedications: this.medications.map((el: any) => {
         return {
           // ...el,
-          productId: el?.id,
+          productId: el?.productId,
           quantity: el?.quantity.toString(),
-          cost: el?.cost,
+          cost: el?.productPrice,
           locationId: el?.locationId,
           organizationId: el?.organizationId,
         };
