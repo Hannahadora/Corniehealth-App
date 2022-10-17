@@ -27,7 +27,7 @@
           >
             <add-medications @dropdownState="handleMedDDstate" />
 
-            <div class="mt-6 flex items-center justify-between">
+            <div class="my-6 flex items-center justify-between">
               <p class="text-xl text-667499 font-bold">
                 {{ prescriptionCartItems.length }} Items
               </p>
@@ -36,7 +36,8 @@
               </p>
             </div>
 
-            <div v-for="(item, idx) in prescriptionCartItems" :key="idx">
+            <div class="border border-gray-500 px-3 py-6" v-if="prescriptionCartItems.length > 0">
+              <div v-for="(item, idx) in prescriptionCartItems" :key="idx" class="border-b border-gray-500 px-3 py-3 mb-2">
               <div class="flex items-start justify-between">
                 <div class="flex items-center">
                   <img :src="item.image" class="w-12 h-12 rounded-full mr-5" alt="">
@@ -45,7 +46,7 @@
                     <p class="mt-1 text-xs">{{item.size}} {{item.form}}</p>
                   </div>
                 </div>
-                <div>
+                <div class="text-right">
                   <p class="line-through text-danger text-sm mt-2">
                     {{ item.productPrice }}
                   </p>
@@ -55,6 +56,7 @@
                   <p class="text-blue-500 underline text-xs mt-2 cursor-pointer" @click="removeItem(item)">Remove</p>
                 </div>
               </div>
+            </div>
             </div>
           </accordion-component>
 

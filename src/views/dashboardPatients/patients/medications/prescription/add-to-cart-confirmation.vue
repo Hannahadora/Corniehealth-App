@@ -175,6 +175,7 @@ export default class AddToCartModal extends Vue {
 
   goToCart() {
     this.addToPrescriptionCart(this.item);
+    this.show = false
     this.$emit('close')
   }
 

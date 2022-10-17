@@ -17,14 +17,15 @@ export default {
 
       const prescriptionsSet  = new ObjectSet(
         [...state.prescriptionCartItems, { ...prescriptions, quantity: 1 }],
-        "id"
+        "productId"
       );
       state.prescriptionCartItems = [...prescriptionsSet];
+    //   localStorage.setItem('PrescriptionCart', state.prescriptionCartItems as any)
     },
     updatePrescriptionCartItems(state, prescriptionCartItems: any[]) {
       const prescriptionCartItemSet = new ObjectSet(
         [...state.prescriptionCartItems, ...prescriptionCartItems],
-        "id"
+        "productId"
       );
       state.prescriptionCartItems = [...prescriptionCartItemSet];
     },

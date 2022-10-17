@@ -23,7 +23,7 @@
         <div class="shipping-info-container px-6 py-4">
           <div class="flex items-center">
             <delivery-van class="mr-2" />
-            <p class="font-bold text=primary">Shipping (2)</p>
+            <p class="font-bold text=primary">Shipping ({{items.length}})</p>
           </div>
           <p class="mt-2 text-sm text=primary">
             You qualify for free shipping.

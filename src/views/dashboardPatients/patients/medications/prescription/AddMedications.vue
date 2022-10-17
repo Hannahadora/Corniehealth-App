@@ -220,8 +220,7 @@ export default class addMedications extends Vue {
   }
 
   itemAdded() {
-    this.addToCartModal = false;
-    this.show = false
+    this.showDatalist = false;
   }
 
   handleSubmit() {
