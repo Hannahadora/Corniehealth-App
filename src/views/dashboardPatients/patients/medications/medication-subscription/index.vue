@@ -21,6 +21,7 @@ import { Prop, PropSync, Watch } from "vue-property-decorator";
 import EmptyState from "./emptyState.vue";
 import ExistingState from "./existingState.vue";
 import MedicationSubscriptionModal from "./MedicationSubscriptionModal.vue";
+import { cornieClient } from "@/plugins/http";
 
 @Options({
   name: "subscriptionPage",
@@ -44,8 +45,23 @@ export default class subscriptionPage extends Vue {
   openModal() {
     this.subscriptionModal = true;
   }
+  async fetchSubscriptions() {
+    try {
+      const { data } = await cornieClient().get(
+        '/api/v1/patient-portal/medication-subscription/get-all'
+      );
+      this.subscriptions = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching medications",
+        status: "error",
+      });
+    }
+  }
 
-  async created() {}
+  async created() {
+    await this.fetchSubscriptions();
+  }
 }
 </script>
 

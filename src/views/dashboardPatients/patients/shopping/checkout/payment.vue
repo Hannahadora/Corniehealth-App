@@ -10,24 +10,52 @@
 
     <div
       class="my-10 xl:px-16 flex items-center cursor-pointer"
-      @click="$router.push('/dashboard/patient/shopping')"
+      @click="$router.go(-1)"
     >
       <chevronleft-blue class="mr-2" />
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
     </div>
 
     <div class="flex items-center justify-center mt-9 mb-2">
-      <circle-red-bg class="cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')"/>
+      <circle-red-bg
+        class="cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`
+          )
+        "
+      />
       <hr class="w-36 border-danger" />
-      <circle-red-bg  class="cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/review')"/>
+      <circle-red-bg
+        class="cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}`
+          )
+        "
+      />
       <hr class="w-36 border-danger" />
       <circle-red />
     </div>
     <div class="flex items-center justify-center mb-11">
-      <div class="mr-28 cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')">
+      <div
+        class="mr-28 cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`
+          )
+        "
+      >
         <p class="text-center text-xs font-medium">Delivery Info</p>
       </div>
-      <div class="mr-28 cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/review')">
+      <div
+        class="mr-28 cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}`
+          )
+        "
+      >
         <p class="text-center text-xs font-medium">Review</p>
       </div>
       <div class="">
@@ -41,23 +69,23 @@
         <div class="delivery-info-container w-full xl:px-24">
           <div class="flex justify-between mb-8">
             <p>Item Total</p>
-            <p class="text-right">₦ 27,000.00</p>
+            <p class="text-right">₦ {{ totalCost }}</p>
           </div>
           <div class="flex justify-between mb-8">
             <p>Shipping</p>
-            <p class="text-right">₦ 27,000.00</p>
+            <p class="text-right">₦ 0</p>
           </div>
           <div class="flex justify-between mb-8">
             <p>Discounts</p>
-            <p class="text-right">₦ 27,000.00</p>
+            <p class="text-right">₦ 0</p>
           </div>
           <div class="flex justify-between mb-6">
             <p>Sales Tax</p>
-            <p class="text-right">₦ 27,000.00</p>
+            <p class="text-right">₦ 0</p>
           </div>
           <div class="flex justify-between py-6 border-t">
             <p class="font-bold">Total</p>
-            <p class="font-bold text-right">₦ 27,000.00</p>
+            <p class="font-bold text-right">₦ {{ grandTotal }}</p>
           </div>
           <p class="text-sm">Promo code</p>
 
@@ -88,7 +116,7 @@
             <div
               @click="selectPaymentMethod('HMO')"
               class="mt-6 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
-              :class="{'border-danger': selectedPaymentMethod === 'HMO'}"
+              :class="{ 'border-danger': selectedPaymentMethod === 'HMO' }"
             >
               HMO
             </div>
@@ -97,7 +125,9 @@
               v-for="(paymentMethod, idx) in paymentMethods"
               :key="idx"
               class="mt-5 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
-              :class="{'border-danger': selectedPaymentMethod === paymentMethod}"
+              :class="{
+                'border-danger': selectedPaymentMethod === paymentMethod,
+              }"
             >
               {{ paymentMethod }}
             </div>
@@ -127,6 +157,8 @@ import CircleRed from "@/components/icons/circle-red.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 import CircleGray from "@/components/icons/circle-gray.vue";
 import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
+
+const cartStore = namespace("cart");
 
 @Options({
   name: "Review",
@@ -159,8 +191,76 @@ export default class Review extends Vue {
     "Card (on file)",
   ];
 
-  selectPaymentMethod(value: any) {
+  @cartStore.State
+  prescriptionCartItems: any;
+
+  get items() {
+    let routeQuery = this.$route.query.type;
+    if (routeQuery === "prescriptions") {
+      return this.prescriptionCartItems;
+    }
+  }
+
+  async selectPaymentMethod(value: any) {
     this.selectedPaymentMethod = value;
+    await this.save();
+  }
+
+  get totalCost() {
+    return this.items.reduce(
+      (a: any, b: any) => Number(a.productPrice) + Number(b.productPrice),
+      0
+    );
+  }
+
+  get grandTotal() {
+    return this.totalCost;
+  }
+
+  get payload() {
+    if (this.$route.query?.type === "prescriptions") {
+      return {
+        deliveryPreferencesId: "",
+        prescriptionImageUrl: "",
+        prescriber_name: "",
+        prescriber_email: "",
+        prescribedMedications: this.items.map((med: any) => {
+          return {
+            medicationId: med.productId,
+            quantity: med.quantity.toString(),
+            cost: med.cost,
+            locationId: med.locationId,
+            organizationId: med.organizationId,
+          };
+        }),
+      };
+    }
+  }
+
+  async save() {
+    this.loading = true;
+    if (this.$route.query?.type === "prescriptions") {
+      try {
+        const { data } = await cornieClient().post(
+          "/api/v1/patient-portal/prescription/create",
+          { ...this.payload }
+        );
+        if (data.success) {
+          this.loading = false;
+          window.notify({
+            msg: "Prescription Added",
+            status: "success",
+          });
+          this.$emit("Prescription-added");
+        }
+      } catch (error) {
+        this.loading = false;
+        window.notify({
+          msg: "An error occured",
+          status: "error",
+        });
+      }
+    }
   }
 
   async created() {}

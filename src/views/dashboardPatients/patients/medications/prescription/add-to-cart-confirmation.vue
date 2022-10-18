@@ -98,7 +98,7 @@
             <div class="w-11/12 py-4 flex items-center justify-center pl-3">
               <button
                 class="text-white font-bold text-center"
-                @click="goToCart"
+                @click.stop="goToCart"
               >
                 Continue to cart
               </button>

@@ -23,7 +23,7 @@
           <accordion-component
             class="text-primary shadow-none border-none"
             title="Add Prescribed Medications"
-            :opened="false"
+            :opened="true"
           >
             <add-medications @dropdownState="handleMedDDstate" />
 
@@ -36,27 +36,48 @@
               </p>
             </div>
 
-            <div class="border border-gray-500 px-3 py-6" v-if="prescriptionCartItems.length > 0">
-              <div v-for="(item, idx) in prescriptionCartItems" :key="idx" class="border-b border-gray-500 px-3 py-3 mb-2">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center">
-                  <img :src="item.image" class="w-12 h-12 rounded-full mr-5" alt="">
-                  <div>
-                    <p>{{ item.genericName }}</p><span class="text-xs text-gray-500">{{item.form}} {{item.strength}}</span>
-                    <p class="mt-1 text-xs">{{item.size}} {{item.form}}</p>
+            <div
+              class="border border-gray-500 px-3 py-6"
+              v-if="prescriptionCartItems.length > 0"
+            >
+              <div
+                v-for="(item, idx) in prescriptionCartItems"
+                :key="idx"
+                class="border-b border-gray-500 px-3 py-3 mb-2"
+              >
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center">
+                    <img
+                      :src="item.image"
+                      class="w-12 h-12 rounded-full mr-5"
+                      alt=""
+                    />
+                    <div>
+                      <p>{{ item.genericName }}</p>
+                      <span class="text-xs text-gray-500"
+                        >{{ item.form }} {{ item.strength }}</span
+                      >
+                      <p class="mt-1 text-xs">
+                        {{ item.size }} {{ item.form }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="line-through text-danger text-sm mt-2">
+                      {{ item.productPrice }}
+                    </p>
+                    <p class="mb-2 font-semibold text-sm">
+                      {{ item.productPrice }}
+                    </p>
+                    <p
+                      class="text-blue-500 underline text-xs mt-2 cursor-pointer"
+                      @click="removeItem(item)"
+                    >
+                      Remove
+                    </p>
                   </div>
                 </div>
-                <div class="text-right">
-                  <p class="line-through text-danger text-sm mt-2">
-                    {{ item.productPrice }}
-                  </p>
-                  <p class="mb-2 font-semibold text-sm">
-                    {{ item.productPrice }}
-                  </p>
-                  <p class="text-blue-500 underline text-xs mt-2 cursor-pointer" @click="removeItem(item)">Remove</p>
-                </div>
               </div>
-            </div>
             </div>
           </accordion-component>
 
@@ -141,7 +162,7 @@
           Cancel
         </cornie-btn>
         <cornie-btn
-          @click="save"
+          @click.self="save"
           :loading="loading"
           :disabled="medications.length === 0"
           type="submit"
@@ -228,9 +249,6 @@ export default class AddPrescriptionDialog extends Vue {
   @Prop({ type: String, default: "" })
   id!: string;
 
-  @Prop({ type: Object, default: {} })
-  observation!: any;
-
   loading = false;
   medications: any = [];
   deliveryOption = "delivery";
@@ -267,16 +285,17 @@ export default class AddPrescriptionDialog extends Vue {
   prescriptionCartItems: any;
 
   get totalCost() {
-    return this.prescriptionCartItems.reduce((a: any, b: any) => a.productPrice + b.productPrice, 0)
+    return this.prescriptionCartItems.reduce(
+      (a: any, b: any) => Number(a.productPrice) + Number(b.productPrice),
+      0
+    );
   }
 
   get addresses() {
     return [];
   }
 
-  removeItem() {
-
-  }
+  removeItem() {}
 
   handleMedDDstate(value: any) {
     this.medDDState = value;
@@ -317,10 +336,8 @@ export default class AddPrescriptionDialog extends Vue {
     this.fileInfo = data.fileInfo;
   }
 
-  async save() {
-    this.$nextTick(() => {
-      this.$router.push("/dashboard/patient/shopping/cart?type=prescriptions");
-    });
+  save() {
+    this.$router.push("/dashboard/patient/shopping/cart?type=prescriptions");
   }
 
   async created() {

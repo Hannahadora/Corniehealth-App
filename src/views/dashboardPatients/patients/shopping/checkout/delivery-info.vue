@@ -10,7 +10,7 @@
 
     <div
       class="my-10 px-16 flex items-center cursor-pointer"
-      @click="$router.push('/dashboard/patient/shopping')"
+      @click="$router.go(-1)"
     >
       <chevronleft-blue class="mr-2" />
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>
@@ -199,8 +199,11 @@
 
       <div class="ml-20 px-3">
         <order-summary
+          :items="items"
           @checkout="
-            $router.push('/dashboard/patient/shopping/checkout/review')
+            $router.push(
+              `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}`
+            )
           "
         />
       </div>
@@ -230,6 +233,10 @@ import ExternalLinkRed from "@/components/icons/external-link-red.vue";
 import CircleRed from "@/components/icons/circle-red.vue";
 import CircleGray from "@/components/icons/circle-gray.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
+import { CornieUser } from "@/types/user";
+
+const cartStore = namespace("cart");
+const account = namespace("user");
 
 @Options({
   name: "ShoppingCart",
@@ -248,11 +255,23 @@ import CircleRedBg from "@/components/icons/circle-red-bg.vue";
     ExternalLinkRed,
     CircleRed,
     CircleGray,
-    CircleRedBg
+    CircleRedBg,
   },
 })
 export default class ShoppingCart extends Vue {
   required = string().required();
+
+  @account.State
+  cornieData!: any;
+
+  @account.Getter
+  cornieUser!: CornieUser;
+
+  @account.Getter
+  corniePatient!: any;
+
+  @cartStore.State
+  prescriptionCartItems: any;
 
   loading: Boolean = true;
   item: any = {};
@@ -261,16 +280,39 @@ export default class ShoppingCart extends Vue {
   shippingInfoForm = false;
 
   contact: any = {
-    fullName: "Emmanuel Obi (M)",
-    email: "emmahobi@hotmail.com",
-    phone: "090382776478",
-    dialCode: "+234",
+    fullName: "",
+    email: "",
+    phone: "",
+    dialCode: "",
   };
   shipping: any = {
-    fullName: "Emmanuel Obi (M)",
-    address: "112 Road, Oba Aran Avenue, Lagos Island, Lagos",
-    apartment: "Block 5, Suite 4C",
+    fullName: "",
+    address: "",
+    apartment: "",
   };
+
+  get userId() {
+    return this.cornieUser?.id;
+  }
+  setDetails(details: CornieUser) {
+    let firstName = details?.firstName;
+    let lastName = details?.lastName;
+    let middleName = details?.middleName as any;
+    this.contact.email = details?.email;
+    this.contact.phone = details?.phone.number;
+    this.contact.dialCode = details?.phone.dialCode;
+
+    this.contact.fullName = `${firstName} ${middleName} ${lastName}`;
+  }
+  setPatientDetails(details: any) {
+  }
+
+  get items() {
+    let routeQuery = this.$route.query.type;
+    if (routeQuery === "prescriptions") {
+      return this.prescriptionCartItems;
+    }
+  }
 
   saveContactInfo() {
     this.contactInfoForm = false;
@@ -279,7 +321,10 @@ export default class ShoppingCart extends Vue {
     this.shippingInfoForm = false;
   }
 
-  async created() {}
+  async created() {
+    this.setDetails(this.cornieUser);
+    this.setPatientDetails(this.corniePatient);
+  }
 }
 </script>
 

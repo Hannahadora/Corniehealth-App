@@ -20,10 +20,36 @@
       <div class="col-span-2 p-3">
         <p class="font-bold text-xl mb-11">Items</p>
 
+        <div v-if="$route.query?.type === 'prescriptions'">
+          <div class="py-4 px-5 bg-35BA83 flex items-center justify-between rounded mb-5">
+            <p>Prescription :</p>
+
+            <div
+              v-if="!fileInfo.fileExt"
+              class="mt-6 flex items-center font-semibold text-green-500 text-sm cursor-pointer"
+              @click="uploadPrescriptionModal = true"
+            >
+              <upload-green class="mr-4" />
+              Upload Prescription
+            </div>
+            <div v-else class="flex items-center">
+              <img
+                class="h-6 w-6"
+                :src="prescription.prescriptionImageUrl"
+                alt="uploaded-image"
+              />
+              <div>
+                <p class="font-bold text-sm">{{ fileInfo.fileExt }}</p>
+                <p class="text-gray-300 text-xs">{{ fileInfo.fileSize }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="shipping-info-container px-6 py-4">
           <div class="flex items-center">
             <delivery-van class="mr-2" />
-            <p class="font-bold text=primary">Shipping ({{items.length}})</p>
+            <p class="font-bold text=primary">Shipping ({{ items.length }})</p>
           </div>
           <p class="mt-2 text-sm text=primary">
             You qualify for free shipping.
@@ -38,10 +64,12 @@
                 <img src="" class="w-12 h-12 mr-5" alt="item-photo" />
                 <div class="">
                   <p class="text-sm">
-                    {{item.genericName}}
-                    <span class="text-xs text-gray-600">{{item.form}} ({{item.strength}})</span>
+                    {{ item.genericName }}
+                    <span class="text-xs text-gray-600"
+                      >{{ item.form }} ({{ item.strength }})</span
+                    >
                   </p>
-                  <p class="text-xs">{{item.size}} {{item.form}}</p>
+                  <p class="text-xs">{{ item.size }} {{ item.form }}</p>
                 </div>
               </div>
               <div class="flex items-center">
@@ -49,11 +77,11 @@
                   type="number"
                   class="w-max border px-8 py-2 bg-transparent focus:outline-none mr-5"
                   :modelValue="item.quantity"
-                    @input="
-                      (evt) => changeQuantity(item.id, Number(evt.data || 1))
-                    "
+                  @input="
+                    (evt) => changeQuantity(item.id, Number(evt.data || 1))
+                  "
                 />
-                <p class="font-bold text-sm mr-5">N{{item.productPrice}}</p>
+                <p class="font-bold text-sm mr-5">N{{ item.productPrice }}</p>
                 <small-delete-red class="cursor-pointer" />
               </div>
             </div>
@@ -65,7 +93,9 @@
               <QuestionCircleRed class="ml-1" />
             </p>
           </div>
-          <div class="bg-cotton-ball px-3 py-3 flex items-center justify-between">
+          <div
+            class="bg-cotton-ball px-3 py-3 flex items-center justify-between"
+          >
             <div>
               <p class="text-sm font-semibold">
                 Ship to Home or Store
@@ -84,7 +114,12 @@
       </div>
 
       <div class="ml-20 px-3">
-        <order-summary :items="items" @checkout="$router.push('/dashboard/patient/shopping/checkout/delivery-info')" />
+        <order-summary
+          :items="items"
+          @checkout="
+            $router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query.type}`)
+          "
+        />
       </div>
     </div>
 
@@ -115,7 +150,9 @@
               & manage appointments, and be more involved in managing your
               health.
             </p>
-            <p class="text-xs text-danger underline cursor-pointer">Learn More</p>
+            <p class="text-xs text-danger underline cursor-pointer">
+              Learn More
+            </p>
           </div>
           <div>
             <cart-health-frame-two />
@@ -123,6 +160,11 @@
         </div>
       </div>
     </div>
+
+    <upload-prescription
+      v-model="uploadPrescriptionModal"
+      @getFormData="getFormData"
+    />
   </div>
 </template>
 
@@ -149,9 +191,11 @@ import SmallDeleteRed from "@/components/icons/small-delete-red.vue";
 import QuestionCircleRed from "@/components/icons/question-circle-red.vue";
 import CartHealthFrame from "@/components/icons/cart-health-frame.vue";
 import CartHealthFrameTwo from "@/components/icons/cart-health-frame-two.vue";
+import UploadGreen from "@/components/icons/upload-green.vue";
 
 import AddToCartConfirmation from "./components/add-to-cart-confirmation.vue";
 import OrderSummary from "./components/order-summary.vue";
+import UploadPrescription from "../medications/prescription/UploadPrescription.vue";
 
 const cartStore = namespace("cart");
 
@@ -178,18 +222,37 @@ const cartStore = namespace("cart");
     QuestionCircleRed,
     CartHealthFrame,
     CartHealthFrameTwo,
+    UploadPrescription,
+    UploadGreen,
   },
 })
 export default class ShoppingCart extends Vue {
-  loading: Boolean = true;
+  loading: Boolean = false;
+  uploadPrescriptionModal: Boolean = false;
+
+  prescription: any = {
+    deliveryPreferencesId: "",
+    prescriptionImageUrl: "",
+    prescriber_name: "",
+    prescriber_email: "",
+    prescribedMedications: {
+      medicationId: "",
+      quantity: "",
+      cost: "",
+      locationId: "",
+      organizationId: "",
+    },
+  };
+
+  fileInfo = {} as any;
 
   @cartStore.State
   prescriptionCartItems: any;
 
   get items() {
-    let routeQuery = this.$route.query.type
-    if(routeQuery === 'prescriptions') {
-      return this.prescriptionCartItems
+    let routeQuery = this.$route.query.type;
+    if (routeQuery === "prescriptions") {
+      return this.prescriptionCartItems;
     }
   }
 
@@ -197,6 +260,14 @@ export default class ShoppingCart extends Vue {
     const medication = this.items.find(({ id }: any) => id == itemId);
     if (!medication) return;
     medication.quantity = quantity;
+  }
+
+  
+  getFormData(data: any) {
+    (this.prescription.prescriptionImageUrl = data.file),
+      (this.prescription.prescriber_name = data.prescriberName),
+      (this.prescription.prescriber_email = data.email);
+    this.fileInfo = data.fileInfo;
   }
 
   async created() {}
@@ -223,5 +294,9 @@ export default class ShoppingCart extends Vue {
 
 .bg-l-blue {
   background: #eef9ff;
+}
+
+.bg-35BA83 {
+  background: rgba(53, 186, 131, 0.15);
 }
 </style>

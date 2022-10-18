@@ -17,14 +17,14 @@
     </div>
 
     <div class="flex items-center justify-center mt-9 mb-2">
-      <circle-red-bg class="cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')" />
+      <circle-red-bg class="cursor-pointer" @click="$router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`)" />
       <hr class="w-36 border-danger" />
       <circle-red />
       <hr class="w-36" />
       <circle-gray />
     </div>
     <div class="flex items-center justify-center mb-11">
-      <div class="mr-28 cursor-pointer" @click="$router.push('/dashboard/patient/shopping/checkout/delivery-info')">
+      <div class="mr-28 cursor-pointer" @click="$router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`)">
         <p class="text-center text-xs font-medium">Delivery Info</p>
       </div>
       <div class="mr-28">
@@ -118,16 +118,16 @@
                 <p>{{ shipping.apartment }}</p>
               </div>
 
-              <div>
+              <div v-for="(item, i) in items" :key="i">
                 <div class="border p-3 flex items-center justify-between">
                   <div class="flex items-center">
                     <img class="w-12 h-12" src="" alt="image" />
                     <div class="ml-5">
-                      <p class="text-xs">Panadol <span class="text-gray-300">Tablet (10mg)</span></p>
-                      <p class="text-xs">30 Tablets</p>
+                      <p class="text-xs">{{item.genericName}} <span class="text-gray-300">{{item.form}} ({{item.strength}})</span></p>
+                      <p class="text-xs">{{item.size}} {{item.form}}</p>
                     </div>
                   </div>
-                  <p>2 Packs</p>
+                  <p>{{item.quantity}} Packs</p>
                   <p>Shipping</p>
                   <p class="font-medium text-danger">Change</p>
                 </div>
@@ -227,8 +227,9 @@
 
       <div class="ml-20 px-3">
         <order-summary
+        :items="items"
           @checkout="
-            $router.push('/dashboard/patient/shopping/checkout/payment')
+            $router.push(`/dashboard/patient/shopping/checkout/payment?type=${$route.query?.type}`)
           "
         />
       </div>
@@ -258,6 +259,10 @@ import ExternalLinkRed from "@/components/icons/external-link-red.vue";
 import CircleRed from "@/components/icons/circle-red.vue";
 import CircleGray from "@/components/icons/circle-gray.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
+import { CornieUser } from "@/types/user";
+
+const cartStore = namespace("cart");
+const account = namespace("user");
 
 @Options({
   name: "Review",
@@ -281,6 +286,18 @@ import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 })
 export default class Review extends Vue {
   required = string().required();
+  
+  @account.State
+  cornieData!: any;
+
+  @account.Getter
+  cornieUser!: CornieUser;
+
+  @account.Getter
+  corniePatient!: any;
+
+  @cartStore.State
+  prescriptionCartItems: any;
 
   loading: Boolean = true;
   item: any = {};
@@ -289,16 +306,40 @@ export default class Review extends Vue {
   shippingInfoForm = false;
 
   contact: any = {
-    fullName: "Emmanuel Obi (M)",
-    email: "emmahobi@hotmail.com",
-    phone: "090382776478",
-    dialCode: "+234",
+    fullName: "",
+    email: "",
+    phone: "",
+    dialCode: "",
   };
   shipping: any = {
-    fullName: "Emmanuel Obi (M)",
-    address: "112 Road, Oba Aran Avenue, Lagos Island, Lagos",
-    apartment: "Block 5, Suite 4C",
+    fullName: "",
+    address: "",
+    apartment: "",
   };
+
+  get userId() {
+    return this.cornieUser?.id;
+  }
+  setDetails(details: CornieUser) {
+    let firstName = details?.firstName;
+    let lastName = details?.lastName;
+    let middleName = details?.middleName as any;
+    this.contact.email = details?.email;
+    this.contact.phone = details?.phone.number;
+    this.contact.dialCode = details?.phone.dialCode;
+
+    this.contact.fullName = `${firstName} ${middleName} ${lastName}`;
+  }
+  setPatientDetails(details: any) {
+  }
+
+  get items() {
+    let routeQuery = this.$route.query.type;
+    if (routeQuery === "prescriptions") {
+      return this.prescriptionCartItems;
+    }
+  }
+
 
   saveContactInfo() {
     this.contactInfoForm = false;
@@ -307,7 +348,10 @@ export default class Review extends Vue {
     this.shippingInfoForm = false;
   }
 
-  async created() {}
+  async created() {
+    this.setDetails(this.cornieUser);
+    this.setPatientDetails(this.corniePatient);
+  }
 }
 </script>
 
