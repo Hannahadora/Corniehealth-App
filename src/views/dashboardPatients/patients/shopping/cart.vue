@@ -249,6 +249,9 @@ export default class ShoppingCart extends Vue {
   @cartStore.State
   prescriptionCartItems: any;
 
+  @cartStore.Action
+  fetchPrescriptionCart!: () => Promise<void>;
+
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
@@ -270,7 +273,9 @@ export default class ShoppingCart extends Vue {
     this.fileInfo = data.fileInfo;
   }
 
-  async created() {}
+  async created() {
+    this.fetchPrescriptionCart()
+  }
 }
 </script>
 

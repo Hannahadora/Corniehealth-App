@@ -208,6 +208,8 @@
         />
       </div>
     </div>
+
+    <delivery-preference v-model="shippingInfoForm" />
   </div>
 </template>
 
@@ -235,6 +237,8 @@ import CircleGray from "@/components/icons/circle-gray.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 import { CornieUser } from "@/types/user";
 
+import DeliveryPreference from '../../medications/prescription/DeliveryPeference.vue'
+
 const cartStore = namespace("cart");
 const account = namespace("user");
 
@@ -256,6 +260,7 @@ const account = namespace("user");
     CircleRed,
     CircleGray,
     CircleRedBg,
+    DeliveryPreference,
   },
 })
 export default class ShoppingCart extends Vue {
@@ -304,8 +309,7 @@ export default class ShoppingCart extends Vue {
 
     this.contact.fullName = `${firstName} ${middleName} ${lastName}`;
   }
-  setPatientDetails(details: any) {
-  }
+  setPatientDetails(details: any) {}
 
   get items() {
     let routeQuery = this.$route.query.type;

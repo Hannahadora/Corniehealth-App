@@ -25,11 +25,11 @@
             title="Add Prescribed Medications"
             :opened="true"
           >
-            <add-medications @dropdownState="handleMedDDstate" />
+            <add-medications @dropdownState="handleMedDDstate" @addMedication="updateItems" />
 
             <div class="my-6 flex items-center justify-between">
               <p class="text-xl text-667499 font-bold">
-                {{ prescriptionCartItems.length }} Items
+                {{ prescriptionItems.length }} Items
               </p>
               <p class="text-xl text-667499 font-bold">
                 SubTotal: N{{ totalCost }}
@@ -38,10 +38,10 @@
 
             <div
               class="border border-gray-500 px-3 py-6"
-              v-if="prescriptionCartItems.length > 0"
+              v-if="prescriptionItems.length > 0"
             >
               <div
-                v-for="(item, idx) in prescriptionCartItems"
+                v-for="(item, idx) in prescriptionItems"
                 :key="idx"
                 class="border-b border-gray-500 px-3 py-3 mb-2"
               >
@@ -264,6 +264,7 @@ export default class AddPrescriptionDialog extends Vue {
   productLocations = [] as any;
   productPharmacies = [] as any;
   medDDState = false;
+  prescriptionItems: any = [];
 
   prescription: any = {
     deliveryPreferencesId: "",
@@ -281,11 +282,11 @@ export default class AddPrescriptionDialog extends Vue {
 
   fileInfo = {} as any;
 
-  @cartStore.State
-  prescriptionCartItems: any;
+  @cartStore.Action
+  fetchPrescriptionCart!: () => Promise<void>;
 
   get totalCost() {
-    return this.prescriptionCartItems.reduce(
+    return this.prescriptionItems.reduce(
       (a: any, b: any) => Number(a.productPrice) + Number(b.productPrice),
       0
     );
@@ -336,6 +337,10 @@ export default class AddPrescriptionDialog extends Vue {
     this.fileInfo = data.fileInfo;
   }
 
+  updateItems(item: any) {
+    this.prescriptionItems.push({...item})
+  }
+
   save() {
     this.$router.push("/dashboard/patient/shopping/cart?type=prescriptions");
   }
@@ -343,6 +348,7 @@ export default class AddPrescriptionDialog extends Vue {
   async created() {
     await this.fetchProductPharmacies();
     await this.fetchProductLocations();
+    this.fetchPrescriptionCart();
   }
 }
 </script>

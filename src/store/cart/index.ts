@@ -1,9 +1,11 @@
 import ObjectSet from "@/lib/objectset";
 import { StoreOptions } from "vuex";
+import localstore from "@/plugins/localstore";
 
 interface CartState {
   cartItems: any[];
-  prescriptionCartItems: any[]
+  prescriptionCartItems: any[];
+  prescriptionUpload: any
 }
 
 export default {
@@ -11,16 +13,32 @@ export default {
   state: {
     cartItems: [],
     prescriptionCartItems: [],
+    prescriptionUpload: {
+      file: "",
+      email: "",
+      prescriberName: "",
+      fileInfo: "",
+    }
   },
   mutations: {
+    setPrescriptionCart(state, data) {
+      state.prescriptionCartItems = data
+    },
+    setPrescriptionUpload(state, data) {
+      state.prescriptionUpload = data
+    },
     addToPrescriptionCart(state, prescriptions: any) {
 
-      const prescriptionsSet  = new ObjectSet(
+      const prescriptionsSet = new ObjectSet(
         [...state.prescriptionCartItems, { ...prescriptions, quantity: 1 }],
         "productId"
       );
       state.prescriptionCartItems = [...prescriptionsSet];
-    //   localStorage.setItem('PrescriptionCart', state.prescriptionCartItems as any)
+      localstore.put("prescriptionCart", state.prescriptionCartItems)
+    },
+    updatePrescriptionUpload(state, file: any) {
+      state.prescriptionUpload = file;
+      localstore.put("prescriptionUpload", state.prescriptionUpload)  
     },
     updatePrescriptionCartItems(state, prescriptionCartItems: any[]) {
       const prescriptionCartItemSet = new ObjectSet(
@@ -38,5 +56,13 @@ export default {
     },
   },
   actions: {
+    fetchPrescriptionCart(ctx) {
+      const pCart = localstore.get("prescriptionCart") && localstore.get("prescriptionCart");
+      ctx.commit("setPrescriptionCart", pCart);
+    },
+    fetchPrescriptionUpload(ctx) {
+      const file = localstore.get("prescriptionUpload") && localstore.get("prescriptionUpload");
+      ctx.commit("setPrescriptionUpload", file);
+    },
   },
 } as StoreOptions<CartState>;

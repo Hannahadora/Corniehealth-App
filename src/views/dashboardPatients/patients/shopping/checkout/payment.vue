@@ -194,6 +194,15 @@ export default class Review extends Vue {
   @cartStore.State
   prescriptionCartItems: any;
 
+  @cartStore.State
+  prescriptionUpload: any;
+
+  @cartStore.Action
+  fetchPrescriptionCart!: () => Promise<void>;
+
+  @cartStore.Action
+  fetchPrescriptionUpload!: () => Promise<void>;
+
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
@@ -221,9 +230,9 @@ export default class Review extends Vue {
     if (this.$route.query?.type === "prescriptions") {
       return {
         deliveryPreferencesId: "",
-        prescriptionImageUrl: "",
-        prescriber_name: "",
-        prescriber_email: "",
+        prescriptionImageUrl: this.prescriptionUpload.file,
+        prescriber_name: this.prescriptionUpload.prescriberName,
+        prescriber_email: this.prescriptionUpload.email,
         prescribedMedications: this.items.map((med: any) => {
           return {
             medicationId: med.productId,
@@ -263,7 +272,10 @@ export default class Review extends Vue {
     }
   }
 
-  async created() {}
+  created() {
+    this.fetchPrescriptionCart();
+    this.fetchPrescriptionUpload();
+  }
 }
 </script>
 

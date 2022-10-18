@@ -10,7 +10,7 @@
 
     <div
       class="my-10 px-16 flex items-center cursor-pointer"
-      @click="$router.push('/dashboard/patient/shopping')"
+      @click="$router.go(-1)"
     >
       <chevronleft-blue class="mr-2" />
       <p class="font-medium text-accent-blue text-sm">Continue Shopping</p>

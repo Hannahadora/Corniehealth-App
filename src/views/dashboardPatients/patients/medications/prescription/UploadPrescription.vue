@@ -78,6 +78,7 @@ import { cornieClient } from "@/plugins/http";
 import CornieRadio from "@/components/cornieradio.vue";
 import { IPatient } from "@/types/IPatient";
 import Uploader from "./uploader.vue";
+const cartStore = namespace("cart");
 
 @Options({
   name: "UploadPrescription",
@@ -107,6 +108,9 @@ export default class UploadPrescription extends Vue {
   @Prop({ type: Object, default: {} })
   observation!: any;
 
+  @cartStore.Mutation
+  updatePrescriptionUpload!: (item: any) => void;
+
   loading = false;
   form = {
     file: "",
@@ -117,10 +121,13 @@ export default class UploadPrescription extends Vue {
 
   save() {
     this.show = false;
-    this.$emit('getFormData', this.form)
+    this.$emit("getFormData", this.form);
+    this.updatePrescriptionUpload(this.form);
   }
 
-  async created() {}
+  created() {
+    this.$emit("getFormData", this.form);
+  }
 }
 </script>
 
