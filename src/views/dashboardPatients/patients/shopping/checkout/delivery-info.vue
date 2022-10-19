@@ -202,14 +202,14 @@
           :items="items"
           @checkout="
             $router.push(
-              `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}`
+              `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}$dID=${deliveryId}`
             )
           "
         />
       </div>
     </div>
 
-    <delivery-preference v-model="shippingInfoForm" />
+    <delivery-preference v-model="shippingInfoForm" @preference-added="updateShipping" />
   </div>
 </template>
 
@@ -295,6 +295,7 @@ export default class ShoppingCart extends Vue {
     address: "",
     apartment: "",
   };
+  deliveryId = "";
 
   get userId() {
     return this.cornieUser?.id;
@@ -323,6 +324,13 @@ export default class ShoppingCart extends Vue {
   }
   saveShippingInfo() {
     this.shippingInfoForm = false;
+  }
+
+  updateShipping(data: any) {
+    this.shipping.fullName = `${this.cornieUser.firstName} ${this.cornieUser.middleName} ${this.cornieUser.lastName}`
+    this.shipping.address = `${data.houseNumber} ${data.address} ${data.city}`
+    this.shipping.apartment = data.houseNumber
+    this.deliveryId = data.id
   }
 
   async created() {

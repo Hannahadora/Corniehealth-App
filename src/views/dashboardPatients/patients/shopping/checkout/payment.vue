@@ -69,7 +69,7 @@
         <div class="delivery-info-container w-full xl:px-24">
           <div class="flex justify-between mb-8">
             <p>Item Total</p>
-            <p class="text-right">₦ {{ totalCost }}</p>
+            <p class="text-right">₦ {{ totalCost || 0 }}</p>
           </div>
           <div class="flex justify-between mb-8">
             <p>Shipping</p>
@@ -212,11 +212,11 @@ export default class Review extends Vue {
 
   async selectPaymentMethod(value: any) {
     this.selectedPaymentMethod = value;
-    await this.save();
+    await this.save(value);
   }
 
   get totalCost() {
-    return this.items.reduce(
+    return this.items?.reduce(
       (a: any, b: any) => Number(a.productPrice) + Number(b.productPrice),
       0
     );
@@ -229,7 +229,7 @@ export default class Review extends Vue {
   get payload() {
     if (this.$route.query?.type === "prescriptions") {
       return {
-        deliveryPreferencesId: "",
+        deliveryPreferencesId: this.$route.query.dID,
         prescriptionImageUrl: this.prescriptionUpload.file,
         prescriber_name: this.prescriptionUpload.prescriberName,
         prescriber_email: this.prescriptionUpload.email,
@@ -246,7 +246,7 @@ export default class Review extends Vue {
     }
   }
 
-  async save() {
+  async save(value?: any) {
     this.loading = true;
     if (this.$route.query?.type === "prescriptions") {
       try {

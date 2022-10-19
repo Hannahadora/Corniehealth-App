@@ -20,13 +20,23 @@
       </cornie-card-title>
       <cornie-card-text class="flex-grow scrollable px-6">
         <div
-          class="w-full p-14 shadow flex items-start justify-between"
+          class="w-full mb-12 py-6 px-6 shadow flex items-start justify-between"
           v-for="(loc, i) in deliveryPreferences"
           :key="i"
         >
-          <img src="@/assets/img/blue-location.svg" alt="" />
+          <div>
+            <img src="@/assets/img/blue-location.svg" alt="" />
+          </div>
           <div class="mx-4">
-            <span class="text-sm text-blue-300 italic">Default Address</span>
+            <span class="text-sm text-blue-300 italic" v-if="loc.isDefault"
+              >Default Address</span
+            >
+            <span
+              class="text-sm text-red-500 italic cursor-pointer"
+              @click="makedefault"
+              v-else
+              >Make Default Address</span
+            >
             <p class="font-bold">
               {{ loc.houseNumber }} {{ loc.address }}, {{ loc.city }},
               {{ loc.state }}, {{ loc.country }}
@@ -41,9 +51,13 @@
                 alt=""
               />
             </p>
-            <div v-if="showDeliveryTimes" class="flex items-center">
-              <p>{{ loc.deliveryTimes.day }}</p>
-              <p>{{ loc.deliveryTimes.to }} {{ loc.deliveryTimes.from }}</p>
+            <div
+              v-for="(period, i) in deliveryTimes"
+              :key="i"
+              class="flex items-center space-x-2"
+            >
+              <p>{{ period.day }}</p>
+              <p>{{ period.to }} - {{ period.from }}</p>
             </div>
           </div>
           <div class="flex items-center cursor-pointer">
@@ -53,7 +67,7 @@
         </div>
 
         <div
-          class="my-12 flex items-center cursor-pointer"
+          class="mb-12 flex items-center cursor-pointer"
           @click="showForm = !showForm"
         >
           <plus class="mr-2" />
@@ -65,7 +79,7 @@
           class="flex-grow flex flex-col space-x-6"
           @submit="save"
         >
-          <div>
+          <div class="flex flex-col space-y-6">
             <cornie-select
               label="Type"
               v-model="type"
@@ -124,15 +138,19 @@
               <p class="text-red-400">Add Another Delivery Time</p>
             </div>
 
-            <div class="flex items-center" v-for="(period, i) in deliveryTimes" :key="i">
-              <v-date-picker
+            <div
+              class="flex items-center space-x-4"
+              v-for="(period, i) in deliveryTimes"
+              :key="i"
+            >
+              <date-picker
                 name="day"
                 v-model="period.day"
                 style="z-index: 9000; width: 100%"
-              ></v-date-picker>
+              ></date-picker>
 
-              <time-picker :label="'From'" v-model="period.from" />
-              <time-picker :label="'To'" v-model="period.to" />
+              <cornie-input type="time" :label="'From'" v-model="period.from" />
+              <cornie-input type="time" :label="'To'" v-model="period.to" />
             </div>
           </accordion-component>
         </v-form>
@@ -168,6 +186,7 @@ import PlusIcon from "@/components/icons/plus.vue";
 import IconBtn from "@/components/CornieIconBtn.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import TimePicker from "@/components/Timepicker.vue";
+import DatePicker from "@/components/datepicker.vue";
 import CornieSelect from "@/components/cornieselect.vue";
 import CustomCheckbox from "@/components/custom-checkbox.vue";
 import { Prop, PropSync, Watch } from "vue-property-decorator";
@@ -210,6 +229,7 @@ const countries = getCountries();
     AccordionComponent,
     PlusIcon,
     TimePicker,
+    DatePicker,
   },
 })
 export default class AddPrescriptionDialog extends Vue {
@@ -291,7 +311,7 @@ export default class AddPrescriptionDialog extends Vue {
           msg: "Delivery preference updated",
           status: "success",
         });
-        this.$emit("prefernece-added");
+        this.$emit("preference-added", data.data);
       }
     } catch (error) {
       this.loading = false;
@@ -316,6 +336,8 @@ export default class AddPrescriptionDialog extends Vue {
     }
   }
 
+  async makedefault() {}
+
   addDeliveryTimes() {
     this.deliveryTimes.push({
       day: "",
@@ -326,6 +348,7 @@ export default class AddPrescriptionDialog extends Vue {
 
   async created() {
     await this.fetchDeliveryPreferences();
+    this.$emit("preference-added", this.deliveryPreferences[0]);
   }
 }
 </script>

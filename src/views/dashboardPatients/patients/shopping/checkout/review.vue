@@ -17,14 +17,28 @@
     </div>
 
     <div class="flex items-center justify-center mt-9 mb-2">
-      <circle-red-bg class="cursor-pointer" @click="$router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`)" />
+      <circle-red-bg
+        class="cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`
+          )
+        "
+      />
       <hr class="w-36 border-danger" />
       <circle-red />
       <hr class="w-36" />
       <circle-gray />
     </div>
     <div class="flex items-center justify-center mb-11">
-      <div class="mr-28 cursor-pointer" @click="$router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`)">
+      <div
+        class="mr-28 cursor-pointer"
+        @click="
+          $router.push(
+            `/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query?.type}`
+          )
+        "
+      >
         <p class="text-center text-xs font-medium">Delivery Info</p>
       </div>
       <div class="mr-28">
@@ -123,11 +137,16 @@
                   <div class="flex items-center">
                     <img class="w-12 h-12" src="" alt="image" />
                     <div class="ml-5">
-                      <p class="text-xs">{{item.genericName}} <span class="text-gray-300">{{item.form}} ({{item.strength}})</span></p>
-                      <p class="text-xs">{{item.size}} {{item.form}}</p>
+                      <p class="text-xs">
+                        {{ item.genericName }}
+                        <span class="text-gray-300"
+                          >{{ item.form }} ({{ item.strength }})</span
+                        >
+                      </p>
+                      <p class="text-xs">{{ item.size }} {{ item.form }}</p>
                     </div>
                   </div>
-                  <p>{{item.quantity}} Packs</p>
+                  <p>{{ item.quantity }} Packs</p>
                   <p>Shipping</p>
                   <p class="font-medium text-danger">Change</p>
                 </div>
@@ -227,13 +246,20 @@
 
       <div class="ml-20 px-3">
         <order-summary
-        :items="items"
+          :items="items"
           @checkout="
-            $router.push(`/dashboard/patient/shopping/checkout/payment?type=${$route.query?.type}`)
+            $router.push(
+              `/dashboard/patient/shopping/checkout/payment?type=${$route.query?.type}$dID=${deliveryId}`
+            )
           "
         />
       </div>
     </div>
+
+    <delivery-preference
+      v-model="shippingInfoForm"
+      @preference-added="updateShipping"
+    />
   </div>
 </template>
 
@@ -261,6 +287,8 @@ import CircleGray from "@/components/icons/circle-gray.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 import { CornieUser } from "@/types/user";
 
+import DeliveryPreference from "../../medications/prescription/DeliveryPeference.vue";
+
 const cartStore = namespace("cart");
 const account = namespace("user");
 
@@ -282,11 +310,12 @@ const account = namespace("user");
     CircleRed,
     CircleGray,
     CircleRedBg,
+    DeliveryPreference,
   },
 })
 export default class Review extends Vue {
   required = string().required();
-  
+
   @account.State
   cornieData!: any;
 
@@ -304,6 +333,7 @@ export default class Review extends Vue {
   shipToMe = "";
   contactInfoForm = false;
   shippingInfoForm = false;
+  deliveryId = "";
 
   contact: any = {
     fullName: "",
@@ -330,8 +360,7 @@ export default class Review extends Vue {
 
     this.contact.fullName = `${firstName} ${middleName} ${lastName}`;
   }
-  setPatientDetails(details: any) {
-  }
+  setPatientDetails(details: any) {}
 
   get items() {
     let routeQuery = this.$route.query.type;
@@ -340,6 +369,12 @@ export default class Review extends Vue {
     }
   }
 
+  updateShipping(data: any) {
+    this.shipping.fullName = `${this.cornieUser.firstName} ${this.cornieUser.middleName} ${this.cornieUser.lastName}`;
+    this.shipping.address = `${data.houseNumber} ${data.address} ${data.city}`;
+    this.shipping.apartment = data.houseNumber;
+    this.deliveryId = data.id;
+  }
 
   saveContactInfo() {
     this.contactInfoForm = false;

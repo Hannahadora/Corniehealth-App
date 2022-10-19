@@ -120,22 +120,22 @@
                     <img :src="item.logo" alt="shop-logo" class="mr-3" />
                     <div>
                       <p class="text-xs font-medium text-primary">
-                        {{ item.shopName }}
+                        {{ item.organizationName }}
                       </p>
                       <p class="" style="font-size: 10px">
-                        {{ item.location }}
+                        {{ item.address }} {{ item.city }}, {{ item.state }}
                       </p>
                     </div>
                   </div>
                   <div>
                     <div class="flex items-center justify-center">
                       <img
-                        :src="item.photo"
+                        :src="item.image"
                         alt=""
                         class="sample-img mt-5 mb-4"
                       />
                     </div>
-                    <p class="font-bold text-primary">{{ item.name }}</p>
+                    <p class="font-bold text-primary">{{ item.genericName }}</p>
                     <p class="text-sm text-primary">{{ item.form }}</p>
                     <p class="mt-5 flex">
                       <img src="@/assets/5star.png" alt="5-star" class="mr-4" />
@@ -143,17 +143,17 @@
                     </p>
                     <p class="mt-3 mb-4">
                       <span class="line-through text-danger text-sm mr-3">{{
-                        item.oldPrice
+                        item.productPrice
                       }}</span
                       ><span class="font-semibold text-sm">
-                        {{ item.newPrice }}</span
+                        {{ item.productPrice }}</span
                       >
                     </p>
 
                     <div>
                       <div
                         class="flex mb-2"
-                        v-for="(type, idx) in item.deliveryType"
+                        v-for="(type, idx) in deliveryTypes"
                         :key="idx"
                       >
                         <check v-if="type.mode" class="mr-3" />
@@ -276,6 +276,9 @@
 
     @Prop()
     items!: Array<any>;
+
+    @Prop()
+    deliveryTypes!: Array<any>;
 
     @Prop()
     title!: string;

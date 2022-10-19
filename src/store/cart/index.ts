@@ -18,7 +18,7 @@ export default {
       email: "",
       prescriberName: "",
       fileInfo: "",
-    }
+    },
   },
   mutations: {
     setPrescriptionCart(state, data) {
