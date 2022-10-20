@@ -23,7 +23,7 @@
       <div class="w-full">
         <p class="my-4 mb-6">How would you like to receive this item?</p>
         <div class="w-full flex flex-col items-center justify-center">
-          <div
+          <div @click="shippingMethod = 'in-store'"
             class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
             :class="{ 'border-danger': shippingMethod === 'in-store' }"
           >
@@ -38,7 +38,7 @@
               </p>
             </div>
           </div>
-          <div
+          <div @click="shippingMethod = 'same-day'"
             class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
             :class="{ 'border-danger': shippingMethod === 'same-day' }"
           >
@@ -51,7 +51,7 @@
               </p>
             </div>
           </div>
-          <div
+          <div @click="shippingMethod = 'standard-shipping'"
             class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
             :class="{ 'border-danger': shippingMethod === 'standard-shipping' }"
           >
@@ -83,22 +83,22 @@
             <div
               class="flex items-center justify-center text-white font-bold border-r border-white pr-3 py-4"
             >
-              <p class="mr-2 font-bold text-xs">{{ item.quantity }}</p>
+              <p class="mr-2 font-bold text-xs">{{ item.quantity || 1 }}</p>
               <div class="flex flex-col justify-center">
                 <chevron-white-up
-                  class="cursor-pointer"
-                  @click="item.quantity++"
-                />
-                <chevron-white-down
-                  class="cursor-pointer"
-                  @click="item.quantity--"
-                />
+                          class="cursor-pointer"
+                          @click="increaseQuantity(item)"
+                        />
+                        <chevron-white-down
+                          class="cursor-pointer"
+                          @click="decreaseQuantity(item)"
+                        />
               </div>
             </div>
             <div class="w-11/12 py-4 flex items-center justify-center pl-3">
               <button
                 class="text-white font-bold text-center"
-                @click="$router.push('/dashboard/patient/shopping/cart')"
+                @click.stop="goToCart"
               >
                 Continue to cart
               </button>
@@ -133,6 +133,7 @@ import StandardShipping from "@/components/icons/standard-shipping.vue";
 import CancelRedBg from "@/components/icons/cancel-red-bg.vue";
 
 const account = namespace("user");
+const cartStore = namespace("cart");
 
 @Options({
   components: {
@@ -156,6 +157,9 @@ export default class AddToCartModal extends Vue {
   @account.Getter
   cornieUser!: CornieUser;
 
+  @cartStore.Mutation
+  addToCart!: (item: any) => void;
+
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
 
@@ -167,6 +171,31 @@ export default class AddToCartModal extends Vue {
 
   get userId() {
     return this.cornieUser?.id;
+  }
+
+  goToCart() {
+    this.addToCart(this.item);
+    this.show = false
+    this.$emit('close')
+  }
+
+  increaseQuantity(item: any) {
+    let qty
+    if(item.quantity){
+      qty = item.quantity 
+    } else {
+      qty = 1
+    }
+    qty++
+  }
+  decreaseQuantity(item: any) {
+    let qty
+    if(item.quantity){
+      qty = item.quantity 
+    } else {
+      qty = 1
+    }
+    qty--
   }
 
   async created() {}

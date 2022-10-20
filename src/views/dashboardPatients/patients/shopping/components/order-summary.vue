@@ -101,7 +101,8 @@ export default class OrderSummary extends Vue {
   promoCode = "";
 
   get totalCost() {
-    return this.items.reduce((a: any, b: any) => Number(a.productPrice) + Number(b.productPrice), 0)
+    const x = this.items.map((el: any) => el.productPrice ?? 0 * el.quantity ?? 1)
+    return x.reduce((a: any, b: any) => Number(a) + Number(b), 0)
   }
 
   get grandTotal() {

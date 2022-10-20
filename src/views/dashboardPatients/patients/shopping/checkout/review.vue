@@ -315,7 +315,6 @@ const account = namespace("user");
 })
 export default class Review extends Vue {
   required = string().required();
-
   @account.State
   cornieData!: any;
 
@@ -328,12 +327,21 @@ export default class Review extends Vue {
   @cartStore.State
   prescriptionCartItems: any;
 
+  @cartStore.State
+  cartItems: any;
+
+  @cartStore.Action
+  fetchPrescriptionCart!: () => Promise<void>;
+
+  @cartStore.Action
+  fetchCartItems!: () => Promise<void>;
+
+
   loading: Boolean = true;
   item: any = {};
-  shipToMe = "";
+  shipToMe = "yes";
   contactInfoForm = false;
   shippingInfoForm = false;
-  deliveryId = "";
 
   contact: any = {
     fullName: "",
@@ -346,6 +354,7 @@ export default class Review extends Vue {
     address: "",
     apartment: "",
   };
+  deliveryId = "";
 
   get userId() {
     return this.cornieUser?.id;
@@ -365,15 +374,8 @@ export default class Review extends Vue {
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
-      return this.prescriptionCartItems;
-    }
-  }
-
-  updateShipping(data: any) {
-    this.shipping.fullName = `${this.cornieUser.firstName} ${this.cornieUser.middleName} ${this.cornieUser.lastName}`;
-    this.shipping.address = `${data.houseNumber} ${data.address} ${data.city}`;
-    this.shipping.apartment = data.houseNumber;
-    this.deliveryId = data.id;
+      return this.prescriptionCartItems || [];
+    } else return this.cartItems || [];
   }
 
   saveContactInfo() {
@@ -383,9 +385,18 @@ export default class Review extends Vue {
     this.shippingInfoForm = false;
   }
 
+  updateShipping(data: any) {
+    this.shipping.fullName = `${this.cornieUser.firstName} ${this.cornieUser.middleName} ${this.cornieUser.lastName}`
+    this.shipping.address = `${data.houseNumber} ${data.address} ${data.city}`
+    this.shipping.apartment = data.houseNumber
+    this.deliveryId = data.id
+  }
+
   async created() {
     this.setDetails(this.cornieUser);
     this.setPatientDetails(this.corniePatient);
+    this.fetchPrescriptionCart()
+    this.fetchCartItems()
   }
 }
 </script>

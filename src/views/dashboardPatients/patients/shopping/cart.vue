@@ -21,7 +21,9 @@
         <p class="font-bold text-xl mb-11">Items</p>
 
         <div v-if="$route.query?.type === 'prescriptions'">
-          <div class="py-4 px-5 bg-35BA83 flex items-center justify-between rounded mb-5">
+          <div
+            class="py-4 px-5 bg-35BA83 flex items-center justify-between rounded mb-5"
+          >
             <p>Prescription :</p>
 
             <div
@@ -49,7 +51,7 @@
         <div class="shipping-info-container px-6 py-4">
           <div class="flex items-center">
             <delivery-van class="mr-2" />
-            <p class="font-bold text=primary">Shipping ({{ items.length }})</p>
+            <p class="font-bold text=primary">Shipping ({{ items?.length }})</p>
           </div>
           <p class="mt-2 text-sm text=primary">
             You qualify for free shipping.
@@ -59,8 +61,8 @@
 
         <div class="mt-5" v-for="(item, i) in items" :key="i">
           <div class="px-4 py-3">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
+            <div class="grid grid-cols-2">
+              <div class="flex">
                 <img src="" class="w-12 h-12 mr-5" alt="item-photo" />
                 <div class="">
                   <p class="text-sm">
@@ -72,17 +74,23 @@
                   <p class="text-xs">{{ item.size }} {{ item.form }}</p>
                 </div>
               </div>
-              <div class="flex items-center">
-                <input
-                  type="number"
-                  class="w-max border px-8 py-2 bg-transparent focus:outline-none mr-5"
-                  :modelValue="item.quantity"
-                  @input="
-                    (evt) => changeQuantity(item.id, Number(evt.data || 1))
-                  "
-                />
-                <p class="font-bold text-sm mr-5">N{{ item.productPrice }}</p>
-                <small-delete-red class="cursor-pointer" />
+              <div class="flex items-center justify-end">
+                <div class="w-2/5 flex justify-end">
+                  <input
+                    type="number"
+                    class="w-12 border px-8 py-2 bg-transparent focus:outline-none mr-5"
+                    :modelValue="item.quantity"
+                    @input="
+                      (evt) => changeQuantity(item.productId, Number(evt.data || 1))
+                    "
+                  />
+                </div>
+                <div class="w-3/5 flex items-center justify-end">
+                  <p class="font-bold text-sm mr-5">
+                    N {{ printLineTotal(item) }}
+                  </p>
+                  <small-delete-red class="cursor-pointer" @click="deleteItem(item)" />
+                </div>
               </div>
             </div>
 
@@ -117,7 +125,9 @@
         <order-summary
           :items="items"
           @checkout="
-            $router.push(`/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query.type}`)
+            $router.push(
+              `/dashboard/patient/shopping/checkout/delivery-info?type=${$route.query.type}`
+            )
           "
         />
       </div>
@@ -249,23 +259,52 @@ export default class ShoppingCart extends Vue {
   @cartStore.State
   prescriptionCartItems: any;
 
+  @cartStore.State
+  cartItems: any;
+
   @cartStore.Action
   fetchPrescriptionCart!: () => Promise<void>;
+
+  @cartStore.Mutation
+  deleteCartItem!: (id: any) => Promise<void>;
+
+  @cartStore.Mutation
+  deletePrescriptionCartItem!: (id: any) => Promise<void>;
+
+  @cartStore.Action
+  fetchCartItems!: () => Promise<void>;
 
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
-      return this.prescriptionCartItems;
-    }
+      return this.prescriptionCartItems || [];
+    } else return this.cartItems || [];
+  }
+
+  deleteItem(item: any) {
+    let routeQuery = this.$route.query.type;
+    if (routeQuery === "prescriptions") {
+      this.deletePrescriptionCartItem(item.id)
+    } else this.deleteCartItem(item.id)
+    window.notify({
+        msg: "item has been removed from cart",
+        status: "success",
+      });
+  }
+
+  printLineTotal(item: any) {
+    const qty = item.quantity || 1
+    const price = item.productPrice || 0
+    const lineTotal = qty * price;
+    return lineTotal;
   }
 
   changeQuantity(itemId: string, quantity: number) {
-    const medication = this.items.find(({ id }: any) => id == itemId);
+    const medication = this.items?.find(({ productId }: any) => productId == itemId);
     if (!medication) return;
     medication.quantity = quantity;
   }
 
-  
   getFormData(data: any) {
     (this.prescription.prescriptionImageUrl = data.file),
       (this.prescription.prescriber_name = data.prescriberName),
@@ -274,7 +313,8 @@ export default class ShoppingCart extends Vue {
   }
 
   async created() {
-    this.fetchPrescriptionCart()
+    this.fetchPrescriptionCart();
+    this.fetchCartItems();
   }
 }
 </script>

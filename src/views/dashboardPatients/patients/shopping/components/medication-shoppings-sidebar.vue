@@ -51,14 +51,21 @@
           </span>
         </div>
         <div class="my-4">
-          <Corniecheckbox
-            class="mb-3"
-            v-for="(option, idx) in pharmacyLists"
+          <div
+            class="flex items-center"
+            v-for="(option, idx) in productPharmacies"
             :key="idx"
-            :label="option"
-            :value="option"
-            v-model="selectedPharmacies"
-          />
+          >
+            <Corniecheckbox
+              class="mb-3"
+              :name="option.name"
+              id="pharmacy"
+              :value="option.id"
+              :modelValue="option.id"
+              @click="selectedPharmacy = option.id"
+            />
+            <label>{{ option.name }}</label>
+          </div>
         </div>
       </FilterAccordion>
       <FilterAccordion class="border-t" title="Medication Clasification">
@@ -151,7 +158,7 @@ export default class ShoppingSideBar extends Vue {
   locationQuery: any = "";
   pharmacyQuery: any = "";
   fulfillmentOption: any = "";
-  selectedPharmacies: any = "";
+  selectedPharmacy: any = "";
   selectedClassifications: any = "";
   selectedCategories: any = "";
   selectedPromoOption: any = "";
@@ -162,12 +169,8 @@ export default class ShoppingSideBar extends Vue {
     "Same Day Delivery",
     "Standard Shipping",
   ];
-  pharmacyLists: any = [
-    "All",
-    "Pickup",
-    "Same Day Delivery",
-    "Standard Shipping",
-  ];
+  productPharmacies: any = [];
+  productLocations: any = [];
   medicalClassifications: any = [
     {
       name: "Maternal Health",
@@ -199,25 +202,37 @@ export default class ShoppingSideBar extends Vue {
     "Season Promos",
   ];
 
-  async fetchAppointments() {
+  async fetchProductLocations() {
     try {
-      this.loading = true;
       const { data } = await cornieClient().get(
-        "/api/v1/patient-portal/appointment/get-all-user-appointment"
+        `/api/v1/patient-portal/catalogue-product/get-locations`
       );
-      this.appointments = data;
+      this.productLocations = data || [];
     } catch (error) {
       window.notify({
-        msg: "There was an error fetching appointments",
+        msg: "There was an error fetching catalogue product locations",
         status: "error",
       });
-    } finally {
-      this.loading = false;
+    }
+  }
+
+  async fetchProductPharmacies() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/patient-portal/catalogue-product/get-pharmacies`
+      );
+      this.productPharmacies = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching catalogue product pharmacies",
+        status: "error",
+      });
     }
   }
 
   async created() {
-    await this.fetchAppointments();
+    await this.fetchProductPharmacies();
+    await this.fetchProductLocations();
   }
 }
 </script>

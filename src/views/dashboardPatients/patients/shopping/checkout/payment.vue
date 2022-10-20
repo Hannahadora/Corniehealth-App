@@ -203,11 +203,17 @@ export default class Review extends Vue {
   @cartStore.Action
   fetchPrescriptionUpload!: () => Promise<void>;
 
+  @cartStore.State
+  cartItems: any;
+
+  @cartStore.Action
+  fetchCartItems!: () => Promise<void>;
+
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
-      return this.prescriptionCartItems;
-    }
+      return this.prescriptionCartItems || [];
+    } else return this.cartItems || [];
   }
 
   async selectPaymentMethod(value: any) {
@@ -216,8 +222,9 @@ export default class Review extends Vue {
   }
 
   get totalCost() {
-    return this.items?.reduce(
-      (a: any, b: any) => Number(a.productPrice) + Number(b.productPrice),
+    const x = this.items.map((el:any) => Number(el.productPrice) * Number(el.quantity))
+    return x?.reduce(
+      (a: any, b: any) => Number(a) + Number(b),
       0
     );
   }
@@ -275,6 +282,7 @@ export default class Review extends Vue {
   created() {
     this.fetchPrescriptionCart();
     this.fetchPrescriptionUpload();
+    this.fetchCartItems();
   }
 }
 </script>

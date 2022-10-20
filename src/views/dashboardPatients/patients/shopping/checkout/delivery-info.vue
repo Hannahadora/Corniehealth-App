@@ -278,6 +278,16 @@ export default class ShoppingCart extends Vue {
   @cartStore.State
   prescriptionCartItems: any;
 
+  @cartStore.State
+  cartItems: any;
+
+  @cartStore.Action
+  fetchPrescriptionCart!: () => Promise<void>;
+
+  @cartStore.Action
+  fetchCartItems!: () => Promise<void>;
+
+
   loading: Boolean = true;
   item: any = {};
   shipToMe = "yes";
@@ -315,8 +325,8 @@ export default class ShoppingCart extends Vue {
   get items() {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
-      return this.prescriptionCartItems;
-    }
+      return this.prescriptionCartItems || [];
+    } else return this.cartItems || [];
   }
 
   saveContactInfo() {
@@ -336,6 +346,8 @@ export default class ShoppingCart extends Vue {
   async created() {
     this.setDetails(this.cornieUser);
     this.setPatientDetails(this.corniePatient);
+    this.fetchPrescriptionCart()
+    this.fetchCartItems()
   }
 }
 </script>

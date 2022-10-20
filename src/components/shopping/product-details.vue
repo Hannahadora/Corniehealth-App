@@ -10,7 +10,8 @@
 
     <div class="grid grid-cols-4 gap-6">
       <div class="bg-white mb-auto h-full shadow-lg p-3 mt-2 rounded-lg w-full">
-        <medication-shopping-sidebar />
+        <slot name="sidebar"></slot>"
+        <!-- <medication-shopping-sidebar /> -->
       </div>
 
       <div class="col-span-3">
@@ -36,6 +37,7 @@
                 :loading="loading"
                 type="submit"
                 class="text-white bg-primary px-3 py-2 rounded font-bold"
+                style="white-space: nowrap"
               >
                 Search best prices
               </cornie-btn>
@@ -46,16 +48,16 @@
         <div class="bg-white mb-auto shadow-lg px-4 pt-3 rounded w-full">
           <div class="flex">
             <div class="mr-2">
-              <img class="sample-img" :src="item.photo" alt="" />
+              <img class="sample-img" :src="item.image" alt="" />
             </div>
             <div>
               <div>
-                <p class="text-xl font-bold mb-7">{{ item.name }}</p>
+                <p class="text-xl font-bold mb-7">{{ item.genericName }}</p>
                 <p>{{ item.description }}</p>
               </div>
               <div class="mt-6 flex">
                 <cornie-select
-                  v-model="item.brand"
+                  v-model="item.form"
                   :items="['Meijer', 'Kirkland', 'Her', 'Generic']"
                   class="w-24 mr-1"
                 />
@@ -87,14 +89,14 @@
                 <p class="text-grey-blue mb-2 text-xs">
                   Cornie Health Lowest Price
                 </p>
-                <p class="font-bold">N4,000 (save 46%)</p>
+                <p class="font-bold">N{{ item.productPrice }} (save 46%)</p>
               </div>
             </div>
             <div class="border px-2 py-5 flex">
               <retail-price />
               <div class="ml-5">
                 <p class="text-grey-blue mb-2 text-xs">Average Retail Price</p>
-                <p class="font-bold">N6,700</p>
+                <p class="font-bold">N {{ item.productPrice }}</p>
               </div>
             </div>
             <div class="border px-2 py-5 flex">
@@ -130,13 +132,15 @@
               <tr>
                 <td>
                   <div class="flex">
-                    <img :src="item.logo" alt="shop-logo" class="mr-3" />
+                    <p class="mr-4 text-center w-10 h-10 flex items-center justify-center rounded-full text-white bg-gray-700 font-bold text-lg">
+                        {{ getInitial(item.organizationName) }}
+                      </p>
                     <div>
-                      <p class="text-xs font-medium text-primary">
-                        {{ item.shopName }}
+                      <p class="font-medium text-primary">
+                        {{ item.organizationName }}
                       </p>
                       <p class="" style="font-size: 10px">
-                        {{ item.location }}
+                        {{ item.address }} {{ item.city }}, {{ item.state }}
                       </p>
                     </div>
                   </div>
@@ -156,10 +160,10 @@
                 </td>
                 <td>
                   <p class="line-through text-danger text-sm mr-3">
-                    {{ item.oldPrice }}
+                    {{ item.productPrice }}
                   </p>
                   <p class="mb-2 font-semibold text-sm">
-                    {{ item.newPrice }}
+                    {{ item.productPrice }}
                   </p>
                 </td>
                 <td>
@@ -167,22 +171,22 @@
                     <div
                       class="flex items-center justify-center text-white font-bold border-r border-white pr-3 py-3"
                     >
-                      <p class="mr-2 font-bold text-xs">{{ item.quantity }}</p>
+                      <p class="mr-2 font-bold text-xs">{{ item.quantity || 1 }}</p>
                       <div class="flex flex-col items-center justify-center">
                         <chevron-white-up
                           class="cursor-pointer"
-                          @click="item.quantity++"
+                          @click="increaseQuantity(item)"
                         />
                         <chevron-white-down
                           class="cursor-pointer"
-                          @click="item.quantity--"
+                          @click="decreaseQuantity(item)"
                         />
                       </div>
                     </div>
                     <div class="w-11/12 py-3 flex items-center justify-center">
                       <button
                         class="text-white font-bold text-center"
-                        @click="openCartConfirmation"
+                        @click="$emit('openCartConfirmation', item)"
                       >
                         Add to cart
                       </button>
@@ -195,7 +199,9 @@
         </div>
 
         <div class="mt-10 bg-white mb-auto shadow-lg p-4 rounded w-full">
-          <p class="font-bold text-lg mb-2">Ways to Save on {{ item.name }}</p>
+          <p class="font-bold text-lg mb-2">
+            Ways to Save on {{ item.genericName }}
+          </p>
           <p class="mb-5">
             These programs and tips can help make your prescription more
             affordable
@@ -217,14 +223,18 @@
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
                   <div class="mr-2">
-                    <img class="sample-img" :src="item.photo" alt="" />
+                    <img class="sample-img" :src="item.image" alt="" />
                   </div>
                   <div>
                     <div>
-                      <p class="text-xl font-bold mb-2">{{ item.name }}</p>
+                      <p class="text-xl font-bold mb-2">
+                        {{ item.genericName }}
+                      </p>
                       <p class="text-xs">
                         Subscription Price:
-                        <span class="text-blue-400">N3,000</span><br /><br />
+                        <span class="text-blue-400"
+                          >N {{ item.productPrice }}</span
+                        ><br /><br />
                         Standard Shipping:
                         <span class="text-blue-400">Free</span><br /><br />
                         Delivery Time:
@@ -263,11 +273,13 @@
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
                   <div class="mr-2">
-                    <img class="sample-img" :src="item.photo" alt="" />
+                    <img class="sample-img" :src="item.image" alt="" />
                   </div>
                   <div>
                     <div>
-                      <p class="text-xl font-bold mb-2">{{ item.name }}</p>
+                      <p class="text-xl font-bold mb-2">
+                        {{ item.genericName }}
+                      </p>
                       <p class="text-xs w-1/2">
                         Applicable for prescription only medications. You will
                         need a new prescription from your doctor to switch to a
@@ -307,14 +319,18 @@
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
                   <div class="mr-2">
-                    <img class="sample-img" :src="item.photo" alt="" />
+                    <img class="sample-img" :src="item.image" alt="" />
                   </div>
                   <div>
                     <div>
-                      <p class="text-xl font-bold mb-2">{{ item.name }}</p>
+                      <p class="text-xl font-bold mb-2">
+                        {{ item.genericName }}
+                      </p>
                       <p class="text-xs">
                         Average retail price:
-                        <span class="text-blue-500">N3,000</span>
+                        <span class="text-blue-500"
+                          >N{{ item.productPrice }}</span
+                        >
                       </p>
                     </div>
                   </div>
@@ -343,14 +359,18 @@
               <div class="flex items-end justify-between py-5 px-3 bg-s-blue">
                 <div class="flex">
                   <div class="mr-2">
-                    <img class="sample-img" :src="item.photo" alt="" />
+                    <img class="sample-img" :src="item.image" alt="" />
                   </div>
                   <div>
                     <div>
-                      <p class="text-xl font-bold mb-2">{{ item.name }}</p>
+                      <p class="text-xl font-bold mb-2">
+                        {{ item.genericName }}
+                      </p>
                       <p class="text-xs">
                         Average retail price:
-                        <span class="text-blue-500">N3,000</span>
+                        <span class="text-blue-500"
+                          >N {{ item.productPrice }}</span
+                        >
                       </p>
                     </div>
                   </div>
@@ -372,147 +392,138 @@
     <add-to-cart-confirmation
       v-model="addToCartModal"
       :item="item"
-      :id="item.id"
+      :id="item.productId"
     />
   </div>
 </template>
 
 <script lang="ts">
-  import CornieBtn from "@/components/CornieBtn.vue";
-  import CornieSelect from "@/components/cornieselect.vue";
-  import CornieCheckbox from "@/components/custom-checkbox.vue";
-  import IconInput from "@/components/IconInput.vue";
-  import AvailabilityTag from "@/components/icons/availability-tag.vue";
-  import Cancel from "@/components/icons/cancel-red-stroke.vue";
-  import Check from "@/components/icons/check-green-stroke.vue";
-  import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
-  import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
-  import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
-  import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
-  import FiveStar from "@/components/icons/five-star.vue";
-  import PriceTag from "@/components/icons/price-tag.vue";
-  import RetailPrice from "@/components/icons/retail-price.vue";
-  import {
-    default as Search,
-    default as SearchIcon,
-  } from "@/components/icons/search.vue";
-  import { cornieClient } from "@/plugins/http";
-  import { Options, Vue } from "vue-class-component";
-  import { Prop } from "vue-property-decorator";
-  import FilterAccordion from "../components/filter-accordion.vue";
+import CornieBtn from "@/components/CornieBtn.vue";
+import CornieSelect from "@/components/cornieselect.vue";
+import CornieCheckbox from "@/components/custom-checkbox.vue";
+import IconInput from "@/components/IconInput.vue";
+import AvailabilityTag from "@/components/icons/availability-tag.vue";
+import Cancel from "@/components/icons/cancel-red-stroke.vue";
+import Check from "@/components/icons/check-green-stroke.vue";
+import ChevronLeftIcon from "@/components/icons/chevronleftorange.vue";
+import ChevronRightIcon from "@/components/icons/chevronrightorange.vue";
+import ChevronWhiteDown from "@/components/icons/chevronwhitedown.vue";
+import ChevronWhiteUp from "@/components/icons/chevronwhiteup.vue";
+import FiveStar from "@/components/icons/five-star.vue";
+import PriceTag from "@/components/icons/price-tag.vue";
+import RetailPrice from "@/components/icons/retail-price.vue";
+import { namespace } from "vuex-class";
+import {
+  default as Search,
+  default as SearchIcon,
+} from "@/components/icons/search.vue";
+import { cornieClient } from "@/plugins/http";
+import { Options, Vue } from "vue-class-component";
+import { Prop, Watch } from "vue-property-decorator";
+// import FilterAccordion from "../components/filter-accordion.vue";
 
-  import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
-  import MedicationShoppingSidebar from "../components/medication-shoppings-sidebar.vue";
+// import AddToCartConfirmation from "../components/add-to-cart-confirmation.vue";
+// import MedicationShoppingSidebar from "../components/medication-shoppings-sidebar.vue";
 
-  @Options({
-    name: "ShopDetailsPage",
-    components: {
-      ChevronRightIcon,
-      ChevronLeftIcon,
-      CornieBtn,
-      Search,
-      FiveStar,
-      Cancel,
-      Check,
-      ChevronWhiteDown,
-      ChevronWhiteUp,
-      MedicationShoppingSidebar,
-      CornieCheckbox,
-      IconInput,
-      SearchIcon,
-      CornieSelect,
-      PriceTag,
-      RetailPrice,
-      AvailabilityTag,
-      FilterAccordion,
-      AddToCartConfirmation,
-    },
-  })
-  export default class ShopDetailsPage extends Vue {
-    appointments: any = [];
-    appointmentModal: Boolean = false;
-    loading: Boolean = true;
-    searchQuery: any = "";
-    addToCartModal: Boolean = false;
-    @Prop()
-    title!: string;
+const cartStore = namespace("cart");
 
-    item: any = {
-      id: "657gfhjcgtdfghbvcfghjgfyytytyutyu",
-      logo: require("@/assets/img/item-logo.svg"),
-      location: "23, Admiralty Way, Lekki, Lagos",
-      shopName: "MedPlus",
-      name: "Anti-malaria  bundle",
-      form: "Tablet 10mg (30 Tabs Per pack)",
-      oldPrice: "N13, 950.00",
-      newPrice: "N13, 950.00",
-      deliveryType: [
-        { type: "Pickup", mode: false },
-        { type: "Same Day Delivery", mode: true },
-        { type: "Standard Shipping", mode: false },
-      ],
-      noOfReviews: "14",
-      photo: require("@/assets/img/panadol-item.svg"),
-      quantity: 0,
-      description:
-        "Ibuprofen is used to reduce fever and to relieve minor aches and pain from headaches, muscle aches, arthristis, menstrual periods, and the common cold. See more",
-    };
+@Options({
+  name: "ShopDetailsPage",
+  components: {
+    ChevronRightIcon,
+    ChevronLeftIcon,
+    CornieBtn,
+    Search,
+    FiveStar,
+    Cancel,
+    Check,
+    ChevronWhiteDown,
+    ChevronWhiteUp,
+    // MedicationShoppingSidebar,
+    CornieCheckbox,
+    IconInput,
+    SearchIcon,
+    CornieSelect,
+    PriceTag,
+    RetailPrice,
+    AvailabilityTag,
+    // FilterAccordion,
+    // AddToCartConfirmation,
+  },
+})
+export default class ShopDetailsPage extends Vue {
+  appointments: any = [];
+  appointmentModal: Boolean = false;
+  loading: Boolean = true;
+  searchQuery: any = "";
+  addToCartModal: Boolean = false;
 
-    async fetchAppointments() {
-      try {
-        this.loading = true;
-        const { data } = await cornieClient().get(
-          "/api/v1/patient-portal/appointment/get-all-user-appointment"
-        );
-        this.appointments = data;
-      } catch (error) {
-        window.notify({
-          msg: "There was an error fetching appointments",
-          status: "error",
-        });
-      } finally {
-        this.loading = false;
-      }
-    }
+  @Prop()
+  title!: string;
 
-    openCartConfirmation(item: any) {
-      this.item = item;
-      this.addToCartModal = true;
-    }
+  @Prop()
+  item!: any;
 
-    async created() {
-      await this.fetchAppointments();
-    }
+  @Watch("searchQuery")
+  handleQuery() {
+    this.$emit("searchQuery", this.searchQuery);
   }
+
+  increaseQuantity(item: any) {
+    let qty
+    if(item.quantity){
+      qty = item.quantity 
+    } else {
+      qty = 1
+    }
+    qty++
+  }
+  decreaseQuantity(item: any) {
+    let qty
+    if(item.quantity){
+      qty = item.quantity 
+    } else {
+      qty = 1
+    }
+    qty--
+  }
+
+  getInitial(str?: any) {
+    return str?.charAt(0) || "";
+  }
+
+async created() {
+  }
+}
 </script>
 
 <style scoped>
-  .sample-img {
-    height: 143px;
-    width: 175px;
-  }
-  .bg-s-blue {
-    background: #f0f4fe;
-  }
-  .related-tag {
-    background: #f6f8f9;
-    padding: 4px 16px;
-    border-radius: 100px;
-  }
-  .text-grey-blue {
-    color: #667499;
-  }
+.sample-img {
+  height: 143px;
+  width: 175px;
+}
+.bg-s-blue {
+  background: #f0f4fe;
+}
+.related-tag {
+  background: #f6f8f9;
+  padding: 4px 16px;
+  border-radius: 100px;
+}
+.text-grey-blue {
+  color: #667499;
+}
 
-  th {
-    background: #f0f4fe;
-    text-align: left;
-    padding: 10px 12px;
-    border-radius: 4px 4px 0px 0px;
-    color: #080056;
-    font-size: 12px;
-  }
+th {
+  background: #f0f4fe;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 4px 4px 0px 0px;
+  color: #080056;
+  font-size: 12px;
+}
 
-  td {
-    padding: 10px 12px;
-  }
+td {
+  padding: 10px 12px;
+}
 </style>

@@ -71,7 +71,7 @@
                     </p>
                     <p
                       class="text-blue-500 underline text-xs mt-2 cursor-pointer"
-                      @click="removeItem(item)"
+                      @click="removeItem(idx)"
                     >
                       Remove
                     </p>
@@ -80,51 +80,6 @@
               </div>
             </div>
           </accordion-component>
-
-          <!-- <accordion-component
-            class="text-primary shadow-none border-none"
-            title="Fulfillment Option"
-            :opened="false"
-          >
-            <div class="mt-6 flex items-center space-x-5">
-              <cornie-radio
-                label="Deliver to Me."
-                value="delivery"
-                v-model="deliveryOption"
-              />
-              <cornie-radio
-                label="I want to pick-up at my nearest pharmacy."
-                value="pick-up"
-                v-model="deliveryOption"
-              />
-            </div>
-            <div class="mt-7" v-if="deliveryOption === 'delivery'">
-              <cornie-select
-                label="Address"
-                v-model="address"
-                placeholder="--Select--"
-                :items="addresses"
-              />
-            </div>
-            <div
-              v-if="deliveryOption === 'pick-up'"
-              class="mt-7 w-full grid lg:grid-cols-2 lg:space-x-4"
-            >
-              <cornie-select
-                label="Select Location"
-                v-model="location"
-                placeholder="--Select--"
-                :items="productLocations"
-                class=""
-              />
-              <cornie-select
-                label="Select Pharmacy"
-                v-model="pharmacy"
-                placeholder="--Select--"
-                :items="productPharmacies"
-              />
-            </div>
-          </accordion-component> -->
 
           <div
             v-if="!fileInfo.fileExt"
@@ -296,38 +251,12 @@ export default class AddPrescriptionDialog extends Vue {
     return [];
   }
 
-  removeItem() {}
+  removeItem(index: any) {
+    this.prescriptionItems.splice(index, 1)
+  }
 
   handleMedDDstate(value: any) {
     this.medDDState = value;
-  }
-
-  async fetchProductLocations() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/patient-portal/catalogue-product/get-locations`
-      );
-      this.productLocations = data || [];
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching catalogue product locations",
-        status: "error",
-      });
-    }
-  }
-
-  async fetchProductPharmacies() {
-    try {
-      const { data } = await cornieClient().get(
-        `/api/v1/patient-portal/catalogue-product/get-pharmacies`
-      );
-      this.productPharmacies = data || [];
-    } catch (error) {
-      window.notify({
-        msg: "There was an error fetching catalogue product pharmacies",
-        status: "error",
-      });
-    }
   }
 
   getFormData(data: any) {
@@ -346,8 +275,6 @@ export default class AddPrescriptionDialog extends Vue {
   }
 
   async created() {
-    await this.fetchProductPharmacies();
-    await this.fetchProductLocations();
     this.fetchPrescriptionCart();
   }
 }
