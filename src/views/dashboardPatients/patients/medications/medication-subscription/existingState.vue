@@ -88,7 +88,7 @@
       message="Confirm you want to send a refill request to your doctor."
       @confirm="requestRefill"
     />
-    <delivery-peference v-model="deliverypreferenceModal" />
+    <delivery-peference v-model="deliveryPreferenceModal" />
   </div>
 </template>
 <script lang="ts">
@@ -154,7 +154,7 @@ export default class SubscriptionExistingState extends Vue {
   requestRefillModal = false;
   itemId = "";
   addPrescription = false;
-  deliverypreferenceModal = false;
+  deliveryPreferenceModal = false;
   medSubscriptions: any = [];
 
   getKeyValue = getTableKeyValue;

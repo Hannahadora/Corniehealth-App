@@ -6,6 +6,10 @@
       :deliveryTypes="deliveryTypes"
       @searchQuery="getQuery"
       @openCartConfirmation="addToCartModal = true"
+      @locationQuery="getLocations"
+      @pharmacyQuery="getPharmacies"
+      @classificationQuery="getClassifications"
+      @subClassificationQuery="getSubclassifications"
     >
       <template v-slot:sidebar>
         <medication-shopping-sidebar />
@@ -52,6 +56,11 @@ export default class ShopDetailsPage extends Vue {
   @cartStore.State
   selectedItem: any;
 
+  selectedPharmacies = "";
+  selectedClassifications = "";
+  selectedSubClassifications = "";
+  selectedLocations = "";
+
   // item = {} as any
   loading: Boolean = true;
   searchQuery: any = "";
@@ -65,16 +74,31 @@ export default class ShopDetailsPage extends Vue {
   ];
   items = [] as any;
 
-  async fetchMedications(
-    query?: string,
-    pharmacies?: string,
-    classifications?: string,
-    subClassifications?: string,
-    locations?: string
-  ) {
+  get queryPayload() {
+    return {
+      query: this.query,
+      pharmacies: this.selectedPharmacies,
+      classifications: this.selectedClassifications,
+      subClassifications: this.selectedSubClassifications,
+      locations: this.selectedLocations,
+    };
+  }
+
+  getPharmacy(value: any) {}
+
+  async fetchMedications(queries: any) {
+    const queryString = Object.keys(queries)
+      .map((filter) => {
+        if (queries[filter] || Number.isInteger(queries[filter])) {
+          return `${filter}=${queries[filter]}`;
+        }
+        return null;
+      })
+      .filter((item) => item)
+      .join("&");
     try {
       const { data } = await cornieClient().get(
-        `/api/v1/patient-portal/catalogue-product/search-catalogue?query=${query}`
+        `/api/v1/patient-portal/catalogue-product/search-catalogue?${queryString}`
       );
       this.items = data || [];
     } catch (error) {
@@ -104,12 +128,24 @@ export default class ShopDetailsPage extends Vue {
   }
 
   async created() {
-    await this.fetchSelectedItem();
+    this.fetchSelectedItem();
     // await this.fetchSingleItem();
   }
 
   getQuery(query: any) {
     this.query = query;
+  }
+  getLocations(location: any) {
+    this.selectedLocations = location;
+  }
+  getPharmacies(pharmacy: any) {
+    this.selectedPharmacies = pharmacy;
+  }
+  getClassifications(classifications: any) {
+    this.selectedClassifications = classifications;
+  }
+  getSubclassifications(subclassifications: any) {
+    this.selectedSubClassifications = subclassifications;
   }
 
   getInitial(str?: any) {
@@ -117,8 +153,13 @@ export default class ShopDetailsPage extends Vue {
   }
 
   @Watch("query")
-  typed(query: string) {
-    this.fetchMedications(query);
+  typed() {
+    this.fetchMedications(this.queryPayload);
+  }
+
+  @Watch("queryPayload", {deep: true})
+  updated() {
+    this.fetchMedications(this.queryPayload);
   }
 }
 </script>

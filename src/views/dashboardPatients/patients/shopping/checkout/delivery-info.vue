@@ -202,7 +202,7 @@
           :items="items"
           @checkout="
             $router.push(
-              `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}$dID=${deliveryId}`
+              `/dashboard/patient/shopping/checkout/review?type=${$route.query?.type}&dID=${deliveryId}`
             )
           "
         />

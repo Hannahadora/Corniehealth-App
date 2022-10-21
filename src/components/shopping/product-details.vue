@@ -454,7 +454,7 @@ const cartStore = namespace("cart");
 export default class ShopDetailsPage extends Vue {
   appointments: any = [];
   appointmentModal: Boolean = false;
-  loading: Boolean = true;
+  loading: Boolean = false;
   searchQuery: any = "";
   addToCartModal: Boolean = false;
 

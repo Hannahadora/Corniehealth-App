@@ -19,6 +19,7 @@
   import EmptyState from './emptyState.vue';
   import ExistingState from './existingState.vue';
   import PrescriptionModal from './PrescriptionModal.vue';
+import { cornieClient } from "@/plugins/http";
   
   @Options({
     name: "prescriptionPage",
@@ -43,7 +44,22 @@
       this.showPrescriptionModal = true
     }
   
-    async created() {}
+    async fetchPrescription() {
+    try {
+      const { data } = await cornieClient().get(
+        "/api/v1/patient-portal/prescription/get-all"
+      );
+      this.prescriptions = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching medications",
+        status: "error",
+      });
+    }
+  }
+    async created() {
+      await this.fetchPrescription()
+    }
   }
   </script>
   

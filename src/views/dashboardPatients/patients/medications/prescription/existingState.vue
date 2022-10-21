@@ -144,6 +144,7 @@ export default class AppointmentExistingState extends Vue {
   itemId = "";
   addPrescription = false;
   deliverypreferenceModal = false;
+  medPrescriptions = [] as any;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -191,6 +192,59 @@ export default class AppointmentExistingState extends Vue {
   }
 
   requestRefill() {}
+
+  get items() {
+    const prescriptions = this.medicationRequests.map((med: any) => {
+      (med as any).createdAt = new Date(
+        (med as any).createdAt
+      ).toLocaleDateString("en-US");
+      return {
+        ...med,
+        keydisplay: med.id,
+        date: med.createdAt ?? "XXXX",
+        rxId: med.medicationSubscriptionId,
+        medication: med.category,
+        quantity: med.quantity,
+        amount: med.cost || 0.00,
+        dispenser: med.dispenser,
+        status: med.status,
+      };
+    });
+    if (!this.query) return prescriptions;
+    return search.searchObjectArray(prescriptions, this.query);
+  }
+
+
+
+  get medicationRequests() {
+    const x = this.medPrescriptions.map((el: any) => {
+      return el.subscribedMedications.flat();
+    });
+
+    const med = x.reduce((a: any, b: any) => {
+      return a.concat(b);
+    }, []);
+
+    return med || []
+  }
+
+  async fetchPrescription() {
+    try {
+      const { data } = await cornieClient().get(
+        "/api/v1/patient-portal/prescription/get-all"
+      );
+      this.medPrescriptions = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching medications",
+        status: "error",
+      });
+    }
+  }
+
+  async created() {
+    await this.fetchPrescription();
+  }
 }
 </script>
 <style scoped>

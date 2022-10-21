@@ -284,12 +284,14 @@ export default class ShoppingCart extends Vue {
   deleteItem(item: any) {
     let routeQuery = this.$route.query.type;
     if (routeQuery === "prescriptions") {
-      this.deletePrescriptionCartItem(item.id)
-    } else this.deleteCartItem(item.id)
+      this.deletePrescriptionCartItem(item.productId)
+    } else this.deleteCartItem(item.productId)
     window.notify({
         msg: "item has been removed from cart",
         status: "success",
       });
+      this.fetchPrescriptionCart();
+    this.fetchCartItems();
   }
 
   printLineTotal(item: any) {

@@ -24,8 +24,8 @@
         <p class="my-4 mb-6">How would you like to receive this item?</p>
         <div class="w-full flex flex-col items-center justify-center">
           <div @click="shippingMethod = 'in-store'"
-            class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
-            :class="{ 'border-danger': shippingMethod === 'in-store' }"
+            class="w-full border border-gray-100 cursor-pointer hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
+            :class="{ 'border border-danger': shippingMethod === 'in-store' }"
           >
             <in-store class="mb-3" />
             <div class="mr-3 text-center">
@@ -39,8 +39,8 @@
             </div>
           </div>
           <div @click="shippingMethod = 'same-day'"
-            class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
-            :class="{ 'border-danger': shippingMethod === 'same-day' }"
+            class="w-full border border-gray-100 cursor-pointer hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
+            :class="{ 'border border-danger': shippingMethod === 'same-day' }"
           >
             <same-day class="mb-3" />
             <div class="mr-3 text-center">
@@ -52,8 +52,8 @@
             </div>
           </div>
           <div @click="shippingMethod = 'standard-shipping'"
-            class="w-full border border-gray-100 hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
-            :class="{ 'border-danger': shippingMethod === 'standard-shipping' }"
+            class="w-full border border-gray-100 cursor-pointer hover:border-danger px-2 py-6 flex flex-col items-center justify-center mb-2"
+            :class="{ 'border border-danger': shippingMethod === 'standard-shipping' }"
           >
             <standard-shipping class="mb-3" />
             <div class="text-center">

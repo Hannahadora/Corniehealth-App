@@ -33,7 +33,7 @@ export default {
         [...state.cartItems, { ...item, quantity: 1 }],
         "productId"
       );
-      state.cartItems = [...itemSet];
+      state.cartItems = [...itemSet]
       localstore.put("cartItems", state.cartItems)
     },
     updateCart(state, items: any[]) {
@@ -46,6 +46,7 @@ export default {
 
     setSelecteditem(state, data) {
       state.selectedItem = data
+      localstore.put("item", state.selectedItem)
     },
 
     deleteCartItem(state, id: string) {
@@ -102,7 +103,7 @@ export default {
 
     fetchSelectedItem(ctx) {
       const item = localstore.get("item") && localstore.get("item");
-      ctx.commit("setCartItems", item);
+      ctx.commit("setSelecteditem", item);
     },
 
 

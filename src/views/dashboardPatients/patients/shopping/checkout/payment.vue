@@ -111,30 +111,22 @@
           </div>
 
           <div class="my-8">
-            <p class="font-semibold text-sm">Checkout with:</p>
-
             <div
-              @click="selectPaymentMethod('HMO')"
-              class="mt-6 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
-              :class="{ 'border-danger': selectedPaymentMethod === 'HMO' }"
+              @click="setbillPayload"
+              class="flex items-center justify-center bg-danger hover:bg-red-100 p-3 text-white text-center cursor-pointer"
             >
-              HMO
-            </div>
-            <div
-              @click="selectPaymentMethod(paymentMethod)"
-              v-for="(paymentMethod, idx) in paymentMethods"
-              :key="idx"
-              class="mt-5 cursor-pointer font-bold px-2 py-2 rounded-lg border border-gray-200 hover:border-danger"
-              :class="{
-                'border-danger': selectedPaymentMethod === paymentMethod,
-              }"
-            >
-              {{ paymentMethod }}
+              <bill-icon class="text-yellow-400 fill-current" />
+              <span class="ml-3 text-xs">Pay</span>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <billing-modal
+      v-model="showPayBillDialog"
+      :paybillPayload="paybillPayload"
+    />
   </div>
 </template>
 
@@ -151,12 +143,14 @@ import CornieCheckbox from "@/components/custom-checkbox.vue";
 import CornieRadio from "@/components/cornieradio.vue";
 import CornieInput from "@/components/cornieinput.vue";
 import CheckPurpleBg from "@/components/icons/check-purple-bg.vue";
+import BillIcon from "@/components/icons/billpayment.vue";
 import { date, string } from "yup";
 
 import CircleRed from "@/components/icons/circle-red.vue";
 import CircleRedBg from "@/components/icons/circle-red-bg.vue";
 import CircleGray from "@/components/icons/circle-gray.vue";
 import ChevronleftBlue from "@/components/icons/chevronleft-blue.vue";
+import BillingModal from "../components/Billingmodal.vue";
 
 const cartStore = namespace("cart");
 
@@ -175,6 +169,8 @@ const cartStore = namespace("cart");
     CircleRed,
     CircleGray,
     ChevronleftBlue,
+    BillingModal,
+    BillIcon,
   },
 })
 export default class Review extends Vue {
@@ -183,6 +179,7 @@ export default class Review extends Vue {
   loading: Boolean = true;
   item: any = {};
   promoCode = "";
+  showPayBillDialog = false;
   selectedPaymentMethod: any = "";
   paymentMethods: any = [
     "Health Wallet",
@@ -190,6 +187,9 @@ export default class Review extends Vue {
     "Paystack",
     "Card (on file)",
   ];
+  paybillPayload: any = {};
+  bill: any = {};
+  prescription: any = {};
 
   @cartStore.State
   prescriptionCartItems: any;
@@ -216,21 +216,25 @@ export default class Review extends Vue {
     } else return this.cartItems || [];
   }
 
-  async selectPaymentMethod(value: any) {
-    this.selectedPaymentMethod = value;
-    await this.save(value);
-  }
-
   get totalCost() {
-    const x = this.items.map((el:any) => Number(el.productPrice) * Number(el.quantity))
-    return x?.reduce(
-      (a: any, b: any) => Number(a) + Number(b),
-      0
+    const x = this.items.map(
+      (el: any) => el.productPrice ?? 0 * el.quantity ?? 1
     );
+    return x.reduce((a: any, b: any) => Number(a) + Number(b), 0);
   }
 
   get grandTotal() {
     return this.totalCost;
+  }
+
+  async setbillPayload() {
+    if (this.$route.query?.type === "prescriptions") {
+      await this.createPrescription();
+      await this.generateBill();
+    }
+    this.paybillPayload.billAmount = this.grandTotal;
+    this.paybillPayload.billDisplay = this.bill.id;
+    this.showPayBillDialog = true;
   }
 
   get payload() {
@@ -242,7 +246,7 @@ export default class Review extends Vue {
         prescriber_email: this.prescriptionUpload.email,
         prescribedMedications: this.items.map((med: any) => {
           return {
-            medicationId: med.productId,
+            productId: med.productId,
             quantity: med.quantity.toString(),
             cost: med.cost,
             locationId: med.locationId,
@@ -253,29 +257,49 @@ export default class Review extends Vue {
     }
   }
 
-  async save(value?: any) {
+  async createPrescription(value?: any) {
     this.loading = true;
-    if (this.$route.query?.type === "prescriptions") {
-      try {
-        const { data } = await cornieClient().post(
-          "/api/v1/patient-portal/prescription/create",
-          { ...this.payload }
-        );
-        if (data.success) {
-          this.loading = false;
-          window.notify({
-            msg: "Prescription Added",
-            status: "success",
-          });
-          this.$emit("Prescription-added");
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/prescription/create",
+        { ...this.payload }
+      );
+      this.loading = false;
+      window.notify({
+        msg: "Prescription Added",
+        status: "success",
+      });
+      this.prescription = data;
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+  async generateBill(value?: any) {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/prescription/generate-prescription-bill",
+        {
+          deliveryPreferencesId: this.$route.query.dID,
+          prescriptionId: this.prescription.id,
         }
-      } catch (error) {
-        this.loading = false;
-        window.notify({
-          msg: "An error occured",
-          status: "error",
-        });
-      }
+      );
+      this.loading = false;
+      window.notify({
+        msg: "Prescription Added",
+        status: "success",
+      });
+      this.bill = data;
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
     }
   }
 

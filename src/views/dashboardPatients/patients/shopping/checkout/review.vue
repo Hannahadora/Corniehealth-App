@@ -137,18 +137,18 @@
                   <div class="flex items-center">
                     <img class="w-12 h-12" src="" alt="image" />
                     <div class="ml-5">
-                      <p class="text-xs">
+                      <p class="text-xs"><br>
                         {{ item.genericName }}
                         <span class="text-gray-300"
                           >{{ item.form }} ({{ item.strength }})</span
                         >
-                      </p>
+                      </p><br>
                       <p class="text-xs">{{ item.size }} {{ item.form }}</p>
                     </div>
                   </div>
-                  <p>{{ item.quantity }} Packs</p>
+                  <p>{{ item.quantity }} {{ item.form }}</p>
                   <p>Shipping</p>
-                  <p class="font-medium text-danger">Change</p>
+                  <p class="font-medium text-danger cursor-pointer">Change</p>
                 </div>
               </div>
 
@@ -249,7 +249,7 @@
           :items="items"
           @checkout="
             $router.push(
-              `/dashboard/patient/shopping/checkout/payment?type=${$route.query?.type}$dID=${deliveryId}`
+              `/dashboard/patient/shopping/checkout/payment?type=${$route.query?.type}&dID=${deliveryId}`
             )
           "
         />

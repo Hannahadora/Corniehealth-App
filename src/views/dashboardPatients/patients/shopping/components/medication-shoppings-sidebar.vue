@@ -13,13 +13,30 @@
               class="border border-gray-600 rounded-full py-3 focus:outline-none"
               type="search"
               placeholder="Search"
-              v-model="locationQuery"
+              v-model="selectedLocation"
             >
               <template v-slot:prepend>
                 <search-icon />
               </template>
             </icon-input>
           </span>
+        </div>
+        <div class="my-4">
+          <div
+            class="flex items-center"
+            v-for="(option, idx) in productLocations"
+            :key="idx"
+          >
+            <Corniecheckbox
+              class="mb-3"
+              :name="option"
+              id="pharmacy"
+              :value="option"
+              :modelValue="option"
+              @click="setLocation(option)"
+            />
+            <label>{{ option }}</label>
+          </div>
         </div>
       </FilterAccordion>
       <FilterAccordion class="border-t" title="Fulfilment Options">
@@ -62,7 +79,7 @@
               id="pharmacy"
               :value="option.id"
               :modelValue="option.id"
-              @click="selectedPharmacy = option.id"
+              @click="setPharmacy(option)"
             />
             <label>{{ option.name }}</label>
           </div>
@@ -155,7 +172,7 @@ import Corniecheckbox from "@/components/custom-checkbox.vue";
 export default class ShoppingSideBar extends Vue {
   appointments: any = [];
   loading: Boolean = true;
-  locationQuery: any = "";
+  selectedLocation: any = "";
   pharmacyQuery: any = "";
   fulfillmentOption: any = "";
   selectedPharmacy: any = "";
@@ -230,6 +247,16 @@ export default class ShoppingSideBar extends Vue {
     }
   }
 
+  setLocation(option: any) {
+    this.selectedLocation = option
+    this.$emit('getLocation', this.selectedLocation)
+  }
+
+  setPharmacy(option: any) {
+    this.selectedPharmacy = option.id
+    this.$emit('getPharmacy', this.selectedPharmacy)
+  }
+ 
   async created() {
     await this.fetchProductPharmacies();
     await this.fetchProductLocations();
