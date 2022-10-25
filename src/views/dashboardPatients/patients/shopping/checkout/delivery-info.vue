@@ -293,6 +293,7 @@ export default class ShoppingCart extends Vue {
   shipToMe = "yes";
   contactInfoForm = false;
   shippingInfoForm = false;
+  deliveryPreferences: any = []
 
   contact: any = {
     fullName: "",
@@ -342,12 +343,28 @@ export default class ShoppingCart extends Vue {
     this.shipping.apartment = data.houseNumber
     this.deliveryId = data.id
   }
+  async fetchDeliveryPreferences() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/patient-portal/delivery-preferences/get-all`
+      );
+      this.deliveryPreferences = data || [];
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching delivery preferneces",
+        status: "error",
+      });
+    }
+  }
+
 
   async created() {
-    this.setDetails(this.cornieUser);
-    this.setPatientDetails(this.corniePatient);
-    this.fetchPrescriptionCart()
-    this.fetchCartItems()
+    await this.setDetails(this.cornieUser);
+    await this.setPatientDetails(this.corniePatient);
+    await this.fetchPrescriptionCart()
+    await this.fetchCartItems()
+    await this.fetchDeliveryPreferences()
+    this.deliveryId = this.deliveryPreferences[0].id
   }
 }
 </script>

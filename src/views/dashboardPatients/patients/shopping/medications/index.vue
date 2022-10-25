@@ -11,8 +11,7 @@
         <medication-shopping-sidebar
           @locationQuery="getLocations"
           @pharmacyQuery="getPharmacies"
-          @classificationQuery="getClassifications"
-          @subClassificationQuery="getSubclassifications"
+          @categoriesQuery="getCategories"
         />
       </template>
     </shopping-page-component>
@@ -150,11 +149,9 @@ export default class ShoppingPage extends Vue {
   getPharmacies(pharmacy: any) {
     this.selectedPharmacies = pharmacy;
   }
-  getClassifications(classifications: any) {
-    this.selectedClassifications = classifications;
-  }
-  getSubclassifications(subclassifications: any) {
+  getCategories(subclassifications: any, classifications: any) {
     this.selectedSubClassifications = subclassifications;
+    this.selectedClassifications = classifications;
   }
 
   getInitial(str?: any) {
@@ -162,19 +159,14 @@ export default class ShoppingPage extends Vue {
   }
 
   @Watch("query")
-  typed() {
-    this.fetchMedications(this.queryPayload);
-  }
-
   @Watch("selectedLocations")
-  updatedLoc() {
+  @Watch("selectedPharmacies")
+  @Watch("selectedClassifications")
+  @Watch("selectedSubClassifications")
+  onUpdate() {
     this.fetchMedications(this.queryPayload);
   }
 
-  @Watch("selectedPharmacy")
-  updatedPharm() {
-    this.fetchMedications(this.queryPayload);
-  }
   async created() {}
 }
 </script>

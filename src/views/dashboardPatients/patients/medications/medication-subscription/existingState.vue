@@ -124,6 +124,8 @@ import NewviewIcon from "@/components/icons/newview.vue";
 
 import PopUpModal from "../components/PopUpModal.vue";
 
+import DeliveryPreference from '../../medications/prescription/DeliveryPeference.vue'
+
 @Options({
   components: {
     CancelIcon,
@@ -146,6 +148,7 @@ import PopUpModal from "../components/PopUpModal.vue";
     CardText,
     CornieDialog,
     PopUpModal,
+    DeliveryPreference,
   },
 })
 export default class SubscriptionExistingState extends Vue {

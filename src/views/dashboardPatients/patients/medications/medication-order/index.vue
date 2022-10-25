@@ -17,6 +17,7 @@
   import { Prop, PropSync, Watch } from "vue-property-decorator";
   import EmptyState from './emptyState.vue';
   import ExistingState from './existingState.vue';
+  import { cornieClient } from "@/plugins/http";
   
   @Options({
     name: "prescriptionPage",
@@ -39,7 +40,23 @@
       return this.medicationOrders.length === 0
     }
   
-    async created() {}
+    async fetchOrders() {
+      try {
+        const { data } = await cornieClient().get(
+          "/api/v1/patient-portal/medication-shop/get-all"
+        );
+        this.medicationOrders = data || [];
+      } catch (error) {
+        window.notify({
+          msg: "There was an error fetching medications",
+          status: "error",
+        });
+      }
+    }
+  
+    async created() {
+      await this.fetchOrders();
+    }
   }
   </script>
   

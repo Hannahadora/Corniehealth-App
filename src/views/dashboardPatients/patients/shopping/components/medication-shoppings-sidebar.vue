@@ -23,19 +23,25 @@
         </div>
         <div class="my-4">
           <div
-            class="flex items-center"
+            class="flex items-center mb-3"
             v-for="(option, idx) in productLocations"
             :key="idx"
           >
-            <Corniecheckbox
-              class="mb-3"
+            <!-- <Corniecheckbox
               :name="option"
               id="pharmacy"
               :value="option"
               :modelValue="option"
               @click="setLocation(option)"
-            />
-            <label>{{ option }}</label>
+            /> -->
+            <label
+              class="cursor-pointer hover:text-danger capitalize"
+              :class="{
+                'text-danger font-bold': selectedLocation === option,
+              }"
+              @click="setLocation(option)"
+              >{{ option }}</label
+            >
           </div>
         </div>
       </FilterAccordion>
@@ -69,63 +75,78 @@
         </div>
         <div class="my-4">
           <div
-            class="flex items-center"
+            class="flex items-center mb-3"
             v-for="(option, idx) in productPharmacies"
             :key="idx"
           >
-            <Corniecheckbox
+            <!-- <Corniecheckbox
               class="mb-3"
               :name="option.name"
               id="pharmacy"
               :value="option.id"
               :modelValue="option.id"
               @click="setPharmacy(option)"
-            />
-            <label>{{ option.name }}</label>
+            /> -->
+            <label
+              class="cursor-pointer hover:text-danger capitalize"
+              :class="{
+                'text-danger font-bold': selectedPharmacy === option.name,
+              }"
+              @click="setPharmacy(option)"
+              >{{ option.name }}</label
+            >
           </div>
         </div>
       </FilterAccordion>
       <FilterAccordion class="border-t" title="Medication Clasification">
         <FilterAccordion
           type2
-          v-for="(classification, idx) in medicalClassifications"
+          v-for="(classification, idx) in medicationCategories"
           :key="idx"
           :title="classification.name"
         >
-          <div class="my-2">
-            <Corniecheckbox
+          <div
+            class="my-2"
+            v-for="(subclassification, idx) in classification.categories"
+            :key="idx"
+          >
+            <!-- <Corniecheckbox
               class="mb-3"
-              v-for="(option, idx) in classification.types"
-              :key="idx"
-              :label="option"
-              :value="option"
+              :label="subclassification"
+              :value="subclassification"
               v-model="selectedClassifications"
-            />
+            /> -->
+            <label
+              class="cursor-pointer hover:text-danger capitalize"
+              :class="{
+                'text-danger font-bold':
+                  selectedSubClassifications === subclassification,
+              }"
+              @click="setCategories(subclassification, classification)"
+              >{{ subclassification }}</label
+            >
           </div>
         </FilterAccordion>
       </FilterAccordion>
-      <FilterAccordion class="border-t" title="Medication Category">
-        <div class="my-2">
-          <Corniecheckbox
-            class="mb-3"
-            v-for="(option, idx) in medicationCategories"
-            :key="idx"
-            :label="option"
-            :value="option"
-            v-model="selectedCategories"
-          />
-        </div>
-      </FilterAccordion>
       <FilterAccordion class="border-t" title="Deals & Promotions">
-        <div class="my-2">
-          <Corniecheckbox
+        <div
+          class="my-2"
+          v-for="(option, idx) in dealAndPromoOptions"
+          :key="idx"
+        >
+          <!-- <Corniecheckbox
             class="mb-3"
-            v-for="(option, idx) in dealAndPromoOptions"
-            :key="idx"
+           
             :label="option"
             :value="option"
             v-model="selectedPromoOption"
-          />
+          /> -->
+          <label
+            class="cursor-pointer hover:text-danger capitalize"
+            :class="{ 'text-danger font-bold': selectedPromoOption === option }"
+            @click="setPromoOption(option)"
+            >{{ option.name }}</label
+          >
         </div>
       </FilterAccordion>
     </div>
@@ -150,6 +171,8 @@ import IconInput from "@/components/IconInput.vue";
 import SearchIcon from "@/components/icons/search.vue";
 import FilterAccordion from "./filter-accordion.vue";
 import Corniecheckbox from "@/components/custom-checkbox.vue";
+
+import { medicationCategories } from "@/plugins/medication-categories";
 
 @Options({
   name: "ShoppingSideBar",
@@ -177,8 +200,10 @@ export default class ShoppingSideBar extends Vue {
   fulfillmentOption: any = "";
   selectedPharmacy: any = "";
   selectedClassifications: any = "";
-  selectedCategories: any = "";
+  selectedSubClassifications: any = "";
   selectedPromoOption: any = "";
+
+  medicationCategories: any = medicationCategories;
 
   fulfillmentOptions: any = [
     "All",
@@ -188,26 +213,7 @@ export default class ShoppingSideBar extends Vue {
   ];
   productPharmacies: any = [];
   productLocations: any = [];
-  medicalClassifications: any = [
-    {
-      name: "Maternal Health",
-      types: ["All", "Pickup", "Same Day Delivery", "Standard Shipping"],
-    },
-    {
-      name: "Pain",
-      types: ["All", "Pickup", "Same Day Delivery", "Standard Shipping"],
-    },
-    {
-      name: "Sexual Wellness",
-      types: ["All", "Pickup", "Same Day Delivery", "Standard Shipping"],
-    },
-  ];
-  medicationCategories: any = [
-    "All",
-    "Pickup",
-    "Same Day Delivery",
-    "Standard Shipping",
-  ];
+
   dealAndPromoOptions: any = [
     "All",
     "Auto-reorder and save",
@@ -247,16 +253,30 @@ export default class ShoppingSideBar extends Vue {
     }
   }
 
+  setPromoOption(option: any) {
+    this.selectedPromoOption = option.name;
+  }
+
   setLocation(option: any) {
-    this.selectedLocation = option
-    this.$emit('getLocation', this.selectedLocation)
+    this.selectedLocation = option;
+    this.$emit("locationQuery", this.selectedLocation);
   }
 
   setPharmacy(option: any) {
-    this.selectedPharmacy = option.id
-    this.$emit('getPharmacy', this.selectedPharmacy)
+    this.selectedPharmacy = option.name;
+    this.$emit("pharmacyQuery", this.selectedPharmacy);
   }
- 
+
+  setCategories(subclassification: any, classification: any) {
+    this.selectedSubClassifications = subclassification;
+    this.selectedClassifications = classification;
+    this.$emit(
+      "categoriesQuery",
+      this.selectedSubClassifications,
+      this.selectedClassifications
+    );
+  }
+
   async created() {
     await this.fetchProductPharmacies();
     await this.fetchProductLocations();

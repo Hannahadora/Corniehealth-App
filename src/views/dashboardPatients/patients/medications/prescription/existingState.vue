@@ -1,9 +1,9 @@
 <template>
   <div class="w-full pb-80">
-    <span class="flex justify-end w-full mb-8 mt-5">
+    <span class="flex justify-end space-x-4 w-full mb-8 mt-5">
       <button
-        class="bg-danger rounded-lg text-primary border-2 border-primary py-3 px-4 font-semibold focus:outline-none hover:opacity-90"
-        @click="deliveryPreferenceModal = true"
+        class="rounded-lg text-primary border-2 border-primary py-3 px-4 font-semibold focus:outline-none hover:opacity-90"
+        @click="deliverypreferenceModal = true"
       >
         Delivery preferences
       </button>
@@ -18,7 +18,7 @@
       <template #actions="{ item }">
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="viewItem(item.id)"
+          @click="viewItem(item)"
         >
           <newview-icon class="text-blue-300 fill-current" />
           <span class="ml-3 text-xs">View Rx</span>
@@ -27,12 +27,12 @@
           @click="openRequestRefill(item.id)"
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
         >
-          <update-icon class="text-danger fill-current" />
+          <check-yellow-bg class="text-danger fill-current" />
           <span class="ml-3 text-xs">Request Refill</span>
         </div>
         <div
           class="flex items-center hover:bg-gray-100 p-3 cursor-pointer"
-          @click="deleteItem(item.id)"
+          @click="cancelItem(item)"
         >
           <cancel-icon />
           <span class="ml-3 text-xs">Cancel</span>
@@ -74,7 +74,15 @@
       message="Confirm you want to send a refill request to your doctor."
       @confirm="requestRefill"
     />
+    <pop-up-modal
+      v-model="cancelOrderModal"
+      :terms="true"
+      title="Cancel"
+      message="Confirm you want to cancel this pescription."
+      @confirm="confirmCancel"
+    />
     <prescription-modal v-model="addPrescription" />
+    <details-modal v-model="itemDetailsModal" :request="selectedItem" />
     <delivery-peference v-model="deliverypreferenceModal" />
   </div>
 </template>
@@ -104,20 +112,22 @@ import DeleteIcon from "@/components/icons/delete.vue";
 import EyeIcon from "@/components/icons/yelloweye.vue";
 import EditIcon from "@/components/icons/edit.vue";
 //import CloseIcon from "@/components/icons/CloseIcon.vue";
-import CancelIcon from "@/components/icons/cancel.vue";
-import UpdateIcon from "@/components/icons/newupdate.vue";
+import CancelIcon from "@/components/icons/cancel-red-bg.vue";
+import CheckYellowBg from "@/components/icons/check-yellow-bg.vue";
 import PlusIcon from "@/components/icons/plus.vue";
 import NewviewIcon from "@/components/icons/newview.vue";
 
 import PopUpModal from "../components/PopUpModal.vue";
+import DetailsModal from "../components/DetailsModal.vue";
 import PrescriptionModal from "./PrescriptionModal.vue";
+import DeliveryPreference from '../../medications/prescription/DeliveryPeference.vue'
 
 @Options({
   components: {
     CancelIcon,
     SortIcon,
     NewviewIcon,
-    UpdateIcon,
+    CheckYellowBg,
     ThreeDotIcon,
     PlusIcon,
     SearchIcon,
@@ -135,15 +145,20 @@ import PrescriptionModal from "./PrescriptionModal.vue";
     CornieDialog,
     PopUpModal,
     PrescriptionModal,
+    DeliveryPreference,
+    DetailsModal,
   },
 })
-export default class AppointmentExistingState extends Vue {
+export default class PrescriptionExistingPage extends Vue {
   loading = false;
   query = "";
   requestRefillModal = false;
   itemId = "";
+  selectedItem: any ={};
   addPrescription = false;
   deliverypreferenceModal = false;
+  itemDetailsModal = false;
+  cancelOrderModal = false;
   medPrescriptions = [] as any;
 
   getKeyValue = getTableKeyValue;
@@ -193,6 +208,30 @@ export default class AppointmentExistingState extends Vue {
 
   requestRefill() {}
 
+  viewItem(item:any) {
+    this.selectedItem = item;
+    this.itemId = item.id;
+    this.itemDetailsModal = true
+  }
+
+  cancelItem(item:any) {
+    this.selectedItem = item;
+    this.itemId = item.id;
+    this.cancelOrderModal = true
+  }
+
+  async confirmCancel() {
+    await cornieClient().patch(
+      `/api/v1/patient-portal/prescription/${this.itemId}/cancel`, {}
+    );
+    window.notify({
+      msg: "Successfully cancelled",
+      status: "success",
+    });
+    this.cancelOrderModal = false;
+    this.fetchPrescription()
+  }
+
   get items() {
     const prescriptions = this.medicationRequests.map((med: any) => {
       (med as any).createdAt = new Date(
@@ -202,11 +241,11 @@ export default class AppointmentExistingState extends Vue {
         ...med,
         keydisplay: med.id,
         date: med.createdAt ?? "XXXX",
-        rxId: med.medicationSubscriptionId,
+        rxId: med.orderId,
         medication: med.category,
         quantity: med.quantity,
         amount: med.cost || 0.00,
-        dispenser: med.dispenser,
+        dispenser: med.prescriber_name,
         status: med.status,
       };
     });
@@ -218,7 +257,7 @@ export default class AppointmentExistingState extends Vue {
 
   get medicationRequests() {
     const x = this.medPrescriptions.map((el: any) => {
-      return el.subscribedMedications.flat();
+      return el.prescribedMedications.flat();
     });
 
     const med = x.reduce((a: any, b: any) => {

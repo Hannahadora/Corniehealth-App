@@ -473,6 +473,8 @@ export default class MedicationSubscriptionModal extends Vue {
   medications: any = [];
   country = "";
   query = "";
+  bill: any;
+  subscription: any;
 
   subscriptionModel: any = {
     subscribeFor: "self",
@@ -639,20 +641,48 @@ export default class MedicationSubscriptionModal extends Vue {
   }
 
   async save() {
+    await this.createSubscription();
+    await this.generateBill();
+  }
+
+  async createSubscription() {
     this.loading = true;
     try {
       const { data } = await cornieClient().post(
         "/api/v1/patient-portal/medication-subscription/create",
         { ...this.payload }
       );
-      if (data.success) {
-        this.loading = false;
-        window.notify({
-          msg: "Subscription Added",
-          status: "success",
-        });
-        this.$emit("subscription-added");
-      }
+      this.loading = false;
+      window.notify({
+        msg: "Subscription Added",
+        status: "success",
+      });
+      this.$emit("subscription-added");
+      this.subscription = data;
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+
+  async generateBill(value?: any) {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/prescription/generate-subscription-bill",
+        {
+          subscriptionId: this.subscription.id,
+        }
+      );
+      this.loading = false;
+      window.notify({
+        msg: "Bill generated",
+        status: "success",
+      });
+      this.bill = data;
     } catch (error) {
       this.loading = false;
       window.notify({

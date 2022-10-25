@@ -231,6 +231,9 @@ export default class Review extends Vue {
     if (this.$route.query?.type === "prescriptions") {
       await this.createPrescription();
       await this.generateBill();
+    }else {
+      await this.createMedicationOrder();
+      await this.generateMedOrderBill();
     }
     this.paybillPayload.billAmount = this.grandTotal;
     this.paybillPayload.billDisplay = this.bill.id;
@@ -238,12 +241,11 @@ export default class Review extends Vue {
   }
 
   get payload() {
-    if (this.$route.query?.type === "prescriptions") {
       return {
         deliveryPreferencesId: this.$route.query.dID,
-        prescriptionImageUrl: this.prescriptionUpload.file,
-        prescriber_name: this.prescriptionUpload.prescriberName,
-        prescriber_email: this.prescriptionUpload.email,
+        prescriptionImageUrl: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.file : undefined,
+        prescriber_name: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.prescriberName : undefined,
+        prescriber_email: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.email : undefined,
         prescribedMedications: this.items.map((med: any) => {
           return {
             productId: med.productId,
@@ -254,7 +256,6 @@ export default class Review extends Vue {
           };
         }),
       };
-    }
   }
 
   async createPrescription(value?: any) {
@@ -286,6 +287,52 @@ export default class Review extends Vue {
         {
           deliveryPreferencesId: this.$route.query.dID,
           prescriptionId: this.prescription.id,
+        }
+      );
+      this.loading = false;
+      window.notify({
+        msg: "Prescription Added",
+        status: "success",
+      });
+      this.bill = data;
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+
+  async createMedicationOrder(value?: any) {
+    this.loading = true;
+    try {
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/medication-shop/create",
+        { ...this.payload }
+      );
+      this.loading = false;
+      window.notify({
+        msg: "Prescription Added",
+        status: "success",
+      });
+      this.prescription = data;
+    } catch (error) {
+      this.loading = false;
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
+  async generateMedOrderBill(value?: any) {
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().post(
+        "/api/v1/patient-portal/medication-shop/generate-subcription-bill",
+        {
+          deliveryPreferencesId: this.$route.query.dID,
+          medicationShopId: this.prescription.id,
         }
       );
       this.loading = false;
