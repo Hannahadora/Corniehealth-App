@@ -82,7 +82,7 @@
       @confirm="confirmCancel"
     />
     <prescription-modal v-model="addPrescription" />
-    <details-modal v-model="itemDetailsModal" :request="selectedItem" />
+    <details-modal v-model="itemDetailsModal" :request="selectedItem" title="View Prescription" />
     <delivery-peference v-model="deliverypreferenceModal" />
   </div>
 </template>
