@@ -233,71 +233,6 @@
               </span>
             </template>
           </cornie-table>
-  
-          <div class="mt-8 flex items-start justify-end">
-            <!-- <div
-              class="p-4 border rounded-md flex items-center justify-between w-1/4"
-            >
-              <span class="w-2/3 text-sm">Coupon | Promo Code</span>
-              <input
-                class="w-1/3 self-end"
-                type="text"
-                v-model="request.coupon"
-                placeholder="----"
-              />
-            </div> -->
-  
-            <div class="w-1/3">
-              <table class="w-full">
-                <tbody>
-                  <!-- <tr>
-                    <td>Total Discount</td>
-                    <td>
-                      {{ request.totalDiscount ? request.totalDiscount : "0" }}
-                    </td>
-                  </tr> -->
-                  <tr>
-                    <td>Sub Total</td>
-                    <td>{{ request.subTotal ? request.subTotal : "0" }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-bold">Shipping Cost</td>
-                    <td class="font-bold">
-                      {{ request.shippingCost ? request.shippingCost : "0" }}
-                    </td>
-                  </tr>
-                  <tr class="">
-                    <td class="font-bold">Grand Total</td>
-                    <td class="font-bold">{{ grandTotal }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-  
-          <div class="border-dashed border-t mt-4 py-6">
-            <div class="w-full flex item-center justify-between">
-              <div class="-mt-4">
-                <text-area
-                  placeholder="Enter"
-                  label="Notes"
-                  v-model="request.note"
-                  class="w-full"
-                  rows="0"
-                />
-              </div>
-  
-              <div class="ml-40 w-1/2">
-                <cornie-select
-                  class="w-full"
-                  label="Medication Administration"
-                  placeholder="Select one"
-                  v-model="medicationAdministration"
-                  :items="['Community', 'Inpatient', 'Outpatient']"
-                />
-              </div>
-            </div>
-          </div>
         </cornie-card-text>
   
         <div class="flex items-center justify-between mt-24">
@@ -311,53 +246,7 @@
             class="flex items-center mb-6"
             v-if="request?.status !== 'dispensed'"
           >
-            <!-- <div class="relative">
-             <cornie-btn
-                @click="openPostOptions = true"
-                class="border-primary border-2 px-6 py-1 mr-3 font-medium rounded-lg text-primary"
-              >
-                <chevron-down-icon />
-                {{ postMethod }}
-              </cornie-btn>
-  
-               <div
-                class="absolute w-full bg-white shadow rounded-lg py-4 px-2 mt-2"
-                v-if="openPostOptions"
-              >
-                <ul class="flex flex-col">
-                  <li
-                    class="py-3 px-4 cursor-pointer rounded-3xl"
-                    :class="{ 'bg-f0f4fe': postMethod === 'Post Bill' }"
-                    @click="
-                      postMethod = 'Post Bill';
-                      openPostOptions = false;
-                    "
-                  >
-                    Post Bill
-                  </li>
-                  <li
-                    class="py-3 px-4 cursor-pointer rounded-3xl"
-                    :class="{ 'bg-f0f4fe': postMethod === 'Share Pay Link' }"
-                    @click="
-                      postMethod = 'Share Pay Link';
-                      openPostOptions = false;
-                    "
-                  >
-                    Share Pay Link
-                  </li>
-                  <li
-                    class="py-3 px-4 cursor-pointer rounded-3xl"
-                    :class="{ 'bg-f0f4fe': postMethod === 'Post Claim' }"
-                    @click="
-                      postMethod = 'Post Claim';
-                      openPostOptions = false;
-                    "
-                  >
-                    Post Claim
-                  </li>
-                </ul>
-              </div>
-            </div> -->
+            
             <cornie-btn
               @click="PostBill"
               class="border-primary border-2 px-6 py-1 mr-3 font-medium rounded-lg text-primary"
@@ -463,7 +352,7 @@
   const request = namespace("request");
   
   @Options({
-    name: "DispenseModal",
+    name: "DetailsModal",
     components: {
       CornieDialog,
       ...CornieCard,
@@ -485,7 +374,7 @@
       ChevronDownIcon,
     },
   })
-  export default class DispenseModal extends Vue {
+  export default class DetailsModal extends Vue {
     @PropSync("modelValue", { type: Boolean, default: false })
     show!: boolean;
   
