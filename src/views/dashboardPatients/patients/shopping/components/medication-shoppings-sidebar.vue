@@ -27,21 +27,16 @@
             v-for="(option, idx) in productLocations"
             :key="idx"
           >
-            <!-- <Corniecheckbox
+            <Corniecheckbox
               :name="option"
               id="pharmacy"
               :value="option"
-              :modelValue="option"
-              @click="setLocation(option)"
-            /> -->
-            <label
-              class="cursor-pointer hover:text-danger capitalize"
-              :class="{
-                'text-danger font-bold': selectedLocation === option,
-              }"
-              @click="setLocation(option)"
-              >{{ option }}</label
-            >
+              v-model="selectedLocation[idx]"
+              @change="setLocation(option)"
+            />
+            <label class="cursor-pointer hover:text-danger capitalize">{{
+              option
+            }}</label>
           </div>
         </div>
       </FilterAccordion>
@@ -79,26 +74,21 @@
             v-for="(option, idx) in productPharmacies"
             :key="idx"
           >
-            <!-- <Corniecheckbox
+            <Corniecheckbox
               class="mb-3"
               :name="option.name"
-              id="pharmacy"
+              :id="option.id"
               :value="option.id"
-              :modelValue="option.id"
-              @click="setPharmacy(option)"
-            /> -->
-            <label
-              class="cursor-pointer hover:text-danger capitalize"
-              :class="{
-                'text-danger font-bold': selectedPharmacy === option.name,
-              }"
-              @click="setPharmacy(option)"
-              >{{ option.name }}</label
-            >
+              v-model="selectedPharmacy[idx]"
+              @change="setPharmacy(option)"
+            />
+            <label class="cursor-pointer hover:text-danger capitalize">{{
+              option.name
+            }}</label>
           </div>
         </div>
       </FilterAccordion>
-      <FilterAccordion class="border-t" title="Medication Clasification">
+      <FilterAccordion class="border-t f" title="Medication Clasification">
         <FilterAccordion
           type2
           v-for="(classification, idx) in medicationCategories"
@@ -110,21 +100,13 @@
             v-for="(subclassification, idx) in classification.categories"
             :key="idx"
           >
-            <!-- <Corniecheckbox
+            <Corniecheckbox
               class="mb-3"
-              :label="subclassification"
               :value="subclassification"
-              v-model="selectedClassifications"
-            /> -->
-            <label
-              class="cursor-pointer hover:text-danger capitalize"
-              :class="{
-                'text-danger font-bold':
-                  selectedSubClassifications === subclassification,
-              }"
-              @click="setCategories(subclassification, classification)"
-              >{{ subclassification }}</label
-            >
+              :label="subclassification"
+              v-model="selectedClassifications[idx]"
+              @change="setCategories(subclassification, classification)"
+            />
           </div>
         </FilterAccordion>
       </FilterAccordion>
@@ -134,19 +116,15 @@
           v-for="(option, idx) in dealAndPromoOptions"
           :key="idx"
         >
-          <!-- <Corniecheckbox
+          <Corniecheckbox
             class="mb-3"
-           
             :label="option"
             :value="option"
-            v-model="selectedPromoOption"
-          /> -->
-          <label
-            class="cursor-pointer hover:text-danger capitalize"
-            :class="{ 'text-danger font-bold': selectedPromoOption === option }"
-            @click="setPromoOption(option)"
-            >{{ option.name }}</label
-          >
+            v-model="selectedPromoOption[idx]"
+          />
+          <label class="cursor-pointer hover:text-danger capitalize">{{
+            option.name
+          }}</label>
         </div>
       </FilterAccordion>
     </div>
@@ -195,12 +173,12 @@ import { medicationCategories } from "@/plugins/medication-categories";
 export default class ShoppingSideBar extends Vue {
   appointments: any = [];
   loading: Boolean = true;
-  selectedLocation: any = "";
+  selectedLocation: any = [];
   pharmacyQuery: any = "";
   fulfillmentOption: any = "";
-  selectedPharmacy: any = "";
-  selectedClassifications: any = "";
-  selectedSubClassifications: any = "";
+  selectedPharmacy: any = [];
+  selectedClassifications: any = [];
+  selectedSubClassifications: any = [];
   selectedPromoOption: any = "";
 
   medicationCategories: any = medicationCategories;
@@ -253,26 +231,40 @@ export default class ShoppingSideBar extends Vue {
     }
   }
 
+  filterChecked(arr: any, arr2: any, value?: string) {
+    const newArr = arr.filter((el: any) => el === true);
+    console.log('newArr', newArr)
+    const intersections = arr2.filter((e: any, idx: any) =>
+      newArr.find((el: any, i: any) => i === idx)
+    );
+    console.log('inters', intersections)
+    const dIds = value === "id" ? intersections.map((el: any) => (el.id)) : intersections;
+    return dIds;
+  }
+
   setPromoOption(option: any) {
     this.selectedPromoOption = option.name;
   }
 
   setLocation(option: any) {
-    this.selectedLocation = option;
-    this.$emit("locationQuery", this.selectedLocation);
+    this.$emit(
+      "locationQuery",
+      this.filterChecked(this.selectedLocation, this.productLocations, "")
+    );
   }
 
   setPharmacy(option: any) {
-    this.selectedPharmacy = option.name;
-    this.$emit("pharmacyQuery", this.selectedPharmacy);
+    this.$emit(
+      "pharmacyQuery",
+      this.filterChecked(this.selectedPharmacy, this.productPharmacies, "id")
+    );
   }
 
   setCategories(subclassification: any, classification: any) {
-    this.selectedSubClassifications = subclassification;
-    this.selectedClassifications = classification;
+    this.selectedClassifications.push(classification.name);
     this.$emit(
       "categoriesQuery",
-      this.selectedSubClassifications,
+      this.filterChecked(this.selectedSubClassifications, classification, ""),
       this.selectedClassifications
     );
   }

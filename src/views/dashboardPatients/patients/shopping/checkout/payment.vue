@@ -231,9 +231,9 @@ export default class Review extends Vue {
     if (this.$route.query?.type === "prescriptions") {
       await this.createPrescription();
       await this.generateBill();
-    }else {
+    } else {
       await this.createMedicationOrder();
-      await this.generateMedOrderBill();
+      await this.getOrderSummary();
     }
     this.paybillPayload.billAmount = this.grandTotal;
     this.paybillPayload.billDisplay = this.bill.id;
@@ -241,21 +241,30 @@ export default class Review extends Vue {
   }
 
   get payload() {
-      return {
-        deliveryPreferencesId: this.$route.query.dID,
-        prescriptionImageUrl: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.file : undefined,
-        prescriber_name: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.prescriberName : undefined,
-        prescriber_email: this.$route.query.type === 'prescriptions' ? this.prescriptionUpload.email : undefined,
-        prescribedMedications: this.items.map((med: any) => {
-          return {
-            productId: med.productId,
-            quantity: med.quantity.toString(),
-            cost: med.cost,
-            locationId: med.locationId,
-            organizationId: med.organizationId,
-          };
-        }),
-      };
+    return {
+      deliveryPreferencesId: this.$route.query.dID,
+      prescriptionImageUrl:
+        this.$route.query.type === "prescriptions"
+          ? this.prescriptionUpload.file
+          : undefined,
+      prescriber_name:
+        this.$route.query.type === "prescriptions"
+          ? this.prescriptionUpload.prescriberName
+          : undefined,
+      prescriber_email:
+        this.$route.query.type === "prescriptions"
+          ? this.prescriptionUpload.email
+          : undefined,
+      prescribedMedications: this.items.map((med: any) => {
+        return {
+          productId: med.productId,
+          quantity: med.quantity.toString(),
+          cost: med.cost,
+          locationId: med.locationId,
+          organizationId: med.organizationId,
+        };
+      }),
+    };
   }
 
   async createPrescription(value?: any) {
@@ -309,7 +318,18 @@ export default class Review extends Vue {
     try {
       const { data } = await cornieClient().post(
         "/api/v1/patient-portal/medication-shop/create",
-        { ...this.payload }
+        {
+          deliveryPreferencesId: this.$route.query.dID,
+          shopMedications: this.items.map((med: any) => {
+            return {
+              productId: med.productId,
+              quantity: med.quantity.toString(),
+              cost: med.cost,
+              locationId: med.locationId,
+              organizationId: med.organizationId,
+            };
+          }),
+        }
       );
       this.loading = false;
       window.notify({
@@ -325,14 +345,21 @@ export default class Review extends Vue {
       });
     }
   }
-  async generateMedOrderBill(value?: any) {
+  async getOrderSummary(value?: any) {
+    this.loading = true;
     try {
-      this.loading = true;
       const { data } = await cornieClient().post(
-        "/api/v1/patient-portal/medication-shop/generate-subcription-bill",
+        "/api/v1/patient-portal/medication-shop/get-order-summary",
         {
-          deliveryPreferencesId: this.$route.query.dID,
-          medicationShopId: this.prescription.id,
+          shopMedications: this.items.map((med: any) => {
+            return {
+              productId: med.productId,
+              quantity: med.quantity.toString(),
+              cost: med.cost,
+              locationId: med.locationId,
+              organizationId: med.organizationId,
+            };
+          }),
         }
       );
       this.loading = false;

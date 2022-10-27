@@ -221,13 +221,17 @@ export default class PrescriptionExistingPage extends Vue {
   }
 
   async confirmCancel() {
-    await cornieClient().patch(
+    try {
+      await cornieClient().patch(
       `/api/v1/patient-portal/prescription/${this.itemId}/cancel`, {}
     );
     window.notify({
       msg: "Successfully cancelled",
       status: "success",
     });
+    } catch(error: any) {
+      console.log('error', error.data.message)
+    }
     this.cancelOrderModal = false;
     this.fetchPrescription()
   }
