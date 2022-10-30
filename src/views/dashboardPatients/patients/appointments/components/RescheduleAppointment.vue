@@ -77,10 +77,15 @@
           <div class="border-sect p-4 mb-6 flex justify-between">
             <p class="text-grey-blue">Location:</p>
             <div>
-              <p>{{findLocation(appointment.locationId)}}</p>
-              <p class="text-right">{{ pLocation?.name }}</p>
-              <p class="text-right">{{ pLocation?.city }}</p>
-              <p class="text-right">{{ pLocation?.state }}</p>
+              <p class="text-right">{{ appointmentLocation?.name }}</p>
+              <p class="text-right">
+                {{ appointmentLocation?.address }},
+                {{ appointmentLocation?.city }}
+              </p>
+              <p class="text-right">
+                {{ appointmentLocation?.state }},
+                {{ appointmentLocation?.country }}
+              </p>
               <p class="text-right">{{ appointment?.practitioner?.email }}</p>
               <p class="text-right">
                 {{ appointment?.practitioner?.phone.dialCode }}
@@ -222,6 +227,7 @@ export default class RescheduleAppointment extends Vue {
   newAppointmentTime = "";
   appointmentHasBeenRescheduled = false;
   pLocation: any = {};
+  appointmentLocation: any = {};
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -298,8 +304,19 @@ export default class RescheduleAppointment extends Vue {
     }
   }
 
+  async locationById() {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/location/${this.appointment?.locationId}`
+      );
+      this.appointmentLocation = data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async created() {
+    await this.locationById()
   }
 }
 </script>

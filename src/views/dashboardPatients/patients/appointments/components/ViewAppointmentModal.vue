@@ -37,7 +37,9 @@
             </div>
             <div class="flex justify-between">
               <p class="text-grey-blue">Specialty:</p>
-              <p class="text-right">{{ appointment?.practitioner?.jobDesignation }}</p>
+              <p class="text-right">
+                {{ appointment?.practitioner?.jobDesignation }}
+              </p>
             </div>
           </div>
           <div class="border-sect p-4 mb-6 flex justify-between">
@@ -51,8 +53,14 @@
             <p class="text-grey-blue">Location:</p>
             <div>
               <p class="text-right">{{ appointmentLocation?.name }}</p>
-              <p class="text-right">{{ appointmentLocation?.address }}, {{ appointmentLocation?.city }}</p>
-              <p class="text-right">{{ appointmentLocation?.state }}, {{ appointmentLocation?.country }}</p>
+              <p class="text-right">
+                {{ appointmentLocation?.address }},
+                {{ appointmentLocation?.city }}
+              </p>
+              <p class="text-right">
+                {{ appointmentLocation?.state }},
+                {{ appointmentLocation?.country }}
+              </p>
               <p class="text-right">{{ appointment?.practitioner?.email }}</p>
               <p class="text-right">
                 {{ appointment?.practitioner?.phone.dialCode }}
@@ -172,7 +180,7 @@ export default class ViewAppointment extends Vue {
   search: any = {};
   loading: Boolean = false;
   locations = [];
-  appointmentLocation: any = {}
+  appointmentLocation: any = {};
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -197,12 +205,18 @@ export default class ViewAppointment extends Vue {
   }
 
   async locationById() {
-    const { data } = await cornieClient().get(`/api/v1/location/${this.appointment?.locationId}`);
-    this.appointmentLocation = data;
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/location/${this.appointment?.locationId}`
+      );
+      this.appointmentLocation = data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async created() {
-    await this.locationById()
+    await this.locationById();
   }
 }
 </script>

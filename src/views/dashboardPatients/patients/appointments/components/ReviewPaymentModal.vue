@@ -182,6 +182,7 @@ export default class ReviewPaymentModal extends Vue {
   show = false;
   showAppointmentModal = false;
   locations = [];
+  appointmentLocation: any = {}
 
   @Prop({ type: Object, default: {} })
   practitioner!: any;
@@ -207,7 +208,7 @@ export default class ReviewPaymentModal extends Vue {
     } else return this.practitioner.phone
   }
 
-  created() {}
+ 
 }
 </script>
 
