@@ -28,57 +28,59 @@
               Searching
             </div>
 
-            <div v-if="!loading && specialties.length > 0">
-              <div class="w-full text-left mb-2">
-                <div class="ddh w-full px-2 py-4">Specialty</div>
-                <ul
-                  v-for="(specialty, index) in specialties"
-                  :key="index"
-                  class="block"
-                >
-                  <li
-                    class="lowercase px-2 py-4 hover:bg-gray-100 cursor-pointer"
-                    @click="selectProvider(specialty, 'specialty')"
+            <div v-if="!loading">
+              <div v-if="tab === 'doctors' && specialties.length > 0">
+                <div class="w-full text-left mb-2">
+                  <div class="ddh w-full px-2 py-4">Specialty</div>
+                  <ul
+                    v-for="(specialty, index) in specialties"
+                    :key="index"
+                    class="block"
                   >
-                    {{ specialty.name }}
-                  </li>
-                </ul>
+                    <li
+                      class="lowercase px-2 py-4 hover:bg-gray-100 cursor-pointer"
+                      @click="selectProvider(specialty, 'specialty')"
+                    >
+                      {{ specialty.name }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
 
-            <div v-if="providers.length > 0">
-              <div class="w-full text-left mb-2">
-                <div class="ddh w-full px-2 py-4">Provider</div>
-                <ul
-                  v-for="(provider, index) in providers"
-                  :key="index"
-                  class="block"
-                >
-                  <li
-                    class="px-2 py-4 lowercase hover:bg-gray-100 cursor-pointer"
-                    @click="selectProvider(provider, 'provider')"
+              <div v-if="providers.length > 0">
+                <div class="w-full text-left mb-2">
+                  <div class="ddh w-full px-2 py-4">Provider</div>
+                  <ul
+                    v-for="(provider, index) in providers"
+                    :key="index"
+                    class="block"
                   >
-                    {{ provider.name }}
-                  </li>
-                </ul>
+                    <li
+                      class="px-2 py-4 lowercase hover:bg-gray-100 cursor-pointer"
+                      @click="selectProvider(provider, 'provider')"
+                    >
+                      {{ provider.name }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
 
-            <div v-if="!loading && practitioners.length > 0">
-              <div class="w-full text-left">
-                <div class="ddh w-full px-2 py-4">Practitioners</div>
-                <ul
-                  v-for="(practitioner, index) in practitioners"
-                  :key="index"
-                  class="block"
-                >
-                  <li
-                    class="lowercase px-2 py-4 hover:bg-gray-100 cursor-pointer"
-                    @click="selectProvider(practitioner, 'practitioner')"
+              <div v-if="tab === 'doctors' && practitioners.length > 0">
+                <div class="w-full text-left">
+                  <div class="ddh w-full px-2 py-4">Practitioners</div>
+                  <ul
+                    v-for="(practitioner, index) in practitioners"
+                    :key="index"
+                    class="block"
                   >
-                    {{ practitioner.name }}
-                  </li>
-                </ul>
+                    <li
+                      class="lowercase px-2 py-4 hover:bg-gray-100 cursor-pointer"
+                      @click="selectProvider(practitioner, 'practitioner')"
+                    >
+                      {{ practitioner.name }}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -118,6 +120,9 @@ export default class SearchFilter extends Vue {
   practitioners = [] as any;
   loading = false;
   query = "";
+
+  @Prop({ type: String, default: "" })
+  tab!: string;
 
   @Watch("query")
   onChange() {

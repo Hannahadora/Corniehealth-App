@@ -59,18 +59,24 @@
           <p class="text-sm">{{ formatTime(item.startTime) }}</p>
         </div>
       </template>
-      <template #Participants="{ item }">
-        <actors-section
-          :items="item.Participants"
-          class="cursor-pointer"
-          @click="displayParticipants(item.id)"
-        />
+      <template #participants="{ item }">
+        <div class="flex">
+          <img
+            class="w-10 h-10 rounded-full mr-2 border"
+            :src="item.practitioner?.image"
+          />
+          <div>
+            <!-- <p>{{ item.practitioner?.jobDesignation }}</p> -->
+            <p>{{ item.practitioner?.firstName }}</p>
+            <p>{{ item.practitioner?.lastName }}</p>
+          </div>
+        </div>
       </template>
       <template #status="{ item }">
         <div class="flex items-center">
           <p
             class="text-xs bg-gray-300 p-1 rounded"
-            v-if="item.status == 'No-Show' || item.status == 'Proposed'"
+            v-if="item.status == 'No-show' || item.status == 'Proposed'"
           >
             {{ item.status }}
           </p>
@@ -239,7 +245,7 @@ export default class AppointmentExistingState extends Vue {
   showRescheduleModal = false;
   showPayBill = false;
   bill: any = {};
-  practitionerLocations: any = []
+  practitionerLocations: any = [];
 
   @patients.State
   patients!: IPatient[];
@@ -257,11 +263,11 @@ export default class AppointmentExistingState extends Vue {
     {
       title: "specialty",
       key: "specialty",
-      show: true,
+      show: false,
     },
     {
       title: "Participants",
-      key: "Participants",
+      key: "participants",
       show: true,
     },
     {
@@ -322,12 +328,12 @@ export default class AppointmentExistingState extends Vue {
   async rescheduleAppointment(item: any) {
     this.showRescheduleModal = true;
     this.selectedAppointment = item;
-    await this.fetchPractitionerLocations(item.practitioner.id)
+    await this.fetchPractitionerLocations(item.practitioner.id);
   }
   async payBill(item: any) {
     this.showPayBill = true;
     this.selectedAppointment = item;
-    await this.generateBillId(item.id)
+    await this.generateBillId(item.id);
   }
 
   get patientId() {
@@ -347,7 +353,7 @@ export default class AppointmentExistingState extends Vue {
         appointmentId: appointment.idn,
         appointmentType: appointment.appointmentType,
         specialty: appointment.serviceCategory,
-        participant: appointment.participants || "Nil",
+        // participants: appointment.participants || "Nil",
         appointmentDateTime: appointment.date,
         status: appointment.status,
       };
@@ -359,10 +365,10 @@ export default class AppointmentExistingState extends Vue {
   async generateBillId(appointmentId: string) {
     try {
       this.loading = true;
-     const { data } =  await cornieClient().get(
+      const { data } = await cornieClient().get(
         `/api/v1/patient-portal/appointment/pay-bill/get-appointment-bill/${appointmentId}`
       );
-      this.bill = data
+      this.bill = data;
     } catch (error: any) {
       window.notify({
         msg: "There was error generating bill id",
@@ -402,23 +408,22 @@ export default class AppointmentExistingState extends Vue {
     });
   }
 
-  
   async fetchPractitionerLocations(practitionerId: any) {
-      try {
-        this.loading = true;
-        const { data } = await cornieClient().get(
-          `/api/v1/general/get-practitioner-location/${practitionerId}`
-        );
-        this.practitionerLocations = data;
-      } catch (error) {
-        window.notify({
-          msg: "There was an error fetching practitioner locations",
-          status: "error",
-        });
-      } finally {
-        this.loading = false;
-      }
+    try {
+      this.loading = true;
+      const { data } = await cornieClient().get(
+        `/api/v1/general/get-practitioner-location/${practitionerId}`
+      );
+      this.practitionerLocations = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching practitioner locations",
+        status: "error",
+      });
+    } finally {
+      this.loading = false;
     }
+  }
 
   async created() {
     await this.fetchAppointments();

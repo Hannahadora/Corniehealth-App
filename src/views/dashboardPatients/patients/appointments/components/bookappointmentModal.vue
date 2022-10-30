@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <search-filter @getSelectedInput="getSelectedInput" />
+        <search-filter @getSelectedInput="getSelectedInput" :tab="selectedTab" />
 
         <select-group
           :tab="selectedTab"

@@ -5,7 +5,7 @@
         class="w-full flex xl:flex-row flex-col xl:items-center items-right justify-between"
       >
         <span class="font-bold text-primary whitespace-nowrap xl:mb-0 mb-6"
-          >Dr. {{ practitioner && practitioner.name }} Availability</span
+          >Dr. {{ practitionerName }} Availability</span
         >
 
         <div class="xl:ml-10">
@@ -185,6 +185,10 @@ export default class DoctorsPage extends Vue {
 
   doubleDigit(s: any) {
     return s.length < 2 ? "0" + s : s;
+  }
+
+  get practitionerName() {
+    return this.practitioner && this.practitioner.name ? this.practitioner.name : `${this.practitioner.firstName} ${this.practitioner.lastName}`
   }
 
   get startTime() {

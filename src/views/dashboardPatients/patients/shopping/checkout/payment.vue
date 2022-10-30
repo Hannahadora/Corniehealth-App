@@ -69,7 +69,7 @@
         <div class="delivery-info-container w-full xl:px-24">
           <div class="flex justify-between mb-8">
             <p>Item Total</p>
-            <p class="text-right">₦ {{ totalCost || 0 }}</p>
+            <p class="text-right">₦ {{ orderSummary.itemsTotal || 0 }}</p>
           </div>
           <div class="flex justify-between mb-8">
             <p>Shipping</p>
@@ -77,7 +77,7 @@
           </div>
           <div class="flex justify-between mb-8">
             <p>Discounts</p>
-            <p class="text-right">₦ 0</p>
+            <p class="text-right">₦ {{orderSummary.discounts}}</p>
           </div>
           <div class="flex justify-between mb-6">
             <p>Sales Tax</p>
@@ -188,6 +188,7 @@ export default class Review extends Vue {
     "Card (on file)",
   ];
   paybillPayload: any = {};
+  orderSummary: any = {};
   bill: any = {};
   prescription: any = {};
 
@@ -233,7 +234,6 @@ export default class Review extends Vue {
       await this.generateBill();
     } else {
       await this.createMedicationOrder();
-      await this.getOrderSummary();
     }
     this.paybillPayload.billAmount = this.grandTotal;
     this.paybillPayload.billDisplay = this.bill.id;
@@ -333,7 +333,7 @@ export default class Review extends Vue {
       );
       this.loading = false;
       window.notify({
-        msg: "Prescription Added",
+        msg: "Medication Added",
         status: "success",
       });
       this.prescription = data;
@@ -351,7 +351,7 @@ export default class Review extends Vue {
       const { data } = await cornieClient().post(
         "/api/v1/patient-portal/medication-shop/get-order-summary",
         {
-          shopMedications: this.items.map((med: any) => {
+          shoppedMedications: this.items.map((med: any) => {
             return {
               productId: med.productId,
               quantity: med.quantity.toString(),
@@ -363,24 +363,21 @@ export default class Review extends Vue {
         }
       );
       this.loading = false;
-      window.notify({
-        msg: "Prescription Added",
-        status: "success",
-      });
-      this.bill = data;
+      this.orderSummary = data;
     } catch (error) {
       this.loading = false;
       window.notify({
-        msg: "An error occured",
+        msg: "An error occured while generating order",
         status: "error",
       });
     }
   }
 
-  created() {
+  async created() {
     this.fetchPrescriptionCart();
     this.fetchPrescriptionUpload();
     this.fetchCartItems();
+    await this.getOrderSummary()
   }
 }
 </script>

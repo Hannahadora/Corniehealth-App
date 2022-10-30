@@ -22,7 +22,7 @@
       </cornie-card-title>
 
       <cornie-card-text class="flex-grow scrollable mt-1">
-        <div class="w-full">
+        <div class="w-full mb-24">
           <div class="border-sect p-4 mb-6 flex justify-between">
             <p class="text-grey-blue">Appointment ID:</p>
             <p class="text-right">{{ appointment?.idn }}</p>
@@ -37,7 +37,7 @@
             </div>
             <div class="flex justify-between">
               <p class="text-grey-blue">Specialty:</p>
-              <p class="text-right">{{ appointment?.specialty }}</p>
+              <p class="text-right">{{ appointment?.practitioner?.jobDesignation }}</p>
             </div>
           </div>
           <div class="border-sect p-4 mb-6 flex justify-between">
@@ -50,7 +50,9 @@
           <div class="border-sect p-4 mb-6 flex justify-between">
             <p class="text-grey-blue">Location:</p>
             <div>
-              <p class="text-right">{{ appointment?.locationId }}</p>
+              <p class="text-right">{{ appointmentLocation?.name }}</p>
+              <p class="text-right">{{ appointmentLocation?.address }}, {{ appointmentLocation?.city }}</p>
+              <p class="text-right">{{ appointmentLocation?.state }}, {{ appointmentLocation?.country }}</p>
               <p class="text-right">{{ appointment?.practitioner?.email }}</p>
               <p class="text-right">
                 {{ appointment?.practitioner?.phone.dialCode }}
@@ -96,7 +98,7 @@
           </div>
         </div>
 
-        <div class="absolute bottom-6 right-6">
+        <div class="w-full absolute bottom-6 right-6 bg-white">
           <div class="w-full mx-auto mt-12 flex items-center justify-end">
             <cornie-btn
               class="xl:mr-2 xl:mb-0 mb-6 xl:w-auto w-full bg-white px-6 py-1 text-primary border-primary border-2 rounded-xl"
@@ -170,6 +172,7 @@ export default class ViewAppointment extends Vue {
   search: any = {};
   loading: Boolean = false;
   locations = [];
+  appointmentLocation: any = {}
 
   @PropSync("modelValue", { type: Boolean, default: false })
   show!: boolean;
@@ -193,7 +196,14 @@ export default class ViewAppointment extends Vue {
     });
   }
 
-  created() {}
+  async locationById() {
+    const { data } = await cornieClient().get(`/api/v1/location/${this.appointment?.locationId}`);
+    this.appointmentLocation = data;
+  }
+
+  async created() {
+    await this.locationById()
+  }
 }
 </script>
 

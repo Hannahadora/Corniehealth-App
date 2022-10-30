@@ -11,7 +11,7 @@
         class="bg-danger rounded-lg text-white py-3 px-4 font-semibold focus:outline-none hover:opacity-90"
         @click="$emit('openModal')"
       >
-        Upload Prescription
+        Subscribe
       </button>
     </span>
     <cornie-table :columns="rawHeaders" v-model="items">
@@ -56,7 +56,7 @@
         <div class="flex items-center">
           <p
             class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
-            v-if="item.status == 'pending'"
+            v-if="item.status == 'ending'"
           >
             {{ item.status }}
           </p>
@@ -74,7 +74,7 @@
           </p>
           <p
             class="text-xs bg-gray-300 text-black p-1 rounded"
-            v-if="item.status == 'inactive'"
+            v-if="item.status == 'Inactive'"
           >
             {{ item.status }}
           </p>
@@ -88,7 +88,7 @@
       message="Confirm you want to send a refill request to your doctor."
       @confirm="requestRefill"
     />
-    <delivery-peference v-model="deliveryPreferenceModal" />
+    <delivery-preference v-model="deliveryPreferenceModal" />
   </div>
 </template>
 <script lang="ts">
@@ -213,41 +213,32 @@ export default class SubscriptionExistingState extends Vue {
   requestRefill() {}
 
   get items() {
-    const subscriptions = this.medicationRequests.map((med: any) => {
-      (med as any).createdAt = new Date(
-        (med as any).createdAt
-      ).toLocaleDateString("en-US");
+    const combined = this.medSubscriptions.map(this.medicationRequests);
+    const medicationRequest = combined.flatMap((value: any) => value);
+
+    if (!this.query) return medicationRequest;
+    return search.searchObjectArray(medicationRequest, this.query);
+  }
+
+  medicationRequests(request: any) {
+    const { subscribedMedications, ...rest } = request;
+    return subscribedMedications.map((medication: any) => {
       return {
-        ...med,
-        keydisplay: med.id,
-        date: med.createdAt ?? "XXXX",
-        subId: med.medicationSubscriptionId,
-        medication: med.category,
-        quantity: med.quantity,
-        frequency: med.frequency || "N/A",
-        amount: med.cost || 0.00,
-        dispenser: med.dispenser,
-        status: med.status,
+        ...subscribedMedications,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        date: new Date(request.createdAt).toLocaleDateString(),
+        subId: request.orderId || 'N/A',
+        medication: request.category,
+        quantity: request.quantity || 0,
+        frequency: request.frequency || "N/A",
+        amount: request.cost || 0.00,
+        dispenser: request.subscribeFor,
+        status: request.status,
       };
     });
-    if (!this.query) return subscriptions;
-    return search.searchObjectArray(subscriptions, this.query);
   }
-
-
-
-  get medicationRequests() {
-    const x = this.medSubscriptions.map((el: any) => {
-      return el.subscribedMedications.flat();
-    });
-
-    const med = x.reduce((a: any, b: any) => {
-      return a.concat(b);
-    }, []);
-
-    return med || []
-  }
-
   async fetchSubscriptions() {
     try {
       const { data } = await cornieClient().get(

@@ -42,13 +42,13 @@
         <div class="flex items-center">
           <p
             class="text-xs bg-yellow-200 text-yellow-500 p-1 rounded"
-            v-if="item.status == 'pending'"
+            v-if="item.status == 'Pending'"
           >
             {{ item.status }}
           </p>
           <p
             class="text-xs bg-green-200 text-green-500 p-1 rounded"
-            v-if="item.status == 'active'"
+            v-if="item.status == 'Active'"
           >
             {{ item.status }}
           </p>
@@ -60,7 +60,7 @@
           </p>
           <p
             class="text-xs bg-gray-300 text-black p-1 rounded"
-            v-if="item.status == 'inactive'"
+            v-if="item.status == 'Inactive'"
           >
             {{ item.status }}
           </p>
@@ -83,7 +83,7 @@
     />
     <prescription-modal v-model="addPrescription" />
     <details-modal v-model="itemDetailsModal" :request="selectedItem" title="View Prescription" />
-    <delivery-peference v-model="deliverypreferenceModal" />
+    <delivery-preference v-model="deliverypreferenceModal" />
   </div>
 </template>
 <script lang="ts">
@@ -230,45 +230,35 @@ export default class PrescriptionExistingPage extends Vue {
       status: "success",
     });
     } catch(error: any) {
-      console.log('error', error.data.message)
+      console.log('error', error.response)
     }
     this.cancelOrderModal = false;
     this.fetchPrescription()
   }
 
   get items() {
-    const prescriptions = this.medicationRequests.map((med: any) => {
-      (med as any).createdAt = new Date(
-        (med as any).createdAt
-      ).toLocaleDateString("en-US");
-      return {
-        ...med,
-        keydisplay: med.id,
-        date: med.createdAt ?? "XXXX",
-        rxId: med.orderId,
-        medication: med.category,
-        quantity: med.quantity,
-        amount: med.cost || 0.00,
-        dispenser: med.prescriber_name,
-        status: med.status,
-      };
-    });
-    if (!this.query) return prescriptions;
-    return search.searchObjectArray(prescriptions, this.query);
+    const combined = this.medPrescriptions.map(this.medicationRequests);
+    const medicationRequest = combined.flatMap((value: any) => value);
+
+    if (!this.query) return medicationRequest;
+    return search.searchObjectArray(medicationRequest, this.query);
   }
 
-
-
-  get medicationRequests() {
-    const x = this.medPrescriptions.map((el: any) => {
-      return el.prescribedMedications.flat();
+  medicationRequests(request: any) {
+    const { prescribedMedications, ...rest } = request;
+    return prescribedMedications.map((medication: any) => {
+      return {
+        ...prescribedMedications,
+        ...rest,
+        medicationId: medication.id,
+        requestId: request.id,
+        date: new Date(request.createdAt).toLocaleDateString(),
+        rxId: request.orderId,
+        medication: request.name,
+        amount: request.amount || 0,
+        dispenser: request.prescriber_name,
+      };
     });
-
-    const med = x.reduce((a: any, b: any) => {
-      return a.concat(b);
-    }, []);
-
-    return med || []
   }
 
   async fetchPrescription() {
