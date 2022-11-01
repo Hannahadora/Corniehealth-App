@@ -104,7 +104,7 @@
               class="mb-3"
               :value="subclassification"
               :label="subclassification"
-              v-model="selectedClassifications[idx]"
+              v-model="selectedSubClassifications[idx]"
               @change="setCategories(subclassification, classification)"
             />
           </div>
@@ -233,12 +233,18 @@ export default class ShoppingSideBar extends Vue {
 
   filterChecked(arr: any, arr2: any, value?: string) {
     const newArr = arr.filter((el: any) => el === true);
-    console.log('newArr', newArr)
     const intersections = arr2.filter((e: any, idx: any) =>
       newArr.find((el: any, i: any) => i === idx)
     );
-    console.log('inters', intersections)
     const dIds = value === "id" ? intersections.map((el: any) => (el.id)) : intersections;
+    return dIds;
+  }
+  filterCheckedCategories(arr: any, arr2: any) {
+    const newArr = arr.filter((el: any) => el === true);
+    const intersections = arr2.categories?.filter((e: any, idx: any) =>
+      newArr.find((el: any, i: any) => i === idx)
+    );
+    const dIds = intersections;
     return dIds;
   }
 
@@ -264,7 +270,7 @@ export default class ShoppingSideBar extends Vue {
     this.selectedClassifications.push(classification.name);
     this.$emit(
       "categoriesQuery",
-      this.filterChecked(this.selectedSubClassifications, classification, ""),
+      this.filterCheckedCategories(this.selectedSubClassifications, classification),
       this.selectedClassifications
     );
   }

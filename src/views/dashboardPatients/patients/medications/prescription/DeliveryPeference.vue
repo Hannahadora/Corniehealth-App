@@ -33,7 +33,7 @@
             >
             <span
               class="text-sm text-red-500 italic cursor-pointer"
-              @click="makedefault"
+              @click="makedefault(loc)"
               v-else
               >Make Default Address</span
             >
@@ -336,7 +336,23 @@ export default class AddPrescriptionDialog extends Vue {
     }
   }
 
-  async makedefault() {}
+  async makedefault(option: any) {
+    try {
+      await cornieClient().put(
+        `/api/v1/patient-portal/delivery-preferences/default/${option.id}`, {}
+      );
+      window.notify({
+        msg: "Successful",
+        status: "success",
+      });
+      await this.fetchDeliveryPreferences()
+    } catch (error) {
+      window.notify({
+        msg: "An error occured",
+        status: "error",
+      });
+    }
+  }
 
   addDeliveryTimes() {
     this.deliveryTimes.push({
