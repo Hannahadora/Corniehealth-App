@@ -39,9 +39,9 @@
           <div v-if="currentStep == 2 && areaPath === 'signup'">
             <div class="flex items-center justify-center">
               <heartpulse />
-              <span class="text-white text-base font-bold text-center w-full">
+              <p class="text-white text-base font-bold text-center ml-2">
                 Connected. Patient-Centric. Supportive.
-              </span>
+              </p>
             </div>
             <div
               v-if="type === 'Provider'"
@@ -95,7 +95,9 @@
 </template>
 
 <script>
+import Heartpulse from "@/components/icons/heartpulse.vue";
 export default {
+  components: {Heartpulse},
   props: {
     step: {
       type: Object,

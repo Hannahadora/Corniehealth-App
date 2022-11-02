@@ -93,6 +93,10 @@ import DomainInput from "@/components/domain-input.vue";
 import store from "@/store";
 import { login, setAuthDomain } from "@/plugins/auth";
 import { string } from "yup";
+import { namespace } from "vuex-class";
+import User from "@/types/user";
+
+const user = namespace("user");
 
 @Options({
   components: {
@@ -109,6 +113,15 @@ export default class Signin extends Vue {
   password = "";
   loading = false;
   domainName = "";
+
+  @user.State
+  user!: User;
+
+  @user.State
+  requiresTwoFactorAuth!: false;
+
+  @user.Mutation
+  updateTwoFA!: (val: boolean) => void;
 
   get payload() {
     const payload: any = {
@@ -131,7 +144,7 @@ export default class Signin extends Vue {
     try {
       const res: any = await login(this.payload);
       if (
-        !store.state.user.requiresTwoFactorAuth ||
+        !store.state.user.this.requiresTwoFactorAuth &&
         !store.state.user.requiresSecurityQuestion
       ) {
         if (this.$route.query.practitioner) {
