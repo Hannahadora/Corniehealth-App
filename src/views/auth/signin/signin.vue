@@ -144,7 +144,7 @@ export default class Signin extends Vue {
     try {
       const res: any = await login(this.payload);
       if (
-        !store.state.user.this.requiresTwoFactorAuth &&
+        !store.state.user.requiresTwoFactorAuth ||
         !store.state.user.requiresSecurityQuestion
       ) {
         if (this.$route.query.practitioner) {
