@@ -14,7 +14,7 @@
       </div>
     </template>
     <template v-if="loggedIn">
-      <two-factor v-if="twoFactor" @change-path="changePath('signin')"/>
+      <two-factor v-if="twoFactorNeeded" @change-path="changePath('signin')"/>
       <recommendation v-else @change-path="changePath('2fa')" />
     </template>
     <sign-in v-else @logged-in="setLoggedIn" />
@@ -66,7 +66,7 @@ export default class BaseSignIn extends Vue {
     if (user.id) this.userCreated = true;
   }
 
-  get twoFactor() {
+  get twoFactorNeeded() {
     return (
       store.state.user.requiresTwoFactorAuth ||
       store.state.user.requiresSecurityQuestion

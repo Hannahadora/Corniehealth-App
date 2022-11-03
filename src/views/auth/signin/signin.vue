@@ -144,13 +144,16 @@ export default class Signin extends Vue {
     try {
       const res: any = await login(this.payload);
       if (
-        !store.state.user.requiresTwoFactorAuth ||
-        !store.state.user.requiresSecurityQuestion
+        !res.data.requiresTwoFactorAuth ||
+        !res.data.requiresSecurityQuestion
       ) {
         if (this.$route.query.practitioner) {
           location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/appointment/doctor/${this.$route.query.practitioner}/confirm-payment?token=${store.state.user.authToken}`;
-        } else this.$router.push("/dashboard");
+        } if (this.$route.query.redirect) {
+          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/${this.$route.query.redirect}?token=${store.state.user.authToken}`;
+        }else this.$router.push("/dashboard");
       } else {
+        console.log('yessssssss')
         this.$emit("logged-in");
         console.log("2fa");
       }
