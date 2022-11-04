@@ -82,7 +82,7 @@
       @confirm="confirmCancel"
     />
     <prescription-modal v-model="addPrescription" />
-    <details-modal v-model="itemDetailsModal" :request="selectedItem" title="View Prescription" />
+    <details-modal v-model="itemDetailsModal" :request="selectedItem" :id="itemId" :organization="selectedItemOrg" title="View Prescription" />
     <delivery-preference v-model="deliverypreferenceModal" />
   </div>
 </template>
@@ -160,6 +160,7 @@ export default class PrescriptionExistingPage extends Vue {
   itemDetailsModal = false;
   cancelOrderModal = false;
   medPrescriptions = [] as any;
+  selectedItemOrg = {} as any;
 
   getKeyValue = getTableKeyValue;
   preferredHeaders = [];
@@ -206,11 +207,10 @@ export default class PrescriptionExistingPage extends Vue {
     this.requestRefillModal = true;
   }
 
-  requestRefill() {}
-
-  viewItem(item:any) {
-    this.selectedItem = item;
+  async viewItem(item:any) {
     this.itemId = item.id;
+    await this.viewAPrescription(item.id)
+    this.fetchMedicationOrg(item)
     this.itemDetailsModal = true
   }
 
@@ -220,6 +220,12 @@ export default class PrescriptionExistingPage extends Vue {
     this.cancelOrderModal = true
   }
 
+  fetchMedicationOrg(item: any) {
+    const orgId = item.organizationId
+    const org = this.selectedItem.prescribedMedications.find((el: any) => el.organization.id === orgId)
+    this.selectedItemOrg = org?.organization
+  }
+
   async confirmCancel() {
     try {
       await cornieClient().patch(
@@ -227,6 +233,22 @@ export default class PrescriptionExistingPage extends Vue {
     );
     window.notify({
       msg: "Successfully cancelled",
+      status: "success",
+    });
+    } catch(error: any) {
+      console.log('error', error.response)
+    }
+    this.cancelOrderModal = false;
+    this.fetchPrescription()
+  }
+
+  async requestRefill() {
+    try {
+      await cornieClient().patch(
+      `/api/v1/patient-portal/prescription/request-refill`, {prescriptionId: this.itemId}
+    );
+    window.notify({
+      msg: "Successful",
       status: "success",
     });
     } catch(error: any) {
@@ -251,6 +273,7 @@ export default class PrescriptionExistingPage extends Vue {
         ...prescribedMedications,
         ...rest,
         medicationId: medication.id,
+        organizationId: medication.organizationId,
         requestId: request.id,
         date: new Date(request.createdAt).toLocaleDateString(),
         rxId: request.orderId,
@@ -270,6 +293,19 @@ export default class PrescriptionExistingPage extends Vue {
     } catch (error) {
       window.notify({
         msg: "There was an error fetching medications",
+        status: "error",
+      });
+    }
+  }
+  async viewAPrescription(prescriptionId: any) {
+    try {
+      const { data } = await cornieClient().get(
+        `/api/v1/patient-portal/prescription/view/${prescriptionId}`
+      );
+      this.selectedItem = data;
+    } catch (error) {
+      window.notify({
+        msg: "There was an error fetching prescription details",
         status: "error",
       });
     }

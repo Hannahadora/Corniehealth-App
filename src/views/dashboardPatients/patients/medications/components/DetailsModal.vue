@@ -23,7 +23,7 @@
           <div>
             <span class="text-white text-sm mr-2">Dispense ID #:</span>
             <span class="font-semi-bold text-white">{{
-              request.identifier
+              request.orderId
             }}</span>
           </div>
           <div>
@@ -61,11 +61,11 @@
                 </div>
                 <div
                   class="w-2 h-2 rounded-full"
-                  style="background: '#C2C7D6'"
+                  style="background: '#C2C7D6';"
                 ></div>
                 <div>{{ organization.email }}</div>
                 <div>
-                  <span style="color: '#C2C7D6'">Patient ID: </span>
+                  <span style="color: '#C2C7D6';">Patient ID: </span>
                   {{ request?.patientId }}
                 </div>
               </div>
@@ -84,7 +84,7 @@
             <span class="text-white text-sm mr-2">Delivery Instruction:</span>
             <span class="font-semi-bold text-white capitalize">
               {{
-                request.deliveryLocation ? request?.deliveryLocation : ""
+                `${request.deliveryPreferences.type} - ${request.deliveryPreferences.city} ${request.deliveryPreferences.state}`
               }}</span
             >
           </div>
@@ -401,10 +401,6 @@ export default class DetailsModal extends Vue {
 
   @user.Getter
   authCurrentLocation!: any;
-
-  get statuses() {
-    return ["Active", "Substituted", "On-Hold", "Dispensed"];
-  }
 
   get locationId() {
     // return this.authCurrentLocation;
