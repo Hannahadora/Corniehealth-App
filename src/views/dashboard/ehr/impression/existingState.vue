@@ -112,6 +112,7 @@ import ImpressionModal from "./impressionDialog.vue";
 import { namespace } from "vuex-class";
 import { cornieClient } from "@/plugins/http";
 import StatusModal from "./status.vue";
+import { mapDisplay } from "@/plugins/definitions";
 
 const impression = namespace("impression");
 
@@ -169,6 +170,9 @@ export default class ImpressionExistingState extends Vue {
 
   // @impression.State
   // impressions!: IImpression[];
+
+  
+  findingMapper = (code: string) => "";
 
   @impression.Action
   deleteImpression!: (id: string) => Promise<boolean>;
@@ -272,6 +276,12 @@ export default class ImpressionExistingState extends Vue {
     // },
   ];
 
+  async createMapper() {
+    this.findingMapper = await mapDisplay(
+      "http://hl7.org/fhir/ValueSet/clinical-findings"
+    );
+  }
+
   get headers() {
     const preferred =
       this.preferredHeaders.length > 0
@@ -295,7 +305,7 @@ export default class ImpressionExistingState extends Vue {
         keydisplay: "XXXXXXX",
         cid: "XXXXXXX",
         prognosis: impression.prognosis?.length > 0 ? impression.prognosis[0]?.itemCode : "N/A",
-        findings: impression.findings?.length > 0 ? impression.findings[0]?.basis : "N/A",
+        findings: impression.findings?.length > 0 ? this.findingMapper(impression.findings[0]?.basis) : "N/A",
         assessor:
           this.findPractitioner(impression?.recorded?.asserterId) || "N/A",
         status: impression.status,
@@ -399,6 +409,7 @@ export default class ImpressionExistingState extends Vue {
     await this.fetchPractitioners();
     await this.getPatientImpressions();
     this.sortImpressions;
+    await this.createMapper();
   }
 }
 </script>

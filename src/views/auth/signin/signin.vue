@@ -148,9 +148,9 @@ export default class Signin extends Vue {
         !res.data.requiresSecurityQuestion
       ) {
         if (this.$route.query.practitioner) {
-          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/appointment/doctor/${this.$route.query.practitioner}/confirm-payment?token=${store.state.user.authToken}`;
+          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/patients/appointment/doctor/${this.$route.query.practitioner}/confirm-payment&token=${store.state.user.authToken}`;
         } if (this.$route.query.redirect) {
-          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/${this.$route.query.redirect}?token=${store.state.user.authToken}`;
+          location.href = `http://corniehealth-bookingsite.s3-website.eu-west-3.amazonaws.com/${this.$route.query.redirect}&token=${store.state.user.authToken}`;
         }else this.$router.push("/dashboard");
       } else {
         console.log('yessssssss')

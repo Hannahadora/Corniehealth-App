@@ -1,5 +1,5 @@
 <template>
-  <cornie-dialog v-model="show" right class="w-1/2 h-full">
+  <cornie-dialog v-model="show" right class="xl:w-1/2 lg:w-2/3 w-full h-full">
     <cornie-card
       height="100%"
       class="flex flex-col h-full bg-white overflow-y-scroll"
@@ -51,7 +51,7 @@
             title="Effective"
             :opened="true"
           >
-            <div class="grid grid-cols-3 gap-3 mt-6 w-1/2">
+            <div class="grid grid-cols-2 gap-3 mt-6 w-1/2">
               <cornie-radio
                 name="effective"
                 v-model="effectiveType"
@@ -679,7 +679,13 @@ export default class Impression extends Vue {
     if (this.allImpressions.length === 0) {
       return this.emptyArraySample.map((el: any) => el.name);
     } else {
-      return this.allImpressions?.map((el) => el.status) || [];
+      const newArr: any = []
+      this.allImpressions?.forEach((el: any) => {
+        if(el.basicInfo) {
+          newArr.push(el.basicInfo.code)
+        }
+      });
+      return newArr
     }
   }
   async apply() {
